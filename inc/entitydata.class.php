@@ -294,9 +294,9 @@ class EntityData extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         Dropdown::show('AuthLDAP', array ('value'      => $entdata->fields['authldaps_id'],
-                                           'emptylabel' => $LANG['ldap'][44],
-                                           'condition'  => "`is_active` = '1'"));
+         Dropdown::show('AuthLDAP', array('value'      => $entdata->fields['authldaps_id'],
+                                          'emptylabel' => $LANG['ldap'][44],
+                                          'condition'  => "`is_active` = '1'"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";

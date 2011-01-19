@@ -38,7 +38,7 @@ class NotificationTargetUser extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('passwordforget' => $LANG['users'][3]);
+      return array('passwordforget' => $LANG['users'][3]);
    }
 
 

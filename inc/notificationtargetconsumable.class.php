@@ -38,7 +38,7 @@ class NotificationTargetConsumable extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['mailing'][36]);
+      return array('alert' => $LANG['mailing'][36]);
    }
 
 

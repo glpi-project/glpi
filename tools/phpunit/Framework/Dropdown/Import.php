@@ -361,7 +361,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.78',
                                                          "manufacturer" => $manu,
                                                          "old_version"  => ''),
-                                                   array (), array());
+                                                   array(), array());
       $this->assertArrayHasKey('name', $res_rule, "Fail: name not altered");
       $this->assertEquals('GLPI', $res_rule['name'], "Fail: name not correct");
 

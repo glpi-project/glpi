@@ -82,7 +82,7 @@ class RuleImportComputer extends Rule {
    function getCriterias() {
       global $LANG;
 
-      $criterias = array ();
+      $criterias = array();
       $criterias['entities_id']['table']     = 'glpi_entities';
       $criterias['entities_id']['field']     = 'entities_id';
       $criterias['entities_id']['name']      = $LANG['rulesengine'][152].' : '.$LANG['ocsng'][62];

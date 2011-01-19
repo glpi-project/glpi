@@ -110,9 +110,9 @@ class RuleCriteria extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
-      $rules_list = array ();
+      $rules_list = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $tmp          = new RuleCriteria;
+         $tmp          = new RuleCriteria();
          $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }

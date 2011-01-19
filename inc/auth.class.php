@@ -80,7 +80,7 @@ class Auth {
 
    /**
     * Is the user exists in the DB
-    * @param $options array containing condition : array ('name'=>'glpi') or array ('email' => 'test at test.com')
+    * @param $options array containing condition : array('name'=>'glpi') or array('email' => 'test at test.com')
     *
     * @return 0 (Not in the DB -> check external auth),
     *         1 ( Exist in the DB with a password -> check first local connection and external after),
@@ -183,8 +183,9 @@ class Auth {
                                          array('basedn'            => $ldap_method['basedn'],
                                                'login_field'       => $ldap_method['login_field'],
                                                'search_parameters' => $params,
-                                               'user_params' => array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                                      'value'=>$login),
+                                               'user_params'
+                                                   => array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                            'value'  => $login),
                                                'condition'         => $ldap_method['condition'],
                                                'user_dn'           => $this->user_dn));
          $dn = $infos['dn'];
@@ -386,8 +387,8 @@ class Auth {
                $_SESSION["glpiusers_idisation"] = true;
                $_SESSION["glpiextauth"]         = $this->extauth;
                $_SESSION["glpiauthtype"]        = $this->user->fields['authtype'];
-               $_SESSION["glpisearchcount"]     = array ();
-               $_SESSION["glpisearchcount2"]    = array ();
+               $_SESSION["glpisearchcount"]     = array();
+               $_SESSION["glpisearchcount2"]    = array();
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $this->user->fields['use_mode'];
                $_SESSION["glpicrontimer"]       = time();
@@ -486,8 +487,8 @@ class Auth {
    function getAuthMethods() {
 
       //Return all the authentication methods in an array
-      $this->authtypes = array ('ldap' => getAllDatasFromTable('glpi_authldaps'),
-                                'mail' => getAllDatasFromTable('glpi_authmails'));
+      $this->authtypes = array('ldap' => getAllDatasFromTable('glpi_authldaps'),
+                               'mail' => getAllDatasFromTable('glpi_authmails'));
    }
 
 
@@ -527,11 +528,12 @@ class Auth {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
+            $user = $this->user->fields['name'];
             // Used for log when login process failed
-            $login_name = $this->user->fields['name'];;
+            $login_name = $user;
             $this->auth_succeded = true;
             $this->extauth       = 1;
-            $this->user_present  = $this->user->getFromDBbyName(addslashes($login_name));
+            $this->user_present  = $this->user->getFromDBbyName(addslashes($user));
             $this->user->fields['authtype'] = $authtype;
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
@@ -549,21 +551,24 @@ class Auth {
                      $params['method'] = AuthLdap::IDENTIFIER_LOGIN;
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
                      $user_dn = AuthLdap::searchUserDn($ds,
-                                                       array('basedn'      => $ldap_method["basedn"],
-                                                             'login_field' => $ldap_method['login_field'],
-                                                             'search_parameters' => $params,
-                                                             'user_params' => array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                             'value'       => $login_name),
-                                                             'condition'   => $ldap_method["condition"]));
+                                                       array('basedn' => $ldap_method["basedn"],
+                                                             'login_field'
+                                                                      => $ldap_method['login_field'],
+                                                             'search_parameters'
+                                                                      => $params,
+                                                             'user_params'
+                                                                      => $user,
+                                                             'condition'
+                                                                      => $ldap_method["condition"]));
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
                      }
                   }
                }
             }
 
             // Reset to secure it
-            $this->user->fields['name']       = $login_name;
+            $this->user->fields['name']       = $user;
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 
          } else {
@@ -898,7 +903,7 @@ class Auth {
     * @return boolean
    **/
    static function isAlternateAuth($auths_id) {
-      return  in_array($auths_id, array(Auth::X509,Auth::CAS, Auth::EXTERNAL));
+      return in_array($auths_id, array(Auth::X509, Auth::CAS, Auth::EXTERNAL));
    }
 
 

@@ -38,7 +38,7 @@ class NotificationTargetCrontask extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['crontask'][17]);
+      return array('alert' => $LANG['crontask'][17]);
    }
 
 

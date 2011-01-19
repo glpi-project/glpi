@@ -273,27 +273,25 @@ function logDebug() {
 function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
    // Date et heure de l'erreur
-   $errortype = array (E_ERROR           => 'Error',
-                       E_WARNING         => 'Warning',
-                       E_PARSE           => 'Parsing Error',
-                       E_NOTICE          => 'Notice',
-                       E_CORE_ERROR      => 'Core Error',
-                       E_CORE_WARNING    => 'Core Warning',
-                       E_COMPILE_ERROR   => 'Compile Error',
-                       E_COMPILE_WARNING => 'Compile Warning',
-                       E_USER_ERROR      => 'User Error',
-                       E_USER_WARNING    => 'User Warning',
-                       E_USER_NOTICE     => 'User Notice',
-                       E_STRICT          => 'Runtime Notice',
-                       // Need php 5.2.0
-                       4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-                       // Need php 5.3.0
-                       8192 /* E_DEPRECATED */       => 'Deprecated function',
-                       16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+   $errortype = array(E_ERROR           => 'Error',
+                      E_WARNING         => 'Warning',
+                      E_PARSE           => 'Parsing Error',
+                      E_NOTICE          => 'Notice',
+                      E_CORE_ERROR      => 'Core Error',
+                      E_CORE_WARNING    => 'Core Warning',
+                      E_COMPILE_ERROR   => 'Compile Error',
+                      E_COMPILE_WARNING => 'Compile Warning',
+                      E_USER_ERROR      => 'User Error',
+                      E_USER_WARNING    => 'User Warning',
+                      E_USER_NOTICE     => 'User Notice',
+                      E_STRICT          => 'Runtime Notice',
+                      // Need php 5.2.0
+                      4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
+                      // Need php 5.3.0
+                      8192 /* E_DEPRECATED */       => 'Deprecated function',
+                      16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
    // Les niveaux qui seront enregistrés
-   $user_errors = array(E_USER_ERROR,
-                        E_USER_WARNING,
-                        E_USER_NOTICE);
+   $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
    $err = $errortype[$errno] . "($errno): $errmsg\n";
    if (in_array($errno, $user_errors)) {
@@ -898,10 +896,8 @@ function key_exists_deep($need, $tab) {
 **/
 function clean_cross_side_scripting_deep($value) {
 
-   $in  = array('<',
-                '>');
-   $out = array('&lt;',
-                '&gt;');
+   $in  = array('<', '>');
+   $out = array('&lt;', '&gt;');
 
    $value = is_array($value) ? array_map('clean_cross_side_scripting_deep', $value)
                              : (is_null($value) ? NULL : str_replace($in,$out,$value));
@@ -921,10 +917,8 @@ function clean_cross_side_scripting_deep($value) {
 **/
 function unclean_cross_side_scripting_deep($value) {
 
-   $in  = array('<',
-                '>');
-   $out = array('&lt;',
-                '&gt;');
+   $in  = array('<', '>');
+   $out = array('&lt;', '&gt;');
 
    $value = is_array($value) ? array_map('unclean_cross_side_scripting_deep', $value)
                              : (is_null($value) ? NULL : str_replace($out,$in,$value));

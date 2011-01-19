@@ -91,7 +91,7 @@ class RuleOcs extends Rule {
 
    function getCriterias() {
       global $LANG;
-      $criterias = array ();
+      $criterias = array();
 
       $criterias['TAG']['table']     = 'accountinfo';
       $criterias['TAG']['field']     = 'TAG';

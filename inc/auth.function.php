@@ -80,12 +80,11 @@ function haveRight($module, $right) {
       return false;
    }
 
-   $matches = array (""  => array("","r","w"), // ne doit pas arriver normalement
-                     "r" => array("r","w"),
-                     "w" => array("w"),
-                     "1" => array("1"),
-                     "0" => array("0","1"), // ne doit pas arriver non plus
-                     );
+   $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
+                    "r" => array("r", "w"),
+                    "w" => array("w"),
+                    "1" => array("1"),
+                    "0" => array("0", "1")); // ne doit pas arriver non plus
 
    if (isset ($_SESSION["glpiactiveprofile"][$module])
        && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
@@ -353,7 +352,7 @@ function initEntityProfiles($userID) {
              ORDER BY `glpi_profiles`.`name`";
    $result = $DB->query($query);
 
-   $_SESSION['glpiprofiles'] = array ();
+   $_SESSION['glpiprofiles'] = array();
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_assoc($result)) {
          $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
@@ -407,7 +406,7 @@ function changeProfile($ID) {
          $data['entities'] = $_SESSION['glpiprofiles'][$ID]['entities'];
 
          $_SESSION['glpiactiveprofile']  = $data;
-         $_SESSION['glpiactiveentities'] = array ();
+         $_SESSION['glpiactiveentities'] = array();
 
          Search::resetSaveSearch();
          $active_entity_done = false;
@@ -549,7 +548,7 @@ function changeActiveEntities($ID="all", $is_recursive=false) {
 function loadGroups() {
    global $DB;
 
-   $_SESSION["glpigroups"] = array ();
+   $_SESSION["glpigroups"] = array();
 
    $query_gp = "SELECT `groups_id`
                 FROM `glpi_groups_users`

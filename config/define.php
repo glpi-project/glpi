@@ -72,7 +72,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'zh_TW' => array('繁體中文',              'zh_TW.php','zh_TW', 'zh','chinese'),);
 
 // Init to store glpi itemtype / tables link
-$CFG_GLPI['glpitables']=array();
+$CFG_GLPI['glpitables'] = array();
 
 define("NOT_AVAILABLE",'N/A');
 
@@ -278,7 +278,7 @@ $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 $CFG_GLPI["union_search_type"] = array('ReservationItem' => "reservation_types",
                                        'States'          => "state_types");
 
-$CFG_GLPI["systeminformations_types"] = array ('AuthLDAP', 'DBConnection', 'MailCollector',
+$CFG_GLPI["systeminformations_types"] = array('AuthLDAP', 'DBConnection', 'MailCollector',
                                               'OcsServer', 'Plugin');
 
 $CFG_GLPI["rulecollections_types"] = array('RuleImportComputerCollection',

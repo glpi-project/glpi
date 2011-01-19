@@ -76,10 +76,10 @@ $values['closed'] = Stat::constructEntryValues("inter_closed",$_REQUEST["date1"]
 // Total des interventions closes
 $values['late'] = Stat::constructEntryValues("inter_solved_late",$_REQUEST["date1"],$_REQUEST["date2"]);
 
-$available=array('total'  => $LANG['job'][14], 
-                 'solved' => $LANG['job'][15],
-                 'late'   => $LANG['job'][17],
-                 'closed' => $LANG['job'][16],);
+$available = array('total'  => $LANG['job'][14],
+                   'solved' => $LANG['job'][15],
+                   'late'   => $LANG['job'][17],
+                   'closed' => $LANG['job'][16],);
 echo "<div class='center'>";
 
 $show_all = false;
@@ -93,11 +93,11 @@ foreach ($available as $key => $name) {
 }
 echo "</div>";
 
-$toprint=array();
+$toprint = array();
 foreach ($available as $key => $name) {
    if ($show_all || isset($_REQUEST['graph'][$key])) {
       $toprint[$name]=$values[$key];
-   } 
+   }
 }
 
 Stat::showGraph($toprint
@@ -128,11 +128,10 @@ foreach ($values2['avgtaketime'] as $key => $val) {
    $values2['avgtaketime'][$key]/=HOUR_TIMESTAMP;
 }
 
-$available=array('avgclosed'   => $LANG['stats'][10],
-                 'avgsolved'   => $LANG['stats'][9],
-                 'avgtaketime' => $LANG['stats'][12],
-                 'avgactiontime'  => $LANG['stats'][14],
-                );
+$available = array('avgclosed'      => $LANG['stats'][10],
+                   'avgsolved'      => $LANG['stats'][9],
+                   'avgtaketime'    => $LANG['stats'][12],
+                   'avgactiontime'  => $LANG['stats'][14]);
 
 
 echo "<div class='center'>";
@@ -148,11 +147,11 @@ foreach ($available as $key => $name) {
 }
 echo "</div>";
 
-$toprint=array();
+$toprint = array();
 foreach ($available as $key => $name) {
    if ($show_all2 || isset($_REQUEST['graph2'][$key])) {
       $toprint[$name]=$values2[$key];
-   } 
+   }
 }
 
 Stat::showGraph($toprint,

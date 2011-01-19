@@ -38,7 +38,7 @@ class NotificationTargetInfocom extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['setup'][247]);
+      return array('alert' => $LANG['setup'][247]);
    }
 
 

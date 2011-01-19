@@ -173,7 +173,7 @@ class Computer extends CommonDBTM {
          if (($this->updates[$i]=="contact" || $this->updates[$i]=="contact_num")
              && $CFG_GLPI["is_contact_autoupdate"]) {
 
-            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
             $update_done = false;
             $updates3[0] = "contact";
@@ -219,7 +219,7 @@ class Computer extends CommonDBTM {
              ||($this->updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
                 && $CFG_GLPI["is_group_autoupdate"])) {
 
-            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
             $update_done = false;
             $updates4[0] = "users_id";
@@ -265,7 +265,7 @@ class Computer extends CommonDBTM {
 
          // Update state of attached items
          if ($this->updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
-            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             $update_done = false;
 
             foreach ($items as $t) {
@@ -304,7 +304,7 @@ class Computer extends CommonDBTM {
              && $this->fields["locations_id"]!=0
              && $CFG_GLPI["is_location_autoupdate"]) {
 
-            $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             $update_done = false;
             $updates2[0] = "locations_id";
 
@@ -1109,13 +1109,6 @@ class Computer extends CommonDBTM {
       $tab[104]['massiveaction'] = false;
       $tab[104]['joinparams']    = array('jointype' => 'child');
 
-      $tab[105]['table']         = 'glpi_ocslinks';
-      $tab[105]['field']         = 'tag';
-      $tab[105]['name']          = $LANG['ocsconfig'][39];
-      $tab[105]['datatype']      = 'string';
-      $tab[105]['massiveaction'] = false;
-      $tab[105]['joinparams']    = array('jointype' => 'child');
-
       $tab['registry'] = $LANG['title'][43];
 
       $tab[110]['table']         = 'glpi_registrykeys';
@@ -1131,7 +1124,6 @@ class Computer extends CommonDBTM {
       $tab[111]['forcegroupby']  = true;
       $tab[111]['massiveaction'] = false;
       $tab[111]['joinparams']    = array('jointype' => 'child');
-
 
       return $tab;
    }

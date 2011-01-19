@@ -370,7 +370,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                Dropdown::show('SoftwareLicense',
                               array('condition' => "`glpi_softwarelicenses`.`softwares_id`
                                                       = '".$license->fields['softwares_id']."'",
-                           '        used'       => array($searchID)));
+                                    'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";

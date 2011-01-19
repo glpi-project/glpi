@@ -70,7 +70,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       if ($result && $nb>$offset) {
          // Step to refresh progressbar
          $step = ($nb>20 ? floor($nb/20) : 1);
-         $send = array ();
+         $send = array();
          $send["tablename"] = $this->item_table;
 
          while ($data = $DB->fetch_array($result)) {

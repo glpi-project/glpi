@@ -38,7 +38,7 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['mailing'][33]);
+      return array('alert' => $LANG['mailing'][33]);
    }
 
    /**

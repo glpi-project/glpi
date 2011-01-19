@@ -1703,7 +1703,7 @@ class Rule extends CommonDBTM {
    function getRulesForEntity($ID) {
       global $DB;
 
-      $rules = array ();
+      $rules = array();
 
       //Get all the rules whose sub_type is $sub_type and entity is $ID
       $query = "SELECT `glpi_rules`.`id`

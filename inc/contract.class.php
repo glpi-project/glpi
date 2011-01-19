@@ -513,15 +513,6 @@ class Contract extends CommonDBTM {
       $tab[86]['name']     = $LANG['entity'][9];
       $tab[86]['datatype'] = 'bool';
 
-      $tab[72]['table']         = 'glpi_contracts_items';
-      $tab[72]['field']         = 'count';
-      $tab[72]['name']          = $LANG['document'][19]." (".$LANG['tracking'][29].")";
-      $tab[72]['forcegroupby']  = true;
-      $tab[72]['usehaving']     = true;
-      $tab[72]['datatype']      = 'number';
-      $tab[72]['massiveaction'] = false;
-      $tab[72]['joinparams']    = array('jointype' => 'child');
-
       return $tab;
    }
 
@@ -1117,15 +1108,15 @@ class Contract extends CommonDBTM {
          return 0;
       }
 
-      $message = array();
-      $items_notice = array();
-      $items_end = array();
-      $cron_status = 0;
+      $message       = array();
+      $items_notice  = array();
+      $items_end     = array();
+      $cron_status   = 0;
 
 
-      $contract_infos[Alert::END] = array();
+      $contract_infos[Alert::END]    = array();
       $contract_infos[Alert::NOTICE] = array();
-      $contract_messages = array();
+      $contract_messages             = array();
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $query_notice = "SELECT `glpi_contracts`.*
@@ -1231,7 +1222,6 @@ class Contract extends CommonDBTM {
     * Print a select with contracts
     *
     * Print a select named $name with contracts options and selected value $value
-    *
     *    - name : string / name of the select (default is contracts_id)
     *    - value : integer / preselected value (default 0)
     *    - entity : integer or array / restrict to a defined entity or array of entities
@@ -1245,7 +1235,7 @@ class Contract extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   static function dropdown($options = array()) {
+   static function dropdown($options=array()) {
       global $DB;
 
       //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false

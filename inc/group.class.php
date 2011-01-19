@@ -168,7 +168,7 @@ class Group extends CommonDBTM {
    function title() {
       global $LANG, $CFG_GLPI;
 
-      $buttons = array ();
+      $buttons = array();
       if (haveRight("group", "w") && haveRight("user_authtype", "w") && AuthLdap::useAuthLdap()) {
          $buttons["ldap.group.php"] = $LANG['setup'][3];
          $title = "";
@@ -349,7 +349,7 @@ class Group extends CommonDBTM {
       Dropdown::show('Group', array('entity' => $this->fields["entities_id"],
                                     'used'   => array($this->fields["id"])));
       echo "&nbsp;";
-      closeArrowMassive('changegroup', $LANG['buttons'][20]);
+      closeArrowMassive('changegroup', $LANG['buttons'][14]);
 
       echo "</form></div>";
    }

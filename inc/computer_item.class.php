@@ -358,7 +358,7 @@ class Computer_Item extends CommonDBRelation{
       $ID = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
 
-      $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+      $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
       $datas = array();
       foreach ($items as $itemtype) {
          $item = new $itemtype();
@@ -672,13 +672,13 @@ class Computer_Item extends CommonDBRelation{
          }
       }
 
-      $params = array('searchText'     => '__VALUE__',
-                     'fromtype'        => $fromtype,
-                     'idtable'         => $itemtype,
-                     'myname'          => $myname,
-                     'onlyglobal'      => $onlyglobal,
-                     'entity_restrict' => $entity_restrict,
-                     'used'            => $used);
+      $params = array('searchText'      => '__VALUE__',
+                      'fromtype'        => $fromtype,
+                      'idtable'         => $itemtype,
+                      'myname'          => $myname,
+                      'onlyglobal'      => $onlyglobal,
+                      'entity_restrict' => $entity_restrict,
+                      'used'            => $used);
 
       $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>
                   </select>\n";

@@ -49,7 +49,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('desynchronization' => $LANG['setup'][810]);
+      return array('desynchronization' => $LANG['setup'][810]);
    }
 
 

@@ -108,7 +108,7 @@ class RuleAction extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
-      $rules_actions = array ();
+      $rules_actions = array();
       while ($rule = $DB->fetch_assoc($result)) {
          $tmp = new RuleAction;
          $tmp->fields     = $rule;
@@ -162,15 +162,15 @@ class RuleAction extends CommonDBChild {
    static function getActions() {
       global $LANG;
 
-      return array ('assign'              => $LANG['rulesengine'][22],
-                    'regex_result'        => $LANG['rulesengine'][45],
-                    'append_regex_result' => $LANG['rulesengine'][79],
-                    'affectbyip'          => $LANG['rulesengine'][46],
-                    'affectbyfqdn'        => $LANG['rulesengine'][47],
-                    'affectbymac'         => $LANG['rulesengine'][49],
-                    'compute'             => $LANG['rulesengine'][38],
-                    'send'                => $LANG['buttons'][26],
-                    'add_validation'      => $LANG['buttons'][26]);
+      return array('assign'              => $LANG['rulesengine'][22],
+                   'regex_result'        => $LANG['rulesengine'][45],
+                   'append_regex_result' => $LANG['rulesengine'][79],
+                   'affectbyip'          => $LANG['rulesengine'][46],
+                   'affectbyfqdn'        => $LANG['rulesengine'][47],
+                   'affectbymac'         => $LANG['rulesengine'][49],
+                   'compute'             => $LANG['rulesengine'][38],
+                   'send'                => $LANG['buttons'][26],
+                   'add_validation'      => $LANG['buttons'][26]);
    }
 
 

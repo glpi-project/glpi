@@ -109,7 +109,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    }
 
 
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array ()) {
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;
 
       if (isCommandLine()) {
@@ -167,7 +167,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                 || (isset($res_rule["version"]))
                 && $res_rule["version"] != '') {
 
-               $IDs = array ();
+               $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
                $sql = "SELECT `id`
                        FROM `glpi_softwares`
@@ -223,8 +223,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    function replayDictionnaryOnSoftwaresByID($IDs, $res_rule=array()) {
       global $DB;
 
-      $new_softs  = array ();
-      $delete_ids = array ();
+      $new_softs  = array();
+      $delete_ids = array();
 
       foreach ($IDs as $ID) {
          $res_soft = $DB->query("SELECT `gs`.`id`,

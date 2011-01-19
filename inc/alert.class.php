@@ -124,9 +124,9 @@ class Alert extends CommonDBTM {
    static function dropdownIntegerNever($name, $value, $options=array()) {
       global $LANG;
 
-      $p['max']      = 100;
-      $p['step']     = 1;
-      $p['toadd']    = array();
+      $p['max']   = 100;
+      $p['step']  = 1;
+      $p['toadd'] = array();
       if (isset($options['never_value']) && $options['never_value']) {
          $p['toadd'][$options['never_value']] = $LANG['setup'][307];
       } else {

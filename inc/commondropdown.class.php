@@ -267,7 +267,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displaySpecificTypeField($ID, $field = array()) {
+   function displaySpecificTypeField($ID, $field=array()) {
    }
 
 
@@ -564,7 +564,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $value string : Value of the new dropdown.
     * @param $entities_id int : entity in case of specific dropdown
-    * @param $external_params array (manufacturer)
+    * @param $external_params array(manufacturer)
     * @param $comment
     * @param $add if true, add it if not found. if false, just check if exists
     *
@@ -605,7 +605,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $input["entities_id"] = $entities_id;
 
       if ($rulecollection) {
-         $res_rule = $rulecollection->processAllRules($ruleinput, array (), array());
+         $res_rule = $rulecollection->processAllRules($ruleinput, array(), array());
          if (isset($res_rule["name"])) {
             $input["name"] = $res_rule["name"];
          }

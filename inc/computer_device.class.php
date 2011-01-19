@@ -60,10 +60,10 @@ class Computer_Device extends CommonDBTM {
    **/
    static function getDeviceTypes() {
 
-      return array (1 => 'DeviceMotherboard', 2 => 'DeviceProcessor',   3 => 'DeviceMemory',
-                    4 => 'DeviceHardDrive',   5 => 'DeviceNetworkCard', 6 => 'DeviceDrive',
-                    7 => 'DeviceControl',     8 => 'DeviceGraphicCard', 9 => 'DeviceSoundCard',
-                   10 => 'DevicePci',        11 => 'DeviceCase',       12 => 'DevicePowerSupply');
+      return array(1 => 'DeviceMotherboard', 2 => 'DeviceProcessor',   3 => 'DeviceMemory',
+                   4 => 'DeviceHardDrive',   5 => 'DeviceNetworkCard', 6 => 'DeviceDrive',
+                   7 => 'DeviceControl',     8 => 'DeviceGraphicCard', 9 => 'DeviceSoundCard',
+                  10 => 'DevicePci',        11 => 'DeviceCase',       12 => 'DevicePowerSupply');
    }
 
 
