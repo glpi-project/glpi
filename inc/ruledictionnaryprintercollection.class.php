@@ -132,12 +132,12 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
          //Replay software dictionnary rules
          $input    = addslashes_deep($input);
-         $res_rule = $this->processAllRules($input, array (), array ());
+         $res_rule = $this->processAllRules($input, array(), array());
          $res_rule = addslashes_deep($res_rule);
 
          //If the software's name or version has changed
          if (self::somethingHasChanged($res_rule,$input)) {
-            $IDs = array ();
+            $IDs = array();
             //Find all the softwares in the database with the same name and manufacturer
             $sql = "SELECT `id`
                     FROM `glpi_printers`

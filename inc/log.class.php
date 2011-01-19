@@ -81,7 +81,7 @@ class Log extends CommonDBTM {
       $result = 0;
 
       foreach ($oldvalues as $key => $oldval) {
-         $changes = array ();
+         $changes = array();
 
          if ($real_type == 'Infocom') {
             // Parsing $SEARCHOPTION to find infocom
@@ -128,27 +128,27 @@ class Log extends CommonDBTM {
                                                                    'priority'))) {
                      switch ($key) {
                         case 'status' :
-                           $changes = array ($id_search_option,
-                                             addslashes(Ticket::getStatus($oldval)),
-                                             addslashes(Ticket::getStatus($values[$key])));
+                           $changes = array($id_search_option,
+                                            addslashes(Ticket::getStatus($oldval)),
+                                            addslashes(Ticket::getStatus($values[$key])));
                            break;
 
                         case 'urgency' :
-                           $changes = array ($id_search_option,
-                                             addslashes(Ticket::getUrgencyName($oldval)),
-                                             addslashes(Ticket::getUrgencyName($values[$key])));
+                           $changes = array($id_search_option,
+                                            addslashes(Ticket::getUrgencyName($oldval)),
+                                            addslashes(Ticket::getUrgencyName($values[$key])));
                            break;
 
                         case 'impact' :
-                           $changes = array ($id_search_option,
-                                             addslashes(Ticket::getImpactName($oldval)),
-                                             addslashes(Ticket::getImpactName($values[$key])));
+                           $changes = array($id_search_option,
+                                            addslashes(Ticket::getImpactName($oldval)),
+                                            addslashes(Ticket::getImpactName($values[$key])));
                            break;
 
                         case 'priority' :
-                           $changes = array ($id_search_option,
-                                             addslashes(Ticket::getPriorityName($oldval)),
-                                             addslashes(Ticket::getPriorityName($values[$key])));
+                           $changes = array($id_search_option,
+                                            addslashes(Ticket::getPriorityName($oldval)),
+                                            addslashes(Ticket::getPriorityName($values[$key])));
                            break;
                      }
 
@@ -162,13 +162,11 @@ class Log extends CommonDBTM {
 //                      }
 
                      // other cases ; link field -> get data from dropdown
-                     if ($val2["table"] != 'glpi_complete_entities') {
-                        $changes = array($id_search_option,
-                                       addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                              $oldval)),
-                                       addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                              $values[$key])));
-                     }
+                     $changes = array($id_search_option,
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval)),
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $values[$key])));
                   }
                   break;
                }

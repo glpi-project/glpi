@@ -41,8 +41,8 @@ if (!defined('GLPI_ROOT')) {
 class ComputerDisk extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype = 'Computer';
-   public $items_id = 'computers_id';
+   public $itemtype  = 'Computer';
+   public $items_id  = 'computers_id';
    public $dohistory = true;
 
 
@@ -52,13 +52,16 @@ class ComputerDisk extends CommonDBChild {
       return $LANG['computers'][0];
    }
 
+
    function canCreate() {
       return haveRight('computer', 'w');
    }
 
+
    function canView() {
       return haveRight('computer', 'r');
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -76,19 +79,21 @@ class ComputerDisk extends CommonDBChild {
 
 
    function post_getEmpty () {
-      $this->fields["totalsize"]='0';
-      $this->fields["freesize"]='0';
+
+      $this->fields["totalsize"] = '0';
+      $this->fields["freesize"]  = '0';
    }
 
+
    /**
-   * Print the version form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target for the Form
-   *     - computers_id ID of the computer for add process
-   *
-   *@return true if displayed  false if item not found or not right to display
+    * Print the version form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target for the Form
+    *     - computers_id ID of the computer for add process
+    *
+    * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
@@ -102,7 +107,7 @@ class ComputerDisk extends CommonDBChild {
         return false;
       }
 
-      $comp=new Computer();
+      $comp = new Computer();
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -110,8 +115,8 @@ class ComputerDisk extends CommonDBChild {
       } else {
          $comp->getFromDB($computers_id);
          // Create item
-         $input=array('entities_id'=>$comp->getEntityID());
-         $this->check(-1,'w',$input);
+         $input = array('entities_id' => $comp->getEntityID());
+         $this->check(-1, 'w', $input);
       }
 
       $this->showTabs($options);
@@ -125,9 +130,7 @@ class ComputerDisk extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][25]."&nbsp;:</td>";
-      echo "<td colspan='3'>";
-      echo $comp->getLink();
-      echo "</td></tr>";
+      echo "<td colspan='3'>".$comp->getLink()."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
@@ -165,25 +168,26 @@ class ComputerDisk extends CommonDBChild {
 
    }
 
-   function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
-      $ong[1]=$LANG['title'][26];
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong[1] = $LANG['title'][26];
 
       return $ong;
    }
 
+
    /**
     * Print the computers disks
     *
-    *@param $comp Computer
-    *@param $withtemplate=''  boolean : Template or basic item.
+    * @param $comp Computer
+    * @param $withtemplate=''  boolean : Template or basic item.
     *
-    *@return Nothing (call to classes members)
-    *
-    **/
+    * @return Nothing (call to classes members)
+   **/
    static function showForComputer(Computer $comp, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $LANG;
 
       $ID = $comp->fields['id'];
 
@@ -194,16 +198,17 @@ class ComputerDisk extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      $query = "SELECT `glpi_filesystems`.`name` as fsname, `glpi_computerdisks`.*
+      $query = "SELECT `glpi_filesystems`.`name` AS fsname,
+                       `glpi_computerdisks`.*
                 FROM `glpi_computerdisks`
                 LEFT JOIN `glpi_filesystems`
                           ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
                 WHERE (`computers_id` = '$ID')";
 
       if ($result=$DB->query($query)) {
-         echo "<table class='tab_cadre_fixe'><tr>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='7'>";
-         if  ($DB->numrows($result)==1) {
+         if ($DB->numrows($result)==1) {
             echo $LANG['computers'][0];
          } else {
             echo $LANG['computers'][8];
@@ -221,7 +226,8 @@ class ComputerDisk extends CommonDBChild {
             echo "</tr>";
 
             initNavigateListItems('ComputerDisk', $LANG['help'][25]." = ".
-                                  (empty($comp->fields['name']) ? "($ID)" : $comp->fields['name']));
+                                  (empty($comp->fields['name']) ? "($ID)"
+                                                                : $comp->fields['name']));
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -239,30 +245,31 @@ class ComputerDisk extends CommonDBChild {
                echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
                       $LANG['common'][82]."<span class='small_space'></span></td>";
                echo "<td>";
-               $percent=0;
+               $percent = 0;
                if ($data['totalsize']>0) {
                   $percent=round(100*$data['freesize']/$data['totalsize']);
                }
-               displayProgressBar('100',$percent,
-                                 array('simple'=>true,'forcepadding'=>false));
+               displayProgressBar('100', $percent, array('simple'       => true,
+                                                         'forcepadding' => false));
                echo "</td>";
 
                addToNavigateListItems('ComputerDisk',$data['id']);
-
             }
+
          } else {
             echo "<tr><th colspan='7'>".$LANG['search'][15]."</th></tr>";
          }
 
-      if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
-         echo "<tr class='tab_bg_2'><th colspan='7'>";
-         echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
-                $withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
-      }
-      echo "</table>";
+         if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
+            echo "<tr class='tab_bg_2'><th colspan='7'>";
+            echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+                   $withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
+         }
+         echo "</table>";
       }
       echo "</div><br>";
    }
+
 }
 
 ?>

@@ -752,15 +752,15 @@ class NetworkPort extends CommonDBChild {
                             AND `entities_id` = '$entity'";
             $result = $DB->query($query);
             if ($DB->numrows($result) == 1) {
-               return array ("id"       => $DB->result($result, 0, "id"),
-                             "itemtype" => 'NetworkEquipment');
+               return array("id"       => $DB->result($result, 0, "id"),
+                            "itemtype" => 'NetworkEquipment');
             }
-            return array ();
+            return array();
 
          case 1 :
             $port = $DB->fetch_array($result);
-            return array ("id"       => $port["items_id"],
-                          "itemtype" => $port["itemtype"]);
+            return array("id"       => $port["items_id"],
+                         "itemtype" => $port["itemtype"]);
 
          case 2 :
             //2 ports found with the same IP
@@ -790,16 +790,16 @@ class NetworkPort extends CommonDBChild {
                                    AND `networkports_id_2` = '".$port1["portID"]."')";
                $query = $DB->query($query);
                if ($DB->numrows($query) == 1) {
-                  return array ("id"       => ($network_port == 1 ? $port2["items_id"]
-                                                                  : $port1["items_id"]),
-                                "itemtype" => ($network_port == 1 ? $port2["itemtype"]
-                                                                  : $port1["itemtype"]));
+                  return array("id"       => ($network_port == 1 ? $port2["items_id"]
+                                                                 : $port1["items_id"]),
+                               "itemtype" => ($network_port == 1 ? $port2["itemtype"]
+                                                                 : $port1["itemtype"]));
                }
             }
-            return array ();
+            return array();
 
          default :
-            return array ();
+            return array();
       }
    }
 
@@ -824,7 +824,7 @@ class NetworkPort extends CommonDBChild {
          }
       }
 
-      return array ();
+      return array();
    }
 
 
@@ -854,11 +854,11 @@ class NetworkPort extends CommonDBChild {
 
          if ($DB->numrows($result) == 1) {
             $datas = $DB->fetch_array($result);
-            return array ("id"       => $datas["id"],
-                          "itemtype" => $itemtype);
+            return array("id"       => $datas["id"],
+                         "itemtype" => $itemtype);
          }
       }
-      return array ();
+      return array();
    }
 
 

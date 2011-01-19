@@ -209,9 +209,9 @@ class Bookmark extends CommonDBTM {
 
       switch ($type) {
          case BOOKMARK_SEARCH :
-            $fields_toclean = array('start', 'add_search_count', 'delete_search_count',
-                                    'add_search_count2', 'delete_search_count2', 'glpisearchcount',
-                                    'glpisearchcount2');
+            $fields_toclean = array('add_search_count', 'add_search_count2', 'delete_search_count',
+                                    'delete_search_count2', 'glpisearchcount', 'glpisearchcount2',
+                                    'start');
             foreach ($fields_toclean as $field) {
                if (isset($query_tab[$field])) {
                   unset($query_tab[$field]);

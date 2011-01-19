@@ -430,8 +430,10 @@ class CronTask extends CommonDBTM{
          echo "<strong>" . $this->getStateName(self::STATE_RUNNING)."</strong>";
       } else {
          Dropdown::showFromArray('state',
-                                 array(self::STATE_DISABLE => $this->getStateName(self::STATE_DISABLE),
-                                       self::STATE_WAITING => $this->getStateName(self::STATE_WAITING)),
+                                 array(self::STATE_DISABLE
+                                       => $this->getStateName(self::STATE_DISABLE),
+                                       self::STATE_WAITING
+                                       => $this->getStateName(self::STATE_WAITING)),
                                  array('value' => $this->fields["state"]));
       }
       echo "</td></tr>";

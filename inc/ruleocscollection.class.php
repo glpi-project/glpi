@@ -72,7 +72,7 @@ class RuleOcsCollection extends RuleCollection {
 
       $tables = $this->getTablesForQuery();
       $fields = $this->getFieldsForQuery();
-      $rule_parameters = array ();
+      $rule_parameters = array();
 
       $select_sql = "";
 
@@ -107,7 +107,7 @@ class RuleOcsCollection extends RuleCollection {
 
          OcsServer::checkOCSconnection($this->ocsservers_id);
          $result = $DBocs->query($sql);
-         $ocs_datas = array ();
+         $ocs_datas = array();
          $fields = $this->getFieldsForQuery(1);
 
          //May have more than one line : for example in case of multiple network cards

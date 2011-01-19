@@ -38,7 +38,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['setup'][264]);
+      return array('alert' => $LANG['setup'][264]);
    }
 
 

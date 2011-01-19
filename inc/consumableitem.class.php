@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
-   protected $forward_entity_to=array('Infocom','Consumable');
+   protected $forward_entity_to = array('Consumable', 'Infocom');
 
    static function getTypeName() {
       global $LANG;
@@ -397,7 +397,7 @@ class ConsumableItem extends CommonDBTM {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['crontask'][3]);
+      return array('alert' => $LANG['crontask'][3]);
    }
 
 

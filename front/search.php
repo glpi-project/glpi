@@ -69,7 +69,7 @@ if (isset($_GET["globalsearch"])) {
          unset($_GET["contains"]);
          unset($_GET["searchtype"]);
          echo "<hr>";
-         $_GET=array();
+         $_GET = array();
       }
    }
 }

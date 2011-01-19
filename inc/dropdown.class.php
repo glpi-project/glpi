@@ -488,8 +488,8 @@ class Dropdown {
    static function showGMT($name, $value='') {
       global $LANG;
 
-      $elements = array (-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
-                         1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
+      $elements = array(-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
+                        1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
 
       echo "<select name='$name' id='dropdown_".$name."'>";
 
@@ -593,11 +593,11 @@ class Dropdown {
                                                'State'           => $LANG['setup'][83],
                                                'Manufacturer'    => $LANG['common'][5]),
 
-                  $LANG['title'][24]  => array ('TicketCategory'         => $LANG['setup'][79],
-                                                'TaskCategory'           => $LANG['setup'][98],
-                                                'TicketSolutionType'     => $LANG['job'][48],
-                                                'RequestType'            => $LANG['job'][44],
-                                                'TicketSolutionTemplate' => $LANG['jobresolution'][6]),
+                  $LANG['title'][24]  => array('TicketCategory'         => $LANG['setup'][79],
+                                               'TaskCategory'           => $LANG['setup'][98],
+                                               'TicketSolutionType'     => $LANG['job'][48],
+                                               'RequestType'            => $LANG['job'][44],
+                                               'TicketSolutionTemplate' => $LANG['jobresolution'][6]),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],

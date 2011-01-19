@@ -61,6 +61,7 @@ class Config extends CommonDBTM {
       $tabs[3] = $LANG['Menu'][38];  // Inventory
       $tabs[4] = $LANG['title'][24];   // Helpdesk
       $tabs[5] = $LANG['setup'][720];  // SysInfo
+      $tabs[7] = $LANG['setup'][811];  // SysInfo
 
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
@@ -134,7 +135,7 @@ class Config extends CommonDBTM {
 
          for ($urgency=1 ; $urgency<=5 ; $urgency++) {
             for ($impact=1 ; $impact<=5 ; $impact++) {
-               $priority = $input["_matrix_${urgency}_${impact}"];
+               $priority               = $input["_matrix_${urgency}_${impact}"];
                $tab[$urgency][$impact] = $priority;
             }
          }
@@ -323,19 +324,6 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (haveRight("transfer","w") && isMultiEntitiesMode()) {
-         echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][291] . "&nbsp;:</td><td>";
-         Dropdown::show('Transfer',
-                           array('value' => $CFG_GLPI["transfers_id_auto"],
-                                 'name'  => "transfers_id_auto",
-                                 'emptylabel'=> $LANG['setup'][292]));
-         echo "</td></td></tr>";
-         echo "</table>";
-      }
-
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
 
@@ -347,7 +335,7 @@ class Config extends CommonDBTM {
       echo "<th>" . $LANG['state'][0] . "</th>";
       echo "</tr>";
 
-      $fields = array("contact", "user", "group", "location");
+      $fields = array("contact", "group", "location", "user");
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['setup'][281] . "&nbsp;:</td>";
       $values[0] = $LANG['setup'][285];
@@ -559,7 +547,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
       Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'], 0, 99, 1,
-                            array(0  => $LANG['setup'][307]));
+                            array(0 => $LANG['setup'][307]));
       echo "&nbsp;".$LANG['stats'][31]."</td>";
       echo "<td>" . $LANG['setup'][608] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
@@ -665,13 +653,9 @@ class Config extends CommonDBTM {
       $userpref  = false;
       $url       = getItemTypeFormURL(__CLASS__);
 
-      if (array_key_exists('last_login',$data)) {
+      if (isset($data['last_login'])) {
          $userpref = true;
-         if ($data["id"] === getLoginUserID()) {
-            $url      = $CFG_GLPI['root_doc']."/front/preference.php";
-         } else {
-            $url      = $CFG_GLPI['root_doc']."/front/user.form.php";
-         }
+         $url      = $CFG_GLPI['root_doc']."/front/preference.php";
       }
 
       echo "<form name='form' action='$url' method='post'>";
@@ -721,8 +705,8 @@ class Config extends CommonDBTM {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array (REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
-                       FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
+      $values = array(REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
+                      FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
       Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td></tr>";
 

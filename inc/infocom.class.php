@@ -233,11 +233,11 @@ class Infocom extends CommonDBTM {
    **/
    static function getAutoManagemendDatesFields() {
 
-      return array ('autofill_buy_date'      => 'buy_date',
-                    'autofill_use_date'      => 'use_date',
-                    'autofill_delivery_date' => 'delivery_date',
-                    'autofill_warranty_date' => 'warranty_date',
-                    'autofill_order_date'    => 'order_date');
+      return array('autofill_buy_date'      => 'buy_date',
+                   'autofill_use_date'      => 'use_date',
+                   'autofill_delivery_date' => 'delivery_date',
+                   'autofill_warranty_date' => 'warranty_date',
+                   'autofill_order_date'    => 'order_date');
    }
 
 
@@ -1037,7 +1037,7 @@ class Infocom extends CommonDBTM {
 //                                                       AND `$nt`.`itemtype` = 'Consumable') ";
 //                }
       $specific_itemtype = '';
-      $beforejoin        = array ();
+      $beforejoin        = array();
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software

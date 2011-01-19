@@ -495,7 +495,7 @@ class MailCollector  extends CommonDBTM {
 
       $head = $this->getHeaders($i); // Get Header Info Return Array Of Headers
                                      // **Key Are (subject,to,toOth,toNameOth,from,fromName)
-      $tkt = array ();
+      $tkt = array();
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
@@ -1288,7 +1288,7 @@ class MailCollector  extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       if (countElementsInTable($this->getTable())) {
-         $buttons = array ();
+         $buttons = array();
          $buttons["notimportedemail.php"] = $LANG['rulesengine'][142];
          displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142], '',
                       $buttons);

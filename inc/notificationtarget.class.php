@@ -425,11 +425,12 @@ class NotificationTarget extends CommonDBChild {
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
 
-            $this->target[$new_mail] = array ('language' => (empty($new_lang) ?$CFG_GLPI["language"]
+            $this->target[$new_mail] = array('language'  => (empty($new_lang) ?$CFG_GLPI["language"]
                                                                               :$new_lang),
-                                              'email'             => $new_mail,
-                                              'additionnaloption' => $notificationoption,
-                                              'username'          => $username);
+                                             'email'     => $new_mail,
+                                             'additionnaloption'
+                                                         => $notificationoption,
+                                             'username'  => $username);
          }
       }
    }
