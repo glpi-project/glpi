@@ -349,7 +349,7 @@ class Group extends CommonDBTM {
       Dropdown::show('Group', array('entity' => $this->fields["entities_id"],
                                     'used'   => array($this->fields["id"])));
       echo "&nbsp;";
-      closeArrowMassive('changegroup', $LANG['buttons'][14]);
+      closeArrowMassive('changegroup', $LANG['buttons'][20]);
 
       echo "</form></div>";
    }
