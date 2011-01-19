@@ -429,7 +429,7 @@ function getAncestorsOf($table,$items_id) {
    $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"ancestors_cache");
-   if ($use_cache) {
+   if ($use_cache && $items_id>0) {
       $query="SELECT `ancestors_cache`,`$parentIDfield`
               FROM `$table`
               WHERE `id` = '$items_id'";
@@ -495,7 +495,7 @@ function getSonsOf($table,$IDf) {
    $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"sons_cache");
-   if ($use_cache) {
+   if ($use_cache && $IDf>0) {
       $query="SELECT `sons_cache` FROM `$table` WHERE `id` = '$IDf'";
       if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ) {
          $sons=trim($DB->result($result,0,0));
@@ -542,7 +542,7 @@ function getSonsOf($table,$IDf) {
       }
    }
    // Store cache datas in DB
-   if ($use_cache) {
+   if ($use_cache && $IDf>0) {
       $query="UPDATE `$table`
               SET `sons_cache`='".exportArrayToDB($id_found)."'
               WHERE `id`='$IDf';";
