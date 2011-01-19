@@ -1109,6 +1109,13 @@ class Computer extends CommonDBTM {
       $tab[104]['massiveaction'] = false;
       $tab[104]['joinparams']    = array('jointype' => 'child');
 
+      $tab[105]['table']         = 'glpi_ocslinks';
+      $tab[105]['field']         = 'tag';
+      $tab[105]['name']          = $LANG['ocsconfig'][39];
+      $tab[105]['datatype']      = 'string';
+      $tab[105]['massiveaction'] = false;
+      $tab[105]['joinparams']    = array('jointype' => 'child');
+
       $tab['registry'] = $LANG['title'][43];
 
       $tab[110]['table']         = 'glpi_registrykeys';
@@ -1124,6 +1131,7 @@ class Computer extends CommonDBTM {
       $tab[111]['forcegroupby']  = true;
       $tab[111]['massiveaction'] = false;
       $tab[111]['joinparams']    = array('jointype' => 'child');
+
 
       return $tab;
    }
