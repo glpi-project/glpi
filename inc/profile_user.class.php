@@ -577,6 +577,8 @@ class Profile_User extends CommonDBTM {
 
       return array();
    }
+
+
    static function getEntitiesForProfileByUser($users_id, $profiles_id) {
       global $DB;
 

@@ -350,7 +350,8 @@ class User extends CommonDBTM {
 
          } else {
             if ($input["password"] == $input["password2"]) {
-               $input["password"] = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+               $input["password"]
+                     = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                unset($input["password2"]);
 
             } else {
@@ -442,9 +443,11 @@ class User extends CommonDBTM {
                    && ($input['id'] == getLoginUserID()
                        || $this->currentUserHaveMoreRightThan($input['id'])
                        || ($input['token'] == $this->fields['token'] // Permit to change password with token and email
-                           && (abs(strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)
+                           && (abs(strtotime($_SESSION["glpi_currenttime"])
+                               -strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)
                            && $input['email'] == $this->fields['email']))) {
-                  $input["password"] = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                  $input["password"]
+                        = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
                } else {
                   unset($input["password"]);
@@ -745,7 +748,7 @@ class User extends CommonDBTM {
                 FROM `glpi_groups`
                 WHERE `ldap_field` != ''
                 ORDER BY `ldap_field`";
-      $group_fields = array ();
+      $group_fields = array();
 
       foreach ($DB->request($query) as $data) {
          $group_fields[] = utf8_strtolower($data["ldap_field"]);
@@ -1008,11 +1011,11 @@ class User extends CommonDBTM {
    function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition,
                                  $group_member_field, $use_dn, $login_field) {
 
-      $groups = array ();
-      $listgroups = array ();
+      $groups = array();
+      $listgroups = array();
 
       //Only retrive cn and member attributes from groups
-      $attrs = array ('dn');
+      $attrs = array('dn');
 
       if (!$use_dn) {
          $filter = "(& $group_condition (|($group_member_field=$user_dn)($group_member_field=$login_field=$user_dn)))";
@@ -1108,7 +1111,7 @@ class User extends CommonDBTM {
    function title() {
       global $LANG, $CFG_GLPI;
 
-      $buttons = array ();
+      $buttons = array();
       $title = $LANG['Menu'][14];
 
       if ($this->canCreate()) {
@@ -1297,7 +1300,7 @@ class User extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='5' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
       echo "<td class='center middle' rowspan='5'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"] . "</textarea>";
+      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
@@ -1340,14 +1343,14 @@ class User extends CommonDBTM {
 
             $options[0] = DROPDOWN_EMPTY_VALUE;
             $options += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                          Profile_User::getUserProfiles($this->fields['id']));
+                                                Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
 
             echo "<td>" .  $LANG['profiles'][37] . "&nbsp;: </td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
             Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
-                                          'entity' => $entities));
+                                           'entity' => $entities));
             echo "</td></tr>";
          }
 
@@ -1488,13 +1491,12 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
             $options = array(0 => DROPDOWN_EMPTY_VALUE);
-            $options = array_merge($options,Dropdown::getDropdownArrayNames('glpi_profiles',
-                                          Profile_User::getUserProfiles($this->fields['id'])));
+            $options = array_merge($options,
+                                   Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                Profile_User::getUserProfiles($this->fields['id'])));
 
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
-
-
 
          } else {
             echo "<td colspan='2'>&nbsp;";
@@ -1511,9 +1513,7 @@ class User extends CommonDBTM {
          echo "</td>";
 
         if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
-
-            $entities = Profile_User::getUserEntities($this->fields['id'],1);
-
+            $entities = Profile_User::getUserEntities($this->fields['id'], 1);
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
             Dropdown::show('Entity', array('value'  => $this->fields['entities_id'],
                                            'entity' => $entities));
@@ -1749,8 +1749,8 @@ class User extends CommonDBTM {
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('beforejoin'
-                                         => array(array('table'      => 'glpi_profiles_users',
-                                                        'joinparams' => array('jointype' => 'child'))));
+                                         => array('table'      => 'glpi_profiles_users',
+                                                  'joinparams' => array('jointype' => 'child')));
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'user_dn';
@@ -1769,8 +1769,8 @@ class User extends CommonDBTM {
       $tab[80]['forcegroupby']  = true;
       $tab[80]['massiveaction'] = false;
       $tab[80]['joinparams']    = array('beforejoin'
-                                         => array(array('table'      => 'glpi_profiles_users',
-                                                        'joinparams' => array('jointype' => 'child'))));
+                                         => array('table'      => 'glpi_profiles_users',
+                                                  'joinparams' => array('jointype' => 'child')));
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
@@ -1943,7 +1943,7 @@ class User extends CommonDBTM {
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
+    *                   only available if entity is a single value not an array(default false)
     *    - all : Nobody or All display for none selected
     *          all=0 (default) -> Nobody
     *          all=1 -> All
@@ -2422,7 +2422,7 @@ class User extends CommonDBTM {
 
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id'] = $users_id;
-      $myuser = new User;
+      $myuser = new User();
 
       switch ($CFG_GLPI['user_deleted_ldap']) {
          //DO nothing

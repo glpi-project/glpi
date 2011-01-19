@@ -56,6 +56,7 @@ class Ocslink extends CommonDBTM {
       return haveRight('ocsng', 'r');
    }
 
+
    /**
    * Show OcsLink of an item
    *
@@ -64,15 +65,15 @@ class Ocslink extends CommonDBTM {
    * @return nothing
    **/
    static function showForItem(CommonDBTM $item) {
-      global $DB,$LANG;
+      global $DB, $LANG;
 
       if (in_array($item->getType(),array('Computer'))) {
          $items_id = $item->getField('id');
 
          $query = "SELECT `glpi_ocslinks`.`tag` AS tag
-                     FROM `glpi_ocslinks`
-                     WHERE `glpi_ocslinks`.`computers_id` = '$items_id'"
-                     .getEntitiesRestrictRequest("AND","glpi_ocslinks");
+                   FROM `glpi_ocslinks`
+                   WHERE `glpi_ocslinks`.`computers_id` = '$items_id' ".
+                         getEntitiesRestrictRequest("AND","glpi_ocslinks");
 
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
@@ -83,11 +84,11 @@ class Ocslink extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . $LANG['ocsng'][0] . "</th>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>" . $LANG['ocsconfig'][39] . "&nbsp;: " . $data['tag'] . "</td></tr>";
+            echo "<td class='center'>".$LANG['ocsconfig'][39]."&nbsp;: ".$data['tag']."</td></tr>";
          }
       }
-
    }
+
 
 }
 

@@ -1555,12 +1555,12 @@ function update0782to080($output='HTML') {
 
    /* New automatic transfert feature */
    $migration->addField('glpi_configs', 'transfers_id_auto',
-                        'int(11) NOT NULL DEFAULT \'0\'');
+                        'int(11) NOT NULL DEFAULT 0');
 
    $migration->addField('glpi_ocslinks','tag',
                         'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL');
    /* END - New automatic transfert feature */
-   
+
    // must always be at the end
    $migration->executeMigration();
 
