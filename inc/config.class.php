@@ -61,7 +61,6 @@ class Config extends CommonDBTM {
       $tabs[3] = $LANG['Menu'][38];  // Inventory
       $tabs[4] = $LANG['title'][24];   // Helpdesk
       $tabs[5] = $LANG['setup'][720];  // SysInfo
-      $tabs[7] = $LANG['setup'][811];  // SysInfo
 
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
@@ -323,6 +322,19 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table>";
+
+      if (haveRight("transfer","w") && isMultiEntitiesMode()) {
+         echo "<br><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['setup'][291] . "&nbsp;:</td><td>";
+         Dropdown::show('Transfer',
+                        array('value'      => $CFG_GLPI["transfers_id_auto"],
+                              'name'       => "transfers_id_auto",
+                              'emptylabel' => $LANG['setup'][292]));
+         echo "</td></td></tr>";
+         echo "</table>";
+      }
 
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
@@ -653,9 +665,13 @@ class Config extends CommonDBTM {
       $userpref  = false;
       $url       = getItemTypeFormURL(__CLASS__);
 
-      if (isset($data['last_login'])) {
+      if (array_key_exists('last_login',$data)) {
          $userpref = true;
-         $url      = $CFG_GLPI['root_doc']."/front/preference.php";
+         if ($data["id"] === getLoginUserID()) {
+            $url      = $CFG_GLPI['root_doc']."/front/preference.php";
+         } else {
+            $url      = $CFG_GLPI['root_doc']."/front/user.form.php";
+         }
       }
 
       echo "<form name='form' action='$url' method='post'>";
