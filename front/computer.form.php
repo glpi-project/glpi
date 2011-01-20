@@ -132,6 +132,7 @@ if (isset($_POST["add"])) {
                     "lockmonitor" => "import_monitor",
                     "lockperiph"  => "import_peripheral",
                     "lockip"      => "import_ip",
+                    "lockdevice"  => "import_device",
                     "lockfield"   => "computer_update");
    foreach ($actions as $lock => $field) {
       if (isset($_POST[$lock]) && count($_POST[$lock])) {

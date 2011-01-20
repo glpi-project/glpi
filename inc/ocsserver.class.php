@@ -3203,6 +3203,37 @@ class OcsServer extends CommonDBTM {
             }
          }
 
+         // Search for locked devices
+         $locked_dev = importArrayFromDB($data["import_device"]);
+         if (!in_array(self::IMPORT_TAG_078, $locked_dev)) {
+            $locked_dev = OcsServer::migrateImportDevice($ID, $locked_dev);
+         }
+         $types = Computer_Device::getDeviceTypes();
+         $first = true;
+         foreach ($locked_dev as $key => $val) {
+            if (!$key) { // self::IMPORT_TAG_078
+               continue;
+            }
+            list($type, $nomdev) = explode(self::FIELD_SEPARATOR, $val);
+            list($type, $iddev)  = explode(self::FIELD_SEPARATOR, $key);
+            if (!isset($types[$type])) { // should never happen
+               continue;
+            }
+            $compdev = new Computer_Device($types[$type]);
+            if (!$compdev->getFromDB($iddev)) {
+               $header = true;
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][56] . "</th></tr>\n";
+                  $first = false;
+               }
+               $device = new $types[$type]();
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>";
+               echo $device->getTypeName()."&nbsp;: $nomdev</td>";
+               echo "<td class='left' width='50%'>";
+               echo "<input type='checkbox' name='lockdevice[" . $key . "]'></td></tr>\n";
+            }
+         }
+
          if ($header) {
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
             echo "<input class='submit' type='submit' name='unlock' value='" .
