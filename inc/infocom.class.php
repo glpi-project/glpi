@@ -40,9 +40,11 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Infocom class
 **/
-class Infocom extends CommonDBTM {
+class Infocom extends CommonDBChild {
 
-   // From CommonDBTM
+   // From CommonDBChild
+   public $itemtype  = 'itemtype';
+   public $items_id  = 'items_id';
    public $dohistory = true;
    public $auto_message_on_action = false; // Link in message can't work'
 
