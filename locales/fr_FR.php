@@ -1484,7 +1484,7 @@ $LANG['ocsng'][52]="Logiciel(s) verrouillé(s)";
 
 $LANG['ocsng'][54] = "Logiciel mis dans la corbeille par la synchro OCSNG";
 $LANG['ocsng'][55] = "Volume(s) verrouillé(s)";
-
+$LANG['ocsng'][56] = "Composant(s) verrouillé(s)";
 $LANG['ocsng'][57] = "Interface OCSNG";
 $LANG['ocsng'][58] = "Liaison OCSNG";
 $LANG['ocsng'][59] = "Présent dans GLPI";
