@@ -503,7 +503,7 @@ class OcsServer extends CommonDBTM {
       $out .= "<option value='1'".($this->fields["ocs_db_utf8"] ? "selected" : "") .
                ">" . $LANG['choice'][1] . "</option>";
       $out .= "</select></td>";
-      
+
       if (!empty ($ID)) {
          $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
          $out .= "<td>";
@@ -2625,6 +2625,37 @@ class OcsServer extends CommonDBTM {
                echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
                echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>\n";
+            }
+         }
+
+         // Search for locked devices
+         $locked_dev = importArrayFromDB($data["import_device"]);
+         if (!in_array(self::IMPORT_TAG_078, $locked_dev)) {
+            $locked_dev = OcsServer::migrateImportDevice($ID, $locked_dev);
+         }
+         $types = Computer_Device::getDeviceTypes();
+         $first = true;
+         foreach ($locked_dev as $key => $val) {
+            if (!$key) { // self::IMPORT_TAG_078
+               continue;
+            }
+            list($type, $nomdev) = explode(self::FIELD_SEPARATOR, $val);
+            list($type, $iddev)  = explode(self::FIELD_SEPARATOR, $key);
+            if (!isset($types[$type])) { // should never happen
+               continue;
+            }
+            $compdev = new Computer_Device($types[$type]);
+            if (!$compdev->getFromDB($iddev)) {
+               $header = true;
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][56] . "</th></tr>\n";
+                  $first = false;
+               }
+               $device = new $types[$type]();
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>";
+               echo $device->getTypeName()."&nbsp;: $nomdev</td>";
+               echo "<td class='left' width='50%'>";
+               echo "<input type='checkbox' name='lockdevice[" . $key . "]'></td></tr>\n";
             }
          }
 
