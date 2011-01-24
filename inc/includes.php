@@ -172,6 +172,8 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
             Plugin::load($name);
          }
       }
+      // For plugins which require action after all plugin init
+      doHook("post_init");
    }
 }
 
