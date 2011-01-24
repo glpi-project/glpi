@@ -2120,6 +2120,7 @@ $LANG['validation'][19]="Validation acceptée";
 $LANG['validation'][20]="Validation refusée";
 $LANG['validation'][21]="Valideur";
 $LANG['validation'][23]="L'utilisateur choisi n'a pas d'adresse email renseignée. La demande a été créée mais l'envoi de l'email a échoué.";
+$LANG['validation'][25] = "Statut global de la validation";
 $LANG['validation'][26]="Demande de validation";
 $LANG['validation'][27]="Une demande de validation a été soumise";
 $LANG['validation'][28]="Statut de la demande de validation";

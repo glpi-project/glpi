@@ -544,6 +544,8 @@ class NotificationTargetTicket extends NotificationTarget {
          }
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
          $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
+         $this->datas['##ticket.globalvalidation##']
+                           = TicketValidation::getStatus($this->obj->getField('global_validation'));
          $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                             $this->obj->getField('requesttypes_id'));
 
@@ -841,6 +843,8 @@ class NotificationTargetTicket extends NotificationTarget {
 
             $tmp['##ticket.title##']        = $ticket['name'];
             $tmp['##ticket.status##']       = Ticket::getStatus($ticket['status']);
+            $tmp['##ticket.globalvalidation##']
+                                            = TicketValidation::getStatus($ticket['global_validation']);
             $tmp['##ticket.requesttype##']  = Dropdown::getDropdownName('glpi_requesttypes',
                                                                         $ticket['requesttypes_id']);
 
