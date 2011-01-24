@@ -675,7 +675,9 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
          $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
-         $this->datas['##ticket.type##']        = Ticket::getTicketTypeName($this->obj->getField('type'));
+         $this->datas['##ticket.globalvalidation##']
+                     = TicketValidation::getStatus($this->obj->getField('global_validation'));
+         $this->datas['##ticket.type##']  = Ticket::getTicketTypeName($this->obj->getField('type'));
          $this->datas['##ticket.requesttype##']
                      = Dropdown::getDropdownName('glpi_requesttypes',
                                                  $this->obj->getField('requesttypes_id'));
@@ -1014,7 +1016,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
             $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
             $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
-            $tmp['##validation.validator##']         =  html_clean(getUserName($validation['users_id_validate']));
+            $tmp['##validation.validator##']    =  html_clean(getUserName($validation['users_id_validate']));
             $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
             $this->datas['validations'][] = $tmp;
          }
@@ -1077,18 +1079,20 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.url##']          = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=ticket_".$ticket['id']);
 
-            $tmp['##ticket.title##']        = $ticket['name'];
-            $tmp['##ticket.status##']       = Ticket::getStatus($ticket['status']);
-            $tmp['##ticket.requesttype##']  = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                        $ticket['requesttypes_id']);
+            $tmp['##ticket.title##']       = $ticket['name'];
+            $tmp['##ticket.status##']      = Ticket::getStatus($ticket['status']);
+            $tmp['##ticket.globalvalidation##']
+                                           = TicketValidation::getStatus($ticket['global_validation']);
+            $tmp['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                       $ticket['requesttypes_id']);
 
-            $tmp['##ticket.urgency##']      = Ticket::getUrgencyName($ticket['urgency']);
-            $tmp['##ticket.impact##']       = Ticket::getImpactName($ticket['impact']);
-            $tmp['##ticket.priority##']     = Ticket::getPriorityName($ticket['priority']);
-            $tmp['##ticket.time##']         = Ticket::getActionTime($ticket['actiontime']);
-            $tmp['##ticket.costtime##']     = $ticket['cost_time'];
-            $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
-            $tmp['##ticket.content##']      = $ticket['content'];
+            $tmp['##ticket.urgency##']          = Ticket::getUrgencyName($ticket['urgency']);
+            $tmp['##ticket.impact##']           = Ticket::getImpactName($ticket['impact']);
+            $tmp['##ticket.priority##']         = Ticket::getPriorityName($ticket['priority']);
+            $tmp['##ticket.time##']             = Ticket::getActionTime($ticket['actiontime']);
+            $tmp['##ticket.costtime##']         = $ticket['cost_time'];
+            $tmp['##ticket.creationdate##']     = convDateTime($ticket['date']);
+            $tmp['##ticket.content##']          = $ticket['content'];
 
 
             if ($t->countUsers(Ticket::REQUESTER)) {
@@ -1296,7 +1300,8 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
-                    'ticket.useremailnotification' => $LANG['job'][19]
+                    'ticket.useremailnotification' => $LANG['job'][19],
+                    'ticket.globalvalidation'      => $LANG['validation'][25]
                   );
 
       foreach ($tags as $tag => $label) {
