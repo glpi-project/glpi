@@ -432,7 +432,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
          }
-         $tmp['name'] = $name;
+         $tmp['name'] = addslashes($name);
          $tmp[$fk]    = $parent;
 
          if (isset($input['entities_id'])) {
