@@ -375,7 +375,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return the ID of the new or existing dropdown
     */
    function import ($input) {
-
+      
       if (isset($input['name'])) {
          return parent::import($input);
       }
@@ -393,7 +393,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
          }
-         $tmp['name'] = $name;
+         $tmp['name'] = addslashes($name);
          $tmp[$fk] = $parent;
          if (isset($input['entities_id'])) {
             $tmp['entities_id'] = $input['entities_id'];
@@ -406,9 +406,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                }
             }
          }
-//          echo "import";print_r($tmp);echo "<br>";
+         
          $parent = parent::import($tmp);
-//          echo "imported $parent<br>";
       }
       return $parent;
    }
