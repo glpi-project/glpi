@@ -661,7 +661,7 @@ if (isset($_POST["itemtype"])) {
                      // Change entity
                      $input['entities_id']  = $_SESSION['glpiactive_entity'];
                      $input['is_recursive'] = 1;
-
+                     $input = addslashes_deep($input);
                      // Import new
                      $newid = $item->import($input);
 
