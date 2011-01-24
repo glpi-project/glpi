@@ -783,7 +783,14 @@ function update0782to080($output='HTML') {
 
    $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
-   $migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL");
+   if ($migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL")) {
+
+      $query = "UPDATE `glpi_profiles`
+                SET `rule_dictionnary_printer` = `rule_dictionnary_software`";
+      $DB->query($query)
+      or die("0.80 set default rule_dictionnary_printer in profile ".$LANG['update'][90].$DB->error());
+
+   }
 
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
