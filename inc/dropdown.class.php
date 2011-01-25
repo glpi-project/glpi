@@ -292,9 +292,9 @@ class Dropdown {
                         break;
 
                      case "glpi_suppliers" :
-                        if (!empty($data["phone"])) {
+                        if (!empty($data["phonenumber"])) {
                            $comment .= "<br><strong>".$LANG['help'][35]."&nbsp;:</strong> ".
-                                        $data["phone"];
+                                        $data["phonenumber"];
                         }
                         if (!empty($data["fax"])) {
                            $comment .= "<br><strong>".$LANG['financial'][30]."&nbsp;:</strong> ".
