@@ -731,6 +731,23 @@ class Ticket extends CommonDBTM {
          }
          unset($input["document"]);
       }
+
+      //Action for send_validation rule
+      if (isset($this->input["_add_validation"])
+          && $this->input["_add_validation"]>0) {
+
+         $validation = new Ticketvalidation();
+         $values['tickets_id']       = $this->input['id'];
+         $values['users_id_validate']= $this->input["_add_validation"];
+
+         if ($validation->can(-1, 'w', $values)) {
+            $validation->add($values);
+
+            Event::log($this->fields['id'], "ticket", 4, "tracking",
+                     $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+         }
+      }
+
       return $input;
    }
 
@@ -1664,11 +1681,12 @@ class Ticket extends CommonDBTM {
          $values['tickets_id']       = $this->fields['id'];
          $values['users_id_validate']= $this->input["_add_validation"];
 
-         $validation->check(-1, 'w', $values);
-         $validation->add($values);
+         if ($validation->can(-1, 'w', $values)) {
+            $validation->add($values);
 
-         Event::log($this->fields['id'], "ticket", 4, "tracking",
-                    $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+            Event::log($this->fields['id'], "ticket", 4, "tracking",
+                     $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+         }
       }
 
       // Processing Email
