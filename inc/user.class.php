@@ -1272,6 +1272,10 @@ class User extends CommonDBTM {
          if (haveRight("user_authtype", "r")) {
             echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
+            if (!empty($this->fields["date_sync"])) {
+               echo '<br>'.$LANG['login'][29].'&nbsp;: '.convDateTime($this->fields["date_sync"]);
+            }
+
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
