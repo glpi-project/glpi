@@ -114,7 +114,10 @@ if (isset($_POST["add"])) {
 
 } else {
    $dropdown->displayHeader();
-   $dropdown->showForm($_GET["id"]);
+   if (!isset($options)) {
+      $options = array();
+   }
+   $dropdown->showForm($_GET["id"],$options);
    commonFooter();
 }
 
