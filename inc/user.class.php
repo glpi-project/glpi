@@ -1770,6 +1770,11 @@ class User extends CommonDBTM {
       $tab[22]['name']          = $LANG['users'][17];
       $tab[22]['massiveaction'] = false;
 
+      $tab[23]['table']         = $this->getTable();
+      $tab[23]['field']         = 'date_sync';
+      $tab[23]['name']          = $LANG['login'][29];
+      $tab[23]['massiveaction'] = false;
+
       $tab[80]['table']         = 'glpi_complete_entities';
       $tab[80]['linkfield']     = 'entities_id';
       $tab[80]['field']         = 'completename';
