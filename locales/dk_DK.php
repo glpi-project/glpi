@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Låst IP(er)";
 $LANG['ocsng'][52]="Låst software"; 
 $LANG['ocsng'][54]="Software slettet af OCSNG synkronisering"; 
 $LANG['ocsng'][55]="Låst(e) volumen(er)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG grænseflade"; 
 
 $LANG['pager'][1]="til"; 

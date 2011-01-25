@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="IPs bloqueadas";
 $LANG['ocsng'][52]="Software bloqueado"; 
 $LANG['ocsng'][54]="Software deleted by OCSNG synchronization"; 
 $LANG['ocsng'][55]="Volume(s) bloqueado(s)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG Interface"; 
 
 $LANG['pager'][1]="ata"; 

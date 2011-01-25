@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="ロックされたIP";
 $LANG['ocsng'][52]="ロックされたソフトウェア"; 
 $LANG['ocsng'][54]="OCSNG同期によって削除されたソフトウェア"; 
 $LANG['ocsng'][55]="ロックされた領域"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG インターフェイス"; 
 
 $LANG['pager'][1]="to"; 

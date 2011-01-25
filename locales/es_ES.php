@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="IPs bloqueadas";
 $LANG['ocsng'][52]="Software bloqueado"; 
 $LANG['ocsng'][54]="Material tirado a la papelera por la sincronización OCS"; 
 $LANG['ocsng'][55]="Volumen(es) bloqueado(s)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="Interfaz OCSNG"; 
 
 $LANG['pager'][1]="hasta"; 

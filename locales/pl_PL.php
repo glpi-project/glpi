@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Zablokowane IP";
 $LANG['ocsng'][52]="Zablokowane oprogramowanie"; 
 $LANG['ocsng'][54]="Oprogramowanie usunięte podczas synchronizacji z OCS"; 
 $LANG['ocsng'][55]="Partycja zablokowana"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="Interfejs OCS"; 
 
 $LANG['pager'][1]="do"; 

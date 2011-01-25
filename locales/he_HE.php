@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="כתובת IP נעולה";
 $LANG['ocsng'][52]="תוכנות נעולות"; 
 $LANG['ocsng'][54]="תוכנה נמחקה בתהליך סנכרון עם OCS"; 
 $LANG['ocsng'][55]="נפח נעול"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="ממשק OCS"; 
 
 $LANG['pager'][1]="עד"; 

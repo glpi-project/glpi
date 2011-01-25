@@ -1132,7 +1132,7 @@ $LANG['ocsconfig'][3]="OCSNG使用者的密碼";
 $LANG['ocsconfig'][4]="OCSNG資料庫名稱"; 
 $LANG['ocsconfig'][5]="導入選項"; 
 $LANG['ocsconfig'][6]="於OCSNG導入忽略"; 
-$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
+$LANG['ocsconfig'][7]="OCSNG資料庫使用UTF8"; 
 $LANG['ocsconfig'][9]="排除下列標籤 (分隔 $, 全部皆否)"; 
 $LANG['ocsconfig'][10]="總體導入"; 
 $LANG['ocsconfig'][11]="沒有導入"; 
@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="被鎖定的 IP(s)";
 $LANG['ocsng'][52]="被鎖定的軟體(s)"; 
 $LANG['ocsng'][54]="OCS 同步後已將軟體刪除"; 
 $LANG['ocsng'][55]="儲存裝置被鎖定"; 
+$LANG['ocsng'][56]="已鎖定的元件"; 
 $LANG['ocsng'][57]="OCS 介面"; 
 
 $LANG['pager'][1]="到"; 

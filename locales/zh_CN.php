@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="固定IP";
 $LANG['ocsng'][52]="锁软件"; 
 $LANG['ocsng'][54]="软件被OCSNG同步删除"; 
 $LANG['ocsng'][55]="卷 锁定"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG 界面"; 
 
 $LANG['pager'][1]="到"; 

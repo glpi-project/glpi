@@ -1132,7 +1132,7 @@ $LANG['ocsconfig'][3]="Password dell'utente OCS-NG";
 $LANG['ocsconfig'][4]="Nome del database OCS-NG"; 
 $LANG['ocsconfig'][5]="Opzioni di importazione"; 
 $LANG['ocsconfig'][6]="Ignoralo nell'importazione OCS-NG"; 
-$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
+$LANG['ocsconfig'][7]="Database OCS-NG in UTF8"; 
 $LANG['ocsconfig'][9]="Escludi i seguenti tag (usa $ come separatore, se assente include tutti)"; 
 $LANG['ocsconfig'][10]="Importazione globale"; 
 $LANG['ocsconfig'][11]="Non importare"; 
@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="IP bloccati";
 $LANG['ocsng'][52]="Software bloccati"; 
 $LANG['ocsng'][54]="Software cancellato dalla sincronizzazione OCS-NG"; 
 $LANG['ocsng'][55]="Volumi bloccati"; 
+$LANG['ocsng'][56]="Componenti bloccati"; 
 $LANG['ocsng'][57]="Interfaccia OCS-NG"; 
 
 $LANG['pager'][1]="a"; 

@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Gesperrte IP(s)";
 $LANG['ocsng'][52]="Gesperrte Software"; 
 $LANG['ocsng'][54]="Software wurde durch die OCSNG-Synchronisation in den Papierkorb verschoben"; 
 $LANG['ocsng'][55]="Gesperrte(s) Laufwerk(e)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG Schnittstelle"; 
 
 $LANG['pager'][1]="bis"; 

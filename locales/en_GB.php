@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Locked IP(s)";
 $LANG['ocsng'][52]="Locked software(s)"; 
 $LANG['ocsng'][54]="Software deleted by OCSNG synchronization"; 
 $LANG['ocsng'][55]="Volume(s) locked(s)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG Interface"; 
 
 $LANG['pager'][1]="to"; 

@@ -45,7 +45,7 @@ $LANG['backup'][23]="Ошибка MySQL начиная с";
 $LANG['backup'][24]="Автоматическое перенаправление, нажмите для остановки"; 
 
 $LANG['bookmark'][1]="закладка"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; 
+$LANG['bookmark'][2]="Частичная загрузка закладок."; 
 $LANG['bookmark'][3]="Вы пока не заполнили ни одной закладки"; 
 $LANG['bookmark'][4]="Новая закладка"; 
 $LANG['bookmark'][5]="Общие закладки"; 
@@ -1132,7 +1132,7 @@ $LANG['ocsconfig'][3]="Пароль пользователя OCSNG";
 $LANG['ocsconfig'][4]="Имя базы данных OCSNG"; 
 $LANG['ocsconfig'][5]="Опции импорта"; 
 $LANG['ocsconfig'][6]="Исключить из импорта OCSNG"; 
-$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
+$LANG['ocsconfig'][7]="База данных OCSNG в UTF8"; 
 $LANG['ocsconfig'][9]="Исключить следующие тэги (разделитель $, пусти для всех)"; 
 $LANG['ocsconfig'][10]="Глобальный импорт"; 
 $LANG['ocsconfig'][11]="Нет импорта"; 
@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Заблокированный(ые) IP";
 $LANG['ocsng'][52]="Заблокированное ПО"; 
 $LANG['ocsng'][54]="Программное обеспечение удаленное при синхронизации с OCSNG"; 
 $LANG['ocsng'][55]="Заблокировано накопителей"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG интерфейс"; 
 
 $LANG['pager'][1]="по"; 

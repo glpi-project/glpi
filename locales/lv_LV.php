@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Slēgta(s) ip";
 $LANG['ocsng'][52]="Slēgta programmatūra"; 
 $LANG['ocsng'][54]="Software deleted by OCSNG synchronization"; 
 $LANG['ocsng'][55]="Slēgts/i sējums/i"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG Interface"; 
 
 $LANG['pager'][1]="līdz"; 

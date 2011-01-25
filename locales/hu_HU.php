@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Zárolt IP-k";
 $LANG['ocsng'][52]="Zárolt szoftver(ek)"; 
 $LANG['ocsng'][54]="OCS szinkron törölte a szoftvert"; 
 $LANG['ocsng'][55]="Zárolt kötet(ek)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG interfész"; 
 
 $LANG['pager'][1]="vége"; 

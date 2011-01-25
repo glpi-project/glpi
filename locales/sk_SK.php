@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Uzamknuté IP";
 $LANG['ocsng'][52]="Uzamknutý software"; 
 $LANG['ocsng'][54]="Software odstránený pri OCS synchronizácii"; 
 $LANG['ocsng'][55]="Jednotka(y) uzamknutá(é)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCS Rozhranie"; 
 
 $LANG['pager'][1]="do"; 

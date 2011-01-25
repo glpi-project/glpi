@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Beschikbare IP(s)";
 $LANG['ocsng'][52]="Beschikbare software"; 
 $LANG['ocsng'][54]="Software verwijderd door de OCSNG synchronisatie"; 
 $LANG['ocsng'][55]="Geblokkeerde volume(s)"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="naar"; 

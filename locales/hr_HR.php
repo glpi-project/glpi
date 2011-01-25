@@ -1211,6 +1211,7 @@ $LANG['ocsng'][50]="Zaključan IP";
 $LANG['ocsng'][52]="Zaključan program(i)"; 
 $LANG['ocsng'][54]="Software deleted by OCSNG synchronization"; 
 $LANG['ocsng'][55]="Disk zaključan"; 
+$LANG['ocsng'][56]="Locked component(s)"; 
 $LANG['ocsng'][57]="OCSNG Interface"; 
 
 $LANG['pager'][1]="Prema"; 
