@@ -44,7 +44,7 @@ class User extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   public $history_blacklist = array('last_login', 'date_mod');
+   public $history_blacklist = array('last_login', 'date_mod', 'date_sync');
 
 
    static function getTypeName() {
@@ -896,8 +896,10 @@ class User extends CommonDBTM {
             return false;
          }
 
-         //Store user's dn
+        //Store user's dn
         $this->fields['user_dn'] = $userdn;
+        //Store date_sync
+        $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
 
          foreach ($fields as $k => $e) {
             if (empty($v[0][$e][0])) {
@@ -1066,6 +1068,8 @@ class User extends CommonDBTM {
       }
 
       $this->fields['name'] = $name;
+      //Store date_sync
+      $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
 
       if (!$DB->isSlave()) {
          //Instanciate the affectation's rule

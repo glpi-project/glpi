@@ -975,10 +975,10 @@ class AuthLDAP extends CommonDBTM {
                   $stamp = '';
                }
 
-               if (isset($userinfos["date_mod"])) {
-                  $date_mod = $userinfos["date_mod"];
+               if (isset($userinfos["date_sync"])) {
+                  $date_sync = $userinfos["date_sync"];
                } else {
-                  $date_mod = '';
+                  $date_sync = '';
                }
 
                echo "<tr class='tab_bg_2 center'>";
@@ -992,8 +992,8 @@ class AuthLDAP extends CommonDBTM {
                   echo "<td>&nbsp;</td>";
                }
                if ($_SESSION['ldap_import']['mode']) {
-                  if ($date_mod != '') {
-                     echo "<td>" . convDateTime($date_mod) . "</td>";
+                  if ($date_sync != '') {
+                     echo "<td>" . convDateTime($date_sync) . "</td>";
                   } else {
                      echo "<td>&nbsp;</td>";
                   }
@@ -1158,12 +1158,12 @@ class AuthLDAP extends CommonDBTM {
             if (!empty ($ldap_users[$user['name']])) {
                //If entry was modified or if script should synchronize all the users
                if (($values['action'] == AuthLDAP::ACTION_ALL)
-                   || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
+                   || ($ldap_users[$user['name']] - strtotime($user['date_sync']) > 0)) {
 
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $user['name'],
                                         'timestamp' => $user_infos[$user['name']]['timestamp'],
-                                        'date_mod'  => $user['date_mod']);
+                                        'date_sync'  => $user['date_sync']);
                }
 
             // Only manage deleted user if ALL (because of entity visibility in delegated mode)
@@ -1188,7 +1188,7 @@ class AuthLDAP extends CommonDBTM {
          foreach ($diff as $user) {
             $list[] = array("user"      => $user,
                             "timestamp" => $user_infos[$user]["timestamp"],
-                            "date_mod"  => DROPDOWN_EMPTY_VALUE);
+                            "date_sync"  => DROPDOWN_EMPTY_VALUE);
          }
          if ($values['order'] == 'DESC') {
             rsort($list);
@@ -1580,9 +1580,9 @@ class AuthLDAP extends CommonDBTM {
             $user    = new User();
             //Get informations from LDAP
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login))) {
-               //Add the auth method
-               // Force date mod
-               $user->fields["date_mod"] = $_SESSION["glpi_currenttime"];
+               // Add the auth method
+               // Force date sync
+               $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
 
                if ($action == AuthLdap::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;

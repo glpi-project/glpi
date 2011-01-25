@@ -784,7 +784,7 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
    if ($migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL")) {
-
+      $migration->migrationOneTable("glpi_profiles");
       $query = "UPDATE `glpi_profiles`
                 SET `rule_dictionnary_printer` = `rule_dictionnary_software`";
       $DB->query($query)
@@ -1480,6 +1480,15 @@ function update0782to080($output='HTML') {
                         'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
    $migration->addField('glpi_authldaps', 'registration_number_field',
                         'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
+
+   if ($migration->addField("glpi_users", "date_sync", "datetime default NULL AFTER `date_mod`")) {
+      $migration->migrationOneTable("glpi_users");
+      $query = "UPDATE `glpi_users`
+                  SET `date_sync` = `date_mod`
+                  WHERE `auths_id` > 0;";
+      $DB->query($query)
+      or die("0.80 set default date_sync for users ".$LANG['update'][90] .$DB->error());
+   }
 
    //Migrate OCS computers link from static config to rules engine
    if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
