@@ -1187,6 +1187,8 @@ function update0782to080($output='HTML') {
                   `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
                   `fields` VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
                   `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  `action_refuse` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  `action_notify` TINYINT( 1 ) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci
                 ) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
                   COMMENT = 'Stores field unicity criterias'";
@@ -1194,6 +1196,54 @@ function update0782to080($output='HTML') {
           or die("0.80 add table glpi_fieldunicities ".$LANG['update'][90]. $DB->error());
 
       $ADDTODISPLAYPREF['FieldUnicity'] = array(1, 80, 4, 3, 86, 30);
+   }
+
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `name` = 'Item not unique'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Item not unique', 'FieldUnicity', NOW())";
+         $DB->query($query)
+         or die("0.80 add item not unique notification " . $LANG['update'][90] . $DB->error());
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations` " .
+                  "VALUES(NULL, $notid, '', '##lang.unicity.action##', " .
+                  "'##lang.unicity.entity## : ##unicity.entity## \r\n\n" .
+                  "##lang.unicity.itemtype## : ##unicity.itemtype## \r\n\n" .
+                  "##lang.unicity.message## : ##unicity.message## \r\n\n" .
+                  "##lang.unicity.action_user## : ##unicity.action_user## \r\n\n" .
+                  "##lang.unicity.action_type## : ##unicity.action_type## \r\n\n" .
+                  "##lang.unicity.date## : ##unicity.date##'," .
+                  "'&lt;p&gt;##lang.unicity.entity## : ##unicity.entity##&lt;/p&gt;\r\n&lt;p&gt;" .
+                  "##lang.unicity.itemtype## : ##unicity.itemtype##&lt;/p&gt;\r\n&lt;p&gt;" .
+                  "##lang.unicity.message## : ##unicity.message##&lt;/p&gt;\r\n&lt;p&gt;" .
+                  "##lang.unicity.action_user## : ##unicity.action_user##&lt;/p&gt;\r\n&lt;p&gt;" .
+                  "##lang.unicity.action_type## : ##unicity.action_type##&lt;/p&gt;\r\n&lt;p&gt;" .
+                  "##lang.unicity.date## : ##unicity.date##&lt;/p&gt;');";
+      $DB->query($query)
+      or die("0.80 add item not unique notification translation ".$LANG['update'][90].$DB->error());
+
+      $query = "INSERT INTO `glpi_notifications`
+                       (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                        `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                        `date_mod`)
+                VALUES ('Item not unique', 0, 'FieldUnicity', 'refuse', 'mail', $notid, '', 1, 1,
+                        NOW())";
+      $DB->query($query)
+      or die("0.80 add computer not unique notification " . $LANG['update'][90] . $DB->error());
+      $notifid = $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtargets`
+                       (`id`, `notifications_id`, `type`, `items_id`)
+                VALUES (NULL, $notifid, 1, 19);";
+      $DB->query($query)
+      or die("0.80 add computer not unique notification target " . $LANG['update'][90] . $DB->error());
+      }
    }
 
    if ($migration->addField('glpi_mailcollectors', 'passwd',

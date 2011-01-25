@@ -2169,7 +2169,7 @@ $LANG['setup'][503] = "Modèles de téléphones";
 $LANG['setup'][504] = "Types de téléphones";
 $LANG['setup'][505] = "Types d'alimentation téléphone";
 
-$LANG['setup'][601] = "Valeur LDAP";
+$LANG['setup'][601] = "Valeur de l'attribut";
 $LANG['setup'][602] = "Connexion à la base de données OCSNG";
 $LANG['setup'][603] = "Ajouter un utilisateur";
 $LANG['setup'][604] = "Associer à un groupe";
@@ -2234,6 +2234,13 @@ $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins u
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 $LANG['setup'][819] = "Passage à l'état ";
 $LANG['setup'][820] = "Comportement à la suppression d'une machine dans OCSNG";
+$LANG['setup'][821] = "Enregistrement en base refusé";
+$LANG['setup'][822] = "Envoyer une notification";
+$LANG['setup'][823] = "Enregistrement effectué mais doulon sur ";
+$LANG['setup'][824] = "Auteur de l'action";
+$LANG['setup'][825] = "Action voulue";
+$LANG['setup'][826] = "Doublons";
+$LANG['setup'][827] = "Alerte enregistrement en doublon";
 
 
 $LANG['sla'][1] = "SLA";
