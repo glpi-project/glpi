@@ -74,7 +74,13 @@ class FieldUnicity extends CommonDropdown {
                          'type'  => 'unicity_itemtype'),
                    array('name'  => 'fields',
                          'label' => $LANG['setup'][815],
-                         'type'  => 'unicity_fields'));
+                         'type'  => 'unicity_fields'),
+                   array('name'  => 'action_refuse',
+                         'label' => $LANG['setup'][821],
+                         'type'  => 'bool'),
+                   array('name'  => 'action_notify',
+                         'label' => $LANG['setup'][822],
+                         'type'  => 'bool'));
    }
 
 
@@ -86,6 +92,7 @@ class FieldUnicity extends CommonDropdown {
 
       $ong = array();
       $ong[12] = $LANG['title'][38];
+      $ong[2]  = $LANG['setup'][826];
       return $ong;
    }
 
@@ -96,6 +103,9 @@ class FieldUnicity extends CommonDropdown {
    function displayMoreTabs($tab) {
 
       switch ($tab) {
+         case 2:
+            self::showDoubles($this);
+            break;
          case 12 :
          case -1 :
             Log::showForItem($this);
@@ -146,10 +156,7 @@ class FieldUnicity extends CommonDropdown {
             if (class_exists($itemtype)) {
                $item = new $itemtype();
                if ($item->can(-1,'r')) {
-                  $result = self::getUnicityFieldsConfig($itemtype, $this->fields['entities_id']);
-                  if (empty($result)) {
-                     $options[$itemtype] = $item->getTypeName($itemtype);
-                  }
+                  $options[$itemtype] = $item->getTypeName($itemtype);
                }
             }
          }
@@ -157,7 +164,7 @@ class FieldUnicity extends CommonDropdown {
          $rand = Dropdown::showFromArray('itemtype', $options);
 
          $params = array('itemtype' => '__VALUE__',
-                        'id'        => $ID);
+                         'id'       => $ID);
          ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownUnicityFields.php",
                                      $params);
@@ -179,7 +186,7 @@ class FieldUnicity extends CommonDropdown {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_recursive`, `entities_id`
+      $query = "SELECT *
                 FROM `glpi_fieldunicities`
                 WHERE `itemtype` = '$itemtype' ".
                       getEntitiesRestrictRequest("AND", 'glpi_fieldunicities', "", $entities_id,
@@ -189,18 +196,20 @@ class FieldUnicity extends CommonDropdown {
          $query .= " AND `is_active` = '1' ";
       }
 
-      $query .= "ORDER BY `entities_id` DESC
-                 LIMIT 1";
-      //echo $query;exit();
-      $result = $DB->query($query);
-
+      $query .= "ORDER BY `entities_id` DESC";
+      $current_entity = false;
       $return = array();
-      //A configuration found
-      if ($DB->numrows($result)) {
-         $tmp['is_recursive'] = $DB->result($result,0,'is_recursive');
-         $tmp['entities_id']  = $DB->result($result,0,'entities_id');
-         $tmp['fields']       = explode(',',$DB->result($result,0,'fields'));
-         $return = $tmp;
+      foreach($DB->request($query) as $data) {
+         //First row processed
+         if (!$current_entity) {
+            $current_entity = $data['entities_id'];
+         }
+         //Process only for one entity, not more
+         if ($current_entity != $data['entities_id']) {
+            break;
+         } else {
+            $return[] = $data;
+         }
       }
       return $return;
    }
@@ -232,9 +241,8 @@ class FieldUnicity extends CommonDropdown {
       if (!isset($unicity->fields['entities_id'])) {
          $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
-      $criteria = FieldUnicity::getUnicityFieldsConfig($unicity->fields['itemtype'],
-                                                       $unicity->fields['entities_id'], false);
 
+      $unicity_fields = explode(',',$unicity->fields['fields']);
       //Search option for this type
       $target = new $unicity->fields['itemtype'];
 
@@ -256,7 +264,7 @@ class FieldUnicity extends CommonDropdown {
              && !in_array($field['Field'],$blacklisted_options)) {
 
             echo "<option value='".$field['Field']."'";
-            if (isset($criteria['fields']) && in_array($field['Field'],$criteria['fields'])) {
+            if (isset($unicity_fields) && in_array($field['Field'],$unicity_fields)) {
                echo " selected ";
             }
             echo  ">".$searchOption['name']."</option>";
@@ -295,6 +303,17 @@ class FieldUnicity extends CommonDropdown {
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'itemtype';
+      $tab[4]['forcegroupby']  = true;
+
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'action_refuse';
+      $tab[5]['name']          = $LANG['setup'][821];
+      $tab[5]['datatype']      = 'bool';
+
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'action_notify';
+      $tab[6]['name']          = $LANG['setup'][822];
+      $tab[6]['datatype']      = 'bool';
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
@@ -312,9 +331,10 @@ class FieldUnicity extends CommonDropdown {
       $tab[30]['datatype']       = 'bool';
       $tab[30]['massiveaction']  = false;
 
-      $tab[80]['table'] = 'glpi_entities';
-      $tab[80]['field'] = 'completename';
-      $tab[80]['name']  = $LANG['entity'][0];
+      $tab[80]['table']        = 'glpi_entities';
+      $tab[80]['field']        = 'completename';
+      $tab[80]['name']         = $LANG['entity'][0];
+      $tab[80]['forcegroupby'] = true;
 
       return $tab;
    }
@@ -329,7 +349,7 @@ class FieldUnicity extends CommonDropdown {
    **/
    static function checkBeforeInsert($input) {
       global $LANG;
-
+      
       if (!$input['itemtype'] || empty($input['_fields'])) {
          addMessageAfterRedirect($LANG['setup'][817], true, ERROR);
          $input = array();
@@ -368,5 +388,65 @@ class FieldUnicity extends CommonDropdown {
       $DB->query($query);
    }
 
+   static function showDoubles(FieldUnicity $unicity) {
+      global $LANG, $DB;
+
+
+      $fields = array();
+      $where_fields = array();
+      $item = new $unicity->fields['itemtype'];
+      foreach (explode(',',$unicity->fields['fields']) as $field) {
+         $fields[] = $field;
+         $where_fields[] = $field;
+      }
+   
+      if (!empty($fields)) {
+
+         $colspan = count($fields) + 1;
+         echo "<table class='tab_cadre_fixe' >";
+         echo "<tr><th colspan='".$colspan."'>".$LANG['setup'][826]."</th></tr>";
+
+         $entities = $unicity->fields['entities_id'];
+         if ($unicity->fields['is_recursive']) {
+            $entities = getSonsOf('glpi_entities',$unicity->fields['entities_id']);
+         }
+         $where_global = getEntitiesRestrictRequest("AND", $item->getTable(),'',$entities);
+
+         $fields_string = implode(',',$fields);
+         $where_fields_string = implode(',',$where_fields);
+         $query = "SELECT $fields_string, count(*) as cpt FROM `".$item->getTable()."` " .
+                  "GROUP BY $fields_string ORDER BY cpt DESC";
+         $results = array();
+         foreach ($DB->request($query) as $data) {
+            if ($data['cpt'] > 1) {
+               $results[] = $data;
+               
+            }
+         }
+         if (empty($results)) {
+            echo "<tr><td align='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+         } else {
+            echo "<tr>";
+            foreach ($fields as $field) {
+               $searchOption = $item->getSearchOptionByField('field',$field);
+               echo "<th>".$searchOption["name"]."</th>";
+            }
+            echo "<th>".$LANG['tracking'][29]."</th></tr>";
+
+            foreach ($results as $result) {
+               echo "<tr>";
+               foreach ($fields as $field) {
+                  echo "<td>".$result[$field]."</td>";
+               }
+               echo "<td>".$result['cpt']."</td>";
+               echo "</tr>";
+            }
+         }
+      }
+      else {
+         echo "<tr><td align='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+      }
+      echo "</table>";
+   }
 }
 ?>

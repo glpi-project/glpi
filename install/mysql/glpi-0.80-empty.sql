@@ -1659,6 +1659,8 @@ CREATE TABLE `glpi_fieldunicities` (
   `entities_id` int(11) NOT NULL DEFAULT '-1',
   `fields` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  `action_refuse` tinyint(1) NOT NULL DEFAULT '0',
+  `action_notify` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores field unicity criterias';
@@ -2265,33 +2267,34 @@ CREATE TABLE `glpi_notifications` (
   KEY `notificationtemplates_id` (`notificationtemplates_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('7','Update Followup','0','Ticket','update_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('8','Update Task','0','Ticket','update_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('9','Delete Followup','0','Ticket','delete_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('10','Delete Task','0','Ticket','delete_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('11','Resolve ticket','0','Ticket','solved','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('12','Ticket Validation','0','Ticket','validation','mail','7','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('13','New Reservation','0','Reservation','new','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('14','Update Reservation','0','Reservation','update','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('15','Delete Reservation','0','Reservation','delete','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('16','Alert Reservation','0','Reservation','alert','mail','3','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('17','Contract Notice','0','Contract','notice','mail','12','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('18','Contract End','0','Contract','end','mail','12','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('19','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('20','Cartridges','0','Cartridge','alert','mail','8','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('21','Consumables','0','Consumable','alert','mail','9','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('22','Infocoms','0','Infocom','alert','mail','10','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('23','Software Licenses','0','SoftwareLicense','alert','mail','11','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('24','Ticket Recall','0','Ticket','recall','mail','4','','1','1','2011-01-25 10:01:24');
-INSERT INTO `glpi_notifications` VALUES ('25','Password Forget','0','User','passwordforget','mail','13','','1','1','2011-01-25 10:01:25');
-INSERT INTO `glpi_notifications` VALUES ('26','Ticket Satisafction','0','Ticket','satisfaction','mail','14','','1','1','2011-01-25 10:01:25');
-INSERT INTO `glpi_notifications` VALUES ('27','Crontask Watcher','0','Crontask','alert','mail','15','','1','1','2011-01-25 10:01:25');
+INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('7','Update Followup','0','Ticket','update_followup','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('8','Update Task','0','Ticket','update_task','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('9','Delete Followup','0','Ticket','delete_followup','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('10','Delete Task','0','Ticket','delete_task','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('11','Resolve ticket','0','Ticket','solved','mail','4','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('12','Ticket Validation','0','Ticket','validation','mail','7','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('13','New Reservation','0','Reservation','new','mail','2','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('14','Update Reservation','0','Reservation','update','mail','2','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('15','Delete Reservation','0','Reservation','delete','mail','2','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('16','Alert Reservation','0','Reservation','alert','mail','3','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('17','Contract Notice','0','Contract','notice','mail','12','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('18','Contract End','0','Contract','end','mail','12','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('19','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('20','Cartridges','0','Cartridge','alert','mail','8','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('21','Consumables','0','Consumable','alert','mail','9','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('22','Infocoms','0','Infocom','alert','mail','10','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('23','Software Licenses','0','SoftwareLicense','alert','mail','11','','1','1','2011-01-25 11:07:10');
+INSERT INTO `glpi_notifications` VALUES ('24','Ticket Recall','0','Ticket','recall','mail','4','','1','1','2011-01-25 11:07:14');
+INSERT INTO `glpi_notifications` VALUES ('25','Password Forget','0','User','passwordforget','mail','13','','1','1','2011-01-25 11:07:14');
+INSERT INTO `glpi_notifications` VALUES ('26','Ticket Satisafction','0','Ticket','satisfaction','mail','14','','1','1','2011-01-25 11:07:16');
+INSERT INTO `glpi_notifications` VALUES ('27','Item not unique','0','FieldUnicity','refuse','mail','15','','1','1','2011-01-25 11:07:16');
+INSERT INTO `glpi_notifications` VALUES ('28','Crontask Watcher','0','Crontask','alert','mail','16','','1','1','2011-01-25 11:07:16');
 
 ### Dump table glpi_notificationtargets
 
@@ -2350,7 +2353,8 @@ INSERT INTO `glpi_notificationtargets` VALUES ('41','21','1','9');
 INSERT INTO `glpi_notificationtargets` VALUES ('42','21','1','10');
 INSERT INTO `glpi_notificationtargets` VALUES ('43','21','1','11');
 INSERT INTO `glpi_notificationtargets` VALUES ('44','21','1','26');
-INSERT INTO `glpi_notificationtargets` VALUES ('45','1','1','27');
+INSERT INTO `glpi_notificationtargets` VALUES ('45','19','1','27');
+INSERT INTO `glpi_notificationtargets` VALUES ('46','1','1','28');
 
 ### Dump table glpi_notificationtemplates
 
@@ -2368,21 +2372,22 @@ CREATE TABLE `glpi_notificationtemplates` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2010-02-01 15:51:46','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('2','Reservations','Reservation','2010-02-03 14:03:45','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('3','Alert Reservation','Reservation','2010-02-03 14:03:45','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('4','Tickets','Ticket','2010-02-07 21:39:15','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('5','Tickets (Simple)','Ticket','2010-02-07 21:39:15','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('6','Alert Tickets not closed','Ticket','2010-02-07 21:39:15','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('7','Tickets Validation','Ticket','2010-02-26 21:39:15','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('8','Cartridges','Cartridge','2010-02-16 13:17:24','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('9','Consumables','Consumable','2010-02-16 13:17:38','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('10','Infocoms','Infocom','2010-02-16 13:17:55','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('11','Licenses','SoftwareLicense','2010-02-16 13:18:12','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('12','Contracts','Contract','2010-02-16 13:18:12','',NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('13','Password Forget','User','2011-01-25 10:01:25',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('14','Ticket Satisfaction','Ticket','2011-01-25 10:01:25',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('15','Crontask','Crontask','2011-01-25 10:01:25',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('2','Reservations','Reservation','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('3','Alert Reservation','Reservation','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('4','Tickets','Ticket','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('5','Tickets (Simple)','Ticket','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('6','Alert Tickets not closed','Ticket','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('7','Tickets Validation','Ticket','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('8','Cartridges','Cartridge','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('9','Consumables','Consumable','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('10','Infocoms','Infocom','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('11','Licenses','SoftwareLicense','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('12','Contracts','Contract','2011-01-25 11:07:10','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('13','Password Forget','User','2011-01-25 11:07:14',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('14','Ticket Satisfaction','Ticket','2011-01-25 11:07:16',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('15','Item not unique','FieldUnicity','2011-01-25 11:07:16',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('16','Crontask','Crontask','2011-01-25 11:07:16',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -2421,8 +2426,8 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reserv
  ##reservation.url## 
 
  ##ENDFOREACHreservations##','&lt;p&gt;##lang.reservation.entity## : ##reservation.entity## &lt;br /&gt; &lt;br /&gt;
-##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype## :  ##reservation.itemtype##&lt;br /&gt;
- ##lang.reservation.item## :  ##reservation.item##&lt;br /&gt; &lt;br /&gt;
+##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype## : ##reservation.itemtype##&lt;br /&gt;
+ ##lang.reservation.item## : ##reservation.item##&lt;br /&gt; &lt;br /&gt;
  &lt;a href=\"##reservation.url##\"&gt; ##reservation.url##&lt;/a&gt;&lt;br /&gt;
  ##ENDFOREACHreservations##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket.action## ##ticket.title##',' ##IFticket.storestatus=solved##
@@ -2440,7 +2445,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
  ##lang.ticket.creationdate## : ##ticket.creationdate##
  ##lang.ticket.closedate## : ##ticket.closedate##
  ##lang.ticket.requesttype## : ##ticket.requesttype##
-##IFticket.itemtype## ##lang.ticket.item.name## : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## - ##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+ ##IFticket.itemtype## ##lang.ticket.item.name## : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## - ##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
 ##IFticket.assigntousers## ##lang.ticket.assigntousers## : ##ticket.assigntousers## ##ENDIFticket.assigntousers##
  ##lang.ticket.status## : ##ticket.status##
 ##IFticket.assigntogroups## ##lang.ticket.assigntogroups## : ##ticket.assigntogroups## ##ENDIFticket.assigntogroups##
@@ -2450,6 +2455,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 ##IFticket.user.email## ##lang.ticket.user.email## : ##ticket.user.email ##ENDIFticket.user.email##
 ##IFticket.category## ##lang.ticket.category## : ##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
  ##lang.ticket.content## : ##ticket.content##
+
  ##IFticket.storestatus=closed##
 
  ##lang.ticket.solvedate## : ##ticket.solvedate##
@@ -2480,10 +2486,10 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 ##ENDFOREACHtasks##','<!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }    -->
 <div>##IFticket.storestatus=solved##</div>
 <div>##lang.ticket.url## : <a href=\"##ticket.urlapprove##\">##ticket.urlapprove##</a> <strong>&#160;</strong></div>
-<div><strong>##lang.ticket.autoclosewarning##</strong></div>
+<div><strong>##lang.ticket.autoclosewarning##</strong> </div>
 <div><span style=\"color: #888888;\"><strong><span style=\"text-decoration: underline;\">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style=\"text-decoration: underline; color: #888888;\"><strong>##lang.ticket.solution.type##</strong></span> : ##ticket.solution.type##<br /><span style=\"text-decoration: underline; color: #888888;\"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description## ##ENDIFticket.storestatus##</div>
 <div>##ELSEticket.storestatus## ##lang.ticket.url## : <a href=\"##ticket.url##\">##ticket.url##</a> ##ENDELSEticket.storestatus##</div>
-<p class=\"description b\"><strong>##lang.ticket.description##</strong></p>
+<div class=\"description b\"><strong>##lang.ticket.description##</strong></div>
 <p><span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.title##</span>&#160;:##ticket.title## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.authors##</span>&#160;:##IFticket.authors## ##ticket.authors## ##ENDIFticket.authors##    ##ELSEticket.authors##--##ENDELSEticket.authors## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.creationdate##</span>&#160;:##ticket.creationdate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.closedate##</span>&#160;:##ticket.closedate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.requesttype##</span>&#160;:##ticket.requesttype##<br /> ##IFticket.itemtype## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.item.name##</span>&#160;: ##ticket.itemtype## - ##ticket.item.name##    ##IFticket.item.model## - ##ticket.item.model##    ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -##ticket.item.otherserial##  ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype## <br /> ##IFticket.assigntousers## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.assigntousers##</span>&#160;: ##ticket.assigntousers## ##ENDIFticket.assigntousers##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\">##lang.ticket.status## </span>&#160;: ##ticket.status##<br /> ##IFticket.assigntogroups## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.assigntogroups##</span>&#160;: ##ticket.assigntogroups## ##ENDIFticket.assigntogroups##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.urgency##</span>&#160;: ##ticket.urgency##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.impact##</span>&#160;: ##ticket.impact##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.priority##</span>&#160;: ##ticket.priority## <br /> ##IFticket.user.email##<span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.user.email##</span>&#160;: ##ticket.user.email ##ENDIFticket.user.email##    <br /> ##IFticket.category##<span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\">##lang.ticket.category## </span>&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##    <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.content##</span>&#160;: ##ticket.content##</p>
 <br />##IFticket.storestatus=closed##<br /><span style=\"text-decoration: underline;\"><strong><span style=\"color: #888888;\">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style=\"color: #888888;\"><strong><span style=\"text-decoration: underline;\">##lang.ticket.solution.type##</span></strong></span> : ##ticket.solution.type##<br /><span style=\"text-decoration: underline; color: #888888;\"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description##<br />##ENDIFticket.storestatus##</p>
 <div class=\"description b\">##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##</div>
@@ -2555,13 +2561,22 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 ##lang.ticket.item.name##&lt;/span&gt;&#160;:
 ##ticket.itemtype## - ##ticket.item.name##
 ##ENDIFticket.itemtype##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('15','15','','##crontask.action##','##lang.crontask.warning## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('15','15','','##lang.unicity.action##','##lang.unicity.entity## : ##unicity.entity## 
 
-##FOREACHcrontasks## 
- ##crontask.name## : ##crontask.description##
- 
-##ENDFOREACHcrontasks##','&lt;p&gt;##lang.crontask.warning##&lt;/p&gt;
-&lt;p&gt;##FOREACHcrontasks## &lt;br /&gt;&lt;a href=\"##crontask.url##\"&gt;##crontask.name##&lt;/a&gt; : ##crontask.description##&lt;br /&gt; &lt;br /&gt;##ENDFOREACHcrontasks##&lt;/p&gt;');
+##lang.unicity.itemtype## : ##unicity.itemtype## 
+
+##lang.unicity.message## : ##unicity.message## 
+
+##lang.unicity.action_user## : ##unicity.action_user## 
+
+##lang.unicity.action_type## : ##unicity.action_type## 
+
+##lang.unicity.date## : ##unicity.date##','&lt;p&gt;##lang.unicity.entity## : ##unicity.entity##&lt;/p&gt;
+&lt;p&gt;##lang.unicity.itemtype## : ##unicity.itemtype##&lt;/p&gt;
+&lt;p&gt;##lang.unicity.message## : ##unicity.message##&lt;/p&gt;
+&lt;p&gt;##lang.unicity.action_user## : ##unicity.action_user##&lt;/p&gt;
+&lt;p&gt;##lang.unicity.action_type## : ##unicity.action_type##&lt;/p&gt;
+&lt;p&gt;##lang.unicity.date## : ##unicity.date##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket.action## ##ticket.title##','##FOREACHvalidations##
 
 ##IFvalidation.storestatus=waiting##
@@ -2609,7 +2624,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.content##&lt;/span&gt;&lt;/td&gt;
 &lt;/tr&gt;
-##FOREACHtickets##                   
+##FOREACHtickets##
 &lt;tr&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.authors##&lt;/span&gt;&lt;/td&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;&lt;a href=\"##ticket.url##\"&gt;##ticket.title##&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
@@ -2655,7 +2670,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartr
 ##lang.cartridge.remaining## : ##cartridge.remaining##
 
 ##cartridge.url## 
- ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## : ##cartridge.entity##
+ ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
 &lt;br /&gt;##lang.cartridge.item## :
 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
@@ -2720,6 +2735,13 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('14','14','','##tick
 ##lang.satisfaction.text## ##ticket.urlsatisfaction##','&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('16','16','','##crontask.action##','##lang.crontask.warning## 
+
+##FOREACHcrontasks## 
+ ##crontask.name## : ##crontask.description##
+ 
+##ENDFOREACHcrontasks##','&lt;p&gt;##lang.crontask.warning##&lt;/p&gt;
+&lt;p&gt;##FOREACHcrontasks## &lt;br /&gt;&lt;a href=\"##crontask.url##\"&gt;##crontask.name##&lt;/a&gt; : ##crontask.description##&lt;br /&gt; &lt;br /&gt;##ENDFOREACHcrontasks##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

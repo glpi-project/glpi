@@ -2530,94 +2530,114 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $entities_id = $this->fields['entities_id'];
          }
-//          printCleanArray($this->input);
-/*         //In case it's an infocom
-         if (in_array(get_class($this), array('Infocom'))) {
-            $infocom = new Infocom();
-            if ($infocom->getFromDB($this->input['id'])) {
-               $item = new $infocom->fields['itemtype']();
-               $item->getFromDB($infocom->fields['items_id']);
-               $entities_id = $item->fields['entities_id'];
-            }
-         } else {
-            $entities_id = $this->input['entities_id'];
-         }*/
 
-         $fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+         $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+         foreach ($all_fields  as $key => $fields) {
 
-         //If there's fields to check
-         if (!empty($fields) && !empty($fields['fields'])) {
-            $where = "";
-
-            foreach ($fields['fields'] as $field) {
-               if (isset($this->input[$field]) //Field is set
-                  //Standard field not null
-                   && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
-                     //Foreign key and value is not 0
-                       || (getTableNameForForeignKeyField($field) != ''
-                           && $this->input[$field] > 0))) {
-                  $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
-               }
-            }
-
-            if ($where != '') {
-               $entities = $fields['entities_id'];
-               if ($fields['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities',$fields['entities_id']);
-               }
-               $where_global = getEntitiesRestrictRequest("AND", $this->getTable(),'',$entities);
-
-               //If update, exclude ID of the current object
-               if (!$add) {
-                  $where.=" AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
+            //If there's fields to check
+            if (!empty($fields) && !empty($fields['fields'])) {
+               $where = "";
+               
+               $continue = true;
+               foreach (explode(',',$fields['fields']) as $field) {
+                  if (isset($this->input[$field]) //Field is set
+                     //Standard field not null
+                      && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
+                        //Foreign key and value is not 0
+                          || (getTableNameForForeignKeyField($field) != ''
+                              && $this->input[$field] > 0))) {
+                     $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
+                  } else {
+                     $continue = false;
+                  }
                }
 
-               if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
-                  if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
-                     $message = array();
-                     foreach ($fields['fields'] as $field) {
-                        $table = getTableNameForForeignKeyField($field);
-                        if ($table != '') {
-                           $searchOption = $this->getSearchOptionByField('field', 'name',$table);
-                        } else {
-                           $searchOption = $this->getSearchOptionByField('field', $field);
+               if ($continue && $where != '') {
+                  $entities = $fields['entities_id'];
+                  if ($fields['is_recursive']) {
+                     $entities = getSonsOf('glpi_entities',$fields['entities_id']);
+                  }
+                  $where_global = getEntitiesRestrictRequest("AND", $this->getTable(),'',$entities);
+   
+                  //If update, exclude ID of the current object
+                  if (!$add) {
+                     $where.=" AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
+                  }
+                  
+                  if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
+                     if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
+                        $message = array();
+                        foreach (explode(',',$fields['fields']) as $field) {
+                           $table = getTableNameForForeignKeyField($field);
+                           if ($table != '') {
+                              $searchOption = $this->getSearchOptionByField('field', 'name',$table);
+                           } else {
+                              $searchOption = $this->getSearchOptionByField('field', $field);
+                           }
+                           $message[] = $searchOption['name'].'='.$this->input[$field];
                         }
-                        $message[] = $searchOption['name'].'='.$this->input[$field];
-                     }
 
-                     $doubles       = getAllDatasFromTable($this->table,"1 $where $where_global");
-                     $message_text  = $LANG['setup'][813].": ".implode('&nbsp;&&nbsp;',$message);
-                     $message_text .= $LANG['setup'][818];
-                     foreach ($doubles as $double) {
-                        if (get_class($this) == 'Infocom') {
-                           $item        = new $double['itemtype'];
-                           $item->getFromDB($double['items_id']);
-                           $item_serial = $item->fields['serial'];
-                           $item_id     = $item->fields['id'];
-                           $entities_id = $item->fields['entities_id'];
+                        $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
+                        if ($fields['action_refuse']) {
+                           $message_text = $LANG['setup'][813];
                         } else {
-                           $item_serial = $double['serial'];
-                           $item_id     = $double['id'];
-                           $entities_id = $double['entities_id'];
+                           $message_text = $LANG['setup'][823];
                         }
-                        $message_text .= " [".$LANG['login'][6].": ".$item_id.", ";
-                        $message_text .= $LANG['common'][19].": ".$item_serial.", ";
-                        $message_text .=$LANG['entity'][0].": ";
-                        $message_text .= Dropdown::getDropdownName('glpi_entities',
-                                                                   $entities_id)."]";
+                        $message_text .= " ".implode('&nbsp;&&nbsp;',$message);
+                        $message_text .= $LANG['setup'][818];
+                        foreach ($doubles as $double) {
+                           //If object extends CommonDBChild then get the parent object
+                           if (in_array('CommonDBChild',class_parents($this))) {
+                              $item        = new $double['itemtype'];
+                              $item->getFromDB($double['items_id']);
+                              $item_serial = $item->fields['serial'];
+                              $item_id     = $item->fields['id'];
+                              $entities_id = $item->fields['entities_id'];
+                           } else {
+                              $item_serial = $double['serial'];
+                              $item_id     = $double['id'];
+                              $entities_id = $double['entities_id'];
+                           }
+                           $message_text  .= "<br>[".$LANG['login'][6].": ".$item_id.", ";
+                           $message_text  .= $LANG['common'][19].": ".$item_serial.", ";
+                           $message_text  .=$LANG['entity'][0].": ";
+                           $message_text  .= Dropdown::getDropdownName('glpi_entities',
+                                                                      $entities_id)."]";
+                        }
+                        if ($p['unicity_error_message']) {
+                           if (!$fields['action_refuse']) {
+                              $show_other_messages = false;
+                           } else {
+                              $show_other_messages = true;
+                           }
+                           addMessageAfterRedirect($message_text, true, $show_other_messages, 
+                                                   $show_other_messages);
+                        }
+                        if ($p['add_event_on_duplicate']) {
+                           Event::log ((!$add?$this->fields['id']:0), get_class($this),
+                                       4, 'inventory',
+                                       $_SESSION["glpiname"]." ".$LANG['log'][123].' : '.
+                                          $message_text);
+                        }
                      }
-                     if ($p['unicity_error_message']) {
-                        addMessageAfterRedirect($message_text, true, ERROR, false);
+                     if($fields['action_refuse']) {
+                        $result = false;
                      }
-                     if ($p['add_event_on_duplicate']) {
-                        Event::log ((!$add?$this->fields['id']:0), get_class($this), 4, 'inventory',
-                                    $_SESSION["glpiname"]." ".$LANG['log'][123].' : '.$message_text);
+                     if($fields['action_notify']) {
+                        $params = array('message'     => html_clean($message_text),
+                                        'action_type' => $add,
+                                        'action_user' => getUserName(getLoginUserID()),
+                                        'entities_id' => $this->fields['entities_id'],
+                                        'itemtype'    => get_class($this),
+                                        'date'        => $_SESSION['glpi_currenttime'],
+                                        'refuse'      => $fields['action_refuse']);
+                        NotificationEvent::raiseEvent('refuse',new FieldUnicity(),$params);
                      }
                   }
-                  $result = false;
                }
             }
          }
+
       }
       return $result;
    }
