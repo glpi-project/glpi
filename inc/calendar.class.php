@@ -280,32 +280,17 @@ class Calendar extends CommonDropdown {
 
       if ($delay >= DAY_TIMESTAMP || $force_work_in_days) { // only based on days
          $cache_duration = importArrayFromDB($this->fields['cache_duration']);
-         $first = true;
 
          while ($delay>0) {
+            // Begin next day : do not take into account first day : must finish to a working day
+            $actualtime += DAY_TIMESTAMP;
             $actualdate = date('Y-m-d',$actualtime);
             $dayofweek  = self::getDayNumberInWeek($actualtime);
 
             if (!$this->isHoliday($actualdate) && $cache_duration[$dayofweek]>0 ) {
-               // Do not take into account first day if it is already finished
-               if ($first) {
-                  $beginhour    = date('H:i:s',$timestart);
-                  $endhour      = '24:00:00';
-                  $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
-                                                                        $dayofweek, $beginhour,
-                                                                        $endhour);
-                  if ($timeoftheday>0) {
-                     $delay -= DAY_TIMESTAMP;
-                  }
-                  $first = false;
-
-               } else {
                   $delay -= DAY_TIMESTAMP;
-               }
             }
-            $actualtime += DAY_TIMESTAMP;
-
-            if ($delay<=0) { // delay done : if < 0 delete hours
+            if ($delay<0) { // delay done : if < 0 delete hours
                $actualtime += $delay;
             }
          }
