@@ -5700,5 +5700,42 @@ class OcsServer extends CommonDBTM {
       }
    }
 
+   static function previewRuleImportProcess($output) {
+      global $LANG;
+      
+      //If ticket is assign to an object, display this information first
+      if (isset($output["action"])) {
+         
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".$LANG['rulesengine'][11]."</td>";
+         echo "<td>";
+         switch ($output["action"]) {
+            case OcsServer::LINK_RESULT_LINK :
+               echo $LANG['ocsng'][81];
+               break;
+            case OcsServer::LINK_RESULT_NO_IMPORT:
+               echo $LANG['ocsng'][82];
+               break;
+            case OcsServer::LINK_RESULT_IMPORT:
+               echo $LANG['ocsng'][83];
+               break;
+         }
+         echo "</td>";
+         echo "</tr>";
+         if ($output["action"] != OcsServer::LINK_RESULT_NO_IMPORT 
+               && isset($output["found_computers"])) {
+            echo "<tr class='tab_bg_2'>";
+            $item = new Computer;
+            if ($item->getFromDB($output["found_computers"][0])) {
+               echo "<td>".$LANG['rulesengine'][155]."</td>";
+               echo "<td>";
+               echo $item->getLink(true);
+               echo "</td>";
+            }
+            echo "</tr>";
+         }
+      }
+      return $output;
+   }
 }
 ?>
