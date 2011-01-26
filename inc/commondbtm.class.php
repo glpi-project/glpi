@@ -2493,7 +2493,50 @@ class CommonDBTM extends CommonGLPI {
       return true;
    }
 
+   function getUnicityFieldsToDisplayInErrorMessage() {
+      global $LANG;
+      return array('id'          => $LANG['login'][6],
+                   'serial'      => $LANG['common'][19],
+                   'entities_id' => $LANG['entity'][0],
+                   'aaaa' => 'aaa');
+   }
+   
+   function getUncityErrorMessage($message = array(), $fields = array(), $doubles = array()) {
+      global $LANG;
 
+      if ($fields['action_refuse']) {
+         $message_text = $LANG['setup'][813];
+      } else {
+         $message_text = $LANG['setup'][823];
+      }
+      $message_text .= " ".implode('&nbsp;&&nbsp;',$message);
+      $message_text .= $LANG['setup'][818];
+
+      foreach ($doubles as $double) {
+         $doubles_text = array();
+
+         if (in_array('CommonDBChild',class_parents($this))) {
+            $item = new $double['itemtype'];
+            $item->getFromDB($double['items_id']);
+         } else {
+            $item = new CommonDBTM;
+            $item->fields = $double;
+         }
+         
+         foreach ($this->getUnicityFieldsToDisplayInErrorMessage() as $key => $value) {
+            $field_value = $item->getField($key);
+            if ($field_value != NOT_AVAILABLE) {
+               if (getTableNameForForeignKeyField($key) != '') {
+                  $field_value = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
+                                                           $field_value);
+               }
+               $doubles_text[] =  $value.": ".$field_value;
+            }
+         }
+         $message_text .= "<br>[".implode(',',$doubles_text)."]";
+      }
+      return $message_text;
+   }
    /**
     * Check field unicity before insert or update
     *
@@ -2578,41 +2621,10 @@ class CommonDBTM extends CommonGLPI {
                         }
 
                         $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
-                        if ($fields['action_refuse']) {
-                           $message_text = $LANG['setup'][813];
-                        } else {
-                           $message_text = $LANG['setup'][823];
-                        }
-                        $message_text .= " ".implode('&nbsp;&&nbsp;',$message);
-                        $message_text .= $LANG['setup'][818];
-                        foreach ($doubles as $double) {
-                           //If object extends CommonDBChild then get the parent object
-                           if (in_array('CommonDBChild',class_parents($this))) {
-                              $item        = new $double['itemtype'];
-                              $item->getFromDB($double['items_id']);
-                              if ($item->getField('serial')) {
-                                 $item_serial = $item->fields['serial'];
-                              }
-                              $item_id     = $item->fields['id'];
-                              $entities_id = $item->fields['entities_id'];
-                           } else {
-                              if ($this->getField('serial')) {
-                                 $item_serial = $double['serial'];
-                              }
-                              $item_id     = $double['id'];
-                              $entities_id = $double['entities_id'];
-                           }
-                           $message_text  .= "<br>[".$LANG['login'][6].": ".$item_id.", ";
-                           if ($this->getField('serial')) {
-                              $message_text  .= $LANG['common'][19].": ".$item_serial.", ";
-                           }
-                           $message_text  .=$LANG['entity'][0].": ";
-                           $message_text  .= Dropdown::getDropdownName('glpi_entities',
-                                                                      $entities_id)."]";
-                        }
+                        $message_text = $this->getUncityErrorMessage($message,$fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
-                              $show_other_messages = false;
+                           $show_other_messages = ($fields['action_refuse']?true:false);
                            } else {
                               $show_other_messages = true;
                            }
