@@ -413,8 +413,15 @@ class FieldUnicity extends CommonDropdown {
          $where_global = getEntitiesRestrictRequest("AND", $item->getTable(),'',$entities);
 
          $fields_string = implode(',',$fields);
+         if ($item->maybeTemplate()) {
+            $where_template = " WHERE `is_template`='0'";
+         } else {
+            $where_template = "";
+         }
+         
          $where_fields_string = implode(',',$where_fields);
          $query = "SELECT $fields_string, count(*) as cpt FROM `".$item->getTable()."` " .
+                  "$where_template " .
                   "GROUP BY $fields_string ORDER BY cpt DESC";
          $results = array();
          foreach ($DB->request($query) as $data) {
