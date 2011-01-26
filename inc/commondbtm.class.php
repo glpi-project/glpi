@@ -2590,16 +2590,22 @@ class CommonDBTM extends CommonGLPI {
                            if (in_array('CommonDBChild',class_parents($this))) {
                               $item        = new $double['itemtype'];
                               $item->getFromDB($double['items_id']);
-                              $item_serial = $item->fields['serial'];
+                              if ($item->getField('serial')) {
+                                 $item_serial = $item->fields['serial'];
+                              }
                               $item_id     = $item->fields['id'];
                               $entities_id = $item->fields['entities_id'];
                            } else {
-                              $item_serial = $double['serial'];
+                              if ($this->getField('serial')) {
+                                 $item_serial = $double['serial'];
+                              }
                               $item_id     = $double['id'];
                               $entities_id = $double['entities_id'];
                            }
                            $message_text  .= "<br>[".$LANG['login'][6].": ".$item_id.", ";
-                           $message_text  .= $LANG['common'][19].": ".$item_serial.", ";
+                           if ($this->getField('serial')) {
+                              $message_text  .= $LANG['common'][19].": ".$item_serial.", ";
+                           }
                            $message_text  .=$LANG['entity'][0].": ";
                            $message_text  .= Dropdown::getDropdownName('glpi_entities',
                                                                       $entities_id)."]";
