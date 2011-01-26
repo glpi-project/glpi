@@ -74,11 +74,6 @@ class RuleImportComputer extends Rule {
    }
 
 
-   function preProcessPreviewResults($output) {
-      return $output;
-   }
-
-
    function getCriterias() {
       global $LANG;
 
@@ -205,8 +200,10 @@ class RuleImportComputer extends Rule {
    }
 
 
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value) {
-
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
+      if ($test) {
+         return false;
+      }
       switch ($condition) {
          case Rule::PATTERN_FIND :
          case RuleImportComputer::PATTERN_IS_EMPTY :
@@ -338,7 +335,7 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-
+      
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
@@ -358,7 +355,7 @@ class RuleImportComputer extends Rule {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
-
+      
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             if ($action->fields['field'] == '_fusion') {
@@ -381,6 +378,63 @@ class RuleImportComputer extends Rule {
 
             } else {
                $output['action'] = OcsServer::LINK_RESULT_NO_IMPORT;
+            }
+         }
+      }
+      return $output;
+   }
+
+   /**
+    * Function used to display type specific criterias during rule's preview
+    *
+    * @param $fields fields values
+   **/
+   function showSpecificCriteriasForPreview($fields) {
+
+      $entity_as_criteria = false;
+      foreach ($this->criterias as $criteria) {
+         if ($criteria->fields['criteria'] == 'entities_id') {
+            $entity_as_criteria = true;
+            break;
+         }
+      }
+      if (!$entity_as_criteria) {
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+      }
+   }
+   
+   function preProcessPreviewResults($output) {
+      global $LANG;
+
+      //If ticket is assign to an object, display this information first
+      if (isset($output["action"])) {
+         
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".$LANG['rulesengine'][11]."</td>";
+         echo "<td>";
+         switch ($output["action"]) {
+            case OcsServer::LINK_RESULT_LINK :
+               echo $LANG['ocsng'][81];
+               break;
+            case OcsServer::LINK_RESULT_NO_IMPORT:
+               echo $LANG['ocsng'][82];
+               break;
+            case OcsServer::LINK_RESULT_IMPORT:
+               echo $LANG['ocsng'][83];
+               break;
+         }
+         echo "</td>";
+         echo "</tr>";
+         if ($output["action"] != OcsServer::LINK_RESULT_NO_IMPORT) {
+            $item = new Computer;
+            if ($item->getFromDB($output["found_computers"][0])) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>".$LANG['rulesengine'][155]."</td>";
+   
+               echo "<td>";
+               echo $item->getLink(true);
+               echo "</td>";
+               echo "</tr>";
             }
          }
       }

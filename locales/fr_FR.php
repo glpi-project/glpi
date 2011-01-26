@@ -1503,6 +1503,9 @@ $LANG['ocsng'][77] = "traitement terminé";
 $LANG['ocsng'][78] = "Liaison si possible, sinon pas d'import";
 $LANG['ocsng'][79] = "Liaison si possible, sinon import";
 $LANG['ocsng'][80] = "Machines dont l'import est refusé par une règle";
+$LANG['ocsng'][81] = "Liaison possible";
+$LANG['ocsng'][82] = "Import refusé";
+$LANG['ocsng'][83] = "Nouvelle machine créée dans GLPI";
 
 
 $LANG['pager'][1] = "à";
@@ -1860,6 +1863,7 @@ $LANG['rulesengine'][151] = "est déjà présent dans GLPI";
 $LANG['rulesengine'][152] = "Machine à importer";
 $LANG['rulesengine'][153] = "Machine dans GLPI";
 $LANG['rulesengine'][154] = "est vide";
+$LANG['rulesengine'][155] = "Lier avec l'ordinateur";
 
 
 $LANG['satisfaction'][0]  = "Satisfaction";
