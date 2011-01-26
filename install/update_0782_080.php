@@ -819,14 +819,14 @@ function update0782to080($output='HTML') {
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;')";
          $DB->query($query)
-         or die("0.80 add ticket satisafaction notification translation " . $LANG['update'][90] .
+         or die("0.80 add ticket satisfaction notification translation " . $LANG['update'][90] .
                 $DB->error());
 
          $query = "INSERT INTO `glpi_notifications`
                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                            `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                            `date_mod`)
-                   VALUES ('Ticket Satisafction', 0, 'Ticket', 'satisfaction', 'mail',
+                   VALUES ('Ticket Satisfaction', 0, 'Ticket', 'satisfaction', 'mail',
                            $notid, '', 1, 1,
                            NOW())";
          $DB->query($query)
