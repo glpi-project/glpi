@@ -89,6 +89,10 @@ class RuleImportComputerCollection extends RuleCollection {
       return array_merge($input,$params);
    }
 
+   function preProcessPreviewResults($output) {
+      return OcsServer::previewRuleImportProcess($output);
+   }
+
 }
 
 ?>
