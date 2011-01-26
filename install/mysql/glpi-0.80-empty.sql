@@ -2292,7 +2292,7 @@ INSERT INTO `glpi_notifications` VALUES ('22','Infocoms','0','Infocom','alert','
 INSERT INTO `glpi_notifications` VALUES ('23','Software Licenses','0','SoftwareLicense','alert','mail','11','','1','1','2011-01-25 11:07:10');
 INSERT INTO `glpi_notifications` VALUES ('24','Ticket Recall','0','Ticket','recall','mail','4','','1','1','2011-01-25 11:07:14');
 INSERT INTO `glpi_notifications` VALUES ('25','Password Forget','0','User','passwordforget','mail','13','','1','1','2011-01-25 11:07:14');
-INSERT INTO `glpi_notifications` VALUES ('26','Ticket Satisafction','0','Ticket','satisfaction','mail','14','','1','1','2011-01-25 11:07:16');
+INSERT INTO `glpi_notifications` VALUES ('26','Ticket Satisfaction','0','Ticket','satisfaction','mail','14','','1','1','2011-01-25 11:07:16');
 INSERT INTO `glpi_notifications` VALUES ('27','Item not unique','0','FieldUnicity','refuse','mail','15','','1','1','2011-01-25 11:07:16');
 INSERT INTO `glpi_notifications` VALUES ('28','Crontask Watcher','0','Crontask','alert','mail','16','','1','1','2011-01-25 11:07:16');
 
