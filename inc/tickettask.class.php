@@ -62,12 +62,9 @@ class TicketTask  extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $querydel = "DELETE
-                   FROM `glpi_ticketplannings`
-                   WHERE `tickettasks_id` = '".$this->fields['id']."'";
-      $DB->query($querydel);
+      $temp = new TicketPlanning();
+		$temp->deleteByCriteria(array('tickettasks_id' => $this->fields['id']));
    }
 
 
