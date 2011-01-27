@@ -2525,7 +2525,12 @@ class CommonDBTM extends CommonGLPI {
          $doubles_text = array();
 
          if (in_array('CommonDBChild',class_parents($this))) {
-            $item = new $double['itemtype'];
+            if ($this->getField($this->itemtype)) {
+               $item = new $double['itemtype']; 
+            } else {
+               $item = new $this->itemtype;
+            }
+            
             $item->getFromDB($double['items_id']);
          } else {
             $item = new CommonDBTM();

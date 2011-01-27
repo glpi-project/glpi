@@ -699,6 +699,18 @@ class SoftwareLicense extends CommonDBTM {
       NotificationEvent::debugEvent($this, $options);
    }
 
+   /**
+    * Get fields to display in the unicity error message
+    * @return an aray which contains field => label
+    */
+   function getUnicityFieldsToDisplayInErrorMessage() {
+      global $LANG;
+      return array('id'           => $LANG['login'][6],
+                   'serial'       => $LANG['common'][19],
+                   'entities_id'  => $LANG['entity'][0],
+                   'softwares_id' => $LANG['help'][31]);
+   }
+
 }
 
 ?>
