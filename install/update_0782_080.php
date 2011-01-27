@@ -771,7 +771,7 @@ function update0782to080($output='HTML') {
    if ($migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '0'")) {
       $migration->migrationOneTable("glpi_entitydatas");
 
-      $query = "UPDATE  `glpi_entitydatas`
+      $query = "UPDATE `glpi_entitydatas`
                 SET `inquest_config` = '1'
                 WHERE `entities_id` = '0'";
       $DB->query($query)
@@ -785,11 +785,11 @@ function update0782to080($output='HTML') {
 
    if ($migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL")) {
       $migration->migrationOneTable("glpi_profiles");
+
       $query = "UPDATE `glpi_profiles`
                 SET `rule_dictionnary_printer` = `rule_dictionnary_software`";
       $DB->query($query)
       or die("0.80 set default rule_dictionnary_printer in profile ".$LANG['update'][90].$DB->error());
-
    }
 
    $query = "SELECT *
@@ -1232,17 +1232,18 @@ function update0782to080($output='HTML') {
                        (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                         `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                         `date_mod`)
-                VALUES ('Item not unique', 0, 'FieldUnicity', 'refuse', 'mail', $notid, '', 1, 1,
+                VALUES ('Item not unique', 0, 'FieldUnicity', 'refuse', 'mail',
+                        $notid, '', 1, 1,
                         NOW())";
       $DB->query($query)
       or die("0.80 add computer not unique notification " . $LANG['update'][90] . $DB->error());
       $notifid = $DB->insert_id();
 
       $query = "INSERT INTO `glpi_notificationtargets`
-                       (`id`, `notifications_id`, `type`, `items_id`)
-                VALUES (NULL, $notifid, 1, 19);";
+                       (`notifications_id`, `type`, `items_id`)
+                VALUES ($notifid, 1, 19);";
       $DB->query($query)
-      or die("0.80 add computer not unique notification target " . $LANG['update'][90] . $DB->error());
+      or die("0.80 add computer not unique notification target ".$LANG['update'][90]. $DB->error());
       }
    }
 
@@ -1533,9 +1534,10 @@ function update0782to080($output='HTML') {
 
    if ($migration->addField("glpi_users", "date_sync", "datetime default NULL AFTER `date_mod`")) {
       $migration->migrationOneTable("glpi_users");
+
       $query = "UPDATE `glpi_users`
-                  SET `date_sync` = `date_mod`
-                  WHERE `auths_id` > 0;";
+                SET `date_sync` = `date_mod`
+                WHERE `auths_id` > 0";
       $DB->query($query)
       or die("0.80 set default date_sync for users ".$LANG['update'][90] .$DB->error());
    }
