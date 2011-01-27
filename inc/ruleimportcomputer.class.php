@@ -233,13 +233,13 @@ class RuleImportComputer extends Rule {
 
 
    function getCriteriaByID($ID) {
-
+      $criteria = array();
       foreach ($this->criterias as $criterion) {
          if ($ID == $criterion->fields['criteria']) {
-            return $criterion;
+            $criteria[] = $criterion;
          }
       }
-      return array();
+      return $criteria;
    }
 
 
@@ -253,21 +253,24 @@ class RuleImportComputer extends Rule {
       $global_criteria   = array('IPADDRESS', 'IPSUBNET', 'MACADDRESS', 'name', 'serial');
 
       foreach ($global_criteria as $criterion) {
-         $crit = $this->getCriteriaByID($criterion);
-         if (!empty($crit)) {
-            if (!isset($input[$criterion]) || $input[$criterion] == '') {
-               $continue = false;
-            } else if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
-               $complex_criterias[] = $crit;
+         $criteria = $this->getCriteriaByID($criterion);
+         if (!empty($criteria)) {
+            foreach ($criteria as $crit) {
+               if (!isset($input[$criterion]) || $input[$criterion] == '') {
+                  $continue = false;
+               } else if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
+                  $complex_criterias[] = $crit;
+               }
             }
          }
       }
-
-      if (isset($this->criterias['states_id'])) {
-         $complex_criterias[] = $this->getCriteriaByID('states_id');
+      
+      
+      foreach ($this->getCriteriaByID('states_id') as $crit) {
+         $complex_criterias[] = $crit;
       }
-
-      //If no complex criteria or a value is missing, then there's a problem !
+      
+      //If a value is missing, then there's a problem !
       if (!$continue) {
          return false;
       }
@@ -287,7 +290,7 @@ class RuleImportComputer extends Rule {
       $sql_where = " `glpi_computers`.`entities_id` IN ($where_entity)
                     AND `glpi_computers`.`is_template` = '0' ";
       $sql_from = "`glpi_computers`";
-
+      
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
             case 'IPADDRESS' :
@@ -337,14 +340,17 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-
+      
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
-         return true;
       }
-      return false;
+      
+      //This method already return true because we've checked before that there's at least one
+      //global criterion. So now let'so go into executeActions and then see which action needs to be
+      //performed
+      return true;
    }
 
 
@@ -357,7 +363,7 @@ class RuleImportComputer extends Rule {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
-
+      logDebug($output);
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             if ($action->fields['field'] == '_fusion') {
