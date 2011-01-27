@@ -365,7 +365,7 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['financial'][3]." : ".$LANG['financial'][111]."</th></tr>";
+      echo "<tr><th colspan='4'>".$LANG['financial'][3]."&nbsp;: ".$LANG['financial'][111]."</th></tr>";
 
 
       $options[0] = $LANG['financial'][113];

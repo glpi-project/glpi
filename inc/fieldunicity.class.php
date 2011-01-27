@@ -475,7 +475,7 @@ class FieldUnicity extends CommonDropdown {
                       'date'        => $_SESSION['glpi_currenttime'],
                       'refuse'      => true);
 
-      NotificationEvent::debugEvent($this,$params);
+      NotificationEvent::debugEvent($this, $params);
    }
 
 }

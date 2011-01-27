@@ -2510,10 +2510,11 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Build an unicity error message
+    *
     * @param $message the string to be display on the screen, or to be sent in a notification
     * @param $unicty the unicity criterion that failed to match
     * @param $doubles the items that are already present in DB
-    */
+   **/
    function getUncityErrorMessage($message, $unicity, $doubles) {
       global $LANG;
 
