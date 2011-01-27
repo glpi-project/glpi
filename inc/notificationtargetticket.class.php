@@ -606,19 +606,24 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
 
-   function getJoinSql() {
+   /**
+    * Restrict by profile and by config
+    * to avoid send notification to a user without rights
+   **/
+   function getProfilesJoinSql() {
 
-      if ($this->isPrivate()) {
-         return " INNER JOIN `glpi_profiles_users`
+      $query = " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
                          getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
-                                                    $this->getEntity(), true).")
-                  INNER JOIN `glpi_profiles`
+                                                    $this->getEntity(), true).")";
+
+      if ($this->isPrivate()) {
+         $query .= " INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
                          AND `glpi_profiles`.`interface` = 'central'
                          AND `glpi_profiles`.`show_full_ticket` = '1') ";
       }
-      return "";
+      return $query;
    }
 
 
