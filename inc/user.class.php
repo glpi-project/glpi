@@ -43,8 +43,8 @@ if (!defined('GLPI_ROOT')) {
 class User extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
-   public $history_blacklist = array('last_login', 'date_mod', 'date_sync');
+   public $dohistory         = true;
+   public $history_blacklist = array('date_mod', 'date_sync', 'last_login');
 
 
    static function getTypeName() {
@@ -123,7 +123,7 @@ class User extends CommonDBTM {
 
 
    /**
-   * Compute preferences for the current user mixing config and user data
+    * Compute preferences for the current user mixing config and user data
    **/
    function computePreferences () {
       global $CFG_GLPI;
@@ -177,13 +177,11 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->fields["is_active"] = 1;
-
       if (isset ($CFG_GLPI["language"])) {
          $this->fields['language'] = $CFG_GLPI["language"];
       } else {
          $this->fields['language'] = "en_GB";
       }
-
    }
 
 
@@ -279,9 +277,9 @@ class User extends CommonDBTM {
    /**
     * Retrieve an item from the database using its login
     *
-    *@param $name login of the user
+    * @param $name login of the user
     *
-    *@return true if succeed else false
+    * @return true if succeed else false
    **/
    function getFromDBbyName($name) {
       global $DB;
@@ -306,9 +304,9 @@ class User extends CommonDBTM {
    /**
     * Retrieve an item from the database using its email
     *
-    *@param $email login of the user
+    * @param $email login of the user
     *
-    *@return true if succeed else false
+    * @return true if succeed else false
    **/
    function getFromDBbyEmail($email) {
       global $DB;
@@ -519,7 +517,7 @@ class User extends CommonDBTM {
    /**
     * Apply rules to determine dynamic rights of the user
     *
-    *@return boolean : true if we play the Rule Engine
+    * @return boolean : true if we play the Rule Engine
    **/
    function applyRightRules() {
       global $DB;
@@ -652,7 +650,7 @@ class User extends CommonDBTM {
 
 
    /**
-   * Synchronise LDAP group of the user
+    * Synchronise LDAP group of the user
    **/
    function syncLdapGroups() {
       global $DB;
@@ -871,7 +869,7 @@ class User extends CommonDBTM {
     * @param $login User Login
     *
     * @return String : basedn of the user / false if not founded
-    */
+   **/
    function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB, $CFG_GLPI;
 
@@ -1009,18 +1007,19 @@ class User extends CommonDBTM {
     * @param $login_field string user login field
     *
     * @return String : basedn of the user / false if not founded
-    */
+   **/
    function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition,
                                  $group_member_field, $use_dn, $login_field) {
 
-      $groups = array();
+      $groups     = array();
       $listgroups = array();
 
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
 
       if (!$use_dn) {
-         $filter = "(& $group_condition (|($group_member_field=$user_dn)($group_member_field=$login_field=$user_dn)))";
+         $filter = "(& $group_condition (|($group_member_field=$user_dn)
+                                          ($group_member_field=$login_field=$user_dn)))";
       } else {
          $filter = "(& $group_condition ($group_member_field=$user_dn))";
       }
@@ -1050,7 +1049,7 @@ class User extends CommonDBTM {
     *
     * @param $mail_method mail method description array
     * @param $name login of the user
-    */
+   **/
    function getFromIMAP($mail_method, $name) {
       global $DB;
 
@@ -1094,7 +1093,7 @@ class User extends CommonDBTM {
    /**
     * Blank passwords field of a user in the DB
     * needed for external auth users
-    **/
+   **/
    function blankPassword() {
       global $DB;
 
@@ -1110,8 +1109,8 @@ class User extends CommonDBTM {
    /**
     * Print a good title for user pages
     *
-    *@return nothing (display)
-    **/
+    * @return nothing (display)
+   **/
    function title() {
       global $LANG, $CFG_GLPI;
 
@@ -1139,10 +1138,10 @@ class User extends CommonDBTM {
    /**
     * Is the specified user have more right than the current one ?
     *
-    *@param $ID Integer : Id of the user
+    * @param $ID Integer : Id of the user
     *
-    *@return boolean : true if currrent user have the same right or more right
-    **/
+    * @return boolean : true if currrent user have the same right or more right
+   **/
    function currentUserHaveMoreRightThan($ID) {
 
       $user_prof = $this->getUserProfiles($ID);
@@ -1153,10 +1152,10 @@ class User extends CommonDBTM {
    /**
     * Get user profiles (no entity association)
     *
-    *@param $ID Integer : Id of the user
+    * @param $ID Integer : Id of the user
     *
-    *@return array of the IDs of the profiles
-    **/
+    * @return array of the IDs of the profiles
+   **/
    function getUserProfiles($ID) {
       global $DB;
 
@@ -1184,7 +1183,7 @@ class User extends CommonDBTM {
     *     - withtemplate boolean : template or basic item
     *
     * @return boolean : user found
-    **/
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
@@ -1394,11 +1393,11 @@ class User extends CommonDBTM {
    /**
     * Print the user preference form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the user
+    * @param $target form target
+    * @param $ID Integer : Id of the user
     *
-    *@return boolean : user found
-    **/
+    * @return boolean : user found
+   **/
    function showMyForm($target, $ID) {
       global $CFG_GLPI, $LANG, $PLUGIN_HOOKS;
 
@@ -1562,7 +1561,9 @@ class User extends CommonDBTM {
    }
 
 
-   ///Get all the authentication method parameters for the current user
+   /**
+    * Get all the authentication method parameters for the current user
+   **/
    function getAuthMethodsByID() {
       return Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
    }
@@ -2074,74 +2075,8 @@ class User extends CommonDBTM {
 
 
    /**
-    * Make a select box with all glpi users in tracking table
-    *
-    * @param $myname the name of the HTML select
-    * @param $value the preselected value we want
-    * @param $field field of the glpi_tickets table to lookiup for possible users
-    * @param $display_comment display the comment near the dropdown
-    *
-    * @return nothing (print out an HTML select box)
-    */
-// Obsolete function
-//    static function dropdownForTicket($myname,$value,$field,$display_comment=1) {
-//       global $CFG_GLPI, $LANG, $DB;
-//
-//
-//       $rand = mt_rand();
-//       $use_ajax = false;
-//       if ($CFG_GLPI["use_ajax"]) {
-//          if ($CFG_GLPI["ajax_limit_count"] == 0) {
-//             $use_ajax = true;
-//          } else {
-//             $query = "SELECT COUNT(`".$field."`)
-//                       FROM `glpi_tickets` ".
-//                       getEntitiesRestrictRequest("WHERE","glpi_tickets");
-//             $result = $DB->query($query);
-//
-//             $nb = $DB->result($result,0,0);
-//             if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-//                $use_ajax = true;
-//             }
-//          }
-//       }
-//
-//       $user = getUserName($value, 2);
-//       $default  = "<select name='$myname'><option value='$value'>";
-//       $default .= utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"])."</option>";
-//       $default .= "</select>";
-//       if (empty($value) || $value==0) {
-//          $default  = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
-//          $default .= "</select>";
-//       }
-//
-//       $params = array('searchText' => '__VALUE__',
-//                       'value'      => $value,
-//                       'field'      => $field,
-//                       'myname'     => $myname,
-//                       'comment'    => $display_comment,
-//                       'rand'       => $rand);
-//
-//       ajaxDropdown($use_ajax, "/ajax/dropdownUsersTracking.php", $params, $default, $rand);
-//
-//       if (!haveRight("user","r")) {
-//          $user["link"] = '';
-//       } else if (empty($user["link"])) {
-//          $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
-//       }
-//       // Display comment
-//       if ($display_comment) {
-//          showToolTip($user["comment"], array('contentid' => "comment_".$myname.$rand,
-//                                              'link'      => $user["link"],
-//                                              'linkid'    => "comment_link_".$myname.$rand));
-//       }
-//       return $rand;
-//    }
-
-
-   /**
     * Simple add user form for external auth
-    */
+   **/
    static function showAddExtAuthForm() {
       global $LANG;
 
@@ -2193,7 +2128,7 @@ class User extends CommonDBTM {
 
    /**
     * Generate vcard for the current user
-    */
+   **/
    function generateVcard() {
 
       include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
@@ -2230,7 +2165,7 @@ class User extends CommonDBTM {
 
    /**
     * Show items of the current user
-    */
+   **/
    function showItems() {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -2483,7 +2418,9 @@ class User extends CommonDBTM {
    }
 
 
-   /// Show form for password recovery
+   /**
+    * Show form for password recovery
+   **/
    static function showPasswordForgetChangeForm ($token) {
       global $LANG, $CFG_GLPI, $DB;
 
@@ -2534,7 +2471,9 @@ class User extends CommonDBTM {
    }
 
 
-   /// Show form for password recovery
+   /**
+    * Show form for password recovery
+   **/
    static function showPasswordForgetRequestForm () {
       global $LANG, $CFG_GLPI;
 
@@ -2563,7 +2502,8 @@ class User extends CommonDBTM {
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
 
             if ($input['token']==$this->fields['token']
-                && (abs(strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)) {
+                && (abs(strtotime($_SESSION["glpi_currenttime"])
+                        -strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)) {
 
                $input['id'] = $this->fields['id'];
 
@@ -2636,6 +2576,7 @@ class User extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * Display information from LDAP server for user
    **/
@@ -2680,6 +2621,7 @@ class User extends CommonDBTM {
       echo "</table></div>";
    }
 
+
    /**
     * Display debug information for current object
    **/
@@ -2688,13 +2630,16 @@ class User extends CommonDBTM {
       NotificationEvent::debugEvent($this);
       $this->showLdapDebug();
    }
-   
+
+
    /**
     * Get fields to display in the unicity error message
+    *
     * @return an aray which contains field => label
-    */
+   **/
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
+
       return array('id'          => $LANG['login'][6],
                    'entities_id' => $LANG['entity'][0]);
    }
