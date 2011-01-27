@@ -218,7 +218,7 @@ define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 $CFG_GLPI["unicity_types"] = array('Budget', 'Cartridge', 'Computer', 'Consumable', 'Contact',
                                    'Contract', 'Infocom', 'Monitor', 'NetworkEquipment',
                                    'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
-                                   'Supplier','User');
+                                   'Supplier','User','SoftwareLicense');
 
 $CFG_GLPI["state_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                                  'Printer');
