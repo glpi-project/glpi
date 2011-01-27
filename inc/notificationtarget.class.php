@@ -142,6 +142,7 @@ class NotificationTarget extends CommonDBChild {
     * @return a notificationtarget class or false
    **/
    static function getInstance($item, $event='', $options=array()) {
+
       if ($plug = isPluginItemType($item->getType())) {
          $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
       } else {

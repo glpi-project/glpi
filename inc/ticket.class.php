@@ -733,18 +733,16 @@ class Ticket extends CommonDBTM {
       }
 
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"])
-          && $this->input["_add_validation"]>0) {
-
+      if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
          $validation = new Ticketvalidation();
-         $values['tickets_id']       = $this->input['id'];
-         $values['users_id_validate']= $this->input["_add_validation"];
+         $values['tickets_id']        = $this->input['id'];
+         $values['users_id_validate'] = $this->input["_add_validation"];
 
          if ($validation->can(-1, 'w', $values)) {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                     $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+                       $_SESSION["glpiname"]."  ".$LANG['log'][21]);
          }
       }
 
@@ -1674,18 +1672,17 @@ class Ticket extends CommonDBTM {
 
 
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"])
-          && $this->input["_add_validation"]>0) {
+      if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
 
          $validation = new Ticketvalidation();
-         $values['tickets_id']       = $this->fields['id'];
-         $values['users_id_validate']= $this->input["_add_validation"];
+         $values['tickets_id']        = $this->fields['id'];
+         $values['users_id_validate'] = $this->input["_add_validation"];
 
          if ($validation->can(-1, 'w', $values)) {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                     $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+                       $_SESSION["glpiname"]."  ".$LANG['log'][21]);
          }
       }
 

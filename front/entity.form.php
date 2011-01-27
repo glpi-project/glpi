@@ -41,7 +41,8 @@ $dropdown = new Entity();
 
 // Root entity : no edit
 if (isset($_GET['id']) && $_GET['id']==0) {
-   $options=array('canedit'=>false,'candel'=>false);
+   $options = array('canedit' => false,
+                    'candel'  => false);
 }
 
 include (GLPI_ROOT . "/front/dropdown.common.form.php");

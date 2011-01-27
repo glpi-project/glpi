@@ -1163,7 +1163,7 @@ class AuthLDAP extends CommonDBTM {
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $user['name'],
                                         'timestamp' => $user_infos[$user['name']]['timestamp'],
-                                        'date_sync'  => $user['date_sync']);
+                                        'date_sync' => $user['date_sync']);
                }
 
             // Only manage deleted user if ALL (because of entity visibility in delegated mode)
@@ -1188,7 +1188,7 @@ class AuthLDAP extends CommonDBTM {
          foreach ($diff as $user) {
             $list[] = array("user"      => $user,
                             "timestamp" => $user_infos[$user]["timestamp"],
-                            "date_sync"  => DROPDOWN_EMPTY_VALUE);
+                            "date_sync" => DROPDOWN_EMPTY_VALUE);
          }
          if ($values['order'] == 'DESC') {
             rsort($list);

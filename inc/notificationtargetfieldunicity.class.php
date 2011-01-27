@@ -41,6 +41,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       return array('refuse' => $LANG['setup'][827]);
    }
 
+
    /**
     * Get all data needed for template processing
    **/
