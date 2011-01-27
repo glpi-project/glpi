@@ -1862,7 +1862,7 @@ class Rule extends CommonDBTM {
    /**
     *
    **/
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value,$test) {
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value,$test=false) {
       return false;
    }
 
