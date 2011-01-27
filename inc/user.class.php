@@ -2688,6 +2688,17 @@ class User extends CommonDBTM {
       NotificationEvent::debugEvent($this);
       $this->showLdapDebug();
    }
+   
+   /**
+    * Get fields to display in the unicity error message
+    * @return an aray which contains field => label
+    */
+   function getUnicityFieldsToDisplayInErrorMessage() {
+      global $LANG;
+      return array('id'          => $LANG['login'][6],
+                   'entities_id' => $LANG['entity'][0]);
+   }
+
 }
 
 ?>

@@ -2493,18 +2493,27 @@ class CommonDBTM extends CommonGLPI {
       return true;
    }
 
+   /**
+    * Get fields to display in the unicity error message
+    * @return an aray which contains field => label
+    */
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
       return array('id'          => $LANG['login'][6],
                    'serial'      => $LANG['common'][19],
-                   'entities_id' => $LANG['entity'][0],
-                   'aaaa' => 'aaa');
+                   'entities_id' => $LANG['entity'][0]);
    }
    
-   function getUncityErrorMessage($message = array(), $fields = array(), $doubles = array()) {
+   /**
+    * Build an unicity error message
+    * @message the string to be display on the screen, or to be sent in a notification
+    * @unicty the unicity criterion that failed to match
+    * @doubles the items that are already present in DB 
+    */
+   function getUncityErrorMessage($message, $unicity, $doubles) {
       global $LANG;
 
-      if ($fields['action_refuse']) {
+      if ($unicity['action_refuse']) {
          $message_text = $LANG['setup'][813];
       } else {
          $message_text = $LANG['setup'][823];
@@ -2519,7 +2528,7 @@ class CommonDBTM extends CommonGLPI {
             $item = new $double['itemtype'];
             $item->getFromDB($double['items_id']);
          } else {
-            $item = new CommonDBTM;
+            $item = new CommonDBTM();
             $item->fields = $double;
          }
          
@@ -2537,6 +2546,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return $message_text;
    }
+   
    /**
     * Check field unicity before insert or update
     *
