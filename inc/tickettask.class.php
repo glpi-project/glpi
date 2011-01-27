@@ -64,7 +64,7 @@ class TicketTask  extends CommonDBTM {
    function cleanDBonPurge() {
 
       $temp = new TicketPlanning();
-		$temp->deleteByCriteria(array('tickettasks_id' => $this->fields['id']));
+      $temp->deleteByCriteria(array('tickettasks_id' => $this->fields['id']));
    }
 
 

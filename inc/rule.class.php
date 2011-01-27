@@ -1361,9 +1361,8 @@ class Rule extends CommonDBTM {
       $crit    = $this->getCriteria($ID);
       $display = false;
       $tested  = false;
-      
-      if ($condition == Rule::PATTERN_EXISTS
-          || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
+
+      if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
          Dropdown::showYesNo($name, 0, 0);
          $display = true;
          $tested  = true;
@@ -1421,7 +1420,7 @@ class Rule extends CommonDBTM {
       }
       //Not a standard condition
       if (!$tested) {
-        $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value,$test);
+        $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
       }
 
       if (!$display) {
@@ -1559,7 +1558,7 @@ class Rule extends CommonDBTM {
       global $DB, $LANG;
 
       $criterias = $this->getCriterias();
-      
+
       if ($this->getRuleWithCriteriasAndActions($rules_id,1,0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
@@ -1862,7 +1861,7 @@ class Rule extends CommonDBTM {
    /**
     *
    **/
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value,$test=false) {
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
       return false;
    }
 

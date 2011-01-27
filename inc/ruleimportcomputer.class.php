@@ -201,9 +201,11 @@ class RuleImportComputer extends Rule {
 
 
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
+
       if ($test) {
          return false;
       }
+
       switch ($condition) {
          case Rule::PATTERN_FIND :
          case RuleImportComputer::PATTERN_IS_EMPTY :
@@ -335,7 +337,7 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-      
+
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
@@ -355,7 +357,7 @@ class RuleImportComputer extends Rule {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
-      
+
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             if ($action->fields['field'] == '_fusion') {
@@ -384,6 +386,7 @@ class RuleImportComputer extends Rule {
       return $output;
    }
 
+
    /**
     * Function used to display type specific criterias during rule's preview
     *
@@ -402,7 +405,8 @@ class RuleImportComputer extends Rule {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       }
    }
-   
+
+
    function preProcessPreviewResults($output) {
       return OcsServer::previewRuleImportProcess($output);
    }
