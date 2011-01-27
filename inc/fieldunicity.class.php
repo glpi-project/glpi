@@ -455,5 +455,22 @@ class FieldUnicity extends CommonDropdown {
       }
       echo "</table>";
    }
+   
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+
+      $params = array('message'     => '',
+                      'action_type' => true,
+                      'action_user' => getUserName(getLoginUserID()),
+                      'entities_id' => $_SESSION['glpiactive_entity'],
+                      'itemtype'    => get_class($this),
+                      'date'        => $_SESSION['glpi_currenttime'],
+                      'refuse'      => true);
+
+      NotificationEvent::debugEvent($this,$params);
+   }
+
 }
 ?>

@@ -38,7 +38,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('refuse' => $LANG['setup'][821]);
+      return array('refuse' => $LANG['setup'][827]);
    }
 
    /**
