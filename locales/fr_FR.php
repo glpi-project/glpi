@@ -1492,6 +1492,9 @@ $LANG['ocsng'][60] = "Présent dans OCSNG";
 $LANG['ocsng'][61] = "Aucun objet à nettoyer.";
 $LANG['ocsng'][62] = "entité de destination de la machine";
 
+$LANG['ocsng'][67] = "Liaison possible";
+$LANG['ocsng'][68] = "Import refusé";
+$LANG['ocsng'][69] = "Nouvelle machine créée dans GLPI";
 $LANG['ocsng'][70] = "Machines importées";
 $LANG['ocsng'][71] = "Machines synchronisées";
 $LANG['ocsng'][72] = "Machines ne vérifiant aucune règle";
@@ -1503,9 +1506,7 @@ $LANG['ocsng'][77] = "traitement terminé";
 $LANG['ocsng'][78] = "Liaison si possible, sinon pas d'import";
 $LANG['ocsng'][79] = "Liaison si possible, sinon import";
 $LANG['ocsng'][80] = "Machines dont l'import est refusé par une règle";
-$LANG['ocsng'][81] = "Liaison possible";
-$LANG['ocsng'][82] = "Import refusé";
-$LANG['ocsng'][83] = "Nouvelle machine créée dans GLPI";
+
 
 
 $LANG['pager'][1] = "à";
