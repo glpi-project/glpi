@@ -106,6 +106,7 @@ class FieldUnicity extends CommonDropdown {
          case 2:
             self::showDoubles($this);
             break;
+
          case 12 :
          case -1 :
             Log::showForItem($this);
@@ -197,9 +198,10 @@ class FieldUnicity extends CommonDropdown {
       }
 
       $query .= "ORDER BY `entities_id` DESC";
+
       $current_entity = false;
-      $return = array();
-      foreach($DB->request($query) as $data) {
+      $return         = array();
+      foreach ($DB->request($query) as $data) {
          //First row processed
          if (!$current_entity) {
             $current_entity = $data['entities_id'];
@@ -242,7 +244,7 @@ class FieldUnicity extends CommonDropdown {
          $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
 
-      $unicity_fields = explode(',',$unicity->fields['fields']);
+      $unicity_fields = explode(',', $unicity->fields['fields']);
       //Search option for this type
       $target = new $unicity->fields['itemtype'];
 
@@ -349,7 +351,7 @@ class FieldUnicity extends CommonDropdown {
    **/
    static function checkBeforeInsert($input) {
       global $LANG;
-      
+
       if (!$input['itemtype'] || empty($input['_fields'])) {
          addMessageAfterRedirect($LANG['setup'][817], true, ERROR);
          $input = array();
@@ -388,50 +390,54 @@ class FieldUnicity extends CommonDropdown {
       $DB->query($query);
    }
 
+
    static function showDoubles(FieldUnicity $unicity) {
       global $LANG, $DB;
 
 
-      $fields = array();
+      $fields       = array();
       $where_fields = array();
-      $item = new $unicity->fields['itemtype'];
+      $item         = new $unicity->fields['itemtype'];
       foreach (explode(',',$unicity->fields['fields']) as $field) {
-         $fields[] = $field;
+         $fields[]       = $field;
          $where_fields[] = $field;
       }
-   
-      if (!empty($fields)) {
 
+      if (!empty($fields)) {
          $colspan = count($fields) + 1;
-         echo "<table class='tab_cadre_fixe' >";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='".$colspan."'>".$LANG['setup'][826]."</th></tr>";
 
          $entities = $unicity->fields['entities_id'];
          if ($unicity->fields['is_recursive']) {
-            $entities = getSonsOf('glpi_entities',$unicity->fields['entities_id']);
+            $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
          }
-         $where_global = getEntitiesRestrictRequest("AND", $item->getTable(),'',$entities);
-
-         $fields_string = implode(',',$fields);
+         // why this variable because not used
+//         $where_global  = getEntitiesRestrictRequest("AND", $item->getTable(), '', $entities);
+         $fields_string = implode(',', $fields);
          if ($item->maybeTemplate()) {
-            $where_template = " WHERE `is_template`='0'";
+            $where_template = " WHERE `is_template` = '0'";
          } else {
             $where_template = "";
          }
-         
-         $where_fields_string = implode(',',$where_fields);
-         $query = "SELECT $fields_string, count(*) as cpt FROM `".$item->getTable()."` " .
-                  "$where_template " .
-                  "GROUP BY $fields_string ORDER BY cpt DESC";
+
+         $where_fields_string = implode(',', $where_fields);
+         $query = "SELECT $fields_string,
+                          COUNT(*) AS cpt
+                   FROM `".$item->getTable()."`
+                   $where_template
+                   GROUP BY $fields_string
+                   ORDER BY cpt DESC";
          $results = array();
          foreach ($DB->request($query) as $data) {
             if ($data['cpt'] > 1) {
                $results[] = $data;
-               
+
             }
          }
+
          if (empty($results)) {
-            echo "<tr><td align='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+            echo "<tr><td class='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
          } else {
             echo "<tr>";
             foreach ($fields as $field) {
@@ -445,17 +451,17 @@ class FieldUnicity extends CommonDropdown {
                foreach ($fields as $field) {
                   echo "<td>".$result[$field]."</td>";
                }
-               echo "<td>".$result['cpt']."</td>";
-               echo "</tr>";
+               echo "<td>".$result['cpt']."</td></tr>";
             }
          }
-      }
-      else {
-         echo "<tr><td align='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+
+      } else {
+         echo "<tr><td class='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
       }
       echo "</table>";
    }
-   
+
+
    /**
     * Display debug information for current object
    **/

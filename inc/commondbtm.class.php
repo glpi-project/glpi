@@ -2493,22 +2493,26 @@ class CommonDBTM extends CommonGLPI {
       return true;
    }
 
+
    /**
     * Get fields to display in the unicity error message
+    *
     * @return an aray which contains field => label
-    */
+   **/
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
+
       return array('id'          => $LANG['login'][6],
                    'serial'      => $LANG['common'][19],
                    'entities_id' => $LANG['entity'][0]);
    }
-   
+
+
    /**
     * Build an unicity error message
-    * @message the string to be display on the screen, or to be sent in a notification
-    * @unicty the unicity criterion that failed to match
-    * @doubles the items that are already present in DB 
+    * @param $message the string to be display on the screen, or to be sent in a notification
+    * @param $unicty the unicity criterion that failed to match
+    * @param $doubles the items that are already present in DB
     */
    function getUncityErrorMessage($message, $unicity, $doubles) {
       global $LANG;
@@ -2526,17 +2530,17 @@ class CommonDBTM extends CommonGLPI {
 
          if (in_array('CommonDBChild',class_parents($this))) {
             if ($this->getField($this->itemtype)) {
-               $item = new $double['itemtype']; 
+               $item = new $double['itemtype'];
             } else {
                $item = new $this->itemtype;
             }
-            
+
             $item->getFromDB($double['items_id']);
          } else {
             $item = new CommonDBTM();
             $item->fields = $double;
          }
-         
+
          foreach ($this->getUnicityFieldsToDisplayInErrorMessage() as $key => $value) {
             $field_value = $item->getField($key);
             if ($field_value != NOT_AVAILABLE) {
@@ -2551,7 +2555,8 @@ class CommonDBTM extends CommonGLPI {
       }
       return $message_text;
    }
-   
+
+
    /**
     * Check field unicity before insert or update
     *
@@ -2594,14 +2599,13 @@ class CommonDBTM extends CommonGLPI {
 
             //If there's fields to check
             if (!empty($fields) && !empty($fields['fields'])) {
-               $where = "";
-               
+               $where    = "";
                $continue = true;
                foreach (explode(',',$fields['fields']) as $field) {
                   if (isset($this->input[$field]) //Field is set
-                     //Standard field not null
+                      //Standard field not null
                       && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
-                        //Foreign key and value is not 0
+                          //Foreign key and value is not 0
                           || (getTableNameForForeignKeyField($field) != ''
                               && $this->input[$field] > 0))) {
                      $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
@@ -2613,42 +2617,44 @@ class CommonDBTM extends CommonGLPI {
                if ($continue && $where != '') {
                   $entities = $fields['entities_id'];
                   if ($fields['is_recursive']) {
-                     $entities = getSonsOf('glpi_entities',$fields['entities_id']);
+                     $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                   }
-                  $where_global = getEntitiesRestrictRequest("AND", $this->getTable(),'',$entities);
-   
+                  $where_global = getEntitiesRestrictRequest(" AND", $this->getTable(), '',
+                                                             $entities);
+
                   //If update, exclude ID of the current object
                   if (!$add) {
-                     $where.=" AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
+                     $where .= " AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
                   }
-                  
+
                   if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
                      if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
                            $table = getTableNameForForeignKeyField($field);
                            if ($table != '') {
-                              $searchOption = $this->getSearchOptionByField('field', 'name',$table);
+                              $searchOption = $this->getSearchOptionByField('field', 'name',
+                                                                            $table);
                            } else {
                               $searchOption = $this->getSearchOptionByField('field', $field);
                            }
                            $message[] = $searchOption['name'].'='.$this->input[$field];
                         }
 
-                        $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
-                        $message_text = $this->getUncityErrorMessage($message,$fields, $doubles);
+                        $doubles      = getAllDatasFromTable($this->table, "1 $where $where_global");
+                        $message_text = $this->getUncityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
                            $show_other_messages = ($fields['action_refuse']?true:false);
                            } else {
                               $show_other_messages = true;
                            }
-                           addMessageAfterRedirect($message_text, true, $show_other_messages, 
+                           addMessageAfterRedirect($message_text, true, $show_other_messages,
                                                    $show_other_messages);
                         }
                         if ($p['add_event_on_duplicate']) {
-                           Event::log ((!$add?$this->fields['id']:0), get_class($this),
-                                       4, 'inventory',
+                           Event::log ((!$add?$this->fields['id']:0), get_class($this), 4,
+                                       'inventory',
                                        $_SESSION["glpiname"]." ".$LANG['log'][123].' : '.
                                           $message_text);
                         }
@@ -2664,7 +2670,7 @@ class CommonDBTM extends CommonGLPI {
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],
                                         'refuse'      => $fields['action_refuse']);
-                        NotificationEvent::raiseEvent('refuse',new FieldUnicity(),$params);
+                        NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                      }
                   }
                }
