@@ -670,12 +670,12 @@ class NotificationTargetTicket extends NotificationTarget {
                                                                                 $this->getEntity());
          $events = $this->getAllEvents();
 
-         if ($event != 'validation') {
-            $this->datas['##ticket.action##'] = $events[$event];
-         } else {
+         if ($event == 'validation' && isset($options['validation_status'])) {
             $this->datas['##ticket.action##']
                         = $LANG['validation'][0].' - '.
                           TicketValidation::getStatus($options['validation_status']);
+         } else {
+            $this->datas['##ticket.action##'] = $events[$event];
          }
 
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
