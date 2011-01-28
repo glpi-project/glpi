@@ -610,7 +610,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * Restrict by profile and by config
     * to avoid send notification to a user without rights
    **/
-   function getProfilesJoinSql() {
+   function getProfileJoinSql() {
 
       $query = " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
