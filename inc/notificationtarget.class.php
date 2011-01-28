@@ -400,6 +400,22 @@ class NotificationTarget extends CommonDBChild {
          $new_lang = trim($data['language']);
       }
 
+      if (isset($data['id'])) {
+         $user = new User();
+         if (!$user->getFromDB($data['id'])
+             || $user->getField('is_deleted')==1
+             || $user->getField('is_active')==0) {
+            // unknown, deleted or disabled user
+            return false;
+         }
+         $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(), true);
+         $prof = $user->getUserProfiles($data['id'], $filt);
+         if (!count($prof)) {
+            // No right on the entity of the object
+            return false;
+         }
+      }
+
       $notificationoption = $this->addAdditionnalUserInfo($data);
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
