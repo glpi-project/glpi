@@ -414,9 +414,22 @@ class NotificationTarget extends CommonDBChild {
       $username='';
       if (isset($data['name']) && !empty($data['name'])) {
          $username = $data['name'];
-      } else if (isset($data['id'])) {
+      }
+      if (isset($data['id'])) {
          $user = new User;
-         if ($user->getFromDB($data['id'])) {
+         if (!$user->getFromDB($data['id'])
+             || $user->getField('is_deleted')==1
+             || $user->getField('is_active')==0) {
+            // unknown, deleted or disabled user
+            return false;
+         }
+         $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(), true);
+         $prof = $user->getUserProfiles($data['id'], $filt);
+         if (!count($prof)) {
+            // No right on the entity of the object
+            return false;
+         }
+         if (empty($username)) {
             $username = formatUserName(0, $user->getField('name'), $user->getField('realname'),
                                        $user->getField('firstname'), 0, 0, true);
          }
