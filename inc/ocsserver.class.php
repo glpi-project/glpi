@@ -2772,16 +2772,19 @@ class OcsServer extends CommonDBTM {
                   $params           = array('entities_id'   => $entity,
                                             'ocsservers_id' => $ocsservers_id);
                   $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
-
+                  logDebug($rulelink_results);
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $options       = array('name' => "tolink[".$tab["id"]."]");
                   $show_dropdown = true;
-                  if (!empty($rulelink_results['found_computers'])) {
-                     $options['value']  = $rulelink_results['found_computers'][0];
-                     $options['entity'] = $entity;
-                  }
+                  //If the computer is not explicitly refused by a rule
                   if (!isset($rulelink_results['action'])
                       || $rulelink_results['action'] != self::LINK_RESULT_NO_IMPORT) {
+
+                     if (!empty($rulelink_results['found_computers'])) {
+                        $options['value']  = $rulelink_results['found_computers'][0];
+                        $options['entity'] = $entity;
+                     }
+
                      Dropdown::show('Computer', $options);
                   } else {
                      echo "<img src='".GLPI_ROOT. "/pics/redbutton.png'>";

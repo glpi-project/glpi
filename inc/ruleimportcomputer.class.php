@@ -363,7 +363,7 @@ class RuleImportComputer extends Rule {
     * @return the $output array modified
    **/
    function executeActions($output, $params) {
-      logDebug($output);
+      
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             if ($action->fields['field'] == '_fusion') {
