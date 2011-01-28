@@ -229,10 +229,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
 
          default : // dropdown case
-            // Specific plugin Type case
             $plugdisplay=false;
-            if ($plug=isPluginItemType($_POST["itemtype"])) {
-               $plugdisplay=doOneHook($plug['plugin'],
+            // Specific plugin Type case
+            if (($plug=isPluginItemType($_POST["itemtype"]))
+                // Specific for plugin which add link to core object
+                || ($plug=isPluginItemType(getItemTypeForTable($search['table'])))) {
+               $plugdisplay = doOneHook($plug['plugin'],
                                        'MassiveActionsFieldsDisplay',
                                           array('itemtype'  => $_POST["itemtype"],
                                                 'options'     => $search));
