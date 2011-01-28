@@ -600,7 +600,6 @@ class MailCollector  extends CommonDBTM {
                   }
 
                } else {
-                  // Detect a signature if already keep lines
                   $to_keep[$ID] = $ID;
                }
             }
