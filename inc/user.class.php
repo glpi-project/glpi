@@ -1152,8 +1152,8 @@ class User extends CommonDBTM {
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)
     *
-    *@param $ID Integer : Id of the user
-    *@param $sqlfilter String : additional filter (must start with AND)
+    * @param $ID Integer : Id of the user
+    * @param $sqlfilter String : additional filter (must start with AND)
     *
     * @return array of the IDs of the profiles
    **/
@@ -1163,7 +1163,8 @@ class User extends CommonDBTM {
       $prof = array();
       $query = "SELECT DISTINCT `glpi_profiles_users`.`profiles_id`
                 FROM `glpi_profiles_users`
-                WHERE `glpi_profiles_users`.`users_id` = '$ID' " . $sqlfilter;
+                WHERE `glpi_profiles_users`.`users_id` = '$ID' " .
+                      $sqlfilter;
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {
