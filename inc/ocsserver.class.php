@@ -3817,7 +3817,7 @@ class OcsServer extends CommonDBTM {
                } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','ffs','jfs','jfs2',
                                                              'xfs','smbfs','nfs','hfs','ufs',
                                                              'Journaled HFS+','fusefs','fuseblk',
-                                                             'reiserfs')) ) {
+                                                             'reiserfs','zfs','VxFS')) ) {
                   // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['TYPE'];
