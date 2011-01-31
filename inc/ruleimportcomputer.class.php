@@ -345,12 +345,20 @@ class RuleImportComputer extends Rule {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
+         return true;
       }
-      
-      //This method already return true because we've checked before that there's at least one
-      //global criterion. So now let'so go into executeActions and then see which action needs to be
-      //performed
-      return true;
+
+      if (count($this->actions)) {
+         foreach ($this->actions as $action) {
+            if ($action->fields['field'] == '_fusion') {
+               if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_IMPORT) { 
+                  return true; 
+               }
+            }
+         }
+      }
+      return false;
+
    }
 
 
