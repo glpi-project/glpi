@@ -2477,7 +2477,6 @@ $LANG['validation'][16] = "Facultatif en cas d'acceptation";
 
 $LANG['validation'][18] = "Demandeur de la validation";
 $LANG['validation'][19] = "Validation acceptée";
-$LANG['validation'][20] = "Validation refusée";
 $LANG['validation'][21] = "Valideur";
 
 $LANG['validation'][23] = "L'utilisateur choisi n'a pas d'adresse de messagerie renseignée. La demande a été créée mais l'envoi du courriel a échoué.";
