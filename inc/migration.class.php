@@ -76,11 +76,23 @@ class Migration {
     * @param $table
     * @param $field to add
     * @param $format of the field (ex: int(11) not null default 0)
+    * @param $update if not empty = value of $field (must be protected)
+    * @param $condition if needed
    **/
-   function addField($table, $field, $format) {
+   function addField($table, $field, $format, $update='', $condition='') {
+      global $DB, $LANG;
 
       if (!FieldExists($table,$field)) {
          $this->change[$table][] = "ADD `$field` $format";
+
+         if ($update) {
+            $this->migrationOneTable($table);
+            $query = "UPDATE `$table`
+                      SET `$field` = $update
+                      $condition";
+            $DB->query($query)
+            or die($this->version." set $field in $table " . $LANG['update'][90] . $DB->error());
+         }
          return true;
       }
       return false;
@@ -160,6 +172,24 @@ class Migration {
          $this->change[$table][] = "DROP INDEX `$indexname`";
       }
    }
+
+
+   /**
+    * Rename table for migration
+    *
+    * @param $oldtable
+    * @param $newtable
+   **/
+   function renameTable($oldtable, $newtable) {
+      global $LANG;
+
+      if (!TableExists("$newtable") && TableExists("$oldtable")) {
+         $query = "RENAME TABLE `$oldtable` TO `$newtable`";
+         $DB->query($query)
+         or die($this->version." rename $oldtable " . $LANG['update'][90] . $DB->error());
+      }
+   }
+
 
 
    /**

@@ -272,25 +272,8 @@ function update0782to080($output='HTML') {
       or die("0.80 create glpi_slalevelactions " . $LANG['update'][90] . $DB->error());
    }
 
-   if ($migration->addField("glpi_profiles", "calendar", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-
-      $query = "UPDATE `glpi_profiles`
-                SET `calendar` = `entity_dropdown`";
-      $DB->query($query)
-      or die("0.80 add calendar right users which are able to write entity_dropdown " .
-             $LANG['update'][90] . $DB->error());
-   }
-
-   if ($migration->addField("glpi_profiles", "sla", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-
-      $query = "UPDATE `glpi_profiles`
-                SET `sla` = `entity_rule_ticket`";
-      $DB->query($query)
-      or die("0.80 add sla right users which are able to write entity_rule_ticket " .
-             $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "calendar", "CHAR( 1 ) NULL", "`entity_dropdown`");
+   $migration->addField("glpi_profiles", "sla", "CHAR( 1 ) NULL", "`entity_rule_ticket`");
 
    $migration->addField("glpi_tickets", "slas_id", "INT( 11 ) NOT NULL DEFAULT 0");
    $migration->addKey("glpi_tickets", "slas_id");
@@ -382,36 +365,20 @@ function update0782to080($output='HTML') {
 
    $migration->addField("glpi_entitydatas", "calendars_id", "INT( 11 ) NOT NULL DEFAULT 0");
 
-   if ($migration->addField("glpi_tickets", "close_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->migrationOneTable('glpi_tickets');
+   $migration->addField("glpi_tickets", "close_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0",
+                        "(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
+                        " WHERE `glpi_tickets`.`status` = 'closed'
+                                AND `glpi_tickets`.`date` IS NOT NULL
+                                AND `glpi_tickets`.`closedate` IS NOT NULL
+                                AND `glpi_tickets`.`closedate` > `glpi_tickets`.`date`");
 
-      // Manage stat computation for existing tickets
-      $query = "UPDATE `glpi_tickets`
-                SET `close_delay_stat`
-                  = (UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
-                WHERE `glpi_tickets`.`status` = 'closed'
-                      AND `glpi_tickets`.`date` IS NOT NULL
-                      AND `glpi_tickets`.`closedate` IS NOT NULL
-                      AND `glpi_tickets`.`closedate` > `glpi_tickets`.`date`";
-      $DB->query($query)
-      or die("0.80 update ticket close_delay_stat value ". $LANG['update'][90] . $DB->error());
-   }
-
-   if ($migration->addField("glpi_tickets", "solve_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->migrationOneTable('glpi_tickets');
-
-      // Manage stat computation for existing tickets
-      $query = "UPDATE `glpi_tickets`
-                SET `solve_delay_stat`
-                  = (UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
-                WHERE (`glpi_tickets`.`status` = 'closed'
-                        OR `glpi_tickets`.`status` = 'solved')
-                      AND `glpi_tickets`.`date` IS NOT NULL
-                      AND `glpi_tickets`.`solvedate` IS NOT NULL
-                      AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`date`";
-      $DB->query($query)
-      or die("0.80 update solve_delay_stat values in glpi_tickets ".$LANG['update'][90].$DB->error());
-   }
+   $migration->addField("glpi_tickets", "solve_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0",
+                        "(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
+                        " WHERE (`glpi_tickets`.`status` = 'closed'
+                                 OR `glpi_tickets`.`status` = 'solved')
+                               AND `glpi_tickets`.`date` IS NOT NULL
+                               AND `glpi_tickets`.`solvedate` IS NOT NULL
+                               AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`date`");
 
    if ($migration->addField("glpi_tickets", "takeintoaccount_delay_stat",
                             "INT( 11 ) NOT NULL DEFAULT 0")) {
@@ -479,31 +446,14 @@ function update0782to080($output='HTML') {
    }
 
    // Put realtime in seconds
-   if ($migration->addField("glpi_tickets", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->migrationOneTable('glpi_tickets');
+   $migration->addField("glpi_tickets", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0",
+                        "ROUND(realtime * 3600)");
 
-      if (FieldExists('glpi_tickets','realtime')) {
-         $query = "UPDATE `glpi_tickets`
-                   SET `actiontime` = ROUND(realtime * 3600)";
-         $DB->query($query)
-         or die("0.80 compute actiontime value in glpi_tickets ".$LANG['update'][90].$DB->error());
+   $migration->dropField("glpi_tickets", "realtime");
 
-         $migration->dropField("glpi_tickets", "realtime");
-      }
-   }
-
-   if ($migration->addField("glpi_tickettasks", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->migrationOneTable('glpi_tickettasks');
-
-      if (FieldExists('glpi_tickettasks','realtime')) {
-         $query = "UPDATE `glpi_tickettasks`
-                   SET `actiontime` = ROUND(realtime * 3600)";
-         $DB->query($query)
-         or die("0.80 compute actiontime value in glpi_tickettasks ".$LANG['update'][90].$DB->error());
-
-         $migration->dropField("glpi_tickettasks", "realtime");
-      }
-   }
+   $migration->addField("glpi_tickettasks", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0",
+                        "ROUND(realtime * 3600)");
+   $migration->dropField("glpi_tickettasks", "realtime");
 
 
    $migration->displayMessage($LANG['update'][141] . ' - Software'); // Updating schema
@@ -636,12 +586,7 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_softwarelicenses", "date_mod", "DATETIME NULL");
    $migration->addKey("glpi_softwarelicenses", "date_mod");
 
-   if (!TableExists('glpi_cartridgeitems_printermodels')
-       && TableExists("glpi_cartridges_printermodels")) {
-      $query = "RENAME TABLE `glpi_cartridges_printermodels` TO `glpi_cartridgeitems_printermodels`";
-      $DB->query($query)
-      or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->renameTable("glpi_cartridges_printermodels", "glpi_cartridgeitems_printermodels");
 
    $migration->addField("glpi_monitors", "have_hdmi",
                         "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`");
@@ -651,14 +596,8 @@ function update0782to080($output='HTML') {
    $migration->dropField("glpi_configs", "dbreplicate_email");
    $migration->addField("glpi_configs", "auto_create_infocoms", "tinyint(1) NOT NULL DEFAULT 0");
 
-   if ($migration->addField("glpi_configs", "csv_delimiter",
-                            "CHAR( 1 ) NOT NULL AFTER `number_format`")) {
-      $migration->migrationOneTable('glpi_configs');
-
-      $query = "UPDATE `glpi_configs`
-                SET `csv_delimiter` = ';'";
-      $DB->query($query);
-   }
+   $migration->addField("glpi_configs", "csv_delimiter", "CHAR( 1 ) NOT NULL AFTER `number_format`",
+                        "';'");
 
    $migration->addField("glpi_users", "csv_delimiter", "CHAR( 1 ) NULL AFTER `number_format`");
    $migration->addField("glpi_users", "names_format",
@@ -669,38 +608,14 @@ function update0782to080($output='HTML') {
    $migration->migrationOneTable("glpi_budgets");
    $migration->addKey("glpi_budgets", "end_date");
 
-   if ($migration->addField("glpi_authldaps", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
-      $migration->migrationOneTable('glpi_authldaps');
+   $migration->addField("glpi_authldaps", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $ADDTODISPLAYPREF['AuthLdap'] = array(30);
 
-      $query = "UPDATE `glpi_authldaps`
-                SET `is_active` = '1'";
-      $DB->query($query)
-      or die("0.80 set all ldap servers active ". $LANG['update'][90] . $DB->error());
+   $migration->addField("glpi_authmails", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $ADDTODISPLAYPREF['AuthMail'] = array(6);
 
-      $ADDTODISPLAYPREF['AuthLdap'] = array(30);
-   }
-
-   if ($migration->addField("glpi_authmails", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
-      $migration->migrationOneTable('glpi_authmails');
-
-      $query = "UPDATE `glpi_authmails`
-                SET `is_active` = '1'";
-      $DB->query($query)
-      or die("0.80 set all ldap servers active ". $LANG['update'][90] . $DB->error());
-
-      $ADDTODISPLAYPREF['AuthMail'] = array(6);
-   }
-
-   if ($migration->addField("glpi_ocsservers", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
-      $migration->migrationOneTable('glpi_ocsservers');
-
-       $query = "UPDATE `glpi_ocsservers`
-                 SET `is_active` = '1'";
-      $DB->query($query)
-      or die("0.80 set all ocs servers active ". $LANG['update'][90] . $DB->error());
-
-      $ADDTODISPLAYPREF['OcsServer'] = array(6);
-   }
+   $migration->addField("glpi_ocsservers", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $ADDTODISPLAYPREF['OcsServer'] = array(6);
 
    $migration->changeField("glpi_configs", "use_auto_assign_to_tech", "auto_assign_mode",
                            "INT( 11 ) NOT NULL DEFAULT '1'");
@@ -768,29 +683,15 @@ function update0782to080($output='HTML') {
              $DB->error());
    }
 
-   if ($migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '0'")) {
-      $migration->migrationOneTable("glpi_entitydatas");
-
-      $query = "UPDATE `glpi_entitydatas`
-                SET `inquest_config` = '1'
-                WHERE `entities_id` = '0'";
-      $DB->query($query)
-      or die("0.80 set default inquest_config for root entity ".$LANG['update'][90].$DB->error());
-   }
+   $migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '0'", "'0'");
    $migration->addField("glpi_entitydatas", "inquest_rate", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_delay", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_URL", "VARCHAR( 255 ) NULL");
 
    $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
-   if ($migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable("glpi_profiles");
-
-      $query = "UPDATE `glpi_profiles`
-                SET `rule_dictionnary_printer` = `rule_dictionnary_software`";
-      $DB->query($query)
-      or die("0.80 set default rule_dictionnary_printer in profile ".$LANG['update'][90].$DB->error());
-   }
+   $migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL",
+                        "`rule_dictionnary_software`");
 
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
@@ -847,16 +748,7 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_infocoms", "order_date", "DATE NULL");
    $migration->addField("glpi_infocoms", "delivery_date", "DATE NULL");
    $migration->addField("glpi_infocoms", "inventory_date", "DATE NULL");
-
-   if ($migration->addField("glpi_infocoms", "warranty_date", "DATE NULL")) {
-      $migration->migrationOneTable("glpi_infocoms");
-
-      $query = "UPDATE `glpi_infocoms`
-                SET `warranty_date` = `buy_date`";
-      $DB->query($query)
-      or die("0.80 set copy buy_date to warranty_date in glpi_infocoms ".$LANG['update'][90].
-             $DB->error());
-   }
+   $migration->addField("glpi_infocoms", "warranty_date", "DATE NULL", "`buy_date`");
 
    if (!TableExists('glpi_rulecacheprinters')) {
       $query = "CREATE TABLE `glpi_rulecacheprinters` (
@@ -1003,10 +895,10 @@ function update0782to080($output='HTML') {
             while ($data = $DB->fetch_assoc($result)) {
                if ($data['users_id_assign']>0) {
                   $query = "INSERT INTO `glpi_tickets_users`
-                                  (`tickets_id`, `users_id`,
-                                   `type`)
-                           VALUES ('".$data['id']."', '".$data['users_id_assign']."',
-                                   '".Ticket::ASSIGN."')";
+                                   (`tickets_id`, `users_id`,
+                                    `type`)
+                            VALUES ('".$data['id']."', '".$data['users_id_assign']."',
+                                    '".Ticket::ASSIGN."')";
                   $DB->query($query)
                   or die("0.80 migrate data to glpi_tickets_users table ".$LANG['update'][90] .
                          $DB->error());
@@ -1023,10 +915,10 @@ function update0782to080($output='HTML') {
                   }
 
                   $query = "INSERT INTO `glpi_tickets_users`
-                                  (`tickets_id`, `users_id`,`type`,
-                                   `use_notification`, `alternative_email`)
-                           VALUES ('".$data['id']."', '$user_id', '".Ticket::REQUESTER."',
-                                   '".$data['use_email_notification']."', '$user_email')";
+                                   (`tickets_id`, `users_id`,`type`,
+                                    `use_notification`, `alternative_email`)
+                            VALUES ('".$data['id']."', '$user_id', '".Ticket::REQUESTER."',
+                                    '".$data['use_email_notification']."', '$user_email')";
                   $DB->query($query)
                   or die("0.80 migrate data to glpi_tickets_users table ".$LANG['update'][90] .
                          $DB->error());
@@ -1153,30 +1045,21 @@ function update0782to080($output='HTML') {
 
 
    //Add date config management fields
-   $migration->addField('glpi_entitydatas','autofill_warranty_date',
-                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_use_date',
-                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_buy_date',
-                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_delivery_date',
-                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-
-   if ($migration->addField('glpi_entitydatas','autofill_order_date',
-                            "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'")) {
-         $migration->migrationOneTable('glpi_entitydatas');
-
-         $query = "UPDATE `glpi_entitydatas`
-                   SET `autofill_warranty_date` = '0',
-                       `autofill_use_date` = '0',
-                       `autofill_buy_date` = '0',
-                       `autofill_delivery_date` = '0',
-                       `autofill_order_date` = '0'
-                   WHERE `entities_id` = '0'";
-         $DB->query($query)
-         or die("0.80 set default automatic date fill values for root entity ".$LANG['update'][90] .
-                $DB->error());
-      }
+   $migration->addField("glpi_entitydatas", "autofill_warranty_date",
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'", "'0'",
+                        " WHERE `entities_id` = '0'");
+   $migration->addField("glpi_entitydatas", "autofill_use_date",
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'", "'0'",
+                        " WHERE `entities_id` = '0'");
+   $migration->addField("glpi_entitydatas", "autofill_buy_date",
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'", "'0'",
+                        " WHERE `entities_id` = '0'");
+   $migration->addField("glpi_entitydatas", "autofill_delivery_date",
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'", "'0'",
+                        " WHERE `entities_id` = '0'");
+   $migration->addField("glpi_entitydatas", "autofill_order_date",
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'", "'0'",
+                        " WHERE `entities_id` = '0'");
 
    if (!TableExists('glpi_fieldunicities')) {
       $query = "CREATE TABLE `glpi_fieldunicities` (
@@ -1324,10 +1207,10 @@ function update0782to080($output='HTML') {
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)==0) {
          $query = "INSERT INTO `glpi_crontasks`
-                         (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                          `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                  VALUES ('Crontask', 'watcher', 86400, NULL, 1, 1, 3,
-                           0, 24, 30, NULL, NULL, NULL);";
+                          (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                           `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                   VALUES ('Crontask', 'watcher', 86400, NULL, 1, 1, 3,
+                            0, 24, 30, NULL, NULL, NULL);";
          $DB->query($query)
          or die("0.80 populate glpi_crontasks for watcher " . $LANG['update'][90] . $DB->error());
       }
@@ -1388,27 +1271,12 @@ function update0782to080($output='HTML') {
       }
    }
 
-   if ($migration->addField('glpi_profiles', 'clean_ocsng',
-                            'char(1) COLLATE utf8_unicode_ci DEFAULT NULL')) {
-      $migration->migrationOneTable("glpi_profiles");
+   $migration->addField("glpi_profiles", "clean_ocsng",
+                        "char(1) COLLATE utf8_unicode_ci DEFAULT NULL", "`sync_ocsng`");
 
-      $query = "UPDATE `glpi_profiles`
-                SET `clean_ocsng` = `sync_ocsng`";
-
-      $DB->query($query)
-      or die("0.80 copy sync_ocsng to clean_ocsng in glpi_ocslinks ".$LANG['update'][90].
-             $DB->error());
-   }
    /* END - OCS-NG new clean links features */
 
-   if ($migration->addField("glpi_transfers", "keep_disk", "int( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->migrationOneTable("glpi_transfers");
-
-      $query = "UPDATE `glpi_transfers`
-                SET `keep_disk` = '1';";
-      $DB->query($query)
-      or die("0.80 default set of keep_disk for transfer " . $LANG['update'][90].$DB->error());
-   }
+   $migration->addField("glpi_transfers", "keep_disk", "int( 11 ) NOT NULL DEFAULT 0", "'1'");
 
    if ($migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0")) {
       $query = "UPDATE `glpi_profiles`
@@ -1532,15 +1400,8 @@ function update0782to080($output='HTML') {
    $migration->addField('glpi_authldaps', 'registration_number_field',
                         'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
 
-   if ($migration->addField("glpi_users", "date_sync", "datetime default NULL AFTER `date_mod`")) {
-      $migration->migrationOneTable("glpi_users");
-
-      $query = "UPDATE `glpi_users`
-                SET `date_sync` = `date_mod`
-                WHERE `auths_id` > 0";
-      $DB->query($query)
-      or die("0.80 set default date_sync for users ".$LANG['update'][90] .$DB->error());
-   }
+   $migration->addField("glpi_users", "date_sync", "datetime default NULL AFTER `date_mod`",
+                        "`date_mod`", " WHERE `auths_id` > 0");
 
    //Migrate OCS computers link from static config to rules engine
    if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
