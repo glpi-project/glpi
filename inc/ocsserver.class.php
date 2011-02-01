@@ -1783,13 +1783,15 @@ class OcsServer extends CommonDBTM {
                //Return code to indicate that computer was synchronized
                return array('status'       => self::COMPUTER_SYNCHRONIZED,
                             'entitites_id' => $comp->fields["entities_id"],
-                            'rule_matched' => array());
+                            'rule_matched' => array(),
+                            'computers_id' => $line['computers_id']);
             }
 
             // ELSE Return code to indicate only last inventory date changed
             return array('status'       => self::COMPUTER_NOTUPDATED,
                          'entities_id'  => $comp->fields["entities_id"],
-                         'rule_matched' => array());
+                         'rule_matched' => array(),
+                         'computers_id' => $line['computers_id']);
          }
       }
    }
@@ -4467,7 +4469,8 @@ class OcsServer extends CommonDBTM {
                } else if (in_array($line['FILESYSTEM'], array('ext2', 'ext3', 'ext4', 'ffs',
                                                               'fuseblk', 'fusefs', 'hfs', 'jfs',
                                                               'jfs2', 'Journaled HFS+', 'nfs',
-                                                              'smbfs', 'reiserfs', 'ufs', 'xfs'))) {
+                                                              'smbfs', 'reiserfs', 'ufs', 'xfs',
+                                                              'zfs','VxFS'))) {
                   // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint'] = $line['VOLUMN'];
                   $disk['device']     = $line['TYPE'];
