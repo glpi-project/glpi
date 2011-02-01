@@ -752,7 +752,7 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else { // on a sufisament de mémoire on passe à la suite
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png\' alt=\"".$LANG['install'][91]." - ".
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][91]." - ".
                  $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
                  $LANG['install'][89]."\"></td></tr>";
    }
