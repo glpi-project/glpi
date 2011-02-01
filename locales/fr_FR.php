@@ -2371,6 +2371,7 @@ $LANG['title'][37] = "Notes";
 $LANG['title'][38] = "Historique";
 
 $LANG['title'][40] = "Notes personnelles et publiques";
+
 $LANG['title'][42] = "Modification Massive";
 $LANG['title'][43] = "Registre";
 
