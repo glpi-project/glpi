@@ -220,6 +220,7 @@ class Group_User extends CommonDBRelation{
       if ($canedit) {
          $headerspan=$nb_per_line*2;
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
+         echo "<input type='hidden' name='groups_id' value='$ID'>";
 
          if ($group->fields["is_recursive"]) {
             $res=User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
@@ -250,11 +251,11 @@ class Group_User extends CommonDBRelation{
          $headerspan=$nb_per_line;
       }
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
-         "(D=".$LANG['profiles'][29].")</th></tr>";
-
       if (count($used)) {
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
+            " (D=".$LANG['profiles'][29].")</th></tr>";
+
          initNavigateListItems('User',$group->getTypeName()." = ".$group->getName());
          $i=0;
          foreach  ($used as $id => $data) {
@@ -292,15 +293,14 @@ class Group_User extends CommonDBRelation{
             $i++;
          }
          echo "</tr>";
-      }
-      echo "</table></div>";
+         echo "</table></div>";
 
-      if ($canedit) {
-         openArrowMassive("groupuser_form$rand", true);
-         echo "<input type='hidden' name='groups_id' value='$ID'>";
-         closeArrowMassive('deleteuser', $LANG['buttons'][6]);
+         if ($canedit) {
+            openArrowMassive("groupuser_form$rand", true);
+            closeArrowMassive('deleteuser', $LANG['buttons'][6]);
 
-         echo "</form>";
+            echo "</form>";
+         }
       }
    }
 
