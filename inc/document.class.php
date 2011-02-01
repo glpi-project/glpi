@@ -53,26 +53,26 @@ class Document extends CommonDBTM {
 
 
    function canCreate() {
-      if ($_SESSION["glpiactiveprofile"]["interface"] == 'helpdesk') {
-         return true;
-      }
-      return haveRight('document', 'w');
+
+      // Have right to add document OR ticket followup
+      return haveRight('document', 'w') || haveRight('add_followups', '1');
    }
 
    function canCreateItem() {
       //
-      if ($_SESSION["glpiactiveprofile"]["interface"] == 'helpdesk'
-          && isset($this->fields['itemtype'])
-          && $this->fields['itemtype']== 'Ticket'
-          && isset($this->fields['items_id'])
-          && $this->fields['items_id']>0) {
+      // From Ticket Document Tab => check right to add followup.
+      if (isset($this->fields['tickets_id'])
+          && $this->fields['tickets_id']>0) {
 
          $ticket = new Ticket();
-         if ($ticket->getFromDB($this->fields['items_id'])) {
+         if ($ticket->getFromDB($this->fields['tickets_id'])) {
             return $ticket->canAddFollowups();
          }
       }
-      return parent::canCreateItem();
+      if (haveRight('document', 'w')) {
+         return parent::canCreateItem();
+      }
+      return false;
    }
 
    function canView() {
@@ -1352,6 +1352,9 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
+            if ($item->getType()=='Ticket') {
+               echo "<input type='hidden' name='tickets_id' value='$ID'>";
+            }
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
 
