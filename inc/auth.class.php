@@ -611,14 +611,12 @@ class Auth {
                   case Auth::EXTERNAL :
                   case Auth::LDAP :
                      if (canUseLdap()) {
-                        $oldlevel = error_reporting(0);
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"],
                                               $this->user->fields["user_dn"]);
                         if (!$this->auth_succeded && $this->user_deleted_ldap) {
                            $user_deleted_ldap = true;
                         }
-                        error_reporting($oldlevel);
                      }
                      break;
 
@@ -636,9 +634,7 @@ class Auth {
             } else if (!$exists) {
                //test all ldap servers only is user is not present in glpi's DB
                if (!$this->auth_succeded && canUseLdap()) {
-                  $oldlevel = error_reporting(0);
                   AuthLdap::tryLdapAuth($this, $login_name, $login_password, 0, false, false);
-                  error_reporting($oldlevel);
                }
 
                //test all imap/pop servers
