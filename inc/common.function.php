@@ -1900,17 +1900,38 @@ function manageRedirect($where) {
             case "helpdesk" :
                switch ($data[0]) {
                   case "plugin" :
-                     if (isset($data[3])) {
-                        $forcetab = 'forcetab='.$data[3];
-                     }
-                     if (isset($data[2])
-                         && $data[2]>0
-                         && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
-                         && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
+                     $plugin = $data[1];
+                     $valid = false;
+                     if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
+                        && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                        // Simple redirect
+                        if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                           if (isset($data[2]) && $data[2]>0) {
+                              $valid = true;
+                              $id = $data[2];
+                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin];
+                           }
+                           $forcetabnum = 3 ;
+                        } else { // Complex redirect
+                           if (isset($data[2]) && !empty($data[2])
+                              && isset($data[3]) && $data[3]>0
+                              && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
+                              && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
+                              $valid = true;
+                              $id = $data[3];
+                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
+                           }
+                           $forcetabnum = 4 ;
+                        }
 
-                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
-                                    $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2].
-                                    "&$forcetab");
+                     }
+                     
+                     if (isset($data[$forcetabnum])) {
+                        $forcetab = 'forcetab='.$data[$forcetabnum];
+                     }
+
+                     if ($valid) {
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
                      } else {
                         glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                      }
@@ -1936,17 +1957,38 @@ function manageRedirect($where) {
             case "central" :
                switch ($data[0]) {
                   case "plugin" :
-                     if (isset($data[3])) {
-                        $forcetab = 'forcetab='.$data[3];
-                     }
-                     if (isset($data[2])
-                         && $data[2]>0
-                         && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
-                         && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
+                     $plugin = $data[1];
+                     $valid = false;
+                     if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
+                        && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                        // Simple redirect
+                        if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                           if (isset($data[2]) && $data[2]>0) {
+                              $valid = true;
+                              $id = $data[2];
+                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin];
+                           }
+                           $forcetabnum = 3 ;
+                        } else { // Complex redirect
+                           if (isset($data[2]) && !empty($data[2])
+                              && isset($data[3]) && $data[3]>0
+                              && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
+                              && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
+                              $valid = true;
+                              $id = $data[3];
+                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
+                           }
+                           $forcetabnum = 4 ;
+                        }
 
-                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
-                                    $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2].
-                                    "&$forcetab");
+                     }
+                     
+                     if (isset($data[$forcetabnum])) {
+                        $forcetab = 'forcetab='.$data[$forcetabnum];
+                     }
+
+                     if ($valid) {
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
                      } else {
                         glpi_header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                      }
