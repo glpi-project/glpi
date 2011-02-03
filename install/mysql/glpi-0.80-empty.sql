@@ -1648,6 +1648,21 @@ CREATE TABLE `glpi_events` (
 INSERT INTO `glpi_events` VALUES ('1','-1','system','2011-01-18 11:40:45','login','3','glpi connexion de l\'IP: 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('2','-1','system','2011-01-25 10:01:28','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
+### Dump table glpi_fieldblacklists
+
+CREATE TABLE IF NOT EXISTS `glpi_fieldblacklists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `value` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_fieldunicities
 
 DROP TABLE IF EXISTS `glpi_fieldunicities`;

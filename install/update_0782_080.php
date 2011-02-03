@@ -1130,6 +1130,23 @@ function update0782to080($output='HTML') {
       }
    }
 
+   if (!TableExists("glpi_fieldblacklists")) {
+      $query = "CREATE TABLE `glpi_fieldblacklists` (
+                  `id` INT (11) NOT NULL AUTO_INCREMENT,
+                  `name` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `field` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `value` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `itemtype` VARCHAR (255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `entities_id` INT (11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT (1) NOT NULL DEFAULT '0',
+                  `comment` TEXT COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (id),
+                  KEY `name` (`name`)
+             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query)
+          or die("0.80 add table glpi_fieldblacklists ".$LANG['update'][90]. $DB->error());
+   }
+
    if ($migration->addField('glpi_mailcollectors', 'passwd',
                             'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
       $migration->migrationOneTable('glpi_mailcollectors');

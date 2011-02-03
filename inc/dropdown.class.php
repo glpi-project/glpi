@@ -651,7 +651,9 @@ class Dropdown {
                   $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
                                                'UserCategory'  => $LANG['users'][2]),
 
-                  $LANG['rulesengine'][19] => array('RuleRightParameter' => $LANG['rulesengine'][138])
+                  $LANG['rulesengine'][19] => array('RuleRightParameter' => $LANG['rulesengine'][138]),
+
+                  $LANG['setup'][811]      => array('Fieldblacklist'     => $LANG['setup'][828])
 
                  ); //end $opt
 

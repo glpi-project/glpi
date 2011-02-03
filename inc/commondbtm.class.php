@@ -52,9 +52,6 @@ class CommonDBTM extends CommonGLPI {
    /// Set true to desactivate auto compute table name
    var $notable = false;
 
-   //Store insert/update/delete error if any
-   var $last_status = false;
-
    //Additional foeidls for dictionnary processing
    var $additional_fields_for_dictionnary = array();
 
@@ -77,16 +74,6 @@ class CommonDBTM extends CommonGLPI {
     * Constructor
    **/
    function __construct () {
-   }
-
-
-   /**
-    * Return last error
-    *
-    * @return the error code or false is no error
-   **/
-   function getLastStatus() {
-      return $this->last_status;
    }
 
 
@@ -2608,7 +2595,11 @@ class CommonDBTM extends CommonGLPI {
                       && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
                           //Foreign key and value is not 0
                           || (getTableNameForForeignKeyField($field) != ''
-                              && $this->input[$field] > 0))) {
+                              && $this->input[$field] > 0)) 
+                                 && !Fieldblacklist::isFieldBlacklisted(get_class($this),
+                                                                        $entities_id, 
+                                                                        $field, 
+                                                                        $this->input[$field])) {
                      $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
                   } else {
                      $continue = false;
