@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="获批准";
 $LANG['validation'][20]="拒绝批准"; 
 $LANG['validation'][21]="验证程序"; 
 $LANG['validation'][23]="该被选用户没有有效邮件地址。该请求已经被创造，没有邮件确认。"; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="批准请求"; 
 $LANG['validation'][27]="一个验证请求已经被提交"; 
 $LANG['validation'][28]="审批要求的状态"; 

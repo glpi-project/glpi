@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Validació acceptada";
 $LANG['validation'][20]="Validació rebutjada"; 
 $LANG['validation'][21]="Usuari de validació"; 
 $LANG['validation'][23]="L'usuari escollit no te correu electrònic. La petició s'ha creat però l'enviament del correu ha fallat."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Sol·licitud de validació"; 
 $LANG['validation'][27]="S'ha sol·licitat una petició de validació"; 
 $LANG['validation'][28]="Estat de la petició de validació"; 

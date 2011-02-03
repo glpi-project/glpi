@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Validação aceita";
 $LANG['validation'][20]="Validação negada"; 
 $LANG['validation'][21]="Usuário validação"; 
 $LANG['validation'][23]="O usuário selecionado não possui um e-mail válida. A requisição foi criada, mas não foi enviado um e-mail."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Requisição de validação"; 
 $LANG['validation'][27]="Uma requisição para validação foi enviada"; 
 $LANG['validation'][28]="Estado da requisição de validação"; 

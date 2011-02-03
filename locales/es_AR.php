@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Approval granted";
 $LANG['validation'][20]="Approval denied"; 
 $LANG['validation'][21]="Approver"; 
 $LANG['validation'][23]="The selected user has no valid emailaddress. The request has been created, without email confirmation."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Approval request"; 
 $LANG['validation'][27]="Un pedido de validación ha sido enviado"; 
 $LANG['validation'][28]="Status of the Approval request"; 

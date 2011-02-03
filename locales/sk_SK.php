@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Overenie potvrdené";
 $LANG['validation'][20]="Overenie zamietnuté"; 
 $LANG['validation'][21]="Schváliť"; 
 $LANG['validation'][23]="Vybraný užívateľ nemá korektnú emailovú adresu. Žiadosť bola vytvorená, no bez potvrdenia emailom."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Požiadavka na schválenie"; 
 $LANG['validation'][27]="Schválenie žiadosti o overenie bolo odoslané"; 
 $LANG['validation'][28]="Stav požiadavky na schválenie"; 

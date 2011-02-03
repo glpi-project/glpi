@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Aprovação concedida";
 $LANG['validation'][20]="Aprovação negada"; 
 $LANG['validation'][21]="Approver"; 
 $LANG['validation'][23]="O usuário selecionado um endereço de e-mail válido. O pedido foi criado, sem confirmação de e-mail."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Pedido aprovado"; 
 $LANG['validation'][27]="Um pedido de aprovação foi submetido"; 
 $LANG['validation'][28]="Situação da requisição de aprovação"; 

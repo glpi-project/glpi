@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="承認済み有効化";
 $LANG['validation'][20]="拒否された有効化"; 
 $LANG['validation'][21]="有効化のユーザー"; 
 $LANG['validation'][23]="選択されたユーザーには有効なE-mailアドレスがありません。リクエストは作成されましたが、E-mailは送信されていません。"; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="有効化依頼"; 
 $LANG['validation'][27]="有効化のリクエストは送られました。"; 
 $LANG['validation'][28]="有効化依頼の状況"; 

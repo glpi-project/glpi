@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Sprawdzanie zaakceptowane";
 $LANG['validation'][20]="Sprawdzanie odrzucone"; 
 $LANG['validation'][21]="Sprawdzanie użytkownika"; 
 $LANG['validation'][23]="Wybrany użytkownik nie ma poprawnego adresu email. Zgłoszenie zostało utworzone, jednak powiadomienie email nie zostało wysłane."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Zgłoszenie sprawdzania"; 
 $LANG['validation'][27]="Żądanie sprawdzenia zostało wysłane"; 
 $LANG['validation'][28]="Status żądania sprawdzenia"; 

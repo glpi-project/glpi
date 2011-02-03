@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Uzakonitev sprejeta";
 $LANG['validation'][20]="Uzakonitev zavrnjena"; 
 $LANG['validation'][21]="Uzakonitev, potrditev uporabnika"; 
 $LANG['validation'][23]="Izbrani uporabnik nima veljavnega e-poštnega naslova. Prošnja se je skreirala, toda ni bila poslana na noben e-poštni naslov."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Prošnja za uzakonitev"; 
 $LANG['validation'][27]="Prošnja za vrednotenje je bila predložena"; 
 $LANG['validation'][28]="Stanje prošnje za uzakonitev"; 

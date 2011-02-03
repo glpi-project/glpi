@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Convalida accettata";
 $LANG['validation'][20]="Convalida negata"; 
 $LANG['validation'][21]="Utente validatore"; 
 $LANG['validation'][23]="L'utente selezionato non ha un indirizzo e-mail valido. La richiesta è stata creata, ma l'e-mail non è stata inviata."; 
+$LANG['validation'][25]="Stato globale convalida"; 
 $LANG['validation'][26]="Richiesta di convalida"; 
 $LANG['validation'][27]="E' stata inviata una richiesta di convalida"; 
 $LANG['validation'][28]="Stato della richiesta di convalida"; 

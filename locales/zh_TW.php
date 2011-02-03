@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="已准予核准";
 $LANG['validation'][20]="拒絕核准"; 
 $LANG['validation'][21]="核准者"; 
 $LANG['validation'][23]="所選擇的使用者並沒有可用的電子郵件地址。請求已經建立，但不含電子郵件確認。"; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="請求核准"; 
 $LANG['validation'][27]="已送出一個核准申請"; 
 $LANG['validation'][28]="核准請求的狀態"; 

@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Validatie geaccepteerd";
 $LANG['validation'][20]="Validatie geweigerd"; 
 $LANG['validation'][21]="Gevalideerd door"; 
 $LANG['validation'][23]="De gekozen gebruiker heeft geen emailadres, de aanvraag werd gemaakt maar de bevstigingsemail kon niet worden verzonden"; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Aanvraag validatie"; 
 $LANG['validation'][27]="Een validatie aanvraag werd ingediend"; 
 $LANG['validation'][28]="Status van de aanvraag voor validatie"; 

@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="הונפק אישור";
 $LANG['validation'][20]="אישור נדחה"; 
 $LANG['validation'][21]="המאשר"; 
 $LANG['validation'][23]="למשתמש שבחרת אין כתובת מייל חוקית. הבקשה נוצרה אך ללא כתובת מייל לאישור."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="בקשת אישור"; 
 $LANG['validation'][27]="הוגשה בקשה לאישור"; 
 $LANG['validation'][28]="סטטוס של בקשת האישור"; 

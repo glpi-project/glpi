@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Approval granted";
 $LANG['validation'][20]="Approval denied"; 
 $LANG['validation'][21]="Apstiprinātājs"; 
 $LANG['validation'][23]="The selected user has no valid emailaddress. The request has been created, without email confirmation."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Apstiprinājuma pieprasījums"; 
 $LANG['validation'][27]="An approval request has been submitted"; 
 $LANG['validation'][28]="Status of the Approval request"; 

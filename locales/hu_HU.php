@@ -1938,6 +1938,7 @@ $LANG['validation'][19]="Érvényesítés elfogadva";
 $LANG['validation'][20]="Érvényesítés megtagadva"; 
 $LANG['validation'][21]="Érvényesítő felhasználó"; 
 $LANG['validation'][23]="A kiválasztott felhasználónak nincs e-mail címe. A kérelem létrejött, de levelet nem sikerült küldeni."; 
+$LANG['validation'][25]="Global validation status"; 
 $LANG['validation'][26]="Érvényesítési kérelem"; 
 $LANG['validation'][27]="Érvényesítési kérelem elküldve"; 
 $LANG['validation'][28]="Érvényesítési kérelem állapota"; 
