@@ -298,9 +298,10 @@ class Group_User extends CommonDBRelation{
          if ($canedit) {
             openArrowMassive("groupuser_form$rand", true);
             closeArrowMassive('deleteuser', $LANG['buttons'][6]);
-
-            echo "</form>";
          }
+      }
+      if ($canedit) {
+         echo "</form>";
       }
    }
 
