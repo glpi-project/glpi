@@ -929,7 +929,7 @@ class Search {
                $i++;
                $row_num++;
                // New line
-               echo Search::showNewLine($output_type, ($i%2));
+               echo Search::showNewLine($output_type, ($i%2),$p['is_deleted']);
 
                // Add item in item list
                addToNavigateListItems($itemtype, $data["id"]);
@@ -4773,10 +4773,11 @@ class Search {
     *
     * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     * @param $odd is it a new odd line ?
+    * @param $is_deleted is it a deleted search ?
     *
     * @return string to display
    **/
-   static function showNewLine($type, $odd=false) {
+   static function showNewLine($type, $odd=false, $is_deleted = false) {
 
       $out = "";
       switch ($type) {
@@ -4787,9 +4788,9 @@ class Search {
             break;
 
          default :
-            $class = " class='tab_bg_2' ";
+            $class = " class='tab_bg_2".($is_deleted?'_2':'')."' ";
             if ($odd) {
-               $class = " class='tab_bg_1' ";
+               $class = " class='tab_bg_1".($is_deleted?'_2':'')."' ";
             }
             $out = "<tr $class>";
       }
