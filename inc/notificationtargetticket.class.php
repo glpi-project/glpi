@@ -734,7 +734,7 @@ class NotificationTargetTicket extends NotificationTarget {
          if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
             $restrict .= " AND `is_private` = '0'";
          }
-         $restrict .= " ORDER BY `date` DESC";
+         $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
          //Task infos
          $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
@@ -787,7 +787,7 @@ class NotificationTargetTicket extends NotificationTarget {
          if (isset($options['validation_id']) && $options['validation_id']) {
             $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
          }
-         $restrict .= " ORDER BY `submission_date` DESC";
+         $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
 
          foreach ($validations as $validation) {
