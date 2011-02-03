@@ -2787,14 +2787,14 @@ class Search {
 
                   if (count($_SESSION['glpigroups'])) {
                      $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                   "glpi_groups_tickets", "ticket_users_id", 0, 0,
+                                                   "glpi_groups_tickets", "groups_tickets_id", 0, 0,
                                                    $searchopt[8]['joinparams']['beforejoin']['joinparams']);
                   }
                }
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
                      $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                   "glpi_groups_tickets", "ticket_users_id", 0, 0,
+                                                   "glpi_groups_tickets", "groups_tickets_id", 0, 0,
                                                    $searchopt[71]['joinparams']['beforejoin']['joinparams']);
                   }
                }
