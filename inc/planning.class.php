@@ -732,8 +732,8 @@ class Planning {
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
-            if (isset($val["tickets_id"])) {
-               $vevent->setProperty("uid", "Job#".$val["tickets_id"]);
+            if (isset($val["tickettasks_id"])) {
+               $vevent->setProperty("uid", "Job#".$val["tickettasks_id"]);
             } else if (isset($val["reminders_id"])) {
                $vevent->setProperty("uid", "Event#".$val["reminders_id"]);
             } else if (isset($val['planningID'])) { // Specify the ID (for plugins)
