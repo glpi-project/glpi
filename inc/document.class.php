@@ -119,7 +119,9 @@ class Document extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['document'][19];
-         $ong[5] = $LANG['document'][20];
+
+         Document::addTab($this,$ong);
+//         $ong[5] = $LANG['document'][20];
 
          if (haveRight("notes","r")) {
             $ong[10] = $LANG['title'][37];
