@@ -210,7 +210,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_phones'            => 'groups_id',
                                  'glpi_printers'          => 'groups_id',
                                  'glpi_softwares'         => 'groups_id',
-                                 'glpi_tickets'           => 'groups_id',
                                  'glpi_groups_tickets'    => 'groups_id',
                                  'glpi_groups_users'      => 'groups_id'),
 
