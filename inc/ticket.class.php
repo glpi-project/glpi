@@ -2317,65 +2317,67 @@ class Ticket extends CommonDBTM {
       $tab[63]['joinparams']    = array('jointype' => 'child');
 
 
-      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
-         $tab['assign'] = $LANG['job'][5];
+      $tab['assign'] = $LANG['job'][5];
 
-         $tab[5]['table']         = 'glpi_users';
-         $tab[5]['field']         = 'name';
-         $tab[5]['name']          = $LANG['job'][5]." - ".$LANG['job'][6];
-         $tab[5]['forcegroupby']  = true;
-         $tab[5]['massiveaction'] = false;
-         $tab[5]['joinparams']    = array('beforejoin'
-                                          => array('table' => 'glpi_tickets_users',
-                                                   'joinparams'
-                                                           => array('jointype'  => 'child',
-                                                                    'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                   '= '.self::ASSIGN)));
+      $tab[5]['table']         = 'glpi_users';
+      $tab[5]['field']         = 'name';
+      $tab[5]['name']          = $LANG['job'][5]." - ".$LANG['job'][6];
+      $tab[5]['forcegroupby']  = true;
+      $tab[5]['massiveaction'] = false;
+      $tab[5]['joinparams']    = array('beforejoin'
+                                       => array('table' => 'glpi_tickets_users',
+                                                'joinparams'
+                                                         => array('jointype'  => 'child',
+                                                                  'condition' => 'AND NEWTABLE.`type` ' .
+                                                                                 '= '.self::ASSIGN)));
+      $tab[6]['table']     = 'glpi_suppliers';
+      $tab[6]['field']     = 'name';
+      $tab[6]['linkfield'] = 'suppliers_id_assign';
+      $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
 
-         $tab[6]['table']     = 'glpi_suppliers';
-         $tab[6]['field']     = 'name';
-         $tab[6]['linkfield'] = 'suppliers_id_assign';
-         $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $tab[8]['table']         = 'glpi_groups';
+      $tab[8]['field']         = 'name';
+      $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
+      $tab[8]['forcegroupby']  = true;
+      $tab[8]['massiveaction'] = false;
+      $tab[8]['joinparams']    = array('beforejoin'
+                                       => array('table' => 'glpi_groups_tickets',
+                                                'joinparams'
+                                                         => array('jointype'  => 'child',
+                                                                  'condition' => 'AND NEWTABLE.`type` ' .
+                                                                                 '= '.self::ASSIGN)));
 
-         $tab[8]['table']         = 'glpi_groups';
-         $tab[8]['field']         = 'name';
-         $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
-         $tab[8]['forcegroupby']  = true;
-         $tab[8]['massiveaction'] = false;
-         $tab[8]['joinparams']    = array('beforejoin'
-                                          => array('table' => 'glpi_groups_tickets',
-                                                   'joinparams'
-                                                           => array('jointype'  => 'child',
-                                                                    'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                   '= '.self::ASSIGN)));
+      $tab['followup'] = $LANG['mailing'][141];
 
-         $tab['followup'] = $LANG['mailing'][141];
+      $tab[25]['table']         = 'glpi_ticketfollowups';
+      $tab[25]['field']         = 'content';
+      $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
+      $tab[25]['forcegroupby']  = true;
+      $tab[25]['splititems']    = true;
+      $tab[25]['massiveaction'] = false;
+      $tab[25]['joinparams']    = array('jointype' => 'child');
 
-         $tab[25]['table']         = 'glpi_ticketfollowups';
-         $tab[25]['field']         = 'content';
-         $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
-         $tab[25]['forcegroupby']  = true;
-         $tab[25]['splititems']    = true;
-         $tab[25]['massiveaction'] = false;
-         $tab[25]['joinparams']    = array('jointype' => 'child');
+      $tab[27]['table']         = 'glpi_ticketfollowups';
+      $tab[27]['field']         = 'count';
+      $tab[27]['name']          = $LANG['job'][9]." - ".$LANG['tracking'][29];
+      $tab[27]['forcegroupby']  = true;
+      $tab[27]['usehaving']     = true;
+      $tab[27]['datatype']      = 'number';
+      $tab[27]['massiveaction'] = false;
+      $tab[27]['joinparams']    = array('jointype' => 'child');
 
-         $tab[27]['table']         = 'glpi_ticketfollowups';
-         $tab[27]['field']         = 'count';
-         $tab[27]['name']          = $LANG['job'][9]." - ".$LANG['tracking'][29];
-         $tab[27]['forcegroupby']  = true;
-         $tab[27]['usehaving']     = true;
-         $tab[27]['datatype']      = 'number';
-         $tab[27]['massiveaction'] = false;
-         $tab[27]['joinparams']    = array('jointype' => 'child');
+      $tab[29]['table']         = 'glpi_requesttypes';
+      $tab[29]['field']         = 'name';
+      $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
+      $tab[29]['forcegroupby']  = true;
+      $tab[29]['massiveaction'] = false;
+      $tab[29]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_ticketfollowups',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-         $tab[29]['table']         = 'glpi_requesttypes';
-         $tab[29]['field']         = 'name';
-         $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
-         $tab[29]['forcegroupby']  = true;
-         $tab[29]['massiveaction'] = false;
-         $tab[29]['joinparams']    = array('beforejoin'
-                                           => array('table'      => 'glpi_ticketfollowups',
-                                                    'joinparams' => array('jointype' => 'child')));
+      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')
+            || haveRight("own_ticket","1")) {
+
 
 
          $tab['task'] = $LANG['job'][7];
