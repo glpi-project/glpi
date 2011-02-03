@@ -733,8 +733,6 @@ $LANG['help'][6]  = "Basse";
 $LANG['help'][7]  = "Très basse";
 $LANG['help'][8]  = "Informez-moi des suites données";
 
-$LANG['help'][11] = "Mon adresse de messagerie";
-
 $LANG['help'][14] = "Envoyer message";
 
 $LANG['help'][16] = "Vous voulez être informé des suites données mais vous n'avez pas saisi d'adresse de messagerie.";
@@ -1147,9 +1145,7 @@ $LANG['log'][115] = "changement de la version des logiciels installés";
 $LANG['log'][116] = "association d'un ordinateur à une license";
 $LANG['log'][117] = "changement de license pour plusieurs ordinateurs";
 $LANG['log'][118] = "dissociation d'une license et d'ordinateurs";
-$LANG['log'][119] = "ajout d'un lien entre tickets";
 $LANG['log'][120] = "suppression d'un lien entre tickets";
-$LANG['log'][121] = "ajout d'un acteur au ticket";
 $LANG['log'][122] = "suppression d'un acteur au ticket";
 $LANG['log'][123] = "tentative d'ajout d'un élément qui existe déjà";
 
@@ -1170,7 +1166,6 @@ $LANG['login'][12] = "Identifiant ou mot de passe erroné";
 $LANG['login'][13] = "Mot de passe vide";
 $LANG['login'][14] = "Utilisateur inconnu";
 $LANG['login'][15] = "Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés";
-$LANG['login'][16] = "Échec de l'authentification LDAP";
 $LANG['login'][17] = "Autre méthode d'authentification";
 $LANG['login'][18] = "Base interne GLPI";
 $LANG['login'][19] = "Autre authentification transmise dans la requête HTTP";
@@ -1872,7 +1867,6 @@ $LANG['satisfaction'][1]  = "Satisfaction sur la résolution du ticket";
 $LANG['satisfaction'][2]  = "Aucune enquête générée";
 $LANG['satisfaction'][3]  = "Enquête de satisfaction";
 $LANG['satisfaction'][4]  = "Date de réponse à l'enquête de satisfaction";
-$LANG['satisfaction'][5]  = "1 : très insatisfait - 2 : insatisfait - 3 : moyennement satisfait - 4 : satisfait - 5 : très satisfait";
 $LANG['satisfaction'][6]  = "Date de création de l'enquête de satisfaction";
 $LANG['satisfaction'][7]  = "Degré de satisfaction";
 $LANG['satisfaction'][8]  = "Commentaire à l'enquête de satisfaction";
@@ -1992,7 +1986,6 @@ $LANG['setup'][112] = "Nombre de caractères maximum pour les listes déroulante
 $LANG['setup'][113] = "Langue par défaut";
 $LANG['setup'][114] = "Couleurs des priorités";
 $LANG['setup'][115] = "Seuil d'alerte par défaut pour les cartouches et les consommables";
-$LANG['setup'][116] = "Assigner automatiquement les tickets au responsable technique";
 $LANG['setup'][117] = "Autoriser la consultation anonyme de la FAQ";
 $LANG['setup'][118] = "Texte sur la page de connexion";
 
