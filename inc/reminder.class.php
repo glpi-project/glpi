@@ -374,18 +374,30 @@ class Reminder extends CommonDBTM {
    /**
     * Populate the planning with planned reminder
     *
-    * @param $who ID of the user (0 = undefined)
-    * @param $who_group ID of the group of users (0 = undefined)
-    * @param $begin Date
-    * @param $end Date
+    * @param $options options array must contains :
+    *    - who ID of the user (0 = undefined)
+    *    - who_group ID of the group of users (0 = undefined)
+    *    - begin Date
+    *    - end Date
     *
     * @return array of planning item
     **/
-   static function populatePlanning($who, $who_group, $begin, $end) {
+   static function populatePlanning($options = array()) {
       global $DB, $CFG_GLPI;
+      $interv  = array();
+
+      if (!isset($options['begin']) || !isset($options['begin'])
+            || !isset($options['begin']) || !isset($options['end'])) {
+         return $interv;
+      }
+
+      $who       = $options['who'];
+      $who_group = $options['who_group'];
+      $begin     = $options['begin'];
+      $end       = $options['end'];
+
 
       $readpub = $readpriv="";
-      $interv  = array();
 
       // See public reminder ?
       if (haveRight("reminder_public","r")) {

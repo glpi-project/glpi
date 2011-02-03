@@ -342,17 +342,29 @@ class TicketPlanning extends CommonDBTM {
    /**
     * Populate the planning with planned ticket tasks
     *
-    * @param $who ID of the user (0 = undefined)
-    * @param $who_group ID of the group of users (0 = undefined, mine = login user ones)
-    * @param $begin Date
-    * @param $end Date
+    * @param $options options array must contains :
+    *    - who ID of the user (0 = undefined)
+    *    - who_group ID of the group of users (0 = undefined)
+    *    - begin Date
+    *    - end Date
     *
     * @return array of planning item
    **/
-   static function populatePlanning($who, $who_group, $begin, $end) {
+   static function populatePlanning($options = array()) {
       global $DB, $CFG_GLPI;
 
       $interv = array();
+
+      if (!isset($options['begin']) || !isset($options['begin'])
+            || !isset($options['begin']) || !isset($options['end'])) {
+         return $interv;
+      }
+
+      $who       = $options['who'];
+      $who_group = $options['who_group'];
+      $begin     = $options['begin'];
+      $end       = $options['end'];
+
       // Get items to print
       $ASSIGN = "";
 

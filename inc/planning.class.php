@@ -94,7 +94,10 @@ class Planning {
       $message = '';
 
       foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
-         $data = call_user_func(array($itemtype, 'populatePlanning'), $users_id, 0, $begin, $end);
+         $data = call_user_func(array($itemtype, 'populatePlanning'), array('who'       => $users_id,
+                                                                            'who_group' => 0,
+                                                                            'begin'     => $begin,
+                                                                            'end'       => $end));
 
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
@@ -351,10 +354,16 @@ class Planning {
 
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning($who, $who_group, $begin, $end);
+      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+                                                       'who_group' => $who_group,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
 
       // ---------------reminder
-      $datareminders = Reminder::populatePlanning($who, $who_group, $begin, $end);
+      $datareminders = Reminder::populatePlanning(array('who'      => $who,
+                                                       'who_group' => $who_group,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
 
       $interv = array_merge($interv, $datareminders);
 
@@ -631,10 +640,16 @@ class Planning {
       $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning($who, 0, $begin, $end);
+      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+                                                       'who_group' => 0,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
 
       // ---------------Reminder
-      $data = Reminder::populatePlanning($who, 0, $begin, $end);
+      $data = Reminder::populatePlanning(array('who'       => $who,
+                                               'who_group' => 0,
+                                               'begin'     => $begin,
+                                               'end'       => $end));
 
       $interv = array_merge($interv, $data);
 
@@ -712,10 +727,16 @@ class Planning {
       $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning($who, $who_group, $begin, $end);
+      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+                                                       'who_group' => $who_group,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
 
       // ---------------Reminder
-      $data = Reminder::populatePlanning($who, $who_group, $begin, $end);
+      $data = Reminder::populatePlanning(array('who'       => $who,
+                                               'who_group' => $who_group,
+                                               'begin'     => $begin,
+                                               'end'       => $end));
 
       $interv = array_merge($interv, $data);
 
