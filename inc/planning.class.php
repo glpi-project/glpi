@@ -93,7 +93,7 @@ class Planning {
       $planned = false;
       $message = '';
 
-      foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
+      foreach ($CFG_GLPI['planning_types'] as $itemtype) {
          $data = call_user_func(array($itemtype, 'populatePlanning'), array('who'       => $users_id,
                                                                             'who_group' => 0,
                                                                             'begin'     => $begin,
