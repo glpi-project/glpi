@@ -2162,12 +2162,16 @@ class Search {
             return getEntitiesRestrictRequest("","glpi_profiles_users");
 
          case 'Ticket' :
+            // Same structure in addDefaultJoin
             $condition = '';
             if (!haveRight("show_all_ticket","1")) {
 
                $searchopt = &Search::getOptions($itemtype);
                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
+
+               $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
+               $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
                $condition = "(";
 
@@ -2179,8 +2183,6 @@ class Search {
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
-                  $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
-                  $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
                   $condition .=" OR $assign_table.`users_id` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
@@ -2754,11 +2756,57 @@ class Search {
                                        "glpi_entitydatas", "");
 
          case 'Ticket' :
-            if (haveRight("validate_ticket",1)) {
-               return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                          "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
-                                          array('jointype' => 'child'));
+            // Same structure in addDefaultWhere
+            $out = '';
+            if (!haveRight("show_all_ticket","1")) {
+               $searchopt = &Search::getOptions($itemtype);
+
+//                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
+//                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
+//                $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
+//                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
+
+               if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
+                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                                $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+               } else { // Can own ticket : show my and assign to me
+                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                                $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                                $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+               }
+
+               if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
+
+                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                                $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+
+                  if (count($_SESSION['glpigroups'])) {
+                     $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                   "glpi_groups_tickets", "ticket_users_id", 0, 0,
+                                                   $searchopt[8]['joinparams']['beforejoin']['joinparams']);
+                  }
+               }
+               if (haveRight("show_group_ticket",1)) {
+                  if (count($_SESSION['glpigroups'])) {
+                     $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                   "glpi_groups_tickets", "ticket_users_id", 0, 0,
+                                                   $searchopt[71]['joinparams']['beforejoin']['joinparams']);
+                  }
+               }
+
+               if (haveRight("validate_ticket",1)) {
+                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
+                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
+               }
             }
+            return $out;
+            break;
 
          default :
             // Plugin can override core definition for its type
