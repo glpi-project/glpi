@@ -181,7 +181,7 @@ class Migration {
     * @param $newtable
    **/
    function renameTable($oldtable, $newtable) {
-      global $LANG;
+      global $LANG, $DB;
 
       if (!TableExists("$newtable") && TableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
