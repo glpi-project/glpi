@@ -1365,10 +1365,10 @@ class Rule extends CommonDBTM {
       $crit    = $this->getCriteria($ID);
       $display = false;
       $tested  = false;
-
+      
       if (isset($crit['type'])
                  && ($test
-                     ||$condition == Rule::PATTERN_IS
+                     || $condition == Rule::PATTERN_IS
                      || $condition == Rule::PATTERN_IS_NOT)) {
 
          switch ($crit['type']) {
@@ -1420,6 +1420,11 @@ class Rule extends CommonDBTM {
       //Not a standard condition
       if (!$tested) {
         $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
+      }
+
+      if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
+         echo "<input type='hidden' name='$name' value=''>";
+         $display=true;
       }
 
       if (!$display) {
