@@ -2351,7 +2351,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
          ,applyTo: 'showdate$rand'
          ,timeFormat:'H:i'
          ,timeWidth: 40
-         ,dateWidth: 90";
+         ,dateWidth: 90
+         ,startDay: 1";
 
    $empty="";
    if ($maybeempty) {
@@ -2427,7 +2428,8 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
          ,value: '".convDate($value)."'
          ,applyTo: 'showdate$rand'
          ,id: 'date$rand'
-         ,submitFormat:'Y-m-d'";
+         ,submitFormat:'Y-m-d'
+         ,startDay: 1";
 
    switch ($_SESSION['glpidate_format']) {
       case 1 :
