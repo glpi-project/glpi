@@ -2774,7 +2774,7 @@ class OcsServer extends CommonDBTM {
                   $params           = array('entities_id'   => $entity,
                                             'ocsservers_id' => $ocsservers_id);
                   $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
-                  //logDebug($rulelink_results);
+
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $options       = array('name' => "tolink[".$tab["id"]."]");
                   $show_dropdown = true;
