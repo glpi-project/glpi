@@ -1042,7 +1042,40 @@ class Search {
                            default :
                               $title .= $searchopt[$itemtype][$p['field'][$key]]["name"];
                         }
-                        $title .= " = ".$p['contains'][$key];
+
+                        switch ($p['searchtype'][$key]) {
+                           case "equals" :
+                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],array('name','completename'))) {
+                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"], $p['contains'][$key]);
+                              } else {
+                                 $title .= ' = '.$p['contains'][$key];
+                              }
+                              break;
+
+                           case "notequals" :
+                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],array('name','completename'))) {
+                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"], $p['contains'][$key]);
+                              } else {
+                                 $title .= ' <> '.$p['contains'][$key];
+                              }
+                              break;
+
+                           case "lessthan" :
+                              $title .= ' < '.$p['contains'][$key];
+                              break;
+
+                           case "morethan" :
+                              $title .= ' > '.$p['contains'][$key];
+                              break;
+
+                           case "contains" :
+                              $title .= ' = %'.$p['contains'][$key].'%';
+                              break;
+
+                           default :
+                              $title .= ' = '.$p['contains'][$key];
+                              break;
+                        }
                      }
                   }
                }
@@ -1054,7 +1087,40 @@ class Search {
                         }
                         $title .= $metanames[$p['itemtype2'][$key]]."/";
                         $title .= $searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["name"];
-                        $title .= " = ".$p['contains2'][$key];
+
+                        switch ($p['searchtype2'][$key]) {
+                           case "equals" :
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],array('name','completename'))) {
+                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"], $p['contains2'][$key]);
+                              } else {
+                                 $title .= ' = '.$p['contains2'][$key];
+                              }
+                              break;
+
+                           case "notequals" :
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],array('name','completename'))) {
+                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"], $p['contains2'][$key]);
+                              } else {
+                                 $title .= ' <> '.$p['contains2'][$key];
+                              }
+                              break;
+
+                           case "lessthan" :
+                              $title .= ' < '.$p['contains2'][$key];
+                              break;
+
+                           case "morethan" :
+                              $title .= ' > '.$p['contains2'][$key];
+                              break;
+
+                           case "contains" :
+                              $title .= ' = %'.$p['contains2'][$key].'%';
+                              break;
+
+                           default :
+                              $title .= ' = '.$p['contains2'][$key];
+                              break;
+                        }
                      }
                   }
                }
