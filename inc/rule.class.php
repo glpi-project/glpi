@@ -1423,7 +1423,7 @@ class Rule extends CommonDBTM {
       }
 
       if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
-         echo "<input type='hidden' name='$name' value=''>";
+         echo "<input type='hidden' name='$name' value='1'>";
          $display=true;
       }
 
