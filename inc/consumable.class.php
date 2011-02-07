@@ -398,46 +398,41 @@ class Consumable extends CommonDBTM {
                 WHERE (`consumableitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
-         if ($DB->result($result,0,0)!=0) {
-            if (!$show_old && $canedit) {
-               echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
-               echo "<input type='hidden' name='tID' value='$tID'>\n";
-            }
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            if (!$show_old) {
-               echo "<tr><th colspan='7'>";
-               echo self::getCount($tID, -1);
-               echo "</th></tr>";
-            } else { // Old
-               echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
-            }
-            $i = 0;
-            echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-            echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-            if ($show_old) {
-               echo "<th>".$LANG['common'][34]."</th>";
-            }
-            echo "<th>".$LANG['financial'][3]."</th>";
-
-            if (!$show_old && $canedit) {
-               echo "<th>";
-               User::dropdown(array('value'  => $consitem->fields["entities_id"],
-                                    'right'  => 'all'));
-               echo "&nbsp;<input type='submit' class='submit' name='give' value='".
-                            $LANG['consumables'][32]."'>";
-               echo "</th>";
-            } else {
-               echo "<th>&nbsp;</th>";
-            }
-            if ($canedit) {
-               echo "<th>&nbsp;</th>";
-            }
-            echo "</tr>";
-
-         } else {
-            echo "<div class='spaced b'>".$LANG['consumables'][7]."</div>";
-            return;
+         if (!$show_old && $canedit) {
+            echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
+            echo "<input type='hidden' name='tID' value='$tID'>\n";
          }
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         if (!$show_old) {
+            echo "<tr><th colspan='7'>";
+            echo self::getCount($tID, -1);
+            echo "</th></tr>";
+         } else { // Old
+            echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
+         }
+         $i = 0;
+         echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
+         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
+         if ($show_old) {
+            echo "<th>".$LANG['common'][34]."</th>";
+         }
+         echo "<th>".$LANG['financial'][3]."</th>";
+
+         if (!$show_old && $canedit && $DB->result($result,0,0)!=0) {
+            echo "<th>";
+            User::dropdown(array('value'  => $consitem->fields["entities_id"],
+                                 'right'  => 'all'));
+            echo "&nbsp;<input type='submit' class='submit' name='give' value='".
+                           $LANG['consumables'][32]."'>";
+            echo "</th>";
+         } else {
+            echo "<th>&nbsp;</th>";
+         }
+         if ($canedit) {
+            echo "<th>&nbsp;</th>";
+         }
+         echo "</tr>";
+
       }
 
       $where     = "";

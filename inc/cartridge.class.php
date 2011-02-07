@@ -424,36 +424,32 @@ class Cartridge extends CommonDBTM {
                 WHERE (`cartridgeitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
-         if ($DB->result($result,0,0)!=0) {
-            $total  = $DB->result($result, 0, "COUNT");
-            $unused = self::getUnusedNumber($tID);
-            $used   = self::getUsedNumber($tID);
-            $old    = self::getOldNumber($tID);
+         $total  = $DB->result($result, 0, "COUNT");
+         $unused = self::getUnusedNumber($tID);
+         $used   = self::getUsedNumber($tID);
+         $old    = self::getOldNumber($tID);
 
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            if (!$show_old) {
-               echo "<tr><th colspan='7'>".self::getCount($tID,-1)."</th>";
-               echo "<th colspan='2'>&nbsp;</th></tr>";
-            } else { // Old
-               echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."</th>";
-               echo "<th colspan='2'>&nbsp;</th></tr>";
-            }
-            $i = 0;
-            echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-            echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-            echo "<th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
-
-            if ($show_old) {
-               echo "<th>".$LANG['cartridges'][39]."</th>";
-            }
-
-            echo "<th>".$LANG['financial'][3]."</th>";
-            echo "<th colspan='2'>&nbsp;</th>";
-
-            echo "</tr>";
-         } else {
-            echo "<div class='spaced'>".$LANG['cartridges'][7]."</div>";
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         if (!$show_old) {
+            echo "<tr><th colspan='7'>".self::getCount($tID,-1)."</th>";
+            echo "<th colspan='2'>&nbsp;</th></tr>";
+         } else { // Old
+            echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."</th>";
+            echo "<th colspan='2'>&nbsp;</th></tr>";
          }
+         $i = 0;
+         echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
+         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
+
+         if ($show_old) {
+            echo "<th>".$LANG['cartridges'][39]."</th>";
+         }
+
+         echo "<th>".$LANG['financial'][3]."</th>";
+         echo "<th colspan='2'>&nbsp;</th>";
+
+         echo "</tr>";
       }
 
       if (!$show_old) { // NEW
