@@ -230,10 +230,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
 $types = array('Cartridge', 'Consumable', 'SoftwareLicense');
 
 $i = 0;
+echo "<table width='90%'><tr><td class='center top'>";
 while (count($types)>0) {
-   if ($i==0) {
-      echo "<table width='90%'><tr><td class='center top'>";
-   }
    $type = array_shift($types);
 
    if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
@@ -249,12 +247,10 @@ while (count($types)>0) {
 }
 
 if (($i%2)==0) {
-   echo "</td><td>&nbsp;";
+   echo "&nbsp;</td><td>&nbsp;";
 }
 
-if ($i>0) {
-   echo "&nbsp;</td></tr></table>";
-}
+echo "&nbsp;</td></tr></table>";
 
 echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
       $LANG['financial'][21]." = ".formatNumber($valeurtot)." - ".
