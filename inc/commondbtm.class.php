@@ -2595,11 +2595,9 @@ class CommonDBTM extends CommonGLPI {
                       && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
                           //Foreign key and value is not 0
                           || (getTableNameForForeignKeyField($field) != ''
-                              && $this->input[$field] > 0)) 
-                                 && !Fieldblacklist::isFieldBlacklisted(get_class($this),
-                                                                        $entities_id, 
-                                                                        $field, 
-                                                                        $this->input[$field])) {
+                              && $this->input[$field] > 0))
+                      && !Fieldblacklist::isFieldBlacklisted(get_class($this), $entities_id, $field,
+                                                             $this->input[$field])) {
                      $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
                   } else {
                      $continue = false;

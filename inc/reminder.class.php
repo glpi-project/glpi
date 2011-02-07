@@ -381,13 +381,16 @@ class Reminder extends CommonDBTM {
     *    - end Date
     *
     * @return array of planning item
-    **/
-   static function populatePlanning($options = array()) {
+   **/
+   static function populatePlanning($options=array()) {
       global $DB, $CFG_GLPI;
+
       $interv  = array();
 
-      if (!isset($options['begin']) || !isset($options['begin'])
-            || !isset($options['begin']) || !isset($options['end'])) {
+      if (!isset($options['begin'])
+          || !isset($options['begin'])
+          || !isset($options['begin'])
+          || !isset($options['end'])) {
          return $interv;
       }
 
@@ -395,7 +398,6 @@ class Reminder extends CommonDBTM {
       $who_group = $options['who_group'];
       $begin     = $options['begin'];
       $end       = $options['end'];
-
 
       $readpub = $readpriv="";
 

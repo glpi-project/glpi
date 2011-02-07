@@ -1365,7 +1365,7 @@ class Rule extends CommonDBTM {
       $crit    = $this->getCriteria($ID);
       $display = false;
       $tested  = false;
-      
+
       if (isset($crit['type'])
                  && ($test
                      || $condition == Rule::PATTERN_IS
@@ -1424,7 +1424,7 @@ class Rule extends CommonDBTM {
 
       if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
          echo "<input type='hidden' name='$name' value='1'>";
-         $display=true;
+         $display = true;
       }
 
       if (!$display) {

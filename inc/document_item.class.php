@@ -69,37 +69,37 @@ class Document_Item extends CommonDBRelation{
       return $input;
    }
 
+
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_documents_items`.`documents_id` = `glpi_documents`.`id`
-                      AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
+                   AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
       if (getLoginUserID()) {
-         $restrict .= getEntitiesRestrictRequest(" AND ","glpi_documents",'','',true);
+         $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents", '', '', true);
       } else {
          // Anonymous access from FAQ
-         $restrict .= " AND `glpi_documents`.`entities_id`= '0' ";
+         $restrict .= " AND `glpi_documents`.`entities_id` = '0' ";
       }
 
-      $nb = countElementsInTable(array('glpi_documents_items','glpi_documents'),$restrict);
+      $nb = countElementsInTable(array('glpi_documents_items', 'glpi_documents'), $restrict);
 
       // Document case : search in both
       if ($item->getType() == 'Document') {
-         $restrict = "`glpi_documents_items`.`items_id`=`glpi_documents`.`id`
-                        AND `glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
-                        AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
+         $restrict = "`glpi_documents_items`.`items_id` = `glpi_documents`.`id`
+                      AND `glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
+                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
          if (getLoginUserID()) {
-            $restrict .= getEntitiesRestrictRequest(" AND ","glpi_documents",'','',true);
+            $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents", '', '', true);
          } else {
             // Anonymous access from FAQ
-            $restrict .= " AND `glpi_documents`.`entities_id`= '0' ";
+            $restrict .= " AND `glpi_documents`.`entities_id` = '0' ";
          }
-         $nb += countElementsInTable(array('glpi_documents_items','glpi_documents'),$restrict);
+         $nb += countElementsInTable(array('glpi_documents_items', 'glpi_documents'), $restrict);
       }
       return $nb ;
-
    }
 
 }
