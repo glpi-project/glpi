@@ -600,7 +600,7 @@ class Planning {
       ksort($interv);
 
       echo "<table class='tab_cadrehov'><tr><th>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG['planning'][15]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".$LANG['planning'][15]."</a>";
       echo "</th></tr>";
       $type='';
       if (count($interv)>0) {
