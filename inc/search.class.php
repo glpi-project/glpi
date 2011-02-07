@@ -929,7 +929,7 @@ class Search {
                $i++;
                $row_num++;
                // New line
-               echo Search::showNewLine($output_type, ($i%2),$p['is_deleted']);
+               echo self::showNewLine($output_type, ($i%2), $p['is_deleted']);
 
                // Add item in item list
                addToNavigateListItems($itemtype, $data["id"]);
@@ -1119,19 +1119,22 @@ class Search {
                               $title .= $searchopt[$itemtype][$p['field'][$key]]["name"];
                         }
 
-
                         switch ($p['searchtype'][$key]) {
                            case "equals" :
-                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],array('name','completename'))) {
-                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"], $p['contains'][$key]);
+                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],
+                                           array('name', 'completename'))) {
+                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
+                                                                           $p['contains'][$key]);
                               } else {
                                  $title .= ' = '.$p['contains'][$key];
                               }
                               break;
 
                            case "notequals" :
-                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],array('name','completename'))) {
-                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"], $p['contains'][$key]);
+                              if (in_array($searchopt[$itemtype][$p['field'][$key]]["field"],
+                                           array('name', 'completename'))) {
+                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
+                                                                            $p['contains'][$key]);
                               } else {
                                  $title .= ' <> '.$p['contains'][$key];
                               }
@@ -1167,16 +1170,20 @@ class Search {
 
                         switch ($p['searchtype2'][$key]) {
                            case "equals" :
-                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],array('name','completename'))) {
-                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"], $p['contains2'][$key]);
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],
+                                           array('name', 'completename'))) {
+                                 $title .= ' = '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
+                                                                           $p['contains2'][$key]);
                               } else {
                                  $title .= ' = '.$p['contains2'][$key];
                               }
                               break;
 
                            case "notequals" :
-                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],array('name','completename'))) {
-                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"], $p['contains2'][$key]);
+                              if (in_array($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["field"],
+                                           array('name', 'completename'))) {
+                                 $title .= ' <> '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
+                                                                            $p['contains2'][$key]);
                               } else {
                                  $title .= ' <> '.$p['contains2'][$key];
                               }
@@ -2834,46 +2841,46 @@ class Search {
 //                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                                $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                              $searchopt[4]['joinparams']['beforejoin']['joinparams']);
                } else { // Can own ticket : show my and assign to me
-                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                                $searchopt[4]['joinparams']['beforejoin']['joinparams']);
-                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                                $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                              $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                              $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
 
-                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                                $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                              $searchopt[5]['joinparams']['beforejoin']['joinparams']);
 
                   if (count($_SESSION['glpigroups'])) {
-                     $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                   "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                                   $searchopt[8]['joinparams']['beforejoin']['joinparams']);
+                     $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                 "glpi_groups_tickets", "groups_tickets_id", 0, 0,
+                                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']);
                   }
                }
+
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
-                     $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                   "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                                   $searchopt[71]['joinparams']['beforejoin']['joinparams']);
+                     $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                                 "glpi_groups_tickets", "groups_tickets_id", 0, 0,
+                                                 $searchopt[71]['joinparams']['beforejoin']['joinparams']);
                   }
                }
 
                if (haveRight("validate_ticket",1)) {
-                  $out.= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
-                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
+                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                              "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
+                                              $searchopt[58]['joinparams']['beforejoin']['joinparams']);
                }
             }
             return $out;
-            break;
 
          default :
             // Plugin can override core definition for its type
@@ -4844,7 +4851,7 @@ class Search {
     *
     * @return string to display
    **/
-   static function showNewLine($type, $odd=false, $is_deleted = false) {
+   static function showNewLine($type, $odd=false, $is_deleted= false) {
 
       $out = "";
       switch ($type) {
