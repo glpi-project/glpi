@@ -278,7 +278,10 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_tickets", "slas_id", "INT( 11 ) NOT NULL DEFAULT 0");
    $migration->addKey("glpi_tickets", "slas_id");
    $migration->addField("glpi_tickets", "slalevels_id", "INT( 11 ) NOT NULL DEFAULT 0");
-   $migration->addField("glpi_tickets", "due_date", "datetime default NULL");
+   if ($migration->addField("glpi_tickets", "due_date", "datetime default NULL")) {
+      $ADDTODISPLAYPREF['Ticket'] = array(18);
+   }
+
    $migration->addKey("glpi_tickets", "due_date");
    $migration->addField("glpi_tickets", "begin_waiting_date", "datetime default NULL");
    $migration->addField("glpi_tickets", "sla_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
