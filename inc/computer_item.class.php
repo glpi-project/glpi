@@ -47,17 +47,19 @@ class Computer_Item extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    /**
     * Count connection for an item
     *
-    * @param $itemtype integer type of the item
-    * @param $items_id integer ID of the item
+    * @param $item object of commonDBTM
     *
     * @return integer: count
-    */
-   static function countForItem($itemtype, $items_id) {
+   **/
+   static function countForItem(CommonDBTM $item) {
+
       return countElementsInTable('glpi_computers_items',
-                                  "`itemtype`='$itemtype' AND `items_id`='$items_id'");
+                                  "`itemtype` = '".$item->getType()."'
+                                   AND `items_id` ='".$item->getField('id')."'");
    }
 
 
@@ -83,7 +85,7 @@ class Computer_Item extends CommonDBRelation{
             return false;
          }
          if ($item->getField('is_global')==0
-             &&  $this->countForItem($input['itemtype'],$input['items_id'])> 0) {
+             && $this->countForItem($item) > 0) {
                return false;
          }
       }
