@@ -593,11 +593,12 @@ class Dropdown {
                                                'State'           => $LANG['setup'][83],
                                                'Manufacturer'    => $LANG['common'][5]),
 
-                  $LANG['title'][24]  => array('TicketCategory'         => $LANG['setup'][79],
-                                               'TaskCategory'           => $LANG['setup'][98],
-                                               'TicketSolutionType'     => $LANG['job'][48],
-                                               'RequestType'            => $LANG['job'][44],
-                                               'TicketSolutionTemplate' => $LANG['jobresolution'][6]),
+                  $LANG['title'][24]  => array('TicketCategory'      => $LANG['setup'][79],
+                                               'TaskCategory'        => $LANG['setup'][98],
+                                               'TicketSolutionType'  => $LANG['job'][48],
+                                               'RequestType'         => $LANG['job'][44],
+                                               'TicketSolutionTemplate'
+                                                                     => $LANG['jobresolution'][6]),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
@@ -634,10 +635,11 @@ class Dropdown {
                                                'Holiday'  => $LANG['calendar'][11]),
 
 
-                  $LANG['setup'][145] => array('OperatingSystem'            => $LANG['setup'][5],
-                                               'OperatingSystemVersion'     => $LANG['computers'][52],
-                                               'OperatingSystemServicePack' => $LANG['computers'][53],
-                                               'AutoUpdateSystem'           => $LANG['computers'][51]),
+                  $LANG['setup'][145] => array('OperatingSystem'        => $LANG['setup'][5],
+                                               'OperatingSystemVersion' => $LANG['computers'][52],
+                                               'OperatingSystemServicePack'
+                                                                        => $LANG['computers'][53],
+                                               'AutoUpdateSystem'       => $LANG['computers'][51]),
 
                   $LANG['setup'][88]  => array('NetworkInterface'         => $LANG['setup'][9],
                                                'NetworkEquipmentFirmware' => $LANG['setup'][71],
@@ -651,9 +653,10 @@ class Dropdown {
                   $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
                                                'UserCategory'  => $LANG['users'][2]),
 
-                  $LANG['rulesengine'][19] => array('RuleRightParameter' => $LANG['rulesengine'][138]),
+                  $LANG['rulesengine'][19]
+                                      => array('RuleRightParameter' => $LANG['rulesengine'][138]),
 
-                  $LANG['setup'][811]      => array('Fieldblacklist'     => $LANG['setup'][828])
+                  $LANG['setup'][811] => array('Fieldblacklist' => $LANG['setup'][828])
 
                  ); //end $opt
 

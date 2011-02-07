@@ -1142,9 +1142,9 @@ function update0782to080($output='HTML') {
                   `comment` TEXT COLLATE utf8_unicode_ci,
                   PRIMARY KEY (id),
                   KEY `name` (`name`)
-             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
-          or die("0.80 add table glpi_fieldblacklists ".$LANG['update'][90]. $DB->error());
+      or die("0.80 add table glpi_fieldblacklists ".$LANG['update'][90]. $DB->error());
    }
 
    if ($migration->addField('glpi_mailcollectors', 'passwd',

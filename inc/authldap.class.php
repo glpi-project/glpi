@@ -1846,7 +1846,7 @@ class AuthLDAP extends CommonDBTM {
    static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn) {
 
       $oldlevel = error_reporting(0);
-      $user_dn = $auth->connection_ldap($ldap_method, $login, $password);
+      $user_dn  = $auth->connection_ldap($ldap_method, $login, $password);
       error_reporting($oldlevel);
 
       if ($user_dn) {

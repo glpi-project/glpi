@@ -350,13 +350,15 @@ class TicketPlanning extends CommonDBTM {
     *
     * @return array of planning item
    **/
-   static function populatePlanning($options = array()) {
+   static function populatePlanning($options=array()) {
       global $DB, $CFG_GLPI;
 
       $interv = array();
 
-      if (!isset($options['begin']) || !isset($options['begin'])
-            || !isset($options['begin']) || !isset($options['end'])) {
+      if (!isset($options['begin'])
+          || !isset($options['begin'])
+          || !isset($options['begin'])
+          || !isset($options['end'])) {
          return $interv;
       }
 
@@ -372,9 +374,9 @@ class TicketPlanning extends CommonDBTM {
          if (count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
             $ASSIGN = "`users_id` IN (SELECT DISTINCT `users_id`
-                                       FROM `glpi_groups_users`
-                                       WHERE `groups_id` IN ('$groups'))
-                                             AND ";
+                                      FROM `glpi_groups_users`
+                                      WHERE `groups_id` IN ('$groups'))
+                                            AND ";
          } else { // Only personal ones
             $ASSIGN = "`users_id` = '$who'
                        AND ";

@@ -1901,31 +1901,32 @@ function manageRedirect($where) {
                switch ($data[0]) {
                   case "plugin" :
                      $plugin = $data[1];
-                     $valid = false;
+                     $valid  = false;
                      if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
-                        && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                         && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                         // Simple redirect
                         if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                            if (isset($data[2]) && $data[2]>0) {
                               $valid = true;
-                              $id = $data[2];
-                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin];
+                              $id    = $data[2];
+                              $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
                            }
                            $forcetabnum = 3 ;
                         } else { // Complex redirect
-                           if (isset($data[2]) && !empty($data[2])
-                              && isset($data[3]) && $data[3]>0
-                              && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
-                              && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
+                           if (isset($data[2])
+                               && !empty($data[2])
+                               && isset($data[3])
+                               && $data[3] > 0
+                               && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
+                               && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
                               $valid = true;
-                              $id = $data[3];
-                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
+                              $id    = $data[3];
+                              $page  = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
                            }
                            $forcetabnum = 4 ;
                         }
-
                      }
-                     
+
                      if (isset($data[$forcetabnum])) {
                         $forcetab = 'forcetab='.$data[$forcetabnum];
                      }
@@ -1958,31 +1959,32 @@ function manageRedirect($where) {
                switch ($data[0]) {
                   case "plugin" :
                      $plugin = $data[1];
-                     $valid = false;
+                     $valid  = false;
                      if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
-                        && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
+                         && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                         // Simple redirect
                         if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                            if (isset($data[2]) && $data[2]>0) {
                               $valid = true;
-                              $id = $data[2];
-                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin];
+                              $id    = $data[2];
+                              $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
                            }
                            $forcetabnum = 3 ;
                         } else { // Complex redirect
-                           if (isset($data[2]) && !empty($data[2])
-                              && isset($data[3]) && $data[3]>0
-                              && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
-                              && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
+                           if (isset($data[2])
+                               && !empty($data[2])
+                               && isset($data[3])
+                               && $data[3] > 0
+                               && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
+                               && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
                               $valid = true;
-                              $id = $data[3];
-                              $page = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
+                              $id    = $data[3];
+                              $page  = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
                            }
                            $forcetabnum = 4 ;
                         }
-
                      }
-                     
+
                      if (isset($data[$forcetabnum])) {
                         $forcetab = 'forcetab='.$data[$forcetabnum];
                      }

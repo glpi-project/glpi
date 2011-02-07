@@ -2327,9 +2327,9 @@ class Ticket extends CommonDBTM {
       $tab[5]['joinparams']    = array('beforejoin'
                                        => array('table' => 'glpi_tickets_users',
                                                 'joinparams'
-                                                         => array('jointype'  => 'child',
-                                                                  'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                 '= '.self::ASSIGN)));
+                                                        => array('jointype'  => 'child',
+                                                                 'condition' => 'AND NEWTABLE.`type` ' .
+                                                                                '= '.self::ASSIGN)));
       $tab[6]['table']     = 'glpi_suppliers';
       $tab[6]['field']     = 'name';
       $tab[6]['linkfield'] = 'suppliers_id_assign';
@@ -2343,9 +2343,9 @@ class Ticket extends CommonDBTM {
       $tab[8]['joinparams']    = array('beforejoin'
                                        => array('table' => 'glpi_groups_tickets',
                                                 'joinparams'
-                                                         => array('jointype'  => 'child',
-                                                                  'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                 '= '.self::ASSIGN)));
+                                                        => array('jointype'  => 'child',
+                                                                 'condition' => 'AND NEWTABLE.`type` ' .
+                                                                                '= '.self::ASSIGN)));
 
       $tab['followup'] = $LANG['mailing'][141];
 
@@ -2377,8 +2377,6 @@ class Ticket extends CommonDBTM {
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')
             || haveRight("own_ticket","1")) {
-
-
 
          $tab['task'] = $LANG['job'][7];
 

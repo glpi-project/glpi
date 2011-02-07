@@ -71,6 +71,7 @@ class Fieldblacklist extends CommonDropdown {
                          'type'  => 'text'));
    }
 
+
    /**
     * Get search function for the class
     *
@@ -115,11 +116,11 @@ class Fieldblacklist extends CommonDropdown {
       return $input;
    }
 
+
    /**
     * Display specific fields for FieldUnicity
    **/
-   function displaySpecificTypeField($ID, $field = array()) {
-      global $CFG_GLPI;
+   function displaySpecificTypeField($ID, $field=array()) {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :
@@ -131,6 +132,7 @@ class Fieldblacklist extends CommonDropdown {
             break;
       }
    }
+
 
    /**
     * Display a dropdown which contains all the available itemtypes
@@ -154,16 +156,16 @@ class Fieldblacklist extends CommonDropdown {
          }
       }
       asort($options);
-      $rand = Dropdown::showFromArray('itemtype', $options,array('value'=>$value));
+      $rand = Dropdown::showFromArray('itemtype', $options, array('value'=>$value));
 
       $params = array('itemtype' => '__VALUE__',
                       'id'       => $ID);
       ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
                                   $params);
-
    }
-   
+
+
    static function selectCriterias(CommonDBTM $blacklist) {
       global $DB, $CFG_GLPI;
 
@@ -201,7 +203,8 @@ class Fieldblacklist extends CommonDropdown {
             $criteria[$field['Field']] = $searchOption['name'];
          }
       }
-      $rand = Dropdown::showFromArray('value',$criteria,array('value'=>$blacklist->fields['value']));
+      $rand   = Dropdown::showFromArray('value', $criteria,
+                                        array('value' => $blacklist->fields['value']));
       $params = array('itemtype' => $blacklist->fields['itemtype'],
                       'id_field' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_value$rand", "span_values",
@@ -209,26 +212,31 @@ class Fieldblacklist extends CommonDropdown {
                                   $params);
       echo "</span>";
    }
-   
+
+
    /**
     * Check if a field & value and blacklisted or not
+    *
     * @param itemtype itemtype of the blacklisted field
     * @param entities_id  the entity in which the field must be saved
     * @param field the field to check
     * @param value the field's value
+    *
     * @return true is value if blacklisted, false otherwise
-    */
-   static function isFieldBlacklisted($itemtype,$entities_id, $field, $value) {
+   **/
+   static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;
-      $query = "SELECT count(*) AS cpt 
-                FROM `glpi_fieldblacklists` 
-                WHERE `itemtype`='$itemtype' 
-                   AND `field`='$field' 
-                     AND `value`='$value'".
-               getEntitiesRestrictRequest(" AND","glpi_fieldblacklists","entities_id",$entities_id,
-                                          true);
+
+      $query = "SELECT count(*) AS cpt
+                FROM `glpi_fieldblacklists`
+                WHERE `itemtype` = '$itemtype'
+                      AND `field` = '$field'
+                      AND `value` = '$value'".
+                      getEntitiesRestrictRequest(" AND", "glpi_fieldblacklists", "entities_id",
+                                                 $entities_id, true);
       return ($DB->result($DB->query($query),0,'cpt')?true:false);
    }
+
 }
 
 ?>
