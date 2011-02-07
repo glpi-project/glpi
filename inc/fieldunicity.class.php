@@ -413,7 +413,6 @@ class FieldUnicity extends CommonDropdown {
             $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
          }
          // why this variable because not used
-//         $where_global  = getEntitiesRestrictRequest("AND", $item->getTable(), '', $entities);
          $fields_string = implode(',', $fields);
          if ($item->maybeTemplate()) {
             $where_template = " WHERE `is_template` = '0'";
