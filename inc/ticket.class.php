@@ -2881,9 +2881,9 @@ class Ticket extends CommonDBTM {
 
       $this->showFormHeader($options);
 
-      $show_template = $canedit
-                       && $this->getField('ticketsolutiontypes_id') == 0
-                       && empty($this->fields['solution']);
+      $show_template = $canedit;
+//                        && $this->getField('ticketsolutiontypes_id') == 0
+//                        && empty($this->fields['solution']);
 
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
