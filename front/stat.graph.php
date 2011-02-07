@@ -280,7 +280,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
 showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='button' name='submit' value=\"".$LANG['buttons'][7]."\"></td></tr>";
+echo "<input type='submit' class='button' value=\"".$LANG['buttons'][7]."\"></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
@@ -363,7 +363,7 @@ if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
 }
 
 foreach ($available as $key => $name) {
-   echo "<input type='checkbox' name='graph[$key]' ".
+   echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
           ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
@@ -425,7 +425,7 @@ if (!isset($_REQUEST['graph2']) || count($_REQUEST['graph2'])==0) {
 }
 
 foreach ($available as $key => $name) {
-   echo "<input type='checkbox' name='graph2[$key]' ".
+   echo "<input type='checkbox' onchange='submit()' name='graph2[$key]' ".
           ($show_all2||isset($_REQUEST['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
