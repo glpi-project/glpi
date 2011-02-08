@@ -517,7 +517,8 @@ class NotificationTarget extends CommonDBChild {
 
       $query = $this->getDistinctUserSql()."
                FROM `glpi_groups`
-               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)
+               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`) ".
+               $this->getProfileJoinSql()."
                WHERE `glpi_groups`.`id` = '".$groups_id."'";
 
          foreach ($DB->request($query) as $data) {
@@ -711,12 +712,9 @@ class NotificationTarget extends CommonDBChild {
 
       $query = $this->getDistinctUserSql().",
                glpi_profiles_users.entities_id AS entity
-               FROM `glpi_profiles_users`".
+               FROM `glpi_users`".
                $this->getProfileJoinSql()."
-               INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."' ".
-                     getEntitiesRestrictRequest(" AND", "glpi_profiles_users", "entities_id",
-                                                $this->getEntity(), true);
+               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."';";
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
@@ -870,7 +868,10 @@ class NotificationTarget extends CommonDBChild {
 
 
    function getProfileJoinSql() {
-      return "";
+      return " INNER JOIN `glpi_profiles_users`
+                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
+                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
+                                                    $this->getEntity(), true).")";
    }
 
 
