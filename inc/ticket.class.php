@@ -1168,7 +1168,6 @@ class Ticket extends CommonDBTM {
 
          // Read again ticket to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
-         exit();
          NotificationEvent::raiseEvent($mailtype, $this);
 
       }
@@ -3829,7 +3828,7 @@ class Ticket extends CommonDBTM {
 
          } else if (haveRight("steal_ticket","1")
                     || (haveRight("own_ticket","1") && $this->countUsers(self::ASSIGN)==0)) {
-            echo self::getActorIcon('user',self::ASSIGN)."&nbsp;";
+            echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'entity'      => $this->fields["entities_id"],
