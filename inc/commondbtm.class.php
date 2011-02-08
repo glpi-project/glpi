@@ -2492,7 +2492,7 @@ class CommonDBTM extends CommonGLPI {
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
 
-      return array('id'          => $LANG['login'][6],
+      return array('id'          => $LANG['common'][2],
                    'serial'      => $LANG['common'][19],
                    'entities_id' => $LANG['entity'][0]);
    }
@@ -2674,6 +2674,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
       }
+
       return $result;
    }
 
