@@ -497,7 +497,8 @@ class Computer_Device extends CommonDBTM {
             }
          }
       }
-      if ($this->fields['specificity'] == $this->input['specificity']) {
+      if (isset($this->fields['specificity']) 
+            && $this->fields['specificity'] == $this->input['specificity']) {
          // No change
          return false;
       }
