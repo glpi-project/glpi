@@ -2545,7 +2545,7 @@ class CommonDBTM extends CommonGLPI {
                $doubles_text[] =  $value.": ".$field_value;
             }
          }
-         $message_text .= "<br>[".implode(',',$doubles_text)."]";
+         $message_text .= "<br>[".implode(', ',$doubles_text)."]";
       }
       return $message_text;
    }
