@@ -2345,9 +2345,12 @@ class CommonDBTM extends CommonGLPI {
     * @return then search option array, or an empty array if not found
    **/
    function getSearchOptionByField($field, $value, $table='') {
-
+      
       foreach ($this->getSearchOptions() as $searchOption) {
-         if (isset($searchOption[$field]) && $searchOption[$field] == $value) {
+         if ((isset($searchOption['linkfield']) 
+               && $searchOption['linkfield'] == $value) 
+                  || (isset($searchOption[$field]) 
+                     && $searchOption[$field] == $value)) {
             if (($table == '') || ($table != '' && $searchOption['table'] == $table)) {
                return $searchOption;
             }
@@ -2494,6 +2497,9 @@ class CommonDBTM extends CommonGLPI {
                    'entities_id' => $LANG['entity'][0]);
    }
 
+   function getUnallowedFieldsForUnicity() {
+      return array('date_mod', 'id', 'items_id','is_recursive');
+   }
 
    /**
     * Build an unicity error message

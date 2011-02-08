@@ -2646,6 +2646,11 @@ class User extends CommonDBTM {
                    'entities_id' => $LANG['entity'][0]);
    }
 
+   function getUnallowedFieldsForUnicity() {
+      return array_merge(parent::getUnallowedFieldsForUnicity(), 
+                         array('last_sync', 'last_login', 'profiles_id', 'entities_id'));
+   }
+
 }
 
 ?>
