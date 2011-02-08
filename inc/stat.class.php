@@ -309,11 +309,11 @@ class Stat {
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = Stat::constructEntryValues("inter_solved_late", $date1, $date2, $type,
+            $solved_late    = Stat::constructEntryValues("inter_solved_late", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
-            $nb_solved = array_sum($solved);
+            $nb_solved_late = array_sum($solved_late);
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
-            $export_data['solved_late'][$value[$i]['link']] = $nb_solved;
+            $export_data['solved_late'][$value[$i]['link']] = $nb_solved_late;
 
             //le nombre d'intervention closes - the number of closed intervention
             $closed    = Stat::constructEntryValues("inter_closed", $date1, $date2, $type,
@@ -512,15 +512,15 @@ class Stat {
             break;
 
          case "usertitles_id" :
-            $LEFTJOIN = " INNER JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`
-                                  AND `glpi_users`.`usertitles_id` = '$value')";
+            $LEFTJOIN = $LEFTJOINUSER;
+            $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
+                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
             break;
 
          case "usercategories_id" :
-            $LEFTJOIN = " INNER JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`
-                                  AND `glpi_users`.`usercategories_id` = '$value')";
+            $LEFTJOIN = $LEFTJOINUSER;
+            $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
+                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
             break;
 
          case "device":

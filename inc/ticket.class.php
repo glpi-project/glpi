@@ -1166,6 +1166,7 @@ class Ticket extends CommonDBTM {
 
          // Read again ticket to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
+         exit();
          NotificationEvent::raiseEvent($mailtype, $this);
 
       }
@@ -6173,7 +6174,10 @@ class Ticket extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_users`.`$field`
                 FROM `glpi_tickets`
-                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)
+                INNER JOIN `glpi_tickets_users` 
+                     ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
+                             AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
+                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)
                 LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
