@@ -245,14 +245,14 @@ class Consumable extends CommonDBTM {
          }
          if (!$nohtml) {
             $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total";
-            $out .= "<span class='small_space b'>";
+            $out .= "<span class='b'>";
             if ($unused>1) {
                $out .= $LANG['consumables'][14];
             } else {
                $out .= $LANG['consumables'][20];
             }
             $out .= "&nbsp;:&nbsp;$unused</span>";
-            $out .= "<span class='small_space'>";
+            $out .= "<span class='very_small_space'>";
             if ($old>1) {
                $out .= $LANG['consumables'][22];
             } else {
@@ -260,7 +260,6 @@ class Consumable extends CommonDBTM {
             }
             $out .= "&nbsp;:&nbsp;$old</span></div>";
          } else {
-            $out .= $LANG['common'][33]." : $total   ";
             if ($unused>1) {
                $out .= $LANG['consumables'][14];
             } else {
