@@ -3827,7 +3827,7 @@ class Ticket extends CommonDBTM {
 
          } else if (haveRight("steal_ticket","1")
                     || (haveRight("own_ticket","1") && $this->countUsers(self::ASSIGN)==0)) {
-            echo "$usericon&nbsp;";
+            echo self::getActorIcon('user',self::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'entity'      => $this->fields["entities_id"],
@@ -4319,7 +4319,7 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>".$LANG['common'][57]."</td>";
       echo "<td colspan='$titlecolspan'>";
-      if ($canupdate_descr) {
+      if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showName$rand() {\n";
@@ -4376,7 +4376,7 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='$titlecolspan'>";
-      if ($canupdate_descr) { // Admin =oui on autorise la modification de la description
+      if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showDesc$rand() {\n";
@@ -4440,7 +4440,8 @@ class Ticket extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
-      if ($canupdate
+      if (!$ID
+          || $canupdate
           || $canupdate_descr
           || haveRight("assign_ticket","1")
           || haveRight("steal_ticket","1")) {
