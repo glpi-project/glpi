@@ -1037,13 +1037,13 @@ class Search {
                if ($itemtype == 'CartridgeItem') {
                   echo Search::showItem($output_type,
                                         Cartridge::getCount($data["id"], $data["ALARM"],
-                                                            $output_type),
+                                                            $output_type!=HTML_OUTPUT),
                                         $item_num, $row_num);
                }
                if ($itemtype == 'ConsumableItem') {
                   echo Search::showItem($output_type,
                                         Consumable::getCount($data["id"], $data["ALARM"],
-                                                             $output_type),
+                                                             $output_type!=HTML_OUTPUT),
                                         $item_num, $row_num);
                }
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {

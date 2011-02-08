@@ -242,21 +242,21 @@ class Cartridge extends CommonDBTM {
 
          if (!$nohtml) {
             $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total
-                     <span class='small_space b'>";
+                     <span class='b'>";
             if ($unused>1) {
                $out .= $LANG['cartridges'][13];
             } else {
                $out .= $LANG['cartridges'][20];
             }
             $out .= "&nbsp;:&nbsp;$unused</span>";
-            $out .= "<span class='small_space'>";
+            $out .= "<span class='very_small_space'>";
             if ($used>1) {
                $out .= $LANG['cartridges'][14];
             } else {
                $out .= $LANG['cartridges'][21];
             }
             $out .= "&nbsp;:&nbsp;$used</span>";
-            $out .= "<span class='small_space'>";
+            $out .= "<span class='very_small_space'>";
             if ($old>1) {
                $out .= $LANG['cartridges'][15];
             } else {
@@ -271,19 +271,19 @@ class Cartridge extends CommonDBTM {
             } else {
                $out .= $LANG['cartridges'][20];
             }
-            $out .= " : ;$unused   ";
+            $out .= " : $unused   ";
             if ($used>1) {
                $out .= $LANG['cartridges'][14];
             } else {
                $out .= $LANG['cartridges'][21];
             }
-            $out .= " : ;$used   ";
+            $out .= " : $used   ";
             if ($old>1) {
                $out .= $LANG['cartridges'][15];
             } else {
                $out .= $LANG['cartridges'][22];
             }
-            $out .= " : ;$old< ";
+            $out .= " : $old ";
          }
 
       } else {
