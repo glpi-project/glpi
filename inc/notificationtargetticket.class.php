@@ -229,7 +229,8 @@ class NotificationTargetTicket extends NotificationTarget {
                       `glpi_tickets_users`.`use_notification` AS notif,
                       `glpi_tickets_users`.`alternative_email` AS altemail
                FROM `glpi_tickets_users`
-               LEFT JOIN `glpi_users` ON (`glpi_tickets_users`.`users_id` = `glpi_users`.`id`)
+               LEFT JOIN `glpi_users` ON (`glpi_tickets_users`.`users_id` = `glpi_users`.`id`)".
+               $this->getProfileJoinSql()."
                WHERE `glpi_tickets_users`.`tickets_id` = '".$this->obj->fields["id"]."'
                      AND `glpi_tickets_users`.`type` = '$type'";
 
@@ -292,7 +293,8 @@ class NotificationTargetTicket extends NotificationTarget {
       $query =        $this->getDistinctUserSql()."
                FROM `glpi_groups_tickets`
                INNER JOIN `glpi_groups` ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)
-               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)
+               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
+               $this->getProfileJoinSql()."
                WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
                      AND `glpi_groups_tickets`.`type` = '$type'";
 
@@ -417,7 +419,8 @@ class NotificationTargetTicket extends NotificationTarget {
          $query =        $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
+                        ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)".
+                   $this->getProfileJoinSql()."
                    WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
          foreach ($DB->request($query) as $data) {
@@ -434,10 +437,11 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query =        $this->getDistinctUserSql()."
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
+                        ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)".
+                   $this->getProfileJoinSql()."
                    WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
          foreach ($DB->request($query) as $data) {
@@ -456,7 +460,8 @@ class NotificationTargetTicket extends NotificationTarget {
       if (isset($options['followup_id'])) {
          $query =        $this->getDistinctUserSql()."
                    FROM `glpi_ticketfollowups`
-                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
+                  INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
+                  $this->getProfileJoinSql()."
                    WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
 
          foreach ($DB->request($query) as $data) {
@@ -475,7 +480,8 @@ class NotificationTargetTicket extends NotificationTarget {
       if (isset($options['task_id'])) {
          $query =        $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
-                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)
+                   INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)".
+                     $this->getProfileJoinSql()."
                    WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
 
          foreach ($DB->request($query) as $data) {
@@ -494,10 +500,11 @@ class NotificationTargetTicket extends NotificationTarget {
       if (isset($options['task_id'])) {
          $query =        $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
-                   LEFT JOIN `glpi_ticketplannings`
+                   INNER JOIN `glpi_ticketplannings`
                         ON (`glpi_ticketplannings`.`tickettasks_id` = `glpi_tickettasks`.`id`)
-                   LEFT JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_ticketplannings`.`users_id`)
+                   INNER JOIN `glpi_users`
+                        ON (`glpi_users`.`id` = `glpi_ticketplannings`.`users_id`)".
+                     $this->getProfileJoinSql()."
                    WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
 
          foreach ($DB->request($query) as $data) {
