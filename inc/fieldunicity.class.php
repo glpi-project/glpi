@@ -108,7 +108,11 @@ class FieldUnicity extends CommonDropdown {
             break;
 
          case 12 :
+            Log::showForItem($this);
+            break;
+
          case -1 :
+            self::showDoubles($this);
             Log::showForItem($this);
             break;
       }
