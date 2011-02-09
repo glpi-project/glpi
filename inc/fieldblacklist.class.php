@@ -63,7 +63,7 @@ class Fieldblacklist extends CommonDropdown {
       return array(array('name'  => 'itemtype',
                          'label' => $LANG['common'][17],
                          'type'  => 'blacklist_itemtype'),
-                   array('name'  => 'name',
+                   array('name'  => 'field',
                          'label' => $LANG['rulesengine'][12],
                          'type'  => 'blacklist_field'),
                    array('name'  => 'value',
@@ -86,18 +86,18 @@ class Fieldblacklist extends CommonDropdown {
       $tab[4]['field']         = 'itemtype';
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'itemtype';
+      $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['forcegroupby']  = true;
 
-      $tab[5]['table']    = $this->getTable();
-      $tab[5]['field']    = 'name';
-      $tab[5]['name']     = $LANG['rulesengine'][12];
-      $tab[5]['datatype'] = 'string';
-
       $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'value';
-      $tab[6]['name']     = $LANG['rulesengine'][13];
+      $tab[6]['field']    = 'field';
+      $tab[6]['name']     = $LANG['rulesengine'][12];
       $tab[6]['datatype'] = 'string';
+
+      $tab[7]['table']    = $this->getTable();
+      $tab[7]['field']    = 'value';
+      $tab[7]['name']     = $LANG['rulesengine'][13];
+      $tab[7]['datatype'] = 'string';
 
       return $tab;
    }
@@ -144,32 +144,34 @@ class Fieldblacklist extends CommonDropdown {
    function showItemtype($ID, $value=0) {
       global $CFG_GLPI;
 
-      //Add criteria : display dropdown
-      $options[0] = DROPDOWN_EMPTY_VALUE;
-      foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
-         if (class_exists($itemtype)) {
-            $item = new $itemtype();
-            if ($item->can(-1,'r')) {
-               $options[$itemtype] = $item->getTypeName($itemtype);
+      if ($ID > 0) {
+         $item = new $this->fields['itemtype'];
+         echo $item->getTypeName();
+      } else {
+         //Add criteria : display dropdown
+         $options[0] = DROPDOWN_EMPTY_VALUE;
+         foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
+            if (class_exists($itemtype)) {
+               $item = new $itemtype();
+               if ($item->can(-1,'r')) {
+                  $options[$itemtype] = $item->getTypeName($itemtype);
+               }
             }
          }
+         asort($options);
+         $rand = Dropdown::showFromArray('itemtype', $options, array('value'=>$value));
+   
+         $params = array('itemtype' => '__VALUE__',
+                         'id'       => $ID);
+         ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
+                                     $params);
       }
-      asort($options);
-      $rand = Dropdown::showFromArray('itemtype', $options, array('value'=>$value));
-
-      $params = array('itemtype' => '__VALUE__',
-                      'id'       => $ID);
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
-                                  $params);
    }
 
 
    static function selectCriterias(CommonDBTM $blacklist) {
       global $DB, $CFG_GLPI;
-
-      //Do not check unicity on fields with theses names
-      $blacklisted_options = array('date_mod', 'id', 'is_recursive');
 
       //Do not check unicity on fields in DB with theses types
       $blacklisted_types = array('longtext', 'text');
@@ -198,17 +200,18 @@ class Fieldblacklist extends CommonDropdown {
 
          if (!empty($searchOption)
              && !in_array($field['Type'],$blacklisted_types)
-             && !in_array($field['Field'],$blacklisted_options)) {
+             && !in_array($field['Field'],$target->getUnallowedFieldsForUnicity())) {
             $criteria[$field['Field']] = $searchOption['name'];
          }
       }
-      $rand   = Dropdown::showFromArray('field', $criteria,
+      $rand   = Dropdown::showFromArray('value', $criteria,
                                         array('value' => $blacklist->fields['field']));
+      /*
       $params = array('itemtype' => $blacklist->fields['itemtype'],
                       'id_field' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_value$rand", "span_values",
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
-                                  $params);
+                                  $params);*/
       echo "</span>";
    }
 
