@@ -2239,7 +2239,7 @@ $LANG['setup'][824] = "Auteur de l'action";
 $LANG['setup'][825] = "Action voulue";
 $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
-$LANG['setup'][828] = "Valeur interdite";
+$LANG['setup'][828] = "Valeur ignorée pour l'unicité";
 
 
 $LANG['sla'][1] = "SLA";

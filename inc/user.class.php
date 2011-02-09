@@ -2648,7 +2648,7 @@ class User extends CommonDBTM {
 
    function getUnallowedFieldsForUnicity() {
       return array_merge(parent::getUnallowedFieldsForUnicity(), 
-                         array('last_sync', 'last_login', 'profiles_id', 'entities_id'));
+                         array('last_login', 'profiles_id', 'entities_id', 'date_sync', 'auths_id'));
    }
 
 }
