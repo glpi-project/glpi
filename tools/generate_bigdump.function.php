@@ -2453,7 +2453,7 @@ function generate_entity($ID_entity) {
             $query = "INSERT INTO `glpi_computers_softwareversions`
                       VALUES (NULL, '$comp_id',
                               '$versID','0','0')";
-            echo $query.'<br>';
+//            echo $query.'<br>';
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
       }
