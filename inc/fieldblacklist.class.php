@@ -111,7 +111,6 @@ class Fieldblacklist extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
-
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
@@ -203,8 +202,8 @@ class Fieldblacklist extends CommonDropdown {
             $criteria[$field['Field']] = $searchOption['name'];
          }
       }
-      $rand   = Dropdown::showFromArray('value', $criteria,
-                                        array('value' => $blacklist->fields['value']));
+      $rand   = Dropdown::showFromArray('field', $criteria,
+                                        array('value' => $blacklist->fields['field']));
       $params = array('itemtype' => $blacklist->fields['itemtype'],
                       'id_field' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_value$rand", "span_values",
