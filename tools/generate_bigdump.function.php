@@ -2441,12 +2441,19 @@ function generate_entity($ID_entity) {
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $versID = $DB->insert_id();
-         $val3   = mt_rand(1,$MAX['softwareinstall']);
+         $val3   = min($LAST["computers"]-$FIRST['computers'],mt_rand(1,$MAX['softwareinstall']));
+         $first_comp   = mt_rand($FIRST["computers"],$LAST['computers']);
 
          for ($k=0 ; $k<$val3 ; $k++) {
+            $comp_id=($first_comp+$k)%$LAST['computers'];
+            if ($comp_id<$FIRST["computers"]) {
+               $comp_id+=$FIRST["computers"];
+            }
+
             $query = "INSERT INTO `glpi_computers_softwareversions`
-                      VALUES (NULL, '".mt_rand($FIRST["computers"],$LAST['computers'])."',
+                      VALUES (NULL, '$comp_id',
                               '$versID','0','0')";
+            echo $query.'<br>';
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
       }
@@ -2459,7 +2466,8 @@ function generate_entity($ID_entity) {
       for ($j=0 ; $j<$val2 ; $j++) {
          $softwareversions_id_buy = mt_rand($FIRST["version"],$LAST["version"]);
          $softwareversions_id_use = mt_rand($softwareversions_id_buy,$LAST["version"]);
-         $nbused                  = mt_rand(1,$MAX['softwareinstall']);
+
+         $nbused = min($LAST["computers"]-$FIRST['computers'],mt_rand(1,$MAX['softwareinstall']));
 
          $query = "INSERT INTO `glpi_softwarelicenses`
                    VALUES (NULL, $softID, '$ID_entity', '$recursive', '$nbused',
@@ -2469,9 +2477,17 @@ function generate_entity($ID_entity) {
          $DB->query($query) or die("PB REQUETE ".$query);
          $licID = $DB->insert_id();
 
+
+         $first_comp   = mt_rand($FIRST["computers"],$LAST['computers']);
+
+
          for ($k=0 ; $k<$nbused ; $k++) {
+            $comp_id=($first_comp+$k)%$LAST['computers'];
+            if ($comp_id<$FIRST["computers"]) {
+               $comp_id+=$FIRST["computers"];
+            }
             $query = "INSERT INTO `glpi_computers_softwarelicenses`
-                      VALUES (NULL, '".mt_rand($FIRST["computers"],$LAST['computers'])."', '$licID')";
+                      VALUES (NULL, '$comp_id', '$licID')";
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
       }
