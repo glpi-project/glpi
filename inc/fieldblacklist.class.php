@@ -123,11 +123,11 @@ class Fieldblacklist extends CommonDropdown {
 
       switch ($field['type']) {
          case 'blacklist_itemtype' :
-            $this->showItemtype($ID, $this->fields['itemtype']);
+            $this->showItemtype();
             break;
 
          case 'blacklist_field' :
-            self::selectCriterias($this);
+            $this->selectCriterias();
             break;
       }
    }
@@ -141,10 +141,10 @@ class Fieldblacklist extends CommonDropdown {
     *
     * @return nothing
    **/
-   function showItemtype($ID, $value=0) {
+   function showItemtype() {
       global $CFG_GLPI;
 
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $item = new $this->fields['itemtype'];
          echo $item->getTypeName();
       } else {
@@ -159,10 +159,11 @@ class Fieldblacklist extends CommonDropdown {
             }
          }
          asort($options);
-         $rand = Dropdown::showFromArray('itemtype', $options, array('value'=>$value));
+         $rand = Dropdown::showFromArray('itemtype', $options, 
+                                         array('value' => $this->fields['value']));
    
          $params = array('itemtype' => '__VALUE__',
-                         'id'       => $ID);
+                         'id'       => $this->fields['id']);
          ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
                                      $params);
@@ -170,23 +171,20 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   static function selectCriterias(CommonDBTM $blacklist) {
+   function selectCriterias() {
       global $DB, $CFG_GLPI;
-
-      //Do not check unicity on fields in DB with theses types
-      $blacklisted_types = array('longtext', 'text');
 
       echo "<span id='span_fields' name='span_fields'>";
 
-      if (!isset($blacklist->fields['itemtype']) || !$blacklist->fields['itemtype']) {
+      if (!isset($this->fields['itemtype']) || !$this->fields['itemtype']) {
          echo  "</span>";
          return;
       }
 
-      if (!isset($blacklist->fields['entities_id'])) {
-         $blacklist->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+      if (!isset($this->fields['entities_id'])) {
+         $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
-      $target = new $blacklist->fields['itemtype'];
+      $target = new $this->fields['itemtype'];
 
       $criteria = array();
       foreach ($DB->list_fields($target->getTable()) as $field) {
@@ -199,13 +197,13 @@ class Fieldblacklist extends CommonDropdown {
          }
 
          if (!empty($searchOption)
-             && !in_array($field['Type'],$blacklisted_types)
+             && !in_array($field['Type'],$target->getUnallowedFieldsForUnicity())
              && !in_array($field['Field'],$target->getUnallowedFieldsForUnicity())) {
             $criteria[$field['Field']] = $searchOption['name'];
          }
       }
-      $rand   = Dropdown::showFromArray('value', $criteria,
-                                        array('value' => $blacklist->fields['field']));
+      $rand   = Dropdown::showFromArray('field', $criteria,
+                                        array('value' => $this->fields['field']));
       /*
       $params = array('itemtype' => $blacklist->fields['itemtype'],
                       'id_field' => '__VALUE__');

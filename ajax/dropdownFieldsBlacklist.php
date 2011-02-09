@@ -49,5 +49,5 @@ if ($_POST['id'] > 0) {
    $field->getEmpty();
    $field->fields['itemtype'] = $_POST['itemtype'];
 }
-Fieldblacklist::selectCriterias($field);
+$field->selectCriterias($field);
 ?>
