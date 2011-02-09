@@ -2346,7 +2346,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getSearchOptionByField($field, $value, $table='') {
       
-      foreach ($this->getSearchOptions() as $searchOption) {
+      foreach (Search::getOptions(get_class($this)) as $searchOption) {
          if ((isset($searchOption['linkfield']) 
                && $searchOption['linkfield'] == $value) 
                   || (isset($searchOption[$field]) 
