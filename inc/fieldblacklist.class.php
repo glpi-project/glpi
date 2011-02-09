@@ -147,6 +147,7 @@ class Fieldblacklist extends CommonDropdown {
       if ($this->fields['id'] > 0) {
          $item = new $this->fields['itemtype'];
          echo $item->getTypeName();
+         echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
       } else {
          //Add criteria : display dropdown
          $options[0] = DROPDOWN_EMPTY_VALUE;
