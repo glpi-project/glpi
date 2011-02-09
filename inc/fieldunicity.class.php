@@ -305,7 +305,7 @@ class FieldUnicity extends CommonDropdown {
       $tab[4]['field']         = 'itemtype';
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'itemtype';
+      $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['forcegroupby']  = true;
 
       $tab[5]['table']         = $this->getTable();
