@@ -2442,18 +2442,18 @@ function generate_entity($ID_entity) {
 
          $versID = $DB->insert_id();
          $val3   = min($LAST["computers"]-$FIRST['computers'],mt_rand(1,$MAX['softwareinstall']));
-         $first_comp   = mt_rand($FIRST["computers"],$LAST['computers']);
+         $comp_id   = mt_rand($FIRST["computers"],$LAST['computers']);
 
          for ($k=0 ; $k<$val3 ; $k++) {
-            $comp_id=($first_comp+$k)%$LAST['computers'];
-            if ($comp_id<$FIRST["computers"]) {
-               $comp_id+=$FIRST["computers"];
+            $comp_id++;
+            if ($comp_id>$LAST["computers"]) {
+               $comp_id = $FIRST["computers"];
             }
 
             $query = "INSERT INTO `glpi_computers_softwareversions`
                       VALUES (NULL, '$comp_id',
                               '$versID','0','0')";
-//            echo $query.'<br>';
+
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
       }
@@ -2478,13 +2478,13 @@ function generate_entity($ID_entity) {
          $licID = $DB->insert_id();
 
 
-         $first_comp   = mt_rand($FIRST["computers"],$LAST['computers']);
+         $comp_id   = mt_rand($FIRST["computers"],$LAST['computers']);
 
 
          for ($k=0 ; $k<$nbused ; $k++) {
-            $comp_id=($first_comp+$k)%$LAST['computers'];
-            if ($comp_id<$FIRST["computers"]) {
-               $comp_id+=$FIRST["computers"];
+            $comp_id++;
+            if ($comp_id>$LAST["computers"]) {
+               $comp_id = $FIRST["computers"];
             }
             $query = "INSERT INTO `glpi_computers_softwarelicenses`
                       VALUES (NULL, '$comp_id', '$licID')";
