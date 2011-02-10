@@ -196,7 +196,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
             Stat::showGraph(array($LANG['financial'][81] => $valeurnettegraphdisplay),
                             array('title' => $LANG['financial'][81],
-                                  'width' => 500));
+                                  'width' => 400));
 
             echo "</td></tr>\n";
          }
@@ -215,7 +215,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
             Stat::showGraph(array($LANG['financial'][21] => $valeurgraphdisplay),
                             array('title' => $LANG['financial'][21],
-                                  'width' => 500));
+                                  'width' => 400));
 
             echo "</td></tr>";
          }
