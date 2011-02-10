@@ -1255,7 +1255,7 @@ function sendFile($file, $filename) {
    header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
    header('Pragma: private'); /// IE BUG + SSL
    header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-   header("Content-disposition: filename='$filename'");
+   header("Content-disposition: filename=\"$filename\"");
    header("Content-type: ".$mime);
 
    readfile($file) or die ("Error opening file $file");

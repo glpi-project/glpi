@@ -1023,6 +1023,11 @@ class Stat {
                $graph->renderer->options->pieChartGleamBorder = 2;
                $graph->renderer->options->pieChartShadowSize  = 5;
                $graph->renderer->options->pieChartShadowColor = '#BABDB6';
+
+               if (count($entrees)==1) {
+                  $graph->legend = false;
+               }
+
                break;
 
             case 'bar' :
@@ -1101,10 +1106,6 @@ class Stat {
             }
 
             $graph->title = $param['title'];
-         }
-
-         if (count($entrees)==1) {
-            $graph->legend = false;
          }
 
          switch ($_SESSION['glpigraphtype']) {
