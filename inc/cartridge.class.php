@@ -242,7 +242,7 @@ class Cartridge extends CommonDBTM {
 
          if (!$nohtml) {
             $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total
-                     <span class='b'>";
+                     <span class='b very_small_space'>";
             if ($unused>1) {
                $out .= $LANG['cartridges'][13];
             } else {
@@ -265,7 +265,7 @@ class Cartridge extends CommonDBTM {
             $out .= "&nbsp;:&nbsp;$old</span></div>";
 
          } else {
-            $out .= $LANG['common'][33]." : $total   ";
+            $out .= $LANG['common'][33]." : $total  ";
             if ($unused>1) {
                $out .= $LANG['cartridges'][13];
             } else {
@@ -425,9 +425,9 @@ class Cartridge extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $total  = $DB->result($result, 0, "COUNT");
-         $unused = self::getUnusedNumber($tID);
-         $used   = self::getUsedNumber($tID);
-         $old    = self::getOldNumber($tID);
+//          $unused = self::getUnusedNumber($tID);
+//          $used   = self::getUsedNumber($tID);
+//          $old    = self::getOldNumber($tID);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
