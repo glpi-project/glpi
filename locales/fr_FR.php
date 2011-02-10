@@ -1177,7 +1177,6 @@ $LANG['login'][24] = "Date dernière mise à jour";
 $LANG['login'][25] = "Vous n'avez aucun droit pour vous connecter à cette application";
 $LANG['login'][26] = "Vous devez activer la fonction JavaScript de votre navigateur";
 $LANG['login'][27] = "Vous devez autoriser les cookies pour accéder à cette application";
-$LANG['login'][28] = "Identifiant de messagerie";
 $LANG['login'][29] = "Dernière synchronisation";
 $LANG['login'][30] = "Changement de la méthode d'authentification";
 $LANG['login'][31] = "Authentification sur un annuaire LDAP";
