@@ -134,7 +134,7 @@ function includeCommonHtmlHeader($title='') {
 
    echo "<!--[if IE]>" ;
    echo "<script type='text/javascript'>\n";
-   echo "Ext.UpdateManager.defaults.indicatorText='<\span class='loading-indicator-ie'>".
+   echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
          $LANG['common'][80]."<\/span>';\n";
    echo "</script>\n";
    echo "<![endif]-->";
