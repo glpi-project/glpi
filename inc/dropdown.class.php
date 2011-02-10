@@ -50,7 +50,7 @@ class Dropdown {
     *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - auto_submit : boolean / preselected value (default 0)
+    *    - auto_submit : boolean / autosubmit on change (default false)
     *    - rand : integer / already computed rand value
     *    - condition : string / aditional SQL condition to limit display
     *    - displaywith : array / array of field to display with request

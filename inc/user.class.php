@@ -1965,7 +1965,7 @@ class User extends CommonDBTM {
     *          all=1 -> All
     *         all=-1-> nothing
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - helpdesk_ajax : boolean (default 0) / use ajax for helpdesk auto update (mail itemtype)
+    *    - auto_submit : boolean / autosubmit on change (default false)
     *
     * @param $options possible options
     *
@@ -1979,7 +1979,7 @@ class User extends CommonDBTM {
       $p['value']          = '';
       $p['right']          = 'id';
       $p['all']            = 0;
-      $p['helpdesk_ajax']  = 0;
+      $p['auto_submit']    = f;
       $p['comments']       = 1;
       $p['entity']         = -1;
       $p['entity_sons']    = false;
@@ -2027,7 +2027,7 @@ class User extends CommonDBTM {
                       'right'            => $p['right'],
                       'comment'          => $p['comments'],
                       'rand'             => $rand,
-                      'helpdesk_ajax'    => $p['helpdesk_ajax'],
+                      'auto_submit'      => $p['auto_submit'],
                       'entity_restrict'  => $p['entity'],
                       'used'             => $p['used']);
       if ($view_users) {
