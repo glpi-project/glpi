@@ -310,7 +310,7 @@ class Stat {
 
             //le nombre d'intervention resolues - the number of resolved intervention
             $solved_late    = Stat::constructEntryValues("inter_solved_late", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+                                                         $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
             $export_data['solved_late'][$value[$i]['link']] = $nb_solved_late;

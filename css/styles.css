@@ -686,12 +686,12 @@ margin-left:8px;}
 
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
-/* 3 spaces */
+/* 2 space */
 .very_small_space {
    margin-left: 15px;
 }
 
-/* 3 spaces */
+/* 5 spaces */
 .small_space {
    margin-left: 38px;
 }

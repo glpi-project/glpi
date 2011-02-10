@@ -985,22 +985,22 @@ class Ticket extends CommonDBTM {
             $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
             $calendar     = new Calendar();
             $delay_time   = 0;
-   
+
             // Using calendar
             if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
                $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
-                                                            $_SESSION["glpi_currenttime"]);
+                                                             $_SESSION["glpi_currenttime"]);
                // compute new due date using calendar
-               $this->updates[] = "due_date";
+               $this->updates[]          = "due_date";
                $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
                                                                      $delay_time);
             } else { // Not calendar defined
                $delay_time = strtotime($_SESSION["glpi_currenttime"])
-                                                      -strtotime($this->fields['begin_waiting_date']);
+                             -strtotime($this->fields['begin_waiting_date']);
                // compute new due date : no calendar so add computed delay_time
-               $this->updates[] = "due_date";
-               $this->fields['due_date'] = date('Y-m-d H:i:s',$delay_time
-                                                               +strtotime($this->fields['due_date']));
+               $this->updates[]          = "due_date";
+               $this->fields['due_date'] = date('Y-m-d H:i:s',
+                                                $delay_time+strtotime($this->fields['due_date']));
             }
          }
 
@@ -6176,9 +6176,9 @@ class Ticket extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_users`.`$field`
                 FROM `glpi_tickets`
-                INNER JOIN `glpi_tickets_users` 
+                INNER JOIN `glpi_tickets_users`
                      ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-                             AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
+                         AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)
                 LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");

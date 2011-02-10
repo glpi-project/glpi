@@ -36,9 +36,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
+commonHeader($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
 
-checkRight("statistic","1");
+checkRight("statistic", "1");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    if (isset($_GET["date1"])) {
@@ -53,7 +53,7 @@ if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
     && strcmp($_POST["date2"],$_POST["date1"]) < 0) {
 
-   $tmp = $_POST["date1"];
+   $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
@@ -62,8 +62,8 @@ $cleantarget = preg_replace("/[&]date[12]=[0-9-]*/","",$_SERVER['QUERY_STRING'])
 $cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/","",$cleantarget);
 $cleantarget = preg_replace("/&/","&amp;",$cleantarget);
 
-$next = 0;
-$prev = 0;
+$next  = 0;
+$prev  = 0;
 $title = "";
 
 switch($_GET["type"]) {
@@ -256,18 +256,20 @@ echo "<div align='center'>";
 echo "<table class='tab_cadre_navigation'>";
 echo "<tr><td>";
 if ($prev > 0) {
-   echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$prev'><img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".
-          $LANG['buttons'][12]."' title=\"".$LANG['buttons'][12]."\"></a>";
+   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
+          $_POST["date2"]."&amp;id=$prev\">
+          <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12]."\"
+           title=\"".$LANG['buttons'][12]."\"></a>";
 }
 echo "</td>";
 
 echo "<td width='400' class='center b'>$title</td>";
 echo "<td>";
 if ($next > 0) {
-   echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$next'><img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".
-          $LANG['buttons'][11]."' title=\"".$LANG['buttons'][11]."\"></a>";
+   echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
+          $_POST["date2"]."&amp;id=$next\">
+          <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11]."\"
+           title=\"".$LANG['buttons'][11]."\"></a>";
 }
 echo "</td>";
 echo "</tr>";
@@ -276,12 +278,13 @@ echo "</table></div><br>";
 $target = preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 
 echo "<form method='post' name='form' action='$target'><div class='center'>";
-echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
+echo "<table class='tab_cadre'>";
+echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
 showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' value=\"".$LANG['buttons'][7]."\"></td></tr>";
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
+
+echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
 showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";
@@ -375,7 +378,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint ,array('title'     => $LANG['stats'][13],
+Stat::showGraph($toprint, array('title'     => $LANG['stats'][13],
                                 'showtotal' => 1,
                                 'unit'      => $LANG['stats'][35]));
 
@@ -405,7 +408,7 @@ foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key] /= HOUR_TIMESTAMP;
 }
 foreach ($values2['avgactiontime'] as $key => $val) {
-   $values2['avgactiontime'][$key]/=HOUR_TIMESTAMP;
+   $values2['avgactiontime'][$key] /= HOUR_TIMESTAMP;
 }
 
 foreach ($values2['avgtaketime'] as $key => $val) {

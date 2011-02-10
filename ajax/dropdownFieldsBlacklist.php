@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownFieldsBlacklist.php")) {
 
 checkRight("config", "w");
 
-$field = new Fieldblacklist;
+$field = new Fieldblacklist();
 if ($_POST['id'] > 0) {
    $field->getFromDB($_POST['id']);
 } else {

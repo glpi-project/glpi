@@ -416,12 +416,12 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query =        $this->getDistinctUserSql()."
-                   FROM `glpi_ticketvalidations`
-                   LEFT JOIN `glpi_users`
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_ticketvalidations`
+                  LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)".
-                   $this->getProfileJoinSql()."
-                   WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -438,11 +438,11 @@ class NotificationTargetTicket extends NotificationTarget {
 
       if (isset($options['validation_id'])) {
          $query = $this->getDistinctUserSql()."
-                   FROM `glpi_ticketvalidations`
-                   LEFT JOIN `glpi_users`
+                  FROM `glpi_ticketvalidations`
+                  LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)".
-                   $this->getProfileJoinSql()."
-                   WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -458,11 +458,12 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['followup_id'])) {
-         $query =        $this->getDistinctUserSql()."
-                   FROM `glpi_ticketfollowups`
-                  INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_ticketfollowups`
+                  INNER JOIN `glpi_users`
+                        ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
                   $this->getProfileJoinSql()."
-                   WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
+                  WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -478,11 +479,11 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query =        $this->getDistinctUserSql()."
-                   FROM `glpi_tickettasks`
-                   INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)".
-                     $this->getProfileJoinSql()."
-                   WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_tickettasks`
+                  INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)".
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -498,14 +499,14 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query =        $this->getDistinctUserSql()."
-                   FROM `glpi_tickettasks`
-                   INNER JOIN `glpi_ticketplannings`
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_tickettasks`
+                  INNER JOIN `glpi_ticketplannings`
                         ON (`glpi_ticketplannings`.`tickettasks_id` = `glpi_tickettasks`.`id`)
-                   INNER JOIN `glpi_users`
+                  INNER JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketplannings`.`users_id`)".
-                     $this->getProfileJoinSql()."
-                   WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
+                  $this->getProfileJoinSql()."
+                  WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
