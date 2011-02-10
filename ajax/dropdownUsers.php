@@ -48,13 +48,6 @@ if (!defined('GLPI_ROOT')) {
 
 checkLoginUser();
 
-// Make a select box with all glpi users
-if (isset($_POST["helpdesk_ajax"])&& $_POST["helpdesk_ajax"]) {
-   $is_helpdesk_multientity = true;
-} else {
-   $is_helpdesk_multientity = false;
-}
-
 if (!isset($_POST['right'])) {
    $_POST['right'] = "all";
 }
@@ -97,7 +90,7 @@ if ($DB->numrows($result)) {
 asort($users);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'";
-if ($is_helpdesk_multientity) {
+if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
    echo " onChange='submit()'";
 }
 echo ">";
@@ -141,26 +134,6 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                "comment_".$_POST["myname"].$_POST["rand"],
                                $CFG_GLPI["root_doc"]."/ajax/comments.php",
                                $paramscomment, false);
-}
-
-// Manage updates others dropdown for helpdesk
-if ($is_helpdesk_multientity) {
-   if (!isMultiEntitiesMode()) {
-      $paramscomment = array('userID'          => '__VALUE__',
-                             'entity_restrict' => $_POST["entity_restrict"],
-                             'itemtype'        => 0,
-                             'users_id_field'  => "dropdown_users_id".$_POST["rand"]);
-
-      ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"], "tracking_my_devices",
-                                  $CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",
-                                  $paramscomment, false);
-
-/*      $paramscomment = array('value' => '__VALUE__');
-
-      ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"], "user_email_result",
-                                  $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                  false);*/
-   }
 }
 
 ?>
