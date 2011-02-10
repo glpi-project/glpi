@@ -794,7 +794,7 @@ class Infocom extends CommonDBChild {
              && in_array($item->getType(), array('Software',
                                                  'CartridgeItem',
                                                  'ConsumableItem'))) {
-            echo "<div class='firstbloc'>".$LANG['financial'][84]."</div>";
+            echo "<div class='firstbloc center'>".$LANG['financial'][84]."</div>";
          }
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             $input = array('itemtype'    => $item->getType(),
