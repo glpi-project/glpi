@@ -127,15 +127,15 @@ function includeCommonHtmlHeader($title='') {
    echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
    echo " Ext.Updater.defaults.loadScripts = true;\n";
    // JMD : validator doesn't accept html in script , must escape html element to validate
-   echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator\">".
-         $LANG['common'][80]."<\/span>';\n";
+   echo "Ext.UpdateManager.defaults.indicatorText='<\div class=\"center\"><\span class=\"loading-indicator center\">".
+         $LANG['common'][80]."<\/span><\/div>';\n";
    echo "//]]> \n";
    echo "</script>\n";
 
    echo "<!--[if IE]>" ;
    echo "<script type='text/javascript'>\n";
-   echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
-         $LANG['common'][80]."<\/span>';\n";
+   echo "Ext.UpdateManager.defaults.indicatorText='<\div class=\"center\"><\span class=\"loading-indicator-ie\">".
+         $LANG['common'][80]."<\/span><\/div>';\n";
    echo "</script>\n";
    echo "<![endif]-->";
 
