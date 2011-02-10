@@ -455,12 +455,12 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
 
       if ($offsettable >= 0) {
          if (backupMySql($DB,$fichier,$duree,$rowlimit)) {
-            echo "<br><a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
+            echo "<div class='center'><a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
                        "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
                        $LANG['backup'][24]."</a>";
             echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
-                     "$fichier\";</script>";
+                     "$fichier\";</script></div>";
             glpi_flush();
             exit;
          }
@@ -518,10 +518,10 @@ if (isset($_GET["file"])
 
    if ($offset != -1) {
       if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
-         echo "<br><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
+         echo "<div class='center'><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
                     "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][24]."</a>";
          echo "<script language='javascript' type='text/javascript'>window.location=\"backup.php?file=".
-                $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
+                $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script></div>";
          glpi_flush();
          exit;
       }
