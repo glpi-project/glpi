@@ -1497,8 +1497,8 @@ $LANG['ocsng'][74] = "Ordinateurs non modifiés";
 $LANG['ocsng'][75] = "Ordinateurs en doublon";
 $LANG['ocsng'][76] = "Statistiques de la liaison OCSNG";
 $LANG['ocsng'][77] = "traitement terminé";
-$LANG['ocsng'][78] = "Liaison si possible, sinon pas d'import";
-$LANG['ocsng'][79] = "Liaison si possible, sinon import";
+$LANG['ocsng'][78] = "Liaison si possible, sinon import refusé";
+$LANG['ocsng'][79] = "Liaison si possible";
 $LANG['ocsng'][80] = "Ordinateurs dont l'import est refusé par une règle";
 
 

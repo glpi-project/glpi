@@ -340,7 +340,7 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-
+      
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
@@ -351,7 +351,7 @@ class RuleImportComputer extends Rule {
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             if ($action->fields['field'] == '_fusion') {
-               if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_IMPORT) {
+               if ($action->fields["value"] == self::RULE_ACTION_LINK_OR_NO_IMPORT) {
                   return true;
                }
             }
