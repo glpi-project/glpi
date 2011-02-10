@@ -1484,22 +1484,22 @@ $LANG['ocsng'][58] = "Liaison OCSNG";
 $LANG['ocsng'][59] = "Présent dans GLPI";
 $LANG['ocsng'][60] = "Présent dans OCSNG";
 $LANG['ocsng'][61] = "Aucun objet à nettoyer.";
-$LANG['ocsng'][62] = "entité de destination de la machine";
+$LANG['ocsng'][62] = "entité de destination de l'ordinateur";
 
 $LANG['ocsng'][67] = "Liaison possible";
 $LANG['ocsng'][68] = "Import refusé";
-$LANG['ocsng'][69] = "Nouvelle machine créée dans GLPI";
-$LANG['ocsng'][70] = "Machines importées";
-$LANG['ocsng'][71] = "Machines synchronisées";
-$LANG['ocsng'][72] = "Machines ne vérifiant aucune règle";
-$LANG['ocsng'][73] = "Machines liées";
-$LANG['ocsng'][74] = "Machines non modifiées";
-$LANG['ocsng'][75] = "Machines en doublon";
+$LANG['ocsng'][69] = "Nouvel ordinateur créé dans GLPI";
+$LANG['ocsng'][70] = "Ordinateurs importés";
+$LANG['ocsng'][71] = "Ordinateurs synchronisés";
+$LANG['ocsng'][72] = "Ordinateurs ne vérifiant aucune règle";
+$LANG['ocsng'][73] = "Ordinateurs liés";
+$LANG['ocsng'][74] = "Ordinateurs non modifiés";
+$LANG['ocsng'][75] = "Ordinateurs en doublon";
 $LANG['ocsng'][76] = "Statistiques de la liaison OCSNG";
 $LANG['ocsng'][77] = "traitement terminé";
 $LANG['ocsng'][78] = "Liaison si possible, sinon pas d'import";
 $LANG['ocsng'][79] = "Liaison si possible, sinon import";
-$LANG['ocsng'][80] = "Machines dont l'import est refusé par une règle";
+$LANG['ocsng'][80] = "Ordinateurs dont l'import est refusé par une règle";
 
 
 
@@ -1855,8 +1855,8 @@ $LANG['rulesengine'][148] = "Domaine de messagerie connu";
 $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
 $LANG['rulesengine'][151] = "est déjà présent dans GLPI";
-$LANG['rulesengine'][152] = "Machine à importer";
-$LANG['rulesengine'][153] = "Machine dans GLPI";
+$LANG['rulesengine'][152] = "Ordinateur à importer";
+$LANG['rulesengine'][153] = "Ordinateur dans GLPI";
 $LANG['rulesengine'][154] = "est vide";
 $LANG['rulesengine'][155] = "Lier avec l'ordinateur";
 
@@ -2230,7 +2230,7 @@ $LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 $LANG['setup'][819] = "Passage à l'état ";
-$LANG['setup'][820] = "Comportement à la suppression d'une machine dans OCSNG";
+$LANG['setup'][820] = "Comportement à la suppression d'un ordinateur dans OCSNG";
 $LANG['setup'][821] = "Enregistrement en base refusé";
 $LANG['setup'][822] = "Envoyer une notification";
 $LANG['setup'][823] = "Enregistrement effectué mais doublon sur ";
