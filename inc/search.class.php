@@ -1417,6 +1417,8 @@ class Search {
          reset($options);
          $first_group = true;
          $selected = 'view';
+         $str_limit=28;
+
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
@@ -1425,7 +1427,7 @@ class Search {
                } else {
                   $first_group = false;
                }
-               echo "<optgroup label=\"$val\">";
+               echo "<optgroup label=\"".utf8_substr($val,0,$str_limit)."\">";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
                   echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
@@ -1433,7 +1435,7 @@ class Search {
                      echo "selected";
                      $selected = $key;
                   }
-                  echo ">". utf8_substr($val["name"], 0, 28) ."</option>\n";
+                  echo ">". utf8_substr($val["name"], 0, $str_limit) ."</option>\n";
                }
             }
          }
