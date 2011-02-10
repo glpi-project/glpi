@@ -244,8 +244,8 @@ class Consumable extends CommonDBTM {
             $highlight = "class='tab_bg_1_2";
          }
          if (!$nohtml) {
-            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total";
-            $out .= "<span class='b'>";
+            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total
+                     <span class='b'>";
             if ($unused>1) {
                $out .= $LANG['consumables'][14];
             } else {

@@ -248,7 +248,7 @@ class FieldUnicity extends CommonDropdown {
       $unicity_fields = explode(',', $unicity->fields['fields']);
       //Search option for this type
       $target = new $unicity->fields['itemtype'];
-      
+
       //Construct list
       echo "<span id='span_fields' name='span_fields'>";
       echo "<select name='_fields[]' multiple size='15' style='width:400px'>";
@@ -413,8 +413,8 @@ class FieldUnicity extends CommonDropdown {
          if ($unicity->fields['is_recursive']) {
             $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
          }
-         // why this variable because not used
          $fields_string = implode(',', $fields);
+
          if ($item->maybeTemplate()) {
             $where_template = " WHERE `is_template` = '0'";
          } else {

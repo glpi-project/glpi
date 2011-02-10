@@ -259,8 +259,8 @@ function addTracking($type, $ID, $ID_entity) {
       $closedate = "";
       $solvedate = "";
 
-      $opendate = time() - mt_rand(0, 365)*DAY_TIMESTAMP - mt_rand(0, 10)*HOUR_TIMESTAMP 
-                     - mt_rand(0, 60)*MINUTE_TIMESTAMP - mt_rand(0, 60);
+      $opendate  = time() - mt_rand(0, 365)*DAY_TIMESTAMP - mt_rand(0, 10)*HOUR_TIMESTAMP
+                   - mt_rand(0, 60)*MINUTE_TIMESTAMP - mt_rand(0, 60);
 
       if (mt_rand(0,100)<$percent['closed_tracking']) {
          $rtype = mt_rand(0, 100);
@@ -306,12 +306,13 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
       $actiontime      = mt_rand(0, 3)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
-      $firstactiontime = mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
+      $firstactiontime = mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP
+                         +mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $solvetime       = 0;
       $closetime       = 0;
 
-      $solution     = "";
-      $solutiontype = 0;
+      $solution        = "";
+      $solutiontype    = 0;
 
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
