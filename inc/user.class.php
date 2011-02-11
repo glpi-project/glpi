@@ -1144,35 +1144,8 @@ class User extends CommonDBTM {
    **/
    function currentUserHaveMoreRightThan($ID) {
 
-      $user_prof = $this->getUserProfiles($ID);
+      $user_prof = Profile_User::getUserProfiles($ID);
       return Profile::currentUserHaveMoreRightThan($user_prof);
-   }
-
-
-   /**
-    * Get user profiles (no entity association, use sqlfilter if needed)
-    *
-    * @param $ID Integer : Id of the user
-    * @param $sqlfilter String : additional filter (must start with AND)
-    *
-    * @return array of the IDs of the profiles
-   **/
-   function getUserProfiles($ID, $sqlfilter='') {
-      global $DB;
-
-      $prof = array();
-      $query = "SELECT DISTINCT `glpi_profiles_users`.`profiles_id`
-                FROM `glpi_profiles_users`
-                WHERE `glpi_profiles_users`.`users_id` = '$ID' " .
-                      $sqlfilter;
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $prof[$data['profiles_id']] = $data['profiles_id'];
-         }
-      }
-      return $prof;
    }
 
 
@@ -1499,11 +1472,10 @@ class User extends CommonDBTM {
 
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
-            $options = array(0 => DROPDOWN_EMPTY_VALUE);
-            $options = array_merge($options,
-                                   Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                Profile_User::getUserProfiles($this->fields['id'])));
 
+            $options = array(0 => DROPDOWN_EMPTY_VALUE);
+            $options += Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
 
