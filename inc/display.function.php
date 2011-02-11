@@ -2815,7 +2815,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
          ,id: 'date$rand'
          ,value: '$value'
          ,hiddenFormat:'Y-m-d H:i:s'
-         ,applyTo: 'showdate$rand'
+         ,renderTo: 'showdate$rand'
          ,timeFormat:'H:i'
          ,timeWidth: 40
          ,dateWidth: 90
