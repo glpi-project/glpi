@@ -365,9 +365,9 @@ td { }
 	width:950px;
 }
 
-.tab_cadre_fixe tr, .tab_cadre_fixe td {
-	background-color: transparent;
-}
+/*.tab_cadre_fixe tr, .tab_cadre_fixe td { */
+/*	background-color: transparent; */
+/*}*/
 
 
 .tab_cadre_fixe img {
@@ -489,7 +489,7 @@ td { }
 }  
 
 .tab_bg_4 {
-	background-color: silver;
+	background-color: #e4e4e2;
 }
 
 .tab_bg_5 {
