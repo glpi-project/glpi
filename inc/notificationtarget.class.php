@@ -424,7 +424,7 @@ class NotificationTarget extends CommonDBChild {
             return false;
          }
          $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(), true);
-         $prof = $user->getUserProfiles($data['id'], $filt);
+         $prof = Profile_User::getUserProfiles($data['id'], $filt);
          if (!count($prof)) {
             // No right on the entity of the object
             return false;

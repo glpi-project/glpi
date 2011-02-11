@@ -549,33 +549,30 @@ class Profile_User extends CommonDBTM {
 
 
    /**
-    * Get profiles assigned to a user
+    * Get user profiles (no entity association, use sqlfilter if needed)
     *
     * @param $user_ID user ID
+    * @param $sqlfilter String : additional filter (must start with AND)
     *
-    * @return array of entities ID
+    * @return array of the IDs of the profiles
    **/
-   static function getUserProfiles($user_ID) {
+   static function getUserProfiles($user_ID, $sqlfilter='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `profiles_id`, `is_recursive`
+      $query = "SELECT DISTINCT `profiles_id`
                 FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID'";
+                WHERE `users_id` = '$user_ID' $sqlfilter";
       $result = $DB->query($query);
+      $profiles = array();
 
       if ($DB->numrows($result) >0) {
-         $profiles = array();
-
          while ($data = $DB->fetch_assoc($result)) {
-            if ($data['is_recursive']) {
-               $profiles[$data['profiles_id']] = $data['profiles_id'];
-            }
+            $profiles[$data['profiles_id']] = $data['profiles_id'];
          }
 
-         return $profiles;
       }
 
-      return array();
+      return $profiles;
    }
 
 
