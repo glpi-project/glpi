@@ -1951,7 +1951,7 @@ class User extends CommonDBTM {
       $p['value']          = '';
       $p['right']          = 'id';
       $p['all']            = 0;
-      $p['auto_submit']    = f;
+      $p['auto_submit']    = false;
       $p['comments']       = 1;
       $p['entity']         = -1;
       $p['entity_sons']    = false;
