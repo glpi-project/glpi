@@ -5,10 +5,10 @@
  * http://www.sencha.com/license
  */
 .x-pivotgrid .x-grid3-header-offset table td {
-    background: url(../images/default/grid/grid3-hrow.gif) repeat-x 50% 100%;
+    background: url(../images/gray/grid/grid3-hrow2.gif) repeat-x 50% 100%;
     border-left: 1px solid;
     border-right: 1px solid;
-    border-left-color: #EEE;
+    border-left-color: #D0D0D0;
     border-right-color: #D0D0D0;
 }
 
