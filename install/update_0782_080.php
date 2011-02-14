@@ -1409,8 +1409,8 @@ function update0782to080($output='HTML') {
       }
    }
 
-   $migration->addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
-   $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+   $migration->addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','1'," WHERE `update_followups` = 1");
+   $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
 
    $migration->addField('glpi_configs', 'ocs_deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
 
@@ -1511,7 +1511,7 @@ function update0782to080($output='HTML') {
    /* END - New automatic transfert feature */
 
    $migration->addField('glpi_profiles', 'entity_helpdesk',
-                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`notification`');
 
    // must always be at the end
    $migration->executeMigration();
