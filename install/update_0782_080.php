@@ -1510,6 +1510,9 @@ function update0782to080($output='HTML') {
                         'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL');
    /* END - New automatic transfert feature */
 
+   $migration->addField('glpi_profiles', 'entity_helpdesk',
+                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+
    // must always be at the end
    $migration->executeMigration();
 
