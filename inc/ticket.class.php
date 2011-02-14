@@ -2933,7 +2933,7 @@ class Ticket extends CommonDBTM {
          echo "</textarea></div>";
 
       } else {
-         echo nl2br($this->getField('solution'));
+         echo unclean_cross_side_scripting_deep($this->getField('solution'));
       }
       echo "</td></tr>";
 
