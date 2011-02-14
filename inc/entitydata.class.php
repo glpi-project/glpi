@@ -73,10 +73,11 @@ class EntityData extends CommonDBChild {
                                                                'use_reservations_alert',
                                                                'use_infocoms_alert'),
                                        // Helpdesk
-                                       'entity_helpdesk' => 'calendars_id', 'tickettype',
-                                                            'auto_assign_mode', 'autoclose_delay',
-                                                            'inquest_config', 'inquest_rate',
-                                                            'inquest_delay', 'inquest_URL' );
+                                       'entity_helpdesk' => array('calendars_id', 'tickettype',
+                                                                  'auto_assign_mode',
+                                                                  'autoclose_delay',
+                                                                  'inquest_config', 'inquest_rate',
+                                                                  'inquest_delay', 'inquest_URL'));
 
 
    function getIndexName() {
