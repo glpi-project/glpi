@@ -1110,7 +1110,7 @@ class Dropdown {
          }
       }
 
-      if ($value && empty($params['withtemplate'])) {
+      if ($params['value'] && empty($params['withtemplate'])) {
          echo $LANG['peripherals'][31];
 
          if ($params['management_restrict'] == 2) {
