@@ -1047,7 +1047,8 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("calendar", $this->fields["calendar"], 1, 1, 1);
       echo "</td>\n";
-      echo "<td>";
+      echo "<td>".$LANG['title'][24]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("entity_helpdesk", $this->fields["entity_helpdesk"], 1, 1, 1);
       echo "</td></tr>\n";
 
       if ($canedit && $closeform) {

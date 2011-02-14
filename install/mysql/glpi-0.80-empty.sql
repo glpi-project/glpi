@@ -3269,6 +3269,7 @@ CREATE TABLE `glpi_profiles` (
   `clean_ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `delete_own_followup` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `delete_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entity_helpdesk` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),

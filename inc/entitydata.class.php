@@ -53,17 +53,16 @@ class EntityData extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // Array of "right required to update" => array of fields allowed
-   private static $field_right = array('entity' => array(// Address
-                                                         'address', 'postcode', 'postcode', 'town',
-                                                         'state', 'country', 'website',
-                                                         'phonenumber', 'fax', 'email', 'notepad',
-                                                         // Advanced (could be user_authtype ?)
-                                                         'ldap_dn', 'tag', 'authldaps_id',
-                                                         'entity_ldapfilter',
-                                                         // Helpdesk config (could be another right)
-                                                         'autoclose_delay'),
+   private static $field_right = array('entity'          => array(// Address
+                                                                  'address', 'postcode', 'postcode',
+                                                                  'town', 'state', 'country',
+                                                                  'website', 'phonenumber', 'fax',
+                                                                  'email', 'notepad',
+                                                                  // Advanced (could be user_authtype ?)
+                                                                  'ldap_dn', 'tag', 'authldaps_id',
+                                                                  'entity_ldapfilter'),
                                        // Notification
-                                       'notification' => array('admin_email', 'admin_reply',
+                                       'notification'    => array('admin_email', 'admin_reply',
                                                                'admin_email_name',
                                                                'admin_reply_name',
                                                                'mailing_signature',
@@ -72,7 +71,12 @@ class EntityData extends CommonDBChild {
                                                                'use_licenses_alert',
                                                                'use_contracts_alert',
                                                                'use_reservations_alert',
-                                                               'use_infocoms_alert'));
+                                                               'use_infocoms_alert'),
+                                       // Helpdesk
+                                       'entity_helpdesk' => 'calendars_id', 'tickettype',
+                                                            'auto_assign_mode', 'autoclose_delay',
+                                                            'inquest_config', 'inquest_rate',
+                                                            'inquest_delay', 'inquest_URL' );
 
 
    function getIndexName() {
@@ -631,7 +635,7 @@ class EntityData extends CommonDBChild {
       if (!$entity->can($ID,'r')) {
          return false;
       }
-      $canedit = $entity->canCreate();
+      $canedit = haveRight('entity_helpdesk','w') && haveAccessToEntity($ID);
 
       // Get data
       $entdata = new EntityData();
