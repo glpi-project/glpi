@@ -1181,7 +1181,7 @@ div#c_menu{
 	height: 41px;
 	position: absolute;
 	top: 0px;
-	z-index: 10;
+	z-index: 100;
 	left: 45px;
 }
 
