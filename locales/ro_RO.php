@@ -1320,7 +1320,7 @@ $LANG['phones'][40]="Numarul de linii";
 
 $LANG['planning'][0]="Tehnicianul solicitat are deja planificata o interventie"; 
 $LANG['planning'][1]="Eroare la introducerea datelor. Data de inceput este mai mare decat data finala"; 
-$LANG['planning'][2]="L'utilisateur est déjà occupé pour la période utilisée :"; 
+$LANG['planning'][2]="User is already occupied for the selected timeframe :"; 
 $LANG['planning'][3]="Period"; 
 $LANG['planning'][5]="Zi"; 
 $LANG['planning'][6]="Saptamana"; 
@@ -1611,7 +1611,7 @@ $LANG['satisfaction'][7]="Satisfaction";
 $LANG['satisfaction'][8]="Comments to the satisfaction survey"; 
 $LANG['satisfaction'][9]="Internal survey"; 
 $LANG['satisfaction'][10]="External survey"; 
-$LANG['satisfaction'][11]="Nous vous invitons à apprécier la qualité de la prestation :"; 
+$LANG['satisfaction'][11]="We invite you to judge the quality of the service :"; 
 $LANG['satisfaction'][12]="Invitation to fill out the survey"; 
 
 $LANG['search'][0]="Cauta"; 
@@ -2084,7 +2084,7 @@ $LANG['users'][5]="You have been made a request to reset your account password."
 $LANG['users'][6]="Just follow this link (you have one day) :"; 
 $LANG['users'][7]="Please enter your email address. A email will be sent to you and you will be able to choose a new password."; 
 $LANG['users'][8]="Email address not found."; 
-$LANG['users'][9]="La configuration de l'authentification ne vous permet pas de changer votre mot de passe."; 
+$LANG['users'][9]="The authentication method configuration doesn't allow you to change your password."; 
 $LANG['users'][10]="An email has been sent to your email address. The email contains informations for reset your password."; 
 $LANG['users'][11]="Please confirm your email address and enter your new password."; 
 $LANG['users'][12]="Your password reset request has expired or is invalid. Please renew it."; 

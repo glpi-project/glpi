@@ -1320,7 +1320,7 @@ $LANG['phones'][40]="行數";
 
 $LANG['planning'][0]="工程師的請求已經有計劃的在執行。"; 
 $LANG['planning'][1]="輸入日期錯誤,開始日期晚於結束日期"; 
-$LANG['planning'][2]="L'utilisateur est déjà occupé pour la période utilisée :"; 
+$LANG['planning'][2]="User is already occupied for the selected timeframe :"; 
 $LANG['planning'][3]="期間"; 
 $LANG['planning'][5]="天"; 
 $LANG['planning'][6]="星期"; 
@@ -1611,7 +1611,7 @@ $LANG['satisfaction'][7]="滿意度";
 $LANG['satisfaction'][8]="滿意度調查的意見"; 
 $LANG['satisfaction'][9]="內部調查"; 
 $LANG['satisfaction'][10]="外部調查"; 
-$LANG['satisfaction'][11]="Nous vous invitons à apprécier la qualité de la prestation :"; 
+$LANG['satisfaction'][11]="We invite you to judge the quality of the service :"; 
 $LANG['satisfaction'][12]="邀請填寫調查"; 
 
 $LANG['search'][0]="搜尋"; 
@@ -2084,7 +2084,7 @@ $LANG['users'][5]="你已經送出重設帳戶密碼要求。";
 $LANG['users'][6]="只要依照此鏈接（你有一天）："; 
 $LANG['users'][7]="請輸入您的電子郵件地址。電子郵件將發送給您，之後你可以選擇一個新密碼。"; 
 $LANG['users'][8]="未找到電子郵件地址。"; 
-$LANG['users'][9]="La configuration de l'authentification ne vous permet pas de changer votre mot de passe."; 
+$LANG['users'][9]="The authentication method configuration doesn't allow you to change your password."; 
 $LANG['users'][10]="一封電子郵件已經發送到您的電子郵件地址。電子郵件中包含重設密碼的訊息。"; 
 $LANG['users'][11]="請確認您的電子郵件地址和新輸入的密碼"; 
 $LANG['users'][12]="您的密碼重置請求已過期或無效,請更新密碼."; 
