@@ -111,7 +111,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['setup'][704]."</td></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][704]."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][202] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
@@ -207,7 +207,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['common'][41]."</td></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][41]."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . $LANG['setup'][246] . "&nbsp;:</td><td>";
