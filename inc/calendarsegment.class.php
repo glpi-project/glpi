@@ -222,6 +222,59 @@ class CalendarSegment extends CommonDBChild {
 
 
    /**
+    * Get first working hour of a day
+    *
+    * @param $calendars_id id of the calendar
+    * @param $day day number
+    *
+    * @return time value
+   **/
+   static function getFirstWorkingHour($calendars_id, $day) {
+      global $DB;
+
+      $sum = 0;
+      // Do not check hour if day before the end day of after the begin day
+      $query = "SELECT MIN(`begin`)
+                FROM `glpi_calendarsegments`
+                WHERE `calendars_id` = '$calendars_id'
+                     AND `day` = '$day'";
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return $DB->result($result,0,0);
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Get last working hour of a day
+    *
+    * @param $calendars_id id of the calendar
+    * @param $day day number
+    *
+    * @return time value
+   **/
+   static function getLastWorkingHour($calendars_id, $day) {
+      global $DB;
+
+      $sum = 0;
+      // Do not check hour if day before the end day of after the begin day
+      $query = "SELECT MAX(`end`)
+                FROM `glpi_calendarsegments`
+                WHERE `calendars_id` = '$calendars_id'
+                     AND `day` = '$day'";
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return $DB->result($result,0,0);
+         }
+      }
+      return false;
+   }
+
+
+   /**
     * Show segments of a calendar
     *
     * @param $calendar Calendar object
