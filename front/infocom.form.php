@@ -67,7 +67,7 @@ if (isset($_GET["add"])) {
       $ic = new Infocom();
       $ic->getFromDB($_GET["id"]);
       $_GET["itemtype"] = $ic->fields["itemtype"];
-      $_GET["device_id"] = $ic->fields["items_id"];
+      $_GET["items_id"] = $ic->fields["items_id"];
    }
    $item = false;
    if (isset($_GET["itemtype"]) && class_exists($_GET["itemtype"])) {
