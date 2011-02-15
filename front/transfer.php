@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("transfer","r");
 
-commonHeader($LANG['transfer'][1],'',"admin","transfer");
+commonHeader($LANG['transfer'][1],'',"admin",'rule',"transfer");
 
 Search::show('Transfer');
 

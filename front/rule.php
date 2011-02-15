@@ -58,6 +58,12 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
    }
 }
 
+if (haveRight("transfer","r" )&& isMultiEntitiesMode()) {
+      echo "<tr class='tab_bg_1'><td class='center b'>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/front/transfer.php'>";
+      echo $LANG['transfer'][1]."</a></td></tr>";
+}
+
 echo "</table>";
 
 commonFooter();
