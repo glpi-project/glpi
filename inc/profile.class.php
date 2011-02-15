@@ -415,7 +415,7 @@ class Profile extends CommonDBTM {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['title'][24]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['title'][24]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][5]."&nbsp;:</td><td>";
@@ -487,7 +487,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['Menu'][18]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['Menu'][18]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['knowbase'][1]."&nbsp;:</td><td>";
@@ -543,7 +543,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       // Inventory
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['Menu'][38]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][38]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['Menu'][0]."&nbsp;:</td><td>";
@@ -579,7 +579,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Gestion / Management
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['Menu'][26]."</td></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][26]."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['Menu'][22]." / ".$LANG['Menu'][23]."&nbsp;:</td><td>";
@@ -601,7 +601,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Outils / Tools
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['Menu'][18]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][18]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['title'][37]."&nbsp;:</td><td>";
@@ -688,9 +688,9 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       // Assistance / Tracking-helpdesk
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['title'][24]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['title'][24]."</th></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['profiles'][41]."</td>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][41]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -713,7 +713,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['profiles'][40]."</td>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][40]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -734,7 +734,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['ocsconfig'][50]."</td><";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
       echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
@@ -746,7 +746,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['validation'][0]."</td><";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['validation'][0]."</th><";
       echo "/tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -757,7 +757,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['profiles'][39]."</td>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][39]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -770,7 +770,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['profiles'][42]."</td>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][42]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -811,7 +811,7 @@ class Profile extends CommonDBTM {
       echo "</select></td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['profiles'][38]."</td>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][38]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -912,7 +912,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'><tr>";
 
       // Administration
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['Menu'][15]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][15]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['Menu'][14]."&nbsp;:</td><td>";
@@ -959,8 +959,8 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
 
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['rulesengine'][17].' / '.
-             $LANG['rulesengine'][77]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['rulesengine'][17].' / '.
+             $LANG['rulesengine'][77]."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".$LANG['rulesengine'][19]."&nbsp;:</td><td>";
@@ -1002,7 +1002,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>";
 
       // Configuration
-      echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['common'][12]."</td></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['common'][12]."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".$LANG['common'][12]."&nbsp;:</td><td>";
