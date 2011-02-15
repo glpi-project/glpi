@@ -2089,12 +2089,13 @@ class Search {
                      `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
 
          case "glpi_auth_tables.name":
+            $user_searchopt = Search::getOptions('User');
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
                      `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
                      `glpi_authldaps".$addtable."_".
-                           md5("REFTABLE.`authtype` = ".Auth::LDAP)."`.`$field` AS ".$NAME."_".$num."_3,
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field` AS ".$NAME."_".$num."_3,
                      `glpi_authmails".$addtable."_".
-                           md5("REFTABLE.`authtype` = ".Auth::MAIL)."`.`$field` AS ".$NAME."_".$num."_4, ";
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field` AS ".$NAME."_".$num."_4, ";
 
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
@@ -3054,14 +3055,14 @@ class Search {
          switch ($new_table) {
             // No link
             case "glpi_auth_tables" :
+                  $user_searchopt = Search::getOptions('User');
+
                   $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
                                                            "glpi_authldaps", 'auths_id', 0, 0,
-                                                           array('condition' => "AND REFTABLE.`authtype`
-                                                                                   = ".Auth::LDAP));
+                                                           $user_searchopt[30]['joinparams']);
                   $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
                                                             "glpi_authmails", 'auths_id', 0, 0,
-                                                            array('condition' => "AND REFTABLE.`authtype`
-                                                                                   = ".Auth::MAIL));
+                                                            $user_searchopt[31]['joinparams']);
                   break;
 
             case "glpi_complete_entities" :
