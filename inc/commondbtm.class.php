@@ -1519,28 +1519,32 @@ class CommonDBTM extends CommonGLPI {
       if (get_class($this)=='Entity') {
          // is recursive but cannot be change
       } else
-      if ($this->maybeRecursive() && isMultiEntitiesMode()) {
-         echo $LANG['entity'][9]."&nbsp;:&nbsp;";
-         if (!$this->can($ID,'recursive')) {
-            echo Dropdown::getYesNo($this->fields["is_recursive"]);
-            $comment=$LANG['common'][86];
-            $image="/pics/lock.png";
-         // CommonDBChild : entity data is get or copy from parent
-         } else if ( $this instanceof CommonDBChild) {
-            echo Dropdown::getYesNo($this->isRecursive());
-            $comment=$LANG['common'][91];
-            $image="/pics/lock.png";
-         } else if ( !$this->canUnrecurs()) {
-            echo Dropdown::getYesNo($this->fields["is_recursive"]);
-            $comment=$LANG['common'][84];
-            $image="/pics/lock.png";
-         } else {
-            Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
-            $comment=$LANG['common'][85];
-            $image="/pics/aide.png";
-         }
-         echo "&nbsp;";
-         showToolTip($comment);
+      if ($this->maybeRecursive()) {
+         if (isMultiEntitiesMode()) {
+            echo $LANG['entity'][9]."&nbsp;:&nbsp;";
+            if (!$this->can($ID,'recursive')) {
+               echo Dropdown::getYesNo($this->fields["is_recursive"]);
+               $comment=$LANG['common'][86];
+               $image="/pics/lock.png";
+            // CommonDBChild : entity data is get or copy from parent
+            } else if ( $this instanceof CommonDBChild) {
+               echo Dropdown::getYesNo($this->isRecursive());
+               $comment=$LANG['common'][91];
+               $image="/pics/lock.png";
+            } else if ( !$this->canUnrecurs()) {
+               echo Dropdown::getYesNo($this->fields["is_recursive"]);
+               $comment=$LANG['common'][84];
+               $image="/pics/lock.png";
+            } else {
+               Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
+               $comment=$LANG['common'][85];
+               $image="/pics/aide.png";
+            }
+            echo "&nbsp;";
+            showToolTip($comment);
+            } else {
+               echo "<input type='hidden' name='is_recursive' value='0'>";
+            }
       } else {
          echo "&nbsp;";
       }
