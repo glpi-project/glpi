@@ -68,7 +68,7 @@ class Fieldblacklist extends CommonDropdown {
                          'type'  => 'blacklist_field'),
                    array('name'  => 'value',
                          'label' => $LANG['rulesengine'][13],
-                         'type'  => 'text'));
+                         'type'  => 'blacklist_value'));
    }
 
 
@@ -128,6 +128,10 @@ class Fieldblacklist extends CommonDropdown {
 
          case 'blacklist_field' :
             $this->selectCriterias();
+            break;
+
+         case 'blacklist_value' :
+            $this->selectValues();
             break;
       }
    }
@@ -205,16 +209,66 @@ class Fieldblacklist extends CommonDropdown {
       }
       $rand   = Dropdown::showFromArray('field', $criteria,
                                         array('value' => $this->fields['field']));
-      /*
-      $params = array('itemtype' => $blacklist->fields['itemtype'],
-                      'id_field' => '__VALUE__');
-      ajaxUpdateItemOnSelectEvent("dropdown_value$rand", "span_values",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
-                                  $params);*/
+      
+      $params = array('itemtype' => $this->fields['itemtype'],
+                      'id_field' => '__VALUE__',
+                      'id'       => $this->fields['id']);
+      ajaxUpdateItemOnSelectEvent("dropdown_field$rand", "span_values",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
+                                  $params);
       echo "</span>";
    }
 
 
+   function selectValues($field = '') {
+      global $DB, $CFG_GLPI;
+
+      if ($field == '') {
+         $field = $this->fields['field']; 
+      }
+      echo "<span id='span_values' name='span_values'>";
+      if ($this->fields['itemtype'] != '') {
+         $item = new $this->fields['itemtype']();
+         $searchOption = $item->getSearchOptionByField('field', $field);
+         if (isset($searchOption['linkfield'])) {
+            $linkfield = $searchOption['linkfield'];
+         } else {
+            $linkfield = $searchOption['field'];
+         }
+         
+         if ($linkfield == $this->fields['field']) {
+            $value = $this->fields['value'];
+         } else {
+            $value = '';
+         }
+
+         //If field is a foreign key on another table or not
+         $table = getTableNameForForeignKeyField($linkfield);
+         if ($table == '') {
+            if (isset($searchOption['datatype'])) {
+               $datatype = $searchOption['datatype'];
+            } else {
+               $datatype = 'text';
+            }
+            switch ($datatype) {
+               case 'text':
+               case 'string':
+               default:
+                  autocompletionTextField($this, 'value', array('value' => $value));
+                  break;
+               case 'bool':
+                  Dropdown::showYesNo('value',$value);
+                  break;
+            }
+         } else {
+            $itemtype = getItemTypeForTable($table);
+            Dropdown::show($itemtype, array('name'  => 'value', 'value' => $value));
+         }
+         
+      }
+      echo "</span>";
+   }
+   
    /**
     * Check if a field & value and blacklisted or not
     *

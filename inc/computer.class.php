@@ -1094,6 +1094,7 @@ class Computer extends CommonDBTM {
       $tab[100]['field']         = 'is_ocs_import';
       $tab[100]['name']          = $LANG['ocsng'][7];
       $tab[100]['massiveaction'] = false;
+      $tab[100]['datatype']      = 'bool';
 
       $tab[101]['table']      = 'glpi_ocslinks';
       $tab[101]['field']      = 'use_auto_update';

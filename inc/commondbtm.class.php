@@ -2345,7 +2345,7 @@ class CommonDBTM extends CommonGLPI {
     * @return then search option array, or an empty array if not found
    **/
    function getSearchOptionByField($field, $value, $table='') {
-
+      
       foreach (Search::getOptions(get_class($this)) as $searchOption) {
          if ((isset($searchOption['linkfield']) && $searchOption['linkfield'] == $value)
              || (isset($searchOption[$field]) && $searchOption[$field] == $value)) {
@@ -2497,7 +2497,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    function getUnallowedFieldsForUnicity() {
-      return array('date_mod', 'id', 'is_recursive', 'items_id');
+      return array('date_mod', 'id', 'is_recursive', 'items_id', 'notepad', 'comment', 'alert');
    }
 
    /**
