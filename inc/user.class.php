@@ -2354,8 +2354,7 @@ class User extends CommonDBTM {
 
          //Put user in trash
          case 1 :
-            $tmp['is_deleted'] = 1;
-            $myuser->update($tmp);
+            $myuser->delete($tmp);
             break;
 
          //Delete all user dynamic habilitations and groups

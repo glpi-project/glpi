@@ -2418,10 +2418,10 @@ class AuthLDAP extends CommonDBTM {
    static function dropdownUserDeletedActions($value=0) {
       global $LANG;
 
-      $options[0] = $LANG['buttons'][49];
-      $options[1] = $LANG['ldap'][47];
-      $options[2] = $LANG['ldap'][46];
-      $options[3] = $LANG['buttons'][42];
+      $options[0] = $LANG['buttons'][49]; //DO nothing
+      $options[1] = $LANG['ldap'][47];    //Put user in trash
+      $options[2] = $LANG['ldap'][46];    //Delete all user dynamic habilitations and groups
+      $options[3] = $LANG['buttons'][42]; //Deactivate the user
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }
