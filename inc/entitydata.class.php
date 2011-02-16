@@ -53,25 +53,33 @@ class EntityData extends CommonDBChild {
    public $auto_message_on_action = false;
 
    // Array of "right required to update" => array of fields allowed
+   // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'          => array(// Address
                                                                   'address', 'postcode', 'postcode',
                                                                   'town', 'state', 'country',
                                                                   'website', 'phonenumber', 'fax',
                                                                   'email', 'notepad',
                                                                   // Advanced (could be user_authtype ?)
-                                                                  'ldap_dn', 'tag', 'authldaps_id',
-                                                                  'entity_ldapfilter'),
+                                                                  'authldaps_id', 'entity_ldapfilter',
+                                                                  'ldap_dn', 'mail_domain', 'tag',
+                                                                  // Inventory
+                                                                  'autofill_buy_date',
+                                                                  'autofill_delivery_date',
+                                                                  'autofill_order_date',
+                                                                  'autofill_use_date',
+                                                                  'autofill_warranty_date'),
                                        // Notification
                                        'notification'    => array('admin_email', 'admin_reply',
-                                                               'admin_email_name',
-                                                               'admin_reply_name',
-                                                               'mailing_signature',
-                                                               'cartridges_alert_repeat',
-                                                               'consumables_alert_repeat',
-                                                               'use_licenses_alert',
-                                                               'use_contracts_alert',
-                                                               'use_reservations_alert',
-                                                               'use_infocoms_alert'),
+                                                                  'admin_email_name',
+                                                                  'admin_reply_name',
+                                                                  'mailing_signature',
+                                                                  'cartridges_alert_repeat',
+                                                                  'consumables_alert_repeat',
+                                                                  'notclosed_delay',
+                                                                  'use_licenses_alert',
+                                                                  'use_contracts_alert',
+                                                                  'use_reservations_alert',
+                                                                  'use_infocoms_alert'),
                                        // Helpdesk
                                        'entity_helpdesk' => array('calendars_id', 'tickettype',
                                                                   'auto_assign_mode',
@@ -128,21 +136,29 @@ class EntityData extends CommonDBChild {
    }
 
 
-   /// TODO do it in the future in filterDatas or filterValues ?
-   function checkRightDatas($input) {
+   /**
+    * Check right on each field before add / update
+    *
+    * @param $input array (form)
+    *
+    * @return array (filtered input)
+   **/
+   private function checkRightDatas($input) {
+
+      $tmp = array('entities_id' => $input['entities_id']);
 
       foreach (self::$field_right as $right => $fields) {
-         if (!haveRight($right, 'w')) {
 
+         if (haveRight($right, 'w')) {
             foreach ($fields as $field) {
                if (isset($input[$field])) {
-                  unset($input[$field]);
+                  $tmp[$field] = $input[$field];
                }
             }
          }
       }
 
-      return $input;
+      return $tmp;
    }
 
 
