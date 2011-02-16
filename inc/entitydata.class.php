@@ -86,7 +86,13 @@ class EntityData extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('entity', 'w') || haveRight('notification', 'w');
+
+      foreach (self::$field_right as $right => $fields) {
+         if (haveRight($right, 'w')) {
+            return true;
+         }
+      }
+      return false;
    }
 
 
