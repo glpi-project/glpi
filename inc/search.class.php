@@ -1416,8 +1416,8 @@ class Search {
 
          reset($options);
          $first_group = true;
-         $selected = 'view';
-         $str_limit=28;
+         $selected    = 'view';
+         $str_limit   = 28;
 
          foreach ($options as $key => $val) {
             // print groups
