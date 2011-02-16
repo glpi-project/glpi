@@ -41,10 +41,10 @@ if (!defined('GLPI_ROOT')) {
 class RuleRightCollection extends RuleCollection {
 
    // From RuleCollection
-   public $stop_on_first_match=false;
-   public $right = 'rule_ldap';
-   public $orderby="name";
-   public $menu_option='right';
+   public $stop_on_first_match = false;
+   public $right               = 'rule_ldap';
+   public $orderby             = "name";
+   public $menu_option         = 'right';
 
    // Specific ones
    /// Array containing results : entity + right
@@ -54,11 +54,13 @@ class RuleRightCollection extends RuleCollection {
    /// Array containing results : only right
    var $rules_rights = array();
 
+
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][19];
    }
+
 
    function cleanTestOutputCriterias($output) {
 
@@ -68,7 +70,8 @@ class RuleRightCollection extends RuleCollection {
       return $output;
    }
 
-   function showTestResults($rule,$output,$global_result) {
+
+   function showTestResults($rule, $output, $global_result) {
       global $LANG;
 
       $actions = $rule->getActions();
@@ -82,9 +85,9 @@ class RuleRightCollection extends RuleCollection {
          echo "<td class='center' colspan='4'>".$LANG['rulesengine'][111]."</td>";
          foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
             foreach ($entities as $entity) {
-               $this->displayActionByName("entity",$entity[0]);
+               $this->displayActionByName("entity", $entity[0]);
                if (isset($entity[1])) {
-                  $this->displayActionByName("recursive",$entity[1]);
+                  $this->displayActionByName("recursive", $entity[1]);
                }
             }
          }
@@ -94,17 +97,17 @@ class RuleRightCollection extends RuleCollection {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>".$LANG['rulesengine'][110]."</td>";
          foreach ($output["_ldap_rules"]["rules_rights"] as $val) {
-            $this->displayActionByName("profile",$val[0]);
+            $this->displayActionByName("profile", $val[0]);
          }
       }
 
       if (isset($output["_ldap_rules"]["rules_entities_rights"])) {
-         echo "<tr  class='tab_bg_2'>";
+         echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>".$LANG['rulesengine'][112]."</td>";
          foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
-            $this->displayActionByName("entity",$val[0]);
+            $this->displayActionByName("entity", $val[0]);
             if (isset($val[1])) {
-               $this->displayActionByName("profile",$val[1]);
+               $this->displayActionByName("profile", $val[1]);
             }
             if (isset($val[2])) {
                $this->displayActionByName("is_recursive",$val[2]);
@@ -125,24 +128,26 @@ class RuleRightCollection extends RuleCollection {
       echo "</tr>";
    }
 
+
    /**
-   * Display action using its name
-   * @param $name action name
-   * @param $value default value
-   */
-   function displayActionByName($name,$value) {
+    * Display action using its name
+    *
+    * @param $name action name
+    * @param $value default value
+   **/
+   function displayActionByName($name, $value) {
       global $LANG;
 
       echo "<tr class='tab_bg_2'>";
       switch ($name) {
          case "entity" :
             echo "<td class='center'>".$LANG['entity'][0]." </td>\n";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$value)."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $value)."</td>";
             break;
 
          case "profile" :
             echo "<td class='center'>".$LANG['Menu'][35]." </td>\n";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_profiles",$value)."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_profiles", $value)."</td>";
             break;
 
          case "is_recursive" :
@@ -153,15 +158,18 @@ class RuleRightCollection extends RuleCollection {
       echo "</tr>";
    }
 
+
    /**
     * Get all the fields needed to perform the rule
-    */
+   **/
    function getFieldsToLookFor() {
       global $DB;
 
       $params = array();
       $sql = "SELECT DISTINCT `value`
-              FROM `glpi_rules`, `glpi_rulecriterias`, `glpi_rulerightparameters`
+              FROM `glpi_rules`,
+                   `glpi_rulecriterias`,
+                   `glpi_rulerightparameters`
               WHERE `glpi_rules`.`sub_type` = 'RuleRight'
                     AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
                     AND `glpi_rulecriterias`.`criteria` = `glpi_rulerightparameters`.`value`";
@@ -170,19 +178,22 @@ class RuleRightCollection extends RuleCollection {
       while ($param = $DB->fetch_array($result)) {
          //Dn is alwsays retreived from ldap : don't need to ask for it !
          if ($param["value"] != "dn") {
-            $params[]=utf8_strtolower($param["value"]);
+            $params[] = utf8_strtolower($param["value"]);
          }
       }
       return $params;
    }
 
+
    /**
     * Get the attributes needed for processing the rules
+    *
     * @param $input input datas
     * @param $params extra parameters given
+    *
     * @return an array of attributes
-    */
-   function prepareInputDataForProcess($input,$params) {
+   **/
+   function prepareInputDataForProcess($input, $params) {
 
       $rule_parameters = array();
       //LDAP type method
@@ -191,7 +202,8 @@ class RuleRightCollection extends RuleCollection {
          $rule_fields = $this->getFieldsToLookFor();
 
          //Get all the datas we need from ldap to process the rules
-         $sz = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*", $rule_fields);
+         $sz         = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*",
+                                   $rule_fields);
          $rule_input = ldap_get_entries_clean($params["connection"], $sz);
 
          if (count($rule_input)) {
@@ -220,7 +232,7 @@ class RuleRightCollection extends RuleCollection {
                         if (!is_array($rule_input[$field])) {
                            $rule_parameters[$field] = $rule_input[$field];
                         } else {
-                           for ($i=0;$i < count($rule_input[$field]) -1;$i++) {
+                           for ($i=0 ; $i<count($rule_input[$field])-1 ; $i++) {
                               $rule_parameters[$field][] = $rule_input[$field][$i];
                            }
                         }
@@ -233,15 +245,17 @@ class RuleRightCollection extends RuleCollection {
       }
       //IMAP/POP login method
       $rule_parameters["MAIL_SERVER"] = $params["mail_server"];
-      $rule_parameters["MAIL_EMAIL"] = $params["email"];
+      $rule_parameters["MAIL_EMAIL"]  = $params["email"];
       return $rule_parameters;
    }
 
+
    /**
     * Get the list of fields to be retreived to process rules
-    */
+   **/
    function getFieldsForQuery() {
-      $rule = new RuleRight;
+
+      $rule      = new RuleRight;
       $criterias = $rule->getCriterias();
 
       $fields = array();

@@ -47,8 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class RuleSoftwareCategory extends Rule {
 
    // From Rule
-   public $right='rule_softwarecategories';
-   public $can_sort=true;
+   public $right    = 'rule_softwarecategories';
+   public $can_sort = true;
 
    function getTitle() {
       global $LANG;
@@ -56,12 +56,15 @@ class RuleSoftwareCategory extends Rule {
       return $LANG['rulesengine'][37];
    }
 
+
    function maxActionsCount() {
       return 1;
    }
 
+
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = $LANG['help'][31];
@@ -77,14 +80,17 @@ class RuleSoftwareCategory extends Rule {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
       $actions['softwarecategories_id']['name']  = $LANG['common'][36];
       $actions['softwarecategories_id']['type']  = 'dropdown';
       $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
       return $actions;
    }
+
 }
 
 ?>

@@ -42,19 +42,23 @@ class SingletonRuleList {
    /// Items loaded ?
    var $load = 0;
 
+
    /**
-   * get a unique instance of a SingletonRuleList for a type of RuleCollection
-   *
-   * @param $type type of the Rule listed
-   * @param $entity entity where the rule Rule is processed
-   * @return unique instance of an object
-   */
+    * get a unique instance of a SingletonRuleList for a type of RuleCollection
+    *
+    * @param $type type of the Rule listed
+    * @param $entity entity where the rule Rule is processed
+    *
+    * @return unique instance of an object
+   **/
    public static  function &getInstance($type, $entity) {
       static $instances = array();
+
       if (!isset($instances[$type][$entity])) {
          $instances[$type][$entity] = new SingletonRuleList();
       }
       return $instances[$type][$entity];
    }
+
 }
 ?>

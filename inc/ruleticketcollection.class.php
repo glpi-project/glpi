@@ -39,34 +39,42 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   public $right = 'entity_rule_ticket';
-   public $use_output_rule_process_as_next_input=true;
-   public $menu_option='ticket';
+   public $right                                 = 'entity_rule_ticket';
+   public $use_output_rule_process_as_next_input = true;
+   public $menu_option                           = 'ticket';
+
 
    function __construct($entity=0) {
       $this->entity = $entity;
    }
 
+
    function canList() {
       return haveRight("rule_ticket","r") || $this->canView();
    }
+
+
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][28];
    }
 
+
    function preProcessPreviewResults($output) {
       return Ticket::showPreviewAssignAction($output);
    }
+
 
    function showInheritedTab() {
       return haveRight('rule_ticket','r') && ($this->entity);
    }
 
+
    function showChildrensTab() {
       return haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
    }
+
 }
 
 ?>
