@@ -2620,8 +2620,9 @@ class User extends CommonDBTM {
 
 
    function getUnallowedFieldsForUnicity() {
+
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         array('last_login', 'profiles_id', 'entities_id', 'date_sync', 'auths_id'));
+                         array('auths_id', 'date_sync', 'entities_id', 'last_login', 'profiles_id'));
    }
 
 }

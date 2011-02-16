@@ -111,6 +111,7 @@ class Fieldblacklist extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
+
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
@@ -140,9 +141,6 @@ class Fieldblacklist extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @param ID the field unicity item id
-    * @param value the selected value
-    *
     * @return nothing
    **/
    function showItemtype() {
@@ -152,6 +150,7 @@ class Fieldblacklist extends CommonDropdown {
          $item = new $this->fields['itemtype'];
          echo $item->getTypeName();
          echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
+
       } else {
          //Add criteria : display dropdown
          $options[0] = DROPDOWN_EMPTY_VALUE;
@@ -164,9 +163,9 @@ class Fieldblacklist extends CommonDropdown {
             }
          }
          asort($options);
-         $rand = Dropdown::showFromArray('itemtype', $options, 
+         $rand = Dropdown::showFromArray('itemtype', $options,
                                          array('value' => $this->fields['value']));
-   
+
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $this->fields['id']);
          ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
@@ -182,7 +181,7 @@ class Fieldblacklist extends CommonDropdown {
       echo "<span id='span_fields' name='span_fields'>";
 
       if (!isset($this->fields['itemtype']) || !$this->fields['itemtype']) {
-         echo  "</span>";
+         echo "</span>";
          return;
       }
 
@@ -209,7 +208,7 @@ class Fieldblacklist extends CommonDropdown {
       }
       $rand   = Dropdown::showFromArray('field', $criteria,
                                         array('value' => $this->fields['field']));
-      
+
       $params = array('itemtype' => $this->fields['itemtype'],
                       'id_field' => '__VALUE__',
                       'id'       => $this->fields['id']);
@@ -224,7 +223,7 @@ class Fieldblacklist extends CommonDropdown {
       global $DB, $CFG_GLPI;
 
       if ($field == '') {
-         $field = $this->fields['field']; 
+         $field = $this->fields['field'];
       }
       echo "<span id='span_values' name='span_values'>";
       if ($this->fields['itemtype'] != '') {
@@ -235,7 +234,7 @@ class Fieldblacklist extends CommonDropdown {
          } else {
             $linkfield = $searchOption['field'];
          }
-         
+
          if ($linkfield == $this->fields['field']) {
             $value = $this->fields['value'];
          } else {
@@ -264,11 +263,11 @@ class Fieldblacklist extends CommonDropdown {
             $itemtype = getItemTypeForTable($table);
             Dropdown::show($itemtype, array('name'  => 'value', 'value' => $value));
          }
-         
+
       }
       echo "</span>";
    }
-   
+
    /**
     * Check if a field & value and blacklisted or not
     *
