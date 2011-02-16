@@ -233,11 +233,11 @@ class Consumable extends CommonDBTM {
 
       $out = "";
       // Get total
-      $total = Consumable::getTotalNumber($tID);
+      $total = self::getTotalNumber($tID);
 
       if ($total!=0) {
-         $unused = Consumable::getUnusedNumber($tID);
-         $old    = Consumable::getOldNumber($tID);
+         $unused = self::getUnusedNumber($tID);
+         $old    = self::getOldNumber($tID);
 
          $highlight="";
          if ($unused<=$alarm_threshold) {
