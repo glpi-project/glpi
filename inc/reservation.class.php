@@ -456,7 +456,7 @@ class Reservation extends CommonDBChild {
          }
 
          echo "<tr><td>";
-         Reservation::displayReservationDay($ID, $annee_courante."-".$mois_courant."-".$ii);
+         self::displayReservationDay($ID, $annee_courante."-".$mois_courant."-".$ii);
          echo "</td></tr></table>\n";
          echo "</td>";
 
@@ -632,7 +632,7 @@ class Reservation extends CommonDBChild {
       global $DB;
 
       if (!empty($ID)) {
-         Reservation::displayReservationsForAnItem($ID, $date);
+         self::displayReservationsForAnItem($ID, $date);
 
       } else {
          $debut = $date." 00:00:00";
@@ -678,7 +678,7 @@ class Reservation extends CommonDBChild {
                         "&amp;mois_courant=$mois&amp;annee_courante=$annee'>$typename - ".
                         $item->getName()."</a></td></tr>\n";
                   echo "<tr><td>";
-                  Reservation::displayReservationsForAnItem($data['id'],$date);
+                  self::displayReservationsForAnItem($data['id'],$date);
                   echo "</td></tr>\n";
                }
             }
@@ -697,7 +697,7 @@ class Reservation extends CommonDBChild {
       global $DB, $LANG;
 
       $users_id = getLoginUserID();
-      $resa     = new Reservation();
+      $resa     = new self();
       $user     = new User;
       list($year, $month, $day) = explode("-", $date);
       $debut    = $date." 00:00:00";

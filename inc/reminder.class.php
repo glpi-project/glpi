@@ -467,7 +467,7 @@ class Reminder extends CommonDBTM {
    static function getAlreadyPlannedInformation($val) {
       global $CFG_GLPI;
 
-      $out  = Reminder::getTypeName().' : '.convDateTime($val["begin"]).' -> '.
+      $out  = self::getTypeName().' : '.convDateTime($val["begin"]).' -> '.
               convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                $val["reminders_id"]."'>";

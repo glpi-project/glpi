@@ -59,7 +59,7 @@ class Rule extends CommonDBTM {
    /// field used to order rules
    var $orderby = 'ranking';
 
-   /// restrict matching to Rule::AND_MATCHING or Rule::OR_MATCHING : specify value to activate
+   /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
    var $restrict_matching = false;
 
    protected $rules_id_field    = 'rules_id';
@@ -289,12 +289,12 @@ class Rule extends CommonDBTM {
    function dropdownRulesMatch($name, $value='', $restrict=false) {
       global $LANG;
 
-      if (!$restrict || $restrict == Rule::AND_MATCHING) {
-         $elements[Rule::AND_MATCHING] = $LANG['choice'][3];
+      if (!$restrict || $restrict == self::AND_MATCHING) {
+         $elements[self::AND_MATCHING] = $LANG['choice'][3];
       }
 
-      if (!$restrict || $restrict == Rule::OR_MATCHING) {
-         $elements[Rule::OR_MATCHING]  = $LANG['choice'][2];
+      if (!$restrict || $restrict == self::OR_MATCHING) {
+         $elements[self::OR_MATCHING]  = $LANG['choice'][2];
       }
 
       return Dropdown::showFromArray($name, $elements, array('value' => $value));
@@ -791,7 +791,7 @@ class Rule extends CommonDBTM {
 
       reset($this->criterias);
 
-      if ($this->fields["match"]==Rule::AND_MATCHING) {
+      if ($this->fields["match"]==self::AND_MATCHING) {
          $doactions = true;
 
          foreach ($this->criterias as $criteria) {
@@ -876,10 +876,10 @@ class Rule extends CommonDBTM {
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
-         if (in_array($criteria->fields["condition"], array(Rule::PATTERN_IS_NOT,
-                                                            Rule::PATTERN_NOT_CONTAIN,
-                                                            Rule::REGEX_NOT_MATCH,
-                                                            Rule::PATTERN_DOES_NOT_EXISTS))) {
+         if (in_array($criteria->fields["condition"], array(self::PATTERN_IS_NOT,
+                                                            self::PATTERN_NOT_CONTAIN,
+                                                            self::REGEX_NOT_MATCH,
+                                                            self::PATTERN_DOES_NOT_EXISTS))) {
             $res = true;
             foreach ($input[$criteria->fields["criteria"]] as $tmp) {
                $value = $this->getCriteriaValue($criteria->fields["criteria"],
@@ -1165,7 +1165,7 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          $criteria->getFromDB($criteria_result["id"]);
          $this->showMinimalCriteria($criteria->fields);
-         if ($criteria->fields['condition'] != Rule::PATTERN_FIND) {
+         if ($criteria->fields['condition'] != self::PATTERN_FIND) {
             echo "<td class='b'>".Dropdown::getYesNo($criteria_result["result"])."</td></tr>\n";
          } else {
             echo "<td class='b'>".DROPDOWN_EMPTY_VALUE."</td></tr>\n";
@@ -1281,12 +1281,12 @@ class Rule extends CommonDBTM {
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      if ($condition == Rule::PATTERN_EXISTS
-          || $condition == Rule::PATTERN_DOES_NOT_EXISTS
-          || $condition == Rule::PATTERN_FIND) {
+      if ($condition == self::PATTERN_EXISTS
+          || $condition == self::PATTERN_DOES_NOT_EXISTS
+          || $condition == self::PATTERN_FIND) {
           return $LANG['choice'][1];
 
-      } else if (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+      } else if ($condition==self::PATTERN_IS || $condition==self::PATTERN_IS_NOT) {
          $crit = $this->getCriteria($ID);
 
          if (isset($crit['type'])) {
@@ -1367,9 +1367,7 @@ class Rule extends CommonDBTM {
       $tested  = false;
 
       if (isset($crit['type'])
-                 && ($test
-                     || $condition == Rule::PATTERN_IS
-                     || $condition == Rule::PATTERN_IS_NOT)) {
+          && ($test || $condition == self::PATTERN_IS || $condition == self::PATTERN_IS_NOT)) {
 
          switch ($crit['type']) {
             case "yesonly" :
@@ -1422,7 +1420,7 @@ class Rule extends CommonDBTM {
         $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
       }
 
-      if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
+      if ($condition == self::PATTERN_EXISTS || $condition == self::PATTERN_DOES_NOT_EXISTS) {
          echo "<input type='hidden' name='$name' value='1'>";
          $display = true;
       }
@@ -1498,7 +1496,7 @@ class Rule extends CommonDBTM {
    function getCriteriaValue($ID, $condition, $value) {
       global $LANG;
 
-      if ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT) {
+      if ($condition!=self::PATTERN_IS && $condition!=self::PATTERN_IS_NOT) {
          $crit = $this->getCriteria($ID);
          if (isset($crit['type'])) {
 
@@ -1569,7 +1567,7 @@ class Rule extends CommonDBTM {
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
 
-         $type_match = ($this->fields["match"]==Rule::AND_MATCHING
+         $type_match = ($this->fields["match"]==self::AND_MATCHING
                         ?$LANG['choice'][3]:$LANG['choice'][2]);
          $already_displayed = array();
          $first = true;
@@ -1739,7 +1737,7 @@ class Rule extends CommonDBTM {
       autocompletionTextField($this, "description", array('value' => '',
                                                           'size'  => 33));
       echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
-      $this->dropdownRulesMatch("match", Rule::AND_MATCHING);
+      $this->dropdownRulesMatch("match", self::AND_MATCHING);
       echo "</td><td class='tab_bg_2 center'>";
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";
       echo "<input type=hidden name='entities_id' value='-1'>";

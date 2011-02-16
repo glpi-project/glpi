@@ -310,7 +310,7 @@ class AuthMail extends CommonDBTM {
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
             if (!$auth->auth_succeded && $mail_method['is_active']) {
-               $auth = AuthMail::mailAuth($auth, $login, $password, $mail_method);
+               $auth = self::mailAuth($auth, $login, $password, $mail_method);
             } else {
                if ($break) {
                   break;
@@ -320,7 +320,7 @@ class AuthMail extends CommonDBTM {
 
       } else if (array_key_exists($auths_id,$auth->authtypes["mail"])) {
          //Check if the mail server indicated as the last good one still exists !
-         $auth = AuthMail::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
+         $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
       }
       return $auth;
    }

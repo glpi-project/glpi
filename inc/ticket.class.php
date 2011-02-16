@@ -598,7 +598,7 @@ class Ticket extends CommonDBTM {
 
       if (isset($input['_ticket_requester'])) {
          if (isset($input['_ticket_requester']['_type'])) {
-            $input['_ticket_requester']['type']       = Ticket::REQUESTER;
+            $input['_ticket_requester']['type']       = self::REQUESTER;
             $input['_ticket_requester']['tickets_id'] = $input['id'];
 
             switch ($input['_ticket_requester']['_type']) {
@@ -623,7 +623,7 @@ class Ticket extends CommonDBTM {
 
       if (isset($input['_ticket_observer'])) {
          if (isset($input['_ticket_observer']['_type'])) {
-            $input['_ticket_observer']['type']       = Ticket::OBSERVER;
+            $input['_ticket_observer']['type']       = self::OBSERVER;
             $input['_ticket_observer']['tickets_id'] = $input['id'];
 
             switch ($input['_ticket_observer']['_type']) {
@@ -648,7 +648,7 @@ class Ticket extends CommonDBTM {
 
       if (isset($input['_ticket_assign'])) {
          if (isset($input['_ticket_assign']['_type'])) {
-            $input['_ticket_assign']['type']       = Ticket::ASSIGN;
+            $input['_ticket_assign']['type']       = self::ASSIGN;
             $input['_ticket_assign']['tickets_id'] = $input['id'];
 
             switch ($input['_ticket_assign']['_type']) {
@@ -1573,7 +1573,7 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_users_id_requester"]) && $this->input["_users_id_requester"]>0) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_requester"],
-                         'type'       => Ticket::REQUESTER);
+                         'type'       => self::REQUESTER);
          if (isset($this->input["_users_id_requester_notif"])) {
             foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
                $input2[$key] = $val;
@@ -1584,7 +1584,7 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_users_id_observer"]) && $this->input["_users_id_observer"]>0) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_observer"],
-                         'type'       => Ticket::OBSERVER);
+                         'type'       => self::OBSERVER);
          if (isset($this->input["_users_id_observer_notif"])) {
             foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
                $input2[$key] = $val;
@@ -1595,7 +1595,7 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_users_id_assign"]) && $this->input["_users_id_assign"]>0) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_assign"],
-                         'type'       => Ticket::ASSIGN);
+                         'type'       => self::ASSIGN);
          if (isset($this->input["_users_id_assign_notif"])) {
             foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
                $input2[$key] = $val;
@@ -1607,17 +1607,17 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_groups_id_requester"]) && $this->input["_groups_id_requester"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
                                   'groups_id'  => $this->input["_groups_id_requester"],
-                                  'type'       => Ticket::REQUESTER));
+                                  'type'       => self::REQUESTER));
       }
       if (isset($this->input["_groups_id_assign"]) && $this->input["_groups_id_assign"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
                                   'groups_id'  => $this->input["_groups_id_assign"],
-                                  'type'       => Ticket::ASSIGN));
+                                  'type'       => self::ASSIGN));
       }
       if (isset($this->input["_groups_id_observer"]) && $this->input["_groups_id_observer"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
                                   'groups_id'  => $this->input["_groups_id_observer"],
-                                  'type'       => Ticket::OBSERVER));
+                                  'type'       => self::OBSERVER));
       }
 
 
@@ -1628,7 +1628,7 @@ class Ticket extends CommonDBTM {
           && count($this->input["_additional_observers"])) {
 
          $input2 = array('tickets_id' => $this->fields['id'],
-                         'type'       => Ticket::OBSERVER);
+                         'type'       => self::OBSERVER);
 
          foreach ($this->input["_additional_observers"] as $tmp) {
             if (isset($tmp['users_id'])) {
@@ -1646,7 +1646,7 @@ class Ticket extends CommonDBTM {
           && count($this->input["_additional_assigns"])) {
 
          $input2 = array('tickets_id' => $this->fields['id'],
-                         'type'       => Ticket::ASSIGN);
+                         'type'       => self::ASSIGN);
 
          foreach ($this->input["_additional_assigns"] as $tmp) {
             if (isset($tmp['users_id'])) {
@@ -1664,7 +1664,7 @@ class Ticket extends CommonDBTM {
           && count($this->input["_additional_requesters"])) {
 
          $input2 = array('tickets_id' => $this->fields['id'],
-                         'type'       => Ticket::REQUESTER);
+                         'type'       => self::REQUESTER);
 
          foreach ($this->input["_additional_requesters"] as $uid) {
             $input2['users_id'] = $uid;
@@ -4812,7 +4812,7 @@ class Ticket extends CommonDBTM {
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
-         $query .= " AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."'
+         $query .= " AND `glpi_tickets_users`.`type` = '".self::REQUESTER."'
                      AND `glpi_tickets_users`.`users_id` = '".getLoginUserID()."' ";
       }
 

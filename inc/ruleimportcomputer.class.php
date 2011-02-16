@@ -113,8 +113,7 @@ class RuleImportComputer extends Rule {
       $criterias['name']['name']            = $LANG['rulesengine'][152].' : '.
                                                         $LANG['rulesengine'][25];
       $criterias['name']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                    RuleImportComputer::PATTERN_IS_EMPTY,
-                                                    Rule::PATTERN_FIND);
+                                                    self::PATTERN_IS_EMPTY, Rule::PATTERN_FIND);
 
       $criterias['DESCRIPTION']['name']   = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
 
@@ -185,15 +184,15 @@ class RuleImportComputer extends Rule {
    static function addMoreCriteria($criterion='') {
       global $LANG;
 
-      return array(Rule::PATTERN_FIND                   => $LANG['rulesengine'][151],
-                   RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
+      return array(Rule::PATTERN_FIND     => $LANG['rulesengine'][151],
+                   self::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
    }
 
 
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      if ($condition == RuleImportComputer::PATTERN_IS_EMPTY) {
+      if ($condition == self::PATTERN_IS_EMPTY) {
           return $LANG['choice'][1];
       }
       return false;
@@ -208,7 +207,7 @@ class RuleImportComputer extends Rule {
 
       switch ($condition) {
          case Rule::PATTERN_FIND :
-         case RuleImportComputer::PATTERN_IS_EMPTY :
+         case self::PATTERN_IS_EMPTY :
             Dropdown::showYesNo($name, 0, 0);
             return true;
       }
@@ -340,7 +339,7 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-      
+
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];

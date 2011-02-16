@@ -293,7 +293,7 @@ class Auth {
       global $CFG_GLPI;
 
       switch ($authtype) {
-         case Auth::CAS :
+         case self::CAS :
             include (GLPI_PHPCAS);
             phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                            $CFG_GLPI["cas_uri"],false);
@@ -306,7 +306,7 @@ class Auth {
             $this->user->fields['name'] = phpCAS::getUser();
             return true;
 
-         case Auth::EXTERNAL :
+         case self::EXTERNAL :
             $login_string = $_SERVER[$CFG_GLPI["existing_auth_server_field"]];
             $login        = $login_string;
             $pos          = stripos($login_string,"\\");
@@ -325,7 +325,7 @@ class Auth {
             }
             break;
 
-         case Auth::X509 :
+         case self::X509 :
             // From eGroupWare  http://www.egroupware.org
             // an X.509 subject looks like:
             // CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
@@ -524,7 +524,7 @@ class Auth {
       //In case the user was deleted in the LDAP directory
       $user_deleted_ldap = false;
 
-      if (!$noauto && $authtype=Auth::checkAlternateAuthSystems()) {
+      if (!$noauto && $authtype=self::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
@@ -594,7 +594,7 @@ class Auth {
                   if ($this->auth_succeded) {
                      $this->extauth = 0;
                      $this->user_present = $this->user->getFromDBbyName(addslashes($login_name));
-                     $this->user->fields["authtype"] = Auth::DB_GLPI;
+                     $this->user->fields["authtype"] = self::DB_GLPI;
                      $this->user->fields["password"] = $login_password;
                   }
                }
@@ -607,9 +607,9 @@ class Auth {
                //If the user has already been logged, the method_auth and auths_id are already set
                //so we test this connection first
                switch ($this->user->fields["authtype"]) {
-                  case Auth::CAS :
-                  case Auth::EXTERNAL :
-                  case Auth::LDAP :
+                  case self::CAS :
+                  case self::EXTERNAL :
+                  case self::LDAP :
                      if (canUseLdap()) {
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"],
@@ -620,14 +620,14 @@ class Auth {
                      }
                      break;
 
-                  case Auth::MAIL :
+                  case self::MAIL :
                      if (canUseImapPop()) {
                         AuthMail::tryMailAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"]);
                      }
                      break;
 
-                  case Auth::NOT_YET_AUTHENTIFIED :
+                  case self::NOT_YET_AUTHENTIFIED :
                      break;
                }
 
@@ -724,7 +724,7 @@ class Auth {
       global $LANG, $DB;
 
       $p['name']  = 'auths_id';
-      $p['value'] = Auth::DB_GLPI;
+      $p['value'] = self::DB_GLPI;
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -732,15 +732,15 @@ class Auth {
       }
 
       $methods[0] = DROPDOWN_EMPTY_VALUE;
-      $methods[Auth::DB_GLPI] = $LANG['login'][32];
+      $methods[self::DB_GLPI] = $LANG['login'][32];
 
       $sql = "SELECT count(*) AS cpt
               FROM `glpi_authldaps`";
       $result = $DB->query($sql);
 
       if ($DB->result($result, 0, "cpt") > 0) {
-         $methods[Auth::LDAP]     = $LANG['login'][31];
-         $methods[Auth::EXTERNAL] = $LANG['setup'][67];
+         $methods[self::LDAP]     = $LANG['login'][31];
+         $methods[self::EXTERNAL] = $LANG['setup'][67];
       }
 
       $sql = "SELECT count(*) AS cpt
@@ -748,7 +748,7 @@ class Auth {
       $result = $DB->query($sql);
 
       if ($DB->result($result,0,"cpt") > 0) {
-         $methods[Auth::MAIL] = $LANG['login'][33];
+         $methods[self::MAIL] = $LANG['login'][33];
       }
 
       return Dropdown::showFromArray($p['name'], $methods, $p);
@@ -769,21 +769,21 @@ class Auth {
       global $LANG;
 
       switch ($authtype) {
-         case Auth::LDAP :
+         case self::LDAP :
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
                return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
             }
             return $LANG['login'][2]."&nbsp;$name";
 
-         case Auth::MAIL :
+         case self::MAIL :
             $auth = new AuthMail();
             if ($auth->getFromDB($auths_id)) {
                return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
             }
             return $LANG['login'][3]."&nbsp;$name";
 
-         case Auth::CAS :
+         case self::CAS :
             $out = $LANG['login'][4];
             if ($auths_id > 0) {
                $auth = new AuthLdap();
@@ -793,7 +793,7 @@ class Auth {
             }
             return $out;
 
-         case Auth::X509 :
+         case self::X509 :
             $out = $LANG['setup'][190];
             if ($auths_id > 0) {
                $auth = new AuthLdap();
@@ -803,7 +803,7 @@ class Auth {
             }
             return $out;
 
-         case Auth::EXTERNAL :
+         case self::EXTERNAL :
             $out = $LANG['common'][62];
             if ($auths_id > 0) {
                $auth = new AuthLdap();
@@ -813,10 +813,10 @@ class Auth {
             }
             return $out;
 
-         case Auth::DB_GLPI :
+         case self::DB_GLPI :
             return $LANG['login'][18];
 
-         case Auth::NOT_YET_AUTHENTIFIED :
+         case self::NOT_YET_AUTHENTIFIED :
             return $LANG['login'][9];
       }
       return '';
@@ -834,20 +834,20 @@ class Auth {
       global $CFG_GLPI;
 
       switch ($authtype) {
-         case Auth::X509 :
-         case Auth::EXTERNAL :
-         case Auth::CAS :
+         case self::X509 :
+         case self::EXTERNAL :
+         case self::CAS :
             // Use default LDAP config
             $auths_id = $CFG_GLPI["authldaps_id_extra"];
 
-         case Auth::LDAP :
+         case self::LDAP :
             $auth = new AuthLdap();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
                return ($auth->fields);
             }
             break;
 
-         case Auth::MAIL :
+         case self::MAIL :
             $auth = new AuthMail();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
                return ($auth->fields);
@@ -897,7 +897,7 @@ class Auth {
     * @return boolean
    **/
    static function isAlternateAuth($auths_id) {
-      return in_array($auths_id, array(Auth::X509, Auth::CAS, Auth::EXTERNAL));
+      return in_array($auths_id, array(self::X509, self::CAS, self::EXTERNAL));
    }
 
 
@@ -911,7 +911,7 @@ class Auth {
    static function isAlternateAuthWithLdap($auths_id) {
       global $CFG_GLPI;
 
-      return (Auth::isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
+      return (self::isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
    }
 
 
@@ -941,7 +941,7 @@ class Auth {
          if ($redirect) {
             glpi_header("login.php".$redir_string);
          } else {
-            return Auth::X509;
+            return self::X509;
          }
       }
 
@@ -953,7 +953,7 @@ class Auth {
          if ($redirect) {
             glpi_header("login.php".$redir_string);
          } else {
-            return Auth::EXTERNAL;
+            return self::EXTERNAL;
          }
       }
 
@@ -962,7 +962,7 @@ class Auth {
          if ($redirect) {
             glpi_header("login.php".$redir_string);
          } else {
-            return Auth::CAS;
+            return self::CAS;
          }
       }
    return false;
@@ -991,7 +991,7 @@ class Auth {
             echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
 
             switch($data["authtype"]) {
-               case Auth::LDAP :
+               case self::LDAP :
                   //Look it the auth server still exists !
                   // <- Bad idea : id not exists unable to change anything
                   $sql = "SELECT `name`
@@ -1007,13 +1007,13 @@ class Auth {
                   }
                   break;
 
-               case Auth::DB_GLPI :
-               case Auth::MAIL :
+               case self::DB_GLPI :
+               case self::MAIL :
                   break;
 
-               case Auth::CAS :
-               case Auth::EXTERNAL :
-               case Auth::X509 :
+               case self::CAS :
+               case self::EXTERNAL :
+               case self::X509 :
                   if ($CFG_GLPI['authldaps_id_extra']) {
                      $sql = "SELECT `name`
                              FROM `glpi_authldaps`
@@ -1035,7 +1035,7 @@ class Auth {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>".$LANG['login'][30]."&nbsp:&nbsp;</th></tr>";
             echo "<tr class='tab_bg_2'><td class='center'>";
-            $rand             = Auth::dropdown(array('name' => 'authtype'));
+            $rand             = self::dropdown(array('name' => 'authtype'));
             $paramsmassaction = array('authtype' => '__VALUE__',
                                       'name'     => 'change_auth_method');
             ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
