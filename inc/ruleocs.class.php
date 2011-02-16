@@ -40,14 +40,15 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcs extends Rule {
 
    // From Rule
-   public $right='rule_ocs';
-   public $can_sort=true;
+   public $right    = 'rule_ocs';
+   public $can_sort = true;
 
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][18];
    }
+
 
    function maxActionsCount() {
       // Unlimited
@@ -58,6 +59,7 @@ class RuleOcs extends Rule {
    function preProcessPreviewResults($output) {
       return $output;
    }
+
 
    function executeActions($output,$params) {
 
@@ -78,7 +80,7 @@ class RuleOcs extends Rule {
                         //Get the entity associated with the TAG
                         $target_entity = EntityData::getEntityIDByTag($res);
                         if ($target_entity != '') {
-                           $output["entities_id"]=$target_entity;
+                           $output["entities_id"] = $target_entity;
                         }
                      }
                   }
@@ -89,8 +91,10 @@ class RuleOcs extends Rule {
       return $output;
    }
 
+
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
 
       $criterias['TAG']['table']     = 'accountinfo';
@@ -140,8 +144,10 @@ class RuleOcs extends Rule {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
       $actions['entities_id']['name']  = $LANG['entity'][0];
       $actions['entities_id']['type']  = 'dropdown';
@@ -160,6 +166,7 @@ class RuleOcs extends Rule {
 
       return $actions;
    }
+
 }
 
 ?>

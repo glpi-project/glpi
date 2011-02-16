@@ -40,26 +40,31 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcsCollection extends RuleCollection {
 
    // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right = 'rule_ocs';
-   public $menu_option='ocs';
+   public $stop_on_first_match = true;
+   public $right               = 'rule_ocs';
+   public $menu_option         = 'ocs';
 
    // Specific ones
    ///Store the id of the ocs server
    var $ocsservers_id;
 
+
    /**
     * Constructor
+    *
     * @param $ocsservers_id ID of the OCS server
    **/
    function __construct($ocsservers_id=-1) {
       $this->ocsservers_id = $ocsservers_id;
    }
 
+
    function canList() {
       global $CFG_GLPI;
+
       return $CFG_GLPI["use_ocs_mode"] && $this->canView();
    }
+
 
    function getTitle() {
       global $LANG;
@@ -67,11 +72,12 @@ class RuleOcsCollection extends RuleCollection {
       return $LANG['rulesengine'][18];
    }
 
-   function prepareInputDataForProcess($input,$computers_id) {
+
+   function prepareInputDataForProcess($input, $computers_id) {
       global $DBocs;
 
-      $tables = $this->getTablesForQuery();
-      $fields = $this->getFieldsForQuery();
+      $tables          = $this->getTablesForQuery();
+      $fields          = $this->getFieldsForQuery();
       $rule_parameters = array();
 
       $select_sql = "";
@@ -124,93 +130,98 @@ class RuleOcsCollection extends RuleCollection {
          //Sometimes OCS can't find network ports but fill the right ip in hardware table...
          //So let's use the ip to proceed rules (if IP is a criteria of course)
          if (in_array("IPADDRESS",$fields) && !isset($ocs_datas['IPADDRESS'])) {
-            $ocs_datas['IPADDRESS']=OcsServer::getGeneralIpAddress($this->ocsservers_id,$computers_id);
+            $ocs_datas['IPADDRESS'] = OcsServer::getGeneralIpAddress($this->ocsservers_id,
+                                                                     $computers_id);
          }
          return array_merge($rule_parameters, $ocs_datas);
-      } else {
-         return $rule_parameters;
       }
+      return $rule_parameters;
    }
 
-   /**
-   * Get the list of all tables to include in the query
-       * @return an array of table names
-    	*/
-   function getTablesForQuery() {
-      $rule = new RuleOcs();
 
+   /**
+    * Get the list of all tables to include in the query
+    *
+    * @return an array of table names
+   **/
+   function getTablesForQuery() {
+
+      $rule   = new RuleOcs();
       $tables = array();
       foreach ($rule->getCriterias() as $criteria) {
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
              && $criteria['table'] != ''
              && !isset($tables[$criteria["table"]])) {
 
-            $tables[$criteria['table']]=$criteria['linkfield'];
+            $tables[$criteria['table']] = $criteria['linkfield'];
          }
       }
-
       return $tables;
    }
 
+
    /**
-   * Get fields needed to process criterias
-   * @param $withouttable fields without tablename ?
-   * @return an array of needed fields
-   */
+    *  * Get fields needed to process criterias
+    *
+    * @param $withouttable fields without tablename ?
+    *
+    * @return an array of needed fields
+   **/
    function getFieldsForQuery($withouttable=0) {
 
-      $rule = new RuleOcs();
+      $rule   = new RuleOcs();
       $fields = array();
       foreach ($rule->getCriterias() as $key => $criteria) {
          if ($withouttable) {
             if (strcasecmp($key,$criteria['field']) != 0) {
-               $fields[]=$key;
+               $fields[] = $key;
             } else {
-               $fields[]=$criteria['field'];
+               $fields[] = $criteria['field'];
             }
+
          } else {
             //If the field is different from the key
             if (strcasecmp($key,$criteria['field']) != 0) {
                $as = " AS ".$key;
             } else {
-               $as ="";
+               $as = "";
             }
+
             //If the field name is not null AND a table name is provided
             if (($criteria['field'] != ''
                  && (!isset($criteria['virtual']) || !$criteria['virtual']))) {
                if ( $criteria['table'] != '') {
-                  $fields[]=$criteria['table'].".".$criteria['field'].$as;
+                  $fields[] = $criteria['table'].".".$criteria['field'].$as;
                } else {
-                  $fields[]=$criteria['field'].$as;
+                  $fields[] = $criteria['field'].$as;
                }
             } else {
-               $fields[]=$criteria['id'];
+               $fields[] = $criteria['id'];
             }
          }
       }
       return $fields;
    }
 
+
    /**
-   * Get foreign fields needed to process criterias
-   * @return an array of needed fields
-   */
+    * Get foreign fields needed to process criterias
+    *
+    * @return an array of needed fields
+   **/
    function getFKFieldsForQuery() {
 
-      $rule = new RuleOcs();
+      $rule   = new RuleOcs();
       $fields = array();
       foreach ($rule->getCriterias() as $criteria) {
          //If the field name is not null AND a table name is provided
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
              && $criteria['linkfield'] != '') {
-
-            $fields[]=$criteria['table'].".".$criteria['linkfield'];
+            $fields[] = $criteria['table'].".".$criteria['linkfield'];
          }
       }
       return $fields;
    }
 
 }
-
-
 ?>

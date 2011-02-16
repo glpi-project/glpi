@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 class RuleSoftwareCategoryCollection extends RuleCollection {
 
    // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right='rule_softwarecategories';
-   public $menu_option='softwarecategories';
+   public $stop_on_first_match = true;
+   public $right               = 'rule_softwarecategories';
+   public $menu_option         = 'softwarecategories';
 
 
    function getTitle() {
@@ -51,20 +51,25 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
       return $LANG['rulesengine'][37];
    }
 
+
    /**
     * Get the attributes needed for processing the rules
+    *
     * @param $input input data
     * @param $software software data array
+    *
     * @return an array of attributes
-    */
+   **/
    function prepareInputDataForProcess($input,$software) {
 
-      $params["name"]=$software["name"];
+      $params["name"] = $software["name"];
       if (isset($software["comment"])) {
-         $params["comment"]=$software["comment"];
+         $params["comment"] = $software["comment"];
       }
+
       if (isset($software["manufacturers_id"])) {
-         $params["manufacturer"]=Dropdown::getDropdownName("glpi_manufacturers",$software["manufacturers_id"]);
+         $params["manufacturer"] = Dropdown::getDropdownName("glpi_manufacturers",
+                                                             $software["manufacturers_id"]);
       }
       return $params;
    }
