@@ -2441,9 +2441,9 @@ function generate_entity($ID_entity) {
                            '$version', 'comment $version', '$os')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
-         $versID = $DB->insert_id();
-         $val3   = min($LAST["computers"]-$FIRST['computers'],mt_rand(1,$MAX['softwareinstall']));
-         $comp_id   = mt_rand($FIRST["computers"],$LAST['computers']);
+         $versID  = $DB->insert_id();
+         $val3    = min($LAST["computers"]-$FIRST['computers'], mt_rand(1,$MAX['softwareinstall']));
+         $comp_id = mt_rand($FIRST["computers"], $LAST['computers']);
 
          for ($k=0 ; $k<$val3 ; $k++) {
             $comp_id++;
@@ -2452,8 +2452,7 @@ function generate_entity($ID_entity) {
             }
 
             $query = "INSERT INTO `glpi_computers_softwareversions`
-                      VALUES (NULL, '$comp_id',
-                              '$versID','0','0')";
+                      VALUES (NULL, '$comp_id', '$versID', '0', '0')";
 
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
@@ -2468,7 +2467,7 @@ function generate_entity($ID_entity) {
          $softwareversions_id_buy = mt_rand($FIRST["version"],$LAST["version"]);
          $softwareversions_id_use = mt_rand($softwareversions_id_buy,$LAST["version"]);
 
-         $nbused = min($LAST["computers"]-$FIRST['computers'],mt_rand(1,$MAX['softwareinstall']));
+         $nbused = min($LAST["computers"]-$FIRST['computers'], mt_rand(1,$MAX['softwareinstall']));
 
          $query = "INSERT INTO `glpi_softwarelicenses`
                    VALUES (NULL, $softID, '$ID_entity', '$recursive', '$nbused',
@@ -2478,9 +2477,7 @@ function generate_entity($ID_entity) {
          $DB->query($query) or die("PB REQUETE ".$query);
          $licID = $DB->insert_id();
 
-
-         $comp_id   = mt_rand($FIRST["computers"],$LAST['computers']);
-
+         $comp_id = mt_rand($FIRST["computers"], $LAST['computers']);
 
          for ($k=0 ; $k<$nbused ; $k++) {
             $comp_id++;
