@@ -1977,7 +1977,7 @@ class User extends CommonDBTM {
       $use_ajax = false;
 
       if ($CFG_GLPI["use_ajax"]) {
-         $res = User::getSqlSearchResult (true, $p['right'], $p['entity'], $p['value'], $p['used']);
+         $res = self::getSqlSearchResult (true, $p['right'], $p['entity'], $p['value'], $p['used']);
          $nb = ($res ? $DB->result($res,0,"cpt") : 0);
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax = true;

@@ -199,25 +199,25 @@ class Stat {
 
          for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
             //le nombre d'intervention - the number of intervention
-            $opened    = Stat::constructEntryValues("inter_total", $date1, $date2, $type,
+            $opened    = self::constructEntryValues("inter_total", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = Stat::constructEntryValues("inter_solved", $date1, $date2, $type,
+            $solved    = self::constructEntryValues("inter_solved", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $late    = Stat::constructEntryValues("inter_solved_late", $date1, $date2, $type,
+            $late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
                                                   $value[$i]["id"], $value2);
             $nb_late = array_sum($late);
             $export_data['late'][$value[$i]['link']] = $nb_late;
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = Stat::constructEntryValues("inter_closed", $date1, $date2, $type,
+            $closed    = self::constructEntryValues("inter_closed", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
@@ -295,35 +295,35 @@ class Stat {
             }
 
             //le nombre d'intervention - the number of intervention
-            $opened    = Stat::constructEntryValues("inter_total", $date1, $date2, $type,
+            $opened    = self::constructEntryValues("inter_total", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
             $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = Stat::constructEntryValues("inter_solved", $date1, $date2, $type,
+            $solved    = self::constructEntryValues("inter_solved", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved_late    = Stat::constructEntryValues("inter_solved_late", $date1, $date2, $type,
+            $solved_late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
                                                          $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
             $export_data['solved_late'][$value[$i]['link']] = $nb_solved_late;
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = Stat::constructEntryValues("inter_closed", $date1, $date2, $type,
+            $closed    = self::constructEntryValues("inter_closed", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
 
             //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
-            $data = Stat::constructEntryValues("inter_avgtakeaccount", $date1, $date2, $type,
+            $data = self::constructEntryValues("inter_avgtakeaccount", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] *= $solved[$key2];
@@ -344,7 +344,7 @@ class Stat {
 
 
             //Le temps moyen de resolution - The average time to resolv
-            $data = Stat::constructEntryValues("inter_avgsolvedtime", $date1, $date2, $type,
+            $data = self::constructEntryValues("inter_avgsolvedtime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
@@ -363,7 +363,7 @@ class Stat {
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de cloture - The average time to close
-            $data = Stat::constructEntryValues("inter_avgclosedtime", $date1, $date2, $type,
+            $data = self::constructEntryValues("inter_avgclosedtime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
@@ -382,7 +382,7 @@ class Stat {
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de l'intervention reelle - The average actiontime to resolv
-            $data = Stat::constructEntryValues("inter_avgactiontime", $date1, $date2, $type,
+            $data = self::constructEntryValues("inter_avgactiontime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                if (isset($solved[$key2])) {

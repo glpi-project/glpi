@@ -44,9 +44,9 @@ class Search {
    **/
    static function show ($itemtype) {
 
-      Search::manageGetValues($itemtype);
-      Search::showGenericSearch($itemtype, $_GET);
-      Search::showList($itemtype, $_GET);
+      self::manageGetValues($itemtype);
+      self::showGenericSearch($itemtype, $_GET);
+      self::showList($itemtype, $_GET);
    }
 
 
@@ -113,7 +113,7 @@ class Search {
 
       $target = getItemTypeSearchURL($itemtype);
 
-      $limitsearchopt = Search::getCleanedOptions($itemtype);
+      $limitsearchopt = self::getCleanedOptions($itemtype);
 
       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
          $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
@@ -142,7 +142,7 @@ class Search {
       $metanames = array();
 
       // Get the items to display
-      $toview = Search::addDefaultToView($itemtype);
+      $toview = self::addDefaultToView($itemtype);
 
       // Add items to display depending of personal prefs
       $displaypref = DisplayPreference::getForTypeUser($itemtype, getLoginUserID());
@@ -184,11 +184,11 @@ class Search {
       // Construct the request
 
       //// 1 - SELECT
-      $SELECT = "SELECT ".Search::addDefaultSelect($itemtype);
+      $SELECT = "SELECT ".self::addDefaultSelect($itemtype);
 
       // Add select for all toview item
       foreach ($toview as $key => $val) {
-         $SELECT .= Search::addSelect($itemtype, $val, $key, 0);
+         $SELECT .= self::addSelect($itemtype, $val, $key, 0);
       }
 
 
@@ -202,17 +202,17 @@ class Search {
       array_push($already_link_tables, $itemtable);
 
       // Add default join
-      $COMMONLEFTJOIN = Search::addDefaultJoin($itemtype, $itemtable, $already_link_tables);
+      $COMMONLEFTJOIN = self::addDefaultJoin($itemtype, $itemtable, $already_link_tables);
       $FROM .= $COMMONLEFTJOIN;
 
       $searchopt = array();
-      $searchopt[$itemtype] = &Search::getOptions($itemtype);
+      $searchopt[$itemtype] = &self::getOptions($itemtype);
       // Add all table for toview items
       foreach ($toview as $key => $val) {
-         $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                      $searchopt[$itemtype][$val]["table"],
-                                      $searchopt[$itemtype][$val]["linkfield"], 0, 0,
-                                      $searchopt[$itemtype][$val]["joinparams"]);
+         $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+                                    $searchopt[$itemtype][$val]["table"],
+                                    $searchopt[$itemtype][$val]["linkfield"], 0, 0,
+                                    $searchopt[$itemtype][$val]["joinparams"]);
       }
 
       // Search all case :
@@ -220,10 +220,10 @@ class Search {
          foreach ($searchopt[$itemtype] as $key => $val) {
             // Do not search on Group Name
             if (is_array($val)) {
-               $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
-                                            $searchopt[$itemtype][$key]["table"],
-                                            $searchopt[$itemtype][$key]["linkfield"], 0, 0,
-                                            $searchopt[$itemtype][$key]["joinparams"]);
+               $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
+                                          $searchopt[$itemtype][$key]["table"],
+                                          $searchopt[$itemtype][$key]["linkfield"], 0, 0,
+                                          $searchopt[$itemtype][$key]["joinparams"]);
             }
          }
       }
@@ -232,7 +232,7 @@ class Search {
       //// 3 - WHERE
 
       // default string
-      $COMMONWHERE = Search::addDefaultWhere($itemtype);
+      $COMMONWHERE = self::addDefaultWhere($itemtype);
       $first = empty($COMMONWHERE);
 
       // Add deleted if item have it
@@ -306,16 +306,16 @@ class Search {
                      }
                      // Find key
                      $item_num = array_search($p['field'][$key], $toview);
-                     $HAVING .= Search::addHaving($LINK, $NOT,$itemtype, $p['field'][$key],
-                                                  $p['searchtype'][$key], $p['contains'][$key], 0,
-                                                  $item_num);
+                     $HAVING .= self::addHaving($LINK, $NOT,$itemtype, $p['field'][$key],
+                                                $p['searchtype'][$key], $p['contains'][$key], 0,
+                                                $item_num);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
                         $LINK = $tmplink;
                      }
-                     $WHERE .= Search::addWhere($LINK, $NOT, $itemtype, $p['field'][$key],
-                                                $p['searchtype'][$key], $p['contains'][$key]);
+                     $WHERE .= self::addWhere($LINK, $NOT, $itemtype, $p['field'][$key],
+                                              $p['searchtype'][$key], $p['contains'][$key]);
                   }
 
                // view and all search
@@ -380,8 +380,8 @@ class Search {
                               $tmplink = " ";
                               $first2  = false;
                            }
-                           $WHERE .= Search::addWhere($tmplink, $NOT, $itemtype, $key2,
-                                                      $p['searchtype'][$key], $p['contains'][$key]);
+                           $WHERE .= self::addWhere($tmplink, $NOT, $itemtype, $key2,
+                                                    $p['searchtype'][$key], $p['contains'][$key]);
                         }
                      }
                   }
@@ -396,7 +396,7 @@ class Search {
       $ORDER = " ORDER BY `id` ";
       foreach ($toview as $key => $val) {
          if ($p['sort']==$val) {
-            $ORDER = Search::addOrderBy($itemtype, $p['sort'], $p['order'], $key);
+            $ORDER = self::addOrderBy($itemtype, $p['sort'], $p['order'], $key);
          }
       }
 
@@ -412,8 +412,8 @@ class Search {
                 && isset($p['contains2'][$i])
                 && strlen($p['contains2'][$i])>0) {
 
-               $SELECT .= Search::addSelect($p['itemtype2'][$i], $p['field2'][$i], $i, 1,
-                                            $p['itemtype2'][$i]);
+               $SELECT .= self::addSelect($p['itemtype2'][$i], $p['field2'][$i], $i, 1,
+                                          $p['itemtype2'][$i]);
             }
          }
 
@@ -428,10 +428,10 @@ class Search {
                 && strlen($p['contains2'][$i])>0) {
 
                if (!in_array(getTableForItemType($p['itemtype2'][$i]), $already_link_tables2)) {
-                  $FROM .= Search::addMetaLeftJoin($itemtype, $p['itemtype2'][$i],
-                                                   $already_link_tables2,
-                                                   (($p['contains2'][$i]=="NULL")
-                                                    || (strstr($p['link2'][$i], "NOT"))));
+                  $FROM .= self::addMetaLeftJoin($itemtype, $p['itemtype2'][$i],
+                                                 $already_link_tables2,
+                                                 (($p['contains2'][$i]=="NULL")
+                                                  || (strstr($p['link2'][$i], "NOT"))));
                }
             }
          }
@@ -443,18 +443,18 @@ class Search {
                 && strlen($p['contains2'][$i])>0) {
 
                if (!isset($searchopt[$p['itemtype2'][$i]])) {
-                  $searchopt[$p['itemtype2'][$i]] = &Search::getOptions($p['itemtype2'][$i]);
+                  $searchopt[$p['itemtype2'][$i]] = &self::getOptions($p['itemtype2'][$i]);
                }
                if (!in_array($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"]."_".$p['itemtype2'][$i],
                              $already_link_tables2)) {
 
-                  $FROM .= Search::addLeftJoin($p['itemtype2'][$i],
-                                               getTableForItemType($p['itemtype2'][$i]),
-                                               $already_link_tables2,
-                                               $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
-                                               $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
-                                               1, $p['itemtype2'][$i],
-                                               $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"]);
+                  $FROM .= self::addLeftJoin($p['itemtype2'][$i],
+                                             getTableForItemType($p['itemtype2'][$i]),
+                                             $already_link_tables2,
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
+                                             1, $p['itemtype2'][$i],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"]);
                }
             }
          }
@@ -513,9 +513,9 @@ class Search {
                   if (!empty($HAVING)) {
                      $LINK = $tmplink;
                   }
-                  $HAVING .= Search::addHaving($LINK, $NOT, $p['itemtype2'][$key],
-                                               $p['field2'][$key], $p['searchtype2'][$key],
-                                               $p['contains2'][$key], 1, $key);
+                  $HAVING .= self::addHaving($LINK, $NOT, $p['itemtype2'][$key],
+                                             $p['field2'][$key], $p['searchtype2'][$key],
+                                             $p['contains2'][$key], 1, $key);
                } else { // Meta Where Search
                   $LINK = " ";
                   $NOT  = 0;
@@ -537,8 +537,8 @@ class Search {
                   if (!empty($WHERE)) {
                      $LINK = $tmplink;
                   }
-                  $WHERE .= Search::addWhere($LINK, $NOT, $p['itemtype2'][$key], $p['field2'][$key],
-                                             $p['searchtype2'][$key], $p['contains2'][$key], 1);
+                  $WHERE .= self::addWhere($LINK, $NOT, $p['itemtype2'][$key], $p['field2'][$key],
+                                           $p['searchtype2'][$key], $p['contains2'][$key], 1);
                }
             }
          }
@@ -701,7 +701,7 @@ class Search {
             }
          }
          if (empty($QUERY)) {
-            echo Search::showError($output_type);
+            echo self::showError($output_type);
             return;
          }
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$itemtype].".", "", $ORDER) . $LIMIT;
@@ -722,13 +722,13 @@ class Search {
             $numrows = $DBread->numrows($result);
          }
          // Contruct Pager parameters
-         $globallinkto = Search::getArrayUrlLink("field",$p['field']).
-                         Search::getArrayUrlLink("link",$p['link']).
-                         Search::getArrayUrlLink("contains",$p['contains']).
-                         Search::getArrayUrlLink("field2",$p['field2']).
-                         Search::getArrayUrlLink("contains2",$p['contains2']).
-                         Search::getArrayUrlLink("itemtype2",$p['itemtype2']).
-                         Search::getArrayUrlLink("link2",$p['link2']);
+         $globallinkto = self::getArrayUrlLink("field",$p['field']).
+                         self::getArrayUrlLink("link",$p['link']).
+                         self::getArrayUrlLink("contains",$p['contains']).
+                         self::getArrayUrlLink("field2",$p['field2']).
+                         self::getArrayUrlLink("contains2",$p['contains2']).
+                         self::getArrayUrlLink("itemtype2",$p['itemtype2']).
+                         self::getArrayUrlLink("link2",$p['link2']);
 
          $parameters = "sort=".$p['sort']."&amp;order=".$p['order'].$globallinkto;
 
@@ -766,7 +766,7 @@ class Search {
                      if (is_array($out) && count($out)) {
                         foreach ($out as $key => $val) {
                            if (is_array($val)) {
-                              $parameters .= Search::getArrayUrlLink($key, $val);
+                              $parameters .= self::getArrayUrlLink($key, $val);
                            } else {
                               $parameters .= "&amp;$key=$val";
                            }
@@ -828,10 +828,10 @@ class Search {
             }
 
             // Display List Header
-            echo Search::showHeader($output_type, $end_display-$begin_display+1, $nbcols);
+            echo self::showHeader($output_type, $end_display-$begin_display+1, $nbcols);
 
             // New Line for Header Items Line
-            echo Search::showNewLine($output_type);
+            echo self::showNewLine($output_type);
             $header_num = 1;
 
             if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
@@ -845,8 +845,8 @@ class Search {
                                     "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
                }
-               echo Search::showHeaderItem($output_type, $search_config, $header_num, "", 0,
-                                           $p['order']);
+               echo self::showHeaderItem($output_type, $search_config, $header_num, "", 0,
+                                         $p['order']);
             }
 
             // Display column Headers for toview items
@@ -859,8 +859,8 @@ class Search {
                             ($p['order']=="ASC"?"DESC":"ASC")."&amp;start=".$p['start'].
                             $globallinkto;
                }
-               echo Search::showHeaderItem($output_type, $searchopt[$itemtype][$val]["name"],
-                                           $header_num, $linkto,$p['sort']==$val, $p['order']);
+               echo self::showHeaderItem($output_type, $searchopt[$itemtype][$val]["name"],
+                                         $header_num, $linkto,$p['sort']==$val, $p['order']);
             }
 
             // Display columns Headers for meta items
@@ -876,33 +876,33 @@ class Search {
                         $metanames[$p['itemtype2'][$i]] = $metaitem->getTypeName();
                      }
 
-                     echo Search::showHeaderItem($output_type,
-                                                 $metanames[$p['itemtype2'][$i]]." - ".
-                                                   $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
-                                                 $header_num);
+                     echo self::showHeaderItem($output_type,
+                                               $metanames[$p['itemtype2'][$i]]." - ".
+                                                 $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
+                                               $header_num);
                   }
                }
             }
 
             // Add specific column Header
             if ($itemtype == 'CartridgeItem') {
-               echo Search::showHeaderItem($output_type, $LANG['cartridges'][0], $header_num);
+               echo self::showHeaderItem($output_type, $LANG['cartridges'][0], $header_num);
             }
             if ($itemtype == 'ConsumableItem') {
-               echo Search::showHeaderItem($output_type, $LANG['consumables'][0], $header_num);
+               echo self::showHeaderItem($output_type, $LANG['consumables'][0], $header_num);
             }
             if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
-               echo Search::showHeaderItem($output_type, $LANG['state'][6], $header_num);
+               echo self::showHeaderItem($output_type, $LANG['state'][6], $header_num);
             }
             if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                if (haveRight("reservation_central","w")) {
-                  echo Search::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
-                  echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+                  echo self::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
+                  echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
                }
-               echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+               echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
             }
             // End Line for column headers
-            echo Search::showEndLine($output_type);
+            echo self::showEndLine($output_type);
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -958,14 +958,14 @@ class Search {
                                       $sel>";
                      }
                   }
-                  echo Search::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
+                  echo self::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
                }
 
                // Print other toview items
                foreach ($toview as $key => $val) {
-                  echo Search::showItem($output_type, Search::giveItem($itemtype, $val, $data, $key),
-                                        $item_num, $row_num,
-                                        Search::displayConfigItem($itemtype, $val, $data, $key));
+                  echo self::showItem($output_type, self::giveItem($itemtype, $val, $data, $key),
+                                      $item_num, $row_num,
+                                      self::displayConfigItem($itemtype, $val, $data, $key));
                }
 
                // Print Meta Item
@@ -978,9 +978,9 @@ class Search {
 
                         // General case
                         if (strpos($data["META_$j"],"$$$$")===false) {
-                           $out = Search::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data,
-                                                    $j, 1);
-                           echo Search::showItem($output_type, $out, $item_num, $row_num);
+                           $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data, $j,
+                                                  1);
+                           echo self::showItem($output_type, $out, $item_num, $row_num);
 
                         // Case of GROUP_CONCAT item : split item and multilline display
                         } else {
@@ -1028,23 +1028,23 @@ class Search {
                                  }
                               }
                            }
-                           echo Search::showItem($output_type, $out, $item_num, $row_num);
+                           echo self::showItem($output_type, $out, $item_num, $row_num);
                         }
                      }
                   }
                }
                // Specific column display
                if ($itemtype == 'CartridgeItem') {
-                  echo Search::showItem($output_type,
-                                        Cartridge::getCount($data["id"], $data["ALARM"],
-                                                            $output_type!=HTML_OUTPUT),
-                                        $item_num, $row_num);
+                  echo self::showItem($output_type,
+                                      Cartridge::getCount($data["id"], $data["ALARM"],
+                                                          $output_type!=HTML_OUTPUT),
+                                      $item_num, $row_num);
                }
                if ($itemtype == 'ConsumableItem') {
-                  echo Search::showItem($output_type,
-                                        Consumable::getCount($data["id"], $data["ALARM"],
-                                                             $output_type!=HTML_OUTPUT),
-                                        $item_num, $row_num);
+                  echo self::showItem($output_type,
+                                      Consumable::getCount($data["id"], $data["ALARM"],
+                                                           $output_type!=HTML_OUTPUT),
+                                      $item_num, $row_num);
                }
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                   $typename = $data["TYPE"];
@@ -1052,49 +1052,50 @@ class Search {
                      $itemtmp  = new $data["TYPE"]();
                      $typename = $itemtmp->getTypeName();
                   }
-                  echo Search::showItem($output_type, $typename, $item_num, $row_num);
+                  echo self::showItem($output_type, $typename, $item_num, $row_num);
                }
                if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                   if (haveRight("reservation_central","w")) {
                      if (!haveAccessToEntity($data["ENTITY"])) {
-                        echo Search::showItem($output_type, "&nbsp;", $item_num, $row_num);
-                        echo Search::showItem($output_type, "&nbsp;", $item_num, $row_num);
+                        echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
+                        echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
                      } else {
-                        echo Search::showItem($output_type,
-                                              "<a href=\"".getItemTypeFormURL($itemtype)."?id=".
-                                                $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
-                                                "&amp;update=update\" "."title=\"".
-                                                ($data["ACTIVE"]?$LANG['buttons'][42]
-                                                                :$LANG['buttons'][41])."\">".
-                                                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
-                                                ($data["ACTIVE"]?"moins":"plus").".png\" alt='' title=''></a>",
-                                              $item_num, $row_num, "class='center'");
+                        echo self::showItem($output_type,
+                                            "<a href=\"".getItemTypeFormURL($itemtype)."?id=".
+                                              $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
+                                              "&amp;update=update\" "."title=\"".
+                                              ($data["ACTIVE"]?$LANG['buttons'][42]
+                                                              :$LANG['buttons'][41])."\">".
+                                              "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
+                                                ($data["ACTIVE"]?"moins":"plus").".png\" alt=''
+                                                title=''></a>",
+                                            $item_num, $row_num, "class='center'");
 
-                        echo Search::showItem($output_type,
-                                              "<a href='".getItemTypeFormURL($itemtype)."?id=".
-                                                $data["refID"]."&amp;delete=delete' ".
-                                                "onclick=\"return window.confirm('".
-                                                addslashes($LANG['reservation'][38])."\\n".
-                                                addslashes($LANG['reservation'][39])."')\" title=\"".
-                                                $LANG['reservation'][6]."\">".
-                                                "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                                                  alt='' title=''></a>",
-                                              $item_num, $row_num, "class='center'");
+                        echo self::showItem($output_type,
+                                            "<a href='".getItemTypeFormURL($itemtype)."?id=".
+                                              $data["refID"]."&amp;delete=delete' ".
+                                              "onclick=\"return window.confirm('".
+                                              addslashes($LANG['reservation'][38])."\\n".
+                                              addslashes($LANG['reservation'][39])."')\" title=\"".
+                                              $LANG['reservation'][6]."\">".
+                                              "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                                                alt='' title=''></a>",
+                                            $item_num, $row_num, "class='center'");
                      }
                   }
                   if ($data["ACTIVE"]) {
-                     echo Search::showItem($output_type,
-                                           "<a href='reservation.php?reservationitems_id=".
-                                             $data["refID"]."' title=\"".$LANG['reservation'][21].
-                                             "\"><img src=\"".$CFG_GLPI["root_doc"].
+                     echo self::showItem($output_type,
+                                         "<a href='reservation.php?reservationitems_id=".
+                                           $data["refID"]."' title=\"".$LANG['reservation'][21]."\">".
+                                           "<img src=\"".$CFG_GLPI["root_doc"].
                                              "/pics/reservation-3.png\" alt='' title=''></a>",
-                                           $item_num, $row_num, "class='center'");
+                                         $item_num, $row_num, "class='center'");
                   } else {
-                     echo Search::showItem($output_type, "&nbsp;", $item_num, $row_num);
+                     echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
                   }
                }
                // End Line
-               echo Search::showEndLine($output_type);
+               echo self::showEndLine($output_type);
             }
 
             $title = "";
@@ -1211,7 +1212,7 @@ class Search {
             }
 
             // Display footer
-            echo Search::showFooter($output_type,$title);
+            echo self::showFooter($output_type,$title);
 
             // Delete selected item
             if ($output_type==HTML_OUTPUT) {
@@ -1230,7 +1231,7 @@ class Search {
                printPager($p['start'], $numrows, $target, $parameters);
             }
          } else {
-            echo Search::showError($output_type);
+            echo self::showError($output_type);
          }
       } else {
          echo $DBread->error();
@@ -1304,7 +1305,7 @@ class Search {
          $p[$key] = $val;
       }
 
-      $options = Search::getCleanedOptions($itemtype);
+      $options = self::getCleanedOptions($itemtype);
       $target  = getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
@@ -1631,7 +1632,7 @@ class Search {
    **/
    static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val, $meta, $num) {
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
       $table = $searchopt[$ID]["table"];
       $field = $searchopt[$ID]["field"];
 
@@ -1746,7 +1747,7 @@ class Search {
       if ($order!="ASC") {
          $order = "DESC";
       }
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
 
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
@@ -1936,7 +1937,7 @@ class Search {
    **/
    static function addSelect ($itemtype, $ID, $num, $meta=0, $meta_type=0) {
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
       $addtable  = "";
@@ -2089,7 +2090,7 @@ class Search {
                      `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
 
          case "glpi_auth_tables.name":
-            $user_searchopt = Search::getOptions('User');
+            $user_searchopt = self::getOptions('User');
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
                      `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
                      `glpi_authldaps".$addtable."_".
@@ -2243,7 +2244,7 @@ class Search {
             $condition = '';
             if (!haveRight("show_all_ticket","1")) {
 
-               $searchopt = &Search::getOptions($itemtype);
+               $searchopt            = &self::getOptions($itemtype);
                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
 
@@ -2315,7 +2316,7 @@ class Search {
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
       global $LANG;
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
 
@@ -2824,19 +2825,19 @@ class Search {
       switch ($itemtype) {
          // No link
           case 'User' :
-             return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                        "glpi_profiles_users", "profiles_users_id", 0, 0,
-                                        array('jointype' => 'child'));
+             return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                      "glpi_profiles_users", "profiles_users_id", 0, 0,
+                                      array('jointype' => 'child'));
 
          case 'Entity' :
-            return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                       "glpi_entitydatas", "");
+            return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_entitydatas", "");
 
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
             if (!haveRight("show_all_ticket","1")) {
-               $searchopt = &Search::getOptions($itemtype);
+               $searchopt = &self::getOptions($itemtype);
 
 //                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
 //                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
@@ -2844,43 +2845,43 @@ class Search {
 //                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                              $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                            $searchopt[4]['joinparams']['beforejoin']['joinparams']);
                } else { // Can own ticket : show my and assign to me
-                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                              $searchopt[4]['joinparams']['beforejoin']['joinparams']);
-                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                              $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                            $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                            $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
 
-                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                              "glpi_tickets_users", "ticket_users_id", 0, 0,
-                                              $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                            $searchopt[5]['joinparams']['beforejoin']['joinparams']);
 
                   if (count($_SESSION['glpigroups'])) {
-                     $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                 "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                                 $searchopt[8]['joinparams']['beforejoin']['joinparams']);
+                     $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                               "glpi_groups_tickets", "groups_tickets_id", 0, 0,
+                                               $searchopt[8]['joinparams']['beforejoin']['joinparams']);
                   }
                }
 
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
-                     $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                 "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                                 $searchopt[71]['joinparams']['beforejoin']['joinparams']);
+                     $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                               "glpi_groups_tickets", "groups_tickets_id", 0, 0,
+                                               $searchopt[71]['joinparams']['beforejoin']['joinparams']);
                   }
                }
 
                if (haveRight("validate_ticket",1)) {
-                  $out .= Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                              "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
-                                              $searchopt[58]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
+                                            $searchopt[58]['joinparams']['beforejoin']['joinparams']);
                }
             }
             return $out;
@@ -3021,9 +3022,8 @@ class Search {
                      $interjoinparams = $tab['joinparams'];
                   }
 //                   echo "BEFORE ";
-                  $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
-                                                 $interlinkfield, $meta, $meta_type,
-                                                 $interjoinparams);
+                  $before .= self::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
+                                               $interlinkfield, $meta, $meta_type, $interjoinparams);
 //                   echo "END BEFORE ".'<br>';
                }
 
@@ -3055,14 +3055,14 @@ class Search {
          switch ($new_table) {
             // No link
             case "glpi_auth_tables" :
-                  $user_searchopt = Search::getOptions('User');
+                  $user_searchopt = self::getOptions('User');
 
-                  $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                                           "glpi_authldaps", 'auths_id', 0, 0,
-                                                           $user_searchopt[30]['joinparams']);
-                  $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                                            "glpi_authmails", 'auths_id', 0, 0,
-                                                            $user_searchopt[31]['joinparams']);
+                  $specific_leftjoin  = self::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                          "glpi_authldaps", 'auths_id', 0, 0,
+                                                          $user_searchopt[30]['joinparams']);
+                  $specific_leftjoin .= self::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                          "glpi_authmails", 'auths_id', 0, 0,
+                                                          $user_searchopt[31]['joinparams']);
                   break;
 
             case "glpi_complete_entities" :
@@ -3306,7 +3306,7 @@ class Search {
    **/
    static function displayConfigItem ($itemtype, $ID, $data=array(), $num=0) {
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
 
       $NAME  = "ITEM_";
       $table = $searchopt[$ID]["table"];
@@ -3363,11 +3363,11 @@ class Search {
    static function giveItem ($itemtype, $ID, $data, $num, $meta=0) {
       global $CFG_GLPI,$LANG;
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
 
-         return Search::giveItem ($data["TYPE"], $ID, $data, $num, $meta);
+         return self::giveItem ($data["TYPE"], $ID, $data, $num, $meta);
       }
 
       // Plugin can override core definition for its type
@@ -4209,7 +4209,7 @@ class Search {
    static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
       global $CFG_GLPI;
 
-      $options = &Search::getOptions($itemtype, $withplugins);
+      $options = &self::getOptions($itemtype, $withplugins);
       $todel   = array();
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $todel = array_merge($todel, array('financial', 25, 26, 27, 28, 37, 38, 50, 51, 52, 53,
@@ -4460,7 +4460,7 @@ class Search {
    static function getActionsFor($itemtype, $field_num) {
       global $LANG;
 
-      $searchopt = &Search::getOptions($itemtype);
+      $searchopt = &self::getOptions($itemtype);
       $actions   = array('contains'  => $LANG['search'][2],
                          'searchopt' => array());
 

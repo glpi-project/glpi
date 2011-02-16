@@ -657,7 +657,7 @@ class TicketValidation  extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
             echo "<td>";
-            TicketValidation::dropdownStatus("status", array('value' => $this->fields["status"]));
+            self::dropdownStatus("status", array('value' => $this->fields["status"]));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -669,7 +669,7 @@ class TicketValidation  extends CommonDBChild {
          } else {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
-            echo "<td>". TicketValidation::getStatus($this->fields["status"])."</td></tr>";
+            echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";

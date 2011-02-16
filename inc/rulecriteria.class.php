@@ -357,7 +357,7 @@ class RuleCriteria extends CommonDBChild {
          $p[$key] = $value;
       }
       $elements = array();
-      foreach (RuleCriteria::getConditions($itemtype, $p['criterion']) as $pattern => $label) {
+      foreach (self::getConditions($itemtype, $p['criterion']) as $pattern => $label) {
          if (empty($p['allow_conditions'])
              || (!empty($p['allow_conditions']) && in_array($pattern,$p['allow_conditions']))) {
             $elements[$pattern] = $label;

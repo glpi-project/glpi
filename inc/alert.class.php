@@ -164,7 +164,7 @@ class Alert extends CommonDBTM {
       global $LANG;
 
       $tmp[0] = DROPDOWN_EMPTY_VALUE;
-      $tmp[pow(2, Alert::END)] = $LANG['financial'][80];
+      $tmp[pow(2, self::END)] = $LANG['financial'][80];
       Dropdown::showFromArray("default_infocom_alert", $tmp, array('value' => $value));
    }
 
