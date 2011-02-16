@@ -483,7 +483,7 @@ class EntityData extends CommonDBChild {
       global $LANG;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')) {
+      if (!$entity->can($ID,'r') || !haveRight('notification','r')) {
          return false;
       }
 
@@ -655,7 +655,7 @@ class EntityData extends CommonDBChild {
       global $LANG, $CFG_GLPI;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')) {
+      if (!$entity->can($ID,'r') || !haveRight('entity_helpdesk','r')) {
          return false;
       }
       $canedit = haveRight('entity_helpdesk','w') && haveAccessToEntity($ID);
