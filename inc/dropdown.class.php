@@ -1272,7 +1272,7 @@ class Dropdown {
 
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
-               if ($doc->canUpdate()) {
+               if ($doc->canView()) {
                   echo "<option value='add_document'>".$LANG['document'][16]."</option>";
                }
             }
