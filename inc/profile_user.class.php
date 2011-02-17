@@ -561,10 +561,11 @@ class Profile_User extends CommonDBTM {
 
       $query = "SELECT DISTINCT `profiles_id`
                 FROM `glpi_profiles_users`
-                WHERE `users_id` = '$user_ID' $sqlfilter";
+                WHERE `users_id` = '$user_ID'
+                      $sqlfilter";
       $result = $DB->query($query);
-      $profiles = array();
 
+      $profiles = array();
       if ($DB->numrows($result) >0) {
          while ($data = $DB->fetch_assoc($result)) {
             $profiles[$data['profiles_id']] = $data['profiles_id'];

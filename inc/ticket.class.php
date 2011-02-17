@@ -3644,14 +3644,14 @@ class Ticket extends CommonDBTM {
          echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
          if (haveRight("update_ticket","1")) {
             //List all users in the active entities
-            $rand = User::dropdown(array('name'          => '_users_id_requester',
-                                         'value'         => $options["_users_id_requester"],
-                                         'entity'        => $_SESSION['glpiactiveentities'],
+            $rand = User::dropdown(array('name'        => '_users_id_requester',
+                                         'value'       => $options["_users_id_requester"],
+                                         'entity'      => $_SESSION['glpiactiveentities'],
                                  //'entity'        => $this->fields["entities_id"],
                                  //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
-                                         'right'         => 'all',
+                                         'right'       => 'all',
                                          'auto_submit' => 1,
-                                         'ldap_import'   => true));
+                                         'ldap_import' => true));
 
             if ($CFG_GLPI['use_mailing']) {
                echo "<div id='notif_requester_$rand'>";

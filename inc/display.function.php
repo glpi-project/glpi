@@ -3169,7 +3169,8 @@ function displayProgressBar($width, $percent, $options=array()) {
    }
    $output .= "<tr><td>
                <table><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
-                "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".$percentwidth."px' height='12'>";
+                "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".$percentwidth.
+                "px' height='12'>";
 
    if ($param['simple']) {
       $output .= $percent."%";
