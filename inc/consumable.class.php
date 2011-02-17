@@ -471,7 +471,7 @@ class Consumable extends CommonDBTM {
 
             if ($show_old) {
                echo "<td class='center'>";
-               echo formatUserName($data["USERID"], $data["REALNAME"], $data["REALNAME"], $data["FIRSTNAME"]);
+               echo formatUserName($data["USERID"], $data["USERNAME"], $data["REALNAME"], $data["FIRSTNAME"]);
                echo "</td>";
             }
             echo "<td class='center'>";
