@@ -211,7 +211,7 @@ class Dropdown {
             if ($params['value'] && $item->getFromDB($params['value'])) {
                echo '&nbsp;'.$item->getLinks();
             }
-         } 
+         }
 
       }
 
@@ -1172,7 +1172,7 @@ class Dropdown {
             }
             if (in_array($itemtype,$CFG_GLPI["doc_types"])) {
                $doc = new Document();
-               if ($doc->canUpdate()) {
+               if ($doc->canView()) {
                   echo "<option value='add_document'>".$LANG['document'][16]."</option>";
                }
             }
