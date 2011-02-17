@@ -104,7 +104,7 @@ class Dropdown {
 
       if ($params['value'] > 0
          || ($itemtype == "Entity" && $params['value'] >= 0)) {
-         $tmpname = Dropdown::getDropdownName($table,$params['value'],1);
+         $tmpname = self::getDropdownName($table,$params['value'],1);
 
          if ($tmpname["name"]!="&nbsp;") {
             $name    = $tmpname["name"];
@@ -307,7 +307,7 @@ class Dropdown {
                         break;
 
                      case "glpi_netpoints" :
-                        $name .= " (".Dropdown::getDropdownName("glpi_locations",
+                        $name .= " (".self::getDropdownName("glpi_locations",
                                                                 $data["locations_id"]).")";
                         break;
                   }
@@ -389,7 +389,7 @@ class Dropdown {
          }
       }
       asort($options);
-      return Dropdown::showFromArray($name, $options, array('value' => $value,
+      return self::showFromArray($name, $options, array('value' => $value,
                                                             'used'  => $used));
    }
 
@@ -425,7 +425,7 @@ class Dropdown {
          }
       }
 
-      return Dropdown::dropdownTypes($name, $p['value'],$tabs);
+      return self::dropdownTypes($name, $p['value'],$tabs);
    }
 
 
@@ -527,7 +527,7 @@ class Dropdown {
       if ($restrict_to != 1) {
          $options[1] = $LANG['choice'][1];
       }
-      Dropdown::showFromArray($name, $options, array('value' => $value));
+      self::showFromArray($name, $options, array('value' => $value));
    }
 
 
@@ -789,7 +789,7 @@ class Dropdown {
             $values[$key] = $val[0];
          }
       }
-      Dropdown::showFromArray($myname,$values,$options);
+      self::showFromArray($myname,$values,$options);
    }
 
 

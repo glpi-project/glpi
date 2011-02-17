@@ -220,7 +220,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][107]."&nbsp;:</td><td>";
-      Contract::dropdownContractRenewal("renewal", $this->fields["renewal"]);
+      self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
       echo "</td>";
       echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
       echo "<td>";
@@ -239,7 +239,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";
-      Contract::dropdownAlert("alert", $this->fields["alert"]);
+      self::dropdownAlert("alert", $this->fields["alert"]);
       Alert::displayLastAlert('Contract', $ID);
       echo "</td></tr>";
 
@@ -1079,8 +1079,8 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            Contract::dropdown(array('entity' => $item->getEntityID(),
-                                     'used'   => $contracts));
+            self::dropdown(array('entity' => $item->getEntityID(),
+                                 'used'   => $contracts));
             echo "</td><td class='center'>";
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
                    class='submit'>";
@@ -1413,7 +1413,7 @@ class Contract extends CommonDBTM {
 
    function getUnallowedFieldsForUnicity() {
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         array('begin_date', 'duration', 'entities_id', 'week_begin_hour', 
+                         array('begin_date', 'duration', 'entities_id', 'week_begin_hour',
                                'week_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
                                'monday_begin_hour', 'monday_end_hour'));
    }

@@ -230,7 +230,7 @@ class NotificationTemplate extends CommonDBTM {
             $this->signature           = html_entity_decode_deep($this->signature);
 
             $lang['subject'] = $target->getSubjectPrefix($event) .
-                               NotificationTemplate::process($template_datas['subject'], $data);
+                               self::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
 
             //If no html content, then send only in text
@@ -259,14 +259,13 @@ class NotificationTemplate extends CommonDBTM {
                            ".$this->fields['css']."
                          </style>
                         </head>
-                        <body>".NotificationTemplate::process($template_datas['content_html'],
-                                                              $data_html).
+                        <body>".self::process($template_datas['content_html'], $data_html).
                      "<br><br>".$signature_html."</body></html>";
             }
 
             $lang['content_text']
-                  = html_clean(NotificationTemplate::process($template_datas['content_text'],
-                                                             $data)."\n\n".$this->signature);
+                  = html_clean(self::process($template_datas['content_text'],
+                                             $data)."\n\n".$this->signature);
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
       }
@@ -322,13 +321,13 @@ class NotificationTemplate extends CommonDBTM {
                         $data_lang_foreach[$field] = $value;
                      }
                   }
-                  $tmp = NotificationTemplate::processIf($tag_out[1],$data_lang_foreach);
-                  $output_foreach_string .= strtr($tmp,$data_lang_foreach);
+                  $tmp = self::processIf($tag_out[1], $data_lang_foreach);
+                  $output_foreach_string .= strtr($tmp, $data_lang_foreach);
                }
-               $string = str_replace($tag_out[0],$output_foreach_string,$string);
+               $string = str_replace($tag_out[0],$output_foreach_string, $string);
 
             } else {
-               $string = str_replace($tag_out,'',$string);
+               $string = str_replace($tag_out, '', $string);
             }
          }
       }
@@ -340,7 +339,7 @@ class NotificationTemplate extends CommonDBTM {
       }
 
       //Now process IF statements
-      $string = NotificationTemplate::processIf($string,$data);
+      $string = self::processIf($string, $data);
       $string = strtr($string,$data);
 
       return $string;

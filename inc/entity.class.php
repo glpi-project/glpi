@@ -545,7 +545,7 @@ class Entity extends CommonTreeDropdown {
       $entities = array();
 
       foreach ($DB->request($query) as $entitydatas) {
-         Entity::getDefaultValueForAttributeInEntity($field, $entities, $entitydatas);
+         self::getDefaultValueForAttributeInEntity($field, $entities, $entitydatas);
       }
 
       //If root entity doesn't have row in glpi_entitydatas
@@ -555,10 +555,10 @@ class Entity extends CommonTreeDropdown {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         Entity::getDefaultValueForAttributeInEntity($field, $entities,
-                                                     array('entity' => 0,
-                                                           $field   => $DB->result($result, 0,
-                                                                                   $field)));
+         self::getDefaultValueForAttributeInEntity($field, $entities,
+                                                   array('entity' => 0,
+                                                         $field   => $DB->result($result, 0,
+                                                                                 $field)));
 
       } else if ($CFG_GLPI[$field]) {
          $entities[0] = $CFG_GLPI[$field];

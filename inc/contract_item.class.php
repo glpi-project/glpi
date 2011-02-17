@@ -47,6 +47,7 @@ class Contract_Item extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    /**
     * Check right on an contract - overloaded to check max_links_allowed
     *
@@ -56,7 +57,7 @@ class Contract_Item extends CommonDBRelation{
     *
     * @return boolean
    **/
-   function can($ID,$right,&$input=NULL) {
+   function can($ID, $right, &$input=NULL) {
 
       if ($ID<0) {
          // Ajout
@@ -66,19 +67,21 @@ class Contract_Item extends CommonDBRelation{
             return false;
          }
          if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->getTable(),
-                                     "`contracts_id`='".$input['contracts_id']."'") >=
-                                          $contract->fields['max_links_allowed']) {
+             && countElementsInTable($this->getTable(), "`contracts_id`='".$input['contracts_id']."'")
+                                     >= $contract->fields['max_links_allowed']) {
                return false;
          }
       }
       return parent::can($ID,$right,$input);
    }
 
+
    static function getTypeName() {
       global $LANG;
+
       return $LANG['setup'][620].'-'.$LANG['financial'][1];
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -102,6 +105,7 @@ class Contract_Item extends CommonDBRelation{
 
       return $tab;
    }
+
 }
 
 ?>

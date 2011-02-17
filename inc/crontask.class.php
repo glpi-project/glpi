@@ -715,29 +715,28 @@ class CronTask extends CommonDBTM{
 
       $taskname = '';
 
-      if (CronTask::get_lock()) {
-         $task = new CronTask();
+      if (self::get_lock()) {
          for ($i=1 ; $i<=$max ; $i++) {
             $prefix = ($mode==self::MODE_EXTERNAL ? 'External'
                                                   : 'Internal')." #$i: ";
 
-            if ($task->getNeedToRun($mode, $name)) {
-               $_SESSION["glpicronuserrunning"] = "cron_".$task->fields['name'];
+            if ($this->getNeedToRun($mode, $name)) {
+               $_SESSION["glpicronuserrunning"] = "cron_".$this->fields['name'];
 
-               if ($plug=isPluginItemType($task->fields['itemtype'])) {
+               if ($plug=isPluginItemType($this->fields['itemtype'])) {
                   Plugin::load($plug['plugin'], true);
                }
-               $fonction = array($task->fields['itemtype'],
-                                 'cron' . $task->fields['name']);
+               $fonction = array($this->fields['itemtype'],
+                                 'cron' . $this->fields['name']);
 
                if (is_callable($fonction)) {
-                  if ($task->start()) { // Lock in DB + log start
-                     $taskname = $task->fields['name'];
-                     logInFile('cron', $prefix."Launch ".$task->fields['name']."\n");
-                     $retcode  = call_user_func($fonction,$task);
-                     $task->end($retcode); // Unlock in DB + log end
+                  if ($this->start()) { // Lock in DB + log start
+                     $taskname = $this->fields['name'];
+                     logInFile('cron', $prefix."Launch ".$this->fields['name']."\n");
+                     $retcode  = call_user_func($fonction,$this);
+                     $this->end($retcode); // Unlock in DB + log end
                   } else {
-                     logInFile('cron', $prefix."Can't start ".$task->fields['name']."\n");
+                     logInFile('cron', $prefix."Can't start ".$this->fields['name']."\n");
                   }
 
                } else {
@@ -746,7 +745,7 @@ class CronTask extends CommonDBTM{
                   }
                   logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
                   logInFile('cron',
-                            $prefix."Can't start ".$task->fields['name'].
+                            $prefix."Can't start ".$this->fields['name'].
                               "\nUndefined function '$fonction'\n");
                }
 
@@ -755,7 +754,7 @@ class CronTask extends CommonDBTM{
             }
          } // end for
          $_SESSION["glpicronuserrunning"]='';
-         CronTask::release_lock();
+         self::release_lock();
 
       } else {
          logInFile('cron', "Can't get DB lock'\n");

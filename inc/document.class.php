@@ -127,7 +127,7 @@ class Document extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['document'][19];
 
-         Document::addTab($this,$ong);
+         self::addTab($this,$ong);
 //         $ong[5] = $LANG['document'][20];
 
          if (haveRight("notes","r")) {
@@ -704,7 +704,7 @@ class Document extends CommonDBTM {
 
       // for a document,
       // don't show here others documents associated to this one,
-      // it's done for both directions in Document::showAssociated
+      // it's done for both directions in self::showAssociated
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_documents_items`
                 WHERE `glpi_documents_items`.`documents_id` = '$instID'
@@ -1384,8 +1384,8 @@ class Document extends CommonDBTM {
 
             if (haveRight('document','r') && $nb>count($used)) {
                echo "<td class='left' colspan='2'>";
-               Document::dropdown(array('entity' => $entities ,
-                                        'used'   => $used));
+               self::dropdown(array('entity' => $entities ,
+                                    'used'   => $used));
                echo "</td><td class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";

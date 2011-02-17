@@ -92,7 +92,7 @@ class Group_User extends CommonDBRelation{
          $headerspan = $nb_per_line;
       }
 
-      $groups = Group_User::getUserGroups($ID);
+      $groups = self::getUserGroups($ID);
       $used   = array();
       if (!empty($groups)) {
          foreach ($groups as $data) {

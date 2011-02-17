@@ -43,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 class Infocom extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'itemtype';
-   public $items_id  = 'items_id';
-   public $dohistory = true;
+   public $itemtype               = 'itemtype';
+   public $items_id               = 'items_id';
+   public $dohistory              = true;
    public $auto_message_on_action = false; // Link in message can't work'
 
    //Option to automatically fill dates
@@ -162,7 +162,7 @@ class Infocom extends CommonDBChild {
          $result = EntityData::getUsedConfig($date, $changes['entities_id']);
 
          //Date must be filled if status corresponds to the one defined in the config
-         if (preg_match('/'.Infocom::ON_STATUS_CHANGE.'_(.*)/',$result,$values)
+         if (preg_match('/'.self::ON_STATUS_CHANGE.'_(.*)/',$result,$values)
              && $values[1] == $changes['states_id']) {
             $add_or_update    = true;
             $tmp[$date_field] = $_SESSION["glpi_currenttime"];
@@ -904,18 +904,18 @@ class Infocom extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
-            echo formatNumber(Infocom::Amort($ic->fields["sink_type"], $ic->fields["value"],
-                                             $ic->fields["sink_time"], $ic->fields["sink_coeff"],
-                                             $ic->fields["warranty_date"], $ic->fields["use_date"],
-                                             $date_tax,"n"));
+            echo formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
+                                          $ic->fields["sink_time"], $ic->fields["sink_coeff"],
+                                          $ic->fields["warranty_date"], $ic->fields["use_date"],
+                                          $date_tax,"n"));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][22]."&nbsp;:</td><td >";
             if ($withtemplate == 2) {
-               echo Infocom::getAmortTypeName($ic->fields["sink_type"]);
+               echo self::getAmortTypeName($ic->fields["sink_type"]);
             } else {
-               Infocom::dropdownAmortType("sink_type", $ic->fields["sink_type"]);
+               self::dropdownAmortType("sink_type", $ic->fields["sink_type"]);
             }
             echo "</td></tr>";
 
@@ -939,7 +939,7 @@ class Infocom extends CommonDBChild {
             if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
                                                   'Consumable', 'Cartridge', 'SoftwareLicense'))) {
                echo "<td>".$LANG['financial'][89]."&nbsp;:</td><td>";
-               echo Infocom::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
+               echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
             } else {
                 echo "<td colspan='2'>";
             }
@@ -947,8 +947,8 @@ class Infocom extends CommonDBChild {
             if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
                                                   'Consumable', 'Cartridge', 'SoftwareLicense'))) {
                echo "<td>".$LANG['financial'][90]."&nbsp;:</td><td>";
-               echo Infocom::showTco($item->getField('ticket_tco'), $ic->fields["value"],
-                                     $ic->fields["warranty_date"]);
+               echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
+                                  $ic->fields["warranty_date"]);
             } else {
                 echo "<td colspan='2'>";
             }
@@ -989,7 +989,7 @@ class Infocom extends CommonDBChild {
             if ($CFG_GLPI['use_mailing']) {
                echo "<td>".$LANG['setup'][247]."&nbsp;:</td>";
                echo "<td>";
-               echo Infocom::dropdownAlert("alert", $ic->fields["alert"]);
+               echo self::dropdownAlert("alert", $ic->fields["alert"]);
                Alert::displayLastAlert('Infocom', $ic->fields['id']);
                echo "</td>";
             } else {

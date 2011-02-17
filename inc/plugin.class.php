@@ -111,7 +111,7 @@ class Plugin extends CommonDBTM {
       if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
          include_once(GLPI_ROOT . "/plugins/$name/setup.php");
          if (!isset($LOADED_PLUGINS[$name])) {
-            Plugin::loadLang($name);
+            self::loadLang($name);
             $function = "plugin_init_$name";
             if (function_exists($function)) {
                $function();
@@ -197,7 +197,7 @@ class Plugin extends CommonDBTM {
 
             // Find version
             if (file_exists($dirplug."/".$filename."/setup.php")) {
-               Plugin::loadLang($filename);
+               self::loadLang($filename);
                include_once($dirplug."/".$filename."/setup.php");
                $function = "plugin_version_$filename";
                if (function_exists($function)) {

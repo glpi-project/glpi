@@ -354,14 +354,14 @@ class Link extends CommonDBTM {
                $tosend = true;
             }
 
-            $contents=Link::generateLinkContents($link, $item, $name);
+            $contents = self::generateLinkContents($link, $item, $name);
             if (count($contents)) {
                foreach ($contents as $title => $link) {
                   $current_name = $name;
                   if (!empty($title)) {
                      $current_name = $title;
                   }
-                  $clean_name=Link::generateLinkContents($current_name, $item, $name, true);
+                  $clean_name = self::generateLinkContents($current_name, $item, $name, true);
 
                   $url = $link;
                   if ($tosend) {

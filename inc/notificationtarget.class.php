@@ -179,7 +179,7 @@ class NotificationTarget extends CommonDBChild {
    static function getInstanceByType($itemtype, $event='', $options=array()) {
 
       if ($itemtype != '' && class_exists($itemtype)) {
-         return NotificationTarget::getInstance(new $itemtype (), $event, $options);
+         return self::getInstance(new $itemtype (), $event, $options);
       }
       return false;
    }
@@ -355,7 +355,7 @@ class NotificationTarget extends CommonDBChild {
 
       $type   = "";
       $action = "";
-      $target = NotificationTarget::getInstanceByType($input['itemtype']);
+      $target = self::getInstanceByType($input['itemtype']);
 
       if (isset($input['mailing_add'])) {
          $action = 'add';
@@ -393,7 +393,7 @@ class NotificationTarget extends CommonDBChild {
 
 
    function addAdditionnalUserInfo($data) {
-      return NotificationTarget::NO_OPTION;
+      return self::NO_OPTION;
    }
 
 
@@ -900,7 +900,7 @@ class NotificationTarget extends CommonDBChild {
       $p['tag']            = false;
       $p['value']          = true;
       $p['label']          = false;
-      $p['events']         = NotificationTarget::TAG_FOR_ALL_EVENTS;
+      $p['events']         = self::TAG_FOR_ALL_EVENTS;
       $p['foreach']        = false;
       $p['lang']           = true;
       $p['allowed_values'] = array();
@@ -923,18 +923,18 @@ class NotificationTarget extends CommonDBChild {
 
          if ($p['foreach']) {
             $tag = "##FOREACH".$p['tag']."## ##ENDFOREACH".$p['tag']."##";
-            $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+            $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
 
           } else {
             if ($p['value']) {
                $tag = "##".$p['tag']."##";
-               $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+               $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
             }
 
             if ($p['label']&&$p['lang']) {
                $tag = "##lang.".$p['tag']."##";
                $p['label'] = $p['label'];
-               $this->tag_descriptions[NotificationTarget::TAG_LANGUAGE][$tag] = $p;
+               $this->tag_descriptions[self::TAG_LANGUAGE][$tag] = $p;
             }
          }
       }

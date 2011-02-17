@@ -122,10 +122,10 @@ class NotImportedEmail extends CommonDBTM {
       global $LANG;
 
       switch ($reason_id) {
-         case NotImportedEmail::MATCH_NO_RULE :
+         case self::MATCH_NO_RULE :
             return $LANG['mailgate'][12];
 
-         case NotImportedEmail::USER_UNKNOWN :
+         case self::USER_UNKNOWN :
             return $LANG['login'][14];
 
          default :
