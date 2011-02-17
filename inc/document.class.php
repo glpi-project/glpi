@@ -58,6 +58,12 @@ class Document extends CommonDBTM {
       return haveRight('document', 'w') || haveRight('add_followups', '1');
    }
 
+
+   function canUpdate() {
+      return haveRight('document', 'w');
+   }
+
+
    function canCreateItem() {
       //
       // From Ticket Document Tab => check right to add followup.
