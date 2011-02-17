@@ -2205,7 +2205,7 @@ class OcsServer extends CommonDBTM {
 
       $sql_ocs_missing = "";
       if (count($ocs_missing)) {
-         $sql_ocs_missing = 'OR `ocsid` IN ('.implode("','",$ocs_missing).')';
+         $sql_ocs_missing = " OR `ocsid` IN ('".implode("','",$ocs_missing)."')";
       }
 
       //Select unexisting computers
