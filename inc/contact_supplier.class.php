@@ -46,21 +46,22 @@ class Contact_Supplier extends CommonDBRelation{
    public $itemtype_2 = 'Supplier';
    public $items_id_2 = 'suppliers_id';
 
+
    static function getTypeName() {
       global $LANG;
+
       return $LANG['setup'][620].' '.$LANG['common'][92].'-'.$LANG['financial'][26];
    }
+
+
    /**
     * Get search function for the class
     *
     * @return array of search option
     */
    function getSearchOptions() {
-      global $LANG;
-
-      $tab = parent::getSearchOptions();
-
-      return $tab;
+      return parent::getSearchOptions();
    }
+
 }
 ?>

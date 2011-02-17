@@ -493,10 +493,9 @@ class NetworkPort extends CommonDBChild {
             echo "<td class='left'>";
 
             if ($withtemplate != 2 && $withtemplate != 1) {
-               NetworkPort::dropdownConnect($ID,
-                                            array('name'        => 'dport',
-                                                  'entity'      => $device1->fields["entities_id"],
-                                                  'entity_sons' => $device1->isRecursive()));
+               self::dropdownConnect($ID, array('name'        => 'dport',
+                                                'entity'      => $device1->fields["entities_id"],
+                                                'entity_sons' => $device1->isRecursive()));
             } else {
                echo "&nbsp;";
             }

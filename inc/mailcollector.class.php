@@ -191,7 +191,7 @@ class MailCollector  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='200px'> " . $LANG['mailgate'][7] . "&nbsp;:</td><td>";
-      MailCollector::showMaxFilesize('filesize_max',$this->fields["filesize_max"]);
+      self::showMaxFilesize('filesize_max',$this->fields["filesize_max"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";

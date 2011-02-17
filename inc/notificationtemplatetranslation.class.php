@@ -126,7 +126,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td colspan='3'>";
 
       //Get all used languages
-      $used = NotificationTemplateTranslation::getAllUsedLanguages($notificationtemplates_id);
+      $used = self::getAllUsedLanguages($notificationtemplates_id);
       if ($ID > 0) {
          if (isset($used[$this->getField('language')])) {
             unset($used[$this->getField('language')]);
@@ -214,7 +214,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-      return NotificationTemplateTranslation::cleanContentHtml($input);
+      return self::cleanContentHtml($input);
    }
 
 
@@ -228,7 +228,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
-      return NotificationTemplateTranslation::cleanContentHtml($input);
+      return self::cleanContentHtml($input);
    }
 
 

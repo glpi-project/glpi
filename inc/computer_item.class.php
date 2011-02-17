@@ -471,9 +471,8 @@ class Computer_Item extends CommonDBRelation{
                   if (!empty($withtemplate)) {
                      echo "<input type='hidden' name='_no_history' value='1'>";
                   }
-                  Computer_Item::dropdownConnect($itemtype, 'Computer', "items_id",
-                                                 $comp->fields["entities_id"], $withtemplate,
-                                                 $used);
+                  self::dropdownConnect($itemtype, 'Computer', "items_id",
+                                        $comp->fields["entities_id"], $withtemplate, $used);
                   echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                          class='submit'>";
                   echo "</form>";
@@ -560,12 +559,11 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->isRecursive()) {
-               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                              getSonsOf("glpi_entities", $item->getEntityID()), 0,
-                                                        $used);
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
             } else {
-               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                              $item->getEntityID(), 0, $used);
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     $item->getEntityID(), 0, $used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                    class='submit'>";
@@ -584,12 +582,11 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->isRecursive()) {
-               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                              getSonsOf("glpi_entities", $item->getEntityID()), 0,
-                                                        $used);
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     getSonsOf("glpi_entities", $item->getEntityID()), 0, $used);
             } else {
-               Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                                              $item->getEntityID(), 0, $used);
+               self::dropdownConnect('Computer', $item->getType(), "computers_id",
+                                     $item->getEntityID(), 0, $used);
             }
             echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                    class='submit'>";

@@ -756,21 +756,20 @@ class EntityData extends CommonDBChild {
 
       // Do not display for root entity in inherit case
       if ($entdata->fields['inquest_config'] == 0 && $entdata->fields['entities_id'] !=0) {
-         $inquestconfig = EntityData::getUsedConfig('inquest_config',
-                                                    $entdata->fields['entities_id']);
-         $inquestrate   = EntityData::getUsedConfig('inquest_config',
-                                                    $entdata->fields['entities_id'], 'inquest_rate');
+         $inquestconfig = self::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
+         $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+                                              'inquest_rate');
          echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
          if ($inquestrate == 0) {
             echo $LANG['crontask'][31];
          } else {
             echo $typeinquest[$inquestconfig];
-            echo " - " .EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
-                                                  'inquest_delay');
+            echo " - " .self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+                                            'inquest_delay');
             echo "&nbsp;".$LANG['stats'][31]." - ";
             echo $inquestrate."%";
             if ($inquestconfig == 2) {
-               echo " - ".EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+               echo " - ".self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_URL');
             }
          }
@@ -846,7 +845,7 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return EntityData::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
+            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
          }
       }
 

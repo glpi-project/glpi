@@ -495,7 +495,7 @@ class Cartridge extends CommonDBTM {
             $page     = $data["pages"];
 
             echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
-            echo "<td class='center'>".Cartridge::getStatus($data["date_use"], $data["date_out"]);
+            echo "<td class='center'>".self::getStatus($data["date_use"], $data["date_out"]);
             echo "</td><td class='center'>".$date_in."</td>";
             echo "<td class='center'>".$date_use."</td>";
             echo "<td class='center'>";

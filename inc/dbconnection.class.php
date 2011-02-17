@@ -112,7 +112,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function getDBSlaveConf($choice=NULL) {
 
-      if (DBConnection::isDBSlaveActive()) {
+      if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
          return new DBSlave($choice);
       }
@@ -124,7 +124,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function createDBSlaveConfig() {
 
-      DBConnection::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi");
+      self::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi");
    }
 
 
@@ -133,7 +133,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function saveDBSlaveConf($host, $user, $password, $DBname) {
 
-      DBConnection::createSlaveConnectionFile($host, $user, $password, $DBname);
+      self::createSlaveConnectionFile($host, $user, $password, $DBname);
    }
 
 
@@ -152,7 +152,7 @@ class DBConnection extends CommonDBTM {
    static function switchToSlave() {
       global $DB;
 
-      if (DBConnection::isDBSlaveActive()) {
+      if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
          $DB = new DBSlave;
          return $DB->connected;
@@ -183,7 +183,7 @@ class DBConnection extends CommonDBTM {
 
       if ($CFG_GLPI['use_slave_for_search']
           && !$DB->isSlave()
-          && DBConnection::isDBSlaveActive()) {
+          && self::isDBSlaveActive()) {
 
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
          $DBread = new DBSlave();
@@ -212,34 +212,34 @@ class DBConnection extends CommonDBTM {
 
       // First standard config : no use slave : try to connect to master
       if (!$use_slave) {
-         $res = DBConnection::switchToMaster();
+         $res = self::switchToMaster();
       }
 
       // If not already connected to master due to config or error
       if (!$res) {
 
          // No DB slave : first connection to master give error
-         if (!DBConnection::isDBSlaveActive()) {
+         if (!self::isDBSlaveActive()) {
             // Slave wanted but not defined -> use master
             // Ignore $required when no slave configured
             if ($use_slave) {
-               $res = DBConnection::switchToMaster();
+               $res = self::switchToMaster();
             }
 
          // Slave DB configured
          } else {
             // Try to connect to slave if wanted
             if ($use_slave) {
-               $res = DBConnection::switchToSlave();
+               $res = self::switchToSlave();
             }
 
             // No connection to 'mandatory' server
             if (!$res && !$required) {
                //Try to establish the connection to the other mysql server
                if ($use_slave) {
-                  $res = DBConnection::switchToMaster();
+                  $res = self::switchToMaster();
                } else {
-                  $res = DBConnection::switchToSlave();
+                  $res = self::switchToSlave();
                }
                if ($res) {
                   $DB->first_connection=false;
@@ -250,7 +250,7 @@ class DBConnection extends CommonDBTM {
 
       // Display error if needed
       if (!$res && $display) {
-         DBConnection::displayMySQLError();
+         self::displayMySQLError();
       }
       return $res;
    }
@@ -266,8 +266,8 @@ class DBConnection extends CommonDBTM {
    static function getReplicateDelay($choice=NULL) {
 
       include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
-      return (int) (DBConnection::getHistoryMaxDate(new DB())
-                    - DBConnection::getHistoryMaxDate(new DBSlave($choice)));
+      return (int) (self::getHistoryMaxDate(new DB())
+                    - self::getHistoryMaxDate(new DBSlave($choice)));
    }
 
 
@@ -332,7 +332,7 @@ class DBConnection extends CommonDBTM {
       //Lauch cron only is :
       // 1 the master database is avalaible
       // 2 the slave database is configurated
-      if (!$DB->isSlave() && DBConnection::isDBSlaveActive()) {
+      if (!$DB->isSlave() && self::isDBSlaveActive()) {
 
          $DBslave = self::getDBSlaveConf();
          if (is_array($DBslave->dbhost)) {

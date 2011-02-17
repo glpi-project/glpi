@@ -176,7 +176,7 @@ class Log extends CommonDBTM {
          }
 
          if (count($changes)) {
-            $result = Log::history($real_id, $real_type, $changes);
+            $result = self::history($real_id, $real_type, $changes);
          }
       }
       return $result;
@@ -286,7 +286,7 @@ class Log extends CommonDBTM {
       echo "<th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th>";
       echo "<th>".$LANG['event'][19]."</th></tr>";
 
-      foreach (Log::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {
+      foreach (self::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";

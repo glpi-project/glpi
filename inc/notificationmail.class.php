@@ -198,7 +198,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             $data = $DB->fetch_assoc($result);
-            if (NotificationMail::isUserAddressValid($data["email"])) {
+            if (self::isUserAddressValid($data["email"])) {
                return $data["email"];
             }
          }
@@ -210,7 +210,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    function sendNotification($options=array()) {
       global $LANG;
 
-      $mmail = new NotificationMail();
+      $mmail = new self();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
 
       $mmail->SetFrom($options['from'], $options['fromname']);
