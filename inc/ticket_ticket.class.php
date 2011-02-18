@@ -164,7 +164,6 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Get Link Name
     *
-    * @param $myname select name
     * @param $value default value
    **/
    static function getLinkName($value) {
