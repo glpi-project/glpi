@@ -303,6 +303,7 @@ class RuleCriteria extends CommonDBChild {
     * Return the condition label by giving his ID
     *
     * @param $ID condition's ID
+    * @param $itemtype itemtype 
     *
     * @return condition's label
    **/

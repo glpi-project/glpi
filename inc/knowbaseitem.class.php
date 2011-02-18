@@ -345,6 +345,7 @@ class KnowbaseItem extends CommonDBTM {
     * Print out (html) show item : question and answer
     *
     * @param $linkusers_id display users_id link
+    * @param $options array of options
     *
     * @return nothing (display item : question and answer)
    **/

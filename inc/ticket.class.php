@@ -2862,9 +2862,9 @@ class Ticket extends CommonDBTM {
 
    /**
     * Form to add a solution to a ticket
-    * @param $loadkb integer load a kb article as solution
+    * @param $knowbase_id_toload integer load a kb article as solution (0 = no load)
    **/
-   function showSolutionForm($load_kb=0) {
+   function showSolutionForm($knowbase_id_toload=0) {
       global $LANG, $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
@@ -2873,9 +2873,9 @@ class Ticket extends CommonDBTM {
 
       $options = array();
 
-      if ($load_kb > 0) {
+      if ($knowbase_id_toload > 0) {
          $kb = new KnowbaseItem();
-         if ($kb->getFromDB($load_kb)) {
+         if ($kb->getFromDB($knowbase_id_toload)) {
             $this->fields['solution'] = $kb->getField('answer');
          }
       }
