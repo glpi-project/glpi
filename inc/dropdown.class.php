@@ -40,7 +40,7 @@ class Dropdown {
     *
     * Parameters which could be used in options array :
     *    - name : string / name of the select (default is depending itemtype)
-    *    - value : integer / preselected value (default 0)
+    *    - value : integer / preselected value (default -1)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
@@ -72,7 +72,7 @@ class Dropdown {
 
       $params['name']        = $item->getForeignKeyField();
       $params['value']       = '';
-      $params['comments']    = 1;
+      $params['comments']    = true;
       $params['entity']      = -1;
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
