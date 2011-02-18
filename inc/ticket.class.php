@@ -3524,9 +3524,14 @@ class Ticket extends CommonDBTM {
          foreach ($this->users[$type] as $k => $d) {
             echo "$usericon&nbsp;";
             $userdata = getUserName($k, $showuserlink);
-            echo $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
-                                                        array('link'    => $userdata["link"],
-                                                              'display' => false));
+
+            if ($showuserlink) {
+               echo $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
+                                                         array('link'    => $userdata["link"],
+                                                               'display' => false));
+            } else {
+               echo $userdata;
+            }
 
             if ($CFG_GLPI['use_mailing']) {
                $text = $LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).
