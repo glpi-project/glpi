@@ -188,6 +188,7 @@ function addDocuments($type, $ID) {
 /** Generate bigdump : add infocoms to an item
  * @param $type item type
  * @param $ID item ID
+ * @param $ID_entity entity ID
 **/
 function addInfocoms($type, $ID, $ID_entity) {
    global $DB, $FIRST, $LAST,$current_year;

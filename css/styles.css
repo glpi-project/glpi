@@ -917,6 +917,12 @@ float:left;
 padding:2px;
 }
 
+div#tabcontent {
+        width:950px;
+        text-align:center;
+        margin: 0 auto;
+}
+
 /* ################--------------- box (redirect and other)  ---------------#################### */
 .box {margin: 0 auto; width:700px;	text-align:center;}
 .box-tleft{background:transparent url(../pics/corners.gif) no-repeat 0 0;zoom:1;}
