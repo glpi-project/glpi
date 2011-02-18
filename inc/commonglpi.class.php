@@ -321,7 +321,7 @@ class CommonGLPI {
 
       $this->showTabs(0);
 
-      echo "<div id='tabcontent'>&nbsp;</div>";
+      echo "<div id='tabcontent' class='center'>&nbsp;</div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
