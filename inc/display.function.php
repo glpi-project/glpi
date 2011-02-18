@@ -1033,7 +1033,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("config","w") || haveRight("notification","r")) {
+   if (($CFG_GLPI['use_mailing'] && haveRight("notification","r")) || haveRight("config","w")) {
       $menu['config']['content']['mailing']['title'] = $LANG['setup'][704];
       $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
       $menu['config']['content']['mailing']['options']['notification']['title']

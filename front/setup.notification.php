@@ -50,7 +50,7 @@ if (isset($_GET['activate'])) {
 }
 if (!$CFG_GLPI['use_mailing']) {
    echo "<div align='center'<p>";
-   if (haveRight("config","r")) {
+   if (haveRight("config","w")) {
       echo "<a href='setup.notification.php?activate=1' class='icon_consol b'>" .
                $LANG['setup'][202] ."</a></p></div>";
    }
