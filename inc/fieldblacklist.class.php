@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Holiday
+/// Class Fieldblacklist
 class Fieldblacklist extends CommonDropdown {
 
    static function getTypeName() {
@@ -119,6 +119,9 @@ class Fieldblacklist extends CommonDropdown {
 
    /**
     * Display specific fields for FieldUnicity
+    *
+    * @param $ID
+    * @param $field array
    **/
    function displaySpecificTypeField($ID, $field=array()) {
 
@@ -249,19 +252,23 @@ class Fieldblacklist extends CommonDropdown {
             } else {
                $datatype = 'text';
             }
+
             switch ($datatype) {
-               case 'text':
-               case 'string':
-               default:
+               case 'text' :
+               case 'string' :
+               default :
                   autocompletionTextField($this, 'value', array('value' => $value));
                   break;
+
                case 'bool':
                   Dropdown::showYesNo('value',$value);
                   break;
             }
+
          } else {
             $itemtype = getItemTypeForTable($table);
-            Dropdown::show($itemtype, array('name'  => 'value', 'value' => $value));
+            Dropdown::show($itemtype, array('name'  => 'value',
+                                            'value' => $value));
          }
 
       }

@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Calendar
+/// Class FieldUnicity
 class FieldUnicity extends CommonDropdown {
 
    // From CommonDBTM
@@ -86,6 +86,8 @@ class FieldUnicity extends CommonDropdown {
 
    /**
     * Add more tabs to display
+    *
+    * @param $options array
    **/
    function defineMoreTabs($options=array()) {
       global $LANG;
@@ -99,6 +101,8 @@ class FieldUnicity extends CommonDropdown {
 
    /**
     * Display more tabs
+    *
+    * @param $tab
    **/
    function displayMoreTabs($tab) {
 
@@ -121,9 +125,11 @@ class FieldUnicity extends CommonDropdown {
 
    /**
     * Display specific fields for FieldUnicity
+    *
+    * @param $ID
+    * @param $field array
    **/
-   function displaySpecificTypeField($ID, $field = array()) {
-      global $CFG_GLPI;
+   function displaySpecificTypeField($ID, $field=array()) {
 
       switch ($field['type']) {
          case 'unicity_itemtype' :
@@ -213,9 +219,8 @@ class FieldUnicity extends CommonDropdown {
          //Process only for one entity, not more
          if ($current_entity != $data['entities_id']) {
             break;
-         } else {
-            $return[] = $data;
          }
+         $return[] = $data;
       }
       return $return;
    }
@@ -224,7 +229,7 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a list of available fields for unicity checks
     *
-    * @param $unicity an instance of FieldUncity class
+    * @param $unicity an instance of FieldUnicity class
     *
     * @return nothing
    **/
@@ -392,6 +397,11 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
+   /**
+    * List doubles
+    *
+    * @param $unicity an instance of FieldUnicity class
+   **/
    static function showDoubles(FieldUnicity $unicity) {
       global $LANG, $DB;
 
