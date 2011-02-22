@@ -73,10 +73,21 @@ $entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST
 $entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"]);
 //Temps moyen de resolution d'intervention
 $entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"]);
+foreach ($entrees_avgsolvedtime as $key => $val) {
+   $entrees_avgsolvedtime[$key] = $entrees_avgsolvedtime[$key] / HOUR_TIMESTAMP;
+}
+
 //Temps moyen d'intervention reel
 $entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"]);
+foreach ($entrees_avgrealtime as $key => $val) {
+   $entrees_avgrealtime[$key] = $entrees_avgrealtime[$key] / HOUR_TIMESTAMP;
+}
+
 //Temps moyen de prise en compte de l'intervention
 $entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
+foreach ($entrees_avgtaketime as $key => $val) {
+   $entrees_avgtaketime[$key] = $entrees_avgtaketime[$key] / HOUR_TIMESTAMP;
+}
 
 Stat::showGraph(array($LANG['stats'][5]=>$entrees_total)
                ,array('title'=>$LANG['stats'][5],

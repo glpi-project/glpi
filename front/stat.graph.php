@@ -306,6 +306,11 @@ Stat::showGraph(array($LANG['stats'][11]=>$entrees_solved)
 $entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
 
+foreach ($entrees_avgsolvedtime as $key => $val) {
+   $entrees_avgsolvedtime[$key] = $entrees_avgsolvedtime[$key] / HOUR_TIMESTAMP;
+}
+
+
 Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
                ,array('title' => $LANG['stats'][6],
                      'unit'   => $LANG['job'][21]));
@@ -314,6 +319,11 @@ Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
 $entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
 
+foreach ($entrees_avgrealtime as $key => $val) {
+   $entrees_avgrealtime[$key] = $entrees_avgrealtime[$key] / HOUR_TIMESTAMP;
+}
+
+
 Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
                ,array('title' => $LANG['stats'][25],
                      'unit'   => $LANG['job'][21]));
@@ -321,6 +331,10 @@ Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
 //Temps moyen de prise en compte de l'intervention
 $entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
+
+foreach ($entrees_avgtaketime as $key => $val) {
+   $entrees_avgtaketime[$key] = $entrees_avgtaketime[$key] / HOUR_TIMESTAMP;
+}
 
 Stat::showGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
                ,array('title' => $LANG['stats'][30],

@@ -277,7 +277,8 @@ class Stat {
             } else {
                $nb=0;
             }
-            $timedisplay = $nb*HOUR_TIMESTAMP;
+            $timedisplay = $nb;
+
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -300,14 +301,14 @@ class Stat {
             } else {
                $nb=0;
             }
-            $timedisplay=$nb*MINUTE_TIMESTAMP;
+            $timedisplay=$nb;
             if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
             //Le temps total de l'intervention reelle - The total realtime to resolv
-            $timedisplay=$total_realtime*MINUTE_TIMESTAMP;
+            $timedisplay=$total_realtime;
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -325,7 +326,7 @@ class Stat {
             } else {
                $nb=0;
             }
-            $timedisplay=$nb*HOUR_TIMESTAMP;
+            $timedisplay=$nb;
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -477,8 +478,8 @@ class Stat {
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           AVG(TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`solvedate`, `glpi_tickets`.`date`))
-                           /".HOUR_TIMESTAMP.") AS total_visites
+                           AVG(TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`solvedate`, `glpi_tickets`.`date`)))
+                              AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
@@ -497,7 +498,7 @@ class Stat {
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           ".MINUTE_TIMESTAMP." * AVG(`$realtime_table`.`realtime`) AS total_visites
+                           ".HOUR_TIMESTAMP." * AVG(`$realtime_table`.`realtime`) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
@@ -558,15 +559,15 @@ class Stat {
                   $count["$date"]++;
                }
             } else {
-               $visites = round($row['total_visites']);
-               $entrees["$date"] = $visites;
+               $visites = $row['total_visites'];
+               $entrees["$date"] = round($visites);
             }
          }
       }
 
       if ($type=="inter_avgtakeaccount") {
          foreach ($entrees as $key => $val) {
-            $entrees[$key] = round($entrees[$key] / $count[$key] / HOUR_TIMESTAMP);
+            $entrees[$key] = round($entrees[$key] / $count[$key]);
          }
       }
 
