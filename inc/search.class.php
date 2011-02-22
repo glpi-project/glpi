@@ -1975,6 +1975,10 @@ class Search {
       }
 
       switch ($table.".".$field) {
+         case "glpi_tickets.due_date" :
+            return " `$table$addtable`.`$field` AS ".$NAME."_$num,
+                     `$table$addtable`.`status` AS ".$NAME."_".$num."_2, ";
+            
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
             if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
@@ -3343,6 +3347,13 @@ class Search {
          case "glpi_tickets.priority":
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
 
+         case "glpi_tickets.due_date":
+            if (!empty($data[$NAME.$num])
+               && $data[$NAME.$num.'_2'] != 'waiting'
+               && $data[$NAME.$num] < $_SESSION['glpi_currenttime']) {
+               return " class=\"tab_bg_2_2\" ";
+            }
+
          default:
             return "";
       }
@@ -3390,7 +3401,6 @@ class Search {
       $linkfield = $searchopt[$ID]["linkfield"];
 
       switch ($table.'.'.$field) {
-//          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             // USER search case
             if ($itemtype != 'User'
@@ -3770,6 +3780,12 @@ class Search {
                                array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
                                      'display' => false));
             return $out;
+         case "glpi_tickets.due_date" :
+            // No due date in waiting status
+            if ($data[$NAME.$num.'_2'] == 'waiting') {
+               $data[$NAME.$num]="";
+            }
+            break;
 
          case 'glpi_ticketvalidations.status' :
          case "glpi_tickets.global_validation" :

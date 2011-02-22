@@ -278,6 +278,8 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_tickets", "slas_id", "INT( 11 ) NOT NULL DEFAULT 0");
    $migration->addKey("glpi_tickets", "slas_id");
    $migration->addField("glpi_tickets", "slalevels_id", "INT( 11 ) NOT NULL DEFAULT 0");
+   $migration->addKey("glpi_tickets", "slalevels_id");
+
    if ($migration->addField("glpi_tickets", "due_date", "datetime default NULL")) {
       $ADDTODISPLAYPREF['Ticket'] = array(18);
    }

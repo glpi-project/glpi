@@ -2105,11 +2105,6 @@ class Ticket extends CommonDBTM {
       $tab[18]['maybefuture']   = true;
       $tab[18]['massiveaction'] = false;
 
-      $tab[30]['table']         = 'glpi_slas';
-      $tab[30]['field']         = 'name';
-      $tab[30]['name']          = $LANG['sla'][1];
-      $tab[30]['massiveaction'] = false;
-
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'solvedate';
       $tab[17]['name']          = $LANG['reports'][64];
@@ -2154,6 +2149,20 @@ class Ticket extends CommonDBTM {
       $tab[64]['linkfield']     = 'users_id_lastupdater';
       $tab[64]['name']          = $LANG['common'][101];
       $tab[64]['massiveaction'] = false;
+
+
+      $tab['sla'] = $LANG['sla'][1];
+
+      $tab[30]['table']         = 'glpi_slas';
+      $tab[30]['field']         = 'name';
+      $tab[30]['name']          = $LANG['sla'][1];
+      $tab[30]['massiveaction'] = false;
+
+      $tab[32]['table']         = 'glpi_slalevels';
+      $tab[32]['field']         = 'name';
+      $tab[32]['name']          = $LANG['sla'][6];
+      $tab[32]['massiveaction'] = false;
+
 
       $tab['validation'] = $LANG['validation'][0];
 
