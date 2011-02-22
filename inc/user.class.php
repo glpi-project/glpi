@@ -973,11 +973,11 @@ class User extends CommonDBTM {
                                                          'userdn'      => $userdn));
 
             //If rule  action is ignore import
-            if (isset($this->fields["_stop_import"])
+            if (isset($this->fields["_stop_import"])) {
                return false;
             }
             //or no rights found & do not import users with no rights
-            if (!$CFG_GLPI["use_noright_users_add"])) {
+            if (!$CFG_GLPI["use_noright_users_add"]) {
                if (!isset($this->input["_ldap_rules"]) || count($this->input["_ldap_rules"])==0) {
                   return false;
                }
@@ -993,10 +993,10 @@ class User extends CommonDBTM {
                      $right_count++;
                   }
                   if (isset($this->input["_ldap_rules"]["rules_entities"])) {
-                     $entity_count += count($this->input["_ldap_rules"]["rules_entities"])
+                     $entity_count += count($this->input["_ldap_rules"]["rules_entities"]);
                   }
                   if (isset($this->input["_ldap_rules"]["rules_rights"])) {
-                     $right_count += count($this->input["_ldap_rules"]["rules_rights"])
+                     $right_count += count($this->input["_ldap_rules"]["rules_rights"]);
                   }
                   if ($entity_count && $right_count) {
                      $ok = true;
