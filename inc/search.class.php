@@ -2555,7 +2555,7 @@ class Search {
             $search  = array("/\&lt;/","/\&gt;/");
             $replace = array("<",">");
             $val = preg_replace($search, $replace, $val);
-            if (preg_match("/([<>])([=]*)[[:space:]]*([0-9\.]+)/",$val,$regs)) {
+            if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/",$val,$regs)) {
                if ($nott) {
                   if ($regs[1]=='<') {
                      $regs[1] = '>';
@@ -2716,7 +2716,7 @@ class Search {
 
                $val = preg_replace($search,$replace,$val);
 
-               if (preg_match("/([<>=]+)(.*)/",$val,$regs)) {
+               if (preg_match("/^\s*([<>=]+)(.*)/",$val,$regs)) {
                   if (is_numeric($regs[2])) {
                      return $link." $date_computation ".$regs[1]."
                             ADDDATE(NOW(), INTERVAL ".$regs[2]." $search_unit) ";
