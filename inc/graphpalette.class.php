@@ -62,11 +62,16 @@ class GraphPalette extends ezcGraphPalette {
     *
     * @var array
     **/
-    protected $dataSetColor = array('#bfcc7a',
-                                    '#d0d99d',
-                                    '#e6b940',
-                                    '#efd283',
-                                    '#4F6C57');
+    protected $dataSetColor = array(
+        '#3465A4',
+        '#4E9A06',
+        '#CC0000',
+        '#EDD400',
+        '#75505B',
+        '#F57900',
+        '#204A87',
+        '#C17D11',
+    );
 
 
    /**
