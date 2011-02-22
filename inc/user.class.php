@@ -579,13 +579,8 @@ class User extends CommonDBTM {
             }
 
             if (count($entities)>0 && count($rights)==0) {
-               $sql_default_profile = "SELECT `id`
-                                       FROM `glpi_profiles`
-                                       WHERE `is_default` = '1'";
-               $result = $DB->query($sql_default_profile);
-
-               if ($DB->numrows($result)) {
-                  $rights[] = $DB->result($result,0,0);
+               if ($def_prof=Profile::getDefault()) {
+                  $rights[] = $def_prof;
                }
             }
 
@@ -979,12 +974,39 @@ class User extends CommonDBTM {
 
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])
-               //or use matches no rules & do not import users with no rights
-                || (isset($this->fields["_no_rule_matches"])
-                    && $this->fields["_no_rule_matches"]
-                    && !$CFG_GLPI["use_noright_users_add"])) {
                return false;
             }
+            //or no rights found & do not import users with no rights
+            if (!$CFG_GLPI["use_noright_users_add"])) {
+               if (!isset($this->input["_ldap_rules"]) || count($this->input["_ldap_rules"])==0) {
+                  return false;
+               }
+               $ok=false;
+               if (isset($this->input["_ldap_rules"]["rules_entities_rights"])
+                     && count($this->input["_ldap_rules"]["rules_entities_rights"])) {
+                  $ok = true;
+               }
+               if (!$ok) {
+                  $entity_count=0;
+                  $right_count=0;
+                  if (Profile::getDefault()) {
+                     $right_count++;
+                  }
+                  if (isset($this->input["_ldap_rules"]["rules_entities"])) {
+                     $entity_count += count($this->input["_ldap_rules"]["rules_entities"])
+                  }
+                  if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+                     $right_count += count($this->input["_ldap_rules"]["rules_rights"])
+                  }
+                  if ($entity_count && $right_count) {
+                     $ok = true;
+                  }
+               }
+               if (!$ok) {
+                  return false;
+               }
+            }
+            
             //Hook to retrieve more informations for ldap
             $this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
          }
