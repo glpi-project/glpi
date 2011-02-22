@@ -632,10 +632,19 @@ if (isset($_POST["itemtype"])) {
          case 'move_under' :
             if (isset($_POST['parent'])) {
                $fk = $item->getForeignKeyField();
-               foreach ($_POST["item"] as $key => $val) {
-                  if ($val==1 && $item->can($key,'w')) {
-                      $item->update(array('id' => $key,
-                                          $fk  => $_POST['parent']));
+               $parent = new $_POST["itemtype"]();
+               if ($parent->getFromDB($_POST['parent'])) {
+                  foreach ($_POST["item"] as $key => $val) {
+                     if ($val==1 && $item->can($key,'w')) {
+                        // Check if parent is in an entity under the original one
+                        if (!$parent->isEntityAssign()
+                           || $parent->getEntityID()== $item->getEntityID()
+                           || in_array($parent->getEntityID(),
+                                    getAncestorsOf("glpi_entities",$item->getEntityID()))) {
+                           $item->update(array('id' => $key,
+                                                $fk  => $_POST['parent']));
+                        }
+                     }
                   }
                }
             }
