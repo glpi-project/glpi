@@ -4162,6 +4162,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `impact` (`impact`),
   KEY `global_validation` (`global_validation`),
   KEY `slas_id` (`slas_id`),
+  KEY `slalevels_id` (`slalevels_id`),
   KEY `due_date` (`due_date`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`)
