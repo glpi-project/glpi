@@ -2785,7 +2785,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
       $value = $date_value.' '.$hour_value;
    }
 
-   $output .= "<table><tr><td><div id='date$rand-date'></div></td>";
+   $output .= "<table><tr class='top'><td><div id='date$rand-date'></div></td>";
    $output .= "<td><select name='_date$rand-hour' id='date$rand-hour'>";
 
    for ($i=$minHour ; $i<=$maxHour ; $i++) {
