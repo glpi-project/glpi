@@ -54,7 +54,21 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function canView() {
-      return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
+      global $CFG_GLPI;
+      return (haveRight('knowbase', 'r') || haveRight('faq', 'r')
+               || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+   }
+
+   function canViewItem() {
+      global $CFG_GLPI;
+      if ($this->fields["is_faq"]) {
+         return (haveRight('knowbase', 'r') || haveRight('faq', 'r')
+                  || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+      } else {
+         return haveRight("knowbase","r");
+      }
+
+      return false;
    }
 
 
@@ -295,7 +309,7 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ID = $this->fields['id'];
-      if (!$this->can($ID,'r')) {
+      if (!$this->can($ID,'r') || getLoginUserID()===false) {
          return false;
       }
 
@@ -352,6 +366,10 @@ class KnowbaseItem extends CommonDBTM {
    function showFull($linkusers_id=true, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
+      if (!$this->can($this->fields['id'],'r')) {
+         return false;
+      }
+
       // show item : question and answer
       if (!haveRight("user","r")) {
          $linkusers_id = false;
@@ -364,14 +382,6 @@ class KnowbaseItem extends CommonDBTM {
                 SET `view`=view+1
                 WHERE `id` = '".$this->fields['id']."'";
       $DB->query($query);
-
-      if ($this->fields["is_faq"]) {
-         if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r") && !haveRight("knowbase","r")) {
-            return false;
-         }
-      } else if (!haveRight("knowbase","r")) {
-         return false;
-      }
 
       $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
@@ -452,6 +462,11 @@ class KnowbaseItem extends CommonDBTM {
    static function searchForm($options, $faq=0) {
       global $LANG, $CFG_GLPI;
 
+      if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
+         echo "ii";
+         return false;
+      }
+
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
       $params["contains"]                  = "";
@@ -461,10 +476,6 @@ class KnowbaseItem extends CommonDBTM {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
-      }
-
-      if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
-         return false;
       }
 
       echo "<div><table class='center-h'><tr><td>";
