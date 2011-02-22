@@ -578,7 +578,7 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</table>";
       } else {
-         echo "<div class='center b'>".$LANG['search'][15]."</strong>";
+         echo "<div class='center b'>".$LANG['search'][15]."</div>";
       }
    }
 
