@@ -44,7 +44,7 @@
  * @return bool for success (will die for most error)
 **/
 function update0782to080($output='HTML') {
-   global $DB, $LANG;
+   global $DB, $LANG, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
@@ -53,10 +53,7 @@ function update0782to080($output='HTML') {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
    }
 
-   $migration = new Migration("080");
-
    $migration->displayMessage($LANG['update'][141] . ' - Calendar'); // Updating schema
-
 
    $default_calendar_id = 0;
    if (!TableExists('glpi_calendars')) {
