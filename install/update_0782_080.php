@@ -1411,7 +1411,7 @@ function update0782to080($output='HTML') {
    $migration->addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','1'," WHERE `update_followups` = 1");
    $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
 
-   $migration->addField('glpi_configs', 'ocs_deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
+   $migration->addField('glpi_ocsservers', 'deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
 
    //User registration number
    $migration->addField('glpi_users', 'registration_number',

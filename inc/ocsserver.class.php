@@ -428,7 +428,19 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
       Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
                             array(0 => $LANG['common'][49]));
-      echo "</td></tr></table>\n";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>".$LANG['setup'][820]."</td>";
+      echo "<td>";
+      $actions[0] = DROPDOWN_EMPTY_VALUE;
+      $actions[1] = $LANG['ldap'][47];
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $actions['STATE_'.$state['id']] = $LANG['setup'][819].' '.$state['name'];
+      }
+      Dropdown::showFromArray('deleted_behavior', $actions,
+                              array('value' => $this->fields['deleted_behavior']));
+
+      echo "</table>\n";
 
       echo "<br>" . $LANG['ocsconfig'][15];
       echo "<br>" . $LANG['ocsconfig'][14];
@@ -1210,6 +1222,7 @@ class OcsServer extends CommonDBTM {
       if (!(self::checkOCSconnection($ocsservers_id) && self::checkConfig(1))) {
          return false;
       }
+      $cfg_ocs = self::getConfig($ocsservers_id);
 
       $query = "SELECT *
                 FROM `deleted_equiv`
@@ -1306,11 +1319,11 @@ class OcsServer extends CommonDBTM {
                      if ($DB->numrows($result)>0) {
                         $data = $DB->fetch_array($result);
                         $comp = new Computer();
-                        if ($CFG_GLPI['ocs_deleted_behavior']) {
-                           if ($CFG_GLPI['ocs_deleted_behavior'] == 1) {
+                        if ($cfg_ocs['deleted_behavior']) {
+                           if ($cfg_ocs['deleted_behavior'] == 1) {
                               $comp->delete( array("id" => $data["computers_id"]), 0);
                            } else {
-                              if (preg_match('/STATE_(.*)/',$CFG_GLPI['ocs_deleted_behavior'],
+                              if (preg_match('/STATE_(.*)/',$cfg_ocs['deleted_behavior'],
                                   $results)) {
                                  $tmp['id']          = $data["computers_id"];
                                  $tmp['states_id']   = $results[1];
