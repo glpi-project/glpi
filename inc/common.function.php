@@ -1399,16 +1399,16 @@ function get_hour_from_sql($time) {
 /**
  *  Optimize sql table
  *
- * @param $progress_fct function to call to display progress message
+ * @param $migration migration class
  * @param $cron to know if optimize must be done
  *
  * @return number of tables
 **/
-function optimize_tables ($progress_fct=NULL, $cron=false) {
+function optimize_tables ($migration=NULL, $cron=false) {
    global $DB;
 
-   if (function_exists($progress_fct)) {
-      $progress_fct("optimize"); // Start
+   if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+      $migration->displayMessage("optimize - start");
    }
    $result = $DB->list_tables("glpi_%");
    $nb     = 0;
@@ -1420,8 +1420,8 @@ function optimize_tables ($progress_fct=NULL, $cron=false) {
    // For big database to reduce delay of migration
       if ($cron || countElementsInTable($table) < 15000000) {
 
-         if (function_exists($progress_fct)) {
-            $progress_fct("optimize", $table);
+         if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+            $migration->displayMessage("optimize - $table");
          }
 
          $query = "OPTIMIZE TABLE `".$table."` ;";
@@ -1431,9 +1431,10 @@ function optimize_tables ($progress_fct=NULL, $cron=false) {
    }
    $DB->free_result($result);
 
-   if (function_exists($progress_fct)) {
-      $progress_fct("optimize"); // End
+   if (!is_null($migration) && method_exists ($migration,'displayMessage') ){
+      $migration->displayMessage("optimize - end");
    }
+
 
    return $nb;
 }
