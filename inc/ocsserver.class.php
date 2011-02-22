@@ -1222,7 +1222,6 @@ class OcsServer extends CommonDBTM {
       if (!(self::checkOCSconnection($ocsservers_id) && self::checkConfig(1))) {
          return false;
       }
-      $cfg_ocs = self::getConfig($ocsservers_id);
 
       $query = "SELECT *
                 FROM `deleted_equiv`
@@ -1303,6 +1302,8 @@ class OcsServer extends CommonDBTM {
                   }
 
                } else { // Deleted
+
+                  $ocslinks_toclean=array();
                   if (strstr($del,"-")) {
                      $query = "SELECT *
                                FROM `glpi_ocslinks`
@@ -1318,35 +1319,11 @@ class OcsServer extends CommonDBTM {
                   if ($result = $DB->query($query)) {
                      if ($DB->numrows($result)>0) {
                         $data = $DB->fetch_array($result);
-                        $comp = new Computer();
-                        if ($cfg_ocs['deleted_behavior']) {
-                           if ($cfg_ocs['deleted_behavior'] == 1) {
-                              $comp->delete( array("id" => $data["computers_id"]), 0);
-                           } else {
-                              if (preg_match('/STATE_(.*)/',$cfg_ocs['deleted_behavior'],
-                                  $results)) {
-                                 $tmp['id']          = $data["computers_id"];
-                                 $tmp['states_id']   = $results[1];
-                                 $tmp['entities_id'] = $data['entities_id'];
-                                 $comp->update($tmp);
-                              }
-                           }
-                        }
-
-                        //Add history to indicates that the machine was deleted from OCS
-                        $changes[0] = '0';
-                        $changes[1] = $data["ocsid"];
-                        $changes[2] = "";
-                        Log::history($data["computers_id"], 'Computer', $changes, 0,
-                                     HISTORY_OCS_DELETE);
-
-                        $query = "DELETE
-                                  FROM `glpi_ocslinks`
-                                  WHERE `id` ='" . $data["id"] . "'";
-                        $DB->query($query);
+                        $ocslinks_toclean[$data['id']] = $data['id'];
                      }
                   }
                }
+               self::cleanLinksFromList($ocsservers_id, $ocslinks_toclean);
 
                // Delete item in DB
                $equiv_clean=" `EQUIVALENT` = '$equiv'";
@@ -2325,22 +2302,55 @@ class OcsServer extends CommonDBTM {
    /**
     * Clean links between GLPI and OCS from a list.
     *
-    * @param $computers_id array : ids of computers to be cleaned
+    * @param $ocslinks_id array : ids of ocslinks to clean
+    * @param $ocsservers_id int : id of ocs server in GLPI
     *
     * @return nothing
    **/
-   static function cleanLinksFromList($computers_id) {
+   static function cleanLinksFromList($ocsservers_id, $ocslinks_id) {
       global $DB;
 
-      if (!haveRight("clean_ocsng", "w")) {
-         return false;
-      }
+      $cfg_ocs = self::getConfig($ocsservers_id);
 
-      foreach ($computers_id as $key => $val) {
-         $query = "DELETE
-                   FROM `glpi_ocslinks`
-                   WHERE `id` = '$key'";
-         $DB->query($query);
+      foreach ($ocslinks_id as $key => $val) {
+
+         $query = "SELECT *
+                      FROM `glpi_ocslinks`
+                      WHERE `id` = '$key'
+                      AND `ocsservers_id` = '$ocsservers_id'";
+
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $data = $DB->fetch_array($result);
+
+               $comp = new Computer();
+               if ($cfg_ocs['deleted_behavior']) {
+                  if ($cfg_ocs['deleted_behavior'] == 1) {
+                     $comp->delete( array("id" => $data["computers_id"]), 0);
+                  } else {
+                     if (preg_match('/STATE_(.*)/',$cfg_ocs['deleted_behavior'],
+                           $results)) {
+                        $tmp['id']          = $data["computers_id"];
+                        $tmp['states_id']   = $results[1];
+                        $tmp['entities_id'] = $data['entities_id'];
+                        $comp->update($tmp);
+                     }
+                  }
+               }
+
+               //Add history to indicates that the machine was deleted from OCS
+               $changes[0] = '0';
+               $changes[1] = $data["ocsid"];
+               $changes[2] = "";
+               Log::history($data["computers_id"], 'Computer', $changes, 0,
+                              HISTORY_OCS_DELETE);
+
+               $query = "DELETE
+                           FROM `glpi_ocslinks`
+                           WHERE `id` ='" . $data["id"] . "'";
+               $DB->query($query);
+            }
+         }
       }
    }
 
