@@ -916,7 +916,7 @@ function update0782to080($output='HTML') {
                   }
                   $user_email = '';
                   if (strcasecmp($data['user_email'],$data['EMAIL'])!= 0) {
-                     $user_email = $data['user_email'];
+                     $user_email = addslashes($data['user_email']);
                   }
 
                   $query = "INSERT INTO `glpi_tickets_users`
