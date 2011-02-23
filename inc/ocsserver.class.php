@@ -2208,9 +2208,11 @@ class OcsServer extends CommonDBTM {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
 
             $already_linked[$data["ocsid"]]["entities_id"]  = $data["entities_id"];
-            $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,
-                                                                     strpos($data["ocs_deviceid"],
-                                                                     '-'));
+            if (utf8_strlen($data["ocs_deviceid"])>20) { // Strip datetime tag
+               $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,-20);
+            } else {
+               $already_linked[$data["ocsid"]]["ocs_deviceid"] = $data["ocs_deviceid"];
+            }
             $already_linked[$data["ocsid"]]["date"]         = $data["last_update"];
             $already_linked[$data["ocsid"]]["id"]           = $data["id"];
             $already_linked[$data["ocsid"]]["in_ocs"]       = isset($hardware[$data["ocsid"]]);
