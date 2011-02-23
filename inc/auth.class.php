@@ -559,7 +559,7 @@ class Auth {
                                                        'value'       => $login_name),
                                                        'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $login_name);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name);
                      }
                   }
                }
