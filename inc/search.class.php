@@ -1754,6 +1754,12 @@ class Search {
 
 
       $addtable = '';
+
+      if ($table != getTableForItemType($itemtype)
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+         $addtable .= "_".$searchopt[$ID]["linkfield"];
+      }
+
       if (isset($searchopt[$ID]['joinparams'])) {
          $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
 
@@ -1782,7 +1788,6 @@ class Search {
       switch($table.".".$field) {
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
-            $addtable='_auths_id';
             return " ORDER BY `glpi_users`.`authtype` $order,
                               `glpi_authldaps".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $order,
