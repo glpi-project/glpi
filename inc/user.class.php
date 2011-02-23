@@ -331,6 +331,10 @@ class User extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $DB, $LANG;
 
+      if (isset($input['_stop_import'])) {
+         return false;
+      }
+
       // Check if user does not exists
       $query = "SELECT *
                 FROM `".$this->getTable()."`
@@ -971,38 +975,37 @@ class User extends CommonDBTM {
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
                                                          'userdn'      => $userdn));
-
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
-               return false;
+              	return false; 
             }
             //or no rights found & do not import users with no rights
             if (!$CFG_GLPI["use_noright_users_add"]) {
-               if (!isset($this->input["_ldap_rules"]) || count($this->input["_ldap_rules"])==0) {
-                  return false;
-               }
                $ok=false;
-               if (isset($this->input["_ldap_rules"]["rules_entities_rights"])
-                     && count($this->input["_ldap_rules"]["rules_entities_rights"])) {
-                  $ok = true;
-               }
-               if (!$ok) {
-                  $entity_count=0;
-                  $right_count=0;
-                  if (Profile::getDefault()) {
-                     $right_count++;
-                  }
-                  if (isset($this->input["_ldap_rules"]["rules_entities"])) {
-                     $entity_count += count($this->input["_ldap_rules"]["rules_entities"]);
-                  }
-                  if (isset($this->input["_ldap_rules"]["rules_rights"])) {
-                     $right_count += count($this->input["_ldap_rules"]["rules_rights"]);
-                  }
-                  if ($entity_count && $right_count) {
+               if (isset($this->fields["_ldap_rules"]) && count($this->fields["_ldap_rules"])) {
+                  if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])
+                        && count($this->fields["_ldap_rules"]["rules_entities_rights"])) {
                      $ok = true;
                   }
+                  if (!$ok) {
+                     $entity_count=0;
+                     $right_count=0;
+                     if (Profile::getDefault()) {
+                        $right_count++;
+                     }
+                     if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
+                        $entity_count += count($this->fields["_ldap_rules"]["rules_entities"]);
+                     }
+                     if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+                        $right_count += count($this->fields["_ldap_rules"]["rules_rights"]);
+                     }
+                     if ($entity_count && $right_count) {
+                        $ok = true;
+                     }
+                  }
                }
                if (!$ok) {
+                  $this->fields["_stop_import"] = true;
                   return false;
                }
             }
