@@ -275,6 +275,8 @@ class RuleCriteria extends CommonDBChild {
 
          case Rule::REGEX_MATCH :
             $results = array();
+            // Permit use < and > 
+            $pattern = unclean_cross_side_scripting_deep($pattern);
             if (preg_match($pattern."i",$field,$results)>0) {
                // Drop $result[0] : complete match result
                array_shift($results);
@@ -286,6 +288,8 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::REGEX_NOT_MATCH :
+            // Permit use < and > 
+            $pattern = unclean_cross_side_scripting_deep($pattern);
             if (preg_match($pattern."i", $field) == 0) {
                $criterias_results[$criteria] = $pattern;
                return true;
