@@ -1759,6 +1759,7 @@ class Search {
 
          if (!empty($complexjoin)) {
             $addtable .= "_".$complexjoin;
+            
          }
       }
 
@@ -1780,9 +1781,13 @@ class Search {
 
       switch($table.".".$field) {
          case "glpi_auth_tables.name" :
+            $user_searchopt = self::getOptions('User');
+            $addtable='_auths_id';
             return " ORDER BY `glpi_users`.`authtype` $order,
-                              `glpi_authldaps`.`name` $order,
-                              `glpi_authmails`.`name` $order ";
+                              `glpi_authldaps".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $order,
+                              `glpi_authmails".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $order ";
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
@@ -2325,10 +2330,11 @@ class Search {
       $field     = $searchopt[$ID]["field"];
 
       $inittable = $table;
-
+      $addtable = '';
       if ($table != getTableForItemType($itemtype)
           && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
-         $table .= "_".$searchopt[$ID]["linkfield"];
+         $addtable = "_".$searchopt[$ID]["linkfield"];
+         $table .= $addtable;
       }
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -2536,8 +2542,11 @@ class Search {
                             OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
-            return $link." (`glpi_authmails`.`name` $SEARCH
-                            OR `glpi_authldaps`.`name` $SEARCH ) ";
+            $user_searchopt = self::getOptions('User');
+            return $link." (`glpi_authmails".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $SEARCH
+                            OR `glpi_authldaps".$addtable."_".
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $SEARCH ) ";
 
          case "glpi_contracts.renewal" :
             $valid = Contract::getContractRenewalIDByName($val);
