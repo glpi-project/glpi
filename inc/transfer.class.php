@@ -1133,7 +1133,7 @@ class Transfer extends CommonDBTM {
                   $input['entities_id']  = $this->to;
                   $input['completename'] = $data['completename'];
                   $location = new Location();
-                  $newID    = $location->getID($input);
+                  $newID    = $location->findID($input);
 
                   if ($newID<0) {
                      $newID = $location->import($input);
@@ -2295,7 +2295,7 @@ class Transfer extends CommonDBTM {
                   if ($categ->getFromDB($data['taskcategories_id'])) {
                      $inputcat['entities_id']  = $this->to;
                      $inputcat['completename'] = $categ->fields['completename'];
-                     $catid                    = $categ->getID($inputcat);
+                     $catid                    = $categ->findID($inputcat);
                      if ($catid<0) {
                         $catid = $categ->import($inputcat);
                      }
@@ -2336,7 +2336,7 @@ class Transfer extends CommonDBTM {
          if ($categ->getFromDB($data['ticketcategories_id'])) {
             $inputcat['entities_id']  = $this->to;
             $inputcat['completename'] = $categ->fields['completename'];
-            $catid                    = $categ->getID($inputcat);
+            $catid                    = $categ->findID($inputcat);
             if ($catid<0) {
                $catid = $categ->import($inputcat);
             }

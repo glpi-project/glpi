@@ -361,7 +361,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function getID (&$input) {
+   function findID (&$input) {
       global $DB;
 
       if (isset($input['completename']) && !empty($input['completename'])) {

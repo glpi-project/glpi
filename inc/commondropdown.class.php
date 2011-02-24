@@ -503,7 +503,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function getID (&$input) {
+   function findID (&$input) {
       global $DB;
 
       if (!empty($input["name"])) {
@@ -547,7 +547,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // Check twin :
-      if ($ID = $this->getID($input)) {
+      if ($ID = $this->findID($input)) {
          if ($ID>0) {
             return $ID;
          }
@@ -610,7 +610,7 @@ abstract class CommonDropdown extends CommonDBTM {
             $input["name"] = $res_rule["name"];
          }
       }
-      return ($add ? $this->import($input) : $this->getID($input));
+      return ($add ? $this->import($input) : $this->findID($input));
    }
 
 
