@@ -636,11 +636,9 @@ if (isset($_POST["itemtype"])) {
                if ($parent->getFromDB($_POST['parent'])) {
                   foreach ($_POST["item"] as $key => $val) {
                      if ($val==1 && $item->can($key,'w')) {
-                        // Check if parent is in an entity under the original one
-                        if (!$parent->isEntityAssign()
-                           || $parent->getEntityID()== $item->getEntityID()
-                           || in_array($parent->getEntityID(),
-                                    getAncestorsOf("glpi_entities",$item->getEntityID()))) {
+                        // Check if parent is not a child of the original one
+                        if (!in_array($parent->getID(),
+                                    getSonsOf($item->getTable(),$item->getID()))) {
                            $item->update(array('id' => $key,
                                                 $fk  => $_POST['parent']));
                         }
