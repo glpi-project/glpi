@@ -41,6 +41,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'cs_CZ' => array('Čeština',              'cs_CZ.php','cs',    'cs','czech'),
             'de_DE' => array('Deutsch',              'de_DE.php','de',    'de','german'),
             'dk_DK' => array('Dansk',                'dk_DK.php','da',    'da','danish'),
+            'ee_ET' => array('Eesti',                'ee_ET.php','en',    'et','estonian'),
             'en_GB' => array('English',              'en_GB.php','en',    'en','english'),
             'es_AR' => array('Español (Argentina)',  'es_AR.php','es',    'es','spanish'),
             'es_ES' => array('Español (España)',     'es_ES.php','es',    'es','spanish'),
