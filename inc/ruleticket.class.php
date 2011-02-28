@@ -195,6 +195,13 @@ class RuleTicket extends Rule {
       $criterias['ticketcategories_id']['linkfield'] = 'ticketcategories_id';
       $criterias['ticketcategories_id']['type']      = 'dropdown';
 
+      $criterias['type']['table']     = 'glpi_tickets';
+      $criterias['type']['field']     = 'type';
+      $criterias['type']['name']      = $LANG['common'][17];
+      $criterias['type']['linkfield'] = 'type';
+      $criterias['type']['type']      = 'dropdown_tickettype';
+
+
       $criterias['_users_id_requester']['table']     = 'glpi_users';
       $criterias['_users_id_requester']['field']     = 'name';
       $criterias['_users_id_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][34];

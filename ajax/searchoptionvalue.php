@@ -113,6 +113,10 @@ if (isset($_REQUEST['searchtype'])) {
                   Ticket::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;
                   break;
+               case "glpi_tickets.type" :
+                  Ticket::dropdownType($inputname, $_REQUEST['value']);
+                  $display = true;
+                  break;
 
                case "glpi_tickets.priority" :
                   Ticket::dropdownPriority($inputname, $_REQUEST['value'], true, true);
