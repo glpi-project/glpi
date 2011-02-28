@@ -2814,7 +2814,11 @@ class Search {
 
       // Default case
       if (in_array($searchtype, array('equals', 'notequals'))) {
-         $out = " $link (`$table`.`id`".$SEARCH;
+         if ($table != getTableForItemType($itemtype)) {
+            $out = " $link (`$table`.`id`".$SEARCH;
+         } else {
+            $out = " $link (`$table`.`$field`".$SEARCH;
+         }
          if ($searchtype=='notequals') {
             $nott = !$nott;
          }
@@ -3756,6 +3760,9 @@ class Search {
             $status = Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                      alt=\"$status\" title=\"$status\"><br>$status";
+
+         case 'glpi_tickets.type':
+            return Ticket::getTicketTypeName($data[$NAME.$num]);
 
          case 'glpi_tickets.priority':
             return Ticket::getPriorityName($data[$NAME.$num]);

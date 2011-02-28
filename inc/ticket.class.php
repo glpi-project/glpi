@@ -2071,6 +2071,11 @@ class Ticket extends CommonDBTM {
       $tab[12]['name']       = $LANG['joblist'][0];
       $tab[12]['searchtype'] = 'equals';
 
+      $tab[14]['table']      = $this->getTable();
+      $tab[14]['field']      = 'type';
+      $tab[14]['name']       = $LANG['common'][17];
+      $tab[14]['searchtype'] = 'equals';
+
       $tab[10]['table']      = $this->getTable();
       $tab[10]['field']      = 'urgency';
       $tab[10]['name']       = $LANG['joblist'][29];

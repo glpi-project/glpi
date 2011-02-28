@@ -1330,6 +1330,8 @@ class Rule extends CommonDBTM {
 
                case "dropdown_impact" :
                   return Ticket::getImpactName($pattern);
+               case "dropdown_tickettype" :
+                  return Ticket::getTicketTypeName($pattern);
             }
          }
       }
@@ -1412,6 +1414,11 @@ class Rule extends CommonDBTM {
 
             case "dropdown_priority" :
                Ticket::dropdownPriority($name, $value);
+               $display = true;
+               break;
+
+            case "dropdown_tickettype" :
+               Ticket::dropdownType($name, $value);
                $display = true;
                break;
          }
