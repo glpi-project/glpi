@@ -1245,7 +1245,7 @@ class Dropdown {
             echo "<option value='activate_infocoms'>".$LANG['financial'][68]."</option>";
          }
 
-         if ($is_deleted) {
+         if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
             if ($isadmin) {
                echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
                echo "<option value='restore'>".$LANG['buttons'][21]."</option>";
