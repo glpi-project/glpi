@@ -1756,7 +1756,7 @@ class Search {
       $addtable = '';
 
       if ($table != getTableForItemType($itemtype)
-         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -1765,7 +1765,6 @@ class Search {
 
          if (!empty($complexjoin)) {
             $addtable .= "_".$complexjoin;
-            
          }
       }
 
@@ -1988,7 +1987,7 @@ class Search {
          case "glpi_tickets.due_date" :
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
                      `$table$addtable`.`status` AS ".$NAME."_".$num."_2, ";
-            
+
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
             if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
@@ -2318,7 +2317,7 @@ class Search {
     * Generic Function to add where to a request
     *
     * @param $link link string
-    * @param $nott is it a negative serach ?
+    * @param $nott is it a negative search ?
     * @param $itemtype item type
     * @param $ID ID of the item to search
     * @param $searchtype searchtype used (equals or contains)
@@ -2335,11 +2334,11 @@ class Search {
       $field     = $searchopt[$ID]["field"];
 
       $inittable = $table;
-      $addtable = '';
+      $addtable  = '';
       if ($table != getTableForItemType($itemtype)
           && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
-         $table .= $addtable;
+         $table   .= $addtable;
       }
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -3362,17 +3361,17 @@ class Search {
          case "glpi_users.date_mod" :
             return " class='center'";
 
-         case "glpi_tickets.priority":
+         case "glpi_tickets.priority" :
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
 
-         case "glpi_tickets.due_date":
+         case "glpi_tickets.due_date" :
             if (!empty($data[$NAME.$num])
-               && $data[$NAME.$num.'_2'] != 'waiting'
-               && $data[$NAME.$num] < $_SESSION['glpi_currenttime']) {
-               return " class=\"tab_bg_2_2\" ";
+                && $data[$NAME.$num.'_2'] != 'waiting'
+                && $data[$NAME.$num] < $_SESSION['glpi_currenttime']) {
+               return " class='tab_bg_2_2' ";
             }
 
-         default:
+         default :
             return "";
       }
    }
@@ -3744,13 +3743,13 @@ class Search {
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
 
-         case 'glpi_crontasks.state':
+         case 'glpi_crontasks.state' :
             return CronTask::getStateName($data[$NAME.$num]);
 
-         case 'glpi_crontasks.mode':
+         case 'glpi_crontasks.mode' :
             return CronTask::getModeName($data[$NAME.$num]);
 
-         case 'glpi_crontasks.itemtype':
+         case 'glpi_crontasks.itemtype' :
             if ($plug=isPluginItemType($data[$NAME.$num])) {
                return $plug['plugin'];
             }
@@ -3761,19 +3760,19 @@ class Search {
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                      alt=\"$status\" title=\"$status\"><br>$status";
 
-         case 'glpi_tickets.type':
+         case 'glpi_tickets.type' :
             return Ticket::getTicketTypeName($data[$NAME.$num]);
 
-         case 'glpi_tickets.priority':
+         case 'glpi_tickets.priority' :
             return Ticket::getPriorityName($data[$NAME.$num]);
 
-         case 'glpi_tickets.urgency':
+         case 'glpi_tickets.urgency' :
             return Ticket::getUrgencyName($data[$NAME.$num]);
 
          case 'glpi_tickets.impact':
             return Ticket::getImpactName($data[$NAME.$num]);
 
-         case 'glpi_tickets.items_id':
+         case 'glpi_tickets.items_id' :
             if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {
                $item = new $data[$NAME.$num."_2"];
                if ($item->getFromDB($data[$NAME.$num])) {
@@ -3782,7 +3781,7 @@ class Search {
             }
             return '&nbsp;';
 
-         case 'glpi_tickets.name':
+         case 'glpi_tickets.name' :
             $link = getItemTypeFormURL('Ticket');
             $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
@@ -3801,6 +3800,7 @@ class Search {
                                array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
                                      'display' => false));
             return $out;
+
          case "glpi_tickets.due_date" :
             // No due date in waiting status
             if ($data[$NAME.$num.'_2'] == 'waiting') {

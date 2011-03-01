@@ -161,6 +161,7 @@ class RuleCriteria extends CommonDBChild {
 
             case "dropdown_priority" :
                return Ticket::getPriorityName($initValue);
+
             case "dropdown_tickettype" :
                return Ticket::getTicketTypeName($initValue);
          }

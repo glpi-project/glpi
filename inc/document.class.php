@@ -1176,9 +1176,9 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      if ($item->getType()!='Ticket'
-            && $item->getType()!='KnowbaseItem'
-            && !haveRight('document','r')) {
+      if ($item->getType() != 'Ticket'
+          && $item->getType() != 'KnowbaseItem'
+          && !haveRight('document','r')) {
          return false;
       }
 

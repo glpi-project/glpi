@@ -977,19 +977,19 @@ class User extends CommonDBTM {
                                                          'userdn'      => $userdn));
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
-              	return false; 
+               return false;
             }
             //or no rights found & do not import users with no rights
             if (!$CFG_GLPI["use_noright_users_add"]) {
-               $ok=false;
+               $ok = false;
                if (isset($this->fields["_ldap_rules"]) && count($this->fields["_ldap_rules"])) {
                   if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])
-                        && count($this->fields["_ldap_rules"]["rules_entities_rights"])) {
+                      && count($this->fields["_ldap_rules"]["rules_entities_rights"])) {
                      $ok = true;
                   }
                   if (!$ok) {
-                     $entity_count=0;
-                     $right_count=0;
+                     $entity_count = 0;
+                     $right_count  = 0;
                      if (Profile::getDefault()) {
                         $right_count++;
                      }
@@ -1009,7 +1009,7 @@ class User extends CommonDBTM {
                   return false;
                }
             }
-            
+
             //Hook to retrieve more informations for ldap
             $this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
          }

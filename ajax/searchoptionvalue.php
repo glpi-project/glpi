@@ -96,7 +96,7 @@ if (isset($_REQUEST['searchtype'])) {
 //                                        'right' => 'all'));
 //                   $display = true;
 //                   break;
-// 
+//
 // //                case "Ticket.users_id_assign" :
 // //                   User::dropdown(array('name'  => $inputname,
 // //                                        'value' => $_REQUEST['value'],
@@ -113,6 +113,7 @@ if (isset($_REQUEST['searchtype'])) {
                   Ticket::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;
                   break;
+
                case "glpi_tickets.type" :
                   Ticket::dropdownType($inputname, $_REQUEST['value']);
                   $display = true;
@@ -200,7 +201,7 @@ if (isset($_REQUEST['searchtype'])) {
                      break;
                }
             }
-            
+
             //Could display be handled by a plugin ?
             if (!$display && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
                $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
@@ -212,7 +213,7 @@ if (isset($_REQUEST['searchtype'])) {
                   $display = $function($params);
                }
             }
-            
+
             // Standard field usage
             if (!$display) {
                switch ($searchopt['field']) {

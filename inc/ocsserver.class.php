@@ -1303,7 +1303,7 @@ class OcsServer extends CommonDBTM {
 
                } else { // Deleted
 
-                  $ocslinks_toclean=array();
+                  $ocslinks_toclean = array();
                   if (strstr($del,"-")) {
                      $query = "SELECT *
                                FROM `glpi_ocslinks`
@@ -2209,7 +2209,8 @@ class OcsServer extends CommonDBTM {
 
             $already_linked[$data["ocsid"]]["entities_id"]  = $data["entities_id"];
             if (utf8_strlen($data["ocs_deviceid"])>20) { // Strip datetime tag
-               $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,-20);
+               $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,
+                                                                        -20);
             } else {
                $already_linked[$data["ocsid"]]["ocs_deviceid"] = $data["ocs_deviceid"];
             }
@@ -2304,8 +2305,8 @@ class OcsServer extends CommonDBTM {
    /**
     * Clean links between GLPI and OCS from a list.
     *
-    * @param $ocslinks_id array : ids of ocslinks to clean
     * @param $ocsservers_id int : id of ocs server in GLPI
+    * @param $ocslinks_id array : ids of ocslinks to clean
     *
     * @return nothing
    **/
@@ -2317,9 +2318,9 @@ class OcsServer extends CommonDBTM {
       foreach ($ocslinks_id as $key => $val) {
 
          $query = "SELECT *
-                      FROM `glpi_ocslinks`
-                      WHERE `id` = '$key'
-                      AND `ocsservers_id` = '$ocsservers_id'";
+                   FROM `glpi_ocslinks`
+                   WHERE `id` = '$key'
+                         AND `ocsservers_id` = '$ocsservers_id'";
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
@@ -2330,8 +2331,7 @@ class OcsServer extends CommonDBTM {
                   if ($cfg_ocs['deleted_behavior'] == 1) {
                      $comp->delete( array("id" => $data["computers_id"]), 0);
                   } else {
-                     if (preg_match('/STATE_(.*)/',$cfg_ocs['deleted_behavior'],
-                           $results)) {
+                     if (preg_match('/STATE_(.*)/',$cfg_ocs['deleted_behavior'],$results)) {
                         $tmp['id']          = $data["computers_id"];
                         $tmp['states_id']   = $results[1];
                         $tmp['entities_id'] = $data['entities_id'];
@@ -2344,12 +2344,11 @@ class OcsServer extends CommonDBTM {
                $changes[0] = '0';
                $changes[1] = $data["ocsid"];
                $changes[2] = "";
-               Log::history($data["computers_id"], 'Computer', $changes, 0,
-                              HISTORY_OCS_DELETE);
+               Log::history($data["computers_id"], 'Computer', $changes, 0, HISTORY_OCS_DELETE);
 
                $query = "DELETE
-                           FROM `glpi_ocslinks`
-                           WHERE `id` ='" . $data["id"] . "'";
+                         FROM `glpi_ocslinks`
+                         WHERE `id` = '" . $data["id"] . "'";
                $DB->query($query);
             }
          }

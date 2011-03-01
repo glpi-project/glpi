@@ -37,8 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsOr(array('ocsng' => 'r',
-                           'clean_ocsng'      => 'r'));
+checkSeveralRightsOr(array('ocsng'        => 'r',
+                           'clean_ocsng'  => 'r'));
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset ($_SESSION["ocs_import"])) {
@@ -74,19 +74,18 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
 
    if (haveRight('ocsng','w')) {
-
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>" . $LANG['ocsng'][2] .
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>".$LANG['ocsng'][2].
             "</a></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>" . $LANG['ocsng'][1] .
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>".$LANG['ocsng'][1].
             "</a></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.link.php'>" . $LANG['ocsng'][4] .
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.link.php'>".$LANG['ocsng'][4].
             "</a></td></tr>";
    }
 
    if (haveRight('clean_ocsng','r')) {
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.clean.php'>" . $LANG['ocsng'][3] .
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.clean.php'>".$LANG['ocsng'][3].
             "</a></td> </tr>";
    }
 
