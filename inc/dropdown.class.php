@@ -1148,7 +1148,7 @@ class Dropdown {
             echo "<option value='update'>".$LANG['buttons'][14]."</option>";
          }
 
-         if ($is_deleted) {
+         if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
             if ($isadmin) {
                echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
                echo "<option value='restore'>".$LANG['buttons'][21]."</option>";
