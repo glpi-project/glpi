@@ -55,20 +55,22 @@ class KnowbaseItem extends CommonDBTM {
 
    function canView() {
       global $CFG_GLPI;
-      return (haveRight('knowbase', 'r') || haveRight('faq', 'r')
-               || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+
+      return (haveRight('knowbase', 'r')
+              || haveRight('faq', 'r')
+              || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
    }
+
 
    function canViewItem() {
       global $CFG_GLPI;
-      if ($this->fields["is_faq"]) {
-         return (haveRight('knowbase', 'r') || haveRight('faq', 'r')
-                  || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
-      } else {
-         return haveRight("knowbase","r");
-      }
 
-      return false;
+      if ($this->fields["is_faq"]) {
+         return (haveRight('knowbase', 'r')
+                 || haveRight('faq', 'r')
+                 || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+      }
+      return haveRight("knowbase", "r");
    }
 
 
@@ -463,7 +465,6 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
-         echo "ii";
          return false;
       }
 
