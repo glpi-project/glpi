@@ -520,8 +520,10 @@ class TicketFollowup  extends CommonDBTM {
          if ($this->isNewID($ID)
              && in_array($ticket->fields['status'], array('new', 'assign', 'plan'))
              && Ticket::isAllowedStatus($ticket->fields['status'], 'waiting')) {
+
                echo "<td>".$LANG['job'][27]."</td><td>";
                Dropdown::showYesNo('_wait');
+
          } else if ($this->isNewID($ID)
              && $ticket->fields['status'] == 'waiting') {
 
@@ -538,6 +540,7 @@ class TicketFollowup  extends CommonDBTM {
             } else {
                echo "<td colspan='2'>&nbsp;";
             }
+
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
