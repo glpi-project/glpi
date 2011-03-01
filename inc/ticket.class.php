@@ -2876,6 +2876,7 @@ class Ticket extends CommonDBTM {
 
    /**
     * Form to add a solution to a ticket
+    *
     * @param $knowbase_id_toload integer load a kb article as solution (0 = no load)
    **/
    function showSolutionForm($knowbase_id_toload=0) {
@@ -3541,8 +3542,8 @@ class Ticket extends CommonDBTM {
 
             if ($showuserlink) {
                echo $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
-                                                         array('link'    => $userdata["link"],
-                                                               'display' => false));
+                                                           array('link'    => $userdata["link"],
+                                                                 'display' => false));
             } else {
                echo $userdata;
             }

@@ -690,14 +690,17 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("transfer","r" )&& isMultiEntitiesMode()) {
-      $menu['admin']['content']['rule']['options']['transfer']['title']           = $LANG['transfer'][1];
-      $menu['admin']['content']['rule']['options']['transfer']['page']            = '/front/transfer.php';
-      $menu['admin']['content']['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
+   if (haveRight("transfer","r" ) && isMultiEntitiesMode()) {
+      $menu['admin']['content']['rule']['options']['transfer']['title'] = $LANG['transfer'][1];
+      $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
+      $menu['admin']['content']['rule']['options']['transfer']['links']['search']
+                                                                        = "/front/transfer.php";
 
       if (haveRight("transfer","w")) {
-         $menu['admin']['content']['rule']['options']['transfer']['links']['summary'] = "/front/transfer.action.php";
-         $menu['admin']['content']['rule']['options']['transfer']['links']['add']     = "/front/transfer.form.php";
+         $menu['admin']['content']['rule']['options']['transfer']['links']['summary']
+                                                                     = "/front/transfer.action.php";
+         $menu['admin']['content']['rule']['options']['transfer']['links']['add']
+                                                                     = "/front/transfer.form.php";
       }
    }
 
