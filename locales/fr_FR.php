@@ -908,7 +908,7 @@ $LANG['job'][32] = "Aucune";
 $LANG['job'][33] = "Description vide";
 $LANG['job'][34] = "Planifier cette tâche";
 $LANG['job'][35] = "Planification";
-
+$LANG['job'][36] = "si cette réponse permet le traitement de votre demande";
 $LANG['job'][37] = "Résumé";
 $LANG['job'][38] = "Ticket";
 $LANG['job'][39] = "Modifier un suivi";
