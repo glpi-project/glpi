@@ -284,13 +284,12 @@ class Computer_Item extends CommonDBRelation{
                      //Delete periph from glpi
                      if ($decoConf == "delete") {
                         $tmp["id"] = $this->fields['items_id'];
-                        $device->delete($tmp);
+                        $device->delete($tmp, 1);
 
                      //Put periph in trash
                      } else if ($decoConf == "trash") {
                         $tmp["id"] = $this->fields['items_id'];
-                        $tmp["is_deleted"] = 1;
-                        $device->update($tmp);
+                        $device->delete($tmp, 0);
                      }
                   }
                } // $ocsservers_id>0
