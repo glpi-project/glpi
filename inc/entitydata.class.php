@@ -55,10 +55,10 @@ class EntityData extends CommonDBChild {
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'          => array(// Address
-                                                                  'address', 'postcode', 'postcode',
-                                                                  'town', 'state', 'country',
-                                                                  'website', 'phonenumber', 'fax',
-                                                                  'email', 'notepad',
+                                                                  'address', 'country', 'email',
+                                                                  'fax', 'notepad', 'phonenumber',
+                                                                  'postcode', 'state', 'town',
+                                                                  'website',
                                                                   // Advanced (could be user_authtype ?)
                                                                   'authldaps_id', 'entity_ldapfilter',
                                                                   'ldap_dn', 'mail_domain', 'tag',
@@ -378,7 +378,7 @@ class EntityData extends CommonDBChild {
       }
 
       // Notification right applied
-      $canedit = haveRight('infocom', 'w') && haveAccessToEntity($ID);
+      $canedit = haveRight('entity', 'w') && haveAccessToEntity($ID);
 
       // Get data
       $entitydata = new EntityData();
