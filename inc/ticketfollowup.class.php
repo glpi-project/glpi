@@ -324,7 +324,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && $this->input["_job"]->fields["status"] == 'solved') {
+          && in_array($this->input["_job"]->fields["status"], array('solved', 'waiting'))) {
 
          if ($this->input["_job"]->countUsers(Ticket::ASSIGN)>0
              || $this->input["_job"]->countGroups(Ticket::ASSIGN)>0
@@ -335,6 +335,17 @@ class TicketFollowup  extends CommonDBTM {
             $update['status'] = 'new';
          }
 
+         $update['id'] = $this->input["_job"]->fields['id'];
+         // Use update method for history
+         $this->input["_job"]->update($update);
+         $donotif = false; // Done for ticket update (new status)
+      }
+
+      if (isset($this->input["_wait"])
+          && $this->input["_wait"]
+          && in_array($this->input["_job"]->fields["status"], array('new', 'assign', 'plan'))) {
+
+         $update['status'] = 'waiting';
          $update['id'] = $this->input["_job"]->fields['id'];
          // Use update method for history
          $this->input["_job"]->update($update);
@@ -483,8 +494,8 @@ class TicketFollowup  extends CommonDBTM {
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-         echo "<td class='center middle' rowspan='3'><textarea name='content' cols='50' rows='6'>".
+         echo "<td rowspan='4' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td class='center middle' rowspan='4'><textarea name='content' cols='50' rows='6'>".
                $this->fields["content"]."</textarea></td>";
          if ($this->fields["date"]) {
             echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
@@ -503,6 +514,33 @@ class TicketFollowup  extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][77]."&nbsp;:</td><td>";
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         if ($this->isNewID($ID)
+             && in_array($ticket->fields['status'], array('new', 'assign', 'plan'))
+             && Ticket::isAllowedStatus($ticket->fields['status'], 'waiting')) {
+               echo "<td>".$LANG['job'][27]."</td><td>";
+               Dropdown::showYesNo('_wait');
+         } else if ($this->isNewID($ID)
+             && $ticket->fields['status'] == 'waiting') {
+
+            if ($ticket->countUsers(Ticket::ASSIGN)>0
+                || $ticket->countGroups(Ticket::ASSIGN)>0
+                || $ticket->fields["suppliers_id_assign"]>0) {
+               $new = 'assign';
+            } else {
+               $new = 'new';
+            }
+            if (Ticket::isAllowedStatus($ticket->fields['status'], $new)) {
+               echo "<td>".$LANG['job'][28]."</td><td>";
+               Dropdown::showYesNo('_reopen');
+            } else {
+               echo "<td colspan='2'>&nbsp;";
+            }
+         } else {
+            echo "<td colspan='2'>&nbsp;";
+         }
          echo "</td></tr>";
 
          $this->showFormButtons($options);
