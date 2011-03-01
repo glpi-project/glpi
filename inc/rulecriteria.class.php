@@ -277,7 +277,7 @@ class RuleCriteria extends CommonDBChild {
 
          case Rule::REGEX_MATCH :
             $results = array();
-            // Permit use < and > 
+            // Permit use < and >
             $pattern = unclean_cross_side_scripting_deep($pattern);
             if (preg_match($pattern."i",$field,$results)>0) {
                // Drop $result[0] : complete match result
@@ -290,7 +290,7 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::REGEX_NOT_MATCH :
-            // Permit use < and > 
+            // Permit use < and >
             $pattern = unclean_cross_side_scripting_deep($pattern);
             if (preg_match($pattern."i", $field) == 0) {
                $criterias_results[$criteria] = $pattern;
@@ -309,11 +309,11 @@ class RuleCriteria extends CommonDBChild {
     * Return the condition label by giving his ID
     *
     * @param $ID condition's ID
-    * @param $itemtype itemtype 
+    * @param $itemtype itemtype
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID,$itemtype) {
+   static function getConditionByID($ID, $itemtype) {
 
       $conditions = self::getConditions($itemtype);
       if (isset($conditions[$ID])) {

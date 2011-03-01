@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['transfer'][1],'',"admin",'rule',"transfer");
+commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
 
 $transfer = new Transfer();
 
@@ -48,7 +48,7 @@ if (isset($_POST['transfer'])) {
       if (!haveAccessToEntity($_POST['to_entity'])) {
          displayRightError();
       }
-      $transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
+      $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
       unset($_SESSION['glpitransfer_list']);
       echo "<strong>".$LANG['common'][23]."</strong><br>";
       echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";

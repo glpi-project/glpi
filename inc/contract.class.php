@@ -1401,6 +1401,7 @@ class Contract extends CommonDBTM {
       Dropdown::showFromArray($myname, $tmp, array('value' => $value));
    }
 
+
    /**
     * Display debug information for current object
    **/
@@ -1411,11 +1412,13 @@ class Contract extends CommonDBTM {
       NotificationEvent::debugEvent($this, $options);
    }
 
+
    function getUnallowedFieldsForUnicity() {
+
       return array_merge(parent::getUnallowedFieldsForUnicity(),
-                         array('begin_date', 'duration', 'entities_id', 'week_begin_hour',
-                               'week_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
-                               'monday_begin_hour', 'monday_end_hour'));
+                         array('begin_date', 'duration', 'entities_id', 'monday_begin_hour',
+                               'monday_end_hour', 'saturday_begin_hour', 'saturday_end_hour',
+                               'week_begin_hour', 'week_end_hour'));
    }
 
 }

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("transfer","r");
+checkRight("transfer", "r");
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -67,9 +67,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['transfer'][1],'',"admin",'rule',"transfer");
+commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
 
-$transfer->showForm($_GET["id"], array('target'=>$transfer->getFormURL()));
+$transfer->showForm($_GET["id"], array('target' => $transfer->getFormURL()));
 
 commonFooter();
 

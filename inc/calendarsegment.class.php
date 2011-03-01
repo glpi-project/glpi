@@ -237,7 +237,7 @@ class CalendarSegment extends CommonDBChild {
       $query = "SELECT MIN(`begin`)
                 FROM `glpi_calendarsegments`
                 WHERE `calendars_id` = '$calendars_id'
-                     AND `day` = '$day'";
+                      AND `day` = '$day'";
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -246,6 +246,7 @@ class CalendarSegment extends CommonDBChild {
       }
       return false;
    }
+
 
    /**
     * Get last working hour of a day
@@ -263,7 +264,7 @@ class CalendarSegment extends CommonDBChild {
       $query = "SELECT MAX(`end`)
                 FROM `glpi_calendarsegments`
                 WHERE `calendars_id` = '$calendars_id'
-                     AND `day` = '$day'";
+                      AND `day` = '$day'";
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
