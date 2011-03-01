@@ -116,10 +116,7 @@ class Entity extends CommonTreeDropdown {
          if (haveRight('entity_helpdesk','r')) {
             $ong[8] = $LANG['title'][24];       // Helpdesk
          }
-         // TODO Why this right ??? (no filter in  EntityData::$field_right)
-         if (haveRight('infocom','r')) {
-            $ong[10] = $LANG['Menu'][38];       // Inventory
-         }
+         $ong[10] = $LANG['Menu'][38];       // Inventory
       }
       return $ong;
    }
