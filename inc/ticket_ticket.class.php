@@ -241,7 +241,7 @@ class Ticket_Ticket extends CommonDBRelation {
          if (count($tickets)) {
             foreach ($tickets as $data) {
                $input['id'] = $data['tickets_id'];
-               if ($ticket->can($input['id'],'w')) {
+               if ($ticket->can($input['id'],'w') && $data['link'] == 2) {
                   $ticket->update($input);
                }
             }
