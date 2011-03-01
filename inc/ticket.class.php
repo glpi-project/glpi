@@ -2810,6 +2810,24 @@ class Ticket extends CommonDBTM {
 
 
    /**
+    * check is the user can change from / to a status
+    *
+    * @param $old string value of old/current status
+    * @param $new string value of target status
+    *
+    * @return boolean
+    */
+   static function isAllowedStatus($old, $new) {
+
+      if (isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$old][$new])
+            && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$old][$new]) {
+         return false;
+      }
+      return true;
+   }
+
+
+   /**
     * get the Ticket status allowed for a current status
     *
     * @param $current status
@@ -2826,8 +2844,7 @@ class Ticket extends CommonDBTM {
 
       foreach ($tab as $status => $label) {
          if ($status != $current
-             && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status])
-             && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status]) {
+             && !self::isAllowedStatus($current, $status)) {
             unset($tab[$status]);
          }
       }
