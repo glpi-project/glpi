@@ -521,7 +521,7 @@ class TicketFollowup  extends CommonDBTM {
              && in_array($ticket->fields['status'], array('new', 'assign', 'plan'))
              && Ticket::isAllowedStatus($ticket->fields['status'], 'waiting')) {
 
-               echo "<td>".$LANG['job'][27]."</td><td>";
+               echo "<td>".$LANG['job'][27]."&nbsp;: </td><td>";
                Dropdown::showYesNo('_wait');
 
          } else if ($this->isNewID($ID)
@@ -535,7 +535,7 @@ class TicketFollowup  extends CommonDBTM {
                $new = 'new';
             }
             if (Ticket::isAllowedStatus($ticket->fields['status'], $new)) {
-               echo "<td>".$LANG['job'][28]."</td><td>";
+               echo "<td>".$LANG['job'][28]."&nbsp;: </td><td>";
                Dropdown::showYesNo('_reopen');
             } else {
                echo "<td colspan='2'>&nbsp;";
@@ -554,13 +554,19 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-         echo "<td class='center middle'><textarea name='content' cols='80' rows='6'>".
+         echo "<td class='middle'><textarea name='content' cols='80' rows='6'>".
                $this->fields["content"]."</textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
          echo "<input type='hidden' name='requesttypes_id' value='".
                 RequestType::getDefault('helpdesk')."'>";
          echo "</td></tr>\n";
 
+         if ($ticket->fields['status'] == 'waiting' && $ticket->canApprove()) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='middle right'>".$LANG['job'][28]."&nbsp;: </td><td>";
+            Dropdown::showYesNo('_reopen');
+            echo "&nbsp;(".$LANG['job'][36].")</td></tr>\n";
+         }
          $this->showFormButtons($options);
       }
       return true;
@@ -770,7 +776,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $input = array('tickets_id' => $ticket->getField('id'));
 
-      if ($ticket->canApprove()) {
+      if ($ticket->fields["status"] == 'solved' && $ticket->canApprove()) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>". $LANG['job'][51]."</th></tr>";

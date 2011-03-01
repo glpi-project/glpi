@@ -152,11 +152,10 @@ class Ticket extends CommonDBTM {
    **/
    function canApprove() {
 
-      return ($this->fields["status"] == 'solved'
-              && ($this->fields["users_id_recipient"] === getLoginUserID()
-                  || $this->isUser(self::REQUESTER,getLoginUserID())
-                  || (isset($_SESSION["glpigroups"])
-                      && $this->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"]))));
+      return ($this->fields["users_id_recipient"] === getLoginUserID()
+              || $this->isUser(self::REQUESTER, getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(self::REQUESTER, $_SESSION["glpigroups"])));
    }
 
 
