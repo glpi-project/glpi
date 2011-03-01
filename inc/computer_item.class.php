@@ -159,8 +159,7 @@ class Computer_Item extends CommonDBRelation{
             if ($CFG_GLPI["is_location_autoupdate"]
                && $comp->fields['locations_id'] != $item->getField('locations_id')) {
 
-               $updates[] = "locations_id";
-               $item->fields['locations_id'] = addslashes($comp->fields['locations_id']);
+               $updates['locations_id'] = addslashes($comp->fields['locations_id']);
                addMessageAfterRedirect($LANG['computers'][48], true);
             }
             if (($CFG_GLPI["is_user_autoupdate"]
@@ -169,12 +168,10 @@ class Computer_Item extends CommonDBRelation{
                     && $comp->fields['groups_id'] != $item->getField('groups_id'))) {
 
                if ($CFG_GLPI["is_user_autoupdate"]) {
-                  $updates[] = "users_id";
-                  $item->fields['users_id'] = $comp->fields['users_id'];
+                  $updates['users_id'] = $comp->fields['users_id'];
                }
                if ($CFG_GLPI["is_group_autoupdate"]) {
-                  $updates[] = "groups_id";
-                  $item->fields['groups_id'] = $comp->fields['groups_id'];
+                  $updates['groups_id'] = $comp->fields['groups_id'];
                }
                addMessageAfterRedirect($LANG['computers'][50],true);
             }
@@ -183,30 +180,27 @@ class Computer_Item extends CommonDBRelation{
                 && ($comp->fields['contact'] != $item->getField('contact')
                     || $comp->fields['contact_num'] != $item->getField('contact_num'))) {
 
-               $updates[] = "contact";
-               $updates[] = "contact_num";
-               $item->fields['contact']     = addslashes($comp->fields['contact']);
-               $item->fields['contact_num'] = addslashes($comp->fields['contact_num']);
+               $updates['contact']     = addslashes($comp->fields['contact']);
+               $updates['contact_num'] = addslashes($comp->fields['contact_num']);
                addMessageAfterRedirect($LANG['computers'][49], true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]<0
                 && $comp->fields['states_id'] != $item->getField('states_id')) {
 
-               $updates[] = "states_id";
-               $item->fields['states_id'] = $comp->fields['states_id'];
+               $updates['states_id'] = $comp->fields['states_id'];
                addMessageAfterRedirect($LANG['computers'][56], true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]>0
                 && $item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"]) {
 
-               $updates[] = "states_id";
-               $item->fields['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
+               $updates['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
             }
 
             if (count($updates)) {
-               $item->updateInDB($updates);
+               $updates['id'] = $input['items_id'];
+               $item->update($updates);
             }
          }
       }
@@ -236,40 +230,34 @@ class Computer_Item extends CommonDBRelation{
                if (!$device->getField('is_global')) {
                   $updates = array();
                   if ($CFG_GLPI["is_location_autoclean"] && $device->isField('locations_id')) {
-                     $updates[] = "locations_id";
-                     $device->fields['locations_id'] = 0;
+                     $updates['locations_id'] = 0;
                   }
                   if ($CFG_GLPI["is_user_autoclean"] && $device->isField('users_id')) {
-                     $updates[] = "users_id";
-                     $device->fields['users_id'] = 0;
+                     $updates['users_id'] = 0;
                   }
                   if ($CFG_GLPI["is_group_autoclean"] && $device->isField('groups_id')) {
-                     $updates[] = "groups_id";
-                     $device->fields['groups_id'] = 0;
+                     $updates['groups_id'] = 0;
                   }
                   if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact')) {
-                     $updates[] = "contact";
-                     $device->fields['contact'] = "";
+                     $updates['contact'] = "";
                   }
                   if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact_num')) {
-                     $updates[] = "contact_num";
-                     $device->fields['contact_num'] = "";
+                     $updates['contact_num'] = "";
                   }
                   if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->isField('states_id')) {
-                     $updates[] = "states_id";
-                     $device->fields['states_id'] = 0;
+                     $updates['states_id'] = 0;
                   }
 
                   if ($CFG_GLPI["state_autoclean_mode"]>0
                       && $device->isField('states_id')
                       && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
 
-                     $updates[] = "states_id";
-                     $device->fields['states_id'] = $CFG_GLPI["state_autoclean_mode"];
+                     $updates['states_id'] = $CFG_GLPI["state_autoclean_mode"];
                   }
 
                   if (count($updates)) {
-                     $device->updateInDB($updates);
+                     $updates['id'] = $this->fields['items_id'];
+                     $device->update($updates);
                   }
                }
 
