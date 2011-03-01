@@ -638,9 +638,9 @@ if (isset($_POST["itemtype"])) {
                      if ($val==1 && $item->can($key,'w')) {
                         // Check if parent is not a child of the original one
                         if (!in_array($parent->getID(),
-                                    getSonsOf($item->getTable(),$item->getID()))) {
+                                      getSonsOf($item->getTable(), $item->getID()))) {
                            $item->update(array('id' => $key,
-                                                $fk  => $_POST['parent']));
+                                               $fk  => $_POST['parent']));
                         }
                      }
                   }

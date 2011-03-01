@@ -285,8 +285,8 @@ class Rule extends CommonDBTM {
     *
     * @param $name dropdown name
     * @param $value default value
-    * @param $restrict may be be self::AND_MATCHING or self::OR_MATCHING 
-    *                   to restrict to it type / false if both displayed
+    * @param $restrict may be self::AND_MATCHING or self::OR_MATCHING
+    *                   to restrict to its type / false if both displayed
    **/
    function dropdownRulesMatch($name, $value='', $restrict=false) {
       global $LANG;
@@ -1330,6 +1330,7 @@ class Rule extends CommonDBTM {
 
                case "dropdown_impact" :
                   return Ticket::getImpactName($pattern);
+
                case "dropdown_tickettype" :
                   return Ticket::getTicketTypeName($pattern);
             }

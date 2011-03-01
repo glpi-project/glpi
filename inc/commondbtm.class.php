@@ -144,17 +144,20 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
+
    /**
     * Get the identifier of the current item
     *
     * @return ID
    **/
    function getID() {
+
       if (isset($this->fields[$this->getIndexName()])) {
          return $this->fields[$this->getIndexName()];
       }
       return -1;
    }
+
 
    /**
     * Actions done at the end of the getFromDB function

@@ -716,7 +716,7 @@ class CronTask extends CommonDBTM{
       $taskname = '';
 
       if (self::get_lock()) {
-         $crontask = new Crontask();
+         $crontask = new self();
          for ($i=1 ; $i<=$max ; $i++) {
             $prefix = ($mode==self::MODE_EXTERNAL ? 'External'
                                                   : 'Internal')." #$i: ";
@@ -734,7 +734,7 @@ class CronTask extends CommonDBTM{
                   if ($crontask->start()) { // Lock in DB + log start
                      $taskname = $crontask->fields['name'];
                      logInFile('cron', $prefix."Launch ".$crontask->fields['name']."\n");
-                     $retcode  = call_user_func($fonction,$crontask);
+                     $retcode = call_user_func($fonction, $crontask);
                      $crontask->end($retcode); // Unlock in DB + log end
                   } else {
                      logInFile('cron', $prefix."Can't start ".$crontask->fields['name']."\n");

@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
       if ($track->can($_POST["id"],'r')) {
          glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
       }
-      addMessageAfterRedirect($LANG['job'][26],true, ERROR);
+      addMessageAfterRedirect($LANG['job'][26], true, ERROR);
       glpi_header($CFG_GLPI["root_doc"]."/front/ticket.php");
    }
 
