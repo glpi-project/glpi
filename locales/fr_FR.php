@@ -434,6 +434,7 @@ $LANG['crontask'][14] = "Clôture automatique des tickets";
 $LANG['crontask'][15] = "Tickets non résolus";
 $LANG['crontask'][16] = "Actions automatiques des SLAs";
 $LANG['crontask'][17] = "Surveillance des actions automatiques";
+$LANG['crontask'][18] = "Génération des enquêtes de satisfaction";
 
 // keep >12 free additionnal task
 $LANG['crontask'][31] = "Désactivée";
