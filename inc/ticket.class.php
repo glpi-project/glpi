@@ -6256,6 +6256,9 @@ class Ticket extends CommonDBTM {
 
          case 'alertnotclosed' :
             return array('description' => $LANG['crontask'][15]);
+
+         case 'createinquest' :
+            return array('description' => $LANG['crontask'][18]);
       }
       return array();
    }
