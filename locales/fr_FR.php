@@ -899,8 +899,7 @@ $LANG['job'][23] = "Rechercher une solution";
 $LANG['job'][24] = "Utiliser comme solution";
 $LANG['job'][25] = "Enregistrer et ajouter à la base de connaissances";
 $LANG['job'][26] = "Vous avez été redirigé car vous n'avez plus accès à ce ticket";
-$LANG['job'][27] = "Mettre en attente";
-$LANG['job'][28] = "Fin de l'attente";
+
 $LANG['job'][29] = "Ajouter un nouveau suivi";
 $LANG['job'][30] = "Ajouter une nouvelle tâche";
 $LANG['job'][31] = "Durée";
@@ -908,7 +907,7 @@ $LANG['job'][32] = "Aucune";
 $LANG['job'][33] = "Description vide";
 $LANG['job'][34] = "Planifier cette tâche";
 $LANG['job'][35] = "Planification";
-$LANG['job'][36] = "si cette réponse permet le traitement de votre demande";
+
 $LANG['job'][37] = "Résumé";
 $LANG['job'][38] = "Ticket";
 $LANG['job'][39] = "Modifier un suivi";
