@@ -965,7 +965,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".$LANG['common'][27]."</th>"; // Date
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
-            echo "<th>".$LANG['joblist'][6]."</th>"; // Dexcription
+            echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 
             do {
@@ -1015,7 +1015,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
-            echo "<th>".$LANG['joblist'][6]."</th>"; // Dexcription
+            echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 
             $first = true;
