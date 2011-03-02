@@ -3103,7 +3103,12 @@ function showNotesForm($target, $itemtype, $id) {
           $item->getField('notepad')."</textarea></td></tr>";
 
    echo "<tr><td class='tab_bg_2 center'>";
-   echo "<input type='hidden' name='id' value=$id>";
+   echo "<input type='hidden' name='id' value='".$item->fields['id']."'>";
+   // for all objects without id as primary key (like entitydata)
+   if ($item->getIndexName() != $id) {
+         echo "<input type='hidden' name='".$item->getIndexName()."' ".
+               "value='".$item->fields[$item->getIndexName()]."'>";
+   }
 
    if ($canedit) {
       echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
