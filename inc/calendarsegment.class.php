@@ -300,6 +300,8 @@ class CalendarSegment extends CommonDBChild {
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['calendar'][6]."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['calendar'][7]."&nbsp;: ";
+         echo "<input type='hidden' name='entities_id' value='".$calendar->fields['entities_id']."'>";
+         echo "<input type='hidden' name='is_recursive' value='".$calendar->fields['is_recursive']."'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', $LANG['calendarDay']);
          echo "</td><td class='center'>".$LANG['buttons'][33]."&nbsp;: ";
