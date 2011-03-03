@@ -3265,7 +3265,7 @@ CREATE TABLE `glpi_profiles` (
   `sla` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rule_dictionnary_printer` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `clean_ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delete_own_followup` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `update_own_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `delete_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entity_helpdesk` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
