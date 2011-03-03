@@ -54,7 +54,14 @@ if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $slalevel->showForSLA($sla);
+         $rule = new RuleTicket();
+         $rule->showAndAddRuleForm($sla);
          Plugin::displayAction($sla, $_REQUEST['glpi_tab']);
+         break;
+
+      case 4:
+         $rule = new RuleTicket();
+         $rule->showAndAddRuleForm($sla);
          break;
 
       default :

@@ -1708,9 +1708,11 @@ class Rule extends CommonDBTM {
    /**
     * Return all rules from database
     *
-    * @param $ID of entity
+    * @param $crit array of criteria (at least, 'field' and 'value')
+    *
+    * @return array of Rule objects
    **/
-   function getRulesForEntity($ID) {
+   function getRulesForCriteria($crit) {
       global $DB;
 
       $rules = array();
@@ -1720,9 +1722,11 @@ class Rule extends CommonDBTM {
                 FROM `glpi_ruleactions`,
                      `glpi_rules`
                 WHERE `glpi_ruleactions`.".$this->rules_id_field." = `glpi_rules`.`id`
-                      AND `glpi_ruleactions`.`field` = 'entities_id'
-                      AND `glpi_rules`.`sub_type` = '".get_class($this)."'
-                      AND `glpi_ruleactions`.`value` = '$ID'";
+                      AND `glpi_rules`.`sub_type` = '".get_class($this)."'";
+
+      foreach ($crit as $field => $value) {
+         $query .= " AND `glpi_ruleactions`.`$field` = '$value'";
+      }
 
       foreach ($DB->request($query) as $rule) {
          $affect_rule = new Rule;
@@ -1759,17 +1763,20 @@ class Rule extends CommonDBTM {
    }
 
 
-   function showAndAddRuleForm($ID) {
+   function showAndAddRuleForm($item) {
       global $LANG;
 
       $canedit = haveRight($this->right, "w");
 
-      if ($canedit) {
-         $this->showNewRuleForm($ID);
+      if ($canedit && $item->getType()=='Entity') {
+         $this->showNewRuleForm($item->getField('id'));
       }
 
          //Get all rules and actions
-      $rules = $this->getRulesForEntity($ID);
+      $crit = array('field' => getForeignKeyFieldForTable($item->getTable()),
+                    'value' => $item->getField('id'));
+
+      $rules = $this->getRulesForCriteria($crit);
 
       echo "<div class='spaced'>";
 
@@ -1781,7 +1788,8 @@ class Rule extends CommonDBTM {
 
       } else {
          if ($canedit) {
-            echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' ".
+            $formname = $item->getType()."_".$this->getType()."_form";
+            echo "\n<form name='$formname' id='$formname' method='post' ".
                    "action='".getItemTypeSearchURL(get_class($this))."'>";
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
@@ -1793,9 +1801,7 @@ class Rule extends CommonDBTM {
          echo "<th>" . $LANG['joblist'][6] . "</th>";
          echo "<th>" . $LANG['common'][60] . "</th>";
          echo "</tr>\n";
-         initNavigateListItems(get_class($this),
-                               $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",
-                                                                                $ID));
+         initNavigateListItems(get_class($this), $item->getTypeName()."=".$item->getName());
 
          foreach ($rules as $rule) {
             addToNavigateListItems(get_class($this), $rule->fields["id"]);
@@ -1819,7 +1825,7 @@ class Rule extends CommonDBTM {
          echo "</table>\n";
 
          if ($canedit) {
-            openArrowMassive("entityaffectation_form", true);
+            openArrowMassive($formname, true);
             echo "<input type='hidden' name='action' value='delete'>";
             closeArrowMassive('massiveaction', $LANG['buttons'][6]);
             echo "</form>";
