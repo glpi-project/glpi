@@ -976,8 +976,8 @@ class Ticket extends CommonDBTM {
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
             $sla->addLevelToDo($this);
-         } else {
 
+         } else {
             // Compute ticket waiting time use calendar if exists
             $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
             $calendar     = new Calendar();
@@ -987,17 +987,23 @@ class Ticket extends CommonDBTM {
             if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
                $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
-               // compute new due date using calendar
-               $this->updates[]          = "due_date";
-               $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
-                                                                     $delay_time);
+               if ($this->fields['due_date'] > 0) {
+                  // compute new due date using calendar
+                  $this->updates[]          = "due_date";
+                  $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
+                                                                        $delay_time);
+               }
+
             } else { // Not calendar defined
                $delay_time = strtotime($_SESSION["glpi_currenttime"])
                              -strtotime($this->fields['begin_waiting_date']);
-               // compute new due date : no calendar so add computed delay_time
-               $this->updates[]          = "due_date";
-               $this->fields['due_date'] = date('Y-m-d H:i:s',
-                                                $delay_time+strtotime($this->fields['due_date']));
+
+               if ($this->fields['due_date'] > 0) {
+                  // compute new due date : no calendar so add computed delay_time
+                  $this->updates[]          = "due_date";
+                  $this->fields['due_date'] = date('Y-m-d H:i:s',
+                                                   $delay_time+strtotime($this->fields['due_date']));
+               }
             }
          }
 
