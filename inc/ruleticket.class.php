@@ -44,6 +44,13 @@ class RuleTicket extends Rule {
    public $can_sort = true;
 
 
+   function getTitle() {
+      global $LANG;
+
+      return $LANG['rulesengine'][28];
+   }
+
+
    function canCreate() {
       return haveRight('entity_rule_ticket', 'w');
    }

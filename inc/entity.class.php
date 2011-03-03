@@ -142,14 +142,14 @@ class Entity extends CommonTreeDropdown {
                $this->showChildren($ID);
                EntityData::showStandardOptions($this);
                Profile_User::showForEntity($this);
-               $ocsrule       = new RuleOcs;
-               $ldaprule      = new RuleRight;
-               $mailcollector = new RuleMailCollector;
-               $ldaprule->showAndAddRuleForm($_POST["id"]);
+               $ldaprule      = new RuleRight();
+               $ldaprule->showAndAddRuleForm($this);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule->showAndAddRuleForm($_POST["id"]);
+                  $ocsrule    = new RuleOcs();
+                  $ocsrule->showAndAddRuleForm($this);
                }
-               $mailcollector->showAndAddRuleForm($_POST["id"]);
+               $mailcollector = new RuleMailCollector();
+               $mailcollector->showAndAddRuleForm($this);
                Document::showAssociated($this);
                EntityData::showNotificationOptions($this);
                EntityData::showHelpdeskOptions($this);
@@ -166,14 +166,14 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 4 :
-               $ocsrule       = new RuleOcs;
-               $ldaprule      = new RuleRight;
-               $mailcollector = new RuleMailCollector;
-               $ldaprule->showAndAddRuleForm($_POST["id"]);
+               $ldaprule      = new RuleRight();
+               $ldaprule->showAndAddRuleForm($this);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule->showAndAddRuleForm($_POST["id"]);
+                  $ocsrule       = new RuleOcs();
+                  $ocsrule->showAndAddRuleForm($this);
                }
-               $mailcollector->showAndAddRuleForm($_POST["id"]);
+               $mailcollector = new RuleMailCollector();
+               $mailcollector->showAndAddRuleForm($this);
                break;
 
             case 5 :
