@@ -521,25 +521,27 @@ function update0782to080($output='HTML') {
    // For real count : copy template and deleted informations
    $migration->addField("glpi_computers_softwareversions", "is_deleted",
                         "tinyint(1) NOT NULL DEFAULT 0");
-   $migration->addField("glpi_computers_softwareversions", "is_template",
-                        "tinyint(1) NOT NULL DEFAULT 0");
-   $migration->migrationOneTable('glpi_computers_softwareversions');
+   // Gain de temps pour les beta-testeurs
+   if ($migration->addField("glpi_computers_softwareversions", "is_template",
+                            "tinyint(1) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_computers_softwareversions');
 
-   // Update datas
-   $query = "SELECT DISTINCT `computers_id`
-             FROM `glpi_computers_softwareversions`";
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result)) {
-         include_once (GLPI_ROOT . "/inc/computer.class.php");
+      // Update datas
+      $query = "SELECT DISTINCT `computers_id`
+                FROM `glpi_computers_softwareversions`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            include_once (GLPI_ROOT . "/inc/computer.class.php");
 
-         while ($data = $DB->fetch_assoc($result)) {
-            $comp = new Computer();
-            if ($comp->getFromDB($data['computers_id'])) {
-               $query = "UPDATE `glpi_computers_softwareversions`
-                         SET `is_template` = '".$comp->getField('is_template')."',
-                             `is_deleted` = '".$comp->getField('is_deleted')."'
-                         WHERE `computers_id` = '".$data['computers_id']."';";
-               $DB->query($query);
+            while ($data = $DB->fetch_assoc($result)) {
+               $comp = new Computer();
+               if ($comp->getFromDB($data['computers_id'])) {
+                  $query = "UPDATE `glpi_computers_softwareversions`
+                            SET `is_template` = '".$comp->getField('is_template')."',
+                                `is_deleted` = '".$comp->getField('is_deleted')."'
+                            WHERE `computers_id` = '".$data['computers_id']."';";
+                  $DB->query($query);
+               }
             }
          }
       }
@@ -1410,6 +1412,9 @@ function update0782to080($output='HTML') {
 
    $migration->addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','1'," WHERE `update_followups` = 1");
    $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
+
+   //Pour les beta-testeurs
+   $migration->dropField('glpi_configs', 'ocs_deleted_behavior');
 
    $migration->addField('glpi_ocsservers', 'deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
 
