@@ -44,7 +44,7 @@ class Profile extends CommonDBTM {
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('add_followups', 'create_ticket', 'create_validation',
-                                          'delete_own_followup', 'faq', 'helpdesk_hardware',
+                                          'update_own_followups', 'faq', 'helpdesk_hardware',
                                           'helpdesk_item_type', 'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
                                           'show_group_hardware', 'show_group_ticket',
@@ -438,7 +438,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("delete_own_followup", $this->fields["delete_own_followup"]);
+      Dropdown::showYesNo("update_own_followups", $this->fields["update_own_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -723,24 +723,22 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
+      echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;</td><td>&nbsp;</td>";
-      echo "<td colspan='2'></td>";
-      echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
+      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("update_own_followups", $this->fields["update_own_followups"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
       echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
-      echo "</td>";
-      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("delete_own_followup", $this->fields["delete_own_followup"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][51]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
@@ -1451,7 +1449,7 @@ class Profile extends CommonDBTM {
       $tab[79]['datatype'] = 'bool';
 
       $tab[80]['table']    = $this->getTable();
-      $tab[80]['field']    = 'delete_own_followup';
+      $tab[80]['field']    = 'update_own_followups';
       $tab[80]['name']     = $LANG['profiles'][50];
       $tab[80]['datatype'] = 'bool';
 

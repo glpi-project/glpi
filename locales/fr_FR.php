@@ -1623,7 +1623,7 @@ $LANG['profiles'][46] = "Éditer toutes les tâches";
 $LANG['profiles'][47] = "Ajout d'utilisateurs depuis une source externe";
 $LANG['profiles'][48] = "Faire une demande de validation de ticket";
 $LANG['profiles'][49] = "Valider un ticket";
-$LANG['profiles'][50] = "Supprimer mon dernier suivi";
+$LANG['profiles'][50] = "Modifier mes suivis";
 $LANG['profiles'][51] = "Supprimer tous les suivis";
 
 $LANG['registry'][1] = "Ruche";

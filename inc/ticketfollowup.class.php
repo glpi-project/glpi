@@ -80,8 +80,7 @@ class TicketFollowup  extends CommonDBTM {
 
    function canDelete() {
 
-      return (haveRight('delete_followups', 1)
-              || haveRight('delete_own_followup',1));
+      return (haveRight('delete_followups', 1));
    }
 
 
@@ -101,11 +100,6 @@ class TicketFollowup  extends CommonDBTM {
          return true;
       }
 
-      if ($this->fields["users_id"] === getLoginUserID()
-          && haveRight('delete_own_followup',1)
-          && !$ticket->numberOfFollowups(1, $this->fields["id"])) {
-            return true;
-      }
       return false;
    }
 
@@ -165,8 +159,13 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
+      if ($this->fields["users_id"]===getLoginUserID()
+          && haveRight('update_own_followups',1)) {
+            return true;
+
+      }
       // Only the technician
-      return (haveRight("global_add_followups","1")
+      return (haveRight("update_followups","1")
               || $ticket->isUser(Ticket::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups'])));
