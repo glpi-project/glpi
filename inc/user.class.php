@@ -526,10 +526,14 @@ class User extends CommonDBTM {
    function applyRightRules() {
       global $DB;
 
+      $return = false;
+
       if (isset($this->fields["authtype"])
           && ($this->fields["authtype"] == Auth::LDAP
               || $this->fields["authtype"] == Auth::MAIL
               || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
+
+         $dynamic_profiles = Profile_User::getForUser($this->fields["id"],true);
 
          if (isset($this->fields["id"])
              && $this->fields["id"] > 0
@@ -555,7 +559,6 @@ class User extends CommonDBTM {
                $rights = array();
             }
 
-            $dynamic_profiles = Profile_User::getForUser($this->fields["id"],true);
             $retrieved_dynamic_profiles = array();
 
             //For each affectation -> write it in DB
@@ -630,21 +633,23 @@ class User extends CommonDBTM {
                   $right->add($retr_profile);
                }
             }
-            // Delete old dynamic profiles
-            if (count($dynamic_profiles)) {
-               $right = new Profile_User();
-               foreach ($dynamic_profiles as $keydb => $db_profile) {
-                  $right->delete($db_profile);
-               }
-            }
 
             //Unset all the temporary tables
             unset($this->input["_ldap_rules"]);
 
-            return true;
+            $return = true;
          }
+
+         // Delete old dynamic profiles
+         if (count($dynamic_profiles)) {
+            $right = new Profile_User();
+            foreach ($dynamic_profiles as $keydb => $db_profile) {
+               $right->delete($db_profile);
+            }
+         }
+
       }
-      return false;
+      return $return;
    }
 
 
