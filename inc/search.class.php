@@ -3835,6 +3835,9 @@ class Search {
          case 'glpi_ticketsatisfactions.type' :
             return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
 
+         case 'glpi_ticketsatisfactions.satisfaction' :
+            return TicketSatisfaction::displaySatisfaction($data[$NAME.$num]);
+
          case 'glpi_notimportedemails.reason' :
             return NotImportedEmail::getReason($data[$NAME.$num]);
 
