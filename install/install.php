@@ -175,6 +175,7 @@ function step1($update) {
       case 0 :
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
+         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
          echo "</p></form>";
@@ -185,11 +186,13 @@ function step1($update) {
          echo "<form action='install.php' method='post'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
+         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
          echo "</p></form> &nbsp;&nbsp;";
 
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
+         echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
          echo "</p></form>";
