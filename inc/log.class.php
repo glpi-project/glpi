@@ -345,6 +345,10 @@ class Log extends CommonDBTM {
          if ($data["linked_action"]) {
             // Yes it is an internal device
             switch ($data["linked_action"]) {
+               case HISTORY_CREATE_ITEM :
+                  $tmp['change'] = $LANG['log'][20];
+                  break;
+
                case HISTORY_DELETE_ITEM :
                   $tmp['change'] = $LANG['log'][22];
                   break;
