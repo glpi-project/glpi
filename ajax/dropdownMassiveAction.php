@@ -112,6 +112,22 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          TicketTask::showFormMassiveAction();
          break;
 
+      case "add_actor" :
+         $types = array(0                 => DROPDOWN_EMPTY_VALUE,
+                        Ticket::REQUESTER => $LANG['job'][4],
+                        Ticket::OBSERVER  => $LANG['common'][104],
+                        Ticket::ASSIGN    => $LANG['job'][5]);
+         $rand = Dropdown::showFromArray('actortype', $types);
+
+         $paramsmassaction = array('actortype' => '__VALUE__');
+
+         ajaxUpdateItemOnSelectEvent("dropdown_actortype$rand", "show_massiveaction_field",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAddActor.php",
+                                     $paramsmassaction);
+         echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+
+         break;
+
       case "submit_validation" :
          TicketValidation::showFormMassiveAction();
          break;

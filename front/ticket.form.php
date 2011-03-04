@@ -40,6 +40,7 @@ checkLoginUser();
 $fup   = new TicketFollowup();
 $track = new Ticket();
 
+
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
