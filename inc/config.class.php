@@ -872,6 +872,9 @@ class Config extends CommonDBTM {
       loadLanguage('en_GB');
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
+
+      checkWriteAccessToDirs(true);
+
       echo "\n</pre></td></tr>";
 
       echo "<tr><th>" . $LANG['common'][52] . "</th></tr>\n";
@@ -912,11 +915,15 @@ class Config extends CommonDBTM {
       }
       echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
 
+
+
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
          $tmp = new $type;
          $tmp->showSystemInformations($width);
       }
       loadLanguage($oldlang);
+
+
 
       echo "\n</pre></td></tr>";
 
