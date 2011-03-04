@@ -2070,7 +2070,7 @@ function generate_entity($ID_entity) {
                         '".mt_rand(1,$MAX['model'])."', '".mt_rand(1,$MAX['type_computers'])."','0',
                         '', '".mt_rand(1,$MAX['manufacturer'])."', '0', 'note computer $i', '0',
                         '".$userID."', '".$groupID."',
-                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
+                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $compID = $DB->insert_id();
