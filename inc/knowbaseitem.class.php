@@ -285,6 +285,9 @@ class KnowbaseItem extends CommonDBTM {
       $DB->query("UPDATE `".$this->getTable()."`
                   SET `is_faq` = '1'
                   WHERE `id` = '".$this->fields['id']."'");
+      if (isset($_SESSION['glpi_faqcategories'])) {
+         unset($_SESSION['glpi_faqcategories']);
+      }
    }
 
 
@@ -299,6 +302,10 @@ class KnowbaseItem extends CommonDBTM {
       $DB->query("UPDATE `".$this->getTable()."`
                   SET `is_faq` = '0'
                   WHERE `id` = '".$this->fields['id']."'");
+      if (isset($_SESSION['glpi_faqcategories'])) {
+         unset($_SESSION['glpi_faqcategories']);
+      }
+
    }
 
 
