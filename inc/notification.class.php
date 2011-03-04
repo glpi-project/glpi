@@ -150,9 +150,15 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td>";
       echo "<td>";
-      $rand = Dropdown::dropdownTypes("itemtype",
-                                      ($this->fields['itemtype']!=''?$this->fields['itemtype']:''),
-                                       $CFG_GLPI["notificationtemplates_types"]);
+      if (haveRight('config', 'w') && $this->getEntityID() == 0) {
+         $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
+                                         $CFG_GLPI["notificationtemplates_types"]);
+      } else {
+         $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
+                                         array_diff($CFG_GLPI["notificationtemplates_types"],
+                                                    array('Crontask', 'DBConnection')));
+
+      }
 
       $params = array('itemtype' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
