@@ -724,7 +724,7 @@ class Auth {
       global $LANG, $DB;
 
       $p['name']  = 'auths_id';
-      $p['value'] = self::DB_GLPI;
+      $p['value'] = 0;
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
