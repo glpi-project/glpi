@@ -2048,7 +2048,8 @@ class CommonDBTM extends CommonGLPI {
       if ($this->maybeRecursive()) {
          return $this->fields["is_recursive"];
       }
-      return false;
+      // Return integer value to be used to fill is_recursive field
+      return 0;
    }
 
 
@@ -2076,7 +2077,9 @@ class CommonDBTM extends CommonGLPI {
       if ($this->maybeDeleted()) {
          return $this->fields["is_deleted"];
       }
-      return false;
+      // Return integer value to be used to fill is_deleted field
+      return 0;
+
    }
 
 
@@ -2104,7 +2107,8 @@ class CommonDBTM extends CommonGLPI {
       if ($this->maybeTemplate()) {
          return $this->fields["is_template"];
       }
-      return false;
+      // Return integer value to be used to fill is_template field
+      return 0;
    }
 
 
