@@ -3623,11 +3623,12 @@ class Ticket extends CommonDBTM {
     *
     * @param $type string : actor type
     * @param $rand_type integer rand value of div to use
+    * @param $entities_id integer entity ID
     * @param $inticket boolean display in ticket ?
     *
     * @return nothing display
    **/
-   function showActorAddForm($type,$rand_type,$inticket=true) {
+   static function showActorAddForm($type,$rand_type,$entities_id,$inticket=true) {
       global $LANG,$CFG_GLPI;
 
       switch ($type) {
@@ -3640,6 +3641,9 @@ class Ticket extends CommonDBTM {
          case self::ASSIGN :
             $typename = 'assign';
             break;
+         default :
+            return false;
+            break;
       }
 
 
@@ -3650,7 +3654,7 @@ class Ticket extends CommonDBTM {
       $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                         'actortype'       => $typename,
-                        'entity_restrict' => $this->fields['entities_id']);
+                        'entity_restrict' => $entities_id);
 
       ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$typename."[_type]$rand",
                                     "showticket".$typename."_$rand",
@@ -3683,6 +3687,9 @@ class Ticket extends CommonDBTM {
             break;
          case self::ASSIGN :
             $typename = 'assign';
+            break;
+         default :
+            return false;
             break;
       }
       echo self::getActorIcon('user', $type)."&nbsp;";
@@ -3782,7 +3789,7 @@ class Ticket extends CommonDBTM {
       echo "<td>";
 
       if ($rand_requester_ticket>=0) {
-         $this->showActorAddForm(self::REQUESTER,$rand_requester_ticket);
+         self::showActorAddForm(self::REQUESTER,$rand_requester_ticket,$this->fields['entities_id']);
       }
 
       // Requester
@@ -3824,7 +3831,7 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_observer_ticket>=0) {
-         $this->showActorAddForm(self::OBSERVER,$rand_observer_ticket);
+         self::showActorAddForm(self::OBSERVER,$rand_observer_ticket,$this->fields['entities_id']);
       }
 
       // Observer
@@ -3851,7 +3858,7 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign_ticket>=0) {
-         $this->showActorAddForm(self::ASSIGN,$rand_assign_ticket);
+         self::showActorAddForm(self::ASSIGN,$rand_assign_ticket,$this->fields['entities_id']);
       }
 
       // Assign User

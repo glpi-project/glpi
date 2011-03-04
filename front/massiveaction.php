@@ -596,7 +596,7 @@ if (isset($_POST["itemtype"])) {
                if ($val == 1) {
                   $input = array('id'     => $key,
                                  'status' => $_POST['status']);
-                  if ($valid->can(-1,'w',$input)) {
+                  if ($valid->can($key,'w')) {
                      $valid->update($input);
                   }
                }
@@ -616,7 +616,26 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
-
+         case "add_actor" :
+            $ticket = new Ticket();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input = array('id'        => $key);
+                  if (isset($_POST['_ticket_requester'])) {
+                     $input['_ticket_requester'] = $_POST['_ticket_requester'];
+                  }
+                  if (isset($_POST['_ticket_observer'])) {
+                     $input['_ticket_observer'] = $_POST['_ticket_observer'];
+                  }
+                  if (isset($_POST['_ticket_assign'])) {
+                     $input['_ticket_assign'] = $_POST['_ticket_assign'];
+                  }
+                  if ($ticket->can($key,'w')) {
+                     $ticket->update($input);
+                  }
+               }
+            }
+            break;
          case 'reset' :
             if ($_POST["itemtype"] == 'CronTask') {
                checkRight('config','w');
