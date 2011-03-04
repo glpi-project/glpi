@@ -704,7 +704,9 @@ class Ticket extends CommonDBTM {
 
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
-      $docadded = $this->addFiles($input["id"]);
+      if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
+         $docadded = $this->addFiles($input["id"]);
+      }
       /*
       if (count($docadded)>0) {
          $input["date_mod"]=$_SESSION["glpi_currenttime"];

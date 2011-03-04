@@ -69,6 +69,16 @@ class Document_Item extends CommonDBRelation{
       return $input;
    }
 
+   function post_addItem() {
+      if ($this->fields['itemtype'] == 'Ticket') {
+         $ticket = new Ticket();
+         $ticket->update(array('id'          => $this->fields['items_id'],
+                              'date_mod'     => $_SESSION["glpi_currenttime"],
+                              '_forcenotif'  => true,
+                              '_donotadddocs' => true));
+      }
+   }
+
 
    static function countForItem(CommonDBTM $item) {
 
