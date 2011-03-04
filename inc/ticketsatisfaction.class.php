@@ -183,11 +183,14 @@ class TicketSatisfaction extends CommonDBTM {
       if ($value>5) {
          $value = 5;
       }
-      echo '<div style="width: 81px;"  class="x-starslider x-starslider-horz">';
-      echo '<div  class="x-starslider-end">';
-      echo '<div style="width: 81px;" class="x-starslider-inner">';
-      echo "<div style='width: ".intval($value*16)."px;' class='x-starslider-thumb'>";
-      echo '</div></div></div></div>';
+      $out = '<div style="width: 81px;"  class="x-starslider-horz">';
+      $out .= '<div  class="x-starslider-end">';
+      $out .= '<div style="width: 81px;" class="x-starslider-inner">';
+      $out .= "<div style='width: ".intval($value*16)."px;' class='x-starslider-thumb'>";
+      // display for export
+      $out .= '<span class="invisible">'.$value.'</span>';
+      $out .= '</div></div></div></div>';
+      return $out;
    }
 
 
