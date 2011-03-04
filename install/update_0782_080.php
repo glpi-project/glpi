@@ -1521,6 +1521,71 @@ function update0782to080($output='HTML') {
    $migration->addField('glpi_profiles', 'entity_helpdesk',
                         'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`notification`');
 
+   //
+   $migration->addField('glpi_computers','uuid',
+                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL');
+
+   $migration->addField('glpi_ocsservers','import_vms',
+                        'TINYINT( 1 ) NOT NULL DEFAULT  0');
+
+   $migration->addField('glpi_ocsservers','import_general_uuid',
+                        'TINYINT( 1 ) NOT NULL DEFAULT  0');
+
+   $migration->addField('glpi_ocslinks','import_vm',
+                        'LONGTEXT COLLATE utf8_unicode_ci DEFAULT NULL');
+                        
+   if (!TableExists('glpi_virtualmachinetypes')) {
+      $query = "CREATE TABLE  `glpi_virtualmachinetypes` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  `comment` TEXT NOT NULL ,
+                  PRIMARY KEY (  `id` )
+                  ) ENGINE = MYISAM ;";
+                  
+      $DB->query($query)
+      or die("0.80 add new table glpi_virtualmachinetypes ".$LANG['update'][90] .$DB->error());
+   }
+
+   if (!TableExists('glpi_virtualmachinesystems')) {
+      $query = "CREATE TABLE  `glpi_virtualmachinesystems` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  `comment` TEXT NOT NULL ,
+                  PRIMARY KEY (  `id` )
+                  ) ENGINE = MYISAM ;";
+                  
+      $DB->query($query)
+      or die("0.80 add new table glpi_virtualmachinesystems ".$LANG['update'][90] .$DB->error());
+   }
+
+   if (!TableExists('glpi_virtualmachinestates')) {
+      $query = "CREATE TABLE  `glpi_virtualmachinestates` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  `comment` TEXT NOT NULL ,
+                  PRIMARY KEY (  `id` )
+                  ) ENGINE = MYISAM ;";
+                  
+      $DB->query($query)
+      or die("0.80 add new table glpi_virtualmachinestates ".$LANG['update'][90] .$DB->error());
+   }
+   if (!TableExists('glpi_computervirtualmachines')) {
+      $query = "CREATE TABLE  `glpi_computervirtualmachines` (
+                  `id` INT NOT NULL AUTO_INCREMENT ,
+                  `entities_id` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `computers_id` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `name` VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  `virtualmachinestates_id` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `virtualmachinesystems_id` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `virtualmachinetypes_id` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `uuid` VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  `vcpu` INT( 11 ) NOT NULL DEFAULT  '0',
+                  `ram` VARCHAR( 255 ) COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                  PRIMARY KEY (  `id` )
+                  ) ENGINE = MYISAM ;";
+      $DB->query($query)
+      or die("0.80 add new table glpi_computervirtualmachines ".$LANG['update'][90] .$DB->error());
+   }
    // must always be at the end
    $migration->executeMigration();
 

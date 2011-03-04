@@ -369,8 +369,18 @@ $LANG['computers'][51] = "Source de mise à jour";
 $LANG['computers'][52] = "Version du système d'exploitation";
 $LANG['computers'][53] = "Service pack";
 $LANG['computers'][54] = "Pas de téléphone connecté";
-
+$LANG['computers'][55] = "Ajouter une machine virtuelle";
 $LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
+$LANG['computers'][57] = "Machine virtuelle";
+$LANG['computers'][58] = "UUID";
+$LANG['computers'][59] = "Aucune machine virtuelle associée à l'ordinateur";
+$LANG['computers'][60] = "Modèle virtualisation";
+$LANG['computers'][61] = "Nombre de processeurs";
+$LANG['computers'][62] = "Système de virtualisation";
+$LANG['computers'][63] = "Etat de la machine virtuelle";
+$LANG['computers'][64] = "Machine";
+$LANG['computers'][65] = "Liste des machines hôtes";
+$LANG['computers'][66] = "Liste des machines virtuelles";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";

@@ -59,24 +59,25 @@ class OcsServer extends CommonDBTM {
    const IMPORT_TAG_078  = '_version_078_';
 
    // Class constants - OCSNG Flags on Checksum
-   const HARDWARE_FL    = 0;
-   const BIOS_FL        = 1;
-   const MEMORIES_FL    = 2;
+   const HARDWARE_FL          = 0;
+   const BIOS_FL              = 1;
+   const MEMORIES_FL          = 2;
    // not used const SLOTS_FL       = 3;
-   const REGISTRY_FL    = 4;
+   const REGISTRY_FL          = 4;
    // not used const CONTROLLERS_FL = 5;
-   const MONITORS_FL    = 6;
-   const PORTS_FL       = 7;
-   const STORAGES_FL    = 8;
-   const DRIVES_FL      = 9;
-   const INPUTS_FL      = 10;
-   const MODEMS_FL      = 11;
-   const NETWORKS_FL    = 12;
-   const PRINTERS_FL    = 13;
-   const SOUNDS_FL      = 14;
-   const VIDEOS_FL      = 15;
-   const SOFTWARES_FL   = 16;
-   const MAX_CHECKSUM   = 131071;
+   const MONITORS_FL          = 6;
+   const PORTS_FL             = 7;
+   const STORAGES_FL          = 8;
+   const DRIVES_FL            = 9;
+   const INPUTS_FL            = 10;
+   const MODEMS_FL            = 11;
+   const NETWORKS_FL          = 12;
+   const PRINTERS_FL          = 13;
+   const SOUNDS_FL            = 14;
+   const VIDEOS_FL            = 15;
+   const SOFTWARES_FL         = 16;
+   const VIRTUALMACHINES_FL   = 17;
+   const MAX_CHECKSUM         = 262143;
 
    // Class constants - Update result
    const COMPUTER_IMPORTED       = 0; //Computer is imported in GLPI
@@ -238,6 +239,10 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['networking'][14] . " </td>\n<td>";
       Dropdown::showYesNo("import_ip", $this->fields["import_ip"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][58] . " </td>\n<td>";
+      Dropdown::showYesNo("import_general_uuid", $this->fields["import_general_uuid"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>&nbsp;</td></tr>";
@@ -423,6 +428,10 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][41] . " </td>\n<td>";
       Dropdown::showYesNo("import_registry", $this->fields["import_registry"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][57] . " </td>\n<td>";
+      Dropdown::showYesNo("import_vms", $this->fields["import_vms"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
@@ -689,6 +698,10 @@ class OcsServer extends CommonDBTM {
           || $this->fields["import_general_serial"]) {
 
          $checksum |= pow(2,self::BIOS_FL);
+      }
+
+      if ($this->fields["import_general_uuid"]) {
+         $checksum |= pow(2,self::VIRTUALMACHINES_FL);
       }
 
       $this->updates[] = "checksum";
@@ -1750,6 +1763,13 @@ class OcsServer extends CommonDBTM {
                                        $cfg_ocs);
                }
 
+               if ($mixed_checksum & pow(2, self::VIRTUALMACHINES_FL)) {
+                  // Get import vm
+                  $import_vm = importArrayFromDB($line["import_vm"]);
+                  OcsServer::updateVirtualMachines($line['computers_id'], $line['ocsid'], 
+                                                   $ocsservers_id, $cfg_ocs, $import_vm, $dohistory);
+               }
+
                // Update OCS Cheksum
                $query_ocs = "UPDATE `hardware`
                              SET `CHECKSUM` = (CHECKSUM - $mixed_checksum)
@@ -1900,6 +1920,12 @@ class OcsServer extends CommonDBTM {
             }
             $compupdate["comment"] .= "Swap: " . $line["SWAP"];
          }
+
+         if ($options['cfg_ocs']["import_general_uuid"]
+             && !in_array("uuid", $options['computers_updates'])) {
+            $compupdate["uuid"] = $line["UUID"];
+         }
+         
          return array('logHistory'=>$logHistory,'fields'=>$compupdate);
       }
    }
@@ -4437,6 +4463,57 @@ class OcsServer extends CommonDBTM {
    }
 
 
+   static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_vm,
+                              $dohistory) {
+      global $DBocs;
+
+      OcsServer::checkOCSconnection($ocsservers_id);
+
+      //Get vms for this host
+      $query = "SELECT *
+                FROM `virtualmachines`
+                WHERE `HARDWARE_ID` = '$ocsid'";
+      $result = $DBocs->query($query);
+
+      $virtualmachine = new ComputerVirtualMachine();
+      if ($DBocs->numrows($result) > 0) {
+         while ($line = $DBocs->fetch_array($result)) {
+            $line = clean_cross_side_scripting_deep(addslashes_deep($line));
+            $vm['name'] = $line['NAME'];
+            $vm['vcpu'] = $line['VCPU'];
+            $vm['ram']  = $line['MEMORY'];
+            $vm['uuid'] = $line['UUID'];
+            $vm['computers_id'] = $computers_id;
+            
+            $vm['virtualmachinestates_id'] = Dropdown::importExternal('VirtualMachineState',
+                                                                      $line['STATUS']);
+            $vm['virtualmachinetypes_id'] = Dropdown::importExternal('VirtualMachineType',
+                                                                     $line['VMTYPE']);
+            $vm['virtualmachinesystems_id'] = Dropdown::importExternal('VirtualMachineType',
+                                                                     $line['SUBSYSTEM']);
+
+            if (!in_array(stripslashes($line["ID"]), $import_vm)) {
+               $virtualmachine->reset();
+               if (!$dohistory) {
+                  $vm['_no_history'] = true;
+               }
+               $id_vm = $virtualmachine->add($vm);
+               if ($id_vm) {
+                  OcsServer::addToOcsArray($computers_id, array($id_vm => $line['ID']),
+                                           "import_vm");
+               }
+            } else {
+               $id = array_search(stripslashes($line["ID"]), $import_vm);
+               if ($virtualmachine->getFromDB($id)) {
+                   $vm['id'] = $id;
+                   $virtualmachine->update($vm);
+               }
+               unset ($import_vm[$id]);
+            }
+         }
+      }
+   }
+   
    /**
     * Update config of a new software
     *
@@ -4482,7 +4559,7 @@ class OcsServer extends CommonDBTM {
                                                               'fuseblk', 'fusefs', 'hfs', 'jfs',
                                                               'jfs2', 'Journaled HFS+', 'nfs',
                                                               'smbfs', 'reiserfs','VxFS', 'ufs',
-                                                              'xfs', 'zfs'))) {
+                                                              'xfs', 'zfs','vmfs'))) {
                   // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint'] = $line['VOLUMN'];
                   $disk['device']     = $line['TYPE'];
