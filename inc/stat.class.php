@@ -221,6 +221,19 @@ class Stat {
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
+
+            //open satisfaction
+            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1, $date2, $type,
+                                                    $value[$i]["id"], $value2);
+            $nb_opensatisfaction = array_sum($opensatisfaction);
+            $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
+
+            //answer satisfaction
+//             $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction", $date1, $date2, $type,
+//                                                     $value[$i]["id"], $value2);
+//             $nb_answersatisfaction = array_sum($answersatisfaction);
+//             $export_data['opensatisfaction'][$value[$i]['link']] = $nb_answersatisfaction;
+
          }
       }
       return $export_data;
@@ -255,33 +268,57 @@ class Stat {
          }
 
          echo Search::showHeader($output_type, $end_display-$start+1, $nbcols);
+
+
+         if ($output_type==HTML_OUTPUT) { // HTML display
+            echo Search::showNewLine($output_type);
+            $header_num = 1;
+
+            echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+            echo Search::showHeaderItem($output_type, "", $header_num);
+
+            echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num,'',0,'',"colspan=4");
+            echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num,'',0,'',"colspan=3");
+            echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num,'',0,'',"colspan=3");
+            echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num,'',0,'',"colspan=2");
+         }
+
+
          echo Search::showNewLine($output_type);
          $header_num = 1;
-
-         echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
-         if ($output_type==HTML_OUTPUT) { // HTML display
-            echo Search::showHeaderItem($output_type, "", $header_num);
-         }
-         echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num,'',0,'',"colspan=4");
-         echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num,'',0,'',"colspan=3");
-         echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num,'',0,'',"colspan=2");
-
-         echo Search::showNewLine($output_type);
+         $header_to_add='';
          echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
 
          if ($output_type==HTML_OUTPUT) { // HTML display
             echo Search::showHeaderItem($output_type, "", $header_num);
          }
+         if ($output_type!=HTML_OUTPUT) { 
+            $header_to_add = $LANG['stats'][13].' - ';
+         }
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][14], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][15], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][17], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
-         echo Search::showHeaderItem($output_type, $LANG['job'][14], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['job'][15], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['job'][17], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['job'][16], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['stats'][12], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['stats'][9], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['stats'][10], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['common'][107], $header_num);
-         echo Search::showHeaderItem($output_type, $LANG['common'][33], $header_num);
+         if ($output_type!=HTML_OUTPUT) { 
+            $header_to_add = $LANG['satisfaction'][0].' - ';
+         }
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
+
+         if ($output_type!=HTML_OUTPUT) { 
+            $header_to_add = $LANG['stats'][8].' - ';
+         }
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
+
+         if ($output_type!=HTML_OUTPUT) { 
+            $header_to_add = $LANG['stats'][26].' - ';
+         }
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][33], $header_num);
          // End Line for column headers
          echo Search::showEndLine($output_type);
          $row_num = 1;
@@ -309,38 +346,70 @@ class Stat {
                                                     $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
-            $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
             //le nombre d'intervention resolues - the number of resolved intervention
             $solved    = self::constructEntryValues("inter_solved", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
+            if ($nb_opened>0 && $nb_solved >0) {
+               $nb_solved .= ' ('.round($nb_solved*100/$nb_opened).'%)';
+            }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
-            $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
             $solved_late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
                                                          $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
-            if ($nb_solved>0) {
+            if ($nb_solved>0 && $nb_solved_late >0) {
                $nb_solved_late .= ' ('.round($nb_solved_late*100/$nb_solved).'%)';
             }
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
-            $export_data['solved_late'][$value[$i]['link']] = $nb_solved_late;
 
             //le nombre d'intervention closes - the number of closed intervention
             $closed    = self::constructEntryValues("inter_closed", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
+
+            if ($nb_opened>0 && $nb_closed >0) {
+               $nb_closed .= ' ('.round($nb_closed*100/$nb_opened).'%)';
+            }
+
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
-            $export_data['closed'][$value[$i]['link']] = $nb_closed;
 
 
-            //Satisfaction
-//             $data = self::constructEntryValues("inter_avgsatisfaction", $date1, $date2, $type,
-//                                                $value[$i]["id"], $value2);
-//             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
-//             $export_data['closed'][$value[$i]['link']] = $nb_closed;
+            //Satisfaction open
+            $opensatisfaction = self::constructEntryValues("inter_opensatisfaction", $date1, $date2, $type,
+                                                $value[$i]["id"], $value2);
+            $nb_opensatisfaction = array_sum($opensatisfaction);
+            if ($nb_opensatisfaction>0) {
+               $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
+            }
+
+            echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
+
+            //Satisfaction answer
+            $answersatisfaction = self::constructEntryValues("inter_answersatisfaction", $date1, $date2, $type,
+                                                $value[$i]["id"], $value2);
+            $nb_answersatisfaction = array_sum($answersatisfaction);
+            if ($nb_answersatisfaction>0) {
+               $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
+            }
+
+            echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
+
+            //Satisfaction rate
+            $satisfaction = self::constructEntryValues("inter_avgsatisfaction", $date1, $date2, $type,
+                                                $value[$i]["id"], $value2);
+            foreach ($satisfaction as $key2 => $val2) {
+               $satisfaction[$key2] *= $answersatisfaction[$key2];
+            }
+            if ($nb_answersatisfaction>0) {
+               $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
+               $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+            } else {
+               $avgsatisfaction = '&nbsp;';
+            }
+            echo Search::showItem($output_type, $avgsatisfaction, $item_num, $row_num);
 
 
             //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
@@ -697,15 +766,50 @@ class Stat {
                       GROUP BY `glpi_tickets`.`id`
                       ORDER BY `glpi_tickets`.`solvedate`";
             break;
-         case "inter_avgsatisfaction" :
-            $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND (`glpi_tickets`.`status` = 'solved'
-                             OR `glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end);
+         case "inter_opensatisfaction" :
+            $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
+                        AND `glpi_tickets`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
 
             $query = "SELECT `glpi_tickets`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+                                 AS date_unix,
+                             COUNT(`glpi_tickets`.`id`) AS total_visites
+                      FROM `glpi_tickets`
+                      INNER JOIN `glpi_ticketsatisfactions`
+                        ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                      $LEFTJOIN
+                      $WHERE
+                      GROUP BY `glpi_tickets`.`id`
+                      ORDER BY `glpi_tickets`.`closedate`";
+            break;
+         case "inter_answersatisfaction" :
+            $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
+                        AND `glpi_tickets`.`closedate` IS NOT NULL
+                        AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
+                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+
+            $query = "SELECT `glpi_tickets`.`id`,
+                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+                                 AS date_unix,
+                             COUNT(`glpi_tickets`.`id`) AS total_visites
+                      FROM `glpi_tickets`
+                      INNER JOIN `glpi_ticketsatisfactions`
+                        ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                      $LEFTJOIN
+                      $WHERE
+                      GROUP BY `glpi_tickets`.`id`
+                      ORDER BY `glpi_tickets`.`closedate`";
+            break;
+
+         case "inter_avgsatisfaction" :
+            $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
+                        AND `glpi_tickets`.`status` = 'closed'
+                        AND `glpi_tickets`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+
+            $query = "SELECT `glpi_tickets`.`id`,
+                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
                       FROM `glpi_tickets`
@@ -714,7 +818,7 @@ class Stat {
                       $LEFTJOIN
                       $WHERE
                       GROUP BY `glpi_tickets`.`id`
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `glpi_tickets`.`closedate`";
             break;
 
       }

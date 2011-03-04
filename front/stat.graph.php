@@ -340,6 +340,12 @@ Stat::showGraph(array($LANG['stats'][10] => $entrees_avgclosedtime,
 */
 
 
+$show_all = false;
+if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
+   $show_all = true;
+}
+
+
 ///////// Stats nombre intervention
 // Total des interventions
 $values['total']  = Stat::constructEntryValues("inter_total", $_REQUEST["date1"],
@@ -359,11 +365,6 @@ $available = array('total'  => $LANG['job'][14],
                    'late'   => $LANG['job'][17],
                    'closed' => $LANG['job'][16],);
 echo "<div class='center'>";
-
-$show_all = false;
-if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
-   $show_all = true;
-}
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
@@ -444,6 +445,36 @@ Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
                                 'unit'      => $LANG['job'][21],
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
+
+
+///////// Satisfaction
+$values['opensatisfaction']  = Stat::constructEntryValues("inter_opensatisfaction", $_REQUEST["date1"],
+                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+
+$values['answersatisfaction'] = Stat::constructEntryValues("inter_opensatisfaction", $_REQUEST["date1"],
+                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+
+$available = array('opensatisfaction'  => $LANG['satisfaction'][13],
+                   'answersatisfaction' => $LANG['satisfaction'][14]);
+echo "<div class='center'>";
+
+foreach ($available as $key => $name) {
+   echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
+          ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+}
+echo "</div>";
+
+$toprint = array();
+foreach ($available as $key => $name) {
+   if ($show_all || isset($_REQUEST['graph'][$key])) {
+      $toprint[$name] = $values[$key];
+   }
+}
+
+Stat::showGraph($toprint, array('title'     => $LANG['stats'][35],
+                                'showtotal' => 1,
+                                'unit'      => $LANG['stats'][35]));
+
 
 echo "</form>";
 commonFooter();

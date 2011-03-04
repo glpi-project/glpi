@@ -432,9 +432,15 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
       // Insert satisfcation for stats
-      if ($status=='closed') {
+      if ($status=='closed' && mt_rand(0,100) < $percent['satisfaction']) {
+
+         $answerdatetoadd = 'NULL';
+         if (mt_rand(0,100) < $percent['answersatisfaction']) {
+            $answerdatetoadd = $closedatetoadd;
+         }
+
          $query = "INSERT INTO `glpi_ticketsatisfactions` VALUES (NULL,$tID,'".mt_rand(1,2)."',
-                  $closedatetoadd, $closedatetoadd,'".mt_rand(0,5)."','comment satisfaction $tID');";
+                  $closedatetoadd, $answerdatetoadd,'".mt_rand(0,5)."','comment satisfaction $tID');";
          $DB->query($query) or die("PB REQUETE ".$query);
 
       }

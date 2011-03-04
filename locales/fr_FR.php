@@ -1887,6 +1887,8 @@ $LANG['satisfaction'][9]  = "Enquête interne";
 $LANG['satisfaction'][10] = "Enquête externe";
 $LANG['satisfaction'][11] = "Nous vous invitons à apprécier la qualité de la prestation : ";
 $LANG['satisfaction'][12] = "Invitation a remplir l'enquête";
+$LANG['satisfaction'][13] = "Ouvertes";
+$LANG['satisfaction'][14] = "Réponses";
 
 $LANG['search'][0]  = "Recherche";
 $LANG['search'][1]  = "pour tous";
