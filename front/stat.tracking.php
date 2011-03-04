@@ -183,6 +183,19 @@ if (!$_REQUEST['showgraph']) {
                             'unit'      => $LANG['stats'][35],
                             'type'      => 'pie'));
    }
+
+   if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
+      foreach ($data['opensatisfaction'] as $key => $val) {
+         $newkey             = html_clean($key);
+         $cleandata[$newkey] = $val;
+      }
+      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
+                      array('title'     => $LANG['satisfaction'][3],
+                            'showtotal' => 1,
+                            'unit'      => $LANG['stats'][35],
+                            'type'      => 'pie'));
+   }
+
 }
 
 commonFooter();

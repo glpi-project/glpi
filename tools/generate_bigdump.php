@@ -136,11 +136,13 @@ $percent['state'] = 70;
 $MAX['connect_for_peripherals'] = 2;
 
 // TRACKING :
-$percent['tracking_on_item'] = 30;
-$MAX['general_tracking']     = 100;
-$percent['closed_tracking']  = 80;
-$percent['followups']        = 50;
-$percent['tasks']            = 50;
+$percent['tracking_on_item']   = 30;
+$MAX['general_tracking']       = 100;
+$percent['closed_tracking']    = 80;
+$percent['followups']          = 50;
+$percent['tasks']              = 50;
+$percent['satisfaction']       = 50;
+$percent['answersatisfaction'] = 50;
 
 // RESERVATION
 $percent['reservationitems'] = 1;
