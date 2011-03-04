@@ -2484,6 +2484,8 @@ class Ticket extends CommonDBTM {
                }
             }
          }
+         // last updater no search
+         $tab[64]['nosearch'] = true;
       }
       return $tab;
    }
