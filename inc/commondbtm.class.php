@@ -1677,6 +1677,7 @@ class CommonDBTM extends CommonGLPI {
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *     - colspan for each column (default 2)
     *     - formoptions string (javascript p.e.)
+    *     - canedit boolean edit mode of form ?
     *
    **/
    function showFormHeader ($options=array()) {
@@ -1687,6 +1688,7 @@ class CommonDBTM extends CommonGLPI {
       $params['colspan']      = 2;
       $params['withtemplate'] = '';
       $params['formoptions']  = '';
+      $params['canedit']      = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1711,7 +1713,7 @@ class CommonDBTM extends CommonGLPI {
          if ($this->isField("entities_id")) {
             //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
-               // TODO CommonDBChild must nost use current entity, but parent entity
+               // TODO CommonDBChild must not use current entity, but parent entity
 
                if (isset($params['entities_id'])) {
                   $entity = $this->fields['entities_id'] = $params['entities_id'];
@@ -1781,29 +1783,29 @@ class CommonDBTM extends CommonGLPI {
             if (isMultiEntitiesMode()) {
                echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
-               if (!$this->can($ID,'recursive')) {
-                  echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                  $comment = $LANG['common'][86];
-                  $image   = "/pics/lock.png";
-                  // CommonDBChild : entity data is get or copy from parent
+               if ($params['canedit']) {
+                  if (!$this->can($ID,'recursive')) {
+                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                     $comment = $LANG['common'][86];
+                     // CommonDBChild : entity data is get or copy from parent
 
-               } else if ( $this instanceof CommonDBChild) {
-                  echo Dropdown::getYesNo($this->isRecursive());
-                  $comment = $LANG['common'][91];
-                  $image   = "/pics/lock.png";
+                  } else if ( $this instanceof CommonDBChild) {
+                     echo Dropdown::getYesNo($this->isRecursive());
+                     $comment = $LANG['common'][91];
 
-               } else if ( !$this->canUnrecurs()) {
-                  echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                  $comment = $LANG['common'][84];
-                  $image   = "/pics/lock.png";
+                  } else if ( !$this->canUnrecurs()) {
+                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                     $comment = $LANG['common'][84];
 
+                  } else {
+                     Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
+                     $comment = $LANG['common'][85];
+                  }
+                  echo "&nbsp;";
+                  showToolTip($comment);
                } else {
-                  Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
-                  $comment = $LANG['common'][85];
-                  $image   = "/pics/aide.png";
+                  echo Dropdown::getYesNo($this->fields["is_recursive"]);
                }
-               echo "&nbsp;";
-               showToolTip($comment);
             } else {
                echo "<input type='hidden' name='is_recursive' value='0'>";
             }
