@@ -46,6 +46,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    public $items_id_2 = 'softwareversions_id';
 
 
+   function maybeDeleted() {
+      // deleted information duplicate from computers
+      return false;
+   }
+
+
    function prepareInputForAdd($input) {
 
       // Get template and deleted informations from computer
