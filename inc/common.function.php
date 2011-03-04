@@ -1674,7 +1674,8 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
                $errstr = "Too deep";
                break;
-
+            } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
+               // HTTP 200 = OK
             } else if (preg_match("/^HTTP.*302/", $buf)) {
                // HTTP 302 = Moved Temporarily
                $redir = true;
