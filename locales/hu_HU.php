@@ -808,6 +808,7 @@ $LANG['job'][23]="Megoldás keresése";
 $LANG['job'][24]="Felhasználás megoldásként"; 
 $LANG['job'][25]="Mentés és tudástárhoz adás"; 
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
+$LANG['job'][27]="Add an actor"; 
 $LANG['job'][29]="Új intézkedés"; 
 $LANG['job'][30]="Új feladat"; 
 $LANG['job'][31]="Tartam"; 
