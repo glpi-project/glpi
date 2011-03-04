@@ -314,6 +314,9 @@ function addTracking($type, $ID, $ID_entity) {
 
       $solution        = "";
       $solutiontype    = 0;
+      $due_date = $opendate + $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
+                      mt_rand(0, 60)*MINUTE_TIMESTAMP;
+      $duedatetoadd = "'".date("Y-m-d H:i:s", intval($due_date))."'";
 
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
@@ -352,7 +355,7 @@ function addTracking($type, $ID, $ID_entity) {
                         '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."',
                         '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
                         '$hour_cost', '0', '0', '$solutiontype', '$solution', 'none', 0, 0,
-                        NULL, NULL, 0, 0, $closetime, $solvetime, $firstactiontime, '$actiontime')";
+                        $duedatetoadd, NULL, 0, 0, $closetime, $solvetime, $firstactiontime, '$actiontime')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $tID = $DB->insert_id();

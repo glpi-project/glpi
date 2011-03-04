@@ -312,7 +312,7 @@ class Stat {
             $solved_late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
                                                          $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
-            echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
+            echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
             $export_data['solved_late'][$value[$i]['link']] = $nb_solved_late;
 
             //le nombre d'intervention closes - the number of closed intervention
