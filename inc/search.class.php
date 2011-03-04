@@ -1419,30 +1419,42 @@ class Search {
          $first_group = true;
          $selected    = 'view';
          $str_limit   = 28;
+         $nb_in_group = 0;
 
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
                if (!$first_group) {
-                  echo "</optgroup>\n";
+                  $group .= "</optgroup>\n";
                } else {
                   $first_group = false;
                }
-               echo "<optgroup label=\"".utf8_substr($val,0,$str_limit)."\">";
+               if ($nb_in_group) {
+                  echo $group;
+               }
+               $group       = '';
+               $nb_in_group = 0;
+
+               $group .= "<optgroup label=\"".utf8_substr($val,0,$str_limit)."\">";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
-                  echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
+                  $nb_in_group ++;
+                  $group .= "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
-                     echo "selected";
+                     $group .= "selected";
                      $selected = $key;
                   }
-                  echo ">". utf8_substr($val["name"], 0, $str_limit) ."</option>\n";
+                  $group .= ">". utf8_substr($val["name"], 0, $str_limit) ."</option>\n";
                }
             }
          }
          if (!$first_group) {
-            echo "</optgroup>\n";
+            $group .= "</optgroup>\n";
          }
+         if ($nb_in_group) {
+            echo $group;
+         }
+
          echo "<option value='all' ";
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
             echo "selected";
