@@ -2153,7 +2153,6 @@ class Ticket extends CommonDBTM {
       $tab[64]['name']          = $LANG['common'][101];
       $tab[64]['massiveaction'] = false;
 
-
       $tab['sla'] = $LANG['sla'][1];
 
       $tab[30]['table']         = 'glpi_slas';
@@ -2300,6 +2299,7 @@ class Ticket extends CommonDBTM {
       $tab[31]['field']      = 'type';
       $tab[31]['name']       = $LANG['common'][17];
       $tab[31]['searchtype'] = 'equals';
+      $tab[31]['joinparams']    = array('jointype' => 'child');
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
       $tab[60]['field']         = 'date_begin';
@@ -2467,6 +2467,24 @@ class Ticket extends CommonDBTM {
                                         'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
       }
 
+      // Filter search fields for helpdesk
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $tokeep = array('common');
+         if (haveRight('validate_ticket',1) || haveRight('create_validation',1)) {
+            $tokeep[] = 'validation';
+         }
+         $keep = false;
+         foreach($tab as $key => $val) {
+            if (!is_array($val)) {
+               $keep = in_array($key,$tokeep);
+            } 
+            if (!$keep) {
+               if (is_array($val)) {
+                  $tab[$key]['nosearch'] = true;
+               }
+            }
+         }
+      }
       return $tab;
    }
 
