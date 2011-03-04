@@ -987,8 +987,8 @@ class Auth {
 
          if ($DB->numrows($result) == 1) {
             $data = $DB->fetch_array($result);
-            echo "<div class='firstbloc'>";
             echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
+            echo "<div class='firstbloc'>";
 
             switch($data["authtype"]) {
                case self::LDAP :
@@ -1044,7 +1044,7 @@ class Auth {
             echo "<input type='hidden' name='id' value='" . $ID . "'>";
             echo "<span id='show_massiveaction_field'></span>";
             echo "</td></tr></table>";
-            echo "</form></div>";
+            echo "</div></form>";
          }
       }
    }
