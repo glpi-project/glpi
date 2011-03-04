@@ -2256,6 +2256,12 @@ class Search {
       global $CFG_GLPI;
 
       switch ($itemtype) {
+         case 'Notification' :
+            if (!haveRight('config','w')) {
+               return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
+            }
+            break;
+
          // No link
          case 'User' :
             // View all entities

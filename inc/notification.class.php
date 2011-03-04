@@ -260,6 +260,31 @@ class Notification extends CommonDBTM {
    }
 
 
+   function canViewItem() {
+
+      if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
+          && !haveRight('config', 'w')) {
+          return false;
+      }
+      return haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+   }
+
+
+   /**
+    * Is the current user have right to update the current notification ?
+    *
+    * @return boolean
+   **/
+   function canCreateItem() {
+
+      if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
+          && !haveRight('config', 'w')) {
+          return false;
+      }
+      return haveAccessToEntity($this->getEntityID());
+   }
+
+
    /**
     * Display a dropdown with all the available notification modes
     * @param $value the default value for the dropdown
