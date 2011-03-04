@@ -335,6 +335,7 @@ $LANG['common'][103] = "Acteurs";
 $LANG['common'][104] = "Observateur";
 $LANG['common'][105] = "Alerte";
 $LANG['common'][106] = "Au moins un champ a une valeur incorrecte";
+$LANG['common'][107] = "Moyenne";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -593,7 +594,7 @@ $LANG['entity'][18] = "Clôture automatique des tickets résolus après";
 $LANG['entity'][19] = "Configuration de l'enquête de satisfaction";
 $LANG['entity'][20] = "Création de l'enquête après";
 $LANG['entity'][21] = "Taux d'enquêtes à déclencher";
-$LANG['entity'][22] = "Pour les ticket fermés après le";
+$LANG['entity'][22] = "Pour les ticket résolus après le";
 $LANG['entity'][23] = "Valeurs pour les règles génériques d'affectation à l'entité";
 $LANG['entity'][24] = "Valeurs pour l'interface de recherche des utilisateurs depuis un annuaire LDAP";
 $LANG['entity'][25] = "Filtre LDAP associé à l'entité (si nécessaire)";
@@ -2204,7 +2205,7 @@ $LANG['setup'][703] = "Générale";
 $LANG['setup'][704] = "Notifications";
 
 $LANG['setup'][707] = "Alertes sur les réservations";
-$LANG['setup'][708] = "Alertes sur les tickets non fermés depuis";
+$LANG['setup'][708] = "Alertes sur les tickets non résolus depuis";
 
 $LANG['setup'][720] = "Informations système";
 $LANG['setup'][721] = "Informations sur le système, l'installation et la configuration";
@@ -2312,11 +2313,11 @@ $LANG['stats'][7]  = "Voir les graphiques";
 $LANG['stats'][8]  = "Délai moyen";
 $LANG['stats'][9]  = "Résolution";
 $LANG['stats'][10] = "Clôture";
-$LANG['stats'][11] = "Nombre de tickets fermés";
+$LANG['stats'][11] = "Nombre de tickets résolus";
 $LANG['stats'][12] = "Prise en compte";
 $LANG['stats'][13] = "Nombre de tickets";
 $LANG['stats'][14] = "Durée réelle";
-$LANG['stats'][15] = "Durée moyenne de traitement du ticket";
+$LANG['stats'][15] = "Délai moyen de résolution du ticket";
 $LANG['stats'][16] = "Nom du technicien";
 $LANG['stats'][17] = "Nombre de tickets clos";
 $LANG['stats'][18] = "Délai moyen de clôture";
@@ -2326,7 +2327,7 @@ $LANG['stats'][20] = "Nom d'utilisateur";
 $LANG['stats'][23] = "Pas de statistiques disponibles";
 
 $LANG['stats'][25] = "Durée réelle moyenne de traitement du ticket";
-
+$LANG['stats'][26] = "Durée réelle de traitement du ticket";
 $LANG['stats'][27] = "Durée réelle totale de traitement des tickets";
 
 $LANG['stats'][30] = "Délai moyen de prise en compte du ticket";

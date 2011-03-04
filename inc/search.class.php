@@ -4609,10 +4609,11 @@ class Search {
     * @param $linkto link display element (HTML specific)
     * @param $issort is the sort column ?
     * @param $order  order type ASC or DESC
+    * @param $options  string options to add
     *
     * @return string to display
    **/
-   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="") {
+   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="",$options="") {
       global $CFG_GLPI;
 
       $out = "";
@@ -4635,7 +4636,7 @@ class Search {
             break;
 
          default :
-            $out = "<th>";
+            $out = "<th $options>";
             if ($issort) {
                if ($order=="DESC") {
                   $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
