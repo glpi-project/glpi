@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: notificationtargetuser.class.php 13683 2011-01-19 08:49:07Z yllen $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
