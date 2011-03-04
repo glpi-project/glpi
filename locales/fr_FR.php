@@ -1558,6 +1558,7 @@ $LANG['plugins'][7]  = "Aucun plugin installé";
 $LANG['plugins'][8]  = "Voir le catalogue des plugins";
 $LANG['plugins'][9]  = "Auteurs";
 $LANG['plugins'][10] = "Plugin incompatible avec cette version de GLPI";
+$LANG['plugins'][11] = "Supprimez le ou mettez le à jour sinon GLPI ne fonctionnera pas correctement.";
 
 
 $LANG['printers'][14] = "Série";

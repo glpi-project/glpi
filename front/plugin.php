@@ -43,7 +43,7 @@ function registerPluginType($name) {
    global $LANG;
 
    echo "</table>";
-   displayErrorAndDie($LANG['plugins'][10]."&nbsp;: $name");
+   displayErrorAndDie($LANG['plugins'][10]."&nbsp;: $name<br><br>".$LANG['plugins'][11]);
 }
 
 
