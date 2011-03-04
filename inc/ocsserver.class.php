@@ -3627,36 +3627,41 @@ class OcsServer extends CommonDBTM {
 
                // Add network device
                if ($DBocs->numrows($result2) > 0) {
+                  $mac_already_imported=array();
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
                         $network["designation"] = $line2["DESCRIPTION"];
-                        if (!in_array(stripslashes($prevalue.$network["designation"]),
-                                      $import_device)) {
-                           if (!empty ($line2["SPEED"])) {
-                              $network["bandwidth"] = $line2["SPEED"];
+                        if (!in_array($line2["MACADDR"],$mac_already_imported)) {
+                           $mac_already_imported[] = $line2["MACADDR"];
+
+                           if (!in_array(stripslashes($prevalue.$network["designation"]),
+                                       $import_device)) {
+                              if (!empty ($line2["SPEED"])) {
+                                 $network["bandwidth"] = $line2["SPEED"];
+                              }
+                              $DeviceNetworkCard = new DeviceNetworkCard();
+                              $net_id = $DeviceNetworkCard->import($network);
+                              if ($net_id) {
+                                 $devID = $CompDevice->add(array('computers_id'  => $computers_id,
+                                                               '_itemtype'     => 'DeviceNetworkCard',
+                                                               'devicenetworkcards_id' => $net_id,
+                                                               'specificity'   => $line2["MACADDR"],
+                                                               '_no_history'   => !$dohistory));
+                                 self::addToOcsArray($computers_id,
+                                                   array($prevalue.$devID
+                                                                  => $prevalue.$network["designation"]),
+                                                   "import_device");
+                              }
+                           } else {
+                              $tmp = array_search(stripslashes($prevalue.$network["designation"]),
+                                                $import_device);
+                              list($type,$id) = explode(self::FIELD_SEPARATOR,$tmp);
+                              $CompDevice->update(array('id'          => $id,
+                                                      'specificity' => $line2["MACADDR"],
+                                                      '_itemtype'   => 'DeviceNetworkCard',));
+                              unset ($import_device[$tmp]);
                            }
-                           $DeviceNetworkCard = new DeviceNetworkCard();
-                           $net_id = $DeviceNetworkCard->import($network);
-                           if ($net_id) {
-                              $devID = $CompDevice->add(array('computers_id'  => $computers_id,
-                                                              '_itemtype'     => 'DeviceNetworkCard',
-                                                              'devicenetworkcards_id' => $net_id,
-                                                              'specificity'   => $line2["MACADDR"],
-                                                              '_no_history'   => !$dohistory));
-                              self::addToOcsArray($computers_id,
-                                                  array($prevalue.$devID
-                                                               => $prevalue.$network["designation"]),
-                                                  "import_device");
-                           }
-                        } else {
-                           $tmp = array_search(stripslashes($prevalue.$network["designation"]),
-                                               $import_device);
-                           list($type,$id) = explode(self::FIELD_SEPARATOR,$tmp);
-                           $CompDevice->update(array('id'          => $id,
-                                                     'specificity' => $line2["MACADDR"],
-                                                     '_itemtype'   => 'DeviceNetworkCard',));
-                           unset ($import_device[$tmp]);
                         }
                      }
                      if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
