@@ -597,7 +597,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[8]['table']          = $this->getTable();
       $tab[8]['field']          = 'login_field';
-      $tab[8]['name']           = $LANG['setup'][14];
+      $tab[8]['name']           = $LANG['setup'][228];
       $tab[8]['massiveaction']  = false;
       $tab[8]['datatype']       = 'string';
 
