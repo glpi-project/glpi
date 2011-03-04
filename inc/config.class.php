@@ -873,7 +873,6 @@ class Config extends CommonDBTM {
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
-      checkWriteAccessToDirs(true);
 
       echo "\n</pre></td></tr>";
 
@@ -913,8 +912,9 @@ class Config extends CommonDBTM {
       foreach ($DB->request('SELECT VERSION() as ver') as $data) {
          $version = $data['ver'];
       }
-      echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
+      echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n\n";
 
+      checkWriteAccessToDirs(true);
 
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
