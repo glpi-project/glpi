@@ -3618,7 +3618,110 @@ class Ticket extends CommonDBTM {
       }
    }
 
+   /**
+    * show actor add div
+    *
+    * @param $type string : actor type
+    * @param $rand_type integer rand value of div to use
+    * @param $inticket boolean display in ticket ?
+    *
+    * @return nothing display
+   **/
+   function showActorAddForm($type,$rand_type,$inticket=true) {
+      global $LANG,$CFG_GLPI;
 
+      switch ($type) {
+         case self::REQUESTER :
+            $typename = 'requester';
+            break;
+         case self::OBSERVER :
+            $typename = 'observer';
+            break;
+         case self::ASSIGN :
+            $typename = 'assign';
+            break;
+      }
+
+
+      echo "<div ".($inticket?"style='display:none'":'')." id='ticketactor$rand_type'>";
+      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
+                        'user'  => $LANG['common'][34],
+                        'group' => $LANG['common'][35]);
+      $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
+      $params = array('type'            => '__VALUE__',
+                        'actortype'       => $typename,
+                        'entity_restrict' => $this->fields['entities_id']);
+
+      ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$typename."[_type]$rand",
+                                    "showticket".$typename."_$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
+                                    $params);
+      echo "<span id='showticket".$typename."_$rand'>&nbsp;</span>";
+      if ($inticket) {
+         echo "<hr>";
+      }
+      echo "</div>";
+   }
+
+   /**
+    * show actor add div
+    *
+    * @param $type integer : actor type
+    * @param $options array options for default values ($options of showForm)
+    *
+    * @return nothing display
+   **/
+   function showUserAddFormOnCreate($type,$options) {
+      global $LANG,$CFG_GLPI;
+
+      switch ($type) {
+         case self::REQUESTER :
+            $typename = 'requester';
+            break;
+         case self::OBSERVER :
+            $typename = 'observer';
+            break;
+         case self::ASSIGN :
+            $typename = 'assign';
+            break;
+      }
+      echo self::getActorIcon('user', $type)."&nbsp;";
+      //List all users in the active entities
+      $rand = User::dropdown(array('name'        => '_users_id_'.$typename,
+                                    'value'       => $options["_users_id_".$typename],
+                                    'entity'      => $_SESSION['glpiactiveentities'],
+                                    'right'       => 'all',
+                                    'auto_submit' => $type==self::REQUESTER,
+                                    'ldap_import' => true));
+
+      if ($CFG_GLPI['use_mailing']) {
+         echo "<div id='notif_".$typename."_$rand'>";
+         echo "</div>";
+         $paramscomment = array('value' => '__VALUE__',
+                                 'field' => "_users_id_".$typename."_notif",
+                                 'use_notification'
+                                          => $options["_users_id_".$typename."_notif"]['use_notification']);
+
+         ajaxUpdateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,
+                                       "notif_".$typename."_$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                       $paramscomment, false);
+         echo "<script type='text/javascript'>";
+         ajaxUpdateItemJsCode("notif_".$typename."_$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                              false, "dropdown__users_id_".$typename.$rand);
+         echo "</script>";
+      }
+   }
+
+   /**
+    * show actor part in ticket form
+    *
+    * @param $ID integer ticket ID
+    * @param $options array options for default values ($options of showForm)
+    *
+    * @return nothing display
+   **/
    function showActorsPartForm($ID,$options) {
       global $LANG, $CFG_GLPI;
 
@@ -3679,57 +3782,16 @@ class Ticket extends CommonDBTM {
       echo "<td>";
 
       if ($rand_requester_ticket>=0) {
-         echo "<div style='display:none' id='ticketactor$rand_requester_ticket'>";
-         $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                         'user'  => $LANG['common'][34],
-                         'group' => $LANG['common'][35]);
-         $rand   = Dropdown::showFromArray("_ticket_requester[_type]", $types);
-         $params = array('type'            => '__VALUE__',
-                         'actortype'       => 'requester',
-                         'entity_restrict' => $this->fields['entities_id']);
-
-         ajaxUpdateItemOnSelectEvent("dropdown__ticket_requester[_type]$rand",
-                                     "showticketrequester_$rand",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
-                                     $params);
-         echo "<span id='showticketrequester_$rand'>&nbsp;</span>";
-         echo "<hr>";
-         echo "</div>";
+         $this->showActorAddForm(self::REQUESTER,$rand_requester_ticket);
       }
 
       // Requester
       if (!$ID) {
-         echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
+         
          if (haveRight("update_ticket","1")) {
-            //List all users in the active entities
-            $rand = User::dropdown(array('name'        => '_users_id_requester',
-                                         'value'       => $options["_users_id_requester"],
-                                         'entity'      => $_SESSION['glpiactiveentities'],
-                                 //'entity'        => $this->fields["entities_id"],
-                                 //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
-                                         'right'       => 'all',
-                                         'auto_submit' => 1,
-                                         'ldap_import' => true));
-
-            if ($CFG_GLPI['use_mailing']) {
-               echo "<div id='notif_requester_$rand'>";
-               echo "</div>";
-               $paramscomment = array('value' => '__VALUE__',
-                                      'field' => "_users_id_requester_notif",
-                                      'use_notification'
-                                              => $options["_users_id_requester_notif"]['use_notification']);
-
-               ajaxUpdateItemOnSelectEvent("dropdown__users_id_requester".$rand,
-                                           "notif_requester_$rand",
-                                           $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                           $paramscomment, false);
-               echo "<script type='text/javascript'>";
-               ajaxUpdateItemJsCode("notif_requester_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                    false, "dropdown__users_id_requester".$rand);
-               echo "</script>";
-            }
+            $this->showUserAddFormOnCreate(self::REQUESTER,$options);
          } else {
+            echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
             echo getUserName($options["_users_id_requester"], $showuserlink);
          }
 
@@ -3762,55 +3824,13 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_observer_ticket>=0) {
-         echo "<div style='display:none' id='ticketactor$rand_observer_ticket'>";
-         $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                         'user'  => $LANG['common'][34],
-                         'group' => $LANG['common'][35]);
-         $rand   = Dropdown::showFromArray("_ticket_observer[_type]", $types);
-         $params = array('type'            => '__VALUE__',
-                         'actortype'       => 'observer',
-                         'entity_restrict' => $this->fields['entities_id']);
-
-         ajaxUpdateItemOnSelectEvent("dropdown__ticket_observer[_type]$rand",
-                                     "showticketobserver_$rand",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
-                                     $params);
-         echo "<span id='showticketobserver_$rand'>&nbsp;</span>";
-         echo "<hr>";
-         echo "</div>";
+         $this->showActorAddForm(self::OBSERVER,$rand_observer_ticket);
       }
 
       // Observer
       if (!$ID) {
          if (haveRight("update_ticket","1")) {
-            echo self::getActorIcon('user', self::OBSERVER)."&nbsp;";
-
-            //List all users in the active entities
-            $rand = User::dropdown(array('name'        => '_users_id_observer',
-                                         'value'       => $options["_users_id_observer"],
-                                         'entity'      => $_SESSION['glpiactiveentities'],
-                                         'right'       => 'all',
-                                         'ldap_import' => true));
-
-            if ($CFG_GLPI['use_mailing']) {
-               echo "<br><div id='notif_observer_$rand'>";
-               echo "</div>";
-               $paramscomment = array('value' => '__VALUE__',
-                                      'field' => "_users_id_observer_notif",
-                                      'use_notification'
-                                              => $options["_users_id_observer_notif"]['use_notification']);
-
-               ajaxUpdateItemOnSelectEvent("dropdown__users_id_observer".$rand,
-                                           "notif_observer_$rand",
-                                           $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                           $paramscomment, false);
-               echo "<script type='text/javascript'>";
-               ajaxUpdateItemJsCode("notif_observer_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                    false, "dropdown__users_id_observer".$rand);
-               echo "</script>";
-            }
-
+            $this->showUserAddFormOnCreate(self::OBSERVER,$options);
             echo '<hr>';
          }
 
@@ -3831,56 +3851,13 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign_ticket>=0) {
-         echo "<div style='display:none' id='ticketactor$rand_assign_ticket'>";
-         $types = array(''     => DROPDOWN_EMPTY_VALUE,
-                        'user' => $LANG['common'][34]);
-
-         if (haveRight("assign_ticket","1")) {
-            $types['group'] = $LANG['common'][35];
-         }
-         $rand   = Dropdown::showFromArray("_ticket_assign[_type]", $types);
-         $params = array('type'            => '__VALUE__',
-                         'actortype'       => 'assign',
-                         'entity_restrict' => $this->fields['entities_id']);
-
-         ajaxUpdateItemOnSelectEvent("dropdown__ticket_assign[_type]$rand",
-                                     "showticketassign_$rand",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
-                                     $params);
-         echo "<span id='showticketassign_$rand'>&nbsp;</span>";
-         echo "<hr>";
-         echo "</div>";
+         $this->showActorAddForm(self::ASSIGN,$rand_assign_ticket);
       }
 
       // Assign User
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
-            $rand = User::dropdown(array('name'        => '_users_id_assign',
-                                         'value'       => $options["_users_id_assign"],
-                                         'right'       => 'own_ticket',
-                                         'entity'      => $this->fields["entities_id"],
-                                         'ldap_import' => true));
-
-            if ($CFG_GLPI['use_mailing']) {
-               echo "<div id='notif_assign_$rand'>";
-               echo "</div>";
-               $paramscomment = array('value' => '__VALUE__',
-                                      'field' => "_users_id_assign_notif",
-                                      'use_notification'
-                                              => $options["_users_id_assign_notif"]['use_notification']);
-
-               ajaxUpdateItemOnSelectEvent("dropdown__users_id_assign".$rand,
-                                           "notif_assign_$rand",
-                                           $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                           $paramscomment, false);
-               echo "<script type='text/javascript'>";
-               ajaxUpdateItemJsCode("notif_assign_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                    false, "dropdown__users_id_assign".$rand);
-               echo "</script>";
-            }
-
+            $this->showUserAddFormOnCreate(self::ASSIGN,$options);
             echo '<hr>';
 
          } else if (haveRight("steal_ticket","1")
@@ -4316,59 +4293,6 @@ class Ticket extends CommonDBTM {
       if ($ID) {
          $this->showActorsPartForm($ID,$options);
       }
-
-      // Mailing ? Y or no ?
-//       if ($CFG_GLPI["use_mailing"]==1) {
-//          echo "<tr class='tab_bg_1'>";
-//          echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
-//          echo "<td>";
-//          if (!$ID) {
-//             $query = "SELECT `email`
-//                       FROM `glpi_users`
-//                       WHERE `id` ='".$this->fields["users_id"]."'";
-//             $result = $DB->query($query);
-//
-//             $email = "";
-//             if ($result && $DB->numrows($result)) {
-//                $email = $DB->result($result, 0, "email");
-//             }
-//             Dropdown::showYesNo('use_email_notification', !empty($email));
-//          } else {
-//             if ($canupdate) {
-//                Dropdown::showYesNo('use_email_notification',
-//                                    $this->fields["use_email_notification"]);
-//             } else {
-//                if ($this->fields["use_email_notification"]) {
-//                   echo $LANG['choice'][1];
-//                } else {
-//                   echo $LANG['choice'][0];
-//                }
-//             }
-//          }
-//
-//          echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
-//          echo "<td>";
-//          if (!$ID) {
-//             echo "<input type='text' size='30' name='user_email' value='$email'>";
-//          } else {
-//
-//             if ($canupdate) {
-//                autocompletionTextField($this,"user_email");
-//                if (!empty($this->fields["user_email"])) {
-//                   echo "<a href='mailto:".$this->fields["user_email"]."'>";
-//                   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-//                }
-//
-//             } else if (!empty($this->fields["user_email"])) {
-//                echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
-//                     "</a>";
-//
-//             } else {
-//                echo "&nbsp;";
-//             }
-//          }
-//          echo "</td></tr>";
-//       }
 
 
       $view_linked_tickets = ($ID || $canupdate);
