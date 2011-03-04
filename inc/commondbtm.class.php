@@ -615,10 +615,11 @@ class CommonDBTM extends CommonGLPI {
     * @param $input array : the _POST vars returned by the item form when press add
     * @param options an array with the insert options
     *   - unicity_message : do not display message if item it a duplicate (default is yes)
+    * @param $history boolean : do history log ?
     *
     * @return integer the new ID of the added item (or false if fail)
    **/
-   function add($input, $options=array()) {
+   function add($input, $options=array(),$history = true) {
       global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
@@ -664,6 +665,14 @@ class CommonDBTM extends CommonGLPI {
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
                $this->post_addItem();
+
+               if ($this->dohistory && $history) {
+                  $changes[0] = 0;
+                  $changes[1] = $changes[2] = "";
+
+                  Log::history($this->fields["id"], $this->getType(), $changes, 0,
+                               HISTORY_CREATE_ITEM);
+               }
 
                 // Auto create infocoms
                if ($CFG_GLPI["auto_create_infocoms"]
@@ -1093,7 +1102,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                $this->addMessageOnDeleteAction();
 
-               if ($this->dohistory&&$history) {
+               if ($this->dohistory && $history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
 
