@@ -103,6 +103,8 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Ticket::showListForItem('Computer', $_POST["id"]);
             Link::showForItem('Computer', $_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
+            ComputerVirtualMachine::showForVirtualMachine($computer);
+            ComputerVirtualMachine::showForComputer($computer, $_POST["withtemplate"]);
             Plugin::displayAction($computer, $_REQUEST['glpi_tab']);
             break;
 
@@ -155,6 +157,11 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 20 :
             ComputerDisk::showForComputer($computer);
+            break;
+
+         case 21 :
+            ComputerVirtualMachine::showForVirtualMachine($computer);
+            ComputerVirtualMachine::showForComputer($computer);
             break;
 
          default :

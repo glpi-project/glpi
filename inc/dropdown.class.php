@@ -624,7 +624,11 @@ class Dropdown {
                                                'MonitorModel'          => $LANG['setup'][94],
                                                'PeripheralModel'       => $LANG['setup'][97],
                                                'PhoneModel'            => $LANG['setup'][503]),
-
+                  
+                  $LANG['computers'][57] => array('VirtualMachineType'   => $LANG['computers'][62],
+                                                  'VirtualMachineSystem' => $LANG['computers'][60],
+                                                  'VirtualMachineState'  => $LANG['computers'][63]),
+                  
                   $LANG['Menu'][26]   => array('DocumentCategory' => $LANG['setup'][81],
                                                'DocumentType'     => $LANG['document'][7]),
 
