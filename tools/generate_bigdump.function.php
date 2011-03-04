@@ -428,6 +428,14 @@ function addTracking($type, $ID, $ID_entity) {
          $DB->query($query) or die("PB REQUETE ".$query);
       }
 
+      // Insert satisfcation for stats
+      if ($status=='closed') {
+         $query = "INSERT INTO `glpi_ticketsatisfactions` VALUES (NULL,$tID,'".mt_rand(1,2)."',
+                  $closedatetoadd, $closedatetoadd,'".mt_rand(0,5)."','comment satisfaction $tID');";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+      }
+
    }
 
    $query = "UPDATE `".getTableForItemType($type)."`
