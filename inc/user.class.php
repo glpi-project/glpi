@@ -485,6 +485,20 @@ class User extends CommonDBTM {
          $_SESSION["glpidefault_entity"] = $input["entities_id"];
       }
 
+      // Security on default profile update
+      if (isset($input['profiles_id'])) {
+         if (!in_array($input['profiles_id'],Profile_User::getUserProfiles($input['id']))) {
+            unset($input['profiles_id']);
+         }
+      }
+
+      // Security on default entity  update
+      if (isset($input['entities_id'])) {
+         if (!in_array($input['entities_id'],Profile_User::getUserEntities($input['id']))) {
+            unset($input['entities_id']);
+         }
+      }
+
       // Manage preferences fields
       if (getLoginUserID() === $input['id']) {
          if (isset($input['use_mode']) && $_SESSION['glpi_use_mode'] !=  $input['use_mode']) {
@@ -1790,6 +1804,7 @@ class User extends CommonDBTM {
                                          => array('table'      => 'glpi_profiles_users',
                                                   'joinparams' => array('jointype' => 'child')));
 
+
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
       $tab[81]['name']      = $LANG['users'][1];
@@ -1805,6 +1820,11 @@ class User extends CommonDBTM {
       $tab[79]['table'] = 'glpi_profiles';
       $tab[79]['field'] = 'name';
       $tab[79]['name']  = $LANG['profiles'][13];
+
+      $tab[77]['table']         = 'glpi_entities';
+      $tab[77]['field']         = 'name';
+      $tab[77]['massiveaction'] = true;
+      $tab[77]['name']          = $LANG['profiles'][37];
 
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';

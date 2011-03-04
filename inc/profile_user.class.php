@@ -537,7 +537,7 @@ class Profile_User extends CommonDBTM {
                $tab      = getSonsOf('glpi_entities', $data['entities_id']);
                $entities = array_merge($tab, $entities);
             } else {
-               $entities[$data['entities_id']] = $data['entities_id'];
+               $entities[] = $data['entities_id'];
             }
          }
 
