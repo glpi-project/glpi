@@ -451,11 +451,15 @@ Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
 $values['opensatisfaction']  = Stat::constructEntryValues("inter_opensatisfaction", $_REQUEST["date1"],
                                                $_REQUEST["date2"], $_GET["type"], $val1, $val2);
 
-$values['answersatisfaction'] = Stat::constructEntryValues("inter_opensatisfaction", $_REQUEST["date1"],
+$values['answersatisfaction'] = Stat::constructEntryValues("inter_answersatisfaction", $_REQUEST["date1"],
                                                $_REQUEST["date2"], $_GET["type"], $val1, $val2);
 
-$available = array('opensatisfaction'  => $LANG['satisfaction'][13],
-                   'answersatisfaction' => $LANG['satisfaction'][14]);
+$values['avgsatisfaction'] = Stat::constructEntryValues("inter_avgsatisfaction", $_REQUEST["date1"],
+                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+
+$available = array('opensatisfaction'   => $LANG['satisfaction'][13],
+                   'answersatisfaction' => $LANG['satisfaction'][14],
+                   'avgsatisfaction'    => $LANG['satisfaction'][7]);
 echo "<div class='center'>";
 
 foreach ($available as $key => $name) {

@@ -771,8 +771,7 @@ class Stat {
                         AND `glpi_tickets`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
 
-            $query = "SELECT `glpi_tickets`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              COUNT(`glpi_tickets`.`id`) AS total_visites
                       FROM `glpi_tickets`
@@ -780,7 +779,7 @@ class Stat {
                         ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
-                      GROUP BY `glpi_tickets`.`id`
+                      GROUP BY date_unix
                       ORDER BY `glpi_tickets`.`closedate`";
             break;
          case "inter_answersatisfaction" :
@@ -789,8 +788,7 @@ class Stat {
                         AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
                         AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
 
-            $query = "SELECT `glpi_tickets`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              COUNT(`glpi_tickets`.`id`) AS total_visites
                       FROM `glpi_tickets`
@@ -798,7 +796,7 @@ class Stat {
                         ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
-                      GROUP BY `glpi_tickets`.`id`
+                      GROUP BY date_unix
                       ORDER BY `glpi_tickets`.`closedate`";
             break;
 
@@ -808,8 +806,7 @@ class Stat {
                         AND `glpi_tickets`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
 
-            $query = "SELECT `glpi_tickets`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
                       FROM `glpi_tickets`
@@ -817,7 +814,7 @@ class Stat {
                         ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
-                      GROUP BY `glpi_tickets`.`id`
+                      GROUP BY date_unix
                       ORDER BY `glpi_tickets`.`closedate`";
             break;
 
