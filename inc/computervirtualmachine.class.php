@@ -80,7 +80,8 @@ class ComputerVirtualMachine extends CommonDBChild {
 
    function post_getEmpty () {
 
-      $this->fields["ram"] = '0';
+      $this->fields["vcpu"] = '0';
+      $this->fields["ram"]  = '0';
    }
 
 
