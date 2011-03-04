@@ -375,7 +375,6 @@ class NotificationTargetTicket extends NotificationTarget {
                                             'id'       => $author_id));
 
 
-         print_r($this->target);exit();
       }
 
 
