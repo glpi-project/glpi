@@ -303,7 +303,10 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
             } else {
                // No id and no entities_id massive action and no first item
-               if ($val["field"]!='id' && $val["linkfield"]!='entities_id' && $key != 1) {
+               if ($val["field"]!='id' && $key != 1
+                     // Permit entities_id is explicitly activate
+                     && ($val["linkfield"]!='entities_id'
+                           || (isset($val['massiveaction']) && $val['massiveaction']))) {
                   if (!isset($val['massiveaction']) || $val['massiveaction']) {
 
                      if ($show_all) {
