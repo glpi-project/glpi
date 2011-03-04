@@ -1949,6 +1949,7 @@ $LANG['setup'][71]  = "Firmware";
 $LANG['setup'][73]  = "Prise réseau";
 $LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il possède des sous-éléments";
 $LANG['setup'][75]  = "Comme enfant de";
+$LANG['setup'][76]  = "Enfants de";
 
 $LANG['setup'][79]  = "Catégorie des tickets";
 $LANG['setup'][80]  = "Types de tiers";

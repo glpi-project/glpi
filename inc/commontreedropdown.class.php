@@ -215,7 +215,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][75]."&nbsp;: ".$this->getTreeLink();
+      echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][76]." ".$this->getTreeLink();
       echo "</th></tr>";
 
       echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
