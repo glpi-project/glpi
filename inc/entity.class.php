@@ -287,23 +287,7 @@ class Entity extends CommonTreeDropdown {
                 WHERE `entities_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
-      $query = "SELECT `rules_id`
-                FROM `glpi_ruleactions`
-                WHERE `value` = '".$this->fields['id']."'
-                      AND `field` = 'entities_id'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $rule = new Rule();
-            $input['is_active'] = 0;
-
-            while ($data = $DB->fetch_array($result)) {
-               $input['id'] = $data['rules_id'];
-               $rule->update($input);
-            }
-            addMessageAfterRedirect($LANG['rulesengine'][150]);
-         }
-      }
+      Rule::cleanForItemAction($this);
    }
 
 

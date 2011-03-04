@@ -107,6 +107,7 @@ class SLA extends CommonDBTM {
          }
       }
 
+      Rule::cleanForItemAction($this);
    }
 
 

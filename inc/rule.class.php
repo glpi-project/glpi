@@ -1889,6 +1889,32 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * Clean Rule with Action is assign to an item
+    *
+    * @param $item Object
+    */
+   static function cleanForItemAction($item) {
+      global $DB, $LANG;
+
+      $query = "SELECT `rules_id`
+                FROM `glpi_ruleactions`
+                WHERE `value` = '".$item->getField('id')."'
+                  AND `field` = '".getForeignKeyFieldForTable($item->getTable())."'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $rule = new self();
+            $input['is_active'] = 0;
+
+            while ($data = $DB->fetch_array($result)) {
+               $input['id'] = $data['rules_id'];
+               $rule->update($input);
+            }
+            addMessageAfterRedirect($LANG['rulesengine'][150]);
+         }
+      }
+   }
 }
 
 ?>
