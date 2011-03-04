@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: fieldunicity.tabs.php 13503 2011-01-04 16:12:46Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
