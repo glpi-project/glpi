@@ -808,6 +808,7 @@ $LANG['job'][23]="Search a solution";
 $LANG['job'][24]="Use as a solution"; 
 $LANG['job'][25]="Lisa teadmistekogusse"; 
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
+$LANG['job'][27]="Add an actor"; 
 $LANG['job'][29]="Lisa uus täiendus"; 
 $LANG['job'][30]="Lisa uus tegevus"; 
 $LANG['job'][31]="Kestvus"; 

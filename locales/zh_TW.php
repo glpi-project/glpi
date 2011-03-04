@@ -808,6 +808,7 @@ $LANG['job'][23]="搜索解決方案";
 $LANG['job'][24]="使用為一種解決方案"; 
 $LANG['job'][25]="保存並新增到知識庫"; 
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
+$LANG['job'][27]="Add an actor"; 
 $LANG['job'][29]="新增後續追蹤"; 
 $LANG['job'][30]="新增一個作業"; 
 $LANG['job'][31]="期間"; 

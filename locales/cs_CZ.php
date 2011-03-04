@@ -808,6 +808,7 @@ $LANG['job'][23]="Hledat řešení";
 $LANG['job'][24]="Use as a solution"; 
 $LANG['job'][25]="Save and add to the knowledge base"; 
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
+$LANG['job'][27]="Add an actor"; 
 $LANG['job'][29]="Přidat novou doplňující zprávu"; 
 $LANG['job'][30]="Přidat nový úkol"; 
 $LANG['job'][31]="Trvání"; 
