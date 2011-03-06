@@ -2301,7 +2301,7 @@ class Ticket extends CommonDBTM {
       $tab[31]['field']      = 'type';
       $tab[31]['name']       = $LANG['common'][17];
       $tab[31]['searchtype'] = 'equals';
-      $tab[31]['joinparams']    = array('jointype' => 'child');
+      $tab[31]['joinparams'] = array('jointype' => 'child');
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
       $tab[60]['field']         = 'date_begin';
@@ -2478,8 +2478,8 @@ class Ticket extends CommonDBTM {
          $keep = false;
          foreach($tab as $key => $val) {
             if (!is_array($val)) {
-               $keep = in_array($key,$tokeep);
-            } 
+               $keep = in_array($key, $tokeep);
+            }
             if (!$keep) {
                if (is_array($val)) {
                   $tab[$key]['nosearch'] = true;
@@ -2836,16 +2836,18 @@ class Ticket extends CommonDBTM {
     * @param $new string value of target status
     *
     * @return boolean
-    */
+   **/
    static function isAllowedStatus($old, $new) {
 
       if (isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$old][$new])
-            && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$old][$new]) {
+          && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$old][$new]) {
          return false;
       }
+
       if (array_key_exists('helpdesk_status', $_SESSION['glpiactiveprofile'])) { // Not set for post-only)
          return true;
       }
+
       return false;
    }
 
@@ -3796,7 +3798,7 @@ class Ticket extends CommonDBTM {
 
       // Requester
       if (!$ID) {
-         
+
          if (haveRight("update_ticket","1")) {
             $this->showUserAddFormOnCreate(self::REQUESTER,$options);
          } else {

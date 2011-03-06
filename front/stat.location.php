@@ -167,7 +167,7 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[html_clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][11],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
@@ -179,7 +179,7 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[html_clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][19]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][19] => $cleandata),
                       array('title'     => $LANG['stats'][19],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
@@ -191,7 +191,7 @@ if (!$_REQUEST['showgraph']) {
          $newkey=html_clean($key);
          $cleandata[$newkey]=$val;
       }
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][17],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],

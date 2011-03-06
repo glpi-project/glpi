@@ -292,7 +292,7 @@ class Stat {
          if ($output_type==HTML_OUTPUT) { // HTML display
             echo Search::showHeaderItem($output_type, "", $header_num);
          }
-         if ($output_type!=HTML_OUTPUT) { 
+         if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][13].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][14], $header_num);
@@ -300,21 +300,21 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][17], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
-         if ($output_type!=HTML_OUTPUT) { 
+         if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['satisfaction'][0].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
 
-         if ($output_type!=HTML_OUTPUT) { 
+         if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][8].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
 
-         if ($output_type!=HTML_OUTPUT) { 
+         if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][26].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
@@ -766,6 +766,7 @@ class Stat {
                       GROUP BY `glpi_tickets`.`id`
                       ORDER BY `glpi_tickets`.`solvedate`";
             break;
+
          case "inter_opensatisfaction" :
             $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
                         AND `glpi_tickets`.`closedate` IS NOT NULL
@@ -782,6 +783,7 @@ class Stat {
                       GROUP BY date_unix
                       ORDER BY `glpi_tickets`.`closedate`";
             break;
+
          case "inter_answersatisfaction" :
             $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
                         AND `glpi_tickets`.`closedate` IS NOT NULL

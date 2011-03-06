@@ -4619,7 +4619,8 @@ class Search {
     *
     * @return string to display
    **/
-   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="",$options="") {
+   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="",
+                                  $options="") {
       global $CFG_GLPI;
 
       $out = "";
