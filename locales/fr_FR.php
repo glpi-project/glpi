@@ -1560,7 +1560,7 @@ $LANG['planning'][18] = "Fait";
 
 
 $LANG['plugins'][0]  = "Liste des plugins";
-
+$LANG['plugins'][1] = "Supprimez-le ou mettez-le à jour sinon GLPI ne fonctionnera pas correctement.";
 $LANG['plugins'][2]  = "Installé / non configuré";
 $LANG['plugins'][3]  = "Installé / non activé";
 $LANG['plugins'][4]  = "Erreur / à nettoyer";
@@ -1570,7 +1570,6 @@ $LANG['plugins'][7]  = "Aucun plugin installé";
 $LANG['plugins'][8]  = "Voir le catalogue des plugins";
 $LANG['plugins'][9]  = "Auteurs";
 $LANG['plugins'][10] = "Plugin incompatible avec cette version de GLPI";
-$LANG['plugins'][11] = "Supprimez le ou mettez le à jour sinon GLPI ne fonctionnera pas correctement.";
 
 
 $LANG['printers'][14] = "Série";
@@ -2330,20 +2329,17 @@ $LANG['stats'][11] = "Nombre de tickets résolus";
 $LANG['stats'][12] = "Prise en compte";
 $LANG['stats'][13] = "Nombre de tickets";
 $LANG['stats'][14] = "Durée réelle";
-$LANG['stats'][15] = "Délai moyen de résolution du ticket";
+
 $LANG['stats'][16] = "Nom du technicien";
 $LANG['stats'][17] = "Nombre de tickets clos";
-$LANG['stats'][18] = "Délai moyen de clôture";
+
 $LANG['stats'][19] = "Nombre de tickets résolus en retard";
 $LANG['stats'][20] = "Nom d'utilisateur";
 
 $LANG['stats'][23] = "Pas de statistiques disponibles";
 
-$LANG['stats'][25] = "Durée réelle moyenne de traitement du ticket";
 $LANG['stats'][26] = "Durée réelle de traitement du ticket";
-$LANG['stats'][27] = "Durée réelle totale de traitement des tickets";
 
-$LANG['stats'][30] = "Délai moyen de prise en compte du ticket";
 $LANG['stats'][31] = "Jour(s)";
 
 $LANG['stats'][33] = "Min(s)";
