@@ -314,9 +314,9 @@ function addTracking($type, $ID, $ID_entity) {
 
       $solution        = "";
       $solutiontype    = 0;
-      $due_date = $opendate + $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
-                      mt_rand(0, 60)*MINUTE_TIMESTAMP;
-      $duedatetoadd = "'".date("Y-m-d H:i:s", intval($due_date))."'";
+      $due_date        = $opendate + $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+
+                         mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
+      $duedatetoadd    = "'".date("Y-m-d H:i:s", intval($due_date))."'";
 
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
@@ -371,12 +371,12 @@ function addTracking($type, $ID, $ID_entity) {
 
       $query = "INSERT INTO `glpi_groups_tickets`
                 VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
-                       '".Ticket::ASSIGN."');";
+                       '".Ticket::ASSIGN."')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_tickets`
                 VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
-                       '".Ticket::REQUESTER."');";
+                       '".Ticket::REQUESTER."')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
 
@@ -417,7 +417,7 @@ function addTracking($type, $ID, $ID_entity) {
          $query = "INSERT INTO `glpi_tickettasks`
                    VALUES (NULL, '$tID', '".mt_rand($FIRST['taskcategory'], $LAST['taskcategory'])."',
                            '".date("Y-m-d H:i:s",$date)."', '".$users[1]."',
-                           'task $i ".getRandomString(15)."', '".mt_rand(0,1)."', '$actiontime');";
+                           'task $i ".getRandomString(15)."', '".mt_rand(0,1)."', '$actiontime')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $fID = $DB->insert_id();
@@ -427,20 +427,22 @@ function addTracking($type, $ID, $ID_entity) {
       if ($status=="plan"&&$fID) {
          $query = "INSERT INTO `glpi_ticketplannings`
                    VALUES (NULL, '$fID', '".$users[1]."', '".date("Y-m-d H:i:s", $date3)."',
-                           '".date("Y-m-d H:i:s", $date4)."', '1');";
+                           '".date("Y-m-d H:i:s", $date4)."', '1')";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
 
-      // Insert satisfcation for stats
-      if ($status=='closed' && mt_rand(0,100) < $percent['satisfaction']) {
+      // Insert satisfaction for stats
+      if ($status=='closed'
+          && mt_rand(0,100) < $percent['satisfaction']) {
 
          $answerdatetoadd = 'NULL';
          if (mt_rand(0,100) < $percent['answersatisfaction']) {
             $answerdatetoadd = $closedatetoadd;
          }
 
-         $query = "INSERT INTO `glpi_ticketsatisfactions` VALUES (NULL,$tID,'".mt_rand(1,2)."',
-                  $closedatetoadd, $answerdatetoadd,'".mt_rand(0,5)."','comment satisfaction $tID');";
+         $query = "INSERT INTO `glpi_ticketsatisfactions`
+                   VALUES (NULL, $tID, '".mt_rand(1,2)."', $closedatetoadd, $answerdatetoadd,
+                           '".mt_rand(0,5)."', 'comment satisfaction $tID')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
       }
@@ -1292,7 +1294,7 @@ function generate_entity($ID_entity) {
 
       $group = mt_rand($FIRST['groups'], $LAST['groups']);
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0);";
+                VALUES (NULL, '$user_id', '$group', 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "UPDATE `glpi_groups`
@@ -1664,7 +1666,7 @@ function generate_entity($ID_entity) {
 
       // Add an enterprise
       $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$conID');";
+                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$conID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1685,7 +1687,7 @@ function generate_entity($ID_entity) {
 
       // Add an enterprise
       $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$conID');";
+                VALUES(NULL, '".mt_rand($FIRST["enterprises"], $LAST["enterprises"])."', '$conID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
    $LAST["contract"] = getMaxItem("glpi_contracts");

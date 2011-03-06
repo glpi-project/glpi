@@ -142,10 +142,10 @@ class Entity extends CommonTreeDropdown {
                $this->showChildren($ID);
                EntityData::showStandardOptions($this);
                Profile_User::showForEntity($this);
-               $ldaprule      = new RuleRight();
+               $ldaprule = new RuleRight();
                $ldaprule->showAndAddRuleForm($this);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule    = new RuleOcs();
+                  $ocsrule = new RuleOcs();
                   $ocsrule->showAndAddRuleForm($this);
                }
                $mailcollector = new RuleMailCollector();
@@ -166,10 +166,10 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 4 :
-               $ldaprule      = new RuleRight();
+               $ldaprule = new RuleRight();
                $ldaprule->showAndAddRuleForm($this);
                if ($CFG_GLPI["use_ocs_mode"]) {
-                  $ocsrule       = new RuleOcs();
+                  $ocsrule = new RuleOcs();
                   $ocsrule->showAndAddRuleForm($this);
                }
                $mailcollector = new RuleMailCollector();

@@ -1766,7 +1766,7 @@ class OcsServer extends CommonDBTM {
                if ($mixed_checksum & pow(2, self::VIRTUALMACHINES_FL)) {
                   // Get import vm
                   $import_vm = importArrayFromDB($line["import_vm"]);
-                  OcsServer::updateVirtualMachines($line['computers_id'], $line['ocsid'], 
+                  OcsServer::updateVirtualMachines($line['computers_id'], $line['ocsid'],
                                                    $ocsservers_id, $cfg_ocs, $import_vm, $dohistory);
                }
 
@@ -1925,7 +1925,7 @@ class OcsServer extends CommonDBTM {
              && !in_array("uuid", $options['computers_updates'])) {
             $compupdate["uuid"] = $line["UUID"];
          }
-         
+
          return array('logHistory'=>$logHistory,'fields'=>$compupdate);
       }
    }
@@ -3653,7 +3653,7 @@ class OcsServer extends CommonDBTM {
 
                // Add network device
                if ($DBocs->numrows($result2) > 0) {
-                  $mac_already_imported=array();
+                  $mac_already_imported = array();
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
@@ -3662,30 +3662,30 @@ class OcsServer extends CommonDBTM {
                            $mac_already_imported[] = $line2["MACADDR"];
 
                            if (!in_array(stripslashes($prevalue.$network["designation"]),
-                                       $import_device)) {
+                                                      $import_device)) {
                               if (!empty ($line2["SPEED"])) {
                                  $network["bandwidth"] = $line2["SPEED"];
                               }
                               $DeviceNetworkCard = new DeviceNetworkCard();
                               $net_id = $DeviceNetworkCard->import($network);
                               if ($net_id) {
-                                 $devID = $CompDevice->add(array('computers_id'  => $computers_id,
-                                                               '_itemtype'     => 'DeviceNetworkCard',
-                                                               'devicenetworkcards_id' => $net_id,
-                                                               'specificity'   => $line2["MACADDR"],
-                                                               '_no_history'   => !$dohistory));
+                                 $devID = $CompDevice->add(array('computers_id' => $computers_id,
+                                                                 '_itemtype'    => 'DeviceNetworkCard',
+                                                                 'devicenetworkcards_id' => $net_id,
+                                                                 'specificity'  => $line2["MACADDR"],
+                                                                 '_no_history'  => !$dohistory));
                                  self::addToOcsArray($computers_id,
-                                                   array($prevalue.$devID
-                                                                  => $prevalue.$network["designation"]),
-                                                   "import_device");
+                                                     array($prevalue.$devID
+                                                            > $prevalue.$network["designation"]),
+                                                     "import_device");
                               }
                            } else {
                               $tmp = array_search(stripslashes($prevalue.$network["designation"]),
-                                                $import_device);
-                              list($type,$id) = explode(self::FIELD_SEPARATOR,$tmp);
+                                                  $import_device);
+                              list($type, $id) = explode(self::FIELD_SEPARATOR, $tmp);
                               $CompDevice->update(array('id'          => $id,
-                                                      'specificity' => $line2["MACADDR"],
-                                                      '_itemtype'   => 'DeviceNetworkCard',));
+                                                        'specificity' => $line2["MACADDR"],
+                                                        '_itemtype'   => 'DeviceNetworkCard'));
                               unset ($import_device[$tmp]);
                            }
                         }
@@ -4484,7 +4484,7 @@ class OcsServer extends CommonDBTM {
             $vm['ram']  = $line['MEMORY'];
             $vm['uuid'] = $line['UUID'];
             $vm['computers_id'] = $computers_id;
-            
+
             $vm['virtualmachinestates_id'] = Dropdown::importExternal('VirtualMachineState',
                                                                       $line['STATUS']);
             $vm['virtualmachinetypes_id'] = Dropdown::importExternal('VirtualMachineType',
@@ -4513,7 +4513,7 @@ class OcsServer extends CommonDBTM {
          }
       }
    }
-   
+
    /**
     * Update config of a new software
     *

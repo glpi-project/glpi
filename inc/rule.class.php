@@ -1900,7 +1900,7 @@ class Rule extends CommonDBTM {
       $query = "SELECT `rules_id`
                 FROM `glpi_ruleactions`
                 WHERE `value` = '".$item->getField('id')."'
-                  AND `field` = '".getForeignKeyFieldForTable($item->getTable())."'";
+                      AND `field` = '".getForeignKeyFieldForTable($item->getTable())."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -1915,6 +1915,7 @@ class Rule extends CommonDBTM {
          }
       }
    }
+
 }
 
 ?>
