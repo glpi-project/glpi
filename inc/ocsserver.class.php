@@ -1766,8 +1766,8 @@ class OcsServer extends CommonDBTM {
                if ($mixed_checksum & pow(2, self::VIRTUALMACHINES_FL)) {
                   // Get import vm
                   $import_vm = importArrayFromDB($line["import_vm"]);
-                  OcsServer::updateVirtualMachines($line['computers_id'], $line['ocsid'],
-                                                   $ocsservers_id, $cfg_ocs, $import_vm, $dohistory);
+                  self::updateVirtualMachines($line['computers_id'], $line['ocsid'],
+                                              $ocsservers_id, $cfg_ocs, $import_vm, $dohistory);
                }
 
                // Update OCS Cheksum
@@ -4463,11 +4463,11 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_vm,
-                              $dohistory) {
+   static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $import_vm,
+                                         $dohistory) {
       global $DBocs;
 
-      OcsServer::checkOCSconnection($ocsservers_id);
+      self::checkOCSconnection($ocsservers_id);
 
       //Get vms for this host
       $query = "SELECT *
@@ -4485,12 +4485,12 @@ class OcsServer extends CommonDBTM {
             $vm['uuid'] = $line['UUID'];
             $vm['computers_id'] = $computers_id;
 
-            $vm['virtualmachinestates_id'] = Dropdown::importExternal('VirtualMachineState',
-                                                                      $line['STATUS']);
-            $vm['virtualmachinetypes_id'] = Dropdown::importExternal('VirtualMachineType',
-                                                                     $line['VMTYPE']);
+            $vm['virtualmachinestates_id']  = Dropdown::importExternal('VirtualMachineState',
+                                                                       $line['STATUS']);
+            $vm['virtualmachinetypes_id']   = Dropdown::importExternal('VirtualMachineType',
+                                                                       $line['VMTYPE']);
             $vm['virtualmachinesystems_id'] = Dropdown::importExternal('VirtualMachineType',
-                                                                     $line['SUBSYSTEM']);
+                                                                       $line['SUBSYSTEM']);
 
             if (!in_array(stripslashes($line["ID"]), $import_vm)) {
                $virtualmachine->reset();
@@ -4499,8 +4499,7 @@ class OcsServer extends CommonDBTM {
                }
                $id_vm = $virtualmachine->add($vm);
                if ($id_vm) {
-                  OcsServer::addToOcsArray($computers_id, array($id_vm => $line['ID']),
-                                           "import_vm");
+                  self::addToOcsArray($computers_id, array($id_vm => $line['ID']), "import_vm");
                }
             } else {
                $id = array_search(stripslashes($line["ID"]), $import_vm);
@@ -4513,6 +4512,7 @@ class OcsServer extends CommonDBTM {
          }
       }
    }
+
 
    /**
     * Update config of a new software
@@ -4558,8 +4558,8 @@ class OcsServer extends CommonDBTM {
                } else if (in_array($line['FILESYSTEM'], array('ext2', 'ext3', 'ext4', 'ffs',
                                                               'fuseblk', 'fusefs', 'hfs', 'jfs',
                                                               'jfs2', 'Journaled HFS+', 'nfs',
-                                                              'smbfs', 'reiserfs','VxFS', 'ufs',
-                                                              'xfs', 'zfs','vmfs'))) {
+                                                              'smbfs', 'reiserfs', 'vmfs', 'VxFS',
+                                                              'ufs', 'xfs', 'zfs'))) {
                   // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint'] = $line['VOLUMN'];
                   $disk['device']     = $line['TYPE'];

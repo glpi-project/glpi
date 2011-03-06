@@ -44,8 +44,8 @@ class Computer extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('ComputerDisk', 'Infocom', 'NetworkPort', 'Ocslink',
-                                        'ReservationItem','ComputerVirtualMachine');
+   protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine', 'Infocom',
+                                        'NetworkPort', 'Ocslink', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices = array();
@@ -673,19 +673,19 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this,'os_licenseid');
+      autocompletionTextField($this, 'os_licenseid');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this,'os_license_number');
+      autocompletionTextField($this, 'os_license_number');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this,'uuid');
+      autocompletionTextField($this, 'uuid');
       echo "</td></tr>\n";
 
       // Get OCS Datas :

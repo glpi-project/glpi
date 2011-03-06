@@ -29,10 +29,9 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi collet
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

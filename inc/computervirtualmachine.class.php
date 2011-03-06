@@ -138,18 +138,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       autocompletionTextField($this, "name");
       echo "</td><td>".$LANG['computers'][62]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineType', 
+      Dropdown::show('VirtualMachineType',
                      array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][60]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineSystem', 
+      Dropdown::show('VirtualMachineSystem',
                      array('value' => $this->fields['virtualmachinesystems_id']));
       echo "</td><td>".$LANG['computers'][63]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineState', 
+      Dropdown::show('VirtualMachineState',
                      array('value' => $this->fields['virtualmachinestates_id']));
       echo "</td></tr>";
 
@@ -174,7 +174,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       $this->addDivForTabs();
 
       return true;
-
    }
 
 
@@ -192,7 +191,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
          return false;
       }
       $canedit = $comp->can($ID, "w");
@@ -200,25 +199,23 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && $comp->fields['uuid'] != '') {
-         $where = "`uuid`='".$comp->fields['uuid']."'";
-         $hosts = getAllDatasFromTable('glpi_computervirtualmachines',$where);
+         $where = "`uuid` = '".$comp->fields['uuid']."'";
+         $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+
          if (!empty($hosts)) {
-
             echo "<table class='tab_cadre_fixe'>";
-
-            echo "<tr><th colspan='2'>";
-            echo $LANG['computers'][65];
-            echo "</th></tr>";
+            echo "<tr><th colspan='2'>".$LANG['computers'][65]."</th></tr>";
 
             echo "<tr><th>".$LANG['common'][16]."</th>";
             echo "<th>".$LANG['entity'][0]."</th>";
-            echo "</th></tr>";
-            
+            echo "</tr>";
+
             $computer = new Computer();
             foreach ($hosts as $host) {
-               $href = "<a href='computer.form.php?id=".$host['id']."'>";
+                // not used ??
+               // $href = "<a href='computer.form.php?id=".$host['id']."'>";
                echo "<tr class='tab_bg_2'>";
-               echo "<td>"; 
+               echo "<td>";
                if ($computer->can($host['computers_id'],'r')) {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
@@ -226,22 +223,21 @@ class ComputerVirtualMachine extends CommonDBChild {
                   echo $computer->fields['name'];
                }
                echo "</td>";
-               echo "<td>"; 
-               echo Dropdown::getDropdownName('glpi_entities',$computer->fields['entities_id']);
-               echo "</td>";
+               echo "<td>";
+               echo Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']);
+               echo "</td></tr>";
             }
+            echo "</table>";
          }
-
-         echo "</table>";
       }
       echo "</div>";
       if (!empty($hosts)) {
          echo "<br>";
       }
 
-      
    }
-   
+
+
    /**
     * Print the computers disks
     *
@@ -255,26 +251,22 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
          return false;
       }
       $canedit = $comp->can($ID, "w");
 
-      echo "<div class='center'>";
+      echo "<div class='spaced center'>";
 
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
                                               "`computers_id` = '$ID'");
-      if (empty($virtualmachines)) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>";
-         echo $LANG['computers'][59];
-         echo "</th></tr>";
-      } else {
-         echo "<table class='tab_cadre_fixe'>";
 
-        echo "<tr><th colspan='9'>";
-        echo $LANG['computers'][66];
-        echo "</th></tr>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      if (empty($virtualmachines)) {
+         echo "<tr><th>".$LANG['computers'][59]."</th></tr>";
+      } else {
+         echo "<tr><th colspan='9'>".$LANG['computers'][66]."</th></tr>";
 
          echo "<tr><th>".$LANG['common'][16]."</th>";
          echo "<th>".$LANG['computers'][62]."</th>";
@@ -285,30 +277,29 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".$LANG['computers'][24]."</th>";
          echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
-         echo "</th></tr>";
-         
-         $vm = new ComputerVirtualMachine();
+
+         $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
             echo "<tr class='tab_bg_2'>";
             $vm->fields = $virtualmachines;
             echo "<td>$href".$virtualmachine['name']."</a></td>";
-            echo "<td>"; 
+            echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
-                                           $virtualmachine['virtualmachinetypes_id']); 
+                                           $virtualmachine['virtualmachinetypes_id']);
             echo "</td>";
-            echo "<td>"; 
+            echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinesystems',
-                                           $virtualmachine['virtualmachinesystems_id']); 
+                                           $virtualmachine['virtualmachinesystems_id']);
             echo "</td>";
-            echo "<td>"; 
+            echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinestates',
-                                           $virtualmachine['virtualmachinestates_id']); 
+                                           $virtualmachine['virtualmachinestates_id']);
             echo "</td>";
             echo "<td>$href".$virtualmachine['uuid']."</a></td>";
             echo "<td>".$virtualmachine['vcpu']."</td>";
             echo "<td>".$virtualmachine['ram']."</td>";
-            echo "<td>"; 
+            echo "<td>";
             if ($link_computer = self::findVirtualMachine($virtualmachine)) {
                $computer = new Computer();
                if ($computer->can($link_computer,'r')) {
@@ -331,21 +322,25 @@ class ComputerVirtualMachine extends CommonDBChild {
       }
 
       echo "</table>";
-      echo "</div><br>";
+      echo "</div>";
    }
 
-   static function findVirtualMachine($fields = array()) {
+
+   static function findVirtualMachine($fields=array()) {
       global $DB;
-      $query = "SELECT `id` FROM `glpi_computers` 
-                WHERE id NOT IN ('".$fields['id']."')
-                   AND `uuid`='".$fields['uuid']."'";
+
+      $query = "SELECT `id`
+                FROM `glpi_computers`
+                WHERE `id` NOT IN ('".$fields['id']."')
+                      AND `uuid` = '".$fields['uuid']."'";
       $result = $DB->query($query);
+
       if ($DB->numrows($result)) {
          return $DB->result($result,0,'id');
-      } else {
-         return false;
       }
+      return false;
    }
+
 }
 
 ?>
