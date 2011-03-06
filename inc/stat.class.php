@@ -223,8 +223,9 @@ class Stat {
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
 
             //open satisfaction
-            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1,
+                                                              $date2, $type, $value[$i]["id"],
+                                                              $value2);
             $nb_opensatisfaction = array_sum($opensatisfaction);
             $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
 
@@ -269,7 +270,6 @@ class Stat {
 
          echo Search::showHeader($output_type, $end_display-$start+1, $nbcols);
 
-
          if ($output_type==HTML_OUTPUT) { // HTML display
             echo Search::showNewLine($output_type);
             $header_num = 1;
@@ -277,16 +277,19 @@ class Stat {
             echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
             echo Search::showHeaderItem($output_type, "", $header_num);
 
-            echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num,'',0,'',"colspan=4");
-            echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num,'',0,'',"colspan=3");
-            echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num,'',0,'',"colspan=3");
-            echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num,'',0,'',"colspan=2");
+            echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num, '', 0, '',
+                                        "colspan=4");
+            echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '', 0,
+                                        '', "colspan=3");
+            echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num, '', 0, '',
+                                        "colspan=3");
+            echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num, '', 0, '',
+                                        "colspan=2");
          }
 
-
          echo Search::showNewLine($output_type);
-         $header_num = 1;
-         $header_to_add='';
+         $header_num    = 1;
+         $header_to_add = '';
          echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
 
          if ($output_type==HTML_OUTPUT) { // HTML display
@@ -378,8 +381,9 @@ class Stat {
 
 
             //Satisfaction open
-            $opensatisfaction = self::constructEntryValues("inter_opensatisfaction", $date1, $date2, $type,
-                                                $value[$i]["id"], $value2);
+            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1,
+                                                              $date2, $type, $value[$i]["id"],
+                                                              $value2);
             $nb_opensatisfaction = array_sum($opensatisfaction);
             if ($nb_opensatisfaction>0) {
                $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
@@ -388,8 +392,9 @@ class Stat {
             echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
 
             //Satisfaction answer
-            $answersatisfaction = self::constructEntryValues("inter_answersatisfaction", $date1, $date2, $type,
-                                                $value[$i]["id"], $value2);
+            $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction", $date1,
+                                                                $date2, $type, $value[$i]["id"],
+                                                                $value2);
             $nb_answersatisfaction = array_sum($answersatisfaction);
             if ($nb_answersatisfaction>0) {
                $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
@@ -398,8 +403,8 @@ class Stat {
             echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
 
             //Satisfaction rate
-            $satisfaction = self::constructEntryValues("inter_avgsatisfaction", $date1, $date2, $type,
-                                                $value[$i]["id"], $value2);
+            $satisfaction = self::constructEntryValues("inter_avgsatisfaction", $date1, $date2,
+                                                       $type, $value[$i]["id"], $value2);
             foreach ($satisfaction as $key2 => $val2) {
                $satisfaction[$key2] *= $answersatisfaction[$key2];
             }

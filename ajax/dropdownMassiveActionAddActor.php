@@ -44,7 +44,7 @@ checkRight("user", "w");
 
 if ($_POST["actortype"] > 0) {
    $rand = mt_rand();
-   Ticket::showActorAddForm($_POST["actortype"],$rand,$_SESSION['glpiactive_entity'],false);
+   Ticket::showActorAddForm($_POST["actortype"], $rand, $_SESSION['glpiactive_entity'], false);
    echo "&nbsp;<input type='submit' name='add_actor' class='submit' value=\"".$LANG['buttons'][2]."\">";
 }
 

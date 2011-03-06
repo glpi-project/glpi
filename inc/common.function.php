@@ -796,10 +796,11 @@ function checkWriteAccessToDirs($fordebug=false) {
 
       if ($tmperror > 0) {
          if ($fordebug) {
-               echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".$LANG['install'][97]." $dir - ".$errors[$tmperror]."\n";
+            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".$LANG['install'][97]." $dir - ".
+                           $errors[$tmperror]."\n";
          } else {
-               echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
-                        $errors[$tmperror]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
+                       $errors[$tmperror]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
          }
          $error = 2;
       } else {
@@ -822,16 +823,17 @@ function checkWriteAccessToDirs($fordebug=false) {
          echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][22].
-                  "\" title=\"".$LANG['install'][22]."\"></td></tr>";
+                    "\" title=\"".$LANG['install'][22]."\"></td></tr>";
       }
 
    } else {
       if ($fordebug) {
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".GLPI_LOG_DIR."\n";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".
+                        GLPI_LOG_DIR."\n";
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".$LANG['install'][19].
-                  "</p> ".$LANG['install'][97]."'".GLPI_LOG_DIR."'. ".
-            "</td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                   "<p class='red'>".$LANG['install'][19]."</p>".
+                   $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
       }
       $error = 1;
    }
