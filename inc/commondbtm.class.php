@@ -619,7 +619,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return integer the new ID of the added item (or false if fail)
    **/
-   function add($input, $options=array(),$history = true) {
+   function add($input, $options=array(), $history=true) {
       global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
@@ -1807,7 +1807,7 @@ class CommonDBTM extends CommonGLPI {
                      $comment = $LANG['common'][84];
 
                   } else {
-                     Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);
+                     Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
                      $comment = $LANG['common'][85];
                   }
                   echo "&nbsp;";

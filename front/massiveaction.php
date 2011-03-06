@@ -616,11 +616,12 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
+
          case "add_actor" :
             $ticket = new Ticket();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input = array('id'        => $key);
+                  $input = array('id' => $key);
                   if (isset($_POST['_ticket_requester'])) {
                      $input['_ticket_requester'] = $_POST['_ticket_requester'];
                   }
@@ -636,6 +637,7 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
+
          case 'reset' :
             if ($_POST["itemtype"] == 'CronTask') {
                checkRight('config','w');

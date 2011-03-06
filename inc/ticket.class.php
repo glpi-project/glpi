@@ -3622,6 +3622,7 @@ class Ticket extends CommonDBTM {
       }
    }
 
+
    /**
     * show actor add div
     *
@@ -3632,44 +3633,45 @@ class Ticket extends CommonDBTM {
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type,$rand_type,$entities_id,$inticket=true) {
-      global $LANG,$CFG_GLPI;
+   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true) {
+      global $LANG, $CFG_GLPI;
 
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
             break;
+
          case self::OBSERVER :
             $typename = 'observer';
             break;
+
          case self::ASSIGN :
             $typename = 'assign';
             break;
+
          default :
             return false;
-            break;
       }
-
 
       echo "<div ".($inticket?"style='display:none'":'')." id='ticketactor$rand_type'>";
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                        'user'  => $LANG['common'][34],
-                        'group' => $LANG['common'][35]);
+                      'user'  => $LANG['common'][34],
+                      'group' => $LANG['common'][35]);
       $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
-                        'actortype'       => $typename,
-                        'entity_restrict' => $entities_id);
+                      'actortype'       => $typename,
+                      'entity_restrict' => $entities_id);
 
       ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$typename."[_type]$rand",
-                                    "showticket".$typename."_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
-                                    $params);
+                                  "showticket".$typename."_$rand",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php", $params);
       echo "<span id='showticket".$typename."_$rand'>&nbsp;</span>";
       if ($inticket) {
          echo "<hr>";
       }
       echo "</div>";
    }
+
 
    /**
     * show actor add div
@@ -3679,44 +3681,47 @@ class Ticket extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showUserAddFormOnCreate($type,$options) {
-      global $LANG,$CFG_GLPI;
+   function showUserAddFormOnCreate($type, $options) {
+      global $LANG, $CFG_GLPI;
 
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
             break;
+
          case self::OBSERVER :
             $typename = 'observer';
             break;
+
          case self::ASSIGN :
             $typename = 'assign';
             break;
+
          default :
             return false;
-            break;
       }
+
       echo self::getActorIcon('user', $type)."&nbsp;";
       //List all users in the active entities
       $rand = User::dropdown(array('name'        => '_users_id_'.$typename,
-                                    'value'       => $options["_users_id_".$typename],
-                                    'entity'      => $_SESSION['glpiactiveentities'],
-                                    'right'       => 'all',
-                                    'auto_submit' => $type==self::REQUESTER,
-                                    'ldap_import' => true));
+                                   'value'       => $options["_users_id_".$typename],
+                                   'entity'      => $_SESSION['glpiactiveentities'],
+                                   'right'       => 'all',
+                                   'auto_submit' => $type==self::REQUESTER,
+                                   'ldap_import' => true));
 
       if ($CFG_GLPI['use_mailing']) {
          echo "<div id='notif_".$typename."_$rand'>";
          echo "</div>";
          $paramscomment = array('value' => '__VALUE__',
-                                 'field' => "_users_id_".$typename."_notif",
-                                 'use_notification'
-                                          => $options["_users_id_".$typename."_notif"]['use_notification']);
+                                'field' => "_users_id_".$typename."_notif",
+                                'use_notification'
+                                        => $options["_users_id_".$typename."_notif"]['use_notification']);
 
          ajaxUpdateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,
-                                       "notif_".$typename."_$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                       $paramscomment, false);
+                                     "notif_".$typename."_$rand",
+                                     $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                     $paramscomment, false);
          echo "<script type='text/javascript'>";
          ajaxUpdateItemJsCode("notif_".$typename."_$rand",
                               $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
@@ -3724,6 +3729,7 @@ class Ticket extends CommonDBTM {
          echo "</script>";
       }
    }
+
 
    /**
     * show actor part in ticket form
@@ -3733,7 +3739,7 @@ class Ticket extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showActorsPartForm($ID,$options) {
+   function showActorsPartForm($ID, $options) {
       global $LANG, $CFG_GLPI;
 
       $showuserlink = 0;
@@ -3793,14 +3799,15 @@ class Ticket extends CommonDBTM {
       echo "<td>";
 
       if ($rand_requester_ticket>=0) {
-         self::showActorAddForm(self::REQUESTER,$rand_requester_ticket,$this->fields['entities_id']);
+         self::showActorAddForm(self::REQUESTER, $rand_requester_ticket,
+                                $this->fields['entities_id']);
       }
 
       // Requester
       if (!$ID) {
 
          if (haveRight("update_ticket","1")) {
-            $this->showUserAddFormOnCreate(self::REQUESTER,$options);
+            $this->showUserAddFormOnCreate(self::REQUESTER, $options);
          } else {
             echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
             echo getUserName($options["_users_id_requester"], $showuserlink);

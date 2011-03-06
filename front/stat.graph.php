@@ -448,11 +448,13 @@ Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
 
 
 ///////// Satisfaction
-$values['opensatisfaction']  = Stat::constructEntryValues("inter_opensatisfaction", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['opensatisfaction']   = Stat::constructEntryValues("inter_opensatisfaction",
+                                                           $_REQUEST["date1"], $_REQUEST["date2"],
+                                                           $_GET["type"], $val1, $val2);
 
-$values['answersatisfaction'] = Stat::constructEntryValues("inter_answersatisfaction", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['answersatisfaction'] = Stat::constructEntryValues("inter_answersatisfaction",
+                                                           $_REQUEST["date1"], $_REQUEST["date2"],
+                                                           $_GET["type"], $val1, $val2);
 
 
 $available = array('opensatisfaction'   => $LANG['satisfaction'][13],
@@ -477,9 +479,10 @@ Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
                                 'unit'      => $LANG['stats'][35]));
 
 $values['avgsatisfaction'] = Stat::constructEntryValues("inter_avgsatisfaction", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+                                                        $_REQUEST["date2"], $_GET["type"], $val1,
+                                                        $val2);
 
-$available = array('avgsatisfaction'    => $LANG['satisfaction'][7]);
+$available = array('avgsatisfaction' => $LANG['satisfaction'][7]);
 echo "<div class='center'>";
 
 foreach ($available as $key => $name) {
@@ -495,7 +498,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][7]));
+Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
 
 
 echo "</form>";
