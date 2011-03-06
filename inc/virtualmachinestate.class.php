@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ class VirtualMachineState extends CommonDropdown {
 
       return $LANG['computers'][63];
    }
+
 }
 
 ?>

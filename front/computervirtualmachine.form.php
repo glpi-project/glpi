@@ -33,33 +33,33 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
+
 if (!isset($_GET["computers_id"])) {
    $_GET["computers_id"] = "";
 }
 
 $disk = new ComputerVirtualMachine();
 if (isset($_POST["add"])) {
-   $disk->check(-1,'w',$_POST);
+   $disk->check(-1, 'w', $_POST);
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][21]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"],'w');
+   $disk->check($_POST["id"], 'w');
 
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][21]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
@@ -67,16 +67,16 @@ if (isset($_POST["add"])) {
                ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"],'w');
+   $disk->check($_POST["id"], 'w');
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][21]." ".$_POST["id"]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][21]." ".$_POST["id"]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
+   commonHeader($LANG['Menu'][0], $_SERVER['PHP_SELF'], "inventory", "computer");
    $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
    commonFooter();
 }
