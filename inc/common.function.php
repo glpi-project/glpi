@@ -111,6 +111,9 @@ function getItemTypeSearchURL($itemtype, $full=true) {
       $item = strtolower($plug['class']);
 
    } else { // Standard case
+      if ($itemtype == 'Cartridge') {
+         $itemtype = 'CartridgeItem';
+      }
       $item = strtolower($itemtype);
    }
 

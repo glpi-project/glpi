@@ -119,7 +119,7 @@ class CartridgeItem extends CommonDBTM {
 
       $ong[1] = $LANG['Menu'][21];
       if ($this->fields['id'] > 0) {
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
+         if (haveRight("infocom","r")) {
             $ong[4] = $LANG['Menu'][26];
          }
          if (haveRight("document","r")) {
