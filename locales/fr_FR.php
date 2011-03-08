@@ -170,8 +170,6 @@ $LANG['calendarM'][11] = "Décembre";
 
 $LANG['cartridges'][0]  = "Cartouche";
 
-$LANG['cartridges'][7]  = "Pas de cartouche trouvée";
-
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
 $LANG['cartridges'][11] = "Jet d'encre";
@@ -585,9 +583,7 @@ $LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
 $LANG['entity'][0]  = "Entité";
 
 $LANG['entity'][2]  = "Entité racine";
-$LANG['entity'][3]  = "Associer à une entité";
 
-$LANG['entity'][5]  = "Affectation automatique des ordinateurs";
 $LANG['entity'][6]  = "Affectation automatique des utilisateurs";
 $LANG['entity'][7]  = "arborescence";
 $LANG['entity'][8]  = "Par entité";
@@ -1244,7 +1240,6 @@ $LANG['mailing'][37]  = "Contrat entré dans la période de préavis :";
 
 $LANG['mailing'][39]  = "Alerte Contrats";
 $LANG['mailing'][40]  = "Matériel arrivé en fin de garantie :";
-$LANG['mailing'][41]  = "Alerte Informations financières et administratives";
 
 $LANG['mailing'][47]  = "Erreur dans l'envoi du courriel";
 
@@ -1870,7 +1865,6 @@ $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
 $LANG['rulesengine'][151] = "est déjà présent dans GLPI";
 $LANG['rulesengine'][152] = "Ordinateur à importer";
-$LANG['rulesengine'][153] = "Ordinateur dans GLPI";
 $LANG['rulesengine'][154] = "est vide";
 $LANG['rulesengine'][155] = "Lier avec l'ordinateur";
 
@@ -1885,7 +1879,6 @@ $LANG['satisfaction'][7]  = "Degré de satisfaction";
 $LANG['satisfaction'][8]  = "Commentaire à l'enquête de satisfaction";
 $LANG['satisfaction'][9]  = "Enquête interne";
 $LANG['satisfaction'][10] = "Enquête externe";
-$LANG['satisfaction'][11] = "Nous vous invitons à apprécier la qualité de la prestation : ";
 $LANG['satisfaction'][12] = "Invitation à remplir l'enquête";
 $LANG['satisfaction'][13] = "Ouvertes";
 $LANG['satisfaction'][14] = "Réponses";
@@ -2239,11 +2232,8 @@ $LANG['setup'][808] = "Base de données esclave désynchronisée !";
 $LANG['setup'][809] = "Réplicat MySQL : lecture seule";
 $LANG['setup'][810] = "Désynchronisation du réplicat MySQL";
 $LANG['setup'][811] = "Unicité des champs";
-$LANG['setup'][812] = "Critères d'unicité des champs par type";
 $LANG['setup'][813] = "Enregistrement impossible pour ";
-$LANG['setup'][814] = "Vérification globale";
 $LANG['setup'][815] = "Champ(s) unique(s)";
-$LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 $LANG['setup'][819] = "Passage à l'état ";
@@ -2318,7 +2308,6 @@ $LANG['stats'][0]  = "Sélectionnez les statistiques à visualiser";
 $LANG['stats'][1]  = "Globales";
 $LANG['stats'][2]  = "Aucun élément à afficher";
 $LANG['stats'][3]  = "Par Intitulé";
-$LANG['stats'][4]  = "Degré de satisfaction moyen";
 $LANG['stats'][5]  = "Nombre de tickets ouverts";
 
 $LANG['stats'][7]  = "Voir les graphiques";
