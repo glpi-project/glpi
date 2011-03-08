@@ -1,0 +1,32 @@
+CREDITS
+=======
+
+eZ Components team
+------------------
+
+- Sergey Alexeev
+- Sebastian Bergmann
+- Jan Borsodi
+- Raymond Bosman
+- Frederik Holljen
+- Kore Nordmann
+- Derick Rethans
+- Vadym Savchuk
+- Tobias Schlitt
+- Alexandru Stanoi
+
+Contributors
+------------
+
+- Lars Jankowski
+
+  * ODO Meter Charts
+
+- Elger Thiele
+
+  * Custom highlight values in line and bar charts.
+
+- Michael Maclean
+
+  * Contributing the Cairo-OO-driver
+

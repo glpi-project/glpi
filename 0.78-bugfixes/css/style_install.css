@@ -1,0 +1,172 @@
+/*
+ * @version $Id$
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2010 by the INDEPNET Development Team.
+
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+*/
+
+    /*  ... Definition des styles de l'install et de l'update ... */
+
+        body {
+        background-color:#ffffff;
+        font-family: Verdana;
+	 color:#000000; }
+        
+       #principal {
+     	width:760px;
+        font-family: Verdana;
+	font-size:12px;
+        text-align: center; 
+        margin: auto;
+       
+         padding: 40px 40px 40px 40px;
+       }
+
+
+#bloc .haut{
+height: 53px;
+ background: url(../pics/haut_install.png) 0 0 no-repeat; 
+width:760px;
+margin:0;
+padding:0;
+}
+
+#bloc{
+
+background: url(../pics/milieu_install.png) 0 0 repeat-y;
+width:760px;
+margin:0;
+text-align:left;
+}
+
+
+#bloc .bas{
+height: 31px;
+background: url(../pics/bas_install.png)  0 0  no-repeat; 
+
+width:760px;
+
+margin:0;
+padding:0;
+}
+
+
+p{ padding-left:20px;
+padding-right:20px;
+
+}
+
+.center {text-align:center;}
+
+.left{ text-align:left;}
+
+       table {
+       text-align:center;
+       border: 0;
+       margin: 20px;
+       margin-left: auto;
+       margin-right: auto;
+       width: 90%;}
+
+  th
+  {  
+    font-size: 12px;
+    font-weight: bold;
+ 	color: #fccc6f;
+	vertical-align:bottom;
+}
+
+.tab_cadre{
+ 
+}
+
+.tab_bg_1 {
+
+
+}
+
+.tab_check {
+border: 1px solid #aaaaaa;
+padding:10px;
+}
+
+.tab_check td{
+	font-size:11px;
+	border-bottom:1px solid #bbbbbb;
+
+}
+
+       .red { color:red;}
+       .green {color:green;}
+       
+       h2 {
+        color:#D09800;
+        text-align:center;}
+
+       h3 {
+        text-align:center;}
+
+        input {border: 1px solid #ccc;}
+
+        fieldset {
+	margin:40px;       
+	 padding: 20px;
+          border: 2px solid  #D09800;
+        font-size: 12px;
+        font-weight:200;}
+
+	.block {
+	display: inline-block;
+	width:300px;
+	}
+        .submit { text-align:center;}
+       
+        input.submit {
+        border:1px solid #000000;
+        background-color:#eeeeee;
+        }
+        
+        input.submit:hover {
+        border:1px solid #cccccc;
+       background-color:#ffffff;
+        }
+
+	.button {
+        font-weight:200;
+	color:#000000;
+	padding:5px;
+	text-decoration:none;
+	border:1px solid #659900;
+        background-color:#eeeeee;
+        }
+
+        .button:hover{
+          font-weight:200;
+	  color:#000000;
+	 padding:5px;
+	text-decoration:none;
+	border:1px solid #659900;
+       background-color:#ffffff;
+        }
