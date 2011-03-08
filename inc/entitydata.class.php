@@ -921,12 +921,12 @@ class EntityData extends CommonDBChild {
          $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
       }
 
-      if (strstr($url,"[TICKETCATEGORIE_ID]")) {
-         $url = str_replace("[TICKETCATEGORIE_ID]", $ticket->fields['ticketcategories_id'], $url);
+      if (strstr($url,"[TICKETCATEGORY_ID]")) {
+         $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['ticketcategories_id'], $url);
       }
 
-      if (strstr($url,"[TICKETCATEGORIE_NAME]")) {
-         $url = str_replace("[TICKETCATEGORIE_NAME]",
+      if (strstr($url,"[TICKETCATEGORY_NAME]")) {
+         $url = str_replace("[TICKETCATEGORY_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_ticketcategories',
                                                                 $ticket->fields['ticketcategories_id'])),
                             $url);
