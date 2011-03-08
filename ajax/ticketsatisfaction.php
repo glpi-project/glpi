@@ -80,10 +80,10 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>".$LANG['links'][6]."&nbsp;:&nbsp;".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".
-               "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [ITEM_TYPE] [ITEM_ID] [ITEM_NAME] ".
-               "[TICKET_PRIORITY] [TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKET_TYPE] ".
-               "[TICKET_TYPENAME] [SOLUTION_TYPE] [SOLUTION_NAME] ".
-               "[SLA_ID] [SLA_NAME] [SLA_LEVELID] [SLA_LEVELNAME]</td></tr>";
+               "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [ITEMTYPE] [ITEM_ID] [ITEM_NAME] ".
+               "[TICKET_PRIORITY] [TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKETTYPE_ID] ".
+               "[TICKETTYPE_NAME] [SOLUTIONTYPE_ID] [SOLUTIONTYPE_NAME] ".
+               "[SLA_ID] [SLA_NAME] [SLALEVEL_ID] [SLALEVEL_NAME]</td></tr>";
 
          echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['common'][94] . "&nbsp;:&nbsp;</td>";
          echo "<td>";
