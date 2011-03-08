@@ -556,20 +556,20 @@ class MailCollector  extends CommonDBTM {
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
-            $tkt['tickets_id'] = (int)$match[1];
+            $tkt['tickets_id'] = intval($match[1]);
          }
       }
 
       // See in References
       if (!isset($tkt['tickets_id']) && isset($head['references'])) {
          if (preg_match($glpi_message_match, $head['references'], $match)) {
-            $tkt['tickets_id'] = (int)$match[1];
+            $tkt['tickets_id'] = intval($match[1]);
          }
       }
 
       // See in title
       if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)) {
-         $tkt['tickets_id'] = (int)$match[1];
+         $tkt['tickets_id'] = intval($match[1]);
       }
 
       // Found ticket link
@@ -867,7 +867,7 @@ class MailCollector  extends CommonDBTM {
                                  "IMAGE", "VIDEO", "OTHER");
 
       if ($structure->subtype) {
-         return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype;
+         return $primary_mime_type[intval($structure->type)] . '/' . $structure->subtype;
       }
       return "TEXT/PLAIN";
    }
