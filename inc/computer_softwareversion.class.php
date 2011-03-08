@@ -259,6 +259,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_computers`.`serial`,
                        `glpi_computers`.`otherserial`,
                        `glpi_users`.`name` AS username,
+                       `glpi_users`.`id` AS userid,
+                       `glpi_users`.`realname` AS userrealname,
+                       `glpi_users`.`firstname` AS userfirstname,
                        `glpi_softwareversions`.`name` AS version,
                        `glpi_softwareversions`.`id` AS vID,
                        `glpi_softwareversions`.`softwares_id` AS sID,
@@ -294,6 +297,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             $soft       = new Software;
             $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+            $linkUser = haveRight('user','r');
             $title      = $LANG['help'][31] ." = ". $soft->fields["name"];
 
             if ($crit=="id") {
@@ -384,7 +388,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".$data['location']."</td>";
                echo "<td>".$data['state']."</td>";
                echo "<td>".$data['groupe']."</td>";
-               echo "<td>".$data['username']."</td>";
+               echo "<td>".formatUserName($data['userid'],$data['username'],$data['userrealname'],
+                                          $data['userfirstname'],$linkUser)."</td>";
 
                $lics = Computer_SoftwareLicense::GetLicenseForInstallation($data['cID'],
                                                                            $data['vID']);
