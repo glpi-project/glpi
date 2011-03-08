@@ -81,7 +81,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
          echo "<td colspan='2'>".$LANG['links'][6]."&nbsp;:&nbsp;".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".
                "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [ITEM_TYPE] [ITEM_ID] [ITEM_NAME] ".
-               "[TICKET_PRIORITY] [TICKETCATEGORIE_ID] [TICKETCATEGORIE_NAME] [TICKET_TYPE] ".
+               "[TICKET_PRIORITY] [TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKET_TYPE] ".
                "[TICKET_TYPENAME] [SOLUTION_TYPE] [SOLUTION_NAME] ".
                "[SLA_ID] [SLA_NAME] [SLA_LEVELID] [SLA_LEVELNAME]</td></tr>";
 
