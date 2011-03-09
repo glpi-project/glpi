@@ -4498,7 +4498,7 @@ class Ticket extends CommonDBTM {
 
       $search_users_id = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".self::REQUESTER."') ";
-      $search_assign   = " (`users_id` = '".getLoginUserID()."'
+      $search_assign   = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')";
 
       if ($showgrouptickets) {
