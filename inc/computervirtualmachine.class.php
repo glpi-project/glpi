@@ -212,8 +212,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
             $computer = new Computer();
             foreach ($hosts as $host) {
-                // not used ??
-               // $href = "<a href='computer.form.php?id=".$host['id']."'>";
+
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
                if ($computer->can($host['computers_id'],'r')) {
@@ -226,7 +225,10 @@ class ComputerVirtualMachine extends CommonDBChild {
                echo "<td>";
                echo Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']);
                echo "</td></tr>";
+
             }
+
+
             echo "</table>";
          }
       }
@@ -278,6 +280,10 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
 
+         initNavigateListItems('ComputerVirtualMachine', $LANG['help'][25]." = ".
+                               (empty($comp->fields['name']) ? "($ID)"
+                                                             : $comp->fields['name']));
+
          $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
@@ -312,6 +318,8 @@ class ComputerVirtualMachine extends CommonDBChild {
             }
             echo "</td>";
             echo "</tr>";
+            addToNavigateListItems('ComputerVirtualMachine',$virtualmachine['id']);
+
          }
       }
 

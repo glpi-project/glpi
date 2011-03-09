@@ -246,6 +246,10 @@ abstract class CommonDropdown extends CommonDBTM {
                showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
                break;
 
+            case 'password':
+               echo "<input type='password' name='password' value='' size='20' autocomplete='off'>";
+               break;
+               
             default:
                $this->displaySpecificTypeField($ID, $field);
                break;
