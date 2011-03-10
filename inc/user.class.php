@@ -146,7 +146,8 @@ class User extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['users'][14]; // principal
          $ong[4] = $LANG['Menu'][36];
-         if ($this->currentUserHaveMoreRightThan($this->fields['id'])) {
+         if (haveRight('user','w') 
+            && $this->currentUserHaveMoreRightThan($this->fields['id'])) {
             $ong[6] = $LANG['Menu'][11];
          }
          $ong[2] = $LANG['common'][96]; // materiel
