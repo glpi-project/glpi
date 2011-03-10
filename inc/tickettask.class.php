@@ -165,7 +165,7 @@ class TicketTask  extends CommonDBTM {
       if (isset($input["hour"]) && isset($input["minute"])) {
          $input["realtime"] = $input["hour"]+$input["minute"]/60;
       }
-      if ($uid=getLoginUserID()) {
+      if (isset($input['update']) && $uid=getLoginUserID()) { // Change from task form
          $input["users_id"] = $uid;
       }
       if (isset($input["plan"])) {
