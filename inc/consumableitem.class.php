@@ -117,7 +117,7 @@ class ConsumableItem extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][32];
 
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
+         if (haveRight("infocom","r")) {
             $ong[4] = $LANG['Menu'][26];
          }
 
