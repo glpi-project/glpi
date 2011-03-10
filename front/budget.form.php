@@ -48,6 +48,8 @@ if (isset($_POST["add"])) {
    $budget->check(-1,'w',$_POST);
 
    if ($newID = $budget->add($_POST)) {
+      $budget->refreshParentInfos();
+
       Event::log($newID, "budget", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
@@ -86,13 +88,22 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
+   /// TODO To manage using dropdown.commonn.form
    if (isset($_GET['popup'])) {
       popHeader($LANG['financial'][87],$_SERVER['PHP_SELF']);
+      if (isset($_GET["rand"])) {
+         $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
+      }
+
    } else {
       commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
    }
    $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+
    if (isset($_GET['popup'])) {
+      echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+      echo "</div>";
+
       popFooter();
    } else {
       commonFooter();
