@@ -86,9 +86,17 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
+   if (isset($_GET['popup'])) {
+      popHeader($LANG['financial'][87],$_SERVER['PHP_SELF']);
+   } else {
+      commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
+   }
    $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   if (isset($_GET['popup'])) {
+      popFooter();
+   } else {
+      commonFooter();
+   }
 }
 
 ?>
