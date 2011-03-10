@@ -188,7 +188,8 @@ class TicketTask  extends CommonDBTM {
       manageBeginAndEndPlanDates($input['plan']);
 
       $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-      if ($uid=getLoginUserID()) {
+
+      if (isset($input['update']) && $uid=getLoginUserID()) { // Change from task form
          $input["users_id"] = $uid;
       }
       if (isset($input["plan"])) {
