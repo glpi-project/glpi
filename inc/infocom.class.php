@@ -572,7 +572,7 @@ class Infocom extends CommonDBChild {
       if ($item->canView()) {
          echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/infocom.form.php?itemtype=$itemtype&amp;items_id=$device_id&amp;update=$update',
-               'infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\" style='cursor:pointer'>
+               'infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" style='cursor:pointer'>
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
       }
