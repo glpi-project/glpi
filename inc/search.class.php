@@ -1420,6 +1420,7 @@ class Search {
          $selected    = 'view';
          $str_limit   = 28;
          $nb_in_group = 0;
+         $group = '';
 
          foreach ($options as $key => $val) {
             // print groups
