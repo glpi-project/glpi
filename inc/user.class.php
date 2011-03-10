@@ -543,7 +543,8 @@ class User extends CommonDBTM {
 
       $return = false;
 
-      if (isset($this->fields["authtype"])
+      if (isset($this->fields['_ruleright_process'])
+          && isset($this->fields["authtype"])
           && ($this->fields["authtype"] == Auth::LDAP
               || $this->fields["authtype"] == Auth::MAIL
               || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
@@ -995,6 +996,9 @@ class User extends CommonDBTM {
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
                                                          'userdn'      => $userdn));
+
+            $this->fields['_ruleright_process'] = true;
+
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
                return false;
@@ -1130,6 +1134,7 @@ class User extends CommonDBTM {
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
                                                       'email'       => $this->fields["email"]));
+         $this->fields['_ruleright_process'] = true;
       }
       return true;
    } // getFromIMAP()
