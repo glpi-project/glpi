@@ -854,7 +854,7 @@ class EntityData extends CommonDBChild {
             // Default is Incident if not set
             return Ticket::INCIDENT_TYPE;
       }
-      return -1;
+      return 0;
    }
 
 
