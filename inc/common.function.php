@@ -112,6 +112,9 @@ function getItemTypeSearchURL($itemtype, $full=true) {
       if ($itemtype == 'Cartridge') {
          $itemtype = 'CartridgeItem';
       }
+      if ($itemtype == 'Consumable') {
+         $itemtype = 'ConsumableItem';
+      }
       $item = strtolower($itemtype);
    }
    return "$dir/front/$item.php";
