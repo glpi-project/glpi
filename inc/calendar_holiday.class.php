@@ -109,8 +109,8 @@ class Calendar_Holiday extends CommonDBRelation {
             $used[] = $data['id'];
             echo "<td><a href='".getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
-            echo "<td>".$data["begin_date"]."</td>";
-            echo "<td>".$data["end_date"]."</td>";
+            echo "<td>".convDate($data["begin_date"])."</td>";
+            echo "<td>".convDate($data["end_date"])."</td>";
             echo "<td>".Dropdown::getYesNo($data["is_perpetual"])."</td>";
             echo "</tr>";
          }
