@@ -331,17 +331,14 @@ class Ticket extends CommonDBTM {
             $ret["items_id"] = $input["items_id"];
          }
 
-         $input=$ret;
-      }
-
-
-      if (!haveRight("update_ticket","1") && $this->canSolve()) {
-         if (isset($_POST["ticketsolutiontypes_id"])) {
-            $ret["ticketsolutiontypes_id"] = $_POST["ticketsolutiontypes_id"];
-         }
-         if (isset($_POST["solution"])) {
-            $ret["solution"] = $_POST["solution"];
-         }
+         if ($this->canSolve()) {
+            if (isset($input["ticketsolutiontypes_id"])) {
+               $ret["ticketsolutiontypes_id"] = $input["ticketsolutiontypes_id"];
+            }
+            if (isset($input["solution"])) {
+               $ret["solution"] = $input["solution"];
+            }
+	 }
          $input = $ret;
       }
 
