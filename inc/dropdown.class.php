@@ -195,7 +195,8 @@ class Dropdown {
          showToolTip($comment,$options_tooltip);
 
          if (($item instanceof CommonDropdown)
-               && $item->canCreate()) {
+              && $item->canCreate()
+              && !isset($_GET['popup'])) {
 
                echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
