@@ -4809,7 +4809,7 @@ class Ticket extends CommonDBTM {
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups'])))
             && array_key_exists('helpdesk_status',$_SESSION['glpiactiveprofile']) // Not set for post-only
             && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
-               || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
+               || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved']));
    }
 
    /**
