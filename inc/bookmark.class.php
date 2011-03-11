@@ -40,6 +40,8 @@ class Bookmark extends CommonDBTM {
 
    var $auto_message_on_action=false;
 
+   const WIDTH = 750;
+
    function canCreate() {
       return haveRight('bookmark_public', 'w');
    }
@@ -144,7 +146,7 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'>";
       }
 
-      echo "<table class='tab_cadre_report'>";
+      echo "<table class='tab_cadre_report' width='".self::WIDTH."px'>";
       echo "<tr><th>&nbsp;</th><th>";
       if ($ID>0) {
          echo $LANG['bookmark'][1] . " - " . $LANG['common'][2]." $ID";
@@ -470,7 +472,7 @@ class Bookmark extends CommonDBTM {
          echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
          echo "<div class='center' id='tabsbody' >";
 
-         echo "<table class='tab_cadrehov'>";
+         echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
          echo "<tr>";
          echo "<th class='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
          echo "<th width='20px'>&nbsp;</th>";
@@ -554,7 +556,7 @@ class Bookmark extends CommonDBTM {
 
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
-              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=400, width=600, ".
+              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".(Bookmark::WIDTH+250).", ".
               "top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"
