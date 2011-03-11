@@ -4801,11 +4801,15 @@ class Ticket extends CommonDBTM {
     */
    function canSolve() {
 
-      return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
-              &&*/ ($this->can($this->getField('id'), 'w')
-               && array_key_exists('helpdesk_status',$_SESSION['glpiactiveprofile']) // Not set for post-only
-               && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
-                  || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
+      /// TODO block solution edition on closed status ?
+
+      return ((haveRight("update_ticket","1")
+              || ($this->fields["users_id_assign"]===getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups'])))
+            && array_key_exists('helpdesk_status',$_SESSION['glpiactiveprofile']) // Not set for post-only
+            && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
+               || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
    }
 
    /**
