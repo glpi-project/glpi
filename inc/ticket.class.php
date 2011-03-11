@@ -139,8 +139,11 @@ class Ticket extends CommonDBTM {
     * @return boolean
    **/
    function canSolve() {
-      return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
-              &&*/ $this->can($this->getField('id'), 'w')
+      /// TODO block solution edition on closed status ?
+      return ((haveRight("update_ticket","1")
+              || $this->isUser(self::ASSIGN, getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(self::ASSIGN, $_SESSION["glpigroups"])))
                && self::isAllowedStatus($this->fields['status'], 'solved'));
    }
 
@@ -550,36 +553,41 @@ class Ticket extends CommonDBTM {
       }
 
       if (is_numeric(getLoginUserID(false)) && !haveRight("update_ticket","1")) {
+
+         $allowed_fields = array('id');
+
          if ($this->canApprove() && isset($input["status"])) {
-            $ret["status"] = $input["status"];
-         }
-         // Manage assign and steal right
-         if (isset($input["_ticket_assign"])) {
-            $ret["_ticket_assign"] = $input["_ticket_assign"];
-         }
-         if (isset($input["suppliers_id_assign"])) {
-            $ret["suppliers_id_assign"] = $input["suppliers_id_assign"];
+            $allowed_fields[] = 'status';
          }
 
-         // Can only update content if no followups already added
-         $ret["id"] = $input["id"];
-         if (isset($input["content"])) {
-            $ret["content"] = $input["content"];
+         // Manage assign and steal right
+         if (haveRight('assign_ticket',1) || haveRight('steal_ticket',1)) {
+            $allowed_fields[] = '_ticket_assign';
          }
-         if (isset($input["urgency"])) {
-            $ret["urgency"] = $input["urgency"];
+         if (haveRight('assign_ticket',1)) {
+            $allowed_fields[] = 'suppliers_id_assign';
          }
-         if (isset($input["ticketcategories_id"])) {
-            $ret["ticketcategories_id"] = $input["ticketcategories_id"];
+
+         // Can only update initial fields if no followup or task already added
+         if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
+            && $this->isUser(self::REQUESTER,getLoginUserID())) {
+            $allowed_fields[] = 'content';
+            $allowed_fields[] = 'urgency';
+            $allowed_fields[] = 'ticketcategories_id';
+            $allowed_fields[] = 'itemtype';
+            $allowed_fields[] = 'items_id';
+            $allowed_fields[] = 'name';
          }
-         if (isset($input["itemtype"])) {
-            $ret["itemtype"] = $input["itemtype"];
-         }
-         if (isset($input["items_id"])) {
-            $ret["items_id"] = $input["items_id"];
-         }
-         if (isset($input["name"])) {
-            $ret["name"] = $input["name"];
+
+         if ($this->canSolve()) {
+            $allowed_fields[] = 'ticketsolutiontypes_id';
+            $allowed_fields[] = 'solution';
+	 }
+
+         foreach ($allowed_fields as $field) {
+            if (isset($input[$field])) {
+               $ret[$field] = $input[$field];
+            }
          }
 
          $input = $ret;
