@@ -297,7 +297,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             $soft       = new Software;
             $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser = haveRight('user','r');
+            $linkUser   = haveRight('user', 'r');
             $title      = $LANG['help'][31] ." = ". $soft->fields["name"];
 
             if ($crit=="id") {
@@ -388,8 +388,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".$data['location']."</td>";
                echo "<td>".$data['state']."</td>";
                echo "<td>".$data['groupe']."</td>";
-               echo "<td>".formatUserName($data['userid'],$data['username'],$data['userrealname'],
-                                          $data['userfirstname'],$linkUser)."</td>";
+               echo "<td>".formatUserName($data['userid'], $data['username'], $data['userrealname'],
+                                          $data['userfirstname'], $linkUser)."</td>";
 
                $lics = Computer_SoftwareLicense::GetLicenseForInstallation($data['cID'],
                                                                            $data['vID']);
@@ -971,7 +971,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Duplicate all software from a computer template to his clone
+    * Duplicate all software from a computer template to its clone
+    *
+    * @param $oldid ID of the computer to clone
+    * @param $newid ID of the computer cloned
    **/
    function cloneComputer ($oldid, $newid) {
       global $DB;

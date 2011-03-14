@@ -48,7 +48,7 @@ if (!isset($_GET["url"])) {
 $bookmark = new Bookmark;
 
 if (isset($_POST["add"])) {
-   $bookmark->check(-1,'w',$_POST);
+   $bookmark->check(-1, 'w', $_POST);
 
    $bookmark->add($_POST);
    $_GET["action"] = "load";
@@ -61,21 +61,21 @@ if (isset($_POST["add"])) {
    $_GET["action"] = "load";
 
 } else if ($_GET["action"] == "edit" && isset($_GET['mark_default']) && isset($_GET["id"])) {
-   $bookmark->check($_GET["id"],'w');
+   $bookmark->check($_GET["id"], 'w');
 
    if ($_GET["mark_default"] >0) {
       $bookmark->mark_default($_GET["id"]);
    } else if ($_GET["mark_default"]==0) {
       $bookmark->unmark_default($_GET["id"]);
    }
-   $_GET["action"]="load";
+   $_GET["action"] = "load";
 
 } else if ($_GET["action"] == "load" && isset($_GET["id"]) && $_GET["id"]>0) {
-   $bookmark->check($_GET["id"],'r');
+   $bookmark->check($_GET["id"], 'r');
    $bookmark->load($_GET["id"]);
 
 } else if (isset($_POST["delete"])) {
-   $bookmark->check($_POST["id"],'w');
+   $bookmark->check($_POST["id"], 'w');
 
    $bookmark->delete($_POST);
    $_GET["action"] = "load";
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete_several"])) {
    if (isset($_POST["bookmark"])) {
       foreach ($_POST["bookmark"] as $ID=>$value) {
-         if ($bookmark->can($ID,'w')) {
+         if ($bookmark->can($ID, 'w')) {
             $bookmark->delete(array("id" => $ID));
          }
       }
@@ -95,11 +95,11 @@ if ($_GET["action"] == "edit") {
 
    if (isset($_GET['id']) && $_GET['id']>0) {
       // Modify
-      $bookmark->check($_GET["id"],'w');
+      $bookmark->check($_GET["id"], 'w');
       $bookmark->showForm($_GET['id']);
    } else {
       // Create
-      $bookmark->check(-1,'w');
+      $bookmark->check(-1, 'w');
       $bookmark->showForm(0, array('type'     => $_GET["type"],
                                    'url'      => rawurldecode($_GET["url"]),
                                    'itemtype' => $_GET["itemtype"]));
@@ -116,7 +116,7 @@ if ($_GET["action"] == "edit") {
                        'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=Bookmark");
    }
    echo "<div id='tabspanel' class='center-h'></div>";
-   createAjaxTabs('tabspanel','tabcontent',$tabs,'Bookmark',Bookmark::WIDTH);
+   createAjaxTabs('tabspanel', 'tabcontent', $tabs, 'Bookmark', Bookmark::WIDTH);
    echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
