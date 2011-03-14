@@ -53,43 +53,43 @@ function update0782to080($output='HTML') {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
    }
 
-   $newtables = array('glpi_calendars',
-                     'glpi_calendars_holidays',
-                     'glpi_calendarsegments',
-                     'glpi_computervirtualmachines',
-                     'glpi_computers_softwarelicenses',
-                     'glpi_fieldblacklists',
-                     'glpi_fieldunicities',
-                     'glpi_groups_tickets',
-                     'glpi_holidays',
-                     'glpi_rulecacheprinters',
-                     'glpi_slas',
-                     'glpi_slalevels',
-                     'glpi_slalevels_tickets',
-                     'glpi_slalevelactions',
-                     'glpi_tickets_tickets',
-                     'glpi_tickets_users',
-                     'glpi_ticketsatisfactions',
-                     'glpi_ticketsolutiontemplates',
-                     'glpi_virtualmachinestates',
-                     'glpi_virtualmachinesystems',
-                     'glpi_virtualmachinetypes',);
+   $backup_tables = false;
+   $newtables     = array('glpi_calendars',
+                          'glpi_calendars_holidays',
+                          'glpi_calendarsegments',
+                          'glpi_computervirtualmachines',
+                          'glpi_computers_softwarelicenses',
+                          'glpi_fieldblacklists',
+                          'glpi_fieldunicities',
+                          'glpi_groups_tickets',
+                          'glpi_holidays',
+                          'glpi_rulecacheprinters',
+                          'glpi_slas',
+                          'glpi_slalevels',
+                          'glpi_slalevels_tickets',
+                          'glpi_slalevelactions',
+                          'glpi_tickets_tickets',
+                          'glpi_tickets_users',
+                          'glpi_ticketsatisfactions',
+                          'glpi_ticketsolutiontemplates',
+                          'glpi_virtualmachinestates',
+                          'glpi_virtualmachinesystems',
+                          'glpi_virtualmachinetypes');
 
-   foreach ($newtables as  $new_table) {
+   foreach ($newtables as $new_table) {
       // rename new tables if exists ?
       if (TableExists($new_table)) {
          if (TableExists("backup_$new_table")) {
-            $query="DROP TABLE `backup_".$new_table."`";
-            $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
+            $query = "DROP TABLE `backup_".$new_table."`";
+            $DB->query($query)
+            or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
          }
          if ($output) {
             echo "<p><b>$new_table table already exists. ";
             echo "A backup have been done to backup_$new_table.</b></p>";
          }
-         $backup_tables=true;
-         $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
-         $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
-
+         $backup_tables = true;
+         $query         = $migration->renameTable("$new_table", "backup_$new_table");
       }
    }
    if ($backup_tables && $output) {
