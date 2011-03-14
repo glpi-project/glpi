@@ -101,7 +101,7 @@ class SlaLevel extends RuleTicket {
       echo getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
-         echo "<div class='center'>";
+         echo "<div class='center first-bloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['sla'][4]."</tr>";
 
@@ -120,22 +120,20 @@ class SlaLevel extends RuleTicket {
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div><br>";
-
-
-         echo "<div class='center'><table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['sla'][3]."</th>";
-         echo "<th>".$LANG['common'][60]."</th>";
-         echo "</tr>";
+         echo "</table></div>";
 
          $query = "SELECT *
                   FROM `glpi_slalevels`
                   WHERE `slas_id` = '$ID'
                   ORDER BY `execution_time`";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
 
          if ($DB->numrows($result) >0) {
+            echo "<div class='center'><table class='tab_cadre_fixehov'>";
+            echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
+            echo "<th>".$LANG['sla'][3]."</th>";
+            echo "<th>".$LANG['common'][60]."</th>";
+            echo "</tr>";
             initNavigateListItems('SlaLevel',$LANG['sla'][1]." - ".$sla->getName());
 
             while ($data = $DB->fetch_array($result)) {
@@ -171,20 +169,21 @@ class SlaLevel extends RuleTicket {
                $this->showActionsList($data["id"],array('readonly'=>true));
                echo "</td></tr>";
             }
-         }
-         echo "</table></div>";
 
-         if ($canedit) {
             openArrowMassive("slalevel_form$rand",true);
             closeArrowMassive('delete', $LANG['buttons'][6]);
+
+            echo "</table></div>";
          }
-         echo "</form>";
       }
+      echo "</form>";
 
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = parent::getActions();
       unset($actions['slas_id']);
       $actions['recall']['name'] = $LANG['sla'][9];
