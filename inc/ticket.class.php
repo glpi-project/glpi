@@ -141,10 +141,10 @@ class Ticket extends CommonDBTM {
    function canSolve() {
       /// TODO block solution edition on closed status ?
       return ((haveRight("update_ticket","1")
-              || $this->isUser(self::ASSIGN, getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(self::ASSIGN, $_SESSION["glpigroups"])))
-               && self::isAllowedStatus($this->fields['status'], 'solved'));
+               || $this->isUser(self::ASSIGN, getLoginUserID())
+               || (isset($_SESSION["glpigroups"])
+                   && $this->haveAGroup(self::ASSIGN, $_SESSION["glpigroups"])))
+              && self::isAllowedStatus($this->fields['status'], 'solved'));
    }
 
 
@@ -569,8 +569,9 @@ class Ticket extends CommonDBTM {
          }
 
          // Can only update initial fields if no followup or task already added
-         if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
-            && $this->isUser(self::REQUESTER,getLoginUserID())) {
+         if ($this->numberOfFollowups() == 0
+             && $this->numberOfTasks() == 0
+             && $this->isUser(self::REQUESTER,getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
             $allowed_fields[] = 'ticketcategories_id';
@@ -582,7 +583,7 @@ class Ticket extends CommonDBTM {
          if ($this->canSolve()) {
             $allowed_fields[] = 'ticketsolutiontypes_id';
             $allowed_fields[] = 'solution';
-	 }
+         }
 
          foreach ($allowed_fields as $field) {
             if (isset($input[$field])) {
@@ -2951,7 +2952,7 @@ class Ticket extends CommonDBTM {
 //                        && $this->getField('ticketsolutiontypes_id') == 0
 //                        && empty($this->fields['solution']);
       $rand_template = mt_rand();
-      $rand_text = $rand_type = 0;
+      $rand_text     = $rand_type = 0;
       if ($canedit) {
          $rand_text = mt_rand();
          $rand_type = mt_rand();
@@ -2959,18 +2960,17 @@ class Ticket extends CommonDBTM {
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td>";
-         
+
          Dropdown::show('TicketSolutionTemplate',
-                                         array('value'  => 0,
-                                               'entity' => $this->getEntityID(),
-                                               'rand'  => $rand_template,
-                                 // Load type and solution from bookmark
-                                 'toupdate' => array('value_fieldname' => 'value',
-                                                         'to_update'       => 'solution'.$rand_text,
-                                                         'url'             => $CFG_GLPI["root_doc"]."/ajax/solution.php",
-                                                         'moreparams'      => array('type_id'  =>              'dropdown_ticketsolutiontypes_id'.$rand_type))));
-
-
+                        array('value'    => 0,
+                              'entity'   => $this->getEntityID(),
+                              'rand'     => $rand_template,
+                              // Load type and solution from bookmark
+                              'toupdate' => array('value_fieldname' => 'value',
+                                                  'to_update'  => 'solution'.$rand_text,
+                                                  'url'        => $CFG_GLPI["root_doc"]."/ajax/solution.php",
+                                                  'moreparams' => array('type_id'
+                                                                        => 'dropdown_ticketsolutiontypes_id'.$rand_type))));
 
          echo "</td><td>";
          echo "<a title\"".$LANG['job'][23]."\"

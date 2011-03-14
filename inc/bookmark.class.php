@@ -478,7 +478,7 @@ class Bookmark extends CommonDBTM {
          echo "<th width='20px'>&nbsp;</th>";
          echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
-         if ( $DB->numrows($result)) {
+         if ($DB->numrows($result)) {
             $current_type      = -1;
             $current_type_name = NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {
@@ -556,8 +556,8 @@ class Bookmark extends CommonDBTM {
 
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
-              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".(Bookmark::WIDTH+250).", ".
-              "top=100, left=100, scrollbars=yes' );w.focus();\">";
+              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
+              (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"
              alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" class='calendrier'>";

@@ -75,7 +75,8 @@ if (isset($_POST["add"])) {
    $budget->check($_REQUEST["id"],'w');
 
    if ($budget->delete($_REQUEST,1)) {
-      Event::log($_REQUEST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_REQUEST["id"], "budget", 4, "financial",
+                 $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    $budget->redirectToList();
 
@@ -88,11 +89,11 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   /// TODO To manage using dropdown.commonn.form
+   /// TODO To manage using dropdown.common.form
    if (isset($_GET['popup'])) {
       popHeader($LANG['financial'][87],$_SERVER['PHP_SELF']);
       if (isset($_GET["rand"])) {
-         $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
+         $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
       }
 
    } else {

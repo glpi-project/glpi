@@ -228,7 +228,6 @@ class ComputerVirtualMachine extends CommonDBChild {
 
             }
 
-
             echo "</table>";
          }
       }
@@ -280,9 +279,9 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
 
-         initNavigateListItems('ComputerVirtualMachine', $LANG['help'][25]." = ".
-                               (empty($comp->fields['name']) ? "($ID)"
-                                                             : $comp->fields['name']));
+         initNavigateListItems('ComputerVirtualMachine',
+                               $LANG['help'][25]." = ". (empty($comp->fields['name'])
+                                                         ? "($ID)" : $comp->fields['name']));
 
          $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
@@ -318,7 +317,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             }
             echo "</td>";
             echo "</tr>";
-            addToNavigateListItems('ComputerVirtualMachine',$virtualmachine['id']);
+            addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
 
          }
       }
