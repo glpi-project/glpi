@@ -3091,46 +3091,45 @@ class Search {
          }
 
 
-      if (empty($specific_leftjoin)) {
-         switch ($new_table) {
-            // No link
-            case "glpi_auth_tables" :
-                  $user_searchopt = self::getOptions('User');
-
-                  $specific_leftjoin  = self::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                                          "glpi_authldaps", 'auths_id', 0, 0,
-                                                          $user_searchopt[30]['joinparams']);
-                  $specific_leftjoin .= self::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                                          "glpi_authmails", 'auths_id', 0, 0,
-                                                          $user_searchopt[31]['joinparams']);
-                  break;
-
-            case "glpi_complete_entities" :
-               array_push($already_link_tables, "glpi_complete_entities");
-   //            $AS = "AS $new_table";
-               $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`,
-                                                         `comment`, `level`
-                                                  FROM `glpi_entities`
-                                                  UNION
-                                                  SELECT 0 AS id,
-                                                         '".addslashes($LANG['entity'][2])."' AS name,
-                                                         -1 AS entities_id,
-                                                         '".addslashes($LANG['entity'][2])."'
-                                                            AS completename,
-                                                         '' AS comment, -1 AS level) $AS
-                                             ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-               break;
-         }
-      }
-
          if (empty($specific_leftjoin)) {
+            switch ($new_table) {
+               // No link
+               case "glpi_auth_tables" :
+                     $user_searchopt = self::getOptions('User');
+
+                     $specific_leftjoin  = self::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                             "glpi_authldaps", 'auths_id', 0, 0,
+                                                             $user_searchopt[30]['joinparams']);
+                     $specific_leftjoin .= self::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                             "glpi_authmails", 'auths_id', 0, 0,
+                                                             $user_searchopt[31]['joinparams']);
+                     break;
+
+               case "glpi_complete_entities" :
+                  array_push($already_link_tables, "glpi_complete_entities");
+      //            $AS = "AS $new_table";
+                  $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`,
+                                                            `completename`, `comment`, `level`
+                                                     FROM `glpi_entities`
+                                                     UNION
+                                                     SELECT 0 AS id,
+                                                            '".addslashes($LANG['entity'][2])."'
+                                                               AS name,
+                                                            -1 AS entities_id,
+                                                            '".addslashes($LANG['entity'][2])."'
+                                                               AS completename,
+                                                            '' AS comment, -1 AS level) $AS
+                                                ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+                  break;
+            }
+
             switch ($joinparams['jointype']) {
                case 'child' :
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id`
                                                       = `$nt`.`".getForeignKeyFieldForTable($rt)."`
-                                                 $addcondition)";
+                                                         $addcondition)";
                   break;
 
                case "itemtype_item" :
