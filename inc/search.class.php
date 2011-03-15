@@ -3012,7 +3012,6 @@ class Search {
       array_push($already_link_tables, $tocheck);
 
 //        echo "DONE<br>";
-
       $specific_leftjoin = '';
 
       // Plugin can override core definition for its type
@@ -3036,11 +3035,9 @@ class Search {
             }
          }
       }
-
       if (!empty($linkfield)) {
          $before = '';
 //          printCleanArray($joinparams);
-
          if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
 
             if (isset($joinparams['beforejoin']['table'])) {
@@ -3090,7 +3087,6 @@ class Search {
             $joinparams['jointype'] = 'standard';
          }
 
-
          if (empty($specific_leftjoin)) {
             switch ($new_table) {
                // No link
@@ -3122,7 +3118,9 @@ class Search {
                                                 ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
                   break;
             }
+         }
 
+         if (empty($specific_leftjoin)) {
             switch ($joinparams['jointype']) {
                case 'child' :
                   // Child join
@@ -3156,7 +3154,7 @@ class Search {
 //          echo $before.$specific_leftjoin.'<br>';
          return $before.$specific_leftjoin;
       }
-      return '';
+ //     return '';
    }
 
 
