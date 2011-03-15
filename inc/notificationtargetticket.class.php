@@ -754,6 +754,11 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
                $tmp['##task.planning.end##']      = convDateTime($plan->fields['end']);
                $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
+            } else {
+               $tmp['##task.planning.user##']   = "";
+               $tmp['##task.planning.begin##']  = "";
+               $tmp['##task.planning.end##']    = "";
+               $tmp['##task.planning.status##'] = "";
             }
 
             $this->datas['tasks'][] = $tmp;
