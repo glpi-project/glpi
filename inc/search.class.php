@@ -4194,16 +4194,19 @@ class Search {
          if ($itemtype=='States') {
             $search[$itemtype]['common'] = $LANG['common'][32];
 
-            $search['States'][1]['table']     = 'state_types';
-            $search['States'][1]['field']     = 'name';
-            $search['States'][1]['linkfield'] = 'name';
-            $search['States'][1]['name']      = $LANG['common'][16];
-            $search['States'][1]['datatype']  = 'itemlink';
+            $search['States'][1]['table']      = 'state_types';
+            $search['States'][1]['field']      = 'name';
+            $search['States'][1]['linkfield']  = 'name';
+            $search['States'][1]['name']       = $LANG['common'][16];
+            $search['States'][1]['datatype']   = 'itemlink';
+            $search['States'][1]['searchtype'] = 'contains';
 
-            $search['States'][2]['table']     = 'state_types';
-            $search['States'][2]['field']     = 'id';
-            $search['States'][2]['linkfield'] = 'id';
-            $search['States'][2]['name']      = $LANG['common'][2];
+
+            $search['States'][2]['table']      = 'state_types';
+            $search['States'][2]['field']      = 'id';
+            $search['States'][2]['linkfield']  = 'id';
+            $search['States'][2]['name']       = $LANG['common'][2];
+            $search['States'][2]['searchtype'] = 'contains';
 
             $search['States'][31]['table']     = 'glpi_states';
             $search['States'][31]['field']     = 'name';

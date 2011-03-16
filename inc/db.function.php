@@ -120,6 +120,10 @@ function getItemTypeForTable($table) {
 function getTableForItemType($itemtype) {
    global $CFG_GLPI;
 
+   if ($itemtype == 'States') {
+      return '';
+   }
+
    if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
       return $CFG_GLPI['glpitablesitemtype'][$itemtype];
    } else {
