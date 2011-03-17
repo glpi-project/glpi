@@ -1267,7 +1267,7 @@ class Ticket extends CommonDBTM {
       // No Auto set Import for external source
       if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
-      } else if ($input["_users_id_requester"]) {
+      } else if (isset ($input["_users_id_requester"]) && $input["_users_id_requester"]) {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
@@ -1384,7 +1384,8 @@ class Ticket extends CommonDBTM {
 
       // Set unset variables with are needed
       $user = new User();
-      if ($user->getFromDB($input["_users_id_requester"])) {
+      if (isset ($input["_users_id_requester"])
+          && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
       }
 
