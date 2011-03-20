@@ -1186,7 +1186,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
    // check user id : header used for display messages when session logout
    if (getLoginUserID()) {
-      echo "(";
+      echo " (";
       echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
                            $_SESSION["glpifirstname"], 0, 20);
       echo ")";
