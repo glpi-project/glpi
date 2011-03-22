@@ -129,6 +129,9 @@ function getItemTypeForTable($table) {
 function getTableForItemType($itemtype) {
    global $CFG_GLPI;
 
+   // Force singular for itemtype : States case
+   $itemtype = getSingular($itemtype);
+
    if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
       return $CFG_GLPI['glpitablesitemtype'][$itemtype];
 
