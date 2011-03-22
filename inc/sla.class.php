@@ -67,6 +67,7 @@ class SLA extends CommonDBTM {
       $ong    = array();
       $ong[1] = $LANG['title'][26];
       $ong[4] = $LANG['rulesengine'][17]; // Rules
+      $ong[6] = $LANG['Menu'][5]; // Tickets
       return $ong;
    }
 
