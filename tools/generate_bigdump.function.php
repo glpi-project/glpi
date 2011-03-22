@@ -1236,6 +1236,8 @@ function getMaxItem($table) {
 function generate_entity($ID_entity) {
    global $MAX, $DB, $MAX_CONTRACT_TYPE, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK;
 
+   regenerateTreeCompleteName("glpi_entities");
+
    $current_year = date("Y");
 
    // glpi_groups
