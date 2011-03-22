@@ -580,6 +580,24 @@ class Transfer extends CommonDBTM {
                      }
                   }
                }
+               // Clean DB
+               $query = "SELECT `glpi_contracts_items`.`id`
+                         FROM `glpi_contracts_items`
+                         LEFT JOIN `glpi_contracts`
+                           ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.`id`)
+                         WHERE `glpi_contracts`.`id` IS NULL";
+
+               if ($result = $DB->query($query)) {
+                  if ($DB->numrows($result)>0) {
+                     while ($data=$DB->fetch_array($result)) {
+                        $query = "DELETE
+                                  FROM `glpi_contracts_items`
+                                  WHERE `id` = '".$data['id']."'";
+                        $DB->query($query);
+                     }
+                  }
+               }
+
                $query = "SELECT `contracts_id`, `glpi_contracts`.`entities_id`,
                                 `glpi_contracts`.`is_recursive`
                          FROM `glpi_contracts_items`
