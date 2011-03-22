@@ -1283,7 +1283,12 @@ class Ticket extends CommonDBTM {
       if (!isset($input["date"]) || empty($input["date"])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
-
+      if (!isset($input["_users_id_assign"])) {
+         $input["_users_id_assign"] = 0;
+      }
+      if (!isset($input["_groups_id_assign"])) {
+         $input["_groups_id_assign"] = 0;
+      }
       // Set default dropdown
       $dropdown_fields = array('entities_id', 'items_id', 'suppliers_id_assign',
                                'ticketcategories_id');
@@ -4448,7 +4453,8 @@ class Ticket extends CommonDBTM {
                $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
          echo "</td>";
-         echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+         echo "<td>";
+         echo "<input type='file' name='filename' value=\"\" size='25'></td>";
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
