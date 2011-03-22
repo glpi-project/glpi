@@ -2879,11 +2879,12 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
  * @param $can_edit could not modify element
  * @param $minDate minimum allowed date
  * @param $maxDate maximum allowed date
+ * @param $displayYear should we set/diplay the year?
  *
  * @return rand value used
  **/
 function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true, $minDate='',
-                          $maxDate='') {
+                          $maxDate='', $displayYear=true) {
    global $CFG_GLPI;
 
    $rand = mt_rand();
@@ -2901,16 +2902,17 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
 
    switch ($_SESSION['glpidate_format']) {
       case 1 :
-         $output .= ",format: 'd-m-Y'";
+         $displayYear ? $format='d-m-Y' : $format='d-m';
          break;
 
       case 2 :
-         $output .= ",format: 'm-d-Y'";
+         $displayYear ? $format='m-d-Y' : $format='m-d';
          break;
 
       default :
-         $output .= ",format: 'Y-m-d'";
+         $displayYear ? $format='Y-m-d' : $format='m-d';
    }
+   $output .= ",format: '".$format."'";
 
    if ($maybeempty) {
       $output .= ",allowBlank: true";
