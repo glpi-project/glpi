@@ -80,11 +80,9 @@ if ($newID = $track->add($_POST)) {
       echo "</div>";
    } else {
       echo "<div class='center b'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'><br><br>";
-      echo $LANG['help'][18]." (".$LANG['job'][38]."&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$newID'>$newID</a>)<br>";
-      echo $LANG['help'][19]."</div>";
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'><br><br></div>";
+      addMessageAfterRedirect($LANG['help'][19]);
+      displayMessageAfterRedirect();
    }
 
 } else {
