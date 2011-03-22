@@ -652,7 +652,7 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * Print the HTML array Of suppliers for this contrach
+    * Print the HTML array of suppliers for this contract
     *
     *@return Nothing (HTML display)
     *

@@ -4938,7 +4938,7 @@ class Ticket extends CommonDBTM {
          $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
+         echo "<tr><th colspan='11'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
@@ -4984,6 +4984,7 @@ class Ticket extends CommonDBTM {
       $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
       $items[$LANG['common'][1]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
       $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
+      $items[$LANG['sla'][5]]  = "glpi_tickets.due_date";
       $items[$LANG['common'][57]]  = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
@@ -5021,21 +5022,21 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`items_id` = '$items_id'
-                      AND `itemtype` = '$itemtype') ".
-                      getEntitiesRestrictRequest("AND","glpi_tickets")."
-                ORDER BY `glpi_tickets`.`date_mod` DESC
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
+      $restrict = '';
+      $order = '';
+      $options['reset'] = 'reset';
 
-      // Ticket for the item
-      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+      if ($itemtype == 'Sla') {
+         $restrict = "(`slas_id` = '$items_id')";
+         $order = '`glpi_tickets`.`due_date` DESC';
+         $options['field'][0]      = 30;
+         $options['searchtype'][0] = 'equals';
+         $options['contains'][0]   = $items_id;
+         $options['link'][0]       = 'AND';
 
-      if ($number > 0) {
-         initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
+      } else {
+         $restrict = "(`items_id` = '$items_id' AND `itemtype` = '$itemtype')";
+         $order = '`glpi_tickets`.`date_mod` DESC';
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
@@ -5048,9 +5049,28 @@ class Ticket extends CommonDBTM {
          $options['contains2'][0]   = $items_id;
          $options['link2'][0]       = 'AND';
 
-         $options['reset'] = 'reset';
+      }
 
-         echo "<tr><th colspan='10'>";
+
+
+      $query = "SELECT ".self::getCommonSelect()."
+                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
+                WHERE $restrict".
+                      getEntitiesRestrictRequest("AND","glpi_tickets")."
+                ORDER BY $order
+                LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      // Ticket for the item
+      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+
+      if ($number > 0) {
+         initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
+
+
+
+         echo "<tr><th colspan='11'>";
          if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -5068,7 +5088,7 @@ class Ticket extends CommonDBTM {
 
       // Link to open a new ticcket
       if ($items_id && in_array($itemtype,$_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
-         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<tr><td class='tab_bg_2 center' colspan='11'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".
               "$items_id&amp;itemtype="."$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
          echo "</td></tr>";
@@ -5097,7 +5117,7 @@ class Ticket extends CommonDBTM {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='11'>";
          if ($number>1) {
             echo $LANG['joblist'][28];
          } else {
@@ -5151,7 +5171,7 @@ class Ticket extends CommonDBTM {
 
          $options['reset'] = 'reset';
 
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='11'>";
          if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -5206,7 +5226,7 @@ class Ticket extends CommonDBTM {
          $options['contains'][0]   = $userID;
          $options['link'][0]       = 'AND';
 
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='11'>";
          if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -5433,30 +5453,34 @@ class Ticket extends CommonDBTM {
                                "</strong>",
                                $item_num, $row_num, $align);
 
-         // Eigth column
-         $eigth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
+         // Eight column         
+         echo Search::showItem($output_type,convDateTime($job->fields['due_date']),
+                               $item_num, $row_num, $align);
+
+         // ninth column
+         $ninth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
 
          // Add link
          if ($job->canViewItem()) {
-            $eigth_column = "<a id='ticket".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
-                            "/front/ticket.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
+            $ninth_column = "<a id='ticket".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
+                            "/front/ticket.form.php?id=".$job->fields["id"]."\">$ninth_column</a>";
 
             if ($followups && $output_type == HTML_OUTPUT) {
-               $eigth_column .= TicketFollowup::showShortForTicket($job->fields["id"]);
+               $ninth_column .= TicketFollowup::showShortForTicket($job->fields["id"]);
             } else {
-               $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate)."-".
+               $ninth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate)."-".
                                         $job->numberOfTasks($showprivate).")";
             }
          }
 
          if ($output_type == HTML_OUTPUT) {
-            $eigth_column .= "&nbsp;".showToolTip($job->fields['content'],
+            $ninth_column .= "&nbsp;".showToolTip($job->fields['content'],
                                                   array('display' => false,
                                                         'applyto' => "ticket".$job->fields["id"].
                                                                      $rand));
          }
 
-         echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
+         echo Search::showItem($output_type, $ninth_column, $item_num, $row_num,
                                $align_desc."width='300'");
 
          // Finish Line
