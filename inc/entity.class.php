@@ -355,6 +355,10 @@ class Entity extends CommonTreeDropdown {
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = $LANG['entity'][15];
       $tab[9]['massiveaction'] = false;
+      $tab[9]['joinparams']    = array('beforejoin'
+                                       => array('table'      => 'glpi_entitydatas',
+                                                'joinparams' => array('jointype' => 'child')));
+
 
       $tab[10]['table']         = 'glpi_entitydatas';
       $tab[10]['field']         = 'fax';
