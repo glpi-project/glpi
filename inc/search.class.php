@@ -67,6 +67,11 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
+      if ($itemtype!='States' && class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
+
+
       // Default values of parameters
       $p['link']        = array();//
       $p['field']       = array();//
