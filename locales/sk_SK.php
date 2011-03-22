@@ -337,7 +337,7 @@ $LANG['computers'][53]="Service Pack";
 $LANG['computers'][54]="Žiadny telefón nie je pripojený"; 
 $LANG['computers'][55]="Add a virtual machine"; 
 $LANG['computers'][56]="Status updated. The connected items have been updated using this status."; 
-$LANG['computers'][57]="Virtuálny stroj"; 
+$LANG['computers'][57]="Virtual machines"; 
 $LANG['computers'][58]="UUID"; 
 $LANG['computers'][59]="Žiadne virtuálne stroje nie sú priradené k počítaču"; 
 $LANG['computers'][60]="Virtualizačný model"; 
@@ -1574,7 +1574,7 @@ $LANG['rulesengine'][92]="Warning before running rename based on the dictionary 
 $LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; 
 $LANG['rulesengine'][94]="FUSION"; 
 $LANG['rulesengine'][95]="Voľba výrobcu"; 
-$LANG['rulesengine'][96]="Replay dictionnary rules for the manufacturer(s)<br> ( ----- = All)"; 
+$LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; 
 $LANG['rulesengine'][97]="Žiadna položka nie je k dispozícii na testovanie"; 
 $LANG['rulesengine'][100]="Cache informácií"; 
 $LANG['rulesengine'][102]="Názov pravidla"; 
