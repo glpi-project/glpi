@@ -1957,26 +1957,28 @@ class Search {
    *@return select string
    *
    **/
-   static function addSelect ($itemtype, $ID, $num, $meta=0, $meta_type=0) {
+   static function addSelect($itemtype, $ID, $num, $meta=0, $meta_type=0) {
 
       $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
       $addtable  = "";
       $NAME      = "ITEM";
+      $complexjoin = '';
 
-      if ($table != getTableForItemType($itemtype)
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+      }
+
+      if (($table != getTableForItemType($itemtype) || !empty($complexjoin))
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
-      if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-
-         if (!empty($complexjoin)) {
-            $addtable .= "_".$complexjoin;
-         }
+      if (!empty($complexjoin)) {
+         $addtable .= "_".$complexjoin;
       }
+
 
       if ($meta) {
          $NAME = "META";
@@ -2080,6 +2082,15 @@ class Search {
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
             return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
+
+         case "glpi_tickets_tickets.count" :
+            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
+
+         case "glpi_tickets_tickets.tickets_id_1" :
+            return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
+                           AS ".$NAME."_$num,
+                        GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
+                           AS ".$NAME."_".$num."_2, ";
 
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
@@ -2633,6 +2644,9 @@ class Search {
             }
             break;
 
+         case "glpi_tickets_tickets.tickets_id_1" :
+            return $link." (`$table`.`tickets_id_1` = '$val' OR `$table`.`tickets_id_2` = '$val')";
+
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
          case "glpi_tickets.urgency" :
@@ -2996,7 +3010,7 @@ class Search {
 
 
       // Auto link
-      if ($ref_table==$new_table) {
+      if ($ref_table==$new_table && empty($complexjoin)) {
          return "";
       }
 
@@ -3130,6 +3144,17 @@ class Search {
                                                       = `$nt`.`".getForeignKeyFieldForTable($rt)."`
                                                          $addcondition)";
                   break;
+
+               case 'item_item' :
+                  // Item_Item join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON ((`$rt`.`id`
+                                                   = `$nt`.`".getForeignKeyFieldForTable($rt)."_1`
+                                                OR `$rt`.`id`
+                                                   = `$nt`.`".getForeignKeyFieldForTable($rt)."_2`)
+                                                         $addcondition)";
+                  break;
+
 
                case "itemtype_item" :
                   $used_itemtype = $itemtype;
@@ -3677,6 +3702,26 @@ class Search {
                   return $LANG['buttons'][32]." + ".$LANG['financial'][10];
             }
             return "";
+
+         case "glpi_tickets_tickets.tickets_id_1" :
+
+               $out    = "";
+               $split  = explode("$$$$",$data[$NAME.$num]);
+               $split2 = explode("$$$$",$data[$NAME.$num."_2"]);
+               $count_display = 0;
+               for ($k=0 ; $k<count($split) ; $k++) {
+                  $linkid = $split[$k]==$data['id'] ? $split2[$k] : $split[$k];
+                  if ($linkid>0 ) {
+                     $text = $linkid." - ".Dropdown::getDropdownName('glpi_tickets',$linkid);
+                     if ($count_display) {
+                        $out .= "<br>";
+                     }
+                     $count_display++;
+                     $out .= $text;
+                  }
+               }
+               return $out;
+
 
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
@@ -4459,7 +4504,8 @@ class Search {
             }
 
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
-               if (strcmp($itemtable,$val['table'])==0) {
+               if (strcmp($itemtable,$val['table'])==0
+                  && (!isset($val['joinparams']) || count($val['joinparams']) == 0)) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
                   $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
