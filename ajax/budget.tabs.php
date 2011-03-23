@@ -46,8 +46,8 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-if (empty($_POST["id"])) {
-   $_POST["id"] = -1;
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
 }
 
 $budget = new Budget();
@@ -89,6 +89,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
    }
 
 }
+
 ajaxFooter();
 
 ?>
