@@ -5003,7 +5003,7 @@ class Ticket extends CommonDBTM {
       $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
       $items[$LANG['common'][1]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
       $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
-      $items[$LANG['sla'][5]]  = "glpi_tickets.due_date";
+      $items[$LANG['sla'][5]]      = "glpi_tickets.due_date";
       $items[$LANG['common'][57]]  = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
@@ -5041,21 +5041,21 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $restrict = '';
-      $order = '';
+      $restrict         = '';
+      $order            = '';
       $options['reset'] = 'reset';
 
       if ($itemtype == 'Sla') {
-         $restrict = "(`slas_id` = '$items_id')";
-         $order = '`glpi_tickets`.`due_date` DESC';
+         $restrict                 = "(`slas_id` = '$items_id')";
+         $order                    = '`glpi_tickets`.`due_date` DESC';
          $options['field'][0]      = 30;
          $options['searchtype'][0] = 'equals';
          $options['contains'][0]   = $items_id;
          $options['link'][0]       = 'AND';
 
       } else {
-         $restrict = "(`items_id` = '$items_id' AND `itemtype` = '$itemtype')";
-         $order = '`glpi_tickets`.`date_mod` DESC';
+         $restrict                 = "(`items_id` = '$items_id' AND `itemtype` = '$itemtype')";
+         $order                    = '`glpi_tickets`.`date_mod` DESC';
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
@@ -5067,9 +5067,7 @@ class Ticket extends CommonDBTM {
          $options['searchtype2'][0] = 'equals';
          $options['contains2'][0]   = $items_id;
          $options['link2'][0]       = 'AND';
-
       }
-
 
 
       $query = "SELECT ".self::getCommonSelect()."
@@ -5472,7 +5470,7 @@ class Ticket extends CommonDBTM {
                                "</strong>",
                                $item_num, $row_num, $align);
 
-         // Eight column         
+         // Eight column
          echo Search::showItem($output_type,convDateTime($job->fields['due_date']),
                                $item_num, $row_num, $align);
 
