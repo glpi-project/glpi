@@ -1959,11 +1959,11 @@ class Search {
    **/
    static function addSelect($itemtype, $ID, $num, $meta=0, $meta_type=0) {
 
-      $searchopt = &self::getOptions($itemtype);
-      $table     = $searchopt[$ID]["table"];
-      $field     = $searchopt[$ID]["field"];
-      $addtable  = "";
-      $NAME      = "ITEM";
+      $searchopt   = &self::getOptions($itemtype);
+      $table       = $searchopt[$ID]["table"];
+      $field       = $searchopt[$ID]["field"];
+      $addtable    = "";
+      $NAME        = "ITEM";
       $complexjoin = '';
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -1971,7 +1971,7 @@ class Search {
       }
 
       if (($table != getTableForItemType($itemtype) || !empty($complexjoin))
-         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -2081,8 +2081,6 @@ class Search {
          case "glpi_tickets.count" :
          case "glpi_ticketfollowups.count" :
          case "glpi_tickettasks.count" :
-            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
-
          case "glpi_tickets_tickets.count" :
             return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
 
@@ -2645,7 +2643,8 @@ class Search {
             break;
 
          case "glpi_tickets_tickets.tickets_id_1" :
-            return $link." (`$table`.`tickets_id_1` = '$val' OR `$table`.`tickets_id_2` = '$val')";
+            return $link." (`$table`.`tickets_id_1` = '$val'
+                            OR `$table`.`tickets_id_2` = '$val')";
 
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
@@ -3150,9 +3149,9 @@ class Search {
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$rt`.`id`
                                                    = `$nt`.`".getForeignKeyFieldForTable($rt)."_1`
-                                                OR `$rt`.`id`
+                                               OR `$rt`.`id`
                                                    = `$nt`.`".getForeignKeyFieldForTable($rt)."_2`)
-                                                         $addcondition)";
+                                              $addcondition)";
                   break;
 
 
@@ -3712,7 +3711,7 @@ class Search {
                for ($k=0 ; $k<count($split) ; $k++) {
                   $linkid = $split[$k]==$data['id'] ? $split2[$k] : $split[$k];
                   if ($linkid>0 ) {
-                     $text = $linkid." - ".Dropdown::getDropdownName('glpi_tickets',$linkid);
+                     $text = $linkid." - ".Dropdown::getDropdownName('glpi_tickets', $linkid);
                      if ($count_display) {
                         $out .= "<br>";
                      }
@@ -4392,15 +4391,15 @@ class Search {
          if ($itemtype=='States') {
             $search[$itemtype]['common'] = $LANG['common'][32];
 
-            $search['States'][1]['table']     = 'state_types';
-            $search['States'][1]['field']     = 'name';
-            $search['States'][1]['name']      = $LANG['common'][16];
+            $search['States'][1]['table']      = 'state_types';
+            $search['States'][1]['field']      = 'name';
+            $search['States'][1]['name']       = $LANG['common'][16];
             $search['States'][1]['datatype']   = 'itemlink';
             $search['States'][1]['searchtype'] = 'contains';
 
-            $search['States'][2]['table']     = 'state_types';
-            $search['States'][2]['field']     = 'id';
-            $search['States'][2]['name']      = $LANG['common'][2];
+            $search['States'][2]['table']      = 'state_types';
+            $search['States'][2]['field']      = 'id';
+            $search['States'][2]['name']       = $LANG['common'][2];
             $search['States'][2]['searchtype'] = 'contains';
 
             $search['States'][31]['table']     = 'glpi_states';
@@ -4505,7 +4504,7 @@ class Search {
 
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
                if (strcmp($itemtable,$val['table'])==0
-                  && (!isset($val['joinparams']) || count($val['joinparams']) == 0)) {
+                   && (!isset($val['joinparams']) || count($val['joinparams']) == 0)) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
                   $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);

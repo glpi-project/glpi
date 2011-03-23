@@ -45,24 +45,24 @@ class GraphPalette extends ezcGraphPalette {
     * Axiscolor
     *
     * ezcGraphColor
-    **/
-    protected $axisColor = '#e4b22b';
+   **/
+   protected $axisColor = '#e4b22b';
 
 
    /**
     * Color of grid lines
     *
     * ezcGraphColor
-    **/
-    protected $majorGridColor = '#D3D7DF';
+   **/
+   protected $majorGridColor = '#D3D7DF';
 
 
    /**
     * Array with colors for datasets
     *
     * array
-    **/
-    protected $dataSetColor = array('#3465A4',
+   **/
+   protected $dataSetColor = array('#3465A4',
                                     '#4E9A06',
                                     '#CC0000',
                                     '#EDD400',
@@ -76,48 +76,48 @@ class GraphPalette extends ezcGraphPalette {
     * Array with symbols for datasets
     *
     * array
-    **/
-    protected $dataSetSymbol = array(ezcGraph::BULLET);
+   **/
+   protected $dataSetSymbol = array(ezcGraph::BULLET);
 
 
    /**
     * Name of font to use
     *
     * string
-    **/
-    protected $fontName = 'sans-serif';
+   **/
+   protected $fontName = 'sans-serif';
 
 
    /**
     * Fontcolor
     *
     * ezcGraphColor
-    **/
-    protected $fontColor = '#2E3436';
+   **/
+   protected $fontColor = '#2E3436';
 
 
    /**
     * Backgroundcolor for chart
     *
-    *  ezcGraphColor
-    **/
-    protected $chartBackground = '#FFFFFF';
+    * ezcGraphColor
+   **/
+   protected $chartBackground = '#FFFFFF';
 
 
    /**
     * Padding in elements
     *
-    *   integer
-    **/
-    protected $padding = 1;
+    * integer
+   **/
+   protected $padding = 1;
 
 
    /**
     * Margin of elements
     *
     * integer
-    **/
-    protected $margin = 0;
+   **/
+   protected $margin = 0;
 
 }
 

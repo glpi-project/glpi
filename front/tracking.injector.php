@@ -79,8 +79,8 @@ if ($newID = $track->add($_POST)) {
       displayBackLink();
       echo "</div>";
    } else {
-      echo "<div class='center b'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'><br><br></div>";
+      echo "<div class='center b spaced'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'></div>";
       addMessageAfterRedirect($LANG['help'][19]);
       displayMessageAfterRedirect();
    }
