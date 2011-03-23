@@ -5374,7 +5374,7 @@ class Ticket extends CommonDBTM {
             if ($job->fields['entities_id'] == 0) {
                $second_col = $LANG['entity'][2];
             } else {
-               $second_col = $job->fields['entityname'];
+               $second_col = Dropdown::getDropdownName("glpi_entities", $job->fields['entities_id']);
             }
             echo Search::showItem($output_type, $second_col, $item_num, $row_num,
                                   $align." width=100");
@@ -5471,7 +5471,7 @@ class Ticket extends CommonDBTM {
                                $item_num, $row_num, $align);
 
          // Eight column
-         echo Search::showItem($output_type,convDateTime($job->fields['due_date']),
+         echo Search::showItem($output_type, convDateTime($job->fields['due_date']),
                                $item_num, $row_num, $align);
 
          // ninth column
