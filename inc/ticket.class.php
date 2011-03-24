@@ -973,7 +973,7 @@ class Ticket extends CommonDBTM {
       if ($key=array_search('status',$this->updates) !== false
           && ($this->oldvalues['status'] == 'waiting'
             || ($this->oldvalues['status'] == 'solved' // From solved to another state than closed  
-                  && $this->fields['status'] != 'closed')) {
+                  && $this->fields['status'] != 'closed'))) {
 
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
