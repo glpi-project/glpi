@@ -102,7 +102,12 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $tot = 0;
 
-      $query="SELECT * FROM `glpi_slalevels_tickets` WHERE `date` < NOW()";
+      $query = "SELECT *
+                FROM `glpi_slalevels_tickets`
+                LEFT JOIN `glpi_tickets`
+                     ON (`glpi_slalevels_tickets`.`tickets_id` = `glpi_tickets`.`id`)
+                WHERE `glpi_slalevels_tickets`.`date` < NOW()
+                      AND `status` NOT IN ('solved', 'closed')";
       foreach ($DB->request($query) as $data) {
          $tot++;
          $ticket=new Ticket();
