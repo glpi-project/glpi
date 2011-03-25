@@ -105,39 +105,41 @@ class SlaLevel_Ticket extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_slalevels_tickets`
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()";
+
+      $slalevelticket = new Self();
       foreach ($DB->request($query) as $data) {
          $tot++;
-         $ticket=new Ticket();
+         $ticket = new Ticket();
          if ($ticket->getFromDB($data['tickets_id'])) {
-            $slalevel=new SlaLevel();
-            $sla=new SLA();
+            $slalevel = new SlaLevel();
+            $sla      = new SLA();
             // Check if sla datas are OK
             if ($ticket->fields['slas_id']>0
-               && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
+                && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
+
                if ($ticket->fields['status'] == 'closed') {
                   // Drop line when status is closed
-                  $slalevelticket=new SlaLevel_Ticket();
-                  $slalevelticket->delete(array('id'=>$data['id']));
+                  $slalevelticket->delete(array('id' => $data['id']));
                } else if ($ticket->fields['status'] != 'solved') {
                   // If status = solved : keep the line in case of solution not validated
-                  $input=$ticket->fields;
-   
+                  $input = $ticket->fields;
+
                   if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
-                     && $sla->getFromDB($ticket->fields['slas_id'])) {
+                      && $sla->getFromDB($ticket->fields['slas_id'])) {
                      // Process rules
-                     $input=$slalevel->executeActions($input,array());
+                     $input = $slalevel->executeActions($input,array());
                   }
                   // Put next level in todo list
-                  $next=$slalevel->getNextSlaLevel($ticket->fields['slas_id'],$ticket->fields['slalevels_id']);
-                  $input['slalevels_id']=$next;
+                  $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
+                                                     $ticket->fields['slalevels_id']);
+                  $input['slalevels_id'] = $next;
                   $ticket->update($input);
                   $sla->addLevelToDo($ticket);
                }
             }
          } else {
             // Drop line
-            $slalevelticket=new SlaLevel_Ticket();
-            $slalevelticket->delete(array('id'=>$data['id']));
+            $slalevelticket->delete(array('id' => $data['id']));
          }
       }
 

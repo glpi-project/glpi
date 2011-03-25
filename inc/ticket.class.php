@@ -955,31 +955,29 @@ class Ticket extends CommonDBTM {
          unset($this->oldvalues['status']);
       }
 
+      $sla = new SLA();
       // Set begin waiting date if needed
       if (($key=array_search('status',$this->updates)) !== false
-          && ($this->fields['status'] == 'waiting'
-            || $this->fields['status'] == 'solved')) {
-         $this->updates[] = "begin_waiting_date";
+          && ($this->fields['status'] == 'waiting' || $this->fields['status'] == 'solved')) {
+         $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          if ($this->fields['slas_id']>0) {
-            $sla=new SLA();
             $sla->deleteLevelsToDo($this);
          }
-
       }
 
       // Manage come back to waiting state
       if ($key=array_search('status',$this->updates) !== false
           && ($this->oldvalues['status'] == 'waiting'
-            || ($this->oldvalues['status'] == 'solved' // From solved to another state than closed  
-                  && $this->fields['status'] != 'closed'))) {
+               // From solved to another state than closed
+              || ($this->oldvalues['status'] == 'solved' && $this->fields['status'] != 'closed'))) {
 
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
-            $sla=new SLA();
             if ($sla->getFromDB($this->fields['slas_id'])) {
-               $delay_time=$sla->getActiveTimeBetween($this->fields['begin_waiting_date'],$_SESSION["glpi_currenttime"]);
+               $delay_time = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                        $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
                $this->fields["sla_waiting_duration"] += $delay_time;
             }
@@ -1020,7 +1018,6 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-
 
          $this->updates[] = "ticket_waiting_duration";
          $this->fields["ticket_waiting_duration"] += $delay_time;
