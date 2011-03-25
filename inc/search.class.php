@@ -2206,11 +2206,7 @@ class Search {
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         if ($addtable) {
-            $tocompute = str_replace("TABLE", "`$table.$addtable`", $tocompute);
-         } else {
-            $tocompute = str_replace("TABLE", "`$table`", $tocompute);
-         }
+            $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
       }
 
       // Preformat items
