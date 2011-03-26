@@ -427,7 +427,7 @@ function update0681to07() {
       NETWORKING_TYPE => 'glpi_networking',
       PHONE_TYPE => 'glpi_phones'
 	);
-	include (GLPI_ROOT . "/inc/tracking.function.php");
+	//include (GLPI_ROOT . "/inc/tracking.function.php");
 
 	foreach ($tco_tbl as $type => $table) {
 		if (!FieldExists($table, "ticket_tco")) {
@@ -1558,4 +1558,40 @@ function update0681to07() {
 	}
 
 } // fin 0.7 #####################################################################################
+
+//######### Function comming from old tracking.function.php which is now deleted since GLPI 0.72
+//######### Theses function where used during the migration process
+function computeTicketTco($item_type,$item){
+   global $DB;
+   $totalcost=0;
+
+   $query="SELECT * 
+      FROM glpi_tracking 
+      WHERE (device_type = '$item_type' 
+            AND computer = '$item') 
+         AND (cost_time>0 
+            OR cost_fixed>0
+            OR cost_material>0)";
+   $result = $DB->query($query);
+
+   $i = 0;
+   if ($DB->numrows($result)){
+      while ($data=$DB->fetch_array($result)){
+         $totalcost+=trackingTotalCost($data["realtime"],$data["cost_time"],$data["cost_fixed"],$data["cost_material"]); 
+      }
+   }
+   return $totalcost;
+}
+
+/** Computer total cost of a ticket
+* @param $realtime float : ticket realtime 
+* @param $cost_time float : ticket time cost
+* @param $cost_fixed float : ticket fixed cost
+* @param $cost_material float : ticket material cost 
+* @return total cost formatted string
+*/
+function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
+   return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
+}
+
 ?>
