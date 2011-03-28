@@ -57,7 +57,8 @@ if (isset($_GET["active_entity"])) {
       $_GET["is_recursive"] = 0;
    }
    if (changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
-      if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
+      if (($_GET["active_entity"] == $_SESSION["glpiactive_entity"])
+          && isset($_SERVER['HTTP_REFERER'])) {
          glpi_header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
       }
    }
