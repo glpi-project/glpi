@@ -141,8 +141,10 @@ class TicketValidation  extends CommonDBChild {
 
             $input['entities_id'] = $job->fields["entities_id"];
          }
-
-         $input["users_id"] = getLoginUserID();
+         $input["users_id"] = 0;
+         if (!isset($input['_auto_update'])) {
+            $input["users_id"] = getLoginUserID();
+         }
          $input["submission_date"] = $_SESSION["glpi_currenttime"];
          $input["status"] = 'waiting';
 

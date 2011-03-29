@@ -123,6 +123,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                } else if ($ticket->fields['status'] != 'solved') {
                   // If status = solved : keep the line in case of solution not validated
                   $input = $ticket->fields;
+                  $input['_auto_update'] = true;
 
                   if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
                       && $sla->getFromDB($ticket->fields['slas_id'])) {
@@ -133,7 +134,6 @@ class SlaLevel_Ticket extends CommonDBTM {
                   $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
                                                      $ticket->fields['slalevels_id']);
                   $input['slalevels_id'] = $next;
-                  $input['_auto_update'] = true;
                   $ticket->update($input);
                   $sla->addLevelToDo($ticket);
                }
