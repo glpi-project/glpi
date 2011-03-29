@@ -395,12 +395,13 @@ class NotificationTarget extends CommonDBChild {
       global $CFG_GLPI;
 
       $new_mail = trim(utf8_strtolower($data['email']));
+
       $new_lang = '';
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);
       }
 
-      if (isset($data['id'])) {
+      if (isset($data['id']) && $data['id'] > 0) {
          $user = new User();
          if (!$user->getFromDB($data['id'])
              || $user->getField('is_deleted')==1

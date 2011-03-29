@@ -85,7 +85,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $user = new User;
          if ($this->obj->isField('users_id')
             && $user->getFromDB($this->obj->getField('users_id'))) {
-            if ($user->getField('email')==$author_email){
+            if (strcasecmp($user->getField('email'),$author_email)==0){
                $user_lang=$user->getField('language');
                if (!empty($user_lang)) {
                   $author_lang=$user_lang;
