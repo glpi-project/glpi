@@ -745,6 +745,9 @@ class Ticket extends CommonDBTM {
          $validation = new Ticketvalidation();
          $values['tickets_id']        = $this->input['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
+         if (isset($this->input["_auto_update"])) {
+            $values['_auto_update'] = true;
+         }
 
          if ($validation->can(-1, 'w', $values)) {
             $validation->add($values);
