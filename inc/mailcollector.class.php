@@ -824,7 +824,7 @@ class MailCollector  extends CommonDBTM {
                $tos[] = utf8_strtolower($data->mailbox).'@'.$data->host;
             }
          }
-         if (count($mail_header->cc)) {
+         if (isset($mail_header->cc) && count($mail_header->cc)) {
             foreach ($mail_header->cc as $data) {
                $ccs[] = utf8_strtolower($data->mailbox).'@'.$data->host;
             }
