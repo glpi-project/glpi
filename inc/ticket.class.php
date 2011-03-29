@@ -680,8 +680,8 @@ class Ticket extends CommonDBTM {
       }
 
 
-      // set last updater
-      if ($lastupdater=getLoginUserID(true)) {
+      // set last updater when non auto update
+      if (!isset($input['_auto_update']) && $lastupdater=getLoginUserID(true)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
