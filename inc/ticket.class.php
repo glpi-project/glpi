@@ -1499,10 +1499,6 @@ class Ticket extends CommonDBTM {
       // Add document if needed
       $this->addFiles($this->fields['id']);
 
-      // Log this event
-      Event::log($this->fields['id'], "ticket", 4, "tracking",
-                 getUserName(getLoginUserID())." ".$LANG['log'][20]);
-
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
           && strlen($this->input["_followup"]['content']) > 0) {
