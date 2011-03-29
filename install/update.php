@@ -569,6 +569,15 @@ function updateDbUpTo031()
 		case "0.68.1":
 		case "0.68.2":
 		case "0.68.3":
+         // Force update content
+			if (showLocationUpdateForm()){
+            $query = "UPDATE `glpi_config` SET `version` = ' 0.68.3x';";
+            $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
+
+            showContentUpdateForm();
+            exit();
+         }
+		case "0.68.3x": // Special version for replay upgrade process from here
 			include("update_0681_07.php");
 			update0681to07();
 		case "0.7":
@@ -630,35 +639,18 @@ function updateDbUpTo031()
 			update065to068();
 			include("update_068_0681.php");
 			update068to0681();
-			include("update_0681_07.php");
-			update0681to07();
-			include("update_07_071.php");
-			update07to071();
-			include("update_071_0712.php");
-			update071to0712();
-			include("update_0712_0713.php");
-			update0712to0713();
-			include("update_0713_072.php");
-			update0713to072();
-         include("update_072_0721.php");
-         update072to0721();
-			include("update_0721_0722.php");
-			update0721to0722();
-         include("update_0722_0723.php");
-         update0722to0723();
-         include("update_0723_078.php");
-         update0723to078();
-         include("update_078_0781.php");
-         update078to0781();
-         include("update_0781_0782.php");
-         update0781to0782();
+         // Force update content
+         $query = "UPDATE `glpi_config` SET `version` = ' 0.68.3x';";
+         $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
 
+         showContentUpdateForm();
+         exit();
 			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_configs` SET `version` = ' 0.78.3', language='".$glpilanguage."',founded_new_version='' ;";
-	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
+	$DB->query($query) or die("0.78.3 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins
 	$plugin=new Plugin();
