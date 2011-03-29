@@ -133,6 +133,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                   $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
                                                      $ticket->fields['slalevels_id']);
                   $input['slalevels_id'] = $next;
+                  $input['_auto_update'] = true;
                   $ticket->update($input);
                   $sla->addLevelToDo($ticket);
                }
