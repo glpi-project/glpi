@@ -242,7 +242,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_id    = $data['id'];
 
             if (!empty($data['altemail'])
-                && $data['altemail'] != $author_email
+                && strcasecmp($data['altemail'], $author_email) == 0
                 && NotificationMail::isUserAddressValid($data['altemail'])) {
                $author_email = $data['altemail'];
             }

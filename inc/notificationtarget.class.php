@@ -415,7 +415,7 @@ class NotificationTarget extends CommonDBChild {
       if (isset($data['name']) && !empty($data['name'])) {
          $username = $data['name'];
       }
-      if (isset($data['id'])) {
+      if (isset($data['id']) && $data['id'] > 0) {
          $user = new User;
          if (!$user->getFromDB($data['id'])
              || $user->getField('is_deleted')==1
