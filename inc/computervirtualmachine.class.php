@@ -337,10 +337,10 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
       }
 
-      if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
+      if ($canedit) {
          echo "<tr class='tab_bg_2'><th colspan='8'>";
-         echo "<a href='computervirtualmachine.form.php?computers_id=$ID&amp;withtemplate=".
-                $withtemplate."'>".$LANG['computers'][55]."</a></th></tr>";
+         echo "<a href='computervirtualmachine.form.php?computers_id=$ID&amp'>".
+            $LANG['computers'][55]."</a></th></tr>";
       }
 
       echo "</table>";
