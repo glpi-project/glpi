@@ -29,15 +29,15 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
+// Original Author of file: Walif Nouh
+// Purpose of file: Virtual machine management
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Disk class
+/// Class to manage virtual machines
 class ComputerVirtualMachine extends CommonDBChild {
 
    // From CommonDBChild
@@ -186,7 +186,13 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   static function showForVirtualMachine(Computer $comp, $withtemplate='') {
+   /**
+    * Show hosts for a virtualmachine
+    * @comp a computer object that represents the virtual machine
+    * 
+    * @return Nothing (call to classes members)
+    */
+   static function showForVirtualMachine(Computer $comp) {
       global $DB, $LANG;
 
       $ID = $comp->fields['id'];
@@ -199,7 +205,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && $comp->fields['uuid'] != '') {
-         $where = "`uuid` = '".$comp->fields['uuid']."'";
+         $where = "`uuid`".self::getUUIDRestrictRequest($comp->fields['uuid']);
          $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
 
          if (!empty($hosts)) {
@@ -248,11 +254,9 @@ class ComputerVirtualMachine extends CommonDBChild {
     * Print the computers disks
     *
     * @param $comp Computer
-    * @param $withtemplate=''  boolean : Template or basic item.
-    *
     * @return Nothing (call to classes members)
    **/
-   static function showForComputer(Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp) {
       global $DB, $LANG;
 
       $ID = $comp->fields['id'];
@@ -344,25 +348,40 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   static function findVirtualMachine($fields=array()) {
-      global $DB;
-
+   /**
+    * Get correct uuid sql search for virtualmachines
+    * @param uuid the uuid give
+    * @return the restrict which contains uuid, uuid with first block flipped, 
+    * uuid with 3 first block flipped
+    */
+   static function getUUIDRestrictRequest($uuid) {
       //Why this code ? Because some dmidecode < 2.10 is buggy. On unix is flips first block of uuid
       //and on windows flips 3 first blocks...
       $regexes = array ("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
                         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1-$6$5-$8$7$9",);
       foreach ($regexes as $pattern => $replace) {
-         $reverse_uuid = preg_replace($pattern, $replace, $fields['uuid']);
-         $in = " IN ('".strtolower($fields['uuid'])."'";
+         $reverse_uuid = preg_replace($pattern, $replace, $uuid);
+         $in = " IN ('".strtolower($uuid)."'";
          if ($reverse_uuid) {
             $in .= " ,'".strtolower($reverse_uuid)."'";
          }
       }
       $in.= ")";
+      return $in;
+   }
+   
+   /**
+    * Find a virtual machine by uuid
+    * @param fields virtualmachine fields
+    * @return the ID of the computer that have this uuid or false otherwise
+    */
+   static function findVirtualMachine($fields=array()) {
+      global $DB;
+      
       $query = "SELECT `id`
                 FROM `glpi_computers`
                 WHERE `id` NOT IN ('".$fields['id']."')
-                      AND LOWER(`uuid`) $in";
+                      AND LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
       $result = $DB->query($query);
 
       //Virtual machine found, return ID
