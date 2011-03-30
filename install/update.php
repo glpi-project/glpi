@@ -652,8 +652,9 @@ function updateDbUpTo031() {
       case "0.68.2" :
       case "0.68.3" :
          // Force update content
-			if (showLocationUpdateForm()){
-            $query = "UPDATE `glpi_config` SET `version` = ' 0.68.3x';";
+         if (showLocationUpdateForm()) {
+            $query = "UPDATE `glpi_config`
+                      SET `version` = ' 0.68.3x'";
             $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
 
             showContentUpdateForm();
@@ -738,7 +739,8 @@ function updateDbUpTo031() {
          include("update_068_0681.php");
          update068to0681();
          // Force update content
-         $query = "UPDATE `glpi_config` SET `version` = ' 0.68.3x';";
+         $query = "UPDATE `glpi_config`
+                   SET `version` = ' 0.68.3x'";
          $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
 
          showContentUpdateForm();

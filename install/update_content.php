@@ -359,16 +359,13 @@ if (isset($offsettable)) {
 
 $conv_utf8     = false;
 $complete_utf8 = true;
-
-$config_table="glpi_config";
-if (TableExists("glpi_configs")){
-   $config_table="glpi_configs";
+$config_table  = "glpi_config";
+if (TableExists("glpi_configs")) {
+   $config_table = "glpi_configs";
 }
-
 
 if (!FieldExists($config_table,"utf8_conv")) {
    $conv_utf8 = true;
-
 } else {
    $query = "SELECT `utf8_conv`
              FROM `$config_table`
