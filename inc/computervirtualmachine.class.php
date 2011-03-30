@@ -218,6 +218,11 @@ class ComputerVirtualMachine extends CommonDBChild {
                if ($computer->can($host['computers_id'],'r')) {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
+                  $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
+                  $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: "."<br>".$computer->fields['serial'];
+                  $tooltip.= "<br>".$computer->fields['comment'];
+                  echo showToolTip($tooltip, array('display' => false));
+
                } else {
                   echo $computer->fields['name'];
                }
@@ -310,6 +315,12 @@ class ComputerVirtualMachine extends CommonDBChild {
                if ($computer->can($link_computer,'r')) {
                   $url = "<a href='computer.form.php?id=".$link_computer."'>";
                   $url.= $computer->fields["name"]."</a>";
+                  
+                  $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
+                  $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
+                  $tooltip.= "<br>".$computer->fields['serial'];
+                  $tooltip.= "<br>".$computer->fields['comment'];
+                  $url .= showToolTip($tooltip, array('display' => false));
                } else {
                   $url = $this->fields['name'];
                }
@@ -336,15 +347,29 @@ class ComputerVirtualMachine extends CommonDBChild {
    static function findVirtualMachine($fields=array()) {
       global $DB;
 
+      //Why this code ? Because some dmidecode < 2.10 is buggy. On unix is flips first block of uuid
+      //and on windows flips 3 first blocks...
+      $regexes = array ("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
+                        "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1-$6$5-$8$7$9",);
+      foreach ($regexes as $pattern => $replace) {
+         $reverse_uuid = preg_replace($pattern, $replace, $fields['uuid']);
+         $in = " IN ('".strtolower($fields['uuid'])."'";
+         if ($reverse_uuid) {
+            $in .= " ,'".strtolower($reverse_uuid)."'";
+         }
+      }
+      $in.= ")";
       $query = "SELECT `id`
                 FROM `glpi_computers`
                 WHERE `id` NOT IN ('".$fields['id']."')
-                      AND `uuid` = '".$fields['uuid']."'";
+                      AND LOWER(`uuid`) $in";
       $result = $DB->query($query);
 
+      //Virtual machine found, return ID
       if ($DB->numrows($result)) {
          return $DB->result($result,0,'id');
       }
+
       return false;
    }
 

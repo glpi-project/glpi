@@ -81,6 +81,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_computers_deviceprocessors'    => 'computers_id',
                                  'glpi_computers_devicesoundcards'    => 'computers_id',
                                  'glpi_computerdisks'                 => 'computers_id',
+                                 'glpi_computervirtualmachines'       => 'computers_id',
                                  'glpi_computers_items'               => 'computers_id',
                                  'glpi_computers_softwareversions'    => 'computers_id',
                                  'glpi_ocslinks'                      => 'computers_id',
@@ -474,6 +475,14 @@ $RELATION = array("glpi_authldaps"
                   "glpi_vlans"
                         => array('glpi_networkports_vlans' => 'vlans_id'),
 
+                  "glpi_virtualmachinestates"
+                        => array('glpi_computervirtualmachines' => 'virtualmachinestates_id'),
+
+                  "glpi_virtualmachinesystems"
+                        => array('glpi_computervirtualmachines' => 'virtualmachinesystems_id'),
+
+                  "glpi_virtualmachinetypes"
+                        => array('glpi_computervirtualmachines' => 'virtualmachinetypes_id'),
 
                 // link from devices tables (computers, software, ...)
                 "_virtual_device" => array('glpi_contracts_items' => array('items_id',
