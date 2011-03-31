@@ -498,6 +498,8 @@ class Transfer extends CommonDBTM {
             // Transfer affected license (always even if recursive)
             $query = "SELECT `id`
                       FROM `glpi_softwarelicenses`
+                      LEFT JOIN `glpi_computers_softwarelicenses` 
+                        ON (\glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`
                       WHERE `computers_id` IN ".$this->item_search['Computer'];
 
             foreach ($DB->request($query) AS $lic) {
