@@ -496,11 +496,11 @@ class Transfer extends CommonDBTM {
 
          if (count($this->needtobe_transfer['Computer'])>0) { // because -1 (empty list) is possible for computers_id
             // Transfer affected license (always even if recursive)
-            $query = "SELECT `id`
+            $query = "SELECT `glpi_softwarelicenses`.`id`
                       FROM `glpi_softwarelicenses`
                       LEFT JOIN `glpi_computers_softwarelicenses` 
-                        ON (\glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`
-                      WHERE `computers_id` IN ".$this->item_search['Computer'];
+                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`)
+                      WHERE `glpi_computers_softwarelicenses`.`computers_id` IN ".$this->item_search['Computer'];
 
             foreach ($DB->request($query) AS $lic) {
                $this->addToBeTransfer('SoftwareLicense', $lic['id']);
@@ -1516,14 +1516,18 @@ class Transfer extends CommonDBTM {
 
       // Affected licenses
       if ($this->options['keep_software']) {
-         $query = "SELECT *
+      // Could not copy license : number is not valid
+/*         $query = "SELECT `glpi_softwarelicenses`.`id`
                    FROM `glpi_softwarelicenses`
-                   WHERE `computers_id` = '$ID'";
+                      LEFT JOIN `glpi_computers_softwarelicenses` 
+                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`)
+                      WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$ID'";
 
          foreach ($DB->request($query) AS $data) {
+            /// TODO transfer Computer_SoftwareLicense instead of this... permit to do a clean transfer
             $this->transferItem('SoftwareLicense', $data['id'], $data['id']);
          }
-
+*/
       } else {
          if ($ocs_computer) {
             $query = "UPDATE `glpi_ocslinks`
@@ -1531,8 +1535,7 @@ class Transfer extends CommonDBTM {
                       WHERE `computers_id` = '$ID'";
             $DB->query($query);
          }
-         $query = "UPDATE `glpi_softwarelicenses`
-                   SET `computers_id` = '-1'
+         $query = "DELETE FROM `glpi_computers_softwarelicenses`
                    WHERE `computers_id` = '$ID'";
          $DB->query($query);
       }
@@ -1547,6 +1550,8 @@ class Transfer extends CommonDBTM {
    function transferLicenseSoftwares($ID) {
       global $DB;
 
+      /// TODO : complete review it : need to decrement number of license by 1 / create new / increase new one / link computer
+      return ;
       if ($this->inittype == 'Software') {
          // All version will be move with the software
          return;
