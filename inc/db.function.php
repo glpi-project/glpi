@@ -174,11 +174,11 @@ function getTableForItemType($itemtype) {
 function getPlural($string) {
 
    $rules = array(//'singular' => 'plural'
+                  's$' =>'ses',
                   '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'ch$' =>'ches',
                   'sh$' =>'shes',
                   'x$' =>'xes',
-                  's$' =>'ses',
                   '([^s])$'   => '\1s',   // Add at the end if not exists
                   'eds$'      => 'ed');   // case table without plural (ex. imported)
 
@@ -187,7 +187,11 @@ function getPlural($string) {
    }
    return $string;
 }
+$array= array('sandwich','body','boy','box','mix');
 
+foreach ($array as $val) {
+echo $val.'->'.getPlural($val).'<br>';
+}
 /**
  * Return the singular of a string
  *
