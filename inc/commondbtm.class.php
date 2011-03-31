@@ -2418,7 +2418,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'integer' :
                   case 'number' :
                   case 'decimal' :
-                     if ($searchOption['datatype'] == 'integer') {
+                     if ($searchOption['datatype'] == 'decimal') {
                         $this->input[$key] = floatval($value);
                      } else {
                         $this->input[$key] = intval($value);
