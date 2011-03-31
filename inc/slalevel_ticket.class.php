@@ -106,7 +106,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                 FROM `glpi_slalevels_tickets`
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()";
 
-      $slalevelticket = new Self();
+      $slalevelticket = new self();
       foreach ($DB->request($query) as $data) {
          $tot++;
          $ticket = new Ticket();
