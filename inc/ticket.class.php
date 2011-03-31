@@ -3737,11 +3737,20 @@ class Ticket extends CommonDBTM {
       }
 
       echo self::getActorIcon('user', $type)."&nbsp;";
+      $right = 'all';
+      if ($type == self::ASSIGN) {
+         $right = "own_ticket";
+         if (!haveRight("assign_ticket","1")) {
+            $right = 'id';
+         }
+      }
+
+
       //List all users in the active entities
       $rand = User::dropdown(array('name'        => '_users_id_'.$typename,
                                    'value'       => $options["_users_id_".$typename],
                                    'entity'      => $_SESSION['glpiactiveentities'],
-                                   'right'       => 'all',
+                                   'right'       => $right,
                                    'auto_submit' => $type==self::REQUESTER,
                                    'ldap_import' => true));
 
