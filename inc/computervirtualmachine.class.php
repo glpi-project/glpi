@@ -168,7 +168,29 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".$LANG['computers'][24]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this, "ram");
-      echo "</td><td colspan='2'></tr>";
+      echo "</td>"; 
+
+      echo "<td>".$LANG['computers'][64]."&nbsp;:</td>";
+      echo "<td>";
+      if ($link_computer = self::findVirtualMachine($this->fields)) {
+         $computer = new Computer();
+         if ($computer->can($link_computer,'r')) {
+            $url = "<a href='computer.form.php?id=".$link_computer."'>";
+            $url.= $computer->fields["name"]."</a>";
+            
+            $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
+            $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
+            $tooltip.= "<br>".$computer->fields['serial'];
+            $tooltip.= "<br>".$computer->fields['comment'];
+            $url .= "&nbsp; ".showToolTip($tooltip, array('display' => false));
+         } else {
+            $url = $this->fields['name'];
+         }
+         echo $url;
+      }
+      echo "</td>";
+      
+      echo "</tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -227,7 +249,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
                   $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: "."<br>".$computer->fields['serial'];
                   $tooltip.= "<br>".$computer->fields['comment'];
-                  echo showToolTip($tooltip, array('display' => false));
+                  echo "&nbsp; ".showToolTip($tooltip, array('display' => false));
 
                } else {
                   echo $computer->fields['name'];
@@ -324,7 +346,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
                   $tooltip.= "<br>".$computer->fields['serial'];
                   $tooltip.= "<br>".$computer->fields['comment'];
-                  $url .= showToolTip($tooltip, array('display' => false));
+                  $url .= "&nbsp; ".showToolTip($tooltip, array('display' => false));
                } else {
                   $url = $this->fields['name'];
                }
@@ -357,11 +379,11 @@ class ComputerVirtualMachine extends CommonDBChild {
    static function getUUIDRestrictRequest($uuid) {
       //Why this code ? Because some dmidecode < 2.10 is buggy. On unix is flips first block of uuid
       //and on windows flips 3 first blocks...
+      $in = " IN ('".strtolower($uuid)."'";
       $regexes = array ("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
                         "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1-$6$5-$8$7$9",);
       foreach ($regexes as $pattern => $replace) {
          $reverse_uuid = preg_replace($pattern, $replace, $uuid);
-         $in = " IN ('".strtolower($uuid)."'";
          if ($reverse_uuid) {
             $in .= " ,'".strtolower($reverse_uuid)."'";
          }
