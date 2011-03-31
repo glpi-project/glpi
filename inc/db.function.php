@@ -174,16 +174,19 @@ function getTableForItemType($itemtype) {
 function getPlural($string) {
 
    $rules = array(//'singular' => 'plural'
-                  '([^ae])y$' => '\1ies', // special case : category (but not key)
+                  '([^aeiou])y$' => '\1ies', // special case : category (but not key)
+                  'ch$' =>'ches',
+                  'sh$' =>'shes',
+                  'x$' =>'xes',
+                  's$' =>'ses',
                   '([^s])$'   => '\1s',   // Add at the end if not exists
-                  'eds$'      => 'ed');   // case table without plurial
+                  'eds$'      => 'ed');   // case table without plural (ex. imported)
 
    foreach ($rules as $singular => $plural) {
       $string = preg_replace("/$singular/", "$plural", $string);
    }
    return $string;
 }
-
 
 /**
  * Return the singular of a string
