@@ -187,11 +187,7 @@ function getPlural($string) {
    }
    return $string;
 }
-$array= array('sandwich','body','boy','box','mix');
 
-foreach ($array as $val) {
-echo $val.'->'.getPlural($val).'<br>';
-}
 /**
  * Return the singular of a string
  *
