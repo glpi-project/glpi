@@ -358,7 +358,7 @@ $LANG['connect'][16]="Внимание! Следующие два объекта
 
 $LANG['consumables'][0]="Расходный материал"; 
 $LANG['consumables'][1]="На складе"; 
-$LANG['consumables'][2]="Заказной номер"; 
+$LANG['consumables'][2]="Артикул"; 
 $LANG['consumables'][7]="Расходный материал не найден"; 
 $LANG['consumables'][9]="Нет расходного материала"; 
 $LANG['consumables'][12]="Тип расходных материалов"; 
