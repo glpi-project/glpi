@@ -4697,7 +4697,7 @@ class OcsServer extends CommonDBTM {
                $query_softs = "SELECT `glpi_softwareversions`.`name` AS version
                                FROM `glpi_computers_softwareversions`,
                                     `glpi_softwareversions`
-                               WHERE `glpi_computers_softwareversions`.softwareversions_id`
+                               WHERE `glpi_computers_softwareversions`.`softwareversions_id`
                                           =`glpi_softwareversions`.`id`
                                      AND `glpi_computers_softwareversions`.`computers_id`
                                           = '$computers_id'
@@ -4705,7 +4705,7 @@ class OcsServer extends CommonDBTM {
 
                $result_softs      = $DB->query($query_softs);
                $softs             = $DB->fetch_array($result_softs);
-               $softs_array[$key] = $value . self::FIELD_SEPARATOR. $softs["VERSION"];
+               $softs_array[$key] = $value . self::FIELD_SEPARATOR. $softs["version"];
             }
 
             //Replace in GLPI database the import_software by the new one
