@@ -795,7 +795,7 @@ class Ticket extends CommonDBTM {
       }
 
 
-      if ($this->fields['status'] != 'closed') {
+      if ($this->fields['status'] == 'new') {
          if ((in_array("suppliers_id_assign",$this->updates)
               && $this->input["suppliers_id_assign"]>0)
              || isset($this->input["_assignadd"])) {
