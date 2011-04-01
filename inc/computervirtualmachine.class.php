@@ -168,7 +168,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".$LANG['computers'][24]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this, "ram");
-      echo "</td>"; 
+      echo "</td>";
 
       echo "<td>".$LANG['computers'][64]."&nbsp;:</td>";
       echo "<td>";
@@ -177,7 +177,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          if ($computer->can($link_computer,'r')) {
             $url = "<a href='computer.form.php?id=".$link_computer."'>";
             $url.= $computer->fields["name"]."</a>";
-            
+
             $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
             $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
             $tooltip.= "<br>".$computer->fields['serial'];
@@ -189,7 +189,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo $url;
       }
       echo "</td>";
-      
+
       echo "</tr>";
 
       $this->showFormButtons($options);
@@ -210,10 +210,11 @@ class ComputerVirtualMachine extends CommonDBChild {
 
    /**
     * Show hosts for a virtualmachine
-    * @comp a computer object that represents the virtual machine
-    * 
+    *
+    * @param $comp a computer object that represents the virtual machine
+    *
     * @return Nothing (call to classes members)
-    */
+   **/
    static function showForVirtualMachine(Computer $comp) {
       global $DB, $LANG;
 
@@ -247,7 +248,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
                   $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
-                  $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: "."<br>".$computer->fields['serial'];
+                  $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: <br>".$computer->fields['serial'];
                   $tooltip.= "<br>".$computer->fields['comment'];
                   echo "&nbsp; ".showToolTip($tooltip, array('display' => false));
 
@@ -276,6 +277,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * Print the computers disks
     *
     * @param $comp Computer
+    *
     * @return Nothing (call to classes members)
    **/
    static function showForComputer(Computer $comp) {
@@ -341,7 +343,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                if ($computer->can($link_computer,'r')) {
                   $url = "<a href='computer.form.php?id=".$link_computer."'>";
                   $url.= $computer->fields["name"]."</a>";
-                  
+
                   $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
                   $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
                   $tooltip.= "<br>".$computer->fields['serial'];
@@ -362,7 +364,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><th colspan='8'>";
          echo "<a href='computervirtualmachine.form.php?computers_id=$ID&amp'>".
-            $LANG['computers'][55]."</a></th></tr>";
+                $LANG['computers'][55]."</a></th></tr>";
       }
 
       echo "</table>";
@@ -372,16 +374,20 @@ class ComputerVirtualMachine extends CommonDBChild {
 
    /**
     * Get correct uuid sql search for virtualmachines
-    * @param uuid the uuid give
-    * @return the restrict which contains uuid, uuid with first block flipped, 
+    *
+    * @param $uuid the uuid give
+    *
+    * @return the restrict which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped
-    */
+   **/
    static function getUUIDRestrictRequest($uuid) {
+
       //Why this code ? Because some dmidecode < 2.10 is buggy. On unix is flips first block of uuid
       //and on windows flips 3 first blocks...
-      $in = " IN ('".strtolower($uuid)."'";
-      $regexes = array ("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
-                        "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1-$6$5-$8$7$9",);
+      $in      = " IN ('".strtolower($uuid)."'";
+      $regexes = array("/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/" => "$4$3$2$1$5",
+                       "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"
+                                                                    => "$4$3$2$1-$6$5-$8$7$9");
       foreach ($regexes as $pattern => $replace) {
          $reverse_uuid = preg_replace($pattern, $replace, $uuid);
          if ($reverse_uuid) {
@@ -391,15 +397,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       $in.= ")";
       return $in;
    }
-   
+
+
    /**
     * Find a virtual machine by uuid
+    *
     * @param fields virtualmachine fields
+    *
     * @return the ID of the computer that have this uuid or false otherwise
-    */
+   **/
    static function findVirtualMachine($fields=array()) {
       global $DB;
-      
+
       $query = "SELECT `id`
                 FROM `glpi_computers`
                 WHERE `id` NOT IN ('".$fields['id']."')
