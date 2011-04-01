@@ -563,7 +563,7 @@ class Ticket extends CommonDBTM {
          // for post-only with validate right
          if (isset($input['global_validation'])
              && TicketValidation::canValidate($this->fields['id'])) {
-            $ret["global_validation"] = $input["global_validation"];
+            $allowed_fields[] = 'global_validation';
          }
 
          // Manage assign and steal right
