@@ -498,9 +498,11 @@ class Transfer extends CommonDBTM {
             // Transfer affected license (always even if recursive)
             $query = "SELECT `glpi_softwarelicenses`.`id`
                       FROM `glpi_softwarelicenses`
-                      LEFT JOIN `glpi_computers_softwarelicenses` 
-                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`)
-                      WHERE `glpi_computers_softwarelicenses`.`computers_id` IN ".$this->item_search['Computer'];
+                      LEFT JOIN `glpi_computers_softwarelicenses`
+                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
+                              = `glpi_softwarelicenses`.`id`)
+                      WHERE `glpi_computers_softwarelicenses`.`computers_id`
+                              IN ".$this->item_search['Computer'];
 
             foreach ($DB->request($query) AS $lic) {
                $this->addToBeTransfer('SoftwareLicense', $lic['id']);
@@ -1519,7 +1521,7 @@ class Transfer extends CommonDBTM {
       // Could not copy license : number is not valid
 /*         $query = "SELECT `glpi_softwarelicenses`.`id`
                    FROM `glpi_softwarelicenses`
-                      LEFT JOIN `glpi_computers_softwarelicenses` 
+                      LEFT JOIN `glpi_computers_softwarelicenses`
                         ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`)
                       WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$ID'";
 
@@ -1535,7 +1537,8 @@ class Transfer extends CommonDBTM {
                       WHERE `computers_id` = '$ID'";
             $DB->query($query);
          }
-         $query = "DELETE FROM `glpi_computers_softwarelicenses`
+         $query = "DELETE
+                   FROM `glpi_computers_softwarelicenses`
                    WHERE `computers_id` = '$ID'";
          $DB->query($query);
       }
