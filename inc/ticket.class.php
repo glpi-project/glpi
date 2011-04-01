@@ -561,8 +561,7 @@ class Ticket extends CommonDBTM {
          }
 
          // for post-only with validate right
-         if (isset($input['global_validation'])
-             && TicketValidation::canValidate($this->fields['id'])) {
+         if (TicketValidation::canValidate($this->fields['id'])) {
             $allowed_fields[] = 'global_validation';
          }
 
