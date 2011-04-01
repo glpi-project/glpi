@@ -376,7 +376,7 @@ class FieldUnicity extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
-      return self::checkBeforeInsert($input);
+      return $input;
    }
 
 
