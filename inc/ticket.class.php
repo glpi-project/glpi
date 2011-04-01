@@ -747,11 +747,11 @@ class Ticket extends CommonDBTM {
       }
 
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
+      if (isset($input["_add_validation"]) && $input["_add_validation"]>0) {
          $validation = new Ticketvalidation();
-         $values['tickets_id']        = $this->input['id'];
-         $values['users_id_validate'] = $this->input["_add_validation"];
-         if (isset($this->input["_auto_update"])) {
+         $values['tickets_id']        = $input['id'];
+         $values['users_id_validate'] = $input["_add_validation"];
+         if (isset($input["_auto_update"])) {
             $values['_auto_update'] = true;
          }
 
@@ -762,6 +762,14 @@ class Ticket extends CommonDBTM {
                        $_SESSION["glpiname"]."  ".$LANG['log'][21]);
          }
       }
+      if (isset($input["status"]) && $input["status"]!='solved' && $input["status"]!='closed') {
+         $input['solvedate'] = 'NULL';
+      }  
+
+      if (isset($input["status"]) && $input["status"]!='closed') {
+         $input['closedate'] = 'NULL';
+      }  
+
       return $input;
    }
 
@@ -878,7 +886,6 @@ class Ticket extends CommonDBTM {
                $this->fields["solvedate"] = $this->fields["closedate"];
             }
          }
-
       }
 
       // check dates
