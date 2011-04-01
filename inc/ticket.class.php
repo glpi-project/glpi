@@ -560,6 +560,12 @@ class Ticket extends CommonDBTM {
             $allowed_fields[] = 'status';
          }
 
+         // for post-only with validate right
+         if (isset($input['global_validation'])
+             && TicketValidation::canValidate($this->fields['id'])) {
+            $ret["global_validation"] = $input["global_validation"];
+         }
+
          // Manage assign and steal right
          if (haveRight('assign_ticket',1) || haveRight('steal_ticket',1)) {
             $allowed_fields[] = '_ticket_assign';
