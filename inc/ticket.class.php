@@ -763,11 +763,11 @@ class Ticket extends CommonDBTM {
       }
       if (isset($input["status"]) && $input["status"]!='solved' && $input["status"]!='closed') {
          $input['solvedate'] = 'NULL';
-      }  
+      }
 
       if (isset($input["status"]) && $input["status"]!='closed') {
          $input['closedate'] = 'NULL';
-      }  
+      }
 
       return $input;
    }
@@ -5083,7 +5083,7 @@ class Ticket extends CommonDBTM {
          $options['link'][0]       = 'AND';
 
          $options['itemtype2'][0]   = $itemtype;
-         $options['field2'][0]      = Search::getOptionNumber($itemtype, 'name');
+         $options['field2'][0]      = Search::getOptionNumber($itemtype, 'id');
          $options['searchtype2'][0] = 'equals';
          $options['contains2'][0]   = $items_id;
          $options['link2'][0]       = 'AND';
