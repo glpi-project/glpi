@@ -493,21 +493,6 @@ class Transfer extends CommonDBTM {
                }
             }
          }
-
-         if (count($this->needtobe_transfer['Computer'])>0) { // because -1 (empty list) is possible for computers_id
-            // Transfer affected license (always even if recursive)
-            $query = "SELECT `glpi_softwarelicenses`.`id`
-                      FROM `glpi_softwarelicenses`
-                      LEFT JOIN `glpi_computers_softwarelicenses`
-                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
-                              = `glpi_softwarelicenses`.`id`)
-                      WHERE `glpi_computers_softwarelicenses`.`computers_id`
-                              IN ".$this->item_search['Computer'];
-
-            foreach ($DB->request($query) AS $lic) {
-               $this->addToBeTransfer('SoftwareLicense', $lic['id']);
-            }
-         }
       }
 
       // Software: From user choice only
@@ -1050,10 +1035,6 @@ class Transfer extends CommonDBTM {
                $this->transferComputerDisks($ID);
             }
 
-            if ($itemtype == 'SoftwareLicense') {
-               $this->transferLicenseSoftwares($ID);
-            }
-
             // Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
             if ($this->inittype==$itemtype && in_array($itemtype, array('Monitor', 'Phone',
                                                                         'Peripheral', 'Printer'))) {
@@ -1518,18 +1499,12 @@ class Transfer extends CommonDBTM {
 
       // Affected licenses
       if ($this->options['keep_software']) {
-      // Could not copy license : number is not valid
-/*         $query = "SELECT `glpi_softwarelicenses`.`id`
-                   FROM `glpi_softwarelicenses`
-                      LEFT JOIN `glpi_computers_softwarelicenses`
-                        ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id` = `glpi_softwarelicenses`.`id`)
-                      WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$ID'";
-
+         $query = "SELECT `id`
+                   FROM `glpi_computers_softwarelicenses`
+                      WHERE `computers_id` = '$ID'";
          foreach ($DB->request($query) AS $data) {
-            /// TODO transfer Computer_SoftwareLicense instead of this... permit to do a clean transfer
-            $this->transferItem('SoftwareLicense', $data['id'], $data['id']);
+            $this->transferAffectedLicense($data['id']);
          }
-*/
       } else {
          if ($ocs_computer) {
             $query = "UPDATE `glpi_ocslinks`
@@ -1546,41 +1521,74 @@ class Transfer extends CommonDBTM {
 
 
    /**
-    * Transfer softwares of a license
+    * Transfer affected licenses to a computer
     *
     * @param $ID ID of the License
    **/
-   function transferLicenseSoftwares($ID) {
+   function transferAffectedLicense($ID) {
       global $DB;
 
-      /// TODO : complete review it : need to decrement number of license by 1 / create new / increase new one / link computer
-      return ;
-      if ($this->inittype == 'Software') {
-         // All version will be move with the software
-         return;
-      }
+      $computer_softwarelicense = new Computer_SoftwareLicense();
 
       $license = new SoftwareLicense();
-      if ($license->getFromDB($ID)) {
-         $input     = array();
-         $newsoftID = $this->copySingleSoftware($license->fields['softwares_id']);
 
-         if ($newsoftID>0 && $newsoftID!=$license->fields['softwares_id']) {
-            $input['softwares_id'] = $newsoftID;
-         }
+      if ($computer_softwarelicense->getFromDB($ID)) {
+         if ($license->getFromDB($computer_softwarelicense->getField('softwarelicenses_id'))) {
 
-         foreach (array('softwareversions_id_buy', 'softwareversions_id_use') as $field) {
-            if ($license->fields[$field]>0) {
-               $newversID = $this->copySingleVersion($license->fields[$field]);
-               if ($newversID>0 && $newversID!=$license->fields[$field]) {
-                  $input[$field] = $newversID;
+            //// Update current : decrement number by 1 if valid
+            if ($license->getField('number')>1) {
+               $license->update(array('id'     => $license->getID(),
+                                    'number' => ($license->getField('number')-1)));
+            }
+
+            // Create new license : need to transfer softwre and versions before
+            $input     = array();
+            $newsoftID = $this->copySingleSoftware($license->fields['softwares_id']);
+
+            if ($newsoftID > 0) {
+               //// If license already exists : increment number by one
+               $query = "SELECT *
+                           FROM `glpi_softwarelicenses`
+                           WHERE `softwares_id` = '$newsoftID'
+                                 AND `name` = '".addslashes($license->fields['name'])."'
+                                 AND `serial` = '".addslashes($license->fields['serial'])."'";
+
+               $newlicID = -1;
+               if ($result=$DB->query($query)) {
+                  //// If exists : increment number by 1
+                  if ($DB->numrows($result)>0) {
+                     $data=$DB->fetch_array($result);
+                     $newlicID = $data['id'];
+                     $license->update(array('id'     => $data['id'],
+                                          'number' => $data['number']+1));
+                  
+                  } else {
+                     //// If not exists : create with number = 1
+                     $input = $license->fields;
+                     foreach (array('softwareversions_id_buy', 'softwareversions_id_use') as $field) {
+                        if ($license->fields[$field]>0) {
+                           $newversID = $this->copySingleVersion($license->fields[$field]);
+                           if ($newversID>0 && $newversID!=$license->fields[$field]) {
+                              $input[$field] = $newversID;
+                           }
+                        }
+                     }
+
+                     unset($input['id']);
+                     $input['number'] = 1;
+                     $input['entities_id'] = $this->to;
+                     $input['softwares_id'] = $newsoftID;
+                     $newlicID = $license->add($input);
+                  }
+               }
+
+
+               if ($newlicID>0) {
+                  $input = array('id'                  => $ID,
+                                 'softwarelicenses_id' => $newlicID);
+                  $computer_softwarelicense->update($input);
                }
             }
-         }
-
-         if (count($input)) {
-            $input['id'] = $ID;
-            $license->update($input);
          }
       } // getFromDB
 
