@@ -1390,15 +1390,11 @@ class Dropdown {
                   if ($tmp->canCreate()) {
                      echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
+
                   if (haveRight("update_ticket","1")) {
                      echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
                   }
-                  break;
 
-               case 'TicketValidation' :
-                  if (haveRight('create_validation', 1)) {
-                     echo "<option value='validate_ticket'>".$LANG['validation'][0]."</option>";
-                  }
                   break;
 
                case 'CronTask' :
