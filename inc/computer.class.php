@@ -509,6 +509,9 @@ class Computer extends CommonDBTM {
 
       $disk = new ComputerDisk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
+
+      $vm = new ComputerVirtualMachine();
+      $vm->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
 
