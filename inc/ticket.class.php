@@ -769,6 +769,14 @@ class Ticket extends CommonDBTM {
          $input['closedate'] = 'NULL';
       }
 
+      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
+           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
+           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
+          && $input["status"]=="new") {
+
+         $input["status"] = "assign";
+      }
+
       return $input;
    }
 
