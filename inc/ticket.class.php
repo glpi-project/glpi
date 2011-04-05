@@ -4067,7 +4067,7 @@ class Ticket extends CommonDBTM {
          $date = date("Y-m-d H:i:s");
       }
       if ($canupdate) {
-         showDateTimeFormItem("date", $this->fields["date"], 1, false);
+         showDateTimeFormItem("date", $date, 1, false);
       } else {
          echo convDateTime($date);
       }
