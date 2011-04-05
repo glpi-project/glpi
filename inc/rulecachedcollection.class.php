@@ -45,7 +45,7 @@ class RuleCachedCollection extends RuleCollection {
    /// Cache table used
    var $cache_table;
    /// Cache parameters
-   var $cache_plarams;
+   var $cache_params;
 
 
    /**
