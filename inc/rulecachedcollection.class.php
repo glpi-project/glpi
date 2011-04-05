@@ -165,7 +165,7 @@ class RuleCachedCollection extends RuleCollection {
 
       if ($res_check = $DB->query($sql)) {
          $output_values=array();
-         if ($DB->numrows($res_check) == 1) {
+         if ($DB->numrows($res_check) > 0) {
             $data=$DB->fetch_assoc($res_check);
             foreach ($this->cache_params["output_value"] as $param => $param_value) {
                if (isset($data[$param_value])) {
