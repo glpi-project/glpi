@@ -1992,6 +1992,10 @@ class User extends CommonDBTM {
     *          all=0 (default) -> Nobody
     *          all=1 -> All
     *         all=-1-> nothing
+    *    - rand : integer / already computed rand value
+    *    - toupdate : array / Update a specific item on select change on dropdown
+    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - auto_submit : boolean / autosubmit on change (default false)
     *
@@ -2013,6 +2017,9 @@ class User extends CommonDBTM {
       $p['entity_sons']    = false;
       $p['used']           = array();
       $p['ldap_import']    = false;
+      $p['toupdate']       = '';
+      $p['rand']           = mt_rand();
+
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2029,7 +2036,6 @@ class User extends CommonDBTM {
       }
 
       // Make a select box with all glpi users
-      $rand = mt_rand();
       $use_ajax = false;
 
       if ($CFG_GLPI["use_ajax"]) {
@@ -2041,7 +2047,7 @@ class User extends CommonDBTM {
       }
       $user = getUserName($p['value'],2);
 
-      $default_display  = "<select id='dropdown_".$p['name'].$rand."' name='".$p['name']."'>";
+      $default_display  = "<select id='dropdown_".$p['name'].$p['rand']."' name='".$p['name']."'>";
       $default_display .= "<option value='".$p['value']."'>";
       $default_display .= utf8_substr($user["name"], 0, $_SESSION["glpidropdown_chars_limit"]);
       $default_display .= "</option></select>";
@@ -2054,10 +2060,11 @@ class User extends CommonDBTM {
                       'all'              => $p['all'],
                       'right'            => $p['right'],
                       'comment'          => $p['comments'],
-                      'rand'             => $rand,
+                      'rand'             => $p['rand'],
                       'auto_submit'      => $p['auto_submit'],
                       'entity_restrict'  => $p['entity'],
-                      'used'             => $p['used']);
+                      'used'             => $p['used'],
+                      'update_item'      => $p['toupdate'],);
       if ($view_users) {
          $params['update_link'] = $view_users;
       }
@@ -2067,7 +2074,7 @@ class User extends CommonDBTM {
          $default = $default_display;
 
       } else {
-         $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
+         $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
          if ($p['all']) {
             $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
          } else {
@@ -2075,7 +2082,7 @@ class User extends CommonDBTM {
          }
       }
 
-      ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
+      ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$p['rand']);
 
       // Display comment
       if ($p['comments']) {
@@ -2084,9 +2091,9 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
-         showToolTip($user["comment"], array('contentid' => "comment_".$p['name'].$rand,
+         showToolTip($user["comment"], array('contentid' => "comment_".$p['name'].$p['rand'],
                                              'link'      => $user["link"],
-                                             'linkid'    => "comment_link_".$p["name"].$rand));
+                                             'linkid'    => "comment_link_".$p["name"].$p['rand']));
       }
 
       if (haveRight('import_externalauth_users','w')
@@ -2096,11 +2103,11 @@ class User extends CommonDBTM {
          echo "<img alt='' title=\"".$LANG['ldap'][35]."\" src='".$CFG_GLPI["root_doc"].
                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
-               "/front/popup.php?popup=add_ldapuser&amp;rand=$rand&amp;entity=".
+               "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
                $_SESSION['glpiactive_entity']."' ,'glpipopup', 'height=400, ".
                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
-      return $rand;
+      return $p['rand'];
    }
 
 

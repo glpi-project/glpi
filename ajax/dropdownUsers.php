@@ -136,4 +136,5 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                $paramscomment, false);
 }
 
+commonDropdownUpdateItem($_POST);
 ?>

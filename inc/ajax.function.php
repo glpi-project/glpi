@@ -257,4 +257,46 @@ function ajaxUpdateItemJsCode($toupdate, $url, $parameters=array(), $spinner=tru
    echo "});";
 }
 
+
+/**
+ * Javascript code for update an item (Javascript code only)
+ *
+ * @param $options array of options
+*    - toupdate : array / Update a specific item on select change on dropdown
+*                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+*                   and may have moreparams)
+ *
+ **/
+function commonDropdownUpdateItem($options) {
+
+   if (isset($options["update_item"])
+      && (is_array($options["update_item"]) || strlen($options["update_item"])>0)) {
+
+      if (!is_array($options["update_item"])) {
+         $data = unserialize(stripslashes($options["update_item"]));
+      } else {
+         $data = $options["update_item"];
+      }
+
+      if (is_array($data) && count($data)) {
+         $paramsupdate = array();
+         if (isset($data['value_fieldname'])) {
+            $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
+         }
+
+         if (isset($data["moreparams"])
+            && is_array($data["moreparams"])
+            && count($data["moreparams"])) {
+
+            foreach ($data["moreparams"] as $key => $val) {
+               $paramsupdate[$key] = $val;
+            }
+         }
+
+         ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"], $data['to_update'],
+                                    $data['url'], $paramsupdate, false);
+      }
+   }
+
+}
 ?>
