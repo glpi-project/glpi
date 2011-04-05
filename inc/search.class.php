@@ -3989,7 +3989,11 @@ class Search {
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = '<hr>';
                }
-               return str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
+               $text = str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
+               if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
+                  $text = html_clean(unclean_cross_side_scripting_deep($text));
+               }
+               return $text;
 
             case "date" :
                $split = explode("$$$$", $data[$NAME.$num]);
