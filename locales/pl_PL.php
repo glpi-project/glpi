@@ -832,6 +832,7 @@ $LANG['job'][52]="Uaktualnij zadanie";
 $LANG['job'][53]="Usuwanie jako zadanie"; 
 $LANG['job'][54]="Bez odpowiedzi, zgłoszenie zostanie automatycznie zamknięte po"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Poszukuj tylko raz"; 

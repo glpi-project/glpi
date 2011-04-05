@@ -832,6 +832,7 @@ $LANG['job'][52]="Update task";
 $LANG['job'][53]="Deletion of a task"; 
 $LANG['job'][54]="Without a reply, the ticket will be automatically closed after"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Berre mine"; 

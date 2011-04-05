@@ -832,6 +832,7 @@ $LANG['job'][52]="Aggiorna incarico";
 $LANG['job'][53]="Cancella incarico"; 
 $LANG['job'][54]="In assenza di una risposta, la chiamata sarà automaticamente chiusa dopo"; 
 $LANG['job'][55]="Chiamate collegate"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Stato"; 
 $LANG['joblist'][1]="Solo le mie"; 

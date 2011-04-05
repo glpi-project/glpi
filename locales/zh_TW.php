@@ -832,6 +832,7 @@ $LANG['job'][52]="更新作業";
 $LANG['job'][53]="刪除作業"; 
 $LANG['job'][54]="如果沒有回覆，問題單將自動結案"; 
 $LANG['job'][55]="已連結的問題單"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="狀態"; 
 $LANG['joblist'][1]="只有我的"; 

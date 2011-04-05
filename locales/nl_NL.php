@@ -832,6 +832,7 @@ $LANG['job'][52]="Update van een taak";
 $LANG['job'][53]="Taak verwijderen"; 
 $LANG['job'][54]="Zonder antwoord van uwentwege zal het ticket automatisch worden afgesloten"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Alleen die van mijzelf"; 

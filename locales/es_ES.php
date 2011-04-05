@@ -832,6 +832,7 @@ $LANG['job'][52]="Actualizar una tarea";
 $LANG['job'][53]="Supresión de una tarea"; 
 $LANG['job'][54]="Sin una respuesta la incidencia se borrará después de"; 
 $LANG['job'][55]="Incidencias enlazadas"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Estado"; 
 $LANG['joblist'][1]="Sólo los míos"; 

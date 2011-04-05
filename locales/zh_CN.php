@@ -832,6 +832,7 @@ $LANG['job'][52]="更新任务";
 $LANG['job'][53]="删除任务"; 
 $LANG['job'][54]="没有答复，随后标签将会自动关闭"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="状态"; 
 $LANG['joblist'][1]="只是我的"; 

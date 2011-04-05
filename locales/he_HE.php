@@ -832,6 +832,7 @@ $LANG['job'][52]="עדכן משימה";
 $LANG['job'][53]="מחיקת משימה"; 
 $LANG['job'][54]="ללא הודעה חוזרת, הקריאה תיסגר אוטומטית לאחר"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="סטטוס"; 
 $LANG['joblist'][1]="שלי בלבד"; 
