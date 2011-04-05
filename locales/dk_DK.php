@@ -832,6 +832,7 @@ $LANG['job'][52]="Opdatér opgave";
 $LANG['job'][53]="Sletning af en opgave"; 
 $LANG['job'][54]="Uden et svar, vil sagen automatisk blive lukket efter"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Kun mine!"; 

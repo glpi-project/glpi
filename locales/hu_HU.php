@@ -832,6 +832,7 @@ $LANG['job'][52]="Feladat módosítása";
 $LANG['job'][53]="Feladat törlése"; 
 $LANG['job'][54]="Ha nem válaszol, a bejelentés automatikusan le lesz zárva"; 
 $LANG['job'][55]="Hivatkozott bejelentések"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Státusz"; 
 $LANG['joblist'][1]="Csak a sajátokat"; 

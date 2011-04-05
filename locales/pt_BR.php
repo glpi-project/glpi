@@ -832,6 +832,7 @@ $LANG['job'][52]="Atualizar tarefa";
 $LANG['job'][53]="Remoção de uma tarefa"; 
 $LANG['job'][54]="Sem uma resposta, o chamado será fechado automaticamente após"; 
 $LANG['job'][55]="Tickets relacionados"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Apenas minhas tarefas"; 

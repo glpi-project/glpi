@@ -625,6 +625,25 @@ if (isset($_POST["itemtype"])) {
             }
             break;
 
+         case "link_ticket" :
+            $ticket = new Ticket();
+            if (isset($_POST['link']) && isset($_POST['tickets_id_1'])) {
+               if ($ticket->getFromDB($_POST['tickets_id_1'])) {
+                  foreach ($_POST["item"] as $key => $val) {
+                     if ($val == 1) {
+                        $input['id']                    = $_POST['tickets_id_1'];
+                        $input['_link']['tickets_id_1'] = $_POST['tickets_id_1'];
+                        $input['_link']['link']         = $_POST['link'];
+                        $input['_link']['tickets_id_2'] = $key;
+                        if ($ticket->can($_POST['tickets_id_1'],'w')) {
+                           $ticket->update($input);
+                        }
+                     }
+                  }
+               }
+            }
+            break;
+
          case 'reset' :
             if ($_POST["itemtype"] == 'CronTask') {
                checkRight('config','w');

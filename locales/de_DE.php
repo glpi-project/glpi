@@ -832,6 +832,7 @@ $LANG['job'][52]="Tätigkeit aktualisieren";
 $LANG['job'][53]="Tätigkeit löschen"; 
 $LANG['job'][54]="Ohne Ihrer Rückmeldung wird das Ticket automatisch abgeschlossen, nach"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Nur meine"; 

@@ -832,6 +832,7 @@ $LANG['job'][52]="Aktualizovat úkol";
 $LANG['job'][53]="Smazání úkolu"; 
 $LANG['job'][54]="Without a reply, the ticket will be automatically closed after"; 
 $LANG['job'][55]="Související požadavky"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Stav"; 
 $LANG['joblist'][1]="Získané úkoly"; 

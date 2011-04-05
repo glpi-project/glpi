@@ -832,6 +832,7 @@ $LANG['job'][52]="Actualitzar una tasca";
 $LANG['job'][53]="Supressió d'una tasca"; 
 $LANG['job'][54]="Sense una resposta l'incident s'eliminarà després de"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Estat"; 
 $LANG['joblist'][1]="Solament els meus"; 

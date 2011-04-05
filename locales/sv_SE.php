@@ -832,6 +832,7 @@ $LANG['job'][52]="Update task";
 $LANG['job'][53]="Deletion of a task"; 
 $LANG['job'][54]="Obesvarad, kommer detta ärende att avslutas den"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Endast mina"; 

@@ -832,6 +832,7 @@ $LANG['job'][52]="Aktualizovať úlohu";
 $LANG['job'][53]="Zmazanie úlohy"; 
 $LANG['job'][54]="Bez opakovania, požiadavka bude potom automaticky uzatvorená"; 
 $LANG['job'][55]="Spojené požiadavky"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Stav"; 
 $LANG['joblist'][1]="Získané úlohy"; 

@@ -1393,6 +1393,7 @@ class Dropdown {
 
                   if (haveRight("update_ticket","1")) {
                      echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
+                     echo "<option value='link_ticket'>".$LANG['job'][56]."</option>";
                   }
 
                   break;

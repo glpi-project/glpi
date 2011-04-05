@@ -936,6 +936,7 @@ $LANG['job'][52] = "Mise à jour d'une tâche";
 $LANG['job'][53] = "Suppression d'une tâche";
 $LANG['job'][54] = "Sans réponse de votre part, le ticket sera clos automatiquement après";
 $LANG['job'][55] = "Tickets liés";
+$LANG['job'][56] = "Lier des tickets";
 
 
 $LANG['joblist'][0]  = "Statut";

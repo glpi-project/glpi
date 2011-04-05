@@ -832,6 +832,7 @@ $LANG['job'][52]="タスクを更新";
 $LANG['job'][53]="タスクの削除"; 
 $LANG['job'][54]="チケットは応答なく自動的にクローズされます"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="ステータス"; 
 $LANG['joblist'][1]="私の担当"; 

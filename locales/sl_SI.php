@@ -832,6 +832,7 @@ $LANG['job'][52]="Posodobitev naloge";
 $LANG['job'][53]="Izbris naloge"; 
 $LANG['job'][54]="Brez odgovora, opravilo bo avtomatično zaprto po"; 
 $LANG['job'][55]="Linked tickets"; 
+$LANG['job'][56]="Link tickets"; 
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Le moji"; 
