@@ -590,19 +590,6 @@ if (isset($_POST["itemtype"])) {
             }
             break;
 
-         case "validate_ticket" :
-            $valid = new TicketValidation();
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $input = array('id'     => $key,
-                                 'status' => $_POST['status']);
-                  if ($valid->can($key,'w')) {
-                     $valid->update($input);
-                  }
-               }
-            }
-            break;
-
          case "add_task" :
             $task = new TicketTask();
             foreach ($_POST["item"] as $key => $val) {
