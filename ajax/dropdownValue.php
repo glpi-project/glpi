@@ -513,33 +513,5 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
 }
 
-if (isset($_POST["update_item"])
-    && (is_array($_POST["update_item"]) || strlen($_POST["update_item"])>0)) {
-
-   if (!is_array($_POST["update_item"])) {
-      $data = unserialize(stripslashes($_POST["update_item"]));
-   } else {
-      $data = $_POST["update_item"];
-   }
-
-   if (is_array($data) && count($data)) {
-      $paramsupdate = array();
-      if (isset($data['value_fieldname'])) {
-         $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
-      }
-
-      if (isset($data["moreparams"])
-          && is_array($data["moreparams"])
-          && count($data["moreparams"])) {
-
-         foreach ($data["moreparams"] as $key => $val) {
-            $paramsupdate[$key] = $val;
-         }
-      }
-
-      ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"], $data['to_update'],
-                                  $data['url'], $paramsupdate, false);
-   }
-}
-
+commonDropdownUpdateItem($_POST);
 ?>
