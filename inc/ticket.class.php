@@ -668,7 +668,10 @@ class Ticket extends CommonDBTM {
                   if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
                      $ticket_user->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
-                     $input['_assignadd']  = true;
+                     if ((!isset($input['status']) && $this->fields['status']=='new')
+                        || $input['status'] == 'new') {
+                        $input['status'] = 'assign';
+                     }
                   }
                   break;
 
@@ -677,7 +680,10 @@ class Ticket extends CommonDBTM {
                   if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
                      $group_ticket->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
-                     $input['_assignadd']  = true;
+                     if ((!isset($input['status']) && $this->fields['status']=='new')
+                        || $input['status'] == 'new') {
+                        $input['status'] = 'assign';
+                     }
                   }
                   break;
             }
@@ -769,14 +775,6 @@ class Ticket extends CommonDBTM {
          $input['closedate'] = 'NULL';
       }
 
-      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
-           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
-           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
-          && $input["status"]=="new") {
-
-         $input["status"] = "assign";
-      }
-
       return $input;
    }
 
@@ -811,9 +809,8 @@ class Ticket extends CommonDBTM {
 
 
       if ($this->fields['status'] == 'new') {
-         if ((in_array("suppliers_id_assign",$this->updates)
-              && $this->input["suppliers_id_assign"]>0)
-             || isset($this->input["_assignadd"])) {
+         if (in_array("suppliers_id_assign",$this->updates)
+              && $this->input["suppliers_id_assign"]>0) {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
