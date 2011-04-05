@@ -415,7 +415,7 @@ class RuleCollection extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb>0) {
-         openArrowMassive("ruleactions_form", true, '50%');
+         openArrowMassive("ruleactions_form", true);
 
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
@@ -437,7 +437,6 @@ class RuleCollection extends CommonDBTM {
                                      $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
-         echo "</td>";
 
          if ($this->can_replay_rules) {
             echo "</td>"; // close td of openArrowMassive
