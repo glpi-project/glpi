@@ -2411,12 +2411,18 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
    $end = $numrows-$list_limit;
 
    // Human readable count starts here
+
    $current_start = $start+1;
 
    // And the human is viewing from start to end
    $current_end = $current_start+$list_limit-1;
    if ($current_end>$numrows) {
       $current_end = $numrows;
+   }
+
+   // Empty case
+   if ($current_end==0) {
+      $current_start = 0;
    }
 
    // Backward browsing
@@ -2542,7 +2548,10 @@ function printAjaxPager($title, $start, $numrows) {
    if ($current_end>$numrows) {
       $current_end = $numrows;
    }
-
+   // Empty case
+   if ($current_end==0) {
+      $current_start = 0;
+   }
    // Backward browsing
    if ($current_start-$list_limit<=0) {
       $back = 0;
