@@ -57,17 +57,18 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          }
 
          $options = array('name'        => '_ticket_'.$_POST["actortype"].'[users_id]',
-                           'entity'      => $_POST['entity_restrict'],
-                           'right'       => $right,
-                           'ldap_import' => true);
+                          'entity'      => $_POST['entity_restrict'],
+                          'right'       => $right,
+                          'ldap_import' => true);
          if ($CFG_GLPI["use_mailing"]) {
             // Fix rand value
-            $options['rand'] = $rand;
+            $options['rand']     = $rand;
             $options['toupdate'] = array('value_fieldname' => 'value',
-                                          'to_update'  => "notif_user_$rand",
-                                          'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                          'moreparams' => array('value' => '__VALUE__',
-                                                                'field' => "_ticket_".$_POST["actortype"]));
+                                         'to_update'  => "notif_user_$rand",
+                                         'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                         'moreparams' => array('value' => '__VALUE__',
+                                                               'field' => "_ticket_".
+                                                                          $_POST["actortype"]));
          }
 
          $rand = User::dropdown($options);
