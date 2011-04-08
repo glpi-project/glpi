@@ -1991,7 +1991,7 @@ class User extends CommonDBTM {
     *    - all : Nobody or All display for none selected
     *          all=0 (default) -> Nobody
     *          all=1 -> All
-    *         all=-1-> nothing
+    *          all=-1-> nothing
     *    - rand : integer / already computed rand value
     *    - toupdate : array / Update a specific item on select change on dropdown
     *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
@@ -2019,7 +2019,6 @@ class User extends CommonDBTM {
       $p['ldap_import']    = false;
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
-
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2082,7 +2081,7 @@ class User extends CommonDBTM {
          }
       }
 
-      ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$p['rand']);
+      ajaxDropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
 
       // Display comment
       if ($p['comments']) {

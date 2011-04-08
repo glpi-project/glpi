@@ -1501,7 +1501,7 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_software']) {
          $query = "SELECT `id`
                    FROM `glpi_computers_softwarelicenses`
-                      WHERE `computers_id` = '$ID'";
+                   WHERE `computers_id` = '$ID'";
          foreach ($DB->request($query) AS $data) {
             $this->transferAffectedLicense($data['id']);
          }
@@ -1529,8 +1529,7 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $computer_softwarelicense = new Computer_SoftwareLicense();
-
-      $license = new SoftwareLicense();
+      $license                  = new SoftwareLicense();
 
       if ($computer_softwarelicense->getFromDB($ID)) {
          if ($license->getFromDB($computer_softwarelicense->getField('softwarelicenses_id'))) {
@@ -1538,7 +1537,7 @@ class Transfer extends CommonDBTM {
             //// Update current : decrement number by 1 if valid
             if ($license->getField('number')>1) {
                $license->update(array('id'     => $license->getID(),
-                                    'number' => ($license->getField('number')-1)));
+                                      'number' => ($license->getField('number')-1)));
             }
 
             // Create new license : need to transfer softwre and versions before
@@ -1548,20 +1547,20 @@ class Transfer extends CommonDBTM {
             if ($newsoftID > 0) {
                //// If license already exists : increment number by one
                $query = "SELECT *
-                           FROM `glpi_softwarelicenses`
-                           WHERE `softwares_id` = '$newsoftID'
-                                 AND `name` = '".addslashes($license->fields['name'])."'
-                                 AND `serial` = '".addslashes($license->fields['serial'])."'";
+                         FROM `glpi_softwarelicenses`
+                         WHERE `softwares_id` = '$newsoftID'
+                               AND `name` = '".addslashes($license->fields['name'])."'
+                               AND `serial` = '".addslashes($license->fields['serial'])."'";
 
                $newlicID = -1;
                if ($result=$DB->query($query)) {
                   //// If exists : increment number by 1
                   if ($DB->numrows($result)>0) {
-                     $data=$DB->fetch_array($result);
+                     $data     = $DB->fetch_array($result);
                      $newlicID = $data['id'];
                      $license->update(array('id'     => $data['id'],
-                                          'number' => $data['number']+1));
-                  
+                                            'number' => $data['number']+1));
+
                   } else {
                      //// If not exists : create with number = 1
                      $input = $license->fields;
@@ -1575,13 +1574,12 @@ class Transfer extends CommonDBTM {
                      }
 
                      unset($input['id']);
-                     $input['number'] = 1;
-                     $input['entities_id'] = $this->to;
+                     $input['number']       = 1;
+                     $input['entities_id']  = $this->to;
                      $input['softwares_id'] = $newsoftID;
-                     $newlicID = $license->add($input);
+                     $newlicID              = $license->add($input);
                   }
                }
-
 
                if ($newlicID>0) {
                   $input = array('id'                  => $ID,

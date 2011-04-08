@@ -270,7 +270,7 @@ function ajaxUpdateItemJsCode($toupdate, $url, $parameters=array(), $spinner=tru
 function commonDropdownUpdateItem($options) {
 
    if (isset($options["update_item"])
-      && (is_array($options["update_item"]) || strlen($options["update_item"])>0)) {
+       && (is_array($options["update_item"]) || strlen($options["update_item"])>0)) {
 
       if (!is_array($options["update_item"])) {
          $data = unserialize(stripslashes($options["update_item"]));
@@ -285,16 +285,16 @@ function commonDropdownUpdateItem($options) {
          }
 
          if (isset($data["moreparams"])
-            && is_array($data["moreparams"])
-            && count($data["moreparams"])) {
+             && is_array($data["moreparams"])
+             && count($data["moreparams"])) {
 
             foreach ($data["moreparams"] as $key => $val) {
                $paramsupdate[$key] = $val;
             }
          }
 
-         ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"], $data['to_update'],
-                                    $data['url'], $paramsupdate, false);
+         ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+                                     $data['to_update'], $data['url'], $paramsupdate, false);
       }
    }
 
