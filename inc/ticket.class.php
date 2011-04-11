@@ -2521,7 +2521,8 @@ class Ticket extends CommonDBTM {
       }
 
       // Filter search fields for helpdesk
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+      if (getLoginUserID(true) === getLoginUserID(false) // no filter for cron
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tokeep = array('common');
          if (haveRight('validate_ticket',1) || haveRight('create_validation',1)) {
             $tokeep[] = 'validation';
