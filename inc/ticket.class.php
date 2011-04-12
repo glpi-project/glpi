@@ -1608,8 +1608,7 @@ class Ticket extends CommonDBTM {
 
       if (isset($this->input["_users_id_requester"])
             && ($this->input["_users_id_requester"]>0
-               || ($CFG_GLPI["use_anonymous_helpdesk"]
-                     && isset($this->input["_users_id_requester_notif"]['alternative_email'])
+               || (isset($this->input["_users_id_requester_notif"]['alternative_email'])
                      && !empty($this->input["_users_id_requester_notif"]['alternative_email'])))) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_requester"],
