@@ -655,8 +655,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $fields = array('ticket.title'        => 'name',
                          'ticket.content'      => 'content',
                          'ticket.costfixed'    => 'cost_fixed',
-                         'ticket.costmaterial' => 'cost_material',
-                         'ticket.useremail'    => 'user_email');
+                         'ticket.costmaterial' => 'cost_material');
 
          foreach ($fields as $tag => $table_field) {
             $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
@@ -1329,7 +1328,6 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
-                    'ticket.useremailnotification' => $LANG['job'][19],
                     'ticket.globalvalidation'      => $LANG['validation'][25]
                   );
 
