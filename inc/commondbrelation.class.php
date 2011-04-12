@@ -95,7 +95,6 @@ abstract class CommonDBRelation extends CommonDBTM {
          }
          $input = &$this->fields;
       }
-
       // Must can read first Item of the relation
       $type1 = $this->itemtype_1;
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
@@ -134,8 +133,8 @@ abstract class CommonDBRelation extends CommonDBTM {
          return true;
       }
 
-      // Check entity compatibility
-      if ($this->check_entities) {
+      // Check entity compatibility / no check for delete just check write access
+      if ($this->check_entities && $right!='d') {
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
             // get items if needed : need to have entity set
@@ -146,7 +145,6 @@ abstract class CommonDBRelation extends CommonDBTM {
             if (!isset($item2->fields['id'])) {
                $item2->getFromDB($input[$this->items_id_2]);
             }
-
             if ($item1->getEntityID() == $item2->getEntityID()) {
                $checkentity = true;
 
