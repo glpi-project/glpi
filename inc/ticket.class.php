@@ -1606,7 +1606,11 @@ class Ticket extends CommonDBTM {
       $ticket_user  = new Ticket_User;
       $group_ticket = new Group_Ticket;
 
-      if (isset($this->input["_users_id_requester"]) && $this->input["_users_id_requester"]>0) {
+      if (isset($this->input["_users_id_requester"])
+            && ($this->input["_users_id_requester"]>0
+               || ($CFG_GLPI["use_anonymous_helpdesk"]
+                     && isset($this->input["_users_id_requester_notif"]['alternative_email'])
+                     && !empty($this->input["_users_id_requester_notif"]['alternative_email'])))) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_requester"],
                          'type'       => self::REQUESTER);
@@ -3633,8 +3637,15 @@ class Ticket extends CommonDBTM {
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $k => $d) {
+            $save_showuserlink = $showuserlink;
             echo "$usericon&nbsp;";
-            $userdata = getUserName($k, $showuserlink);
+            if ($k) {
+               $userdata = getUserName($k, $showuserlink);
+            } else {
+               $email = $d['alternative_email'];
+               $userdata = "<a href='mailto:$email'>$email</a>";
+               $showuserlink = false;
+            }
 
             if ($showuserlink) {
                echo $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
@@ -3643,6 +3654,7 @@ class Ticket extends CommonDBTM {
             } else {
                echo $userdata;
             }
+            $showuserlink = $save_showuserlink;
 
             if ($CFG_GLPI['use_mailing']) {
                $text = $LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).

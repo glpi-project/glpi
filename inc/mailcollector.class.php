@@ -507,6 +507,9 @@ class MailCollector  extends CommonDBTM {
       //  Who is the user ?
       $tkt['_users_id_requester'] = User::getOrImportByEmail($head['from']);
       $tkt["_users_id_requester_notif"]['use_notification'] = 1;
+      if (!$tkt['_users_id_requester']) {
+         $tkt["_users_id_requester_notif"]['alternative_email'] = $head['from'];
+      }
 
       // Add to and cc as additional observer if user found
       if (count($head['ccs'])) {
