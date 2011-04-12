@@ -142,14 +142,22 @@ class Entity extends CommonTreeDropdown {
                $this->showChildren($ID);
                EntityData::showStandardOptions($this);
                Profile_User::showForEntity($this);
-               $ldaprule = new RuleRight();
-               $ldaprule->showAndAddRuleForm($this);
-               if ($CFG_GLPI["use_ocs_mode"]) {
+
+               $collection = new RuleRightCollection();
+               if ($collection->canList()) {
+                  $ldaprule = new RuleRight();
+                  $ldaprule->showAndAddRuleForm($this);
+               }
+               $collection = new RuleOcsCollection();
+               if ($collection->canList()) {
                   $ocsrule = new RuleOcs();
                   $ocsrule->showAndAddRuleForm($this);
                }
-               $mailcollector = new RuleMailCollector();
-               $mailcollector->showAndAddRuleForm($this);
+               $collection = new RuleMailCollectorCollection();
+               if ($collection->canList()) {
+                  $mailcollector = new RuleMailCollector();
+                  $mailcollector->showAndAddRuleForm($this);
+               }
                Document::showAssociated($this);
                EntityData::showNotificationOptions($this);
                EntityData::showHelpdeskOptions($this);
@@ -166,14 +174,21 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 4 :
-               $ldaprule = new RuleRight();
-               $ldaprule->showAndAddRuleForm($this);
-               if ($CFG_GLPI["use_ocs_mode"]) {
+               $collection = new RuleRightCollection();
+               if ($collection->canList()) {
+                  $ldaprule = new RuleRight();
+                  $ldaprule->showAndAddRuleForm($this);
+               }
+               $collection = new RuleOcsCollection();
+               if ($collection->canList()) {
                   $ocsrule = new RuleOcs();
                   $ocsrule->showAndAddRuleForm($this);
                }
-               $mailcollector = new RuleMailCollector();
-               $mailcollector->showAndAddRuleForm($this);
+               $collection = new RuleMailCollectorCollection();
+               if ($collection->canList()) {
+                  $mailcollector = new RuleMailCollector();
+                  $mailcollector->showAndAddRuleForm($this);
+               }
                break;
 
             case 5 :
