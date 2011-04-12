@@ -1087,9 +1087,10 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                             $options['entities_id']);
          $this->datas['##ticket.action##']      = $LANG['crontask'][15];
-         $tmp = array();
          $t = new Ticket();
          foreach ($options['tickets'] as $ticket) {
+            $tmp = array();
+
             $t->getFromDB($ticket['id']);
 
             $tmp['##ticket.id##']           = sprintf("%07d",$ticket['id']);
@@ -1112,9 +1113,20 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.content##']          = $ticket['content'];
 
 
+            if ($t->getField('ticketsolutiontypes_id')) {
+               $tmp['##ticket.solution.type##']
+                           = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                      $t->getField('ticketsolutiontypes_id'));
+            } else {
+               $this->datas['##ticket.solution.type##']='';
+            }
+            $tmp['##ticket.solution.description##']
+                        = unclean_cross_side_scripting_deep($t->getField('solution'));
+
+
             if ($t->countUsers(Ticket::REQUESTER)) {
                $users = array();
-               foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $tmp) {
+               foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $val) {
                   $user_tmp = new User;
                   $user_tmp->getFromDB($uid);
 
@@ -1146,7 +1158,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             if ($t->countUsers(Ticket::ASSIGN)) {
                $users = array();
-               foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $tmp) {
+               foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $val) {
                   $user_tmp = new User;
                   $user_tmp->getFromDB($uid);
 
@@ -1159,7 +1171,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             if ($t->countGroups(Ticket::ASSIGN)) {
                $groups = array();
-               foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $tmp) {
+               foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $val) {
                   $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                }
                $tmp['##ticket.assigntogroups##'] = implode(', ',$groups);
@@ -1169,7 +1181,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             if ($t->countGroups(Ticket::REQUESTER)) {
                $groups = array();
-               foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $tmp) {
+               foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $val) {
                   $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                }
                $tmp['##ticket.groups##'] = implode(', ',$groups);
@@ -1205,7 +1217,7 @@ class NotificationTargetTicket extends NotificationTarget {
             } else {
                $tmp['##ticket.assigntosupplier##'] = '';
             }
-
+            
             $this->datas['tickets'][] = $tmp;
          }
       }
