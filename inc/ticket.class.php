@@ -493,6 +493,14 @@ class Ticket extends CommonDBTM {
                  WHERE `tickets_id_1` = '".$this->fields['id']."'
                      OR `tickets_id_2` = '".$this->fields['id']."'";
       $DB->query($query1);
+
+      $tu = new Ticket_User();
+      $tu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gt = new Group_Ticket();
+      $gt->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+
    }
 
 
