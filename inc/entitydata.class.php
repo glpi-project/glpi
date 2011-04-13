@@ -678,7 +678,7 @@ class EntityData extends CommonDBChild {
                        'emptylabel' => $LANG['common'][102]);
 
       if ($ID==0) {
-         $options['emptylabel'] = DROPDOWN_EMPTY_VALUE;
+         $options['emptylabel'] = $LANG['sla'][10];
       }
       Dropdown::show('Calendar', $options);
 
