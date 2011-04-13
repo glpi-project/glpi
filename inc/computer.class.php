@@ -84,7 +84,6 @@ class Computer extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1]  = $LANG['title'][30];
          $ong[20] = $LANG['computers'][8];
-         $ong[21] = $LANG['computers'][57];
 
          if (haveRight("software","r")) {
             $ong[2] = $LANG['Menu'][4];
@@ -104,6 +103,8 @@ class Computer extends CommonDBTM {
          }
 
          Document::addTab($this,$ong);
+
+         $ong[21] = $LANG['computers'][57];
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if ($CFG_GLPI["use_ocs_mode"]) {
