@@ -48,6 +48,7 @@ class Ticket_User extends CommonDBRelation {
 
    var $no_form_page = true;
 
+   var $checks_and_logs_only_for_itemtype1 = true;
 
    static function getTicketUsers($tickets_id) {
       global $DB;
