@@ -1947,6 +1947,7 @@ $LANG['sla'][6]="Úroveň eskalácie";
 $LANG['sla'][7]="Leave the SLA"; 
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatické pripomienky SLAs"; 
+$LANG['sla'][10]="24/7"; 
 
 $LANG['software'][1]="Zakúpená verzia"; 
 $LANG['software'][2]="Použiť verziu"; 
