@@ -43,6 +43,8 @@ abstract class CommonDBRelation extends CommonDBTM {
 
    var $check_entities = true;
 
+   var $checks_and_logs_only_for_itemtype1 = false;
+
 
    /**
     * Get search function for the class
@@ -113,19 +115,21 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Must can read second Item of the relation
-      $type2 = $this->itemtype_2;
-      if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $input[$this->itemtype_2];
-      }
+      if (!$this->checks_and_logs_only_for_itemtype1) {
+         $type2 = $this->itemtype_2;
+         if (preg_match('/^itemtype/',$this->itemtype_2)) {
+            $type2 = $input[$this->itemtype_2];
+         }
 
-      if (!class_exists($type2)) {
-         return false;
-      }
+         if (!class_exists($type2)) {
+            return false;
+         }
 
-      $item2 = new $type2();
-      if (!($item2 instanceof CommonDropdown)
-          && !$item2->can($input[$this->items_id_2],'r')) {
-         return false;
+         $item2 = new $type2();
+         if (!($item2 instanceof CommonDropdown)
+            && !$item2->can($input[$this->items_id_2],'r')) {
+            return false;
+         }
       }
 
       // Read right checked on both item
@@ -134,7 +138,9 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Check entity compatibility / no check for delete just check write access
-      if ($this->check_entities && $right!='d') {
+      // No check if checking only itemtype1
+      if (!$this->checks_and_logs_only_for_itemtype1
+         && $this->check_entities && $right!='d') {
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
             // get items if needed : need to have entity set
@@ -167,7 +173,8 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // can write one item is enough
       if ($item1->can($input[$this->items_id_1],'w')
-          || $item2->can($input[$this->items_id_2],'w')) {
+          || ($this->checks_and_logs_only_for_itemtype1
+               || $item2->can($input[$this->items_id_2],'w'))) {
          return true;
       }
 
@@ -222,7 +229,7 @@ abstract class CommonDBRelation extends CommonDBTM {
                       HISTORY_ADD_RELATION);
       }
 
-      if ($item2->dohistory) {
+      if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($item1->getNameID());
@@ -257,6 +264,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
+      
 
       $type2 = $this->itemtype_2;
       if (preg_match('/^itemtype/',$this->itemtype_2)) {
@@ -280,7 +288,7 @@ abstract class CommonDBRelation extends CommonDBTM {
                       HISTORY_DEL_RELATION);
       }
 
-      if ($item2->dohistory) {
+      if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = addslashes($item1->getNameID());
          $changes[2] = "";

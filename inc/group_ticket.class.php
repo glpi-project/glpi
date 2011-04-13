@@ -46,6 +46,7 @@ class Group_Ticket extends CommonDBRelation {
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
+   var $checks_and_logs_only_for_itemtype1 = true;
 
    static function getTicketGroups($tickets_id) {
       global $DB;
