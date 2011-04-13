@@ -230,11 +230,6 @@ class User extends CommonDBTM {
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
-      $query = "DELETE
-                FROM `glpi_groups_users`
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
-
       if ($this->fields['id'] > 0) { // Security
          $query = "DELETE
                    FROM `glpi_displaypreferences`
@@ -272,6 +267,13 @@ class User extends CommonDBTM {
                 SET `users_id` = '0'
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
+
+      $gu = new Group_User();
+      $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $tu = new Ticket_User();
+      $tu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
    }
 
 

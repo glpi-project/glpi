@@ -62,10 +62,12 @@ class Group extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_groups_users`
-                WHERE `groups_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $gu = new Group_User();
+      $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gt = new Group_Ticket();
+      $gt->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
    }
 
 
