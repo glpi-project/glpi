@@ -2249,15 +2249,16 @@ $LANG['setup'][827] = "Alerte enregistrement en doublon";
 $LANG['setup'][828] = "Valeur ignorée pour l'unicité";
 
 
-$LANG['sla'][1] = "SLA";
-$LANG['sla'][2] = "Temps maximum de résolution";
-$LANG['sla'][3] = "Exécution";
-$LANG['sla'][4] = "Ajouter un niveau d'escalade";
-$LANG['sla'][5] = "Date d'échéance";
-$LANG['sla'][6] = "Niveau d'escalade";
-$LANG['sla'][7] = "Sortir de la SLA";
-$LANG['sla'][8] = "Prochaine escalade";
-$LANG['sla'][9] = "Rappels automatiques des SLAs";
+$LANG['sla'][1]  = "SLA";
+$LANG['sla'][2]  = "Temps maximum de résolution";
+$LANG['sla'][3]  = "Exécution";
+$LANG['sla'][4]  = "Ajouter un niveau d'escalade";
+$LANG['sla'][5]  = "Date d'échéance";
+$LANG['sla'][6]  = "Niveau d'escalade";
+$LANG['sla'][7]  = "Sortir de la SLA";
+$LANG['sla'][8]  = "Prochaine escalade";
+$LANG['sla'][9]  = "Rappels automatiques des SLAs";
+$LANG['sla'][10] = "24 heures sur 24, 7 jours sur 7";
 
 
 $LANG['software'][1]  = "Version d'achat";

@@ -162,7 +162,8 @@ class SLA extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['buttons'][15]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Calendar', array('value' => $this->fields["calendars_id"]));
+      Dropdown::show('Calendar', array('value'      => $this->fields["calendars_id"],
+                                       'emptylabel' => $LANG['sla'][10]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['sla'][2]."&nbsp;:</td>";
