@@ -1615,9 +1615,9 @@ class Ticket extends CommonDBTM {
       $group_ticket = new Group_Ticket;
 
       if (isset($this->input["_users_id_requester"])
-            && ($this->input["_users_id_requester"]>0
-               || (isset($this->input["_users_id_requester_notif"]['alternative_email'])
-                     && !empty($this->input["_users_id_requester_notif"]['alternative_email'])))) {
+          && ($this->input["_users_id_requester"]>0
+              || (isset($this->input["_users_id_requester_notif"]['alternative_email'])
+                  && !empty($this->input["_users_id_requester_notif"]['alternative_email'])))) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_requester"],
                          'type'       => self::REQUESTER);
@@ -3649,8 +3649,8 @@ class Ticket extends CommonDBTM {
             if ($k) {
                $userdata = getUserName($k, $showuserlink);
             } else {
-               $email = $d['alternative_email'];
-               $userdata = "<a href='mailto:$email'>$email</a>";
+               $email        = $d['alternative_email'];
+               $userdata     = "<a href='mailto:$email'>$email</a>";
                $showuserlink = false;
             }
 
