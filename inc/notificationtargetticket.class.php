@@ -879,7 +879,7 @@ class NotificationTargetTicket extends NotificationTarget {
                            = Dropdown::getDropdownName('glpi_locations',
                                                        $user->getField('locations_id'));
             } else {
-               $this->datas['##ticket.item.location##']='';
+               $this->datas['##ticket.item.location##'] = '';
             }
             //Object user
             $this->datas['##ticket.item.user##'] = '';
@@ -1115,12 +1115,12 @@ class NotificationTargetTicket extends NotificationTarget {
             if ($t->getField('ticketsolutiontypes_id')) {
                $tmp['##ticket.solution.type##']
                            = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                      $t->getField('ticketsolutiontypes_id'));
+                                                       $t->getField('ticketsolutiontypes_id'));
             } else {
-               $this->datas['##ticket.solution.type##']='';
+               $this->datas['##ticket.solution.type##'] = '';
             }
             $tmp['##ticket.solution.description##']
-                        = unclean_cross_side_scripting_deep($t->getField('solution'));
+                           = unclean_cross_side_scripting_deep($t->getField('solution'));
 
 
             if ($t->countUsers(Ticket::REQUESTER)) {
@@ -1216,7 +1216,7 @@ class NotificationTargetTicket extends NotificationTarget {
             } else {
                $tmp['##ticket.assigntosupplier##'] = '';
             }
-            
+
             $this->datas['tickets'][] = $tmp;
          }
       }

@@ -77,6 +77,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Check right on an item
     *
@@ -86,7 +87,7 @@ abstract class CommonDBRelation extends CommonDBTM {
     *
     * @return boolean
    **/
-   function can($ID,$right,&$input=NULL) {
+   function can($ID, $right, &$input=NULL) {
 
       if ($ID>0) {
          if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
@@ -127,7 +128,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
          $item2 = new $type2();
          if (!($item2 instanceof CommonDropdown)
-            && !$item2->can($input[$this->items_id_2],'r')) {
+             && !$item2->can($input[$this->items_id_2],'r')) {
             return false;
          }
       }
@@ -140,7 +141,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       // Check entity compatibility / no check for delete just check write access
       // No check if checking only itemtype1
       if (!$this->checks_and_logs_only_for_itemtype1
-         && $this->check_entities && $right!='d') {
+          && $this->check_entities && $right!='d') {
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
             // get items if needed : need to have entity set
@@ -151,6 +152,7 @@ abstract class CommonDBRelation extends CommonDBTM {
             if (!isset($item2->fields['id'])) {
                $item2->getFromDB($input[$this->items_id_2]);
             }
+
             if ($item1->getEntityID() == $item2->getEntityID()) {
                $checkentity = true;
 
@@ -174,7 +176,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       // can write one item is enough
       if ($item1->can($input[$this->items_id_1],'w')
           || ($this->checks_and_logs_only_for_itemtype1
-               || $item2->can($input[$this->items_id_2],'w'))) {
+              || $item2->can($input[$this->items_id_2],'w'))) {
          return true;
       }
 
@@ -264,7 +266,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
-      
+
 
       $type2 = $this->itemtype_2;
       if (preg_match('/^itemtype/',$this->itemtype_2)) {
