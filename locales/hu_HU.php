@@ -273,7 +273,7 @@ $LANG['common'][70]="Elem sikeresen hozzáadva";
 $LANG['common'][71]="Sikeresen hozzáadva"; 
 $LANG['common'][72]="Elem törölve"; 
 $LANG['common'][73]="Elem végleg törölve"; 
-$LANG['common'][74]="Elem visszaállítva"; 
+$LANG['common'][74]="Elem sikeresen visszaállítva"; 
 $LANG['common'][75]="Nincs jogosultság a rekurzívvá alakításhoz"; 
 $LANG['common'][76]="Nyilvános"; 
 $LANG['common'][77]="Privát"; 
@@ -1492,7 +1492,7 @@ $LANG['reservation'][38]="Biztos, hogy törölhető a tétel a kölcsönzésekb�
 $LANG['reservation'][39]="Ezzel minden folyamatban levő foglalás törölve lesz."; 
 $LANG['reservation'][40]="Ma lejáró eszköz foglalások"; 
 
-$LANG['rulesengine'][0]="is"; 
+$LANG['rulesengine'][0]="pontosan"; 
 $LANG['rulesengine'][1]="nem"; 
 $LANG['rulesengine'][2]="tartalmaz"; 
 $LANG['rulesengine'][3]="nem tartalmaz"; 
@@ -2059,7 +2059,7 @@ $LANG['transfer'][7]="Áthelyezendő elemek";
 $LANG['transfer'][8]="Áthelyezés módja"; 
 
 $LANG['update'][88]="A telepített adatbázis verziója nem kompatibilis a programmal, frissítés szükséges."; 
-$LANG['update'][89]="Próbáljon újabb verzióhoz tervezett adatbázist használni."; 
+$LANG['update'][89]="Próbálj újabb verzióhoz tervezett adatbázist használni."; 
 $LANG['update'][90]="Hiba az adatbázis frissítésekor"; 
 $LANG['update'][91]="Figyelem !"; 
 $LANG['update'][92]="A következő GLPI adatbázis lesz frissítve:"; 
