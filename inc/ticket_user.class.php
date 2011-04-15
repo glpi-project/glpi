@@ -158,12 +158,20 @@ class Ticket_User extends CommonDBRelation {
       }
 
       $t = new Ticket();
-      $t->updateDateMod($this->fields['tickets_id']);
+      if ($t->getFromDB($this->fields['tickets_id'])) {
+         if ($t->fields["suppliers_id_assign"] == 0
+             && $t->countUsers(Ticket::ASSIGN) == 0
+             && $t->countGroups(Ticket::ASSIGN) == 0) {
 
-      if ($donotif) {
-         NotificationEvent::raiseEvent("update", $t, array('_old_user' => $this->fields));
+            $t->update(array('id'     => $this->fields['tickets_id'],
+                             'status' => 'new'));
+         } else {
+            $t->updateDateMod($this->fields['tickets_id']);
+            if ($donotif) {
+               NotificationEvent::raiseEvent("update", $t, array('_old_user' => $this->fields));
+            }
+         }
       }
-
       parent::post_deleteFromDB();
    }
 
