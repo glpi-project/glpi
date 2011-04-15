@@ -151,5 +151,29 @@ class NotificationTargetReservation extends NotificationTarget {
 
       asort($this->tag_descriptions);
    }
+
+
+      /**
+    * Get item associated with the object on which the event was raised
+    *
+    * @return the object associated with the itemtype
+   **/
+   function getObjectItem($event='') {
+
+      if ($this->obj) {
+         $ri = new ReservationItem();
+
+         if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
+            $itemtype = $ri->getField('itemtype');
+
+            if ($itemtype != NOT_AVAILABLE && $itemtype != '' && class_exists($itemtype)) {
+               $item = new $itemtype();
+               $item->getFromDB($ri->getField('items_id'));
+               $this->target_object = $item;
+            }
+         }
+      }
+   }
+
 }
 ?>
