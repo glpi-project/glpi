@@ -350,7 +350,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip.= "<br>".$computer->fields['comment'];
                   $url .= "&nbsp; ".showToolTip($tooltip, array('display' => false));
                } else {
-                  $url = $this->fields['name'];
+                  $url = $computer->fields['name'];
                }
                echo $url;
             }
