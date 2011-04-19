@@ -945,6 +945,11 @@ class NotificationTargetTicket extends NotificationTarget {
                $this->datas['linkedtickets'][] = $tmp;
             }
          }
+         if (!empty($this->datas['linkedtickets'])) {
+            $this->datas['##ticket.numberoflinkedtickets##'] = count($this->datas['linkedtickets']);
+         } else {
+            $this->datas['##ticket.numberoflinkedtickets##'] = 0;
+         }
 
          $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
          if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
@@ -1325,6 +1330,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     'followup.requesttype'         => $LANG['job'][44],
                     'ticket.numberoffollowups'     => $LANG['mailing'][4],
                     'ticket.numberoftasks'         => $LANG['mailing'][122],
+                    'ticket.numberoflinkedtickets' => $LANG['job'][55]." - ".$LANG['tracking'][29],
                     'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
