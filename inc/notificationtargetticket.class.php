@@ -1287,7 +1287,6 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.openbyuser'            => $LANG['common'][37],
 //                      'ticket.group'                 => $LANG['common'][35],
                     'ticket.groups'                => $LANG['common'][53]." : ".$LANG['common'][35],
-                    'ticket.attribution'           => $LANG['job'][5],
 //                     'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
                     'ticket.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
 //                      'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
@@ -1332,7 +1331,6 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.numberoffollowups'     => $LANG['mailing'][4],
                     'ticket.numberoftasks'         => $LANG['mailing'][122],
                     'ticket.numberoflinkedtickets' => $LANG['job'][55]." - ".$LANG['tracking'][29],
-                    'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
                     'ticket.globalvalidation'      => $LANG['validation'][25]
@@ -1414,7 +1412,9 @@ class NotificationTargetTicket extends NotificationTarget {
       //Tags with just lang
       $tags = array('ticket.days'             => $LANG['stats'][31],
                     'ticket.linkedtickets'    => $LANG['job'][55],
-                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31]);
+                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31],
+                    'ticket.attribution'           => $LANG['job'][5],
+                    'ticket.nocategoryassigned'    => $LANG['mailing'][100]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
