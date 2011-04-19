@@ -429,12 +429,7 @@ class CronTask extends CommonDBTM{
       if ($this->fields["state"]==self::STATE_RUNNING) {
          echo "<strong>" . $this->getStateName(self::STATE_RUNNING)."</strong>";
       } else {
-         Dropdown::showFromArray('state',
-                                 array(self::STATE_DISABLE
-                                       => $this->getStateName(self::STATE_DISABLE),
-                                       self::STATE_WAITING
-                                       => $this->getStateName(self::STATE_WAITING)),
-                                 array('value' => $this->fields["state"]));
+         self::dropdownState('state', $this->fields["state"]);
       }
       echo "</td></tr>";
 
@@ -536,6 +531,7 @@ class CronTask extends CommonDBTM{
 
       return true;
    }
+
 
 
    /**
@@ -641,6 +637,24 @@ class CronTask extends CommonDBTM{
       }
 
       return '???';
+   }
+
+   /**
+    * Dropdown of state
+    *
+    * @param $name select name
+    * @param $value default value
+    *
+    * @return nothing (display)
+   **/
+   static function dropdownState($name, $value=0) {
+      global $LANG;
+
+      return Dropdown::showFromArray($name,
+                              array(self::STATE_DISABLE => $LANG['crontask'][31],
+                                    self::STATE_WAITING => $LANG['crontask'][32]),
+                              array('value' => $value));
+
    }
 
 
@@ -1084,6 +1098,7 @@ class CronTask extends CommonDBTM{
       $tab[4]['field']         = 'state';
       $tab[4]['name']          = $LANG['joblist'][0];
       $tab[4]['massiveaction'] = false;
+      $tab[4]['searchtype']    = array('equals');
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
