@@ -733,7 +733,7 @@ class Reminder extends CommonDBTM {
                $date_url = $tab[0];
 
                if ($planningRight) {
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticketplanning.php?date=".$date_url.
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                         "&amp;type=day'>";
                }
 
