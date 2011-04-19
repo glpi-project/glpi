@@ -157,10 +157,16 @@ if (isset($_REQUEST['searchtype'])) {
 
                case "glpi_ticketsatisfactions.type" :
                   Dropdown::showFromArray($inputname, array(1 => $LANG['satisfaction'][9],
-                                                            2 => $LANG['satisfaction'][10]));
+                                                            2 => $LANG['satisfaction'][10]),
+                                                      array('value' => $_REQUEST['value']));
                   $display = true;
                   break;
 
+               case "glpi_crontasks.state" :
+                  CronTask::dropdownState($inputname,$_REQUEST['value']);
+                  $display = true;
+                  break;
+            
             }
 
             // Standard datatype usage
