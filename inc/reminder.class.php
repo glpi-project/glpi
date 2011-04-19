@@ -57,6 +57,19 @@ class Reminder extends CommonDBTM {
       return haveRight('reminder_public', 'r');
    }
 
+   function post_addItem() {
+      if ($this->fields["is_private"]) {
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
+                                             array('Reminder' => array($this->fields['id'])));
+      }
+   }
+
+   function post_updateItem($history=1) {
+      if ($this->fields["is_private"]) {
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
+                                             array('Reminder' => array($this->fields['id'])));
+      }
+   }
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -82,10 +95,6 @@ class Reminder extends CommonDBTM {
             $input['is_planned'] = 1;
             $input["begin"]      = $input['_plan']["begin"];
             $input["end"]        = $input['_plan']["end"];
-
-            if ($input["is_private"]) {
-               Planning::checkAlreadyPlanned($input["users_id"], $input["begin"], $input["end"]);
-            }
 
          } else {
             addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
@@ -136,11 +145,6 @@ class Reminder extends CommonDBTM {
             $input["begin"]      = $input['_plan']["begin"];
             $input["end"]        = $input['_plan']["end"];
             $input["state"]      = $input['_plan']["state"];
-
-            if ($input["is_private"]) {
-               Planning::checkAlreadyPlanned($input["users_id"], $input["begin"], $input["end"],
-                                             array('Reminder' => array($input['id'])));
-            }
 
          } else {
             addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
@@ -433,6 +437,7 @@ class Reminder extends CommonDBTM {
          if ($DB->numrows($result2)>0) {
             for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
                $interv[$data["begin"]."$$".$i]["reminders_id"] = $data["id"];
+               $interv[$data["begin"]."$$".$i]["id"] = $data["id"];
 
                if (strcmp($begin,$data["begin"])>0) {
                   $interv[$data["begin"]."$$".$i]["begin"] = $begin;
