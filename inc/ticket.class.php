@@ -3781,6 +3781,9 @@ class Ticket extends CommonDBTM {
          if (!haveRight("assign_ticket","1")) {
             $right = 'id';
          }
+         if (haveRight("own_ticket","1")) {
+            $options["_users_id_".$typename] = getLoginUserID();
+         }
       }
 
 
