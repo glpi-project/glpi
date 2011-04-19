@@ -85,7 +85,8 @@ class EntityData extends CommonDBChild {
                                                                   'auto_assign_mode',
                                                                   'autoclose_delay',
                                                                   'inquest_config', 'inquest_rate',
-                                                                  'inquest_delay', 'inquest_URL'));
+                                                                  'inquest_delay', 'inquest_URL',
+                                                                  'max_closedate'));
 
 
    function getIndexName() {
@@ -122,12 +123,11 @@ class EntityData extends CommonDBChild {
       // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
       // cela s'applique aux prochains tickets - Pas à l'historique
       if ((isset($input['inquest_rate'])
-           && $this->fields['inquest_rate'] == 0
+           && ($this->fields['inquest_rate'] == 0 || is_null($this->fields['max_closedate']))
            && $input['inquest_rate'] != $this->fields['inquest_rate'])
           || (isset($input['inquest_config'])
-              && $this->fields['inquest_config'] == 0
+              && ($this->fields['inquest_config'] == 0 || is_null($this->fields['max_closedate']))
               && $input['inquest_config']!= $this->fields['inquest_config'])) {
-
 
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       }
