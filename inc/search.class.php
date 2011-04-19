@@ -646,7 +646,6 @@ class Search {
          $HAVING = ' HAVING '.$HAVING;
       }
 
-      $DBread->query("SET SESSION group_concat_max_len = 9999999;");
 
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
@@ -715,8 +714,24 @@ class Search {
                   $LIMIT;
       }
 
+
+      $DBread->query("SET SESSION group_concat_max_len = 4096;");
+      $result = $DBread->query($QUERY);
+      /// Check group concat limit : if warning : increase limit
+      if ($result2 = $DBread->query('SHOW WARNINGS')) {
+         if ($DBread->numrows($result2) > 0) {
+            $data = $DBread->fetch_assoc($result2);
+            if ($data['Code'] == 1260) {
+               $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+               $result = $DBread->query($QUERY);
+            }
+         }
+      }
+      
+
       // Get it from database and DISPLAY
-      if ($result = $DBread->query($QUERY)) {
+      if ($result) {
+
          // if real search or complete export : get numrows from request
          if (!$nosearch||$p['export_all']) {
             $numrows = $DBread->numrows($result);
