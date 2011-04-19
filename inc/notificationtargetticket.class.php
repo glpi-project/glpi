@@ -654,6 +654,7 @@ class NotificationTargetTicket extends NotificationTarget {
       if ($event != 'alertnotclosed') {
          $fields = array('ticket.title'        => 'name',
                          'ticket.content'      => 'content',
+                         'ticket.description'  => 'content',
                          'ticket.costfixed'    => 'cost_fixed',
                          'ticket.costmaterial' => 'cost_material');
 
