@@ -649,7 +649,7 @@ class Planning {
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
-
+      $v->setConfig( 'filename', "glpi.ics" );
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
       $v->setProperty( "x-wr-calname", "GLPI_".$who."_".$who_group );
@@ -715,8 +715,8 @@ class Planning {
          }
          $v->sort();
       }
-      $v->parse();
-      return $v->createCalendar();
+//      $v->parse();
+      return $v->returnCalendar();
    }
 
 }

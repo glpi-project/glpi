@@ -66,11 +66,7 @@ include (GLPI_ROOT . "/inc/includes.php");
          break;
    }
 if (isset($_GET['genical'])) {
-   // Send UTF8 Headers
-   @header ("content-type:text/calendar; charset=UTF-8");
-   @header("Content-disposition: filename=\"glpi.ics\"");
-
-   echo Planning::generateIcal($_GET["uID"],$_GET["gID"]);
+   Planning::generateIcal($_GET["uID"],$_GET["gID"]);
 
 } else {
    commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
