@@ -562,6 +562,22 @@ class Stat {
                               AND `glpi_tickets_users`.`type` ='".Ticket::REQUESTER."')";
             break;
 
+         case "usertitles_id" :
+            $LEFTJOIN = $LEFTJOINUSER;
+            $LEFTJOIN .= " LEFT JOIN `glpi_users`
+                              ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
+            $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
+                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
+            break;
+
+         case "usercategories_id" :
+            $LEFTJOIN = $LEFTJOINUSER;
+            $LEFTJOIN .= " LEFT JOIN `glpi_users`
+                              ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
+            $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
+                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
+            break;
+
          case "users_id_recipient" :
             $WHERE .= " AND `glpi_tickets`.`users_id_recipient` = '$value'";
             break;
@@ -606,17 +622,6 @@ class Stat {
             $WHERE .= " AND `glpi_tickets`.`$param` = '$value'";
             break;
 
-         case "usertitles_id" :
-            $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
-            break;
-
-         case "usercategories_id" :
-            $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
-            break;
 
          case "device":
             $devtable = getTableForItemType('Computer_'.$value2);
