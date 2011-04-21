@@ -4778,7 +4778,8 @@ class OcsServer extends CommonDBTM {
                   $res_rule = $rulecollection->processAllRules(array("name"         => $name,
                                                                      "manufacturer" => $manufacturer,
                                                                      "old_version"  => $version),
-                                                               array(), array());
+                                                               array(), 
+                                                               array('version' => 'version'));
                   $res_rule = addslashes_deep($res_rule);
 
                   if (isset($res_rule["name"])) {
