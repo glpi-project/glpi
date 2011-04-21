@@ -146,9 +146,9 @@ class RuleDictionnarySoftware extends RuleCached {
       return $actions;
    }
 
-   function addSpecificParamsForPreview($input,$params) {
-      if (isset($input["version"])) {
-         $params["version"] = $input["version"];
+   function addSpecificParamsForPreview($params) {
+      if (isset($_POST["version"])) {
+         $params["version"] = $_POST["version"];
       }
       return $params;
    }
