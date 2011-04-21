@@ -134,6 +134,39 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['is_helpdesk_visible']['type']  = 'yesno';
       return $actions;
    }
+
+   function addSpecificParamsForPreview($input,$params) {
+      if (isset($input["version"])) {
+         $params["version"] = $input["version"];
+      }
+      return $params;
+   }
+
+
+   /**
+    * Function used to display type specific criterias during rule's preview
+    * @param $fields fields values
+    */
+   function showSpecificCriteriasForPreview($fields) {
+      $this->getRuleWithCriteriasAndActions($this->fields['id'],0,1);
+      //if there's a least one action with type == append_regex_result, then need to display
+      //this field as a criteria
+      foreach ($this->actions as $action) {
+         if ($action->fields["action_type"] == "append_regex_result") {
+            $value = (isset($fields[$action->fields['field']])?$fields[$action->fields['field']]:'');
+            //Get actions for this type of rule
+            $actions = $this->getActions();
+            
+            //display the additionnal field
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo $this->fields['match'];
+            echo "</td>";
+            echo "<td>".$actions[$action->fields['field']]['name']."</td><td>";
+            echo "<input type='text' name='version' value='$value'></td></tr>";
+         }
+      }
+   }
 }
 
 ?>
