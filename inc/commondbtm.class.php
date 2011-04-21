@@ -2690,7 +2690,7 @@ class CommonDBTM extends CommonGLPI {
                         $params = array('message'     => html_clean($message_text),
                                         'action_type' => $add,
                                         'action_user' => getUserName(getLoginUserID()),
-                                        'entities_id' => $this->fields['entities_id'],
+                                        'entities_id' => $entities_id,
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],
                                         'refuse'      => $fields['action_refuse']);
