@@ -933,17 +933,18 @@ class NotificationTargetTicket extends NotificationTarget {
          if (count($linked_tickets)) {
             $linkedticket = new Ticket();
             foreach ($linked_tickets as $data) {
-               $tmp = array();
-               $tmp['##linkedticket.id##']   = $data['tickets_id'];
-               $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
-               $tmp['##linkedticket.url##']  = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                         "?redirect=ticket_".$data['tickets_id']);
+               if ($linkedticket->getFromDB($data['tickets_id'])) {
+                  $tmp = array();
+                  $tmp['##linkedticket.id##']   = $data['tickets_id'];
+                  $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
+                  $tmp['##linkedticket.url##']  = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                            "?redirect=ticket_".$data['tickets_id']);
 
-               $linkedticket->getFromDB($data['tickets_id']);
-               $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
-               $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
+                  $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
+                  $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
 
-               $this->datas['linkedtickets'][] = $tmp;
+                  $this->datas['linkedtickets'][] = $tmp;
+               }
             }
          }
          if (!empty($this->datas['linkedtickets'])) {
