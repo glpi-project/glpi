@@ -269,7 +269,7 @@ function step3($host, $user, $password, $update) {
 
          echo "<p><input type='radio' name='databasename' value='0'>".$LANG['install'][39];
          echo "&nbsp;<input type='text' name='newdatabasename'></p>";
-         echo "<input type='hidden' name=\'db_host' value='". $host ."'>";
+         echo "<input type='hidden' name='db_host' value='". $host ."'>";
          echo "<input type='hidden' name='db_user' value='". $user ."'>";
          echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='Etape_3'>";
