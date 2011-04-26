@@ -3026,7 +3026,7 @@ class Ticket extends CommonDBTM {
                                                   'moreparams' => array('type_id'
                                                                         => 'dropdown_ticketsolutiontypes_id'.$rand_type))));
 
-         echo "</td><td>";
+         echo "</td><td colspan='2'>";
          echo "<a title\"".$LANG['job'][23]."\"
                   href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?tickets_id=".
                   $this->getField('id')."'>".$LANG['job'][23]."</a>";
