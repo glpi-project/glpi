@@ -747,12 +747,14 @@ class Profile extends CommonDBTM {
       
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
+      echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][51]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
-      echo "</td></tr>\n";
+      echo "</td>\n";
+      echo "<td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['validation'][0]."</th><";
       echo "/tr>\n";
