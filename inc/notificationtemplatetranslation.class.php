@@ -297,6 +297,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tags = array();
 
       foreach ($target->tag_descriptions as $tag_type => $infos) {
+         foreach($infos as $key => $val) {
+            $infos[$key]['type'] = $tag_type;
+         }
          $tags = array_merge($tags,$infos);
       }
       ksort($tags);
@@ -323,7 +326,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          }
 
          echo "<tr class='tab_bg_1'><td>".$tag."</td>
-               <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
+               <td>".($values['type']==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
                $values['label']."</td>
                <td>$event</td>
                <td>".$action."</td>
