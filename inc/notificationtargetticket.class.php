@@ -1278,7 +1278,6 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.sla'                   => $LANG['sla'][1],
                     'ticket.duedate'               => $LANG['sla'][5],
                     'ticket.requesttype'           => $LANG['job'][44],
-                    'ticket.authors'               => $LANG['job'][18],
                     'author'                       => $LANG['common'][2].' '.$LANG['job'][4],
                     'author.name'                  => $LANG['job'][4],
                     'author.location'              => $LANG['common'][15],
@@ -1399,7 +1398,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    'log'           => $LANG['mailing'][144],
                    'validation'    => $LANG['mailing'][143],
                    'linkedtickets' => $LANG['job'][55],
-                   'authors'       => $LANG['job'][55]);
+                   'authors'       => $LANG['job'][18]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -1410,7 +1409,8 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
       //Tags with just lang
-      $tags = array('ticket.days'             => $LANG['stats'][31],
+      $tags = array('ticket.authors'          => $LANG['job'][18],
+                    'ticket.days'             => $LANG['stats'][31],
                     'ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31],
                     'ticket.attribution'           => $LANG['job'][5],
