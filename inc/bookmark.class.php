@@ -264,10 +264,10 @@ class Bookmark extends CommonDBTM {
                foreach ($query_tab_save['field'] as $key => $val) {
                   if ($val != 'view' && $val != 'all' && !isset($opt[$val])) {
                      $query_tab['glpisearchcount']--;
-                     $partial_load   = true; 
+                     $partial_load   = true;
                   } else {
                      $query_tab['field'][$new_key]      = $val;
-                     if (isset($query_tab_save['searchtype']) 
+                     if (isset($query_tab_save['searchtype'])
                         && isset($query_tab_save['searchtype'][$key])) {
                         $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
                      }
@@ -293,7 +293,7 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['itemtype2']);
                $new_key=0;
                foreach ($query_tab_save['field2'] as $key => $val) {
-                  
+
                   $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
                   // Use if meta type is valid and option available
                   if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok)
@@ -302,13 +302,14 @@ class Bookmark extends CommonDBTM {
                      $partial_load   = true;
                   } else {
                      $query_tab['field2'][$new_key]      = $val;
-                     if (isset($query_tab_save['searchtype2']) 
+                     if (isset($query_tab_save['searchtype2'])
                         && isset($query_tab_save['searchtype2'][$key])) {
                         $query_tab['searchtype2'][$new_key] = $query_tab_save['searchtype2'][$key];
                      }
                      $query_tab['contains2'][$new_key]   = $query_tab_save['contains2'][$key];
                      $query_tab['link2'][$new_key]       = $query_tab_save['link2'][$key];
                      $query_tab['itemtype2'][$new_key]   = $query_tab_save['itemtype2'][$key];
+                     $new_key++;
                   }
                }
             }
