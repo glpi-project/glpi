@@ -337,7 +337,7 @@ $LANG['computers'][53]="服務套件";
 $LANG['computers'][54]="沒有連接的電話"; 
 $LANG['computers'][55]="新增虛擬機"; 
 $LANG['computers'][56]="狀態已更新. 已連線的裝置被更新為現在的狀態."; 
-$LANG['computers'][57]="Virtual machines"; 
+$LANG['computers'][57]="虛擬機"; 
 $LANG['computers'][58]="UUID"; 
 $LANG['computers'][59]="沒有虛擬機與電腦關聯"; 
 $LANG['computers'][60]="虛擬化模式"; 
@@ -832,7 +832,7 @@ $LANG['job'][52]="更新作業";
 $LANG['job'][53]="刪除作業"; 
 $LANG['job'][54]="如果沒有回覆，問題單將自動結案"; 
 $LANG['job'][55]="已連結的問題單"; 
-$LANG['job'][56]="Link tickets"; 
+$LANG['job'][56]="連結問題單"; 
 
 $LANG['joblist'][0]="狀態"; 
 $LANG['joblist'][1]="只有我的"; 
