@@ -146,6 +146,7 @@ class RuleDictionnarySoftware extends RuleCached {
       return $actions;
    }
 
+
    function addSpecificParamsForPreview($params) {
       if (isset($_POST["version"])) {
          $params["version"] = $_POST["version"];
@@ -159,7 +160,10 @@ class RuleDictionnarySoftware extends RuleCached {
     * @param $fields fields values
     */
    function showSpecificCriteriasForPreview($fields) {
-      $this->getRuleWithCriteriasAndActions($this->fields['id'],0,1);
+
+      if (isset($this->fields['id'])) {
+         $this->getRuleWithCriteriasAndActions($this->fields['id'],0,1);
+      }
       //if there's a least one action with type == append_regex_result, then need to display
       //this field as a criteria
       foreach ($this->actions as $action) {
