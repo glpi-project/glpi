@@ -742,8 +742,9 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
-      echo "</td></tr>\n";
-
+      echo "</td>\n";
+      echo "<td colspan='2'></td></tr>\n";
+      
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
       echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
