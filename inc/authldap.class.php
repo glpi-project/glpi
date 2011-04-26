@@ -1587,7 +1587,7 @@ class AuthLDAP extends CommonDBTM {
                   $user->fields["auths_id"] = $ldap_server;
                   //Save informations in database !
                   $input = $user->fields;
-                  unset ($user->fields);
+//                   unset ($user->fields);
                   // Display message after redirect
                   if ($display) {
                      $input['add'] = 1;
