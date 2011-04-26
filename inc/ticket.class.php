@@ -6498,7 +6498,6 @@ class Ticket extends CommonDBTM {
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
-
          $nb = 0;
          $max_closedate = '';
 
@@ -6513,9 +6512,8 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-
          // conservation de toutes les max_closedate des entites filles
-         if ($max_closedate
+         if (!empty($max_closedate)
              && (!isset($maxentity[$parent]) || $max_closedate > $maxentity[$parent])) {
 
             $maxentity[$parent] = $max_closedate;
@@ -6535,7 +6533,6 @@ class Ticket extends CommonDBTM {
                              'entities_id'   => $parent,
                              'max_closedate' => $maxdate));
       }
-
       return ($tot > 0);
    }
 
