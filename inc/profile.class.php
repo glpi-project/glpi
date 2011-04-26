@@ -118,6 +118,15 @@ class Profile extends CommonDBTM {
       }
    }
 
+   function post_addItem() {
+      global $DB;
+      if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
+         $query = "UPDATE ". $this->getTable()."
+                   SET `is_default` = '0'
+                   WHERE `id` <> '".$this->fields['id']."'";
+         $DB->query($query);
+      }
+   }
 
    function cleanDBonPurge() {
       global $DB;
