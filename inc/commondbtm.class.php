@@ -917,7 +917,7 @@ class CommonDBTM extends CommonGLPI {
                      if (in_array($this->getType(),$CFG_GLPI["infocom_types"])
                          && in_array('states_id',$this->updates)
                          && ($this->getField('is_template') != NOT_AVAILABLE)) {
-                        //Check if we have to automaticall fill dates
+                        //Check if we have to automatical fill dates
                         Infocom::manageDateOnStatusChange($this, false);
                      }
                   }
