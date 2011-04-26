@@ -146,8 +146,7 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       $itemtype = get_class($item);
-      $changes  = ($action_add ? $item->fields
-                               : $item->input);
+      $changes  = $item->fields;
 
       //Autofill date on item's status change ?
       $infocom = new Infocom();
