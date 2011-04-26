@@ -1816,9 +1816,11 @@ class AuthLDAP extends CommonDBTM {
          $userid       = -1;
 
          foreach ($ldap_methods as $ldap_method) {
-            $result = self::ldapImportUserByServerId($params, 0, $ldap_method["id"], true);
-            if ($result != false) {
-               return $result;
+            if ($ldap_method['is_active']) {
+               $result = self::ldapImportUserByServerId($params, 0, $ldap_method["id"], true);
+               if ($result != false) {
+                  return $result;
+               }
             }
          }
          addMessageAfterRedirect($LANG['login'][15], false, ERROR);
