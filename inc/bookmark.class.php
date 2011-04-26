@@ -284,6 +284,7 @@ class Bookmark extends CommonDBTM {
             if ($query_tab['glpisearchcount'] == 0) {
                $query_tab['glpisearchcount'] = 1;
             }
+
             // Meta search
             if (isset($query_tab_save['field2']) && count($query_tab_save['field2'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
@@ -295,7 +296,6 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['itemtype2']);
                $new_key = 0;
                foreach ($query_tab_save['field2'] as $key => $val) {
-
                   $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
                   // Use if meta type is valid and option available
                   if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok) || !isset($opt[$val])) {
@@ -310,6 +310,7 @@ class Bookmark extends CommonDBTM {
                      $query_tab['contains2'][$new_key] = $query_tab_save['contains2'][$key];
                      $query_tab['link2'][$new_key]     = $query_tab_save['link2'][$key];
                      $query_tab['itemtype2'][$new_key] = $query_tab_save['itemtype2'][$key];
+                     $new_key++;
                   }
                }
             }
@@ -339,6 +340,7 @@ class Bookmark extends CommonDBTM {
       if ($params= $this->getParameters($ID)) {
          $url  = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
          $url .= "?".append_params($params);
+
          if ($opener) {
             echo "<script type='text/javascript' >\n";
             echo "window.opener.location.href='$url';";
