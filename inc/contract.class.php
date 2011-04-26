@@ -794,9 +794,7 @@ class Contract extends CommonDBTM {
       $number = $DB->numrows($result);
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>";
-      printPagerForm();
-      echo "</th><th colspan='3'>";
+      echo "<tr><th colspan='5'>";
       if ($DB->numrows($result)==0) {
          echo $LANG['document'][13];
       } else {
