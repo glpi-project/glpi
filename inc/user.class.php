@@ -545,7 +545,8 @@ class User extends CommonDBTM {
 
       $return = false;
 
-      if (isset($this->fields['_ruleright_process'])
+      if ((isset($this->fields['_ruleright_process'])
+            || isset($this->input['_ruleright_process'])) // Add after a getFromLDAP
           && isset($this->fields["authtype"])
           && ($this->fields["authtype"] == Auth::LDAP
               || $this->fields["authtype"] == Auth::MAIL
