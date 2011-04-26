@@ -1947,7 +1947,7 @@ $LANG['sla'][6]="Nível de escalonamento";
 $LANG['sla'][7]="Deixe o SLA"; 
 $LANG['sla'][8]="Próximo escalonamento"; 
 $LANG['sla'][9]="Avisos automáticos de SLA(s)"; 
-$LANG['sla'][10]="24/7"; 
+$LANG['sla'][10]="24H sobre 24H, 7 dias sobre 7 dias"; 
 
 $LANG['software'][1]="Versão"; 
 $LANG['software'][2]="Versão em uso"; 
