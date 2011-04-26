@@ -875,10 +875,10 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             //Object location
-            if ($this->target_object->isField('location')) {
+            if ($this->target_object->isField('locations_id')) {
                $this->datas['##ticket.item.location##']
                            = Dropdown::getDropdownName('glpi_locations',
-                                                       $user->getField('locations_id'));
+                                                       $this->target_object->getField('locations_id'));
             } else {
                $this->datas['##ticket.item.location##'] = '';
             }
