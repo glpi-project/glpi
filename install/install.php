@@ -263,8 +263,12 @@ function step3($host, $user, $password, $update) {
 
          $DB_list = mysql_list_dbs($link);
          while ($row = mysql_fetch_object($DB_list)) {
-            echo "<p><input type='radio' name='databasename' value='". $row->Database ."'>";
-            echo "$row->Database.</p>";
+            if (!in_array($row->Database,array("information_schema",
+                                               "mysql",
+                                               "performance_schema") )) {
+               echo "<p><input type='radio' name='databasename' value='". $row->Database ."'>";
+               echo "$row->Database.</p>";
+            }
          }
 
          echo "<p><input type='radio' name='databasename' value='0'>".$LANG['install'][39];
