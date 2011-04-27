@@ -1583,6 +1583,13 @@ function update0782to080($output='HTML') {
       or die("0.80 add new table glpi_computervirtualmachines ".$LANG['update'][90] .$DB->error());
    }
 
+   // Clean ticket validations
+   $query = "DELETE FROM `glpi_ticketvalidations`
+               WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN
+               (SELECT `glpi_tickets`.`id`
+                  FROM `glpi_tickets`)";
+   $DB->query($query) or die("0.80 clean glpi_ticketvalidations" . $LANG['update'][90] . $DB->error());
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
