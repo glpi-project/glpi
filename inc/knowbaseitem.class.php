@@ -54,7 +54,20 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function canView() {
-      return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
+      global $CFG_GLPI;
+      return (haveRight('knowbase', 'r') || haveRight('faq', 'r')
+            || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+   }
+
+   function canViewItem() {
+      global $CFG_GLPI;
+
+      if ($this->fields["is_faq"]) {
+         return (haveRight('knowbase', 'r')
+                 || haveRight('faq', 'r')
+                 || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+      }
+      return haveRight("knowbase", "r");
    }
 
    function defineTabs($options=array()) {
