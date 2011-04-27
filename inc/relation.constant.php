@@ -317,6 +317,9 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                        'glpi_tickettasks'         => 'tickets_id',
                                         "glpi_ticketfollowups"=>"tickets_id"),
 
+               "glpi_ticketsolutiontypes"
+                        => array('glpi_tickets'                 => 'ticketsolutiontypes_id'),
+
                 "glpi_computertypes"=> array("glpi_computers"=>"computertypes_id"),
 
                 "glpi_monitortypes"=> array("glpi_monitors"=>"monitortypes_id"),
