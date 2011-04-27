@@ -3663,7 +3663,7 @@ class Search {
          case 'glpi_tickets.status':
             $status=Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
-                        alt='$status' title='$status'><br>$status";
+                        alt='$status' title='$status'>&nbsp;$status";
          case 'glpi_tickets.priority':
             return Ticket::getPriorityName($data[$NAME.$num]);
 
