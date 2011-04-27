@@ -313,6 +313,8 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                                               "softwareversions_id_use")),
 
                 "glpi_tickets" => array("_glpi_documents"=>"tickets_id",
+                                        'glpi_ticketvalidations'   => 'tickets_id',
+                                       'glpi_tickettasks'         => 'tickets_id',
                                         "glpi_ticketfollowups"=>"tickets_id"),
 
                 "glpi_computertypes"=> array("glpi_computers"=>"computertypes_id"),
