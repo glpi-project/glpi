@@ -1652,6 +1652,14 @@ function helpHeader($title, $url='') {
           $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
    echo "</li>";
 
+   //  Create ticket
+   if (haveRight("create_ticket","1")) {
+      echo "<li id='menu2'>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' title=\"".
+             $LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
+      echo "</li>";
+   }
+
    //  Suivi ticket
    if (haveRight("observe_ticket","1")) {
       echo "<li id='menu2'>";
