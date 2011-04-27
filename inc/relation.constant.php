@@ -419,6 +419,10 @@ $RELATION = array("glpi_authldaps"
                   "glpi_suppliertypes"
                         => array('glpi_suppliers' => 'suppliertypes_id'),
 
+                  "glpi_taskcategories"
+                        => array("glpi_taskcategories" => "taskcategories_id",
+                                 "glpi_tickettasks"    => "taskcategories_id",),
+
                   "glpi_ticketcategories"
                         => array('glpi_tickets' => 'ticketcategories_id'),
 
