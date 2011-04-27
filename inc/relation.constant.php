@@ -256,6 +256,9 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_tickettasks" => array("glpi_ticketplannings"=>"tickettasks_id"),
 
+                "glpi_taskcategories" => array("glpi_taskcategories" => "taskcategories_id",
+                                               "glpi_tickettasks"    => "taskcategories_id",),
+
                 "glpi_groups" => array("glpi_computers"=>"groups_id",
                                        "glpi_monitors"=>"groups_id",
                                        "glpi_networkequipments"=>"groups_id",
