@@ -118,8 +118,10 @@ class Profile extends CommonDBTM {
       }
    }
 
+
    function post_addItem() {
       global $DB;
+
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
@@ -127,6 +129,7 @@ class Profile extends CommonDBTM {
          $DB->query($query);
       }
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -744,7 +747,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
       echo "</td>\n";
       echo "<td colspan='2'></td></tr>\n";
-      
+
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
       echo "<tr class='tab_bg_2'>";
