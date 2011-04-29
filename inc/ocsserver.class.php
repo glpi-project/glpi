@@ -1335,8 +1335,8 @@ class OcsServer extends CommonDBTM {
                         $ocslinks_toclean[$data['id']] = $data['id'];
                      }
                   }
+                  self::cleanLinksFromList($ocsservers_id, $ocslinks_toclean);
                }
-               self::cleanLinksFromList($ocsservers_id, $ocslinks_toclean);
 
                // Delete item in DB
                $equiv_clean=" `EQUIVALENT` = '$equiv'";
@@ -4778,7 +4778,7 @@ class OcsServer extends CommonDBTM {
                   $res_rule = $rulecollection->processAllRules(array("name"         => $name,
                                                                      "manufacturer" => $manufacturer,
                                                                      "old_version"  => $version),
-                                                               array(), 
+                                                               array(),
                                                                array('version' => $version));
                   $res_rule = addslashes_deep($res_rule);
 
