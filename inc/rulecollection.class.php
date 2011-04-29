@@ -399,8 +399,9 @@ class RuleCollection extends CommonDBTM {
       if ($display_entities) {
          echo "<th>".$LANG['entity'][0]."</th>\n";
       }
-
-      echo "<th colspan='2'>&nbsp;</th>";
+      if (!$display_entities) {
+         echo "<th colspan='2'>&nbsp;</th>";
+      }
       echo "</tr>\n";
 
       if (count($this->RuleList->list)) {
