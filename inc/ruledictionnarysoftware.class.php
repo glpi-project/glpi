@@ -148,6 +148,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function addSpecificParamsForPreview($params) {
+
       if (isset($_POST["version"])) {
          $params["version"] = $_POST["version"];
       }
@@ -157,13 +158,15 @@ class RuleDictionnarySoftware extends RuleCached {
 
    /**
     * Function used to display type specific criterias during rule's preview
+    *
     * @param $fields fields values
-    */
+   **/
    function showSpecificCriteriasForPreview($fields) {
 
       if (isset($this->fields['id'])) {
          $this->getRuleWithCriteriasAndActions($this->fields['id'],0,1);
       }
+
       //if there's a least one action with type == append_regex_result, then need to display
       //this field as a criteria
       foreach ($this->actions as $action) {
@@ -171,17 +174,17 @@ class RuleDictionnarySoftware extends RuleCached {
             $value = (isset($fields[$action->fields['field']])?$fields[$action->fields['field']]:'');
             //Get actions for this type of rule
             $actions = $this->getActions();
-            
+
             //display the additionnal field
             echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo $this->fields['match'];
-            echo "</td>";
+            echo "<td>".$this->fields['match']."</td>";
             echo "<td>".$actions[$action->fields['field']]['name']."</td><td>";
             echo "<input type='text' name='version' value='$value'></td></tr>";
          }
       }
    }
+
+
 }
 
 ?>

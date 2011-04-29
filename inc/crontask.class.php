@@ -533,7 +533,6 @@ class CronTask extends CommonDBTM{
    }
 
 
-
    /**
     * reset the next launch date => for a launch as soon as possible
    **/
@@ -639,6 +638,7 @@ class CronTask extends CommonDBTM{
       return '???';
    }
 
+
    /**
     * Dropdown of state
     *
@@ -651,10 +651,9 @@ class CronTask extends CommonDBTM{
       global $LANG;
 
       return Dropdown::showFromArray($name,
-                              array(self::STATE_DISABLE => $LANG['crontask'][31],
-                                    self::STATE_WAITING => $LANG['crontask'][32]),
-                              array('value' => $value));
-
+                                     array(self::STATE_DISABLE => $LANG['crontask'][31],
+                                           self::STATE_WAITING => $LANG['crontask'][32]),
+                                     array('value' => $value));
    }
 
 

@@ -1411,11 +1411,11 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
       //Tags with just lang
-      $tags = array('ticket.days'             => $LANG['stats'][31],
-                    'ticket.linkedtickets'    => $LANG['job'][55],
-                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31],
-                    'ticket.attribution'           => $LANG['job'][5],
-                    'ticket.nocategoryassigned'    => $LANG['mailing'][100]);
+      $tags = array('ticket.days'               => $LANG['stats'][31],
+                    'ticket.linkedtickets'      => $LANG['job'][55],
+                    'ticket.autoclosewarning'   => $LANG['job'][54]." ? ".$LANG['stats'][31],
+                    'ticket.attribution'        => $LANG['job'][5],
+                    'ticket.nocategoryassigned' => $LANG['mailing'][100]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
