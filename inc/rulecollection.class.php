@@ -592,6 +592,8 @@ class RuleCollection extends CommonDBTM {
 
       $rule = $this->getRuleClass();
 
+      $result = false;
+
       // Move others rules in the collection
       if ($old_rank < $rank) {
          if ($type=="before") {
