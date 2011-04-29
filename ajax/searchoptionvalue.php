@@ -163,10 +163,9 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_crontasks.state" :
-                  CronTask::dropdownState($inputname,$_REQUEST['value']);
+                  CronTask::dropdownState($inputname, $_REQUEST['value']);
                   $display = true;
                   break;
-            
             }
 
             // Standard datatype usage
