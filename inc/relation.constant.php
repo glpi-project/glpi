@@ -440,8 +440,8 @@ $RELATION = array("glpi_authldaps"
 
                                  ),
                   "glpi_ticketsolutiontypes"
-                           => array('glpi_tickets'                 => 'ticketsolutiontypes_id',
-                                    'glpi_ticketsolutiontemplates' => 'ticketsolutiontypes_id'),
+                        => array('glpi_tickets'                 => 'ticketsolutiontypes_id',
+                                 'glpi_ticketsolutiontemplates' => 'ticketsolutiontypes_id'),
 
                   "glpi_tickettasks"
                         => array('glpi_ticketplannings' => 'tickettasks_id'),
