@@ -242,7 +242,9 @@ class NotificationTemplate extends CommonDBTM {
                // Restore HTML tags
                if (count($target->html_tags)) {
                   foreach ($target->html_tags as $tag) {
-                     $data_html[$tag] = $save_data[$tag];
+                     if (isset($save_data[$tag])) {
+                        $data_html[$tag] = $save_data[$tag];
+                     }
                   }
                }
 
