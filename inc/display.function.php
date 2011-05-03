@@ -506,7 +506,11 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
 
    if (haveRight("knowbase","r") || haveRight("faq","r")) {
-      $menu['utils']['content']['knowbase']['title']           = $LANG['Menu'][19];
+      if (haveRight("knowbase","r")) {
+         $menu['utils']['content']['knowbase']['title']           = $LANG['Menu'][19];
+      } else {
+         $menu['utils']['content']['knowbase']['title']           = $LANG['knowbase'][1];
+      }
       $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
       $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
 
