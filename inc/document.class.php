@@ -121,7 +121,7 @@ class Document extends CommonDBTM {
          $nb     = Document_Item::countForItem($item);
          $tab[5] = $LANG['Menu'][27];
          if ($nb) {
-            $tab[5] .= " ($nb)";
+            $tab[5] .= "<sup>($nb)</sup>";
          }
       }
    }

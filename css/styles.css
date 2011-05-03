@@ -71,7 +71,13 @@ img {
 small {
    font-family: verdana;
    font-size: 10px;
-} 
+}
+
+sup {
+	vertical-align: baseline;
+	position: relative;
+	top: -0.4em;
+	}
 
 .b {
    font-weight: bold;
