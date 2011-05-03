@@ -3786,17 +3786,11 @@ class Ticket extends CommonDBTM {
          if (!haveRight("assign_ticket","1")) {
             $right = 'id';
          }
-         if (haveRight("own_ticket","1")) {
+         if (haveRight("own_ticket","1") && $options["_users_id_".$typename] == 0) {
             $options["_users_id_".$typename] = getLoginUserID();
          }
       }
 
-      if ($type == self::REQUESTER) {
-         // No requester set if own right = tech
-         if (haveRight("own_ticket","1")) {
-            $options["_users_id_".$typename] = 0;
-         }
-      }
       //List all users in the active entities
       $rand = User::dropdown(array('name'        => '_users_id_'.$typename,
                                    'value'       => $options["_users_id_".$typename],
