@@ -43,6 +43,8 @@ class SLA extends CommonDBTM {
    // From CommonDBTM
    var $dohistory = true;
 
+   protected $forward_entity_to = array('SLALevel');
+
 
    static function getTypeName() {
       global $LANG;
