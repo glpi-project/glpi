@@ -99,9 +99,9 @@ class Supplier extends CommonDBTM {
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[15] = $LANG['common'][96];
          }
-         if (haveRight("document","r")) {
-            $ong[5] = $LANG['Menu'][27];
-         }
+
+         Document::addTab($this,$ong);
+
          if (haveRight("show_all_ticket","1")) {
             $ong[6] = $LANG['title'][28];
          }

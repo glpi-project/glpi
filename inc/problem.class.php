@@ -171,7 +171,7 @@ class Problem extends CommonITILObject {
       // Hardware
       $ong[7] = $LANG['common'][96];
       // Documents
-      $ong[5] = $LANG['Menu'][27];
+      Document::addTab($this,$ong);
       // Solution
       $ong[4] = $LANG['jobresolution'][2];
       if (haveRight("notes","r")) {

@@ -73,9 +73,7 @@ class Phone extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         if (haveRight("document","r")) {
-            $ong[5] = $LANG['Menu'][27];
-         }
+         Document::addTab($this,$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
