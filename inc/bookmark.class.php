@@ -283,7 +283,7 @@ class Bookmark extends CommonDBTM {
                $query_tab['glpisearchcount'] = 1;
             }
             // Meta search
-            if (isset($query_tab_save['field2']) && count($query_tab_save['field2'])) {
+            if (isset($query_tab_save['itemtype2']) && count($query_tab_save['itemtype2'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
 
                unset($query_tab['field2']);
@@ -292,6 +292,7 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['link2']);
                unset($query_tab['itemtype2']);
                $new_key=0;
+
                foreach ($query_tab_save['field2'] as $key => $val) {
 
                   $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
