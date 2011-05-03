@@ -599,9 +599,9 @@ class Dropdown {
 
                   $LANG['title'][24]  => array('TicketCategory'      => $LANG['setup'][79],
                                                'TaskCategory'        => $LANG['setup'][98],
-                                               'TicketSolutionType'  => $LANG['job'][48],
+                                               'SolutionType'  => $LANG['job'][48],
                                                'RequestType'         => $LANG['job'][44],
-                                               'TicketSolutionTemplate'
+                                               'SolutionTemplate'
                                                                      => $LANG['jobresolution'][6]),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],

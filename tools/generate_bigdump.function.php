@@ -520,13 +520,13 @@ function generateGlobalDropdowns() {
 
 
    $items = array();
-   for ($i=0 ; $i<$MAX['ticketsolutions'] ; $i++) {
+   for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
          $val = "type de solution $i";
       }
-      $query = "INSERT INTO `glpi_ticketsolutiontypes`
+      $query = "INSERT INTO `glpi_solutiontypes`
                 VALUES (NULL, '$val', 'comment $val')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
@@ -1495,10 +1495,10 @@ function generate_entity($ID_entity) {
 
    regenerateTreeCompleteName("glpi_ticketcategories");
 
-   $FIRST["ticketsolutionstemplate"] = getMaxItem("glpi_ticketsolutiontemplates")+1;
-   $nb_items = mt_rand(0,$MAX['ticketsolutionstemplate']);
+   $FIRST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates")+1;
+   $nb_items = mt_rand(0,$MAX['solutionstemplate']);
    for ($i=0 ; $i<$nb_items ; $i++) {
-      $query = "INSERT INTO `glpi_ticketsolutiontemplates`
+      $query = "INSERT INTO `glpi_solutiontemplates`
                 VALUES (null, '$ID_entity', '1', 'solution $i-$ID_entity',
                         'content solution $i-$ID_entity', '".mt_rand(0,$MAX['ticketsolutions'])."',
                         'comment solution $i-$ID_entity')";
@@ -1506,7 +1506,7 @@ function generate_entity($ID_entity) {
       $newID = $DB->insert_id();
    }
 
-   $LAST["ticketsolutionstemplate"] = getMaxItem("glpi_ticketsolutiontemplates");
+   $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
 
    // Add Specific questions
    $k = 0;

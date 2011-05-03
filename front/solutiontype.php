@@ -29,22 +29,14 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Remi collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
 
-/// TicketSolutionType class
-class TicketSolutionType extends CommonDropdown {
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['job'][48];
-   }
-}
-
+$dropdown = new SolutionType();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>

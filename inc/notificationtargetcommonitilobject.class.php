@@ -655,10 +655,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.solution.type##"]='';
-      if ($this->obj->getField('ticketsolutiontypes_id')) {
+      if ($this->obj->getField('solutiontypes_id')) {
          $datas["##$objettype.solution.type##"]
-                     = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                   $this->obj->getField('ticketsolutiontypes_id'));
+                     = Dropdown::getDropdownName('glpi_solutiontypes',
+                                                   $this->obj->getField('solutiontypes_id'));
       }
 
       $datas["##$objettype.solution.description##"]

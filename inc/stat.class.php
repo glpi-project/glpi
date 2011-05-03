@@ -121,7 +121,7 @@ class Stat {
             $val = Ticket::getUsedRequestTypeBetween($date1, $date2);
             break;
 
-         case "ticketsolutiontypes_id" :
+         case "solutiontypes_id" :
             $val = Ticket::getUsedSolutionTypeBetween($date1, $date2);
             break;
 
@@ -613,7 +613,7 @@ class Stat {
             break;
 
          case "requesttypes_id" :
-         case "ticketsolutiontypes_id" :
+         case "solutiontypes_id" :
          case "urgency" :
          case "impact" :
          case "priority" :

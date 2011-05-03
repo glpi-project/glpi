@@ -37,6 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$dropdown = new TicketSolutionTemplate();
+$dropdown = new SolutionTemplate();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>

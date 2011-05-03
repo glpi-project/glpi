@@ -191,13 +191,13 @@ switch($_GET["type"]) {
                                                                       $_GET["id"]);
       break;
 
-   case "ticketsolutiontypes_id" :
+   case "solutiontypes_id" :
       $val1  = $_GET["id"];
       $val2  = "";
       $next  = $prev = 0;
-      $next  = getNextItem("glpi_ticketsolutiontypes", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_ticketsolutiontypes", $_GET["id"]);
-      $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_ticketsolutiontypes",
+      $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
+      $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
+      $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_solutiontypes",
                                                                       $_GET["id"]);
       break;
 

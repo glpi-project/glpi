@@ -81,7 +81,7 @@ $items =
                      'impact'                 => array('title' => $LANG['joblist'][30]),
                      'priority'               => array('title' => $LANG['joblist'][2]),
                      'requesttypes_id'        => array('title' => $LANG['job'][44]),
-                     'ticketsolutiontypes_id' => array('title' => $LANG['job'][48])),
+                     'solutiontypes_id' => array('title' => $LANG['job'][48])),
          $LANG['job'][5]
             => array('technicien'          => array('title' => $LANG['job'][6]." ".$LANG['stats'][48]),
                      'technicien_followup' => array('title' => $LANG['job'][6]." ".$LANG['stats'][49]),
