@@ -3528,7 +3528,8 @@ class Ticket extends CommonITILObject {
 
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`glpi_tickets_users`.`users_id` = '$userID') ".
+                WHERE (`glpi_tickets_users`.`users_id` = '$userID'
+                        AND `glpi_tickets_users`.`type` = ".self::REQUESTER.") ".
                       getEntitiesRestrictRequest("AND", "glpi_tickets")."
                 ORDER BY `glpi_tickets`.`date_mod` DESC
                 LIMIT ".intval($_SESSION['glpilist_limit']);
@@ -3679,7 +3680,7 @@ class Ticket extends CommonITILObject {
             if ($job->fields['entities_id'] == 0) {
                $second_col = $LANG['entity'][2];
             } else {
-               $second_col = $job->fields['entityname'];
+               $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
             }
             echo Search::showItem($output_type, $second_col, $item_num, $row_num,
                                   $align." width=100");
