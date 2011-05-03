@@ -3475,7 +3475,7 @@ class Ticket extends CommonDBTM {
       echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
       echo "<td class='b'>";
       echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
-                                   $this->fields["cost_fixed"], $this->fields["cost_material"]);
+                                   $this->fields["cost_fixed"], $this->fields["cost_material"], false);
       echo "</td></tr>\n";
 
       $options['candel']  = false;
@@ -3523,11 +3523,12 @@ class Ticket extends CommonDBTM {
     * @param $cost_time float : ticket time cost
     * @param $cost_fixed float : ticket fixed cost
     * @param $cost_material float : ticket material cost
+    * @param $edit boolean : used for edit of computation ?
     *
     * @return total cost formatted string
    **/
-   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material) {
-      return formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,true);
+   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material, $edit = true) {
+      return formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material, $edit);
    }
 
 
