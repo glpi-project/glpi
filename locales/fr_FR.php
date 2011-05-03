@@ -2342,7 +2342,7 @@ $LANG['stats'][45] = "Par matériel";
 
 $LANG['stats'][47] = "Par ticket";
 $LANG['stats'][48] = "(assigné)";
-$LANG['stats'][49] = "(suivis)";
+$LANG['stats'][49] = "(tâches)";
 
 
 $LANG['title'][5]  = "Base de connaissances";
