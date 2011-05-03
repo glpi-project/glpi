@@ -523,16 +523,82 @@ class Ticket extends CommonITILObject {
 
       // Set begin waiting date if needed
       if (($key=array_search('status',$this->updates)) !== false
-          && $this->fields['status'] == 'waiting') {
-         $this->updates[] = "begin_waiting_date";
+          && ($this->fields['status'] == 'waiting' || $this->fields['status'] == 'solved')) {
+         $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          if ($this->fields['slas_id']>0) {
-            $sla=new SLA();
             $sla->deleteLevelsToDo($this);
          }
-
       }
+
+      // Manage come back to waiting state
+      if ($key=array_search('status',$this->updates) !== false
+          && ($this->oldvalues['status'] == 'waiting'
+               // From solved to another state than closed
+              || ($this->oldvalues['status'] == 'solved' && $this->fields['status'] != 'closed'))) {
+
+         // Compute ticket waiting time use calendar if exists
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+         $delay_time   = 0;
+
+
+         // Compute ticket waiting time use calendar if exists
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                            $_SESSION["glpi_currenttime"]);
+         } else { // Not calendar defined
+            $delay_time = strtotime($_SESSION["glpi_currenttime"])
+                           -strtotime($this->fields['begin_waiting_date']);
+         }
+
+
+         // SLA case : compute sla duration
+         if ($this->fields['slas_id']>0) {
+            if ($sla->getFromDB($this->fields['slas_id'])) {
+               $delay_time_sla = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                        $_SESSION["glpi_currenttime"]);
+               $this->updates[] = "sla_waiting_duration";
+               $this->fields["sla_waiting_duration"] += $delay_time_sla;
+            }
+
+            // Compute new due date
+            $this->updates[] = "due_date";
+            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
+                                                             $this->fields["sla_waiting_duration"]);
+            // Add current level to do
+            $sla->addLevelToDo($this);
+
+         } else {
+            // Using calendar
+            if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+               if ($this->fields['due_date'] > 0) {
+                  // compute new due date using calendar
+                  $this->updates[]          = "due_date";
+                  $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
+                                                                        $delay_time);
+               }
+
+            } else { // Not calendar defined
+               if ($this->fields['due_date'] > 0) {
+                  // compute new due date : no calendar so add computed delay_time
+                  $this->updates[]          = "due_date";
+                  $this->fields['due_date'] = date('Y-m-d H:i:s',
+                                                   $delay_time+strtotime($this->fields['due_date']));
+               }
+            }
+         }
+
+         $this->updates[] = "ticket_waiting_duration";
+         $this->fields["ticket_waiting_duration"] += $delay_time;
+
+         // Reset begin_waiting_date
+         $this->updates[] = "begin_waiting_date";
+         $this->fields["begin_waiting_date"] = 'NULL';
+      }
+
 
       // Manage come back to waiting state
       if ($key=array_search('status',$this->updates) !== false
