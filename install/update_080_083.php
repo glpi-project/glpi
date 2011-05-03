@@ -49,8 +49,6 @@ function update080to083($output='HTML') {
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   /// TODO rename glpi_ticketsolutiontypes to glpi_solutiontypes
-
    if ($output) {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.83</h3>";
    }
@@ -113,7 +111,7 @@ function update080to083($output='HTML') {
                   `impactcontent` longtext DEFAULT NULL,
                   `causecontent` longtext DEFAULT NULL,
                   `symptomcontent` longtext DEFAULT NULL,
-                  `ticketsolutiontypes_id` int(11) NOT NULL DEFAULT '0',
+                  `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
@@ -130,7 +128,7 @@ function update080to083($output='HTML') {
                   KEY `ticketcategories_id` (`ticketcategories_id`),
                   KEY `users_id_recipient` (`users_id_recipient`),
                   KEY `solvedate` (`solvedate`),
-                  KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`),
+                  KEY `solutiontypes_id` (`solutiontypes_id`),
                   KEY `urgency` (`urgency`),
                   KEY `impact` (`impact`),
                   KEY `due_date` (`due_date`),
@@ -487,6 +485,7 @@ function update080to083($output='HTML') {
       }
    }
 
+   $migration->displayMessage($LANG['update'][141].' - various');
 
    /// add missing indexes  for fields
    $migration->addKey("glpi_authldaps", "is_active");
@@ -501,9 +500,7 @@ function update080to083($output='HTML') {
       or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
 
-
    if (!FieldExists('glpi_slalevels','entities_id')) {
-      displayMigrationMessage("080", $LANG['update'][141].' - glpi_slalevels'); // Updating schema
 
       $migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0");
       $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
@@ -528,9 +525,19 @@ function update080to083($output='HTML') {
          $DB->query($query3) or die("0.83 update entities_id and is_recursive=1
                in glpi_slalevels ". $LANG['update'][90] . $DB->error());
       }
-
-
    }
+
+   // rename glpi_ticketsolutiontypes to glpi_solutiontypes
+   $migration->renameTable('glpi_ticketsolutiontypes', 'glpi_solutiontypes');
+   // rename glpi_ticketsolutiontemplates to glpi_solutiontemplates
+   $migration->renameTable('glpi_ticketsolutiontemplates', 'glpi_solutiontemplates');
+
+   $migration->changeField('glpi_tickets', 'ticketsolutiontypes_id', 'solutiontypes_id',
+                           'INT( 11 ) NOT NULL DEFAULT 0');
+   $migration->changeField('glpi_solutiontemplates', 'ticketsolutiontypes_id', 'solutiontypes_id',
+                           'INT( 11 ) NOT NULL DEFAULT 0');
+
+   /// TODO rename glpi_ticketcategories TO ? -> glpi_itilcategories ? -> glpi_helpdeskcategories ?
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

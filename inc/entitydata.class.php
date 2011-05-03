@@ -942,13 +942,13 @@ class EntityData extends CommonDBChild {
       }
 
       if (strstr($url,"[SOLUTIONTYPE_ID]")) {
-         $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['ticketsolutiontypes_id'], $url);
+         $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
       }
 
       if (strstr($url,"[SOLUTIONTYPE_NAME]")) {
          $url = str_replace("[SOLUTIONTYPE_NAME]",
-                            urlencode(Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                                $ticket->fields['ticketsolutiontypes_id'])),
+                            urlencode(Dropdown::getDropdownName('glpi_solutiontypes',
+                                                                $ticket->fields['solutiontypes_id'])),
                             $url);
       }
 

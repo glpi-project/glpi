@@ -29,14 +29,14 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
+
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$dropdown = new TicketSolutionType();
-include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
-
+$dropdown = new SolutionType();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>

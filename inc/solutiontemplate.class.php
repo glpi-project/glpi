@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class TicketSolutionTemplate
-class TicketSolutionTemplate extends CommonDropdown {
+/// Class SolutionTemplate
+class SolutionTemplate extends CommonDropdown {
 
    static function getTypeName() {
       global $LANG;
@@ -60,7 +60,7 @@ class TicketSolutionTemplate extends CommonDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => 'ticketsolutiontypes_id',
+      return array(array('name'  => 'solutiontypes_id',
                          'label' => $LANG['job'][48],
                          'type'  => 'dropdownValue',
                          'list'  => true),

@@ -407,7 +407,7 @@ class Ticket extends CommonITILObject {
          }
 
          if ($this->canSolve()) {
-            $allowed_fields[] = 'ticketsolutiontypes_id';
+            $allowed_fields[] = 'solutiontypes_id';
             $allowed_fields[] = 'solution';
          }
 
@@ -490,8 +490,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Setting a solution or solution type means the ticket is solved
-      if ((in_array("ticketsolutiontypes_id",$this->updates)
-            && $this->input["ticketsolutiontypes_id"] >0)
+      if ((in_array("solutiontypes_id",$this->updates)
+            && $this->input["solutiontypes_id"] >0)
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
@@ -714,7 +714,7 @@ class Ticket extends CommonITILObject {
          }
 
          // Setting a solution type means the ticket is solved
-         if ((in_array("ticketsolutiontypes_id",$this->updates)
+         if ((in_array("solutiontypes_id",$this->updates)
                || in_array("solution",$this->updates))
                && $this->fields["status"]=="solved" ) {
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
@@ -1629,7 +1629,7 @@ class Ticket extends CommonITILObject {
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
-         $tab[23]['table'] = 'glpi_ticketsolutiontypes';
+         $tab[23]['table'] = 'glpi_solutiontypes';
          $tab[23]['field'] = 'name';
          $tab[23]['name']  = $LANG['job'][48];
 
@@ -4401,7 +4401,7 @@ class Ticket extends CommonITILObject {
    static function getUsedSolutionTypeBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `ticketsolutiontypes_id`
+      $query = "SELECT DISTINCT `solutiontypes_id`
                 FROM `glpi_tickets` ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
@@ -4409,15 +4409,15 @@ class Ticket extends CommonITILObject {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
                           OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
-      $query .= " ORDER BY `ticketsolutiontypes_id`";
+      $query .= " ORDER BY `solutiontypes_id`";
 
       $result = $DB->query($query);
       $tab    = array();
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["ticketsolutiontypes_id"];
-            $tmp['link'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                     $line["ticketsolutiontypes_id"]);
+            $tmp['id']   = $line["solutiontypes_id"];
+            $tmp['link'] = Dropdown::getDropdownName('glpi_solutiontypes',
+                                                     $line["solutiontypes_id"]);
             $tab[]       = $tmp;
          }
       }

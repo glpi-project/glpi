@@ -1819,7 +1819,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->showFormHeader($options);
 
       $show_template = $canedit;
-//                        && $this->getField('ticketsolutiontypes_id') == 0
+//                        && $this->getField('solutiontypes_id') == 0
 //                        && empty($this->fields['solution']);
       $rand_template = mt_rand();
       $rand_text     = $rand_type = 0;
@@ -1831,7 +1831,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td>";
 
-         Dropdown::show('TicketSolutionTemplate',
+         Dropdown::show('SolutionTemplate',
                         array('value'    => 0,
                               'entity'   => $this->getEntityID(),
                               'rand'     => $rand_template,
@@ -1840,7 +1840,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                   'to_update'  => 'solution'.$rand_text,
                                                   'url'        => $CFG_GLPI["root_doc"]."/ajax/solution.php",
                                                   'moreparams' => array('type_id'
-                                                                        => 'dropdown_ticketsolutiontypes_id'.$rand_type))));
+                                                                        => 'dropdown_solutiontypes_id'.$rand_type))));
 
          echo "</td><td colspan='2'>";
          echo "<a title\"".$LANG['job'][23]."\"
@@ -1855,12 +1855,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $current   = $this->fields['status'];
       // Settings a solution will set status to solved
       if ($canedit) {
-         Dropdown::show('TicketSolutionType',
-                        array('value' => $this->getField('ticketsolutiontypes_id'),
+         Dropdown::show('SolutionType',
+                        array('value' => $this->getField('solutiontypes_id'),
                               'rand'  => $rand_type));
       } else {
-         echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                        $this->getField('ticketsolutiontypes_id'));
+         echo Dropdown::getDropdownName('glpi_solutiontypes',
+                                        $this->getField('solutiontypes_id'));
       }
       echo "</td><td>".$LANG['job'][25]."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);

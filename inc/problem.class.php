@@ -238,8 +238,8 @@ class Problem extends CommonITILObject {
          }
       }
       // Setting a solution or solution type means the problem is solved
-      if ((in_array("ticketsolutiontypes_id",$this->updates)
-            && $this->input["ticketsolutiontypes_id"] >0)
+      if ((in_array("solutiontypes_id",$this->updates)
+            && $this->input["solutiontypes_id"] >0)
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
@@ -532,7 +532,7 @@ class Problem extends CommonITILObject {
 
       $tab['solution'] = $LANG['jobresolution'][1];
 
-      $tab[23]['table'] = 'glpi_ticketsolutiontypes';
+      $tab[23]['table'] = 'glpi_solutiontypes';
       $tab[23]['field'] = 'name';
       $tab[23]['name']  = $LANG['job'][48];
 
