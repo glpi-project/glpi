@@ -53,14 +53,6 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   function maybeRecursive() {
-      return false;
-   }
-
-   function isEntityAssign() {
-      return false;
-   }
-
    static function getTypeName() {
       global $LANG;
 
