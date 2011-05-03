@@ -65,9 +65,9 @@ class Budget extends CommonDropdown{
       $ong[1] = $LANG['title'][26];
 
       if ($this->fields['id'] > 0) {
-         if (haveRight("document","r")) {
-            $ong[5] = $LANG['Menu'][27];
-         }
+
+         Document::addTab($this,$ong);
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[2] = $LANG['common'][96];
             if (haveRight("link","r")) {

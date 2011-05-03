@@ -122,9 +122,9 @@ class CartridgeItem extends CommonDBTM {
          if (haveRight("infocom","r")) {
             $ong[4] = $LANG['Menu'][26];
          }
-         if (haveRight("document","r")) {
-            $ong[5] = $LANG['Menu'][27];
-         }
+
+         Document::addTab($this,$ong);
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("link","r")) {
                $ong[7] = $LANG['title'][34];

@@ -86,9 +86,9 @@ class Contract extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][23];
          $ong[2] = $LANG['common'][96];
-         if (haveRight("document","r")) {
-            $ong[5] = $LANG['Menu'][27];
-         }
+
+         Document::addTab($this,$ong);
+
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];
          }
