@@ -1,33 +1,26 @@
 /* Generic */
 body {
 font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px;
-scrollbar-3dlight-color:#F0F0EE;
-scrollbar-arrow-color:#676662;
-scrollbar-base-color:#F0F0EE;
-scrollbar-darkshadow-color:#DDDDDD;
-scrollbar-face-color:#E0E0DD;
-scrollbar-highlight-color:#F0F0EE;
-scrollbar-shadow-color:#F0F0EE;
-scrollbar-track-color:#F5F5F5;
 background:#F0F0EE;
+color: black;
 padding:0;
 margin:8px 8px 0 8px;
 }
 
-html {background:#F0F0EE;}
+html {background:#F0F0EE; color:#000;}
 td {font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px;}
 textarea {resize:none;outline:none;}
-a:link, a:visited {color:black;}
-a:hover {color:#2B6FB6;}
+a:link, a:visited {color:black;background-color:transparent;}
+a:hover {color:#2B6FB6;background-color:transparent;}
 .nowrap {white-space: nowrap}
 
 /* Forms */
 fieldset {margin:0; padding:4px; border:1px solid #919B9C; font-family:Verdana, Arial; font-size:10px;}
 legend {color:#2B6FB6; font-weight:bold;}
 label.msg {display:none;}
-label.invalid {color:#EE0000; display:inline;}
-input.invalid {border:1px solid #EE0000;}
-input {background:#FFF; border:1px solid #CCC;}
+label.invalid {color:#EE0000; display:inline;background-color:transparent;}
+input.invalid {border:1px solid #EE0000;background-color:transparent;}
+input {background:#FFF; border:1px solid #CCC;color:black;}
 input, select, textarea {font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px;}
 input, select, textarea {border:1px solid #808080;}
 input.radio {border:1px none #000000; background:transparent; vertical-align:middle;}
@@ -36,17 +29,14 @@ input.checkbox {border:1px none #000000; background:transparent; vertical-align:
 
 /* Buttons */
 #insert, #cancel, input.button, .updateButton {
-border:0; margin:0; padding:0;
 font-weight:bold;
-width:94px; height:26px;
-background:url(../default/img/buttons.png) 0 -26px;
+width:94px; height:23px;
 cursor:pointer;
 padding-bottom:2px;
 float:left;
 }
 
-#insert {background:url(../default/img/buttons.png) 0 -52px}
-#cancel {background:url(../default/img/buttons.png) 0 0; float:right}
+#cancel {float:right}
 
 /* Browse */
 a.pickcolor, a.browse {text-decoration:none}
@@ -73,19 +63,18 @@ td.charmap, #charmap a {width:18px; height:18px; color:#000; border:1px solid #A
 .mceActionPanel {margin-top:5px;}
 
 /* Tabs classes */
-.tabs {width:100%; height:18px; line-height:normal; background:url(../default/img/tabs.gif) repeat-x 0 -72px;}
+.tabs {width:100%; height:18px; line-height:normal;}
 .tabs ul {margin:0; padding:0; list-style:none;}
-.tabs li {float:left; background:url(../default/img/tabs.gif) no-repeat 0 0; margin:0 2px 0 0; padding:0 0 0 10px; line-height:17px; height:18px; display:block;}
-.tabs li.current {background:url(../default/img/tabs.gif) no-repeat 0 -18px; margin-right:2px;}
-.tabs span {float:left; display:block; background:url(../default/img/tabs.gif) no-repeat right -36px; padding:0px 10px 0 0;}
-.tabs .current span {background:url(../default/img/tabs.gif) no-repeat right -54px;}
+.tabs li {float:left; border: 1px solid black; border-bottom:0; margin:0 2px 0 0; padding:0 0 0 10px; line-height:17px; height:18px; display:block; cursor:pointer;}
+.tabs li.current {font-weight: bold; margin-right:2px;}
+.tabs span {float:left; display:block; padding:0px 10px 0 0;}
 .tabs a {text-decoration:none; font-family:Verdana, Arial; font-size:10px;}
 .tabs a:link, .tabs a:visited, .tabs a:hover {color:black;}
 
 /* Panels */
 .panel_wrapper div.panel {display:none;}
 .panel_wrapper div.current {display:block; width:100%; height:300px; overflow:visible;}
-.panel_wrapper {border:1px solid #919B9C; border-top:0px; padding:10px; padding-top:5px; clear:both; background:white;}
+.panel_wrapper {border:1px solid #919B9C; padding:10px; padding-top:5px; clear:both; background:white;}
 
 /* Columns */
 .column {float:left;}
@@ -114,4 +103,3 @@ h3 {font-size:14px;}
 #colorpicker #namedcolors {width:150px;}
 #colorpicker #namedcolors a {display:block; float:left; width:10px; height:10px; margin:1px 1px 0 0; overflow:hidden;}
 #colorpicker #colornamecontainer {margin-top:5px;}
-#colorpicker #picker_panel fieldset {margin:auto;width:325px;}
