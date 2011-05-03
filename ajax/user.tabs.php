@@ -75,6 +75,11 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
       case -1 :
          Profile_User::showForUser($user);
          Group_User::showForUser( $user);
+
+         $config = new Config();
+         $user->computePreferences();
+         $config->showFormUserPrefs($user->fields);
+
          $user->showItems();
          Reservation::showForUser($_POST["id"]);
          Ticket::showListForUser($_POST["id"]);
