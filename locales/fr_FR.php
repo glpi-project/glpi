@@ -2018,7 +2018,7 @@ $LANG['setup'][114] = "Couleurs des priorités";
 $LANG['setup'][115] = "Seuil d'alerte par défaut pour les cartouches et les consommables";
 $LANG['setup'][117] = "Autoriser la consultation anonyme de la FAQ";
 $LANG['setup'][118] = "Texte sur la page de connexion";
-
+$LANG['setup'][119] = "Taille minimum du texte pour la recherche dynamique dans les listes déroulantes";
 $LANG['setup'][120] = "Utiliser l'affichage dynamique pour les listes déroulantes et les champs texte";
 $LANG['setup'][121] = "Caractère pour forcer l'affichage complet des listes déroulantes (joker)";
 $LANG['setup'][122] = "Nombre maximum d'éléments à afficher dans les listes déroulantes quand le joker n'est pas invoqué";

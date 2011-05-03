@@ -539,6 +539,9 @@ function update080to083($output='HTML') {
 
    /// TODO rename glpi_ticketcategories TO ? -> glpi_itilcategories ? -> glpi_helpdeskcategories ?
 
+   $migration->addField("glpi_configs", "ajax_min_textsearch_load",
+                        "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
