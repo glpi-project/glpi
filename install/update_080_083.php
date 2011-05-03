@@ -500,13 +500,13 @@ function update080to083($output='HTML') {
       or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
 
-   if (!FieldExists('glpi_slalevels','entities_id')) {
-
-      $migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0");
+   if ($migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_slalevels');
 
       $entities=getAllDatasFromTable('glpi_entities');
+      $entities[0]="Root";
+
 
       foreach ($entities as $entID => $val) {
          // Non recursive ones
@@ -543,6 +543,38 @@ function update080to083($output='HTML') {
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
 
    $migration->addField("glpi_users", "token", "varchar( 255 ) NULL DEFAULT ''");
+
+   if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
+      $migration->migrationOneTable('glpi_documents_items');
+
+      $entities=getAllDatasFromTable('glpi_entities');
+      $entities[0]="Root";
+
+      foreach ($entities as $entID => $val) {
+         // Non recursive ones
+         $query3="UPDATE `glpi_documents_items`
+                  SET `entities_id`=$entID, `is_recursive`=0
+                  WHERE `documents_id` IN (SELECT `id` FROM `glpi_documents`
+                     WHERE `entities_id`=$entID AND `is_recursive`=0)";
+         $DB->query($query3) or die("0.83 update entities_id and is_recursive=0
+               in glpi_documents_items ". $LANG['update'][90] . $DB->error());
+
+         // Recursive ones
+         $query3="UPDATE `glpi_documents_items`
+                  SET `entities_id`=$entID, `is_recursive`=1
+                  WHERE `documents_id` IN (SELECT `id` FROM `glpi_documents`
+                     WHERE `entities_id`=$entID AND `is_recursive`=1)";
+         $DB->query($query3) or die("0.83 update entities_id and is_recursive=1
+               in glpi_documents_items ". $LANG['update'][90] . $DB->error());
+      }
+
+      /// create index for search count on tab
+      $migration->dropKey("glpi_documents_items", "item");
+      $migration->addKey("glpi_documents_items", array('itemtype','items_id','entities_id','is_recursive'),'item');
+
+   }
+
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

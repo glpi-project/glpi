@@ -45,6 +45,8 @@ class Document extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   protected $forward_entity_to = array('Document_Item');
+
    static function getTypeName() {
       global $LANG;
 
@@ -113,13 +115,12 @@ class Document extends CommonDBTM {
 
    static function addTab(CommonDBTM $item, &$tab) {
       global $LANG;
-      $tab[5] = $LANG['Menu'][27];
+//      $tab[5] = $LANG['Menu'][27];
       /// TODO first try for 
-/*    
       if (haveRight("document","r")) {
          $nb     = Document_Item::countForItem($item);
          $tab[5] = $LANG['Menu'][27]." ($nb)";
-      }*/
+      }
    }
 
    function defineTabs($options=array()) {

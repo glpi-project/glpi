@@ -83,15 +83,14 @@ class Document_Item extends CommonDBRelation{
 
    static function countForItem(CommonDBTM $item) {
 
-      $restrict = "`glpi_documents_items`.`documents_id` = `glpi_documents`.`id`
-                   AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
+      $restrict = "`glpi_documents_items`.`items_id` = '".$item->getField('id')."'
                    AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
       if (getLoginUserID()) {
-         $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents", '', '', true);
+         $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
       } else {
          // Anonymous access from FAQ
-         $restrict .= " AND `glpi_documents`.`entities_id` = '0' ";
+         $restrict .= " AND `glpi_documents_items`.`entities_id` = '0' ";
       }
 
       $nb = countElementsInTable(array('glpi_documents_items', 'glpi_documents'), $restrict);
@@ -103,12 +102,12 @@ class Document_Item extends CommonDBRelation{
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
          if (getLoginUserID()) {
-            $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents", '', '', true);
+            $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
          } else {
             // Anonymous access from FAQ
-            $restrict .= " AND `glpi_documents`.`entities_id` = '0' ";
+            $restrict .= " AND `glpi_documents_items`.`entities_id` = '0' ";
          }
-         $nb += countElementsInTable(array('glpi_documents_items', 'glpi_documents'), $restrict);
+         $nb += countElementsInTable(array('glpi_documents_items'), $restrict);
       }
       return $nb ;
    }
