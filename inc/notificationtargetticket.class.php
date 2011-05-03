@@ -708,9 +708,6 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
          $this->datas['##ticket.duedate##']      = convDateTime($this->obj->getField('due_date'));
 
-         $this->datas['##ticket.useremailnotification##']
-                     = Dropdown::getYesNo($this->obj->getField('user_email_notification'));
-
          $entitydata = new EntityData;
          $autoclose_value = $CFG_GLPI['autoclose_delay'];
 
