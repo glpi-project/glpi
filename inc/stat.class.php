@@ -53,7 +53,7 @@ class Stat {
             break;
 
          case "technicien_followup" :
-            $val = Ticket::getUsedTechFollowupBetween($date1, $date2);
+            $val = Ticket::getUsedTechTaskBetween($date1, $date2);
             break;
 
          case "enterprise" :
@@ -545,10 +545,8 @@ class Stat {
             break;
 
          case "technicien_followup" :
-            $WHERE .= " AND `glpi_ticketfollowups`.`users_id` = '$value'";
-            $LEFTJOIN = "LEFT JOIN `glpi_ticketfollowups`
-                              ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
-                        LEFT JOIN `glpi_tickettasks`
+            $WHERE .= " AND `glpi_tickettasks`.`users_id` = '$value'";
+            $LEFTJOIN = " LEFT JOIN `glpi_tickettasks`
                               ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)";
             break;
 
