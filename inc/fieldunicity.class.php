@@ -419,14 +419,14 @@ class FieldUnicity extends CommonDropdown {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='".$colspan."'>".$LANG['setup'][826]."</th></tr>";
 
-         $entities = $unicity->fields['entities_id'];
+         $entities = array($unicity->fields['entities_id']);
          if ($unicity->fields['is_recursive']) {
             $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
          }
          $fields_string = implode(',', $fields);
 
          if ($item->maybeTemplate()) {
-            $where_template = " WHERE `is_template` = '0'";
+            $where_template = " AND `".$item->getTable()."`.`is_template` = '0'";
          } else {
             $where_template = "";
          }
@@ -435,7 +435,8 @@ class FieldUnicity extends CommonDropdown {
          $query = "SELECT $fields_string,
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
-                   $where_template
+                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
+                        $where_template 
                    GROUP BY $fields_string
                    ORDER BY cpt DESC";
          $results = array();
