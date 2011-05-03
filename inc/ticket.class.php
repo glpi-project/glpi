@@ -5878,7 +5878,7 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2).";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
                           OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .="     AND `glpi_profiles`.`own_ticket` = 1
