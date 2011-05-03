@@ -542,6 +542,8 @@ function update080to083($output='HTML') {
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
 
+   $migration->addField("glpi_users", "token", "varchar( 255 ) NULL DEFAULT ''");
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
