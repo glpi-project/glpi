@@ -106,14 +106,11 @@ function ajaxDisplaySearchTextForDropdown($id, $size=4) {
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  *
  **/
-function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                        $spinner=true) {
+function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array()) {
 
-   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
-                         $spinner);
+   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"));
 }
 
 
@@ -124,13 +121,11 @@ function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  *
  **/
-function ajaxUpdateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                     $spinner=true) {
+function ajaxUpdateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array()) {
 
-   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"), $spinner);
+   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"));
 }
 
 
@@ -142,14 +137,13 @@ function ajaxUpdateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=ar
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  *
  **/
 function ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
-                               $events=array("change"), $spinner=true) {
+                               $events=array("change")) {
 
    echo "<script type='text/javascript'>";
-   ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events, $spinner);
+   ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events);
    echo "</script>";
 }
 
@@ -162,11 +156,10 @@ function ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  *
  **/
 function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
-                                     $events=array("change"), $spinner=true) {
+                                     $events=array("change")) {
 
    if (is_array($toobserve)) {
       $zones = $toobserve;
@@ -180,7 +173,7 @@ function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=ar
             Ext.get('$zone').on(
                '$event',
                function() {";
-                  ajaxUpdateItemJsCode($toupdate, $url, $parameters, $spinner, $toobserve);
+                  ajaxUpdateItemJsCode($toupdate, $url, $parameters, $toobserve);
          echo "});\n";
       }
    }
@@ -193,14 +186,13 @@ function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=ar
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  * @param $toobserve id of another item used to get value in case of __VALUE__ used
  *
  **/
-function ajaxUpdateItem($toupdate, $url, $parameters=array(), $spinner=true, $toobserve="") {
+function ajaxUpdateItem($toupdate, $url, $parameters=array(), $toobserve="") {
 
    echo "<script type='text/javascript'>";
-   ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
+   ajaxUpdateItemJsCode($toupdate,$url,$parameters,$toobserve);
    echo "</script>";
 }
 
@@ -211,12 +203,11 @@ function ajaxUpdateItem($toupdate, $url, $parameters=array(), $spinner=true, $to
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  * @param $toobserve id of another item used to get value in case of __VALUE__ used
  *                   array of id to get value in case of __VALUE#__ used
  *
  **/
-function ajaxUpdateItemJsCode($toupdate, $url, $parameters=array(), $spinner=true, $toobserve="") {
+function ajaxUpdateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="") {
 
    // Get it from a Ext.Element object
    $out = "Ext.get('$toupdate').load({
