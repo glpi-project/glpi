@@ -119,7 +119,10 @@ class Document extends CommonDBTM {
       /// TODO first try for 
       if (haveRight("document","r")) {
          $nb     = Document_Item::countForItem($item);
-         $tab[5] = $LANG['Menu'][27]." ($nb)";
+         $tab[5] = $LANG['Menu'][27];
+         if ($nb) {
+            $tab[5] .= " ($nb)";
+         }
       }
    }
 
