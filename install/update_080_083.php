@@ -571,8 +571,8 @@ function update080to083($output='HTML') {
 
       /// create index for search count on tab
       $migration->dropKey("glpi_documents_items", "item");
+      $migration->migrationOneTable('glpi_documents_items');
       $migration->addKey("glpi_documents_items", array('itemtype','items_id','entities_id','is_recursive'),'item');
-
    }
 
 
