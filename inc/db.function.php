@@ -53,6 +53,17 @@ function getForeignKeyFieldForTable($table) {
   return str_replace("glpi_","",$table)."_id";
 }
 
+/**
+ * Return foreign key field name for an itemtype
+ *
+ * @param $itemtype string: itemtype
+ *
+ * @return string field name used for a foreign key to the parameter itemtype
+**/
+function getForeignKeyFieldForItemType($itemtype) {
+   return getForeignKeyFieldForTable(getTableForItemType($itemtype));
+}
+
 
 /**
  * Return table name for a given foreign key name

@@ -64,11 +64,6 @@ if (isset($_POST["end"]) && !empty($_POST["end"])) {
    $end = date("Y-m-d H:i:s",strtotime($begin)+HOUR_TIMESTAMP);
 }
 
-$state = 0;
-if (isset($_POST["state"])) {
-   $state = $_POST["state"];
-}
-
 echo "<table class='tab_cadre'>";
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
    echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
@@ -79,11 +74,6 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
                         'entity' => $_POST["entity"]));
    echo "</td></tr>\n";
 }
-
-echo "<tr class='tab_bg_2'><td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
-echo "<td class='center'>";
-Planning::dropdownState("plan[state]", $state);
-echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
 $rand_begin = showDateTimeFormItem("plan[begin]", $begin, -1, false, true, '', '',

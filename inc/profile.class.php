@@ -56,9 +56,10 @@ class Profile extends CommonDBTM {
 
 
    /// Fields not related to a basic right
-   static public $noright_fields = array('comment', 'date_mod', 'helpdesk_hardware',
-                                         'helpdesk_item_type', 'helpdesk_status', 'own_ticket',
-                                         'show_group_hardware', 'show_group_ticket');
+   static public $noright_fields = array('comment', 'change_status', 'date_mod',
+                                         'helpdesk_hardware','helpdesk_item_type', 'own_ticket',
+                                         'problem_status', 'show_group_hardware',
+                                         'show_group_ticket', 'ticket_status');
 
 
    var $dohistory = true;
@@ -97,6 +98,7 @@ class Profile extends CommonDBTM {
       } else {
          $ong[1] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
          $ong[2] = $LANG['title'][24]; // Assistance
+         $ong[5] = $LANG['setup'][619]; // Life cycles
          $ong[3] = $LANG['Menu'][15].'/'.$LANG['common'][12]; // Administration/Setup
          if (haveRight("user","r")) {
             $ong[4] = $LANG['Menu'][14];
@@ -118,14 +120,13 @@ class Profile extends CommonDBTM {
       }
    }
 
-
    function post_addItem() {
       global $DB;
 
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
          $query = "UPDATE ". $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->fields['id']."'";
+                  SET `is_default` = '0'
+                  WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
    }
@@ -158,18 +159,46 @@ class Profile extends CommonDBTM {
          }
       }
 
-      if (isset($input["_cycles"])) {
+      if (isset($input["_cycles_ticket"])) {
          $tab = Ticket::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
-               if ($from!=$dest && $input["_cycle"][$from][$dest]==0) {
+               if ($from!=$dest && $input["_cycle_ticket"][$from][$dest]==0) {
                   $cycle[$from][$dest] = 0;
                }
             }
          }
-         $input["helpdesk_status"] = exportArrayToDB($cycle);
+         $input["ticket_status"] = exportArrayToDB($cycle);
       }
+
+
+      if (isset($input["_cycles_problem"])) {
+         $tab = Problem::getAllStatusArray();
+         $cycle = array();
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if ($from!=$dest && $input["_cycle_problem"][$from][$dest]==0) {
+                  $cycle[$from][$dest] = 0;
+               }
+            }
+         }
+         $input["problem_status"] = exportArrayToDB($cycle);
+      }
+
+      if (isset($input["_cycles_change"])) {
+         $tab = Change::getAllStatusArray();
+         $cycle = array();
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if ($from!=$dest && $input["_cycle_change"][$from][$dest]==0) {
+                  $cycle[$from][$dest] = 0;
+               }
+            }
+         }
+         $input["change_status"] = exportArrayToDB($cycle);
+      }
+
       return $input;
    }
 
@@ -211,11 +240,15 @@ class Profile extends CommonDBTM {
       }
 
       // Decode status array
-      if (isset($this->fields["helpdesk_status"]) && !is_array($this->fields["helpdesk_status"])) {
-         $this->fields["helpdesk_status"] = importArrayFromDB($this->fields["helpdesk_status"]);
-         // Need to be an array not a null value
-         if (is_null($this->fields["helpdesk_status"])) {
-            $this->fields["helpdesk_status"] = array();
+      $fields_to_decode = array('ticket_status','problem_status','change_status');
+      foreach ($fields_to_decode as $val) {
+
+         if (isset($this->fields[$val]) && !is_array($this->fields[$val])) {
+            $this->fields[$val] = importArrayFromDB($this->fields[$val]);
+            // Need to be an array not a null value
+            if (is_null($this->fields[$val])) {
+               $this->fields[$val] = array();
+            }
          }
       }
    }
@@ -745,19 +778,16 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
-      echo "</td>\n";
-      echo "<td colspan='2'></td></tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th><";
       echo "/tr>\n";
-      echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][51]."&nbsp;:</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
-      echo "</td>\n";
-      echo "<td colspan='2'></td></tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['validation'][0]."</th><";
       echo "/tr>\n";
@@ -860,12 +890,67 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_all_planning", $this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
-      echo "</table><br><table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['Menu'][7]." / ".$LANG['Menu'][8]."</th>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['profiles'][52]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("edit_all_problem", $this->fields["edit_all_problem"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][25]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("show_all_problem", $this->fields["show_all_problem"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][53]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("show_my_problem", $this->fields["show_my_problem"]);
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['Menu'][8]."&nbsp;:</td><td>";
+      self::dropdownNoneReadWrite("change", $this->fields["change"], 1, 1, 1);
+      echo "</td>";
+      echo "<td colspan='4'></td></tr>\n";
+
+      if ($canedit && $closeform) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value=$ID>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
+      }
+      echo "</div>";
+   }
+
+   /**
+   * Print the Life Cycles form for the current profile
+   *
+   * @param $target of the form
+   * @param $openform boolean open the form
+   * @param $closeform boolean close the form
+   **/
+   function showFormLifeCycle($target, $openform=true, $closeform=true) {
+      global $LANG,$CFG_GLPI;
+
+      $ID = $this->fields['id'];
+
+      if (!haveRight("profile","r")) {
+         return false;
+      }
+      if (($canedit=haveRight("profile","w")) && $openform) {
+         echo "<form method='post' action='$target'>";
+      }
+
+      echo "<div class='spaced'>";
+
+      echo "<table class='tab_cadre_fixe'>";
       $tabstatus = Ticket::getAllStatusArray();
 
       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
       echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
-      echo "<input type='hidden' name='_cycles' value='1'</td>";
+      echo "<input type='hidden' name='_cycles_ticket' value='1'</td>";
       foreach ($tabstatus as $label) {
          echo "<td class='center'>$label</td>";
       }
@@ -878,15 +963,44 @@ class Profile extends CommonDBTM {
             if ($dest==$from) {
                echo Dropdown::getYesNo(1);
             } else {
-               Dropdown::showYesNo("_cycle[$from][$dest]",
-                                   (!isset($this->fields['helpdesk_status'][$from][$dest])
-                                    || $this->fields['helpdesk_status'][$from][$dest]));
+               Dropdown::showYesNo("_cycle_ticket[$from][$dest]",
+                                   (!isset($this->fields['ticket_status'][$from][$dest])
+                                    || $this->fields['ticket_status'][$from][$dest]));
+            }
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
+      echo "</table>";
+
+      echo "<table class='tab_cadre_fixe'>";
+      $tabstatus = Problem::getAllStatusArray();
+
+      echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][617]."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+      echo "<input type='hidden' name='_cycles_problem' value='1'</td>";
+      foreach ($tabstatus as $label) {
+         echo "<td class='center'>$label</td>";
+      }
+      echo "</tr>\n";
+
+      foreach ($tabstatus as $from => $label) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
+         foreach ($tabstatus as $dest => $label) {
+            echo "<td class='center'>";
+            if ($dest==$from) {
+               echo Dropdown::getYesNo(1);
+            } else {
+               Dropdown::showYesNo("_cycle_problem[$from][$dest]",
+                                   (!isset($this->fields['problem_status'][$from][$dest])
+                                    || $this->fields['problem_status'][$from][$dest]));
             }
             echo "</td>";
          }
          echo "</tr>\n";
       }
 
+      
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
@@ -899,8 +1013,6 @@ class Profile extends CommonDBTM {
       }
       echo "</div>";
    }
-
-
    /**
    * Print the central form for a profile
    *
@@ -1529,11 +1641,25 @@ class Profile extends CommonDBTM {
       $tab[99]['datatype'] = 'bool';
 
       $tab[100]['table']         = $this->getTable();
-      $tab[100]['field']         = 'helpdesk_status';
+      $tab[100]['field']         = 'ticket_status';
       $tab[100]['name']          = $LANG['setup'][615];
       $tab[100]['nosearch']      = true;
       $tab[100]['datatype']      = 'text';
       $tab[100]['massiveaction'] = false;
+
+      $tab[110]['table']         = $this->getTable();
+      $tab[110]['field']         = 'problem_status';
+      $tab[110]['name']          = $LANG['setup'][617];
+      $tab[110]['nosearch']      = true;
+      $tab[110]['datatype']      = 'text';
+      $tab[110]['massiveaction'] = false;
+
+      $tab[111]['table']         = $this->getTable();
+      $tab[111]['field']         = 'change_status';
+      $tab[111]['name']          = $LANG['setup'][618];
+      $tab[111]['nosearch']      = true;
+      $tab[111]['datatype']      = 'text';
+      $tab[111]['massiveaction'] = false;
 
       $tab['other'] = $LANG['common'][62];
 

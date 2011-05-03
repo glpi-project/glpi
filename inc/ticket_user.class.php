@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Ticket_User
-class Ticket_User extends CommonDBRelation {
+class Ticket_User extends CommonITILActor {
 
    // From CommonDBRelation
    public $itemtype_1 = 'Ticket';
@@ -46,147 +46,7 @@ class Ticket_User extends CommonDBRelation {
    public $itemtype_2 = 'User';
    public $items_id_2 = 'users_id';
 
-   var $no_form_page = true;
 
-   var $checks_and_logs_only_for_itemtype1 = true;
-
-   static function getTicketUsers($tickets_id) {
-      global $DB;
-
-      $users = array();
-      $query = "SELECT `glpi_tickets_users`.*
-                FROM `glpi_tickets_users`
-                WHERE `tickets_id` = '$tickets_id'";
-
-      foreach ($DB->request($query) as $data) {
-         $users[$data['type']][$data['users_id']] = $data;
-      }
-      return $users;
-   }
-
-
-   function canUpdateItem() {
-      return (parent::canUpdateItem() || $this->fields['users_id'] == getLoginUserID());
-   }
-
-
-   /**
-    * Check right on an item - overloaded to check user access to its datas
-    *
-    * @param $ID ID of the item (-1 if new item)
-    * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
-    *
-    * @return boolean
-   **/
-   function can($ID, $right, &$input=NULL) {
-
-      if ($ID>0) {
-         if ($this->fields['users_id']===getLoginUserID()) {
-            return true;
-         }
-      }
-      return parent::can($ID, $right, $input);
-   }
-
-
-   /**
-    * Print the ticket user form for notification
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *
-    * @return Nothing (display)
-   **/
-   function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
-
-      $this->check($ID,'w');
-
-      echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
-      echo "<div class='center'>";
-      echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_2'><td>".$LANG['job'][38]."&nbsp;:</td>";
-      echo "<td>";
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields["tickets_id"])) {
-         echo $ticket->getField('name');
-      }
-      echo "</td></tr>";
-
-      $user  = new User;
-      $email = "";
-      if ($user->getFromDB($this->fields["users_id"])) {
-         $email = $user->getField('email');
-      }
-
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][34]."&nbsp;:</td>";
-      echo "<td>".$user->getName()."</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."&nbsp;:</td>";
-      echo "<td>";
-      Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][118]."&nbsp;:</td>";
-      echo "<td>";
-      if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
-         echo $email;
-      } else {
-         echo "<input type='text' size='40' name='alternative_email' value='".
-                $this->fields['alternative_email']."'>";
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-      echo "<input type='hidden' name='id' value='$ID'>";
-      echo "</td></tr>";
-
-      echo "</table></div></form>";
-   }
-
-
-   function post_deleteFromDB() {
-      global $CFG_GLPI;
-
-      $donotif = $CFG_GLPI["use_mailing"];
-
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
-
-      $t = new Ticket();
-      if ($t->getFromDB($this->fields['tickets_id'])) {
-         if ($t->fields["suppliers_id_assign"] == 0
-             && $t->countUsers(Ticket::ASSIGN) == 0
-             && $t->countGroups(Ticket::ASSIGN) == 0) {
-
-            $t->update(array('id'     => $this->fields['tickets_id'],
-                             'status' => 'new'));
-         } else {
-            $t->updateDateMod($this->fields['tickets_id']);
-            if ($donotif) {
-               NotificationEvent::raiseEvent("update", $t, array('_old_user' => $this->fields));
-            }
-         }
-      }
-      parent::post_deleteFromDB();
-   }
-
-
-   function post_addItem() {
-
-      $t = new Ticket();
-      $no_stat_computation = true;
-      if ($this->input['type']==Ticket::ASSIGN) {
-         $no_stat_computation = false;
-      }
-      $t->updateDateMod($this->fields['tickets_id'], $no_stat_computation);
-
-      parent::post_addItem();
-   }
 
 }
 

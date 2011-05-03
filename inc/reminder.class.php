@@ -57,25 +57,19 @@ class Reminder extends CommonDBTM {
       return haveRight('reminder_public', 'r');
    }
 
-
    function post_addItem() {
-
-      if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
-                                       $this->fields["end"],
-                                       array('Reminder' => array($this->fields['id'])));
-      }
-   }
-
-
-   function post_updateItem($history=1) {
-
       if ($this->fields["is_private"]) {
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
                                              array('Reminder' => array($this->fields['id'])));
       }
    }
 
+   function post_updateItem($history=1) {
+      if ($this->fields["is_private"]) {
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
+                                             array('Reminder' => array($this->fields['id'])));
+      }
+   }
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -89,6 +83,7 @@ class Reminder extends CommonDBTM {
       }
 
       $input["begin"] = $input["end"] = "NULL";
+
 
       if (isset($input['plan'])) {
          if (!empty($input['plan']["begin"])
@@ -113,6 +108,7 @@ class Reminder extends CommonDBTM {
       }
 
       if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
+
          if (!haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
             addMessageAfterRedirect($LANG['common'][75], false, ERROR);
@@ -148,7 +144,6 @@ class Reminder extends CommonDBTM {
             $input['is_planned'] = 1;
             $input["begin"]      = $input['_plan']["begin"];
             $input["end"]        = $input['_plan']["end"];
-            $input["state"]      = $input['_plan']["state"];
 
          } else {
             addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
@@ -199,7 +194,7 @@ class Reminder extends CommonDBTM {
     * @param $ID Integer : Id of the item to print
     * @param $options array
     *     - target filename : where to go when done.
-   **/
+    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
@@ -290,6 +285,11 @@ class Reminder extends CommonDBTM {
          echo "</td></tr>\n";
       }
 
+      echo "<tr class='tab_bg_2'><td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      Planning::dropdownState("state", $this->fields["state"]);
+      echo "</td></tr>\n";
+      
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td class='center'>";
 
@@ -300,7 +300,6 @@ class Reminder extends CommonDBTM {
             $params = array('form' => 'remind');
 
             if ($ID && $this->fields["is_planned"]) {
-               $params['state'] = $this->fields["state"];
                $params['begin'] = $this->fields["begin"];
                $params['end']   = $this->fields["end"];
             }
@@ -326,8 +325,7 @@ class Reminder extends CommonDBTM {
             echo "<span class='showplan'>";
          }
 
-         echo Planning::getState($this->fields["state"]).": ".convDateTime($this->fields["begin"]).
-              "->". convDateTime($this->fields["end"]);
+         echo convDateTime($this->fields["begin"])."->". convDateTime($this->fields["end"]);
 
          if ($canedit) {
             echo "</span>";
@@ -441,7 +439,7 @@ class Reminder extends CommonDBTM {
          if ($DB->numrows($result2)>0) {
             for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
                $interv[$data["begin"]."$$".$i]["reminders_id"] = $data["id"];
-               $interv[$data["begin"]."$$".$i]["id"]           = $data["id"];
+               $interv[$data["begin"]."$$".$i]["id"] = $data["id"];
 
                if (strcmp($begin,$data["begin"])>0) {
                   $interv[$data["begin"]."$$".$i]["begin"] = $begin;
@@ -472,7 +470,7 @@ class Reminder extends CommonDBTM {
     * @param $val Array of the item to display
     *
     * @return Already planned information
-   **/
+    **/
    static function getAlreadyPlannedInformation($val) {
       global $CFG_GLPI;
 
@@ -494,7 +492,7 @@ class Reminder extends CommonDBTM {
     * @param $complete complete display (more details)
     *
     * @return Nothing (display function)
-   **/
+    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
       global $CFG_GLPI, $LANG;
 

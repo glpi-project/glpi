@@ -28,24 +28,37 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
-// Purpose of file:
-// ----------------------------------------------------------------------
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-$ticket_user = new Ticket_User();
+$item = new Problem_Ticket();
 
-if (isset($_REQUEST["update"])) {
-   $ticket_user->check($_REQUEST["id"], 'w');
+if (isset($_POST["add"])) {
+   $item->check(-1, 'w', $_POST);
 
-   $ticket_user->update($_REQUEST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.opener.location.reload();";
-   echo "window.close()";
-   echo "</script>";
+   if ($item->add($_POST)) {
+      Event::log($_POST["problems_id"], "problem", 4, "tracking",
+                 $_SESSION["glpiname"]." ".$LANG['log'][32]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_REQUEST["id"])) {
-   $ticket_user->showUserNotificationForm($_REQUEST["id"]);
+} else if (isset($_POST["delete"])) {
+
+   if (isset($_POST["item"]) && count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         if ($val == 1) {
+            if ($item->can($key, 'w')) {
+               $item->delete(array('id' => $key));
+            }
+         }
+      }
+      Event::log($_POST["problems_id"], "problem", 4, "tracking",
+                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 }
+
+displayErrorAndDie("lost");
 
 ?>

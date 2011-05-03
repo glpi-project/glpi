@@ -413,23 +413,24 @@ function addTracking($type, $ID, $ID_entity) {
             $date += mt_rand(3600, 7776000);
          }
 
+         $plan_string = 'NULL,NULL,1,0';
+
+         if ($status=="plan") {
+            $plan_string = "'".date("Y-m-d H:i:s", $date3)."', '".date("Y-m-d H:i:s", $date4)."','1',
+                           '".$users[1]."'";
+         }
          $actiontime = (mt_rand(0, 3)+mt_rand(0, 100)/100);
          $query = "INSERT INTO `glpi_tickettasks`
                    VALUES (NULL, '$tID', '".mt_rand($FIRST['taskcategory'], $LAST['taskcategory'])."',
                            '".date("Y-m-d H:i:s",$date)."', '".$users[1]."',
-                           'task $i ".getRandomString(15)."', '".mt_rand(0,1)."', '$actiontime')";
+                           'task $i ".getRandomString(15)."', '".mt_rand(0,1)."', '$actiontime', $plan_string)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $fID = $DB->insert_id();
          $i++;
       }
 
-      if ($status=="plan"&&$fID) {
-         $query = "INSERT INTO `glpi_ticketplannings`
-                   VALUES (NULL, '$fID', '".$users[1]."', '".date("Y-m-d H:i:s", $date3)."',
-                           '".date("Y-m-d H:i:s", $date4)."', '1')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-      }
+
 
       // Insert satisfaction for stats
       if ($status=='closed'
@@ -2514,7 +2515,7 @@ function generate_entity($ID_entity) {
    }
    $LAST["software"] = getMaxItem("glpi_softwares");
 
-   $query = "UPDATE `glpi_ticketplannings`
+   $query = "UPDATE `glpi_tickettasks`
              SET `state` = '2'
              WHERE `end` < NOW()";
    $DB->query($query) or die("PB REQUETE ".$query);

@@ -37,34 +37,32 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class TicketTask  extends CommonITILTask {
+class ProblemTask  extends CommonITILTask {
 
 
    function canCreate() {
 
-      return (haveRight('global_add_tasks', 1)
-              || haveRight('own_ticket', 1));
+      return (haveRight('show_my_problem', '1')
+            || haveRight('edit_all_problem', '1'));
    }
 
    function canView() {
 
-      return (haveRight('observe_ticket', 1)
-              || haveRight('show_full_ticket', 1)
-              || haveRight('own_ticket', 1));
+      return (haveRight('show_all_problem', 1)
+              || haveRight('show_my_problem', 1));
    }
 
    function canUpdate() {
-      return (haveRight('global_add_tasks', 1)
-              || haveRight('own_ticket', 1)
-              || haveRight('update_tasks', 1) );
+      return (haveRight('edit_all_problem', 1)
+              || haveRight('show_my_problem', 1));
    }
 
    function canViewPrivates () {
-      return haveRight('show_full_ticket', 1);
+      return true;
    }
 
    function canEditAll () {
-      return haveRight('update_tasks', 1);
+      return haveRight('edit_all_problem', 1);
    }
 
    /**
@@ -73,21 +71,7 @@ class TicketTask  extends CommonITILTask {
     * @return boolean
    **/
    function canViewItem() {
-
-      if (!parent::canReadITILItem()) {
-         return false;
-      }
-
-      if (haveRight('show_full_ticket', 1)) {
-         return true;
-      }
-      if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
-         return true;
-      }
-      if ($this->fields["users_id"] === getLoginUserID()) {
-         return true;
-      }
-      return false;
+      return parent::canReadITILItem();
    }
 
 
@@ -102,10 +86,14 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      return (haveRight("global_add_tasks","1")
-              || $ticket->isUser(Ticket::ASSIGN, getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups'])));
+      return (haveRight("edit_all_problem","1")
+              || (haveRight("show_my_problem","1")
+                  && ($ticket->isUser(Ticket::ASSIGN, getLoginUserID())
+                        || (isset($_SESSION["glpigroups"])
+                           && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups']))
+                     )
+                  )
+             );
    }
 
 
@@ -120,7 +108,7 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if ($this->fields["users_id"] != getLoginUserID() && !haveRight('update_tasks',1)) {
+      if ($this->fields["users_id"] != getLoginUserID() && !haveRight('edit_all_problem',1)) {
          return false;
       }
 
@@ -150,7 +138,7 @@ class TicketTask  extends CommonITILTask {
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
-      return CommonITILTask::genericPopulatePlanning('TicketTask',$options);
+      return CommonITILTask::genericPopulatePlanning('ProblemTask',$options);
    }
    /**
     * Display a Planning Item
@@ -160,7 +148,7 @@ class TicketTask  extends CommonITILTask {
     * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
-      return CommonITILTask::genericGetAlreadyPlannedInformation('TicketTask',$val);
+      return CommonITILTask::genericGetAlreadyPlannedInformation('ProblemTask',$val);
    }
 
    /**
@@ -174,7 +162,7 @@ class TicketTask  extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
-      return CommonITILTask::genericDisplayPlanningItem('TicketTask',$val, $who, $type, $complete);
+      return CommonITILTask::genericDisplayPlanningItem('ProblemTask',$val, $who, $type, $complete);
    }
 }
 

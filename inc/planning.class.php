@@ -98,7 +98,6 @@ class Planning {
                                                                             'who_group' => 0,
                                                                             'begin'     => $begin,
                                                                             'end'       => $end));
-
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
                if (!isset($except[$itemtype])
@@ -354,7 +353,12 @@ class Planning {
 
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+      $interv = TicketTask::populatePlanning(array('who'       => $who,
+                                                       'who_group' => $who_group,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
+      // ---------------Problem
+      $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
                                                        'who_group' => $who_group,
                                                        'begin'     => $begin,
                                                        'end'       => $end));
@@ -365,7 +369,7 @@ class Planning {
                                                        'begin'     => $begin,
                                                        'end'       => $end));
 
-      $interv = array_merge($interv, $datareminders);
+      $interv = array_merge($interv, $interv2, $datareminders);
 
       // --------------- Plugins
       $data = doHookFunction("planning_populate", array("begin"     => $begin,
@@ -588,8 +592,9 @@ class Planning {
          }
 
       } else if (isset($val["tickets_id"])) {  // show tracking
-         TicketPlanning::displayPlanningItem($val, $who, $type, $complete);
-
+         TicketTask::displayPlanningItem($val, $who, $type, $complete);
+      } else if (isset($val["problems_id"])) {  // show tracking
+         ProblemTask::displayPlanningItem($val, $who, $type, $complete);
       } else {  // show Reminder
          Reminder::displayPlanningItem($val, $who, $type, $complete);
       }
@@ -640,7 +645,7 @@ class Planning {
       $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+      $interv = TicketTask::populatePlanning(array('who'       => $who,
                                                        'who_group' => 0,
                                                        'begin'     => $begin,
                                                        'end'       => $end));
@@ -714,7 +719,6 @@ class Planning {
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
-      $v->setConfig( 'filename', "glpi.ics" );
 
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
@@ -728,7 +732,13 @@ class Planning {
       $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning(array('who'       => $who,
+      $interv = TicketTask::populatePlanning(array('who'       => $who,
+                                                       'who_group' => $who_group,
+                                                       'begin'     => $begin,
+                                                       'end'       => $end));
+
+      // ---------------Problem
+      $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
                                                        'who_group' => $who_group,
                                                        'begin'     => $begin,
                                                        'end'       => $end));
@@ -739,7 +749,7 @@ class Planning {
                                                'begin'     => $begin,
                                                'end'       => $end));
 
-      $interv = array_merge($interv, $data);
+      $interv = array_merge($interv, $interv2, $data);
 
       // ---------------Plugin
       $data = doHookFunction("planning_populate", array("begin"     => $begin,
@@ -791,8 +801,8 @@ class Planning {
          }
       }
       $v->sort();
-      //$v->parse();
-      return $v->returnCalendar();
+      $v->parse();
+      return $v->createCalendar();
    }
 
 }

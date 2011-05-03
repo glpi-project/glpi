@@ -29,50 +29,37 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+$AJAX_INCLUDE = 1;
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-checkSeveralRightsOr(array('knowbase' => 'r',
-                           'faq'      => 'r'));
+checkLoginUser();
 
-if (isset($_GET["id"])) {
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
+if (!isset($_POST['type'])) {
+   exit();
+}
+if (!isset($_POST['parenttype'])) {
+   exit();
 }
 
-commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+$item = new $_POST['type']();
 
-// Search a solution
-if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {
-   $item = new $_GET["itemtype"]();
-   if ($item->getFromDB($_GET["items_id"])) {
-      $_GET["contains"] = $item->getField('name');
-   }
+$parent = new $_POST['parenttype']();
+
+if (isset($_POST[$parent->getForeignKeyField()]) && isset($_POST["id"])
+      && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
+   $item->showForm($_POST["id"], array('parent' => $parent));
+
+} else {
+   echo $LANG['login'][5];
 }
 
-if (!isset($_GET["contains"])) {
-   $_GET["contains"] = "";
-}
-
-if (!isset($_GET["knowbaseitemcategories_id"])) {
-   $_GET["knowbaseitemcategories_id"] = "0";
-}
-
-$faq = !haveRight("knowbase","r");
-
-KnowbaseItem::searchForm($_GET, $faq);
-if (!isset($_GET["itemtype"]) || !isset($_GET["items_id"])) {
-   KnowbaseItemCategory::showFirstLevel($_GET, $faq);
-}
-KnowbaseItem::showList($_GET,$faq);
-
-if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
-   KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php", $faq) ;
-}
-
-commonFooter();
+ajaxFooter();
 
 ?>

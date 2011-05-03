@@ -141,10 +141,13 @@ class TicketValidation  extends CommonDBChild {
 
             $input['entities_id'] = $job->fields["entities_id"];
          }
+
          $input["users_id"] = 0;
          if (!isset($input['_auto_update'])) {
             $input["users_id"] = getLoginUserID();
          }
+
+         $input["users_id"] = getLoginUserID();
          $input["submission_date"] = $_SESSION["glpi_currenttime"];
          $input["status"] = 'waiting';
 
@@ -492,10 +495,11 @@ class TicketValidation  extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand() {\n";
          $params = array('type'       => __CLASS__,
+                         'parentype'  => 'Ticket',
                          'tickets_id' => $tID,
                          'id'         => -1);
          ajaxUpdateItemJsCode("viewfollowup" . $tID . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
          echo "};";
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
@@ -551,10 +555,11 @@ class TicketValidation  extends CommonDBChild {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" . $ticket->fields['id'] . $row["id"] . "$rand() {\n";
                $params = array('type'       => __CLASS__,
+                               'parenttype' => 'Ticket',
                                'tickets_id' => $this->fields["tickets_id"],
                                'id'         => $row["id"]);
                ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
                echo "};";
                echo "</script>\n";
             }
@@ -600,7 +605,7 @@ class TicketValidation  extends CommonDBChild {
       if ($ID>0) {
          $tickets_id = $this->fields["tickets_id"];
       } else {
-         $tickets_id = $options['ticket']->fields["id"];
+         $tickets_id = $options['parent']->fields["id"];
       }
       $ticket = new Ticket();
       if (!$ticket->getFromDB($tickets_id)) {

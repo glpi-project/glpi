@@ -29,50 +29,25 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-checkSeveralRightsOr(array('knowbase' => 'r',
-                           'faq'      => 'r'));
-
-if (isset($_GET["id"])) {
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+/// Class Group_Problem
+class Group_Problem extends CommonITILActor {
 
-// Search a solution
-if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {
-   $item = new $_GET["itemtype"]();
-   if ($item->getFromDB($_GET["items_id"])) {
-      $_GET["contains"] = $item->getField('name');
-   }
+   // From CommonDBRelation
+   public $itemtype_1 = 'Problem';
+   public $items_id_1 = 'problems_id';
+   public $itemtype_2 = 'Group';
+   public $items_id_2 = 'groups_id';
+
+
+
 }
-
-if (!isset($_GET["contains"])) {
-   $_GET["contains"] = "";
-}
-
-if (!isset($_GET["knowbaseitemcategories_id"])) {
-   $_GET["knowbaseitemcategories_id"] = "0";
-}
-
-$faq = !haveRight("knowbase","r");
-
-KnowbaseItem::searchForm($_GET, $faq);
-if (!isset($_GET["itemtype"]) || !isset($_GET["items_id"])) {
-   KnowbaseItemCategory::showFirstLevel($_GET, $faq);
-}
-KnowbaseItem::showList($_GET,$faq);
-
-if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
-   KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php", $faq) ;
-}
-
-commonFooter();
 
 ?>

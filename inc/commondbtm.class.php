@@ -692,7 +692,7 @@ class CommonDBTM extends CommonGLPI {
                             && (!isset($this->input['is_template'])
                                 || !$this->input['is_template'])) {
 
-                  //Check if we have to automaticall fill dates
+                  //Check if we have to automatical fill dates
                   Infocom::manageDateOnStatusChange($this);
                }
                doHook("item_add", $this);

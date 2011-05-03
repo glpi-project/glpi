@@ -29,7 +29,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","0.80");
+define("GLPI_VERSION","0.83");
 define("GLPI_DEMO_MODE","0");
 
 
@@ -274,7 +274,8 @@ $CFG_GLPI["massiveaction_nodelete_types"] = array('CronTask', 'Entity', 'NotImpo
 
 $CFG_GLPI["notificationtemplates_types"] = array('Cartridge', 'Consumable', 'Contract', 'Crontask',
                                                  'DBConnection', 'FieldUnicity', 'Infocom',
-                                                 'Reservation', 'SoftwareLicense', 'Ticket', 'User');
+                                                 'Problem', 'Reservation', 'SoftwareLicense',
+                                                 'Ticket', 'User');
 
 $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 
@@ -290,7 +291,7 @@ $CFG_GLPI["rulecollections_types"] = array('RuleImportComputerCollection',
                                            'RuleTicketCollection');
 
 // Items which can planned something
-$CFG_GLPI['planning_types'] = array('Reminder','TicketPlanning');
+$CFG_GLPI['planning_types'] = array('Reminder','TicketTask','ProblemTask');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;

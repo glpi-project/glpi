@@ -45,84 +45,57 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-$ticket = new Ticket();
+$problem = new Problem();
 
-if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
+if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $fup = new TicketFollowup();
-         $fup->showSummary($ticket);
-         $validation = new Ticketvalidation();
-         $validation->showSummary($ticket);
-         $task = new TicketTask();
-         $task->showSummary($ticket);
-         $ticket->showSolutionForm();
-         if ($ticket->canApprove()) {
-            $fup->showApprobationForm($ticket);
-         }
-         $ticket->showCost($_POST['target']);
-         $ticket->showStats();
-         Document::showAssociated($ticket);
-         Log::showForItem($ticket);
-         Plugin::displayAction($ticket, $_REQUEST['glpi_tab']);
+         Problem_Ticket::showForProblem($problem);
+         $problem->showAnalysisForm();
+         $task = new ProblemTask();
+         $task->showSummary($problem);
+         Item_Problem::showForProblem($problem);
+         Document::showAssociated($problem);
+         $problem->showSolutionForm();
+         Log::showForItem($problem);
          break;
 
       case 2 :
-         $task = new TicketTask();
-         $task->showSummary($ticket);
+         $task = new ProblemTask();
+         $task->showSummary($problem);
          break;
 
       case 3 :
-         $ticket->showCost($_POST['target']);
+         $problem->showAnalysisForm();
          break;
 
       case 4 :
          if (!isset($_POST['load_kb_sol'])) {
             $_POST['load_kb_sol'] = 0;
          }
-         $ticket->showSolutionForm($_POST['load_kb_sol']);
-         if ($ticket->canApprove()) {
-            $fup = new TicketFollowup();
-            $fup->showApprobationForm($ticket);
-         }
+         $problem->showSolutionForm($_POST['load_kb_sol']);
          break;
 
       case 5 :
-         Document::showAssociated($ticket);
+         Document::showAssociated($problem);
          break;
 
       case 6 :
-         Log::showForItem($ticket);
+         Log::showForItem($problem);
          break;
 
       case 7 :
-         $validation = new Ticketvalidation();
-         $validation->showSummary($ticket);
-         break;
-
-      case 8 :
-         $ticket->showStats();
+         Item_Problem::showForProblem($problem);
          break;
 
       case 10 :
-      // affichage uniquement  si enquete déclenchée et status clos
-         $satisfaction = new TicketSatisfaction();
-         if ($ticket->fields['status'] == 'closed' && $satisfaction->getFromDB($_POST["id"])) {
-            $satisfaction->showSatisfactionForm($ticket);
-         } else {
-            echo "<p class='center b'>".$LANG['satisfaction'][2]."</p>";
-         }
-         break;
-
-      case 11 :
-         Problem_Ticket::showForTicket($ticket);
+         showNotesForm($_POST['target'], 'Problem', $_POST["id"]);
          break;
 
       default :
-         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
-            $fup = new TicketFollowup();
-            $fup->showSummary($ticket);
+         if (!Plugin::displayAction($problem, $_REQUEST['glpi_tab'])) {
+            Problem_Ticket::showForProblem($problem);
          }
    }
 }
