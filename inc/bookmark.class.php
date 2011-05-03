@@ -286,7 +286,7 @@ class Bookmark extends CommonDBTM {
             }
 
             // Meta search
-            if (isset($query_tab_save['field2']) && count($query_tab_save['field2'])) {
+            if (isset($query_tab_save['itemtype2']) && count($query_tab_save['itemtype2'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
 
                unset($query_tab['field2']);
