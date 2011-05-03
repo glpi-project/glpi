@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="業種名";
 $LANG['stats'][45]="ハードウェア別"; 
 $LANG['stats'][47]="インシデントチケット別"; 
 $LANG['stats'][48]="（担当者割り当て）"; 
-$LANG['stats'][49]="（対応内容）"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="ナレッジベース"; 
 $LANG['title'][6]="Networking equipments"; 

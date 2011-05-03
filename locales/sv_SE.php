@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Företagsnamn";
 $LANG['stats'][45]="Ärenden per objekt"; 
 $LANG['stats'][47]="Ärenden per användare"; 
 $LANG['stats'][48]="(delegerat)"; 
-$LANG['stats'][49]="(uppföljningar)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Kunskapsdatabas"; 
 $LANG['title'][6]="Networking equipments"; 

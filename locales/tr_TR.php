@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Tedarikçi Adı";
 $LANG['stats'][45]="Donanıma göre"; 
 $LANG['stats'][47]="Çağrıya göre"; 
 $LANG['stats'][48]="(atanmış)"; 
-$LANG['stats'][49]="Takip edilenler"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Kütüphane"; 
 $LANG['title'][6]="Networking equipments"; 

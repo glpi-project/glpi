@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Leverandør-navn";
 $LANG['stats'][45]="For hardware"; 
 $LANG['stats'][47]="Pr. sag"; 
 $LANG['stats'][48]="(tildelt)"; 
-$LANG['stats'][49]="(opfølgning)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Vidensdatabase"; 
 $LANG['title'][6]="Netværksudstyr"; 

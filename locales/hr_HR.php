@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Ime dobavljača";
 $LANG['stats'][45]="Po uređaju"; 
 $LANG['stats'][47]="po ticketu"; 
 $LANG['stats'][48]="(dodijeljen)"; 
-$LANG['stats'][49]="(praćenje)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Baza znanja"; 
 $LANG['title'][6]="Networking equipments"; 

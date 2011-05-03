@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Piegādātāja nosaukums";
 $LANG['stats'][45]="Pēc aparatūras"; 
 $LANG['stats'][47]="Pēc pieteikumiem"; 
 $LANG['stats'][48]="(piesaistīts)"; 
-$LANG['stats'][49]="(sekojumi)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Zināšanu datubāze"; 
 $LANG['title'][6]="Networking equipments"; 

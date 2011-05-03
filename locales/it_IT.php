@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Nome azienda";
 $LANG['stats'][45]="Per dispositivo"; 
 $LANG['stats'][47]="Per chiamata"; 
 $LANG['stats'][48]="(assegnata)"; 
-$LANG['stats'][49]="(commenti)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Knowledge base"; 
 $LANG['title'][6]="Apparati di rete"; 

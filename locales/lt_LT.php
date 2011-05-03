@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Tiekėjo vardas";
 $LANG['stats'][45]="Pagal techninę įrangą"; 
 $LANG['stats'][47]="Pagal paraiškas"; 
 $LANG['stats'][48]="(priskirti)"; 
-$LANG['stats'][49]="(teikiniai)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Žinynas"; 
 $LANG['title'][6]="Networking equipments"; 

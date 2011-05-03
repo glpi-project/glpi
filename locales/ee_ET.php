@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Supplier Name";
 $LANG['stats'][45]="Riistvara kaupa"; 
 $LANG['stats'][47]="Teate kaupa"; 
 $LANG['stats'][48]="(assigned)"; 
-$LANG['stats'][49]="(follow-ups)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Teadmistekogu"; 
 $LANG['title'][6]="Võrguseadmed"; 

@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Numele furnizorului";
 $LANG['stats'][45]="După hardware"; 
 $LANG['stats'][47]="După problemă"; 
 $LANG['stats'][48]="(repartizat)"; 
-$LANG['stats'][49]="(comentarii)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Baza de cunostinte"; 
 $LANG['title'][6]="Networking equipments"; 

@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Nom del proveïdor";
 $LANG['stats'][45]="Per material"; 
 $LANG['stats'][47]="Per incidents"; 
 $LANG['stats'][48]="(assignat)"; 
-$LANG['stats'][49]="(seguiments)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Base de coneixement"; 
 $LANG['title'][6]="Networking equipments"; 

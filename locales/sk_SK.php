@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Meno dodávateľa";
 $LANG['stats'][45]="Podľa hardware"; 
 $LANG['stats'][47]="Podľa požiadavky"; 
 $LANG['stats'][48]="(priradené)"; 
-$LANG['stats'][49]="(nasledovať)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Databáza vedomostí"; 
 $LANG['title'][6]="Sieťové zariadenia"; 

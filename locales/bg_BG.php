@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Supplier Name";
 $LANG['stats'][45]="По хардуеър"; 
 $LANG['stats'][47]="По заявки"; 
 $LANG['stats'][48]="(заявки)"; 
-$LANG['stats'][49]="(проследявания)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="База знания"; 
 $LANG['title'][6]="Networking equipments"; 
