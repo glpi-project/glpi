@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="供應廠商名稱";
 $LANG['stats'][45]="由硬體"; 
 $LANG['stats'][47]="由問題單"; 
 $LANG['stats'][48]="(分配)"; 
-$LANG['stats'][49]="(後續追綜)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="知識庫"; 
 $LANG['title'][6]="網絡設備"; 

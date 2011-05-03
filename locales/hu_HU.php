@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Cégnév";
 $LANG['stats'][45]="Hardverenként"; 
 $LANG['stats'][47]="Bejelentőnként"; 
 $LANG['stats'][48]="(hozzárendelve)"; 
-$LANG['stats'][49]="(intézkedések)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Tudásbázis"; 
 $LANG['title'][6]="Hálózati eszközök"; 

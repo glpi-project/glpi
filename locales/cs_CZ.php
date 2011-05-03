@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Jméno dodavatele";
 $LANG['stats'][45]="Podle hardwaru"; 
 $LANG['stats'][47]="Podle požadavků"; 
 $LANG['stats'][48]="(přiřazeno)"; 
-$LANG['stats'][49]="(doplňující zprávy)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Databáze znalostí"; 
 $LANG['title'][6]="Prvky síťě"; 

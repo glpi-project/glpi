@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Supplier Name";
 $LANG['stats'][45]="由硬件"; 
 $LANG['stats'][47]="由标题"; 
 $LANG['stats'][48]="(分配)"; 
-$LANG['stats'][49]="(后续)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="知识库"; 
 $LANG['title'][6]="Networking equipments"; 

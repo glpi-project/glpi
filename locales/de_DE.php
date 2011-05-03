@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Name des Lieferanten";
 $LANG['stats'][45]="Anzahl der Supporttickets nach Hardware ausgewertet"; 
 $LANG['stats'][47]="Statistik nach Eigenschaften der Supporttickets"; 
 $LANG['stats'][48]="(zugewiesen)"; 
-$LANG['stats'][49]="(Tätigkeiten)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Wissensdatenbank"; 
 $LANG['title'][6]="Networking equipments"; 

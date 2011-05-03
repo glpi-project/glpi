@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Nome do fornecedor";
 $LANG['stats'][45]="Por hardware"; 
 $LANG['stats'][47]="Por chamado"; 
 $LANG['stats'][48]="(atribuido)"; 
-$LANG['stats'][49]="(follow-ups)"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Base de conhecimentos"; 
 $LANG['title'][6]="Equipamentos de rede"; 

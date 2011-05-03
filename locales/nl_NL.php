@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Naam Leverancier";
 $LANG['stats'][45]="Per hardware"; 
 $LANG['stats'][47]="Per Incident-ticket"; 
 $LANG['stats'][48]="(toegewezen)"; 
-$LANG['stats'][49]="(opvolging(en))"; 
+$LANG['stats'][49]="(tasks)"; 
 
 $LANG['title'][5]="Kennis databank"; 
 $LANG['title'][6]="Networking equipments"; 
