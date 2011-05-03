@@ -367,21 +367,7 @@ class Computer extends CommonDBTM {
 
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice($this->getType(), $this->input["_oldID"])) {
-            $ic->fields["items_id"] = $this->fields['id'];
-            unset ($ic->fields["id"]);
-            if (isset($ic->fields["immo_number"])) {
-               $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                     'Infocom', $this->input['entities_id']);
-            }
-            if (empty($ic->fields['use_date'])) {
-               unset($ic->fields['use_date']);
-            }
-            if (empty($ic->fields['buy_date'])) {
-               unset($ic->fields['buy_date']);
-            }
-            $ic->addToDB();
-         }
+         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
 
          // ADD volumes
          $query = "SELECT `id`

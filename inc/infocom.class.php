@@ -1392,6 +1392,36 @@ class Infocom extends CommonDBChild {
       $options['items'] = array($item);
       NotificationEvent::debugEvent($this, $options);
    }
+
+   /**
+    * Duplicate infocoms from an item template to its clone
+    *
+    * @param $itemtype itemtype of the item
+    * @param $oldid ID of the item to clone
+    * @param $newid ID of the item cloned
+   **/
+   function cloneItem ($itemtype, $oldid, $newid) {
+      global $DB;
+
+
+      if ($this->getFromDBforDevice($itemtype, $oldid)) {
+         $input = $this->fields;
+         $input['items_id'] = $newid;
+         unset ($input["id"]);
+         if (isset($input["immo_number"])) {
+            $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1,
+                                                   'Infocom', $input['entities_id']);
+         }
+         $date_fields = array('use_date', 'buy_date', 'order_date', 'delivery_date', 'inventory_date', 'warranty_date');
+         foreach ($date_fields as $f) {
+            if (empty($input[$f])) {
+               unset($input[$f]);
+            }
+         }
+         $this->add($input);
+      }
+   }
+
 }
 
 ?>
