@@ -402,6 +402,9 @@ class Computer extends CommonDBTM {
          $inst = new Computer_SoftwareVersion();
          $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
+         $inst = new Computer_SoftwareLicense();
+         $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
+
          // ADD Contract
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
