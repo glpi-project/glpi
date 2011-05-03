@@ -219,8 +219,10 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][120] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
-      echo "</td><td colspan='2'></td>";
-      echo "</tr>";
+      echo "</td><td>".$LANG['setup'][119]."&nbsp;:</td><td>";
+      Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"], 0, 10, 1);
+
+      echo "</td></tr>";
 
       if ($CFG_GLPI["use_ajax"]) {
          echo "<tr class='tab_bg_2'>";

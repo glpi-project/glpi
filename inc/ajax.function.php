@@ -49,7 +49,9 @@ function ajaxDropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;
    if ($use_ajax) {
       ajaxDisplaySearchTextForDropdown($rand);
       ajaxUpdateItemOnInputTextEvent("search_$rand", "results_$rand",
-                                     $CFG_GLPI["root_doc"].$relativeurl, $params);
+                                     $CFG_GLPI["root_doc"].$relativeurl, $params,
+                                     $CFG_GLPI['ajax_min_textsearch_load'],
+                                     array($CFG_GLPI['ajax_wildcard']));
    }
    echo "<span id='results_$rand'>\n";
    if (!$use_ajax) {
@@ -106,11 +108,14 @@ function ajaxDisplaySearchTextForDropdown($id, $size=4) {
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
+ * @param $minsize minimum size of data to update content
+ * @param $forceloadfor array of content which must force update content
  *
  **/
-function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array()) {
-
-   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"));
+function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
+                                          $minsize=-1, $forceloadfor = array()) {
+   ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
+                        $minsize, $forceloadfor);
 }
 
 
@@ -137,13 +142,16 @@ function ajaxUpdateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=ar
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events
+ * @param $minsize minimum size of data to update content
+ * @param $forceloadfor array of content which must force update content
  *
  **/
 function ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
-                               $events=array("change")) {
+                               $events=array("change"), $minsize = -1, $forceloadfor = array()) {
 
    echo "<script type='text/javascript'>";
-   ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events);
+   ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events, $minsize,
+                               $forceloadfor);
    echo "</script>";
 }
 
@@ -156,10 +164,12 @@ function ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events
+ * @param $minsize minimum size of data to update content
+ * @param $forceloadfor array of content which must force update content
  *
  **/
 function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
-                                     $events=array("change")) {
+                                     $events=array("change"), $minsize = -1, $forceloadfor = array()) {
 
    if (is_array($toobserve)) {
       $zones = $toobserve;
@@ -173,7 +183,26 @@ function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=ar
             Ext.get('$zone').on(
                '$event',
                function() {";
+                  $condition = '';
+                  if ($minsize>0) {
+                     $condition = " Ext.get('$toobserve').getValue().length >= $minsize ";
+                  }
+                  if (count($forceloadfor)) {
+                     foreach ($forceloadfor as $value) {
+                        if (!empty($condition)) {
+                           $condition .= " || ";
+                        }
+                        $condition .= "Ext.get('$toobserve').getValue() == '$value'";
+                     }
+                  }
+                  if (!empty($condition)) {
+                     echo "if ($condition) {";
+                  }
                   ajaxUpdateItemJsCode($toupdate, $url, $parameters, $toobserve);
+                  if (!empty($condition)) {
+                     echo "}";
+                  }
+
          echo "});\n";
       }
    }
