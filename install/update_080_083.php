@@ -500,6 +500,38 @@ function update080to083($output='HTML') {
    $DB->query($query)
       or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
+
+
+   if (!FieldExists('glpi_slalevels','entities_id')) {
+      displayMigrationMessage("080", $LANG['update'][141].' - glpi_slalevels'); // Updating schema
+
+      $migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0");
+      $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
+      $migration->migrationOneTable('glpi_slalevels');
+
+      $entities=getAllDatasFromTable('glpi_entities');
+
+      foreach ($entities as $entID => $val) {
+         // Non recursive ones
+         $query3="UPDATE `glpi_slalevels`
+                  SET `entities_id`=$entID, `is_recursive`=0
+                  WHERE `slas_id` IN (SELECT `id` FROM `glpi_slas`
+                     WHERE `entities_id`=$entID AND `is_recursive`=0)";
+         $DB->query($query3) or die("0.83 update entities_id and is_recursive=0
+               in glpi_slalevels ". $LANG['update'][90] . $DB->error());
+
+         // Recursive ones
+         $query3="UPDATE `glpi_slalevels`
+                  SET `entities_id`=$entID, `is_recursive`=1
+                  WHERE `slas_id` IN (SELECT `id` FROM `glpi_slas`
+                     WHERE `entities_id`=$entID AND `is_recursive`=1)";
+         $DB->query($query3) or die("0.83 update entities_id and is_recursive=1
+               in glpi_slalevels ". $LANG['update'][90] . $DB->error());
+      }
+
+
+   }
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
