@@ -219,6 +219,9 @@ $LANG['central'][14] = "Vue groupe";
 $LANG['central'][18] = "Vos tickets à clore";
 $LANG['central'][19] = "Vos tickets à valider";
 
+$LANG['change'][0] = "Changement";
+$LANG['change'][1] = "Créer un changement à partir de ce ticket";
+$LANG['change'][2] = "Créer un changement à partir de ce problème";
 
 $LANG['choice'][0] = "Non";
 $LANG['choice'][1] = "Oui";
@@ -1300,6 +1303,8 @@ $LANG['Menu'][3]  = "Moniteurs";
 $LANG['Menu'][4]  = "Logiciels";
 $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
+$LANG['Menu'][7] = "Problèmes";
+$LANG['Menu'][8] = "Changements";
 
 $LANG['Menu'][11] = "Préférences";
 $LANG['Menu'][12] = "Maintenance";
@@ -1580,6 +1585,19 @@ $LANG['printers'][30] = "Compteur de page initial";
 $LANG['printers'][31] = "Pages imprimées";
 $LANG['printers'][32] = "Pilote";
 
+$LANG['problem'][0] = "Problème";
+$LANG['problem'][1] = "Accepté";
+$LANG['problem'][2] = "En observation";
+$LANG['problem'][3] = "Analyse";
+$LANG['problem'][4] = "Impacts";
+$LANG['problem'][5] = "Causes";
+$LANG['problem'][6] = "Symptômes";
+$LANG['problem'][7] = "Créer un problème à partir de ce ticket";
+$LANG['problem'][8] = "Nouveau problème";
+$LANG['problem'][9] = "Modification d'un problème";
+$LANG['problem'][10] = "Problème résolu";
+$LANG['problem'][11] = "Clôture d'un problème";
+$LANG['problem'][12] = "Suppression d'un problème";
 
 $LANG['profiles'][0]  = "Droit global";
 $LANG['profiles'][1]  = "Droit local";
@@ -1606,7 +1624,7 @@ $LANG['profiles'][21] = "Voir tous les plannings";
 $LANG['profiles'][22] = "Profil";
 $LANG['profiles'][23] = "Administration des réservations";
 $LANG['profiles'][24] = "Mise à jour de mot de passe";
-
+$LANG['profiles'][25] = "Voir tous les problèmes";
 $LANG['profiles'][26] = "Voir les tickets créés par groupe(s) associé(s)";
 $LANG['profiles'][27] = "Voir les matériels du ou des groupe(s) associé(s)";
 $LANG['profiles'][28] = "Récursif";
@@ -1633,6 +1651,8 @@ $LANG['profiles'][48] = "Faire une demande de validation de ticket";
 $LANG['profiles'][49] = "Valider un ticket";
 $LANG['profiles'][50] = "Modifier mes suivis";
 $LANG['profiles'][51] = "Supprimer tous les suivis";
+$LANG['profiles'][52] = "Editer tous les problèmes";
+$LANG['profiles'][53] = "Voir les problèmes auxquels je participe";
 
 $LANG['registry'][1] = "Ruche";
 $LANG['registry'][2] = "Chemin";
@@ -2193,7 +2213,9 @@ $LANG['setup'][613] = "Ajouter un utilisateur sans habilitation depuis annuaire 
 $LANG['setup'][614] = "Modification du login impossible. Un utilisateur existe déjà.";
 $LANG['setup'][615] = "Cycle de vie des tickets";
 $LANG['setup'][616] = "Depuis \ Vers";
-
+$LANG['setup'][617] = "Cycle de vie des problèmes";
+$LANG['setup'][618] = "Cycle de vie des changements";
+$LANG['setup'][619] = "Cycles de vie";
 $LANG['setup'][620] = "Liaison";
 $LANG['setup'][621] = "Filtre de recherche des entités";
 $LANG['setup'][622] = "Attribut représentant l'entité";
