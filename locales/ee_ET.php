@@ -44,7 +44,7 @@ $LANG['backup'][23]="MySQL viga alates";
 $LANG['backup'][24]="Automaatne ümbersuunamine või vajuta siia"; 
 
 $LANG['bookmark'][1]="järjehoidja"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; 
+$LANG['bookmark'][2]="Järjehoidjat näidatakse ainult osaliselt"; 
 $LANG['bookmark'][3]="Sul pole veel ühtegi järjehoidjat."; 
 $LANG['bookmark'][4]="Uus järjehoidja"; 
 $LANG['bookmark'][5]="Avalik järjehoidja"; 
