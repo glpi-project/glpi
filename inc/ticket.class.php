@@ -1006,13 +1006,30 @@ class Ticket extends CommonDBTM {
                // From solved to another state than closed
               || ($this->oldvalues['status'] == 'solved' && $this->fields['status'] != 'closed'))) {
 
+         // Compute ticket waiting time use calendar if exists
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+         $delay_time   = 0;
+
+
+         // Compute ticket waiting time use calendar if exists
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                            $_SESSION["glpi_currenttime"]);
+         } else { // Not calendar defined
+            $delay_time = strtotime($_SESSION["glpi_currenttime"])
+                           -strtotime($this->fields['begin_waiting_date']);
+         }
+
+
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
-               $delay_time = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+               $delay_time_sla = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                         $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
-               $this->fields["sla_waiting_duration"] += $delay_time;
+               $this->fields["sla_waiting_duration"] += $delay_time_sla;
             }
 
             // Compute new due date
@@ -1023,15 +1040,8 @@ class Ticket extends CommonDBTM {
             $sla->addLevelToDo($this);
 
          } else {
-            // Compute ticket waiting time use calendar if exists
-            $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
-            $calendar     = new Calendar();
-            $delay_time   = 0;
-
             // Using calendar
             if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-               $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
-                                                             $_SESSION["glpi_currenttime"]);
                if ($this->fields['due_date'] > 0) {
                   // compute new due date using calendar
                   $this->updates[]          = "due_date";
@@ -1040,9 +1050,6 @@ class Ticket extends CommonDBTM {
                }
 
             } else { // Not calendar defined
-               $delay_time = strtotime($_SESSION["glpi_currenttime"])
-                             -strtotime($this->fields['begin_waiting_date']);
-
                if ($this->fields['due_date'] > 0) {
                   // compute new due date : no calendar so add computed delay_time
                   $this->updates[]          = "due_date";
