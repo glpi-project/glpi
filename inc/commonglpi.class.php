@@ -84,6 +84,21 @@ class CommonGLPI {
       return array();
    }
 
+   /**
+    * create tab text entry
+    *
+    * @param $text string text to display
+    * @param $nb integer number of items
+    *
+    *  @return array containing the onglets
+   **/
+   static function createTabEntry($text, $nb=0) {
+      if ($nb) {
+         $text .= "<sup>($nb)</sup>";
+      }
+      return $text;
+   }
+
 
    /**
     * Redirect to the list page from which the item was selected
