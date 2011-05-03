@@ -1,0 +1,72 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Ext Slider Example</title>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css">
+
+    <!-- GC -->
+    <!-- LIBS -->
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+    <!-- ENDLIBS -->
+
+    <script type="text/javascript" src="../../ext-all.js"></script>
+
+    <script type="text/javascript" src="slider.js"></script>
+    <link rel="stylesheet" type="text/css" href="slider.css">
+
+    <!-- Common Styles for the examples -->
+    <link rel="stylesheet" type="text/css" href="../shared/examples.css">
+</head>
+<body>
+
+<div id="star-rate"></div>
+
+<input type="button" onclick="run()" value="run">
+
+<script>
+
+
+run = function() {
+    Ext.QuickTips.init();
+    Ext.form.Field.prototype.msgTarget = 'side';
+    var win = new Ext.Window({
+         width:500
+        ,id:'winid'
+        ,height:300
+        ,layout:'fit'
+	,closable: true
+        ,maximizable: true        
+        ,minimizable: true
+	,border:false
+        ,title:'X Star Rate'
+        ,items:[{
+             xtype:'form'
+            ,frame:true
+            ,labelAlign: 'top'
+            ,labelWidth:100
+            ,id:'form'
+            ,url:'.'
+            ,items:[{
+                 xtype:'xstarrate',
+		 fieldLabel: 'Rate',
+                 hiddenName: 'rate',
+                 hiddenValue: 1,
+                 starConfig: {
+                 	minValue: 0,
+                 	maxValue: 5	
+                 }
+            }]
+        }]
+        ,buttons:[{
+             text:'Submit'
+            ,handler:function() {
+                Ext.getCmp('form').getForm().submit();
+            }
+        }]
+    });
+    win.show();
+}
+Ext.onReady(run);
+</script>
+</body>
+</html>

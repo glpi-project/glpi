@@ -1,0 +1,80 @@
+glpi-ldap.ldif provides :
+- 3 branches, to simulate 3 differents directories
+- users stored in using 2 differents objectclasses : person & inetOrgPerson
+- groups : groupOfNames & posixGroup
+- a lot of users in order to test ldap sizelimit
+
+- rootdn : cn=admin,dc=glpi,dc=org
+- rootpw : secret
+
+- user's passwords : for ou=ldap3, all user's password are 'password'
+- for other users, password is the same as the login
+
+Create your own directory :
+- add a new database with prefix dc=glpi,dc=org
+
+=================================================
+In glpi_authldaps :
+INSERT INTO `glpi_authldaps` VALUES(1, 'GLPI1', 'localhost', 'ou=ldap1,dc=glpi,dc=org', '', '', 389, '(objectclass=person)', 'cn', 0, '', '', 0, '', 'mail', 'cn', 'givenname', '', '', '', 'description', 0, 0, 0, '', '', '', '(objectclass=organizationalUnit)', 'ou', '2010-04-13 22:48:22', NULL, 1, 0);
+INSERT INTO `glpi_authldaps` VALUES(3, 'GLPI2', 'localhost', 'ou=ldap2,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', 0, '', '(objectclass=groupOfNames)', 1, 'member', 'mail', 'cn', 'sn', 'telephonenumber', '', '', 'description', 1, 0, 0, 'title', 'businesscategory', 'description', '', '', '2010-04-13 22:35:17', '', 0, 0);
+INSERT INTO `glpi_authldaps` VALUES(4, 'GLPI3', 'localhost', 'ou=ldap3,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', 0, '', '(objectclass=posixGroup)', 1, 'memberUid', 'mail', 'cn', 'sn', 'telephonenumber', '', '', 'description', 0, 0, 0, 'title', 'businesscategory', 'description', '(objectclass=inetOrgPerson)', 'o', '2010-04-13 22:30:29', '', 0, 300);
+
+=================================================
+Entities :
+Create entities in GLPI :
+- USA :
+   * DN : ou=usa,ou=ldap2,dc=glpi,dc=org
+   * TAG : usa
+- Asia :
+   * DN : ou=asia,ou=ldap1,dc=glpi,dc=org
+   * TAG : asia
+- China :
+   * DN : ou=china,ou=asia,ou=ldap2,dc=glpi,dc=org
+   * TAG : china
+- China :
+   * DN : ou=china,ou=asia,ou=ldap1,dc=glpi,dc=org
+   * TAG : china
+- Europe
+   * DN : ou=europe,ou=ldap1,dc=glpi,dc=org
+   * TAG : europe
+- France
+   * DN : ou=france,ou=europe,ou=ldap1,dc=glpi,dc=org
+   * TAG : france
+- Belgium
+   * DN : ou=belgium,ou=europe,ou=ldap1,dc=glpi,dc=org
+   * TAG : belgium
+- Netherland
+   * DN : ou=netherland,ou=europe,ou=ldap1,dc=glpi,dc=org
+   * TAG : netherland
+- Brazil
+   * DN : none
+   * Attribute representing the entity : (o=Brazil)
+   * TAG : Brazil
+- Ecuador
+   * DN : none
+   * Attribute representing the entity : (o=Ecuador)
+   * TAG : Ecuador
+   
+=================================================
+Right rules:
+1 - Entity by LDAP field (for directories GLPI1 & GLPI2)
+   * Criteria : (LDAP)DistinguishedName regex checks /ou=people,(.*)/
+   * Action : Entity by LDAP assign regex result #0
+   
+2 - Entity by LDAP field (for directories GLPI1 & GLPI2)
+   * Criteria : (LDAP)Organizationregex checks /(.*)/
+   * Action : Entity by TAG assign regex result #0
+
+
+=================================================
+Branch : ou=ldap1,dc=glpi,dc=org
+- works with objectclass person
+
+=================================================
+Branch : ou=ldap2,dc=glpi,dc=org
+-works with objectclass inetOrgPerson & groupOfNames
+
+=================================================
+Branch : ou=ldap3,dc=glpi,dc=org
+-works with objectclass inetOrgPerson & posixGroup
+- more than 500 users (to address ldap's sizelimit)

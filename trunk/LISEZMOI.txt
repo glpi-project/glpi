@@ -1,0 +1,4 @@
+Consulter le guide d'installation et de mise à jour du logiciel GLPI présent sur le site glpi-project.org
+
+http://www.glpi-project.org/LISEZMOI
+

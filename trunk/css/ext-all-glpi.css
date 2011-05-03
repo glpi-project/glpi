@@ -1,0 +1,531 @@
+
+# X-tab-panel
+
+.x-tab-panel {
+   overflow:hidden;
+}
+
+.x-tab-panel-header, .x-tab-panel-footer {
+   background:#deecfd;
+   border:1px solid #eeeeee;
+   overflow:hidden;
+   zoom:1;
+}
+
+.x-tab-panel-header {
+   border:1px solid #eeeeee;
+   padding-bottom:2px;
+}
+
+.x-tab-panel-footer {
+   border:1px solid #eeeeee;
+   padding-top:2px;
+}
+
+.x-tab-strip-wrap {
+   width:100%;
+   overflow:hidden;
+   position:relative;
+   zoom:1;
+}
+
+ul.x-tab-strip {
+   display:block;
+   width:5000px;
+   zoom:1;
+}
+
+ul.x-tab-strip-top {
+   padding-top:1px;
+   background:url(../pics/extjs/tabs/tab-strip-bg.gif) #cedff5 repeat-x bottom;
+   border-bottom:1px solid #eeeeee;
+}
+
+ul.x-tab-strip-bottom {
+   padding-bottom:1px;
+   background:url(../pics/extjs/tabs/tab-strip-btm-bg.gif) #cedff5 repeat-x top;
+   border-top:1px solid #eeeeee;
+   border-bottom:0 none;
+}
+
+.x-tab-panel-header-plain .x-tab-strip-top {
+   background:transparent!important;
+   padding-top:0!important;
+}
+
+.x-tab-panel-header-plain {
+   background:transparent!important;
+   border-width:0!important;
+   padding-bottom:0!important;
+}
+
+.x-tab-panel-header-plain .x-tab-strip-spacer {
+   border:1px solid #eeeeee;
+   border-top:0 none;
+   height:0px;
+   background:#eeeeee;
+   font-size:1px;
+   line-height:0px;
+}
+
+.ext-border-box .x-tab-panel-header-plain .x-tab-strip-spacer {
+   height:3px;
+}
+
+ul.x-tab-strip li {
+   float:left;
+   margin-left:2px;
+}
+
+ul.x-tab-strip li.x-tab-edge {
+   float:left;
+   margin:0!important;
+   padding:0!important;
+   border:0 none!important;
+   font-size:1px!important;
+   line-height:1px!important;
+   overflow:hidden;
+   zoom:1;
+   background:transparent!important;
+   width:1px;
+}
+
+.x-tab-strip a, .x-tab-strip span, .x-tab-strip em {
+   display:block;
+}
+
+.x-tab-strip a {
+   text-decoration:none!important;
+   -moz-outline:none;
+   outline:none;
+   cursor:pointer;
+}
+
+.x-tab-strip-inner {
+   overflow:hidden;
+   text-overflow:ellipsis;
+}
+
+.x-tab-strip span.x-tab-strip-text {
+   font:normal 11px Verdana,Arial,Helvetica,sans-serif;
+   color:#659900;
+   white-space:nowrap;
+   cursor:pointer;
+   padding:4px 0;
+}
+
+.x-tab-strip .x-tab-with-icon .x-tab-right {
+   padding-left:6px;
+}
+
+.x-tab-strip .x-tab-with-icon span.x-tab-strip-text {
+   padding-left:20px;
+   background-position:0 3px;
+   background-repeat:no-repeat;
+}
+
+.x-tab-strip-over span.x-tab-strip-text {
+   color:#659900;
+}
+
+.x-tab-strip-active {
+   cursor:default;
+}
+
+.x-tab-strip-active span.x-tab-strip-text {
+   cursor:default;
+   color:#659900;
+   font-weight:bold;
+}
+
+.x-tab-strip-disabled .x-tabs-text {
+   cursor:default;
+   color:#aaa;
+}
+
+.x-tab-panel-body {
+   overflow:hidden;
+}
+
+.x-tab-panel-bwrap {
+   overflow:hidden;
+}
+
+.ext-ie .x-tab-strip .x-tab-right {
+   position:relative;
+}
+
+.x-tab-strip-top .x-tab-strip-active .x-tab-right {
+   margin-bottom:-1px;
+}
+
+.x-tab-strip-top .x-tab-strip-active .x-tab-right span.x-tab-strip-text {
+   padding-bottom:5px;
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
+   margin-top:-1px;
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-right span.x-tab-strip-text {
+   padding-top:5px;
+}
+
+.x-tab-strip-top .x-tab-right {
+   background:transparent url(../pics/extjs/tabs/tabs-sprite.gif) no-repeat 0 -51px;
+   padding-left:10px;
+}
+
+.x-tab-strip-top .x-tab-left {
+   background:transparent url(../pics/extjs/tabs/tabs-sprite.gif) no-repeat right -351px;
+   padding-right:10px;
+}
+
+.x-tab-strip-top .x-tab-strip-inner {
+   background:transparent url(../pics/extjs/tabs/tabs-sprite.gif) repeat-x 0 -201px;
+}
+
+.x-tab-strip-top .x-tab-strip-over .x-tab-right {
+   background-position:0 -101px;
+}
+
+.x-tab-strip-top .x-tab-strip-over .x-tab-left {
+   background-position:right -401px;
+}
+
+.x-tab-strip-top .x-tab-strip-over .x-tab-strip-inner {
+   background-position:0 -251px;
+}
+
+.x-tab-strip-top .x-tab-strip-active .x-tab-right {
+   background-position:0 0;
+}
+
+.x-tab-strip-top .x-tab-strip-active .x-tab-left {
+   background-position:right -301px;
+}
+
+.x-tab-strip-top .x-tab-strip-active .x-tab-strip-inner {
+   background-position:0 -151px;
+}
+
+.x-tab-strip-bottom .x-tab-right {
+   background:url(../pics/extjs/tabs/tab-btm-inactive-right-bg.gif) no-repeat bottom right;
+}
+
+.x-tab-strip-bottom .x-tab-left {
+   background:url(../pics/extjs/tabs/tab-btm-inactive-left-bg.gif) no-repeat bottom left;
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
+   background:url(../pics/extjs/tabs/tab-btm-right-bg.gif) no-repeat bottom left;
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
+   background:url(../pics/extjs/tabs/tab-btm-left-bg.gif) no-repeat bottom right;
+}
+
+.x-tab-strip-bottom .x-tab-left {
+   padding:0 10px;
+}
+
+.x-tab-strip-bottom .x-tab-right {
+   padding:0;
+}
+
+.x-tab-strip .x-tab-strip-close {
+   display:none;
+}
+
+.x-tab-strip-closable {
+   position:relative;
+}
+
+.x-tab-strip-closable .x-tab-left {
+   padding-right:19px;
+}
+
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
+   background-image:url(../pics/extjs/tabs/tab-close.gif);
+   opacity:.6;
+   -moz-opacity:.6;
+   background-repeat:no-repeat;
+   display:block;
+   width:11px;
+   height:11px;
+   position:absolute;
+   top:3px;
+   right:3px;
+   cursor:pointer;
+   z-index:2;
+}
+
+.x-tab-strip .x-tab-strip-active a.x-tab-strip-close {
+   opacity:.8;
+   -moz-opacity:.8;
+}
+
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover {
+   background-image:url(../pics/extjs/tabs/tab-close.gif);
+   opacity:1;
+   -moz-opacity:1;
+}
+
+.x-tab-panel-body {
+   border:1px solid #eeeeee;
+   background:#fff;
+}
+
+.x-tab-panel-body-top {
+   border-top:0 none;
+}
+
+.x-tab-panel-body-bottom {
+   border-bottom:0 none;
+}
+
+.x-tab-scroller-left {
+   background:transparent url(../pics/extjs/tabs/scroll-left.gif) no-repeat -18px 0;
+   border-bottom:1px solid #C7C7AB;
+   width:18px;
+   position:absolute;
+   left:0;
+   top:0;
+   z-index:10;
+   cursor:pointer;
+}
+
+.x-tab-scroller-left-over {
+   background-position:0 0;
+}
+
+.x-tab-scroller-left-disabled {
+   background-position:-18px 0;
+   opacity:.5;
+   -moz-opacity:.5;
+   filter:alpha(opacity=50);
+   cursor:default;
+}
+
+.x-tab-scroller-right {
+   background:transparent url(../pics/extjs/tabs/scroll-right.gif) no-repeat 0 0;
+   border-bottom:1px solid #C7C7AB;
+   width:18px;
+   position:absolute;
+   right:0;
+   top:0;
+   z-index:10;
+   cursor:pointer;
+}
+
+.x-tab-scroller-right-over {
+   background-position:-18px 0;
+}
+
+.x-tab-scroller-right-disabled {
+   background-position:0 0;
+   opacity:.5;
+   -moz-opacity:.5;
+   filter:alpha(opacity=50);
+   cursor:default;
+}
+
+.x-tab-scrolling .x-tab-strip-wrap {
+   margin-left:18px;
+   margin-right:18px;
+}
+
+.x-tab-scrolling {
+   position:relative;
+}
+
+.x-tab-panel-bbar .x-toolbar {
+   border:1px solid #99bbe8;
+   border-top:0 none;
+   overflow:hidden;
+   padding:2px;
+}
+
+.x-tab-panel-tbar .x-toolbar {
+   border:1px solid #99bbe8;
+   border-top:0 none;
+   overflow:hidden;
+   padding:2px;
+}
+
+.x-form-text, textarea.x-form-field {
+   padding:1px 1px;
+   background:#fff;
+   border: 1px solid #888888;
+   background-color:#FAFAFA;
+}
+
+
+
+# X-window
+
+
+/* Window */
+
+.x-window-proxy {
+    background:#e0e0e0;
+    border-color:#b0b0b0;
+}
+
+.x-window-tl .x-window-header {
+    color:#555;
+}
+
+.x-window-tc {
+   background-image:url(../pics/extjs/window/top-bottom.png);
+}
+
+.x-window-tl {
+   background-image:url(../pics/extjs/window/left-corners.png);
+}
+
+.x-window-tr {
+   background-image:url(../pics/extjs/window/right-corners.png);
+}
+
+.x-window-bc {
+   background-image:url(../pics/extjs/window/top-bottom.png);
+}
+
+.x-window-bl {
+   background-image:url(../pics/extjs/window/left-corners.png);
+}
+
+.x-window-br {
+   background-image:url(../pics/extjs/window/right-corners.png);
+}
+
+.x-window-mc {
+    border:1px solid #d0d0d0;
+    background:#e8e8e8;
+}
+
+.x-window-ml {
+   background-image:url(../pics/extjs/window/left-right.png);
+}
+
+.x-window-mr {
+   background-image:url(../pics/extjs/window/left-right.png);
+}
+
+.x-panel-ghost .x-window-tl {
+   border-color:#d0d0d0;
+}
+
+.x-panel-collapsed .x-window-tl {
+   border-color:#d0d0d0;
+}
+
+.x-window-plain .x-window-mc {
+   background: #e8e8e8;
+   border-right:1px solid #eee;
+   border-bottom:1px solid #eee;
+   border-top:1px solid #d0d0d0;
+   border-left:1px solid #d0d0d0;
+}
+
+.x-window-plain .x-window-body {
+   border-left:1px solid #eee;
+   border-top:1px solid #eee;
+   border-bottom:1px solid #d0d0d0;
+   border-right:1px solid #d0d0d0;
+   background:transparent !important;
+}
+
+
+body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc {
+   background-color: #e4e4e4;
+}
+
+
+
+/* Tools */
+
+.x-tool {
+   background-image:url(../pics/extjs/panel/tool-sprites.gif);
+}
+
+.loading-indicator-ie {
+   /*font-size:11px;*/
+   background-image:url(../lib/extjs/resources/images/default/grid/loading.gif);
+   background-repeat:no-repeat;
+   background-position:left;
+   padding-left:20px;
+   /*line-height:16px;*/
+   margin:3px;
+}
+ 
+/* strong is not normal */
+strong {
+   font-weight:bolder;
+}
+
+
+/* X panel */
+/* Allow class overlink to function grr */
+
+.x-panel-body {
+   overflow:visible;
+}
+
+.x-panel-bwrap {
+   overflow:visible;
+}
+
+
+/* Correct for date picker */
+.ext-ie .x-menu {
+   overflow:visible;
+}
+
+/* Correct for kb */
+#kbanswer em {
+   font-style: italic;
+}
+
+/* Tooltip */
+.x-tip .x-tip-close {
+   background-image: url(../pics/extjs/qtip/close.gif);
+}
+
+.x-tip .x-tip-tc, .x-tip .x-tip-tl, .x-tip .x-tip-tr, .x-tip .x-tip-bc, .x-tip .x-tip-bl, 
+.x-tip .x-tip-br, .x-tip .x-tip-ml, .x-tip .x-tip-mr {
+   background-image: url(../pics/extjs/qtip/tip-sprite.gif);
+}
+
+.x-tip .x-tip-mc {
+   font: normal 11px tahoma,arial,helvetica,sans-serif;
+}
+
+.x-tip .x-tip-ml {
+   background-color: #fff;
+}
+
+.x-tip .x-tip-header-text {
+   font: bold 11px tahoma,arial,helvetica,sans-serif;
+   color:#444;
+}
+
+.x-tip .x-tip-body {
+   font: normal 11px tahoma,arial,helvetica,sans-serif;
+   color:#444;
+}
+
+.x-form-invalid-tip .x-tip-tc, .x-form-invalid-tip .x-tip-tl, .x-form-invalid-tip .x-tip-tr, 
+.x-form-invalid-tip .x-tip-bc, .x-form-invalid-tip .x-tip-bl, .x-form-invalid-tip .x-tip-br, 
+.x-form-invalid-tip .x-tip-ml, .x-form-invalid-tip .x-tip-mr {
+   background-image: url(../images/default/form/error-tip-corners.gif);
+}
+
+.x-form-invalid-tip .x-tip-body {
+   background-image:url(../images/default/form/exclamation.gif);
+}
+
+.x-tip-anchor {
+   background-image:url(../pics/extjs/qtip/tip-anchor-sprite.gif);
+}

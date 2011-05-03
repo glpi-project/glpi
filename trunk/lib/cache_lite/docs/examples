@@ -1,0 +1,254 @@
+A few examples of Cache_Lite using :
+------------------------------------
+
+>>> Basic one :
+
+<?php
+
+// Include the package
+require_once('Cache/Lite.php');
+
+// Set a id for this cache
+$id = '123';
+
+// Set a few options
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 3600
+);
+
+// Create a Cache_Lite object
+$Cache_Lite = new Cache_Lite($options);
+
+// Test if thereis a valide cache for this id
+if ($data = $Cache_Lite->get($id)) {
+
+    // Cache hit !
+    // Content is in $data
+    // (...)
+
+} else { // No valid cache found (you have to make the page)
+
+    // Cache miss !
+    // Put in $data datas to put in cache
+    // (...)
+    $Cache_Lite->save($data);
+
+}
+
+?>
+
+
+>>> Usage with blocks
+(You can use Cache_Lite for caching blocks and not the whole page)
+
+<?php
+
+require_once('Cache/Lite.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 3600
+);
+
+// Create a Cache_Lite object
+$Cache_Lite = new Cache_Lite($options);
+
+if ($data = $Cache_Lite->get('block1')) {
+    echo($data);
+} else { 
+    $data = 'Data of the block 1';
+    $Cache_Lite->save($data);
+}
+
+echo('<br><br>Non cached line !<br><br>');
+
+if ($data = $Cache_Lite->get('block2')) {
+    echo($data);
+} else { 
+    $data = 'Data of the block 2';
+    $Cache_Lite->save($data);
+}
+
+?>
+
+
+A few examples of Cache_Lite_Output using :
+-------------------------------------------
+
+>>> Basic one :
+
+<?php
+
+require_once('Cache/Lite/Output.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 10
+);
+
+$cache = new Cache_Lite_Output($options);
+
+if (!($cache->start('123'))) {
+    // Cache missed...
+    for($i=0;$i<1000;$i++) { // Making of the page...
+        echo('0123456789');
+    }
+    $cache->end();
+}
+
+?>
+
+>>> Usage with blocks :
+(You can use Cache_Lite_Output for caching blocks and not the whole page)
+
+<?php
+
+require_once('Cache/Lite/Output.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 10
+);
+
+$cache = new Cache_Lite_Output($options);
+
+if (!($cache->start('block1'))) {
+    // Cache missed...
+    echo('Data of the block 1 !<br>');
+    $cache->end();
+}
+
+echo('<br><br>Non cached line !<br><br>');
+
+if (!($cache->start('block2'))) {
+    // Cache missed...
+    echo('Data of the block 2 !<br>');
+    $cache->end();
+}
+
+
+A few examples of Cache_Lite_Function using :
+---------------------------------------------
+
+>>> With function :
+
+<?php
+
+require_once('Cache/Lite/Function.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 10
+);
+
+$cache = new Cache_Lite_Function($options);
+
+$cache->call('function_to_bench', 12, 45);
+
+function function_to_bench($arg1, $arg2) 
+{
+    echo "This is the output of the function function_to_bench($arg1, $arg2) !<br>";
+    return "This is the result of the function function_to_bench($arg1, $arg2) !<br>";
+}
+
+?>
+
+>>> With method :
+
+<?php
+
+require_once('Cache/Lite/Function.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 10
+);
+
+$cache = new Cache_Lite_Function($options);
+
+$obj = new bench();
+$obj->test = 666;
+
+$cache->call('obj->method_to_bench', 12, 45);
+
+class bench
+{
+    var $test;
+
+    function method_to_bench($arg1, $arg2)
+    {
+        echo "\$obj->test = $this->test and this is the output of the method \$obj->method_to_bench($arg1, $arg2) !<br>";
+        return "\$obj->test = $this->test and this is the result of the method \$obj->method_to_bench($arg1, $arg2) !<br>";        
+    }
+    
+}
+
+?>
+
+>>> With static method :
+
+<?php
+
+require_once('Cache/Lite/Function.php');
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'lifeTime' => 10
+);
+
+$cache = new Cache_Lite_Function($options);
+
+$cache->call('bench::static_method_to_bench', 12, 45);
+
+class bench
+{
+    var $test;
+
+    function static_method_to_bench($arg1, $arg2) {
+        echo "This is the output of the function static_method_to_bench($arg1, $arg2) !<br>";
+        return "This is the result of the function static_method_to_bench($arg1, $arg2) !<br>";
+    }
+}
+
+?>
+
+>>> IMPORTANT :
+
+If you try to use Cache_Lite_Function with $this object ($cache->call('this->method',...) 
+for example), have a look first at :
+
+http://pear.php.net/bugs/bug.php?id=660
+
+
+A few examples of Cache_Lite_File using :
+-----------------------------------------
+
+<?php
+
+$options = array(
+    'cacheDir' => '/tmp/',
+    'masterFile' => '/home/web/config.xml'
+);
+$cache = new Cache_Lite_File($options);
+
+// Set a id for this cache
+$id = '123';
+
+if ($data = $cache->get($id)) {
+
+    // Cache hit !
+    // Content is in $data
+    // (...)
+
+} else { // No valid cache found (you have to make the page)
+
+    // Cache miss !
+    // Put in $data datas to put in cache
+    // (...)
+    $cache->save($data);
+
+}
+
+
+?>
