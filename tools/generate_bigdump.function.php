@@ -167,7 +167,7 @@ function addReservation($type, $ID, $ID_entity) {
  * @param $ID item ID
 **/
 function addDocuments($type, $ID) {
-   global $DOC_PER_ITEM, $DB, $FIRST, $LAST;
+   global $DOC_PER_ITEM, $DB, $FIRST, $LAST, $DOCUMENTS;
 
    $nb = mt_rand(0, $DOC_PER_ITEM);
    $docs = array();
@@ -178,9 +178,12 @@ function addDocuments($type, $ID) {
    $docs = array_unique($docs);
 
    foreach ($docs as $val) {
-      $query = "INSERT INTO `glpi_documents_items`
-                VALUES (NULL, '$val', '$ID', '$type')";
-      $DB->query($query);
+      if (isset($DOCUMENTS[$val])) {
+         list($entID, $recur) = explode('-',$DOCUMENTS[$val]);
+         $query = "INSERT INTO `glpi_documents_items`
+                  VALUES (NULL, '$val', '$ID', '$type', '$entID', '$recur')";
+         $DB->query($query);
+      }
    }
 }
 
@@ -190,7 +193,7 @@ function addDocuments($type, $ID) {
  * @param $ID item ID
  * @param $ID_entity entity ID
 **/
-function addInfocoms($type, $ID, $ID_entity) {
+function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
    global $DB, $FIRST, $LAST,$current_year;
 
 
@@ -209,7 +212,7 @@ function addInfocoms($type, $ID, $ID_entity) {
    $inventorydate = date("Y-m-d", intval($inventorydate));
 
    $query = "INSERT INTO `glpi_infocoms`
-             VALUES (NULL, '$ID', '$type', '$ID_entity', '0', '$buydate', '$usedate',
+             VALUES (NULL, '$ID', '$type', '$ID_entity', '$is_recursive', '$buydate', '$usedate',
                      '".mt_rand(12,36)."', 'infowar $type $ID', '".mt_rand($FIRST["enterprises"],
                      $LAST['enterprises'])."', 'commande $type $ID', 'BL $type $ID',
                      'immo $type $ID', '".mt_rand(0,5000)."', '".mt_rand(0,500)."',
@@ -329,7 +332,7 @@ function addTracking($type, $ID, $ID_entity) {
                          mt_rand(0, 60)*MINUTE_TIMESTAMP;
             $closedate = $opendate+$closetime;
          }
-         $solutiontype = mt_rand(0, $MAX['ticketsolutions']);
+         $solutiontype = mt_rand(0, $MAX['solutiontypes']);
          $solution     = "Solution ".getRandomString(20);
       }
       $updatedate = $opendate+max($firstactiontime, $solvetime, $closetime);
@@ -1235,7 +1238,8 @@ function getMaxItem($table) {
  * @param $ID_entity entity ID
 **/
 function generate_entity($ID_entity) {
-   global $MAX, $DB, $MAX_CONTRACT_TYPE, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK;
+   global $MAX, $DB, $MAX_CONTRACT_TYPE, $percent, $FIRST, $LAST, $MAX_KBITEMS_BY_CAT, $MAX_DISK,
+         $DOCUMENTS;
 
    regenerateTreeCompleteName("glpi_entities");
 
@@ -1496,11 +1500,11 @@ function generate_entity($ID_entity) {
    regenerateTreeCompleteName("glpi_ticketcategories");
 
    $FIRST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates")+1;
-   $nb_items = mt_rand(0,$MAX['solutionstemplate']);
+   $nb_items = mt_rand(0,$MAX['solutiontemplates']);
    for ($i=0 ; $i<$nb_items ; $i++) {
       $query = "INSERT INTO `glpi_solutiontemplates`
                 VALUES (null, '$ID_entity', '1', 'solution $i-$ID_entity',
-                        'content solution $i-$ID_entity', '".mt_rand(0,$MAX['ticketsolutions'])."',
+                        'content solution $i-$ID_entity', '".mt_rand(0,$MAX['solutiontypes'])."',
                         'comment solution $i-$ID_entity')";
       $DB->query($query) or die("PB REQUETE ".$query);
       $newID = $DB->insert_id();
@@ -1554,10 +1558,12 @@ function generate_entity($ID_entity) {
                         '".mt_rand(1,$MAX['rubdocs'])."', '', NOW(), 'comment $i', '0', '$link',
                         'notes document $i', '0', '0', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
+      $docID = $DB->insert_id();
+      $DOCUMENTS[$docID] = $ID_entity."-0";
    }
 
 
-   // GLobal ones
+   // Global ones
    for ($i=0 ; $i<$MAX['document']/2 ; $i++) {
       $link = "";
       if (mt_rand(0,100)<50) {
@@ -1568,7 +1574,10 @@ function generate_entity($ID_entity) {
                         '".mt_rand(1,$MAX['rubdocs'])."', '', NOW(), 'comment $i', '0', '$link',
                         'notes document $i', '0', '0', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
+      $docID = $DB->insert_id();
+      $DOCUMENTS[$docID] = $ID_entity."-1";
    }
+
    $LAST["document"] = getMaxItem("glpi_documents");
 
 
@@ -1975,7 +1984,7 @@ function generate_entity($ID_entity) {
       addTracking('Printer', $printID, $ID_entity);
 
       // AJOUT INFOCOMS
-      addInfocoms('Printer', $printID, $ID_entity);
+      addInfocoms('Printer', $printID, $ID_entity, $recur);
 
       // Add Cartouches
       // Get compatible cartridge

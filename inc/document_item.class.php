@@ -93,7 +93,7 @@ class Document_Item extends CommonDBRelation{
          $restrict .= " AND `glpi_documents_items`.`entities_id` = '0' ";
       }
 
-      $nb = countElementsInTable(array('glpi_documents_items', 'glpi_documents'), $restrict);
+      $nb = countElementsInTable(array('glpi_documents_items'), $restrict);
 
       // Document case : search in both
       if ($item->getType() == 'Document') {

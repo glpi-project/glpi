@@ -159,6 +159,9 @@ $CONTRACT_PER_ITEM = 1;
 // DISK
 $MAX_DISK = 5;
 
+//Doc cache
+$DOCUMENTS = array();
+
 
 foreach ($MAX as $key => $val) {
    $MAX[$key]  = $multiplicator*$val;
