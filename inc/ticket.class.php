@@ -532,6 +532,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
+
       // Manage come back to waiting state
       if ($key=array_search('status',$this->updates) !== false
           && ($this->oldvalues['status'] == 'waiting'
@@ -558,6 +559,7 @@ class Ticket extends CommonITILObject {
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
+               $sla->setTicketCalendar($calendars_id);
                $delay_time_sla = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                         $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
@@ -590,66 +592,6 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-
-         $this->updates[] = "ticket_waiting_duration";
-         $this->fields["ticket_waiting_duration"] += $delay_time;
-
-         // Reset begin_waiting_date
-         $this->updates[] = "begin_waiting_date";
-         $this->fields["begin_waiting_date"] = 'NULL';
-      }
-
-
-      // Manage come back to waiting state
-      if ($key=array_search('status',$this->updates) !== false
-          && $this->oldvalues['status'] == 'waiting') {
-
-         // SLA case : compute sla duration
-         if ($this->fields['slas_id']>0) {
-            $sla=new SLA();
-            if ($sla->getFromDB($this->fields['slas_id'])) {
-               $delay_time=$sla->getActiveTimeBetween($this->fields['begin_waiting_date'],$_SESSION["glpi_currenttime"]);
-               $this->updates[] = "sla_waiting_duration";
-               $this->fields["sla_waiting_duration"] += $delay_time;
-            }
-
-            // Compute new due date
-            $this->updates[] = "due_date";
-            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
-                                                             $this->fields["sla_waiting_duration"]);
-            // Add current level to do
-            $sla->addLevelToDo($this);
-
-         } else {
-            // Compute ticket waiting time use calendar if exists
-            $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
-            $calendar     = new Calendar();
-            $delay_time   = 0;
-
-            // Using calendar
-            if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-               $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
-                                                             $_SESSION["glpi_currenttime"]);
-               if ($this->fields['due_date'] > 0) {
-                  // compute new due date using calendar
-                  $this->updates[]          = "due_date";
-                  $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
-                                                                        $delay_time);
-               }
-
-            } else { // Not calendar defined
-               $delay_time = strtotime($_SESSION["glpi_currenttime"])
-                             -strtotime($this->fields['begin_waiting_date']);
-
-               if ($this->fields['due_date'] > 0) {
-                  // compute new due date : no calendar so add computed delay_time
-                  $this->updates[]          = "due_date";
-                  $this->fields['due_date'] = date('Y-m-d H:i:s',
-                                                   $delay_time+strtotime($this->fields['due_date']));
-               }
-            }
-         }
-
 
          $this->updates[] = "ticket_waiting_duration";
          $this->fields["ticket_waiting_duration"] += $delay_time;
@@ -1028,8 +970,11 @@ class Ticket extends CommonITILObject {
 
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
 
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+
          $sla = new SLA();
          if ($sla->getFromDB($input["slas_id"])) {
+            $sla->setTicketCalendar($calendars_id);
             // Get first SLA Level
             $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
             // Compute due_date
@@ -1135,8 +1080,11 @@ class Ticket extends CommonITILObject {
           && isset($this->input["slalevels_id"])
           && $this->input["slalevels_id"]>0) {
 
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+
          $sla = new SLA();
          if ($sla->getFromDB($this->input["slas_id"])) {
+            $sla->setTicketCalendar($calendars_id);
             // Add first level in working table
             if ($this->input["slalevels_id"]>0) {
                $sla->addLevelToDo($this);
