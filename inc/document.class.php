@@ -115,14 +115,9 @@ class Document extends CommonDBTM {
 
    static function addTab(CommonDBTM $item, &$tab) {
       global $LANG;
-//      $tab[5] = $LANG['Menu'][27];
-      /// TODO first try for 
+
       if (haveRight("document","r")) {
-         $nb     = Document_Item::countForItem($item);
-         $tab[5] = $LANG['Menu'][27];
-         if ($nb) {
-            $tab[5] .= "<sup>($nb)</sup>";
-         }
+         $tab[5] = self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
       }
    }
 
