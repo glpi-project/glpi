@@ -5274,7 +5274,8 @@ class Ticket extends CommonDBTM {
 
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`glpi_tickets_users`.`users_id` = '$userID') ".
+                WHERE (`glpi_tickets_users`.`users_id` = '$userID'
+                        AND `glpi_tickets_users`.`type` = ".self::REQUESTER.") ".
                       getEntitiesRestrictRequest("AND", "glpi_tickets")."
                 ORDER BY `glpi_tickets`.`date_mod` DESC
                 LIMIT ".intval($_SESSION['glpilist_limit']);
