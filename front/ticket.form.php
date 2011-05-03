@@ -169,7 +169,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
       $users_id_requester = 0;
    }
    // Set default value...
-   $values = array('_users_id_requester'       => getLoginUserID(),
+   $values = array('_users_id_requester'       => $users_id_requester,
                    '_users_id_requester_notif' => array('use_notification' => 1),
                    '_groups_id_requester'      => 0,
                    '_users_id_assign'          => 0,
