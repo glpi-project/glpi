@@ -151,8 +151,9 @@ function import($options) {
    }
 
    foreach ($actions_to_do as $action_to_do) {
-      $options['mode'] = $action_to_do;
-      $users           = AuthLdap::getAllUsers($options, $results, $limitexceeded);
+      $options['mode']         = $action_to_do;
+      $options['authldaps_id'] = $options['ldapservers_id'];
+      $users                   = AuthLdap::getAllUsers($options, $results, $limitexceeded);
 
       if (is_array($users)) {
          foreach ($users as $user) {
