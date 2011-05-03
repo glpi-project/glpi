@@ -104,9 +104,10 @@ class Computer extends CommonDBTM {
 
          Document::addTab($this,$ong);
 
-         $ong[21] = $LANG['computers'][57];
-
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
+
+            $ong[21] = $LANG['computers'][57];
+
             if ($CFG_GLPI["use_ocs_mode"]) {
                $ong[14] = $LANG['title'][43];
             }
