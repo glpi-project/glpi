@@ -439,6 +439,28 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return $lic;
    }
 
+   /**
+    * Duplicate all software license from a computer template to its clone
+    *
+    * @param $oldid ID of the computer to clone
+    * @param $newid ID of the computer cloned
+   **/
+   function cloneComputer ($oldid, $newid) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->getTable()."`
+                WHERE `computers_id` = '$oldid'";
+
+      foreach ($DB->request($query) as $data) {
+         unset($data['id']);
+         $data['computers_id'] = $newid;
+         $data['_no_history']  = true;
+
+         $this->add($data);
+      }
+   }
+
 }
 
 ?>
