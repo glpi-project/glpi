@@ -2629,6 +2629,7 @@ class Search {
             return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_tickets.status" :
+         case "glpi_problems.status" :
             $tocheck = array('new'       => array('new'),
                              'notold'    => array('new', 'plan', 'assign', 'waiting'),
                              'notclosed' => array('new', 'plan', 'assign', 'waiting', 'solved'),
@@ -3831,6 +3832,9 @@ class Search {
             }
             return '';
 
+         case 'glpi_problems.status':
+            return Problem::getStatus($data[$NAME.$num]);
+
          case 'glpi_tickets.status':
             $status = Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
@@ -3840,13 +3844,16 @@ class Search {
             return Ticket::getTicketTypeName($data[$NAME.$num]);
 
          case 'glpi_tickets.priority' :
-            return Ticket::getPriorityName($data[$NAME.$num]);
+         case 'glpi_problems.priority' :
+            return CommonITILObject::getPriorityName($data[$NAME.$num]);
 
          case 'glpi_tickets.urgency' :
-            return Ticket::getUrgencyName($data[$NAME.$num]);
+         case 'glpi_problems.urgency' :
+            return CommonITILObject::getUrgencyName($data[$NAME.$num]);
 
          case 'glpi_tickets.impact':
-            return Ticket::getImpactName($data[$NAME.$num]);
+         case 'glpi_problems.impact':
+            return CommonITILObject::getImpactName($data[$NAME.$num]);
 
          case 'glpi_tickets.items_id' :
             if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {

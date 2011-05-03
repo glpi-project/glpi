@@ -52,47 +52,47 @@ class Notification extends CommonDBTM {
    //Notification to the GLPI global administrator
    const GLOBAL_ADMINISTRATOR              = 1;
    //Notification to the technicial who's assign to a ticket
-   const TICKET_ASSIGN_TECH                = 2;
+   const ASSIGN_TECH                = 2;
    //Notification to the owner of the item
    const AUTHOR                            = 3;
    //Notification to the technician previously in charge of the ticket
-   const TICKET_OLD_TECH_IN_CHARGE = 4;
+   const OLD_TECH_IN_CHARGE = 4;
    //Notification to the technician in charge of the item
    const ITEM_TECH_IN_CHARGE               = 5;
    //Notification to the item's user
    const ITEM_USER                         = 6;
    //Notification to the ticket's recipient
-   const TICKET_RECIPIENT                  = 7;
+   const RECIPIENT                  = 7;
    //Notificartion to the ticket's assigned supplier
-   const TICKET_SUPPLIER                   = 8;
+   const SUPPLIER                   = 8;
    //Notification to a group of people
-   const TICKET_ASSIGN_GROUP               = 9;
+   const ASSIGN_GROUP               = 9;
    //Notification to the supervisor of the ticket's assigned group
-   const TICKET_SUPERVISOR_ASSIGN_GROUP    = 10;
+   const SUPERVISOR_ASSIGN_GROUP    = 10;
    //Notification to the entity administrator
    const ENTITY_ADMINISTRATOR              = 11;
    //Notification to the supervisor of the ticket's requester group
-   const TICKET_SUPERVISOR_REQUESTER_GROUP = 12;
+   const SUPERVISOR_REQUESTER_GROUP = 12;
    //Notification to the ticket's requester group
-   const TICKET_REQUESTER_GROUP            = 13;
+   const REQUESTER_GROUP            = 13;
    //Notification to the ticket validation approver
-   const TICKET_VALIDATION_APPROVER        = 14;
+   const VALIDATION_APPROVER        = 14;
    //Notification to the ticket validation requester
-   const TICKET_VALIDATION_REQUESTER       = 15;
+   const VALIDATION_REQUESTER       = 15;
    //Notification to the task assign user
-   const TICKET_TASK_ASSIGN_TECH           = 16;
+   const TASK_ASSIGN_TECH           = 16;
    //Notification to the task author
-   const TICKET_TASK_AUTHOR                = 17;
+   const TASK_AUTHOR                = 17;
    //Notification to the followup author
-   const TICKET_FOLLOWUP_AUTHOR            = 18;
+   const FOLLOWUP_AUTHOR            = 18;
    //Notification to the user
    const USER                              = 19;
    //Notification to the ticket's observer group
-   const TICKET_OBSERVER_GROUP             = 20;
+   const OBSERVER_GROUP             = 20;
    //Notification to the ticket's observer user
-   const TICKET_OBSERVER                   = 21;
+   const OBSERVER                   = 21;
    //Notification to the supervisor of the ticket's observer group
-   const TICKET_SUPERVISOR_OBSERVER_GROUP  = 22;
+   const SUPERVISOR_OBSERVER_GROUP  = 22;
 
 
    // From CommonDBTM

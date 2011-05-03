@@ -412,10 +412,11 @@ class TicketFollowup  extends CommonDBTM {
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand() {\n";
          $params = array('type'       => __CLASS__,
+                         'parenttype' => 'Ticket',
                          'tickets_id' => $this->fields["tickets_id"],
                          'id'         => $this->fields["id"]);
          ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
          echo "};";
          echo "</script>\n";
       }
@@ -459,8 +460,8 @@ class TicketFollowup  extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (isset($options['ticket']) && !empty($options['ticket'])) {
-         $ticket = $options['ticket'];
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $ticket = $options['parent'];
       }
 
       if ($ID > 0) {
@@ -644,10 +645,11 @@ class TicketFollowup  extends CommonDBTM {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand() {\n";
          $params = array('type'       => __CLASS__,
+                         'parenttype' => 'Ticket',
                          'tickets_id' => $ticket->fields['id'],
                          'id'         => -1);
          ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
          echo "};";
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {

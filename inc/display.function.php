@@ -418,6 +418,28 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['maintain']['content']['ticket']['links']['add'] = '/front/ticket.form.php';
    }
 
+   if (haveRight("show_all_problem","1") || haveRight("show_my_problem","1")) {
+      $menu['maintain']['content']['problem']['title']           = $LANG['Menu'][7];
+      $menu['maintain']['content']['problem']['shortcut']        = 'p';
+      $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
+      $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
+      if (haveRight("edit_all_problem","1")) {
+         $menu['maintain']['content']['problem']['links']['add']
+                                                               = '/front/problem.form.php';
+      }
+   }
+
+   if (haveRight("change","r")) {
+      $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
+      $menu['maintain']['content']['change']['shortcut']        = 'p';
+      $menu['maintain']['content']['change']['page']            = '/front/change.php';
+      $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
+      if (haveRight("change","w")) {
+         $menu['maintain']['content']['change']['links']['add']
+                                                               = '/front/change.form.php';
+      }
+   }
+
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']           = $LANG['Menu'][29];
       $menu['maintain']['content']['planning']['shortcut']        = 'l';

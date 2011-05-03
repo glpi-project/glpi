@@ -29,41 +29,18 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE = 1;
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-checkLoginUser();
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_POST['type'])) {
-   exit();
-}
 
-if ($_POST['type']=='TicketTask') {
-   $item = new TicketTask();
+$task = new ProblemTask();
 
-} else if ($_POST['type']=='TicketFollowup') {
-   $item = new TicketFollowup();
+include (GLPI_ROOT . "/front/commonitiltask.form.php");
 
-} else if ($_POST['type']=='TicketValidation') {
-   $item = new TicketValidation();
-}
-
-$ticket = new Ticket();
-
-if (isset($_POST["tickets_id"]) && isset($_POST["id"]) && $ticket->getFromDB($_POST["tickets_id"])) {
-   $item->showForm($_POST["id"], array('ticket' => $ticket));
-
-} else {
-   echo $LANG['login'][5];
-}
-
-ajaxFooter();
 
 ?>

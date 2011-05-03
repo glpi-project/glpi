@@ -37,36 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
-
 $task = new TicketTask();
 
-if (isset($_POST["add"])) {
-   $task->check(-1,'w',$_POST);
-   $task->add($_POST);
-
-   Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL('Ticket')."?id=".$task->getField('tickets_id'));
-
-} else if (isset($_POST["delete"])) {
-   $task->check($_POST['id'], 'd');
-   $task->delete($_POST);
-
-   Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL('Ticket')."?id=".$task->getField('tickets_id'));
-
-} else if (isset($_POST["update"])) {
-   $task->check($_POST["id"],'w');
-   $task->update($_POST);
-
-   Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-}
-
-displayErrorAndDie('Lost');
+include (GLPI_ROOT . "/front/commonitiltask.form.php");
 
 ?>

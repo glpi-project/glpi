@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Group_Ticket
-class Group_Ticket extends CommonDBRelation {
+class Group_Ticket extends CommonITILActor {
 
    // From CommonDBRelation
    public $itemtype_1 = 'Ticket';
@@ -46,63 +46,7 @@ class Group_Ticket extends CommonDBRelation {
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
-   var $checks_and_logs_only_for_itemtype1 = true;
 
-   static function getTicketGroups($tickets_id) {
-      global $DB;
-
-      $groups = array();
-      $query = "SELECT `glpi_groups_tickets`.*
-                FROM `glpi_groups_tickets`
-                WHERE `tickets_id` = '$tickets_id'";
-
-      foreach ($DB->request($query) as $data) {
-         $groups[$data['type']][$data['groups_id']] = $data;
-      }
-      return $groups;
-   }
-
-
-   function post_deleteFromDB() {
-      global $CFG_GLPI;
-
-      $donotif = $CFG_GLPI["use_mailing"];
-
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
-
-      $t = new Ticket();
-      if ($t->getFromDB($this->fields['tickets_id'])) {
-         if ($t->fields["suppliers_id_assign"] == 0
-             && $t->countUsers(Ticket::ASSIGN) == 0
-             && $t->countGroups(Ticket::ASSIGN) == 0) {
-
-            $t->update(array('id'     => $this->fields['tickets_id'],
-                             'status' => 'new'));
-         } else {
-            $t->updateDateMod($this->fields['tickets_id']);
-
-            if ($donotif) {
-               NotificationEvent::raiseEvent("update", $t);
-            }
-         }
-      }
-      parent::post_deleteFromDB();
-   }
-
-
-   function post_addItem() {
-
-      $t = new Ticket();
-      $no_stat_computation = true;
-      if ($this->input['type']==Ticket::ASSIGN) {
-         $no_stat_computation = false;
-      }
-      $t->updateDateMod($this->fields['tickets_id'], $no_stat_computation);
-
-      parent::post_addItem();
-   }
 
 }
 

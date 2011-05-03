@@ -174,11 +174,11 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($canedit) {
          // Load ticket solution
-         if (empty($ID) && isset($options['tickets_id']) && $options['tickets_id']>0) {
-            $ticket = new Ticket();
-            if ($ticket->getFromDB($options['tickets_id'])) {
-               $this->fields['question'] = $ticket->getField('name');
-               $this->fields['answer']   = $ticket->getField('solution');
+         if (empty($ID) && isset($options['itemtype']) && isset($options['items_id'])) {
+            $item = new $options['itemtype']();
+            if ($item->getFromDB($options['items_id'])) {
+               $this->fields['question'] = $item->getField('name');
+               $this->fields['answer']   = $item->getField('solution');
             }
          }
          echo "<div id='contenukb'>";
@@ -495,8 +495,9 @@ class KnowbaseItem extends CommonDBTM {
              stripslashes(cleanInputText($params["contains"]))."\"></td>";
       echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit'></td></tr>";
       echo "</table>";
-      if (isset($options['tickets_id'])) {
-         echo "<input type='hidden' name='tickets_id' value='".$options['tickets_id']."'>";
+      if (isset($options['itemtype']) && isset($options['items_id'])) {
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
+         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
       echo "</form>";
 
@@ -505,7 +506,7 @@ class KnowbaseItem extends CommonDBTM {
       // Category select not for anonymous FAQ
       if (getLoginUserID()
           && !$faq
-          && !isset($options['tickets_id'])) {
+          && (!isset($options['itemtype']) || !isset($options['items_id']))) {
 
          echo "<td><form method=get action='".$params["target"]."'>";
          echo "<table border='0' class='tab_cadre'>";
@@ -657,8 +658,8 @@ class KnowbaseItem extends CommonDBTM {
             $parameters = "start=".$params["start"]."&amp;knowbaseitemcategories_id=".
                           $params['knowbaseitemcategories_id']."&amp;contains=".
                           $params["contains"]."&amp;is_faq=$faq";
-            if (isset($options['tickets_id'])) {
-               $parameters .= "&amp;tickets_id=".$options['tickets_id'];
+            if (isset($options['itemtype']) && isset($options['items_id'])) {
+               $parameters .= "&amp;items_id=".$options['items_id']."&amp;itemtype=".$options['itemtype'];
             }
 
             if ($output_type==HTML_OUTPUT) {
@@ -678,7 +679,8 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
-            if (isset($options['tickets_id']) && $output_type==HTML_OUTPUT) {
+            if (isset($options['itemtype']) && isset($options['items_id'])
+                  && $output_type==HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -694,7 +696,7 @@ class KnowbaseItem extends CommonDBTM {
                echo Search::showNewLine($output_type, $i%2);
 
                if ($output_type==HTML_OUTPUT) {
-                  if (isset($options['tickets_id'])) {
+                  if (isset($options['itemtype']) && isset($options['items_id'])) {
                      $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                               "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
                               "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"" ;
@@ -720,9 +722,10 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
 
-               if (isset($options['tickets_id']) && $output_type==HTML_OUTPUT) {
-                  $content = "<a href='".$CFG_GLPI['root_doc']."/front/ticket.form.php?load_kb_sol=".$data['id']
-                              ."&amp;id=".$options['tickets_id']."&amp;forcetab=4'>".$LANG['job'][24]."</a>";
+               if (isset($options['itemtype']) && isset($options['items_id'])
+                     && $output_type==HTML_OUTPUT) {
+                  $content = "<a href='".getItemTypeFormURL($options['itemtype'])."?load_kb_sol=".$data['id']
+                              ."&amp;id=".$options['items_id']."&amp;forcetab=4'>".$LANG['job'][24]."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 

@@ -80,6 +80,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
          case -1 :
             $prof->showFormInventory($_POST['target'], true, false);
             $prof->showFormTracking($_POST['target'], false, false);
+            $prof->showFormLifeCycle($_POST['target'],false,false);
             $prof->showFormAdmin($_POST['target'], false, true);
             Profile_User::showForProfile($prof);
             Plugin::displayAction($prof, $_REQUEST['glpi_tab']);
@@ -95,6 +96,10 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
 
          case 4 :
             Profile_User::showForProfile($prof);
+            break;
+
+         case 5 :
+            $prof->showFormLifeCycle($_POST['target']);
             break;
 
          case 12 :

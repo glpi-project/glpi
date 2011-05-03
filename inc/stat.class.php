@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
  *  Computer class
 **/
 class Stat {
-
+   /// TODO clean type names : technicien -> tech enterprise -> supplier
    static function getItems($date1, $date2, $type) {
       global $CFG_GLPI, $DB;
 
