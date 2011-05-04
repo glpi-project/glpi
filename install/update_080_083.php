@@ -56,7 +56,7 @@ function update080to083($output='HTML') {
     $backup_tables = false;
     $newtables     = array('glpi_groups_problems','glpi_items_problems','glpi_problems',
                            'glpi_problemtasks','glpi_problems_ticket','glpi_problems_users',);
- 
+
     foreach ($newtables as $new_table) {
        // rename new tables if exists ?
        if (TableExists($new_table)) {
@@ -81,11 +81,11 @@ function update080to083($output='HTML') {
    $migration->displayMessage($LANG['update'][141] . ' - Problems'); // Updating schema
 
    // Clean ticket validations : already done in 0.80
-   $query = "DELETE FROM `glpi_ticketvalidations`
-               WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN
-               (SELECT `glpi_tickets`.`id`
-                  FROM `glpi_tickets`)";
-   $DB->query($query) or die("0.83 clean glpi_ticketvalidations" . $LANG['update'][90] . $DB->error());
+   $query = "DELETE
+             FROM `glpi_ticketvalidations`
+             WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
+                                                                 FROM `glpi_tickets`)";
+   $DB->query($query) or die("0.83 clean glpi_ticketvalidations ".$LANG['update'][90].$DB->error());
 
    // Problems management
    if (!TableExists('glpi_problems')) {
@@ -152,6 +152,7 @@ function update080to083($output='HTML') {
       $DB->query($query)
       or die("0.83 add table glpi_problems_users ". $LANG['update'][90] . $DB->error());
    }
+
    if (!TableExists('glpi_groups_problems')) {
       $query = "CREATE TABLE `glpi_groups_problems` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -165,6 +166,7 @@ function update080to083($output='HTML') {
       $DB->query($query)
       or die("0.83 add table glpi_groups_problems ". $LANG['update'][90] . $DB->error());
    }
+
    if (!TableExists('glpi_items_problems')) {
       $query = "CREATE TABLE `glpi_items_problems` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -178,6 +180,7 @@ function update080to083($output='HTML') {
       $DB->query($query)
       or die("0.83 add table glpi_items_problems ". $LANG['update'][90] . $DB->error());
    }
+
    if (!TableExists('glpi_problems_tickets')) {
       $query = "CREATE TABLE `glpi_problems_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -218,83 +221,38 @@ function update080to083($output='HTML') {
       or die("0.83 add table glpi_problemtasks ". $LANG['update'][90] . $DB->error());
    }
 
-   if ($migration->addField("glpi_profiles", "show_my_problem", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `show_my_problem` = '1'
-            WHERE `own_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for show_my_problem in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "show_my_problem", "CHAR( 1 ) NULL", "1",
+                        " WHERE `own_ticket` = 1");
 
-   if ($migration->addField("glpi_profiles", "show_all_problem", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `show_all_problem` = '1'
-            WHERE `show_all_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for show_all_problem in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "show_all_problem", "CHAR( 1 ) NULL", "1",
+                        " WHERE `show_all_ticket` = 1");
 
-   if ($migration->addField("glpi_profiles", "edit_all_problem", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `edit_all_problem` = '1'
-            WHERE `update_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for edit_all_problem in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "edit_all_problem", "CHAR( 1 ) NULL", "1",
+                        " WHERE `update_ticket` = 1");
 
    $migration->changeField("glpi_profiles", 'helpdesk_status','ticket_status',
                            "TEXT NULL COMMENT 'json encoded array of from/dest allowed status change'");
 
-   if (!FieldExists('glpi_profiles','problem_status')) {
-      $query = "ALTER TABLE `glpi_profiles`
-                   ADD `problem_status` TEXT NULL
-                        COMMENT 'json encoded array of from/dest allowed status change'";
-      $DB->query($query) or die("0.83 add problem_status in glpi_profiles" .
-                                 $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField('glpi_profiles', 'problem_status',
+                        "TEXT NULL COMMENT 'json encoded array of from/dest allowed status change'");
 
-   if ($migration->addField("glpi_profiles", "show_my_change", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `show_my_change` = '1'
-            WHERE `own_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for show_my_change in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "show_my_change", "CHAR( 1 ) NULL", "1",
+                        " WHERE `own_ticket` = 1");
 
-   if ($migration->addField("glpi_profiles", "show_all_change", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `show_all_change` = '1'
-            WHERE `show_all_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for show_all_change in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "show_all_change", "CHAR( 1 ) NULL", "1",
+                        " WHERE `show_all_ticket` = 1");
 
-   if ($migration->addField("glpi_profiles", "edit_all_change", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
-      $query = "UPDATE `glpi_profiles`
-            SET `edit_all_change` = '1'
-            WHERE `update_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for edit_all_change in glpi_profiles " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "edit_all_change", "CHAR( 1 ) NULL", "1",
+                        " WHERE `update_ticket` = 1");
 
-   if ($migration->addField("glpi_profiles", "change", "CHAR( 1 ) NULL")) {
-      $migration->migrationOneTable('glpi_profiles');
+   if ($migration->addField("glpi_profiles", "change", "CHAR( 1 ) NULL", "'r'",
+                            " WHERE `own_ticket` = 1")) {
       $query = "UPDATE `glpi_profiles`
-            SET `change` = 'r'
-            WHERE `own_ticket` = 1";
+                SET `change` = 'w'
+                WHERE `update_ticket` = 1";
       $DB->query($query)
-      or die($this->version." set default values for change in glpi_profiles " . $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_profiles`
-            SET `change` = 'w'
-            WHERE `update_ticket` = 1";
-      $DB->query($query)
-      or die($this->version." set default values for change in glpi_profiles " . $LANG['update'][90] . $DB->error());
+      or die($this->version." set default values for change in glpi_profiles " . $LANG['update'][90] .
+             $DB->error());
    }
 
    // Merge tickettasks and ticket planning
@@ -312,10 +270,10 @@ function update080to083($output='HTML') {
       foreach ($DB->request('glpi_ticketplannings') as $data) {
          if ($task->getFromDB($data['tickettasks_id'])) {
             $query = "UPDATE `glpi_tickettasks`
-                        SET `begin` = ".($data['begin']=='NULL'?'NULL':"'".$data['begin']."'").",
-                           `end` = ".($data['end']=='NULL'?'NULL':"'".$data['end']."'").",
-                           `users_id_tech` = '".$data['users_id']."',
-                           `state` = '".$data['state']."';";
+                      SET `begin` = ".($data['begin']=='NULL'?'NULL':"'".$data['begin']."'").",
+                          `end` = ".($data['end']=='NULL'?'NULL':"'".$data['end']."'").",
+                          `users_id_tech` = '".$data['users_id']."',
+                          `state` = '".$data['state']."'";
             $DB->query($query)
             or die("0.83 migrate planning to glpi_tickettasks ". $LANG['update'][90] . $DB->error());
          }
@@ -352,7 +310,6 @@ function update080to083($output='HTML') {
             }
          }
       }
-
    }
 
 
@@ -376,49 +333,49 @@ function update080to083($output='HTML') {
                            `content_text`,
                            `content_html`)
                    VALUES ($notid, '', '##problem.action## ##problem.title##',
-                          '##IFproblem.storestatus=solved## 
- ##lang.problem.url## : ##problem.urlapprove## 
+                          '##IFproblem.storestatus=solved##
+ ##lang.problem.url## : ##problem.urlapprove##
  ##lang.problem.solvedate## : ##problem.solvedate##
  ##lang.problem.solution.type## : ##problem.solution.type##
- ##lang.problem.solution.description## : ##problem.solution.description## ##ENDIFproblem.storestatus## 
- ##ELSEproblem.storestatus## ##lang.problem.url## : ##problem.url## ##ENDELSEproblem.storestatus## 
+ ##lang.problem.solution.description## : ##problem.solution.description## ##ENDIFproblem.storestatus##
+ ##ELSEproblem.storestatus## ##lang.problem.url## : ##problem.url## ##ENDELSEproblem.storestatus##
 
- ##lang.problem.description## 
+ ##lang.problem.description##
 
- ##lang.problem.title## &#160;:##problem.title## 
- ##lang.problem.authors## &#160;:##IFproblem.authors## ##problem.authors## ##ENDIFproblem.authors## ##ELSEproblem.authors##--##ENDELSEproblem.authors## 
- ##lang.problem.creationdate## &#160;:##problem.creationdate## 
+ ##lang.problem.title## &#160;:##problem.title##
+ ##lang.problem.authors## &#160;:##IFproblem.authors## ##problem.authors## ##ENDIFproblem.authors## ##ELSEproblem.authors##--##ENDELSEproblem.authors##
+ ##lang.problem.creationdate## &#160;:##problem.creationdate##
  ##IFproblem.assigntousers## ##lang.problem.assigntousers## &#160;: ##problem.assigntousers## ##ENDIFproblem.assigntousers##
  ##lang.problem.status## &#160;: ##problem.status##
  ##IFproblem.assigntogroups## ##lang.problem.assigntogroups## &#160;: ##problem.assigntogroups## ##ENDIFproblem.assigntogroups##
  ##lang.problem.urgency## &#160;: ##problem.urgency##
  ##lang.problem.impact## &#160;: ##problem.impact##
- ##lang.problem.priority## : ##problem.priority## 
-##IFproblem.category## ##lang.problem.category## &#160;:##problem.category## ##ENDIFproblem.category## ##ELSEproblem.category## ##lang.problem.nocategoryassigned## ##ENDELSEproblem.category## 
- ##lang.problem.content## &#160;: ##problem.content## 
+ ##lang.problem.priority## : ##problem.priority##
+##IFproblem.category## ##lang.problem.category## &#160;:##problem.category## ##ENDIFproblem.category## ##ELSEproblem.category## ##lang.problem.nocategoryassigned## ##ENDELSEproblem.category##
+ ##lang.problem.content## &#160;: ##problem.content##
 
 ##IFproblem.storestatus=closed##
  ##lang.problem.solvedate## : ##problem.solvedate##
  ##lang.problem.solution.type## : ##problem.solution.type##
  ##lang.problem.solution.description## : ##problem.solution.description##
-##ENDIFproblem.storestatus## 
- ##lang.problem.numberoftickets##&#160;: ##problem.numberoftickets## 
+##ENDIFproblem.storestatus##
+ ##lang.problem.numberoftickets##&#160;: ##problem.numberoftickets##
 
-##FOREACHtickets## 
- [##ticket.date##] ##lang.problem.title## : ##ticket.title## 
+##FOREACHtickets##
+ [##ticket.date##] ##lang.problem.title## : ##ticket.title##
  ##lang.problem.content## ##ticket.content##
 
-##ENDFOREACHtickets## 
- ##lang.problem.numberoftasks##&#160;: ##problem.numberoftasks## 
+##ENDFOREACHtickets##
+ ##lang.problem.numberoftasks##&#160;: ##problem.numberoftasks##
 
-##FOREACHtasks## 
- [##task.date##] 
+##FOREACHtasks##
+ [##task.date##]
  ##lang.task.author## ##task.author##
  ##lang.task.description## ##task.description##
  ##lang.task.time## ##task.time##
- ##lang.task.category## ##task.category## 
+ ##lang.task.category## ##task.category##
 
-##ENDFOREACHtasks## 
+##ENDFOREACHtasks##
 ',
                           '&lt;p&gt;##IFproblem.storestatus=solved##&lt;/p&gt;
 &lt;div&gt;##lang.problem.url## : &lt;a href=\"##problem.urlapprove##\"&gt;##problem.urlapprove##&lt;/a&gt;&lt;/div&gt;
@@ -439,25 +396,27 @@ function update080to083($output='HTML') {
          $DB->query($query)
          or die("0.83 add problem notification translation ".$LANG['update'][90].$DB->error());
 
-      
 
-         $notifications = array('new'             => array(),
-                              'update'          => array(Notification::ASSIGN_TECH,
-                                                         Notification::OLD_TECH_IN_CHARGE),
-                              'solved'          => array(),
-                              'add_task'        => array(),
-                              'update_task'     => array(),
-                              'delete_task'     => array(),
-                              'closed'          => array(),
-                              'delete'          => array());
-         $notif_names = array('new'             => 'New Problem',
-                              'update'          => 'Update Problem',
-                              'solved'          => 'Resolve Problem',
-                              'add_task'        => 'Add Task',
-                              'update_task'     => 'Update Task',
-                              'delete_task'     => 'Delete Task',
-                              'closed'          => 'Close Problem',
-                              'delete'          => 'Delete Problem');
+
+         $notifications = array('new'        => array(),
+                               'update'      => array(Notification::ASSIGN_TECH,
+                                                      Notification::OLD_TECH_IN_CHARGE),
+                               'solved'      => array(),
+                               'add_task'    => array(),
+                               'update_task' => array(),
+                               'delete_task' => array(),
+                               'closed'      => array(),
+                               'delete'      => array());
+
+         $notif_names   = array('new'        => 'New Problem',
+                               'update'      => 'Update Problem',
+                               'solved'      => 'Resolve Problem',
+                               'add_task'    => 'Add Task',
+                               'update_task' => 'Update Task',
+                               'delete_task' => 'Delete Task',
+                               'closed'      => 'Close Problem',
+                               'delete'      => 'Delete Problem');
+
          foreach ($notifications as $key => $val) {
             $notifications[$key][] = Notification::AUTHOR;
             $notifications[$key][] = Notification::GLOBAL_ADMINISTRATOR;
@@ -466,20 +425,21 @@ function update080to083($output='HTML') {
 
          foreach ($notifications as $type => $targets) {
             $query = "INSERT INTO `glpi_notifications`
-                              (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                               `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                               `date_mod`)
-                        VALUES ('".$notif_names[$type]."', 0, 'Problem', '$type', 'mail',
+                      VALUES ('".$notif_names[$type]."', 0, 'Problem', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
             $DB->query($query)
             or die("0.83 add problem $type notification " . $LANG['update'][90] . $DB->error());
             $notifid = $DB->insert_id();
+
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
-                              (`id`, `notifications_id`, `type`, `items_id`)
-                        VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
                $DB->query($query)
-               or die("0.83 add problem $type notification target " . $LANG['update'][90] . $DB->error());
+               or die("0.83 add problem $type notification target " .$LANG['update'][90].$DB->error());
             }
          }
       }
@@ -494,36 +454,44 @@ function update080to083($output='HTML') {
 
 
    // Clean `glpi_networkports_vlans` datas (`networkports_id` whithout networkports)
-   $query = "DELETE FROM `glpi_networkports_vlans`
-               WHERE `networkports_id` NOT IN (SELECT `id` FROM `glpi_networkports`);";
+   $query = "DELETE
+             FROM `glpi_networkports_vlans`
+             WHERE `networkports_id` NOT IN (SELECT `id`
+                                             FROM `glpi_networkports`)";
    $DB->query($query)
-      or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
+   or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
 
    if ($migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_slalevels');
 
-      $entities=getAllDatasFromTable('glpi_entities');
-      $entities[0]="Root";
+      $entities    = getAllDatasFromTable('glpi_entities');
+      $entities[0] = "Root";
 
 
       foreach ($entities as $entID => $val) {
          // Non recursive ones
-         $query3="UPDATE `glpi_slalevels`
-                  SET `entities_id`=$entID, `is_recursive`=0
-                  WHERE `slas_id` IN (SELECT `id` FROM `glpi_slas`
-                     WHERE `entities_id`=$entID AND `is_recursive`=0)";
-         $DB->query($query3) or die("0.83 update entities_id and is_recursive=0
-               in glpi_slalevels ". $LANG['update'][90] . $DB->error());
+         $query3 = "UPDATE `glpi_slalevels`
+                    SET `entities_id` = $entID, `is_recursive` = 0
+                    WHERE `slas_id` IN (SELECT `id`
+                                        FROM `glpi_slas`
+                                        WHERE `entities_id` = $entID
+                                              AND `is_recursive` = 0)";
+         $DB->query($query3)
+         or die("0.83 update entities_id and is_recursive=0 in glpi_slalevels ".$LANG['update'][90].
+                $DB->error());
 
          // Recursive ones
-         $query3="UPDATE `glpi_slalevels`
-                  SET `entities_id`=$entID, `is_recursive`=1
-                  WHERE `slas_id` IN (SELECT `id` FROM `glpi_slas`
-                     WHERE `entities_id`=$entID AND `is_recursive`=1)";
-         $DB->query($query3) or die("0.83 update entities_id and is_recursive=1
-               in glpi_slalevels ". $LANG['update'][90] . $DB->error());
+         $query3 = "UPDATE `glpi_slalevels`
+                    SET `entities_id` = $entID, `is_recursive` = 1
+                    WHERE `slas_id` IN (SELECT `id`
+                                        FROM `glpi_slas`
+                                        WHERE `entities_id` = $entID
+                                              AND `is_recursive` = 1)";
+         $DB->query($query3)
+         or die("0.83 update entities_id and is_recursive=1 in glpi_slalevels ".$LANG['update'][90].
+                $DB->error());
       }
    }
 
@@ -548,31 +516,39 @@ function update080to083($output='HTML') {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_documents_items');
 
-      $entities=getAllDatasFromTable('glpi_entities');
-      $entities[0]="Root";
+      $entities    = getAllDatasFromTable('glpi_entities');
+      $entities[0] = "Root";
 
       foreach ($entities as $entID => $val) {
          // Non recursive ones
-         $query3="UPDATE `glpi_documents_items`
-                  SET `entities_id`=$entID, `is_recursive`=0
-                  WHERE `documents_id` IN (SELECT `id` FROM `glpi_documents`
-                     WHERE `entities_id`=$entID AND `is_recursive`=0)";
-         $DB->query($query3) or die("0.83 update entities_id and is_recursive=0
-               in glpi_documents_items ". $LANG['update'][90] . $DB->error());
+         $query3 = "UPDATE `glpi_documents_items`
+                    SET `entities_id` = $entID, `is_recursive` = 0
+                    WHERE `documents_id` IN (SELECT `id`
+                                             FROM `glpi_documents`
+                                             WHERE `entities_id` = $entID
+                                                   AND `is_recursive` = 0)";
+         $DB->query($query3)
+         or die("0.83 update entities_id and is_recursive=0 in glpi_documents_items ".
+                $LANG['update'][90] . $DB->error());
 
          // Recursive ones
-         $query3="UPDATE `glpi_documents_items`
-                  SET `entities_id`=$entID, `is_recursive`=1
-                  WHERE `documents_id` IN (SELECT `id` FROM `glpi_documents`
-                     WHERE `entities_id`=$entID AND `is_recursive`=1)";
-         $DB->query($query3) or die("0.83 update entities_id and is_recursive=1
-               in glpi_documents_items ". $LANG['update'][90] . $DB->error());
+         $query3 = "UPDATE `glpi_documents_items`
+                    SET `entities_id` = $entID, `is_recursive` = 1
+                    WHERE `documents_id` IN (SELECT `id`
+                                             FROM `glpi_documents`
+                                             WHERE `entities_id` = $entID
+                                                   AND `is_recursive` = 1)";
+         $DB->query($query3)
+         or die("0.83 update entities_id and is_recursive=1 in glpi_documents_items ".
+                $LANG['update'][90] . $DB->error());
       }
 
       /// create index for search count on tab
       $migration->dropKey("glpi_documents_items", "item");
       $migration->migrationOneTable('glpi_documents_items');
-      $migration->addKey("glpi_documents_items", array('itemtype','items_id','entities_id','is_recursive'),'item');
+      $migration->addKey("glpi_documents_items",
+                         array('itemtype', 'items_id', 'entities_id', 'is_recursive'),
+                         'item');
    }
 
 
@@ -580,9 +556,9 @@ function update080to083($output='HTML') {
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query = "SELECT DISTINCT users_id
+      $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type';";
+                WHERE `itemtype` = '$type'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -600,12 +576,12 @@ function update080to083($output='HTML') {
                             FROM `glpi_displaypreferences`
                             WHERE `users_id` = '".$data['users_id']."'
                                   AND `num` = '$newval'
-                                  AND `itemtype` = '$type';";
+                                  AND `itemtype` = '$type'";
                   if ($result2=$DB->query($query)) {
                      if ($DB->numrows($result2)==0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
-                                        (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."')";
+                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
+                                  VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."')";
                         $DB->query($query);
                      }
                   }
@@ -616,8 +592,8 @@ function update080to083($output='HTML') {
             $rank = 1;
             foreach ($tab as $newval) {
                $query = "INSERT INTO `glpi_displaypreferences`
-                               (`itemtype` ,`num` ,`rank` ,`users_id`)
-                        VALUES ('$type', '$newval', '".$rank++."', '0')";
+                                (`itemtype` ,`num` ,`rank` ,`users_id`)
+                         VALUES ('$type', '$newval', '".$rank++."', '0')";
                $DB->query($query);
             }
          }
