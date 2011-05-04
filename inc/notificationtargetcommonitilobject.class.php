@@ -222,7 +222,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       if (isset($options['validation_id'])) {
          $validationtable = getTableForItemtype($this->obj->getType.'Validation');
-         
+
 
          $query = $this->getDistinctUserSql()."
                   FROM `$validationtable`
@@ -479,7 +479,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $events = $this->getAllEvents();
       $objettype = strtolower($this->obj->getType());
 
-      
+
 
       // Get datas from itil objects
       if ($event != 'alertnotclosed') {
@@ -506,7 +506,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $this->getTags();
-      
+
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
          if (!isset($this->datas[$tag])) {
             $this->datas[$tag] = $values['label'];
@@ -769,7 +769,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tickets with a fixed set of values
-      $status = $itemtype::getAllStatusArray(false);
+      $status = $this->obj->getAllStatusArray(false);
       $allowed_ticket = array();
       foreach ($status as $key => $value) {
          $allowed_ticket[] = $key;
