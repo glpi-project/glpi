@@ -407,17 +407,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($input["status"]) && $input["status"]!='solved' && $input["status"]!='closed') {
          $input['solvedate'] = 'NULL';
-      }  
+      }
 
       if (isset($input["status"]) && $input["status"]!='closed') {
          $input['closedate'] = 'NULL';
-      }  
+      }
 
 
       return $input;
    }
 
    function pre_updateInDB() {
+      global $LANG;
 
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates)) !== false
@@ -949,22 +950,22 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][46]."</option>";
       }
-      if (isset($CFG_GLPI[$itemtype::URGENCY_MASK_FIELD])) {
-         if ($complete || ($CFG_GLPI[$itemtype::URGENCY_MASK_FIELD] & (1<<5))) {
+      if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<5))) {
             echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
          }
 
-         if ($complete || ($CFG_GLPI[$itemtype::URGENCY_MASK_FIELD] & (1<<4))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<4))) {
             echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
          }
 
          echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
 
-         if ($complete || ($CFG_GLPI[$itemtype::URGENCY_MASK_FIELD] & (1<<2))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<2))) {
             echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
          }
 
-         if ($complete || ($CFG_GLPI[$itemtype::URGENCY_MASK_FIELD] & (1<<1))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<1))) {
             echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
          }
       }
@@ -1032,22 +1033,22 @@ abstract class CommonITILObject extends CommonDBTM {
                 $LANG['help'][51]."</option>";
       }
 
-      if (isset($CFG_GLPI[$itemtype::IMPACT_MASK_FIELD])) {
-         if ($complete || ($CFG_GLPI[$itemtype::IMPACT_MASK_FIELD] & (1<<5))) {
+      if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<5))) {
             echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
          }
 
-         if ($complete || ($CFG_GLPI[$itemtype::IMPACT_MASK_FIELD] & (1<<4))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<4))) {
             echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
          }
 
          echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
 
-         if ($complete || ($CFG_GLPI[$itemtype::IMPACT_MASK_FIELD] & (1<<2))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<2))) {
             echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
          }
 
-         if ($complete || ($CFG_GLPI[$itemtype::IMPACT_MASK_FIELD] & (1<<1))) {
+         if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<1))) {
             echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
          }
       }
@@ -1112,12 +1113,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
    **/
    static function genericIsAllowedStatus($itemtype, $old, $new) {
-      if (isset($_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new])
-          && !$_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new]) {
+      if (isset($_SESSION['glpiactiveprofile'][constant($itemtype.'::STATUS_MATRIX_FIELD')][$old][$new])
+          && !$_SESSION['glpiactiveprofile'][constant($itemtype.'::STATUS_MATRIX_FIELD')][$old][$new]) {
          return false;
       }
 
-      if (array_key_exists($itemtype::STATUS_MATRIX_FIELD, $_SESSION['glpiactiveprofile'])) { // Not set for post-only)
+      if (array_key_exists(constant($itemtype.'::STATUS_MATRIX_FIELD'), $_SESSION['glpiactiveprofile'])) { // Not set for post-only)
          return true;
       }
 
@@ -1134,8 +1135,9 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getAllowedStatusArray($itemtype,$current) {
       global $LANG;
-   
-      $tab = $itemtype::getAllStatusArray();
+
+      $item = new $itemtype;
+      $tab = $item->getAllStatusArray();
 
       if (!isset($current)) {
          $current = 'new';
@@ -1143,7 +1145,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       foreach ($tab as $status => $label) {
          if ($status != $current
-             && !$itemtype::isAllowedStatus($current, $status)) {
+             && !$item->isAllowedStatus($current, $status)) {
             unset($tab[$status]);
          }
       }
@@ -1161,12 +1163,15 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing (display)
    **/
    static function dropdownGenericStatus($itemtype, $name, $value='new', $option=0) {
+
+      $item = new $itemtype;
+
       if ($option == 2) {
-         $tab = $itemtype::getAllowedStatusArray($itemtype,$value);
+         $tab = $item->getAllowedStatusArray($itemtype,$value);
       } else if ($option == 1) {
-         $tab = $itemtype::getAllStatusArray(true);
+         $tab = $item->getAllStatusArray(true);
       } else {
-         $tab = $itemtype::getAllStatusArray(false);
+         $tab = $item->getAllStatusArray(false);
       }
 
       echo "<select name='$name'>";
@@ -1186,7 +1191,8 @@ abstract class CommonITILObject extends CommonDBTM {
    static function getGenericStatus($itemtype,$value) {
       global $LANG;
 
-      $tab = $itemtype::getAllStatusArray(true);
+      $item = new $itemtype;
+      $tab = $item->getAllStatusArray(true);
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
 
