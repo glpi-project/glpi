@@ -807,6 +807,7 @@ class Search {
             // Compute number of columns to display
             // Add toview elements
             $nbcols = $toview_count;
+            $already_printed = array();
             // Add meta search elements if real search (strlen>0) or only NOT search
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
                for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
@@ -816,7 +817,10 @@ class Search {
                       && !empty($p['itemtype2'][$i])
                       && (!isset($p['link2'][$i]) || !strstr($p['link2'][$i],"NOT"))) {
 
-                     $nbcols++;
+                     if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
+                        $nbcols++;
+                        $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
+                     }
                   }
                }
             }
@@ -879,22 +883,25 @@ class Search {
             }
 
             // Display columns Headers for meta items
+            $already_printed = array();
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
                for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
                   if (isset($p['itemtype2'][$i])
                       && !empty($p['itemtype2'][$i])
                       && isset($p['contains2'][$i])
                       && strlen($p['contains2'][$i])>0) {
+                     if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
+                        if (!isset($metanames[$p['itemtype2'][$i]])) {
+                           $metaitem = new $p['itemtype2'][$i]();
+                           $metanames[$p['itemtype2'][$i]] = $metaitem->getTypeName();
+                        }
 
-                     if (!isset($metanames[$p['itemtype2'][$i]])) {
-                        $metaitem = new $p['itemtype2'][$i]();
-                        $metanames[$p['itemtype2'][$i]] = $metaitem->getTypeName();
+                        echo self::showHeaderItem($output_type,
+                                                $metanames[$p['itemtype2'][$i]]." - ".
+                                                   $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
+                                                $header_num);
+                        $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
                      }
-
-                     echo self::showHeaderItem($output_type,
-                                               $metanames[$p['itemtype2'][$i]]." - ".
-                                                 $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
-                                               $header_num);
                   }
                }
             }
@@ -984,66 +991,70 @@ class Search {
                }
 
                // Print Meta Item
+               $already_printed = array();
                if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
                   for ($j=0 ; $j<$_SESSION["glpisearchcount2"][$itemtype] ; $j++) {
                      if (isset($p['itemtype2'][$j])
                          && !empty($p['itemtype2'][$j])
                          && isset($p['contains2'][$j])
                          && strlen($p['contains2'][$j])>0) {
+                        if (!isset($already_printed[$p['itemtype2'].$p['field2'][$j]])) {
 
-                        // General case
-                        if (strpos($data["META_$j"],"$$$$")===false) {
-                           $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data, $j,
-                                                  1);
-                           echo self::showItem($output_type, $out, $item_num, $row_num);
+                           // General case
+                           if (strpos($data["META_$j"],"$$$$")===false) {
+                              $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data, $j,
+                                                   1);
+                              echo self::showItem($output_type, $out, $item_num, $row_num);
 
-                        // Case of GROUP_CONCAT item : split item and multilline display
-                        } else {
-                           $split = explode("$$$$", $data["META_$j"]);
-                           $count_display = 0;
-                           $out  = "";
-                           $unit = "";
-                           $separate = '<br>';
+                           // Case of GROUP_CONCAT item : split item and multilline display
+                           } else {
+                              $split = explode("$$$$", $data["META_$j"]);
+                              $count_display = 0;
+                              $out  = "";
+                              $unit = "";
+                              $separate = '<br>';
 
-                           if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
-                               && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
+                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
+                                 && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
 
-                              $separate = '<hr>';
-                           }
+                                 $separate = '<hr>';
+                              }
 
-                           if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
-                              $unit = $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'];
-                           }
+                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
+                                 $unit = $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'];
+                              }
 
-                           for ($k=0 ; $k<count($split) ; $k++) {
-                              if ($p['contains2'][$j]=="NULL"
-                                  || strlen($p['contains2'][$j])==0
-                                  ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
-                                  || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
+                              for ($k=0 ; $k<count($split) ; $k++) {
+                                 if ($p['contains2'][$j]=="NULL"
+                                    || strlen($p['contains2'][$j])==0
+                                    ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
+                                    || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
 
-                                 if ($count_display) {
-                                    $out .= $separate;
-                                 }
-                                 $count_display++;
-
-                                 // Manage Link to item
-                                 $split2 = explode("$$", $split[$k]);
-                                 if (isset($split2[1])) {
-                                    $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
-                                              $split2[1]."' ";
-                                    $out .= "href=\"".getItemTypeFormURL($p['itemtype2'][$j]).
-                                             "?id=".$p['itemtype2'][$j]."\">";
-                                    $out .= $split2[0].$unit;
-                                    if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                                       $out .= " (".$split2[1].")";
+                                    if ($count_display) {
+                                       $out .= $separate;
                                     }
-                                    $out .= "</a>";
-                                 } else {
-                                    $out .= $split[$k].$unit;
+                                    $count_display++;
+
+                                    // Manage Link to item
+                                    $split2 = explode("$$", $split[$k]);
+                                    if (isset($split2[1])) {
+                                       $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
+                                                $split2[1]."' ";
+                                       $out .= "href=\"".getItemTypeFormURL($p['itemtype2'][$j]).
+                                                "?id=".$p['itemtype2'][$j]."\">";
+                                       $out .= $split2[0].$unit;
+                                       if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                                          $out .= " (".$split2[1].")";
+                                       }
+                                       $out .= "</a>";
+                                    } else {
+                                       $out .= $split[$k].$unit;
+                                    }
                                  }
                               }
+                              echo self::showItem($output_type, $out, $item_num, $row_num);
                            }
-                           echo self::showItem($output_type, $out, $item_num, $row_num);
+                           $already_printed[$p['itemtype2'].$p['field2'][$j]] = 1;
                         }
                      }
                   }
