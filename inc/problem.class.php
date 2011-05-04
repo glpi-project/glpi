@@ -163,23 +163,25 @@ class Problem extends CommonITILObject {
 
       // show related tickets and changes
       $ong[1] = $LANG['title'][26];
+      if ($this->fields['id'] > 0) {
+         // Analysis
+         $ong[3] = $LANG['problem'][3];
+         // Tasks
+         $ong[2] = $LANG['mailing'][142];
+         // Hardware
+         $ong[7] = $LANG['common'][96];
+         // Documents
+         Document::addTab($this,$ong);
+         // Solution
+         $ong[4] = $LANG['jobresolution'][2];
+         if (haveRight("notes","r")) {
+            $ong[10] = $LANG['title'][37];
+         }
+         // History
+         $ong[6] = $LANG['title'][38];
+      } else {
 
-      // Analysis
-      $ong[3] = $LANG['problem'][3];
-      // Tasks
-      $ong[2] = $LANG['mailing'][142];
-      // Hardware
-      $ong[7] = $LANG['common'][96];
-      // Documents
-      Document::addTab($this,$ong);
-      // Solution
-      $ong[4] = $LANG['jobresolution'][2];
-      if (haveRight("notes","r")) {
-         $ong[10] = $LANG['title'][37];
       }
-      // History
-      $ong[6] = $LANG['title'][38];
-
 
       return $ong;
    }
