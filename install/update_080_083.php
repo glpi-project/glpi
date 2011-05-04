@@ -311,7 +311,7 @@ function update080to083($output='HTML') {
       $task = new TicketTask();
       foreach ($DB->request('glpi_ticketplannings') as $data) {
          if ($task->getFromDB($data['tickettasks_id'])) {
-            $query = "UPDATE `glpitickettasks`
+            $query = "UPDATE `glpi_tickettasks`
                         SET `begin` = ".($data['begin']=='NULL'?'NULL':"'".$data['begin']."'").",
                            `end` = ".($data['end']=='NULL'?'NULL':"'".$data['end']."'").",
                            `users_id_tech` = '".$data['users_id']."',
