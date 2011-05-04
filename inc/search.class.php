@@ -807,6 +807,7 @@ class Search {
             // Compute number of columns to display
             // Add toview elements
             $nbcols = $toview_count;
+            $already_printed = array();
             // Add meta search elements if real search (strlen>0) or only NOT search
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
                for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
@@ -815,8 +816,10 @@ class Search {
                       && strlen($p['contains2'][$i])>0
                       && !empty($p['itemtype2'][$i])
                       && (!isset($p['link2'][$i]) || !strstr($p['link2'][$i],"NOT"))) {
-
-                     $nbcols++;
+                      if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
+                        $nbcols++;
+                        $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
+                     }
                   }
                }
             }
