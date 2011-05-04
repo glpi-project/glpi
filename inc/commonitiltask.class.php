@@ -108,6 +108,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+      global $LANG;
 
       manageBeginAndEndPlanDates($input['plan']);
 
@@ -528,7 +529,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function genericGetAlreadyPlannedInformation($itemtype, $val) {
       global $CFG_GLPI;
 
-      $out  = $itemtype::getTypeName().' : '.convDateTime($val["begin"]).' -> '.
+      $item = new $itemtype();
+      $out  = $item->getTypeName().' : '.convDateTime($val["begin"]).' -> '.
               convDateTime($val["end"]).' : ';
       $out .= "<a href='".getItemTypeFormURL($itemtype)."?id=".$val[getForeignKeyFieldForItemType($itemtype)]."'>";
       $out .= resume_text($val["name"],80).'</a>';
@@ -568,7 +570,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
              $parent->getTypeName()."\">&nbsp;&nbsp;";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
-             $parenttype::getStatus($val["status"])."' title=\"".$parenttype::getStatus($val["status"])."\">";
+             $parent->getStatus($val["status"])."' title=\"".$parentt->getStatus($val["status"])."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
@@ -606,12 +608,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if ($complete) {
          echo "<br><strong>".Planning::getState($val["state"])."<br>";
-         echo $LANG['joblist'][2]."&nbsp;:</strong> ".$parenttype::getPriorityName($val["priority"]);
+         echo $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
 
       } else {
          $content = "<strong>".Planning::getState($val["state"])."<br>".
-                    $LANG['joblist'][2]."&nbsp;:</strong> ".$parenttype::getPriorityName($val["priority"]).
+                    $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]).
                     "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"].
                     "</div>";
          showToolTip($content,array('applyto' => "content_tracking_".$val["id"].$rand));
@@ -630,11 +632,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       } else {
          echo "2' ";
       }
-      
+
       if ($canedit) {
          echo "style='cursor:pointer' onClick=\"viewEditFollowup".$item->fields['id'].$this->fields['id']."$rand();\"";
       }
-                       
+
       echo " id='viewfollowup" . $this->fields[$item->getForeignKeyField()] . $this->fields["id"] . "$rand'>";
 
       echo "<td>".$this->getTypeName();
