@@ -532,19 +532,22 @@ class Ticket extends CommonDBTM {
       if ($CFG_GLPI["is_ticket_title_mandatory"]
          && (isset($input['name']) && empty($input['name']))) {
 
-         addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+         $mes1 = addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+         unset($input['name']);
          $mandatory_ok = false;
       }
 
       if ($CFG_GLPI["is_ticket_content_mandatory"]
          && (isset($input['content']) && empty($input['content']))) {
 
-         addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+         $mes2 = addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+         unset($input['content']);
          $mandatory_ok = false;
       }
 
       if (!$mandatory_ok) {
-         return false;
+         $mes1;
+         $mes2;
       }
 
 
