@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="Nome do fornecedor";
 $LANG['stats'][45]="Por hardware"; 
 $LANG['stats'][47]="Por chamado"; 
 $LANG['stats'][48]="(atribuido)"; 
-$LANG['stats'][49]="(tasks)"; 
+$LANG['stats'][49]="(tarefas)"; 
 
 $LANG['title'][5]="Base de conhecimentos"; 
 $LANG['title'][6]="Equipamentos de rede"; 
@@ -2036,6 +2036,8 @@ $LANG['tracking'][1]="Meus periféricos";
 $LANG['tracking'][2]="Ou complete a busca"; 
 $LANG['tracking'][3]="Datas inválidas. Atualização cancelada"; 
 $LANG['tracking'][4]="Não existe urgência em seu chamado, por favor, corrija."; 
+$LANG['tracking'][6]="The ticket's title is required: update not done"; 
+$LANG['tracking'][7]="The ticket's description is required: update not done"; 
 $LANG['tracking'][8]="Sem descrição para o seu chamado, por favor, tente novamente"; 
 $LANG['tracking'][9]="Padrão para ocorrências"; 
 $LANG['tracking'][10]="Padrão de recebimento de e-mails"; 

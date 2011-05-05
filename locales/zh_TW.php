@@ -2011,7 +2011,7 @@ $LANG['stats'][44]="供應廠商名稱";
 $LANG['stats'][45]="由硬體"; 
 $LANG['stats'][47]="由問題單"; 
 $LANG['stats'][48]="(分配)"; 
-$LANG['stats'][49]="(tasks)"; 
+$LANG['stats'][49]="(作業)"; 
 
 $LANG['title'][5]="知識庫"; 
 $LANG['title'][6]="網絡設備"; 
@@ -2036,6 +2036,8 @@ $LANG['tracking'][1]="我的設備";
 $LANG['tracking'][2]="或完成搜尋"; 
 $LANG['tracking'][3]="無效的資料. 取消更新."; 
 $LANG['tracking'][4]="您沒有緊急的問題單，請更正。"; 
+$LANG['tracking'][6]="The ticket's title is required: update not done"; 
+$LANG['tracking'][7]="The ticket's description is required: update not done"; 
 $LANG['tracking'][8]="您的問題單沒有任何描述, 請重試."; 
 $LANG['tracking'][9]="問題單的預設"; 
 $LANG['tracking'][10]="預設郵件收件人"; 
