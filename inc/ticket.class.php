@@ -529,27 +529,21 @@ class Ticket extends CommonDBTM {
 
       // check mandatory fields
       $mandatory_ok = true;
-      if ($CFG_GLPI["is_ticket_title_mandatory"]
-         && (isset($input['name']) && empty($input['name']))) {
-
-         $mes1 = addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
-         unset($input['name']);
-         $mandatory_ok = false;
+      if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
+         $title = trim($input['name']);
+         if (empty($title)) {
+            addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+            unset($input['name']);
+         }
       }
 
-      if ($CFG_GLPI["is_ticket_content_mandatory"]
-         && (isset($input['content']) && empty($input['content']))) {
-
-         $mes2 = addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
-         unset($input['content']);
-         $mandatory_ok = false;
+      if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
+         $content = trim($input['content']);
+         if (empty($content)) {
+            addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+            unset($input['content']);
+         }
       }
-
-      if (!$mandatory_ok) {
-         $mes1;
-         $mes2;
-      }
-
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
