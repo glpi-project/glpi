@@ -527,6 +527,26 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
+      // check mandatory fields
+      $mandatory_ok = true;
+      if ($CFG_GLPI["is_ticket_title_mandatory"]
+         && (isset($input['name']) && empty($input['name']))) {
+
+         addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+         $mandatory_ok = false;
+      }
+
+      if ($CFG_GLPI["is_ticket_content_mandatory"]
+         && (isset($input['content']) && empty($input['content']))) {
+
+         addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+         $mandatory_ok = false;
+      }
+
+      if (!$mandatory_ok) {
+         return false;
+      }
+
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
@@ -4265,6 +4285,10 @@ class Ticket extends CommonDBTM {
                       'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
             $opt['condition'] = '`is_helpdeskvisible`=1';
+         }
+
+         if ($ID && $CFG_GLPI["is_ticket_category_mandatory"]) {
+            $opt['display_emptychoice'] = false;
          }
          Dropdown::show('TicketCategory', $opt);
 
