@@ -1599,6 +1599,23 @@ class Ticket extends CommonITILObject {
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')
             || haveRight("own_ticket","1")) {
 
+         $tab['linktickets'] = $LANG['job'][55];
+
+         $tab[40]['table']         = 'glpi_tickets_tickets';
+         $tab[40]['field']         = 'tickets_id_1';
+         $tab[40]['name']          = $LANG['job'][55];
+         $tab[40]['massiveaction'] = false;
+         $tab[40]['searchtype']    = 'equals';
+         $tab[40]['joinparams']    = array('jointype' => 'item_item');
+
+         $tab[41]['table']         = 'glpi_tickets_tickets';
+         $tab[41]['field']         = 'count';
+         $tab[41]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29];
+         $tab[41]['massiveaction'] = false;
+         $tab[41]['datatype']      = 'number';
+         $tab[41]['usehaving']     = true;
+         $tab[41]['joinparams']    = array('jointype' => 'item_item');
+
          $tab['task'] = $LANG['job'][7];
 
          $tab[26]['table']         = 'glpi_tickettasks';
