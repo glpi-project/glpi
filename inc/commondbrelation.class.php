@@ -125,9 +125,9 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $item2 = new $type2();
-      if (!$this->checks_and_logs_only_for_itemtype1) {
-         if (!($item2 instanceof CommonDropdown)
-             && !$item2->can($input[$this->items_id_2],'r')) {
+      if (!$this->checks_and_logs_only_for_itemtype1
+          && !($item2 instanceof CommonDropdown)) {
+         if (!$item2->can($input[$this->items_id_2],'r')) {
             return false;
          }
       } else {
