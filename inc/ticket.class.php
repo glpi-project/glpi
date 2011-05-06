@@ -2483,6 +2483,7 @@ class Ticket extends CommonDBTM {
          $tab[41]['field']         = 'count';
          $tab[41]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29];
          $tab[41]['massiveaction'] = false;
+         $tab[41]['datatype']      = 'number';
          $tab[41]['usehaving']     = true;
          $tab[41]['joinparams']    = array('jointype' => 'item_item');
 
