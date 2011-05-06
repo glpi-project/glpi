@@ -848,7 +848,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
       }
 
-      echo "</td></td><strong>" . $data["name"] . "</strong> -&nbsp;".$data["serial"]."&nbsp; ";
+      echo "</td></td><td><strong>" . $data["name"] . "</strong> -&nbsp;".$data["serial"]."&nbsp; ";
       if ($data["softwarelicensetypes_id"]) {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
