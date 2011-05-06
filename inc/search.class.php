@@ -727,7 +727,7 @@ class Search {
             }
          }
       }
-      
+
 
       // Get it from database and DISPLAY
       if ($result) {
@@ -3733,15 +3733,15 @@ class Search {
                $out    = "";
                $split  = explode("$$$$",$data[$NAME.$num]);
                $split2 = explode("$$$$",$data[$NAME.$num."_2"]);
-               $count_display = 0;
+               $displayed = array();
                for ($k=0 ; $k<count($split) ; $k++) {
                   $linkid = $split[$k]==$data['id'] ? $split2[$k] : $split[$k];
-                  if ($linkid>0 ) {
+                  if ($linkid>0 && !isset($displayed[$linkid])) {
                      $text = $linkid." - ".Dropdown::getDropdownName('glpi_tickets', $linkid);
-                     if ($count_display) {
+                     if (count($displayed)) {
                         $out .= "<br>";
                      }
-                     $count_display++;
+                     $displayed[$linkid] = $linkid;
                      $out .= $text;
                   }
                }
