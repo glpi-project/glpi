@@ -116,19 +116,22 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Must can read second Item of the relation
+      $type2 = $this->itemtype_2;
+      if (preg_match('/^itemtype/',$this->itemtype_2)) {
+         $type2 = $input[$this->itemtype_2];
+      }
+
+      if (!class_exists($type2)) {
+         return false;
+      }
+      $item2 = new $type2();
       if (!$this->checks_and_logs_only_for_itemtype1) {
-         $type2 = $this->itemtype_2;
-         if (preg_match('/^itemtype/',$this->itemtype_2)) {
-            $type2 = $input[$this->itemtype_2];
-         }
-
-         if (!class_exists($type2)) {
-            return false;
-         }
-
-         $item2 = new $type2();
          if (!($item2 instanceof CommonDropdown)
              && !$item2->can($input[$this->items_id_2],'r')) {
+            return false;
+         }
+      } else {
+         if (!$item2->getFromDB($input[$this->items_id_2])) {
             return false;
          }
       }
