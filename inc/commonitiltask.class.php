@@ -570,7 +570,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
              $parent->getTypeName()."\">&nbsp;&nbsp;";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
-             $parent->getStatus($val["status"])."' title=\"".$parentt->getStatus($val["status"])."\">";
+             $parent->getStatus($val["status"])."' title=\"".$parent->getStatus($val["status"])."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
