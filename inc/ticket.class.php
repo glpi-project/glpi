@@ -219,13 +219,13 @@ class Ticket extends CommonDBTM {
     *
     * @param $type type to search (see constants) / 0 for all
     *
-    * @return boolean
+    * @return integer
    **/
    function countUsers($type=0) {
 
       if ($type>0) {
          if (isset($this->users[$type])) {
-            return $this->users[$type];
+            return count($this->users[$type]);
          }
 
       } else {
@@ -246,13 +246,13 @@ class Ticket extends CommonDBTM {
     *
     * @param $type type to search (see constants) / 0 for all
     *
-    * @return boolean
+    * @return integer
    **/
    function countGroups($type=0) {
 
       if ($type>0) {
          if (isset($this->groups[$type])) {
-            return $this->groups[$type];
+            return count($this->groups[$type]);
          }
 
       } else {
