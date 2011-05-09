@@ -57,6 +57,13 @@ if (isset($_POST["activate"])) {
    $setupdisplay->orderItem($_POST,'up');
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
    $setupdisplay->orderItem($_POST,'down');
+} else if (isset($_POST['delete_for_user'])) {
+   foreach($_POST['itemtype'] as $itemtype => $val) {
+      $crit = array('users_id' => $_POST['users_id'],
+                    'itemtype' => $itemtype);
+      $setupdisplay->deleteByCriteria($crit);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
    $tabs[1] = array('title'  => $LANG['central'][13],
