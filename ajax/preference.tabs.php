@@ -55,6 +55,10 @@ switch ($_REQUEST['glpi_tab']) {
       $config->showFormUserPrefs($user->fields);
       break;
 
+   case 3 :
+      DisplayPreference::showForUser(getLoginUserID());
+      break;
+
    default :
       $pref = new Preference();
       if (!Plugin::displayAction($pref, $_REQUEST['glpi_tab'])) {
