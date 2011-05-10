@@ -241,7 +241,10 @@ class Ticket_Ticket extends CommonDBRelation {
          if (count($tickets)) {
             foreach ($tickets as $data) {
                $input['id'] = $data['tickets_id'];
-               if ($ticket->can($input['id'],'w') && $data['link'] == self::DUPLICATE_WITH) {
+               if ($ticket->can($input['id'],'w')
+                   && $data['link'] == self::DUPLICATE_WITH
+                   && $ticket->fields['status'] != 'solved'
+                   && $ticket->fields['status'] != 'closed') {
                   $ticket->update($input);
                }
             }
