@@ -834,6 +834,7 @@ function update0782to080($output='HTML') {
 
    $migration->displayMessage($LANG['update'][142] . ' - Multi user group for tickets');
 
+   include_once (GLPI_ROOT . "/inc/commonitilobject.class.php");
    include_once (GLPI_ROOT . "/inc/ticket.class.php");
 
    if (!TableExists('glpi_groups_tickets')) {
