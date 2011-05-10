@@ -118,6 +118,7 @@ if (isset($_POST["add"])) {
 
 } else {
    $dropdown->displayHeader();
+
    if (!isset($options)) {
       $options = array();
    }
