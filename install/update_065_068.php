@@ -154,7 +154,10 @@ function update065to068(){
 		$DB->query($query) or die("0.68 drop type and can_assign_job from users ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!TableExists("glpi_mailing")) {	
+	if(!TableExists("glpi_mailing")) {
+
+		include_once(GLPI_ROOT.'/inc/notification.class.php');
+	
 		$query="CREATE TABLE `glpi_mailing` (
 			`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`type`  varchar(255) default NULL,
@@ -167,22 +170,6 @@ function update065to068(){
 			UNIQUE `mailings` (`type`,`FK_item`,`item_type`)
 				) TYPE = MYISAM ;";
 		$DB->query($query) or die("0.68 create mailing table ".$LANG['update'][90].$DB->error());
-
-		// MAILING TYPE
-		if (!defined("Notification::USER_TYPE")){
-			define("Notification::USER_TYPE","1");
-			define("Notification::PROFILE_TYPE","2");
-			define("Notification::GROUP_TYPE","3");
-		}
-
-		// MAILING USERS TYPE
-		if (!defined("Notification::GLOBAL_ADMINISTRATOR")){
-			define("Notification::GLOBAL_ADMINISTRATOR","1");
-			define("Notification::TICKET_ASSIGN_TECH","2");
-			define("Notification::AUTHOR","3");
-			define("Notification::TICKET_OLD_TECH_IN_CHARGE","4");
-		}
-
 
 		$query="SELECT * from glpi_config WHERE ID='1'";
 		$result=$DB->query($query);
