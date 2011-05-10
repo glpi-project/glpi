@@ -734,7 +734,8 @@ class Ticket extends CommonITILObject {
          // Setting a solution type means the ticket is solved
          if ((in_array("solutiontypes_id",$this->updates)
                || in_array("solution",$this->updates))
-               && $this->fields["status"]=="solved" ) {
+               && ($this->fields["status"] == "solved"
+                  || $this->fields["status"] == "closed")) { // auto close case
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
