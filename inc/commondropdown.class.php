@@ -145,7 +145,7 @@ abstract class CommonDropdown extends CommonDBTM {
                                  $this->getSearchUrl());
    }
 
-
+   
    function displayHeader () {
       commonHeader($this->getTypeName(), '', $this->first_level_menu, $this->second_level_menu,
                    get_class($this));

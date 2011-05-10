@@ -228,7 +228,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       if (isset($comp->fields['uuid']) && $comp->fields['uuid'] != '') {
-         $where = "`uuid`".self::getUUIDRestrictRequest($comp->fields['uuid']);
+         $where = "LOWER(`uuid`)".self::getUUIDRestrictRequest($comp->fields['uuid']);
          $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
 
          if (!empty($hosts)) {
