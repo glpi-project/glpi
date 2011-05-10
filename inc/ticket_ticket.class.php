@@ -190,12 +190,23 @@ class Ticket_Ticket extends CommonDBRelation {
          return false;
       }
 
+      if (!isset($input['link'])) {
+         $input['link'] = self::LINK_TO;
+      }
+
       // No multiple links
       $tickets = self::getLinkedTicketsTo($input['tickets_id_1']);
       if (count($tickets)) {
-         foreach ($tickets as $t) {
+         foreach ($tickets as $key => $t) {
             if ($t['tickets_id']==$input['tickets_id_2']) {
-               return false;
+               // Delete old simple link
+               if ($input['link'] == self::DUPLICATE_WITH
+                   && $t['link'] == self::LINK_TO) {
+                  $tt = new Ticket_Ticket();
+                  $tt->delete(array("id" => $key));
+               } else { // No duplicate link
+                  return false;
+               }
             }
          }
       }
