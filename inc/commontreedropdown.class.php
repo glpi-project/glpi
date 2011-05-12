@@ -355,6 +355,28 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
+    * reformat text field describing a tree (such as completename)
+    *
+    * @param $value string
+    *
+    * @return string
+    */
+   static function cleanTreeText($value) {
+
+      $tmp = explode('>', $value);
+      foreach ($tmp as $k => $v) {
+         $v = trim($v);
+         if (empty($v)) {
+            unset($tmp[$k]);
+         } else {
+            $tmp[$k] = $v;
+         }
+      }
+      return implode(' > ', $tmp);
+   }
+
+
+   /**
     * check if a tree dropdown already exists (before import)
     *
     * @param $input array of value to import (name, ...)
@@ -363,6 +385,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    **/
    function findID (&$input) {
       global $DB;
+
+      if (isset($input['completename'])) {
+         // Clean datas
+         $input['completename'] = self::cleanTreeText($input['completename']);
+      }
 
       if (isset($input['completename']) && !empty($input['completename'])) {
          $query = "SELECT `id`
