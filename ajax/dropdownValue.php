@@ -214,9 +214,7 @@ if ($item instanceof CommonTreeDropdown) {
                   utf8_substr($val, 0, $_POST["limit"])."</option>";
          }
       }
-            echo "<option value='$ID' $class title=\"".cleanInputText($data['completename'].
-                   $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
-                 "</option>";
+
       $display_selected = true;
 
       switch ($table) {
