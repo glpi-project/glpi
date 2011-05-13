@@ -2487,10 +2487,18 @@ class Ticket extends CommonDBTM {
 
          $tab[40]['table']         = 'glpi_tickets_tickets';
          $tab[40]['field']         = 'tickets_id_1';
-         $tab[40]['name']          = $LANG['job'][55];
+         $tab[40]['name']          = $LANG['job'][55]." - ".$LANG['common'][66];
          $tab[40]['massiveaction'] = false;
          $tab[40]['searchtype']    = 'equals';
          $tab[40]['joinparams']    = array('jointype' => 'item_item');
+
+         $tab[47]['table']         = 'glpi_tickets_tickets';
+         $tab[47]['field']         = 'tickets_id_1';
+         $tab[47]['name']          = $LANG['job'][55]." - ".$LANG['common'][98];
+         $tab[47]['massiveaction'] = false;
+         $tab[47]['searchtype']    = 'equals';
+         $tab[47]['joinparams']    = array('jointype' => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".Ticket_Ticket::DUPLICATE_WITH);
 
          $tab[41]['table']         = 'glpi_tickets_tickets';
          $tab[41]['field']         = 'count';
