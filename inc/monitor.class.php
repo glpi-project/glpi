@@ -86,7 +86,7 @@ class Monitor extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
@@ -97,11 +97,11 @@ class Monitor extends CommonDBTM {
                $ong[7] = $LANG['title'][34];
             }
 
-            self::addStandardTab('Note',$ong);
+            $this->addStandardTab('Note',$ong);
 
-            self::addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation',$ong);
 
-            self::addStandardTab('Log',$ong);
+            $this->addStandardTab('Log',$ong);
          }
 
       } else { // New item

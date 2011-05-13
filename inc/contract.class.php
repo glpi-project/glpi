@@ -87,15 +87,15 @@ class Contract extends CommonDBTM {
          $ong[1] = $LANG['Menu'][23];
          $ong[2] = $LANG['common'][96];
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];
          }
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

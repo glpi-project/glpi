@@ -136,7 +136,7 @@ class MailCollector  extends CommonDBTM {
       $ong = array();
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }

@@ -171,13 +171,13 @@ class Problem extends CommonITILObject {
          // Hardware
          $ong[7] = $LANG['common'][96];
          // Documents
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
          // Solution
          $ong[4] = $LANG['jobresolution'][2];
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       } else {
 
       }

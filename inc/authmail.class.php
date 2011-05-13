@@ -83,7 +83,7 @@ class AuthMail extends CommonDBTM {
       $ong = array();
       $ong[1] = $LANG['title'][26];
 
-      self::addStandardTab('Log',$ong);
+      $this->addStandardTab('Log',$ong);
 
       return $ong;
    }

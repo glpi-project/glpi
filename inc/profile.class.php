@@ -93,7 +93,7 @@ class Profile extends CommonDBTM {
          if (haveRight("user","r")) {
             $ong[4] = $LANG['Menu'][14];
          }
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
 
       } else {
          $ong[1] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
@@ -103,7 +103,7 @@ class Profile extends CommonDBTM {
          if (haveRight("user","r")) {
             $ong[4] = $LANG['Menu'][14];
          }
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }

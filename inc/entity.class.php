@@ -117,7 +117,7 @@ class Entity extends CommonTreeDropdown {
             $ong[8] = $LANG['title'][24];       // Helpdesk
          }
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
          $ong[10] = $LANG['Menu'][38];       // Inventory
       }
