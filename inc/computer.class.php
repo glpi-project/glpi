@@ -81,6 +81,7 @@ class Computer extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
+      $ong = array();
       if ($this->fields['id'] > 0) {
 
 //         $ong[1]  = $LANG['title'][30];
