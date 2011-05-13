@@ -113,7 +113,7 @@ class Document extends CommonDBTM {
    }
 
 
-   static function getTabName(CommonDBTM $item) {
+   function getTabName(CommonDBTM $item) {
       global $LANG;
 
       if (haveRight("document","r")) {
@@ -124,7 +124,19 @@ class Document extends CommonDBTM {
          }
       }
       return '';
+   }
 
+   /**
+    * show Tab content
+    *
+    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $withtemplate boolean is a template object ?
+    *
+    * @return true
+   **/
+   static function showTabContent(CommonDBTM $item, $withtemplate = 0) {
+      self::showAssociated($item, $withtemplate);
+      return true;
    }
 
    function defineTabs($options=array()) {
