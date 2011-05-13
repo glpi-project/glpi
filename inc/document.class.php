@@ -146,11 +146,11 @@ class Document extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['document'][19];
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

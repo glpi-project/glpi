@@ -135,9 +135,9 @@ class SoftwareLicense extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }

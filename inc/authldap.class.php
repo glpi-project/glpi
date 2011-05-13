@@ -545,7 +545,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[4]  = $LANG['entity'][0];
          $ong[5]  = $LANG['entity'][14];
          $ong[6]  = $LANG['ldap'][22];
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }

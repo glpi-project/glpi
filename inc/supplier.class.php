@@ -100,7 +100,7 @@ class Supplier extends CommonDBTM {
             $ong[15] = $LANG['common'][96];
          }
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (haveRight("show_all_ticket","1")) {
             $ong[6] = $LANG['title'][28];
@@ -109,9 +109,9 @@ class Supplier extends CommonDBTM {
             $ong[7] = $LANG['title'][34];
          }
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

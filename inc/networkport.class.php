@@ -178,7 +178,7 @@ class NetworkPort extends CommonDBChild {
       global $LANG, $CFG_GLPI;
 
       $ong[1]  = $LANG['title'][26];
-      self::addStandardTab('Log',$ong);
+      $this->addStandardTab('Log',$ong);
 
       return $ong;
    }

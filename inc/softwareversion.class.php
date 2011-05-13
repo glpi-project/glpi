@@ -101,7 +101,7 @@ class SoftwareVersion extends CommonDBChild {
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['software'][19];
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }

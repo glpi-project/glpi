@@ -75,15 +75,15 @@ class Contact extends CommonDBTM{
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][23];
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];
          }
 
-         self::addStandardTab('Note',$ong);
+         $this->addStandardTab('Note',$ong);
 
-         self::addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

@@ -66,7 +66,7 @@ class Budget extends CommonDropdown{
 
       if ($this->fields['id'] > 0) {
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[2] = $LANG['common'][96];
@@ -74,9 +74,9 @@ class Budget extends CommonDropdown{
                $ong[7] = $LANG['title'][34];
             }
 
-            self::addStandardTab('Note',$ong);
+            $this->addStandardTab('Note',$ong);
 
-            self::addStandardTab('Log',$ong);
+            $this->addStandardTab('Log',$ong);
          }
       }
 

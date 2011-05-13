@@ -85,11 +85,11 @@ class Computer extends CommonDBTM {
       if ($this->fields['id'] > 0) {
 
          // All devices : use one to define tab
-         self::addStandardTab('DeviceProcessor',$ong);
+         $this->addStandardTab('DeviceProcessor',$ong);
 
-         self::addStandardTab('ComputerDisk',$ong);
+         $this->addStandardTab('ComputerDisk',$ong);
 
-         self::addStandardTab('Software',$ong);
+         $this->addStandardTab('Software',$ong);
 
          if (haveRight("networking","r")
              || haveRight("printer","r")
@@ -104,11 +104,11 @@ class Computer extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         self::addStandardTab('Document',$ong);
+         $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
 
-            self::addStandardTab('ComputerVirtualMachine',$ong);
+            $this->addStandardTab('ComputerVirtualMachine',$ong);
 
             if ($CFG_GLPI["use_ocs_mode"]) {
                $ong[14] = $LANG['title'][43];
@@ -120,11 +120,11 @@ class Computer extends CommonDBTM {
                $ong[7] = $LANG['title'][34];
             }
 
-            self::addStandardTab('Note',$ong);
+            $this->addStandardTab('Note',$ong);
 
-            self::addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation',$ong);
 
-            self::addStandardTab('Log',$ong);
+            $this->addStandardTab('Log',$ong);
 
             if ($CFG_GLPI["use_ocs_mode"]
                 && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
