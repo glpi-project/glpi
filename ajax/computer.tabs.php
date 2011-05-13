@@ -77,7 +77,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          default :
             if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
-               Computer_Device::showForComputer($computer, $_POST["withtemplate"]);
             }
       }
 
@@ -150,7 +149,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          default :
             if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'])) {
-               Computer_Device::showForComputer($computer);
             }
       }
    }
