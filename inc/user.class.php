@@ -1822,10 +1822,6 @@ class User extends CommonDBTM {
       $tab[82]['field'] = 'name';
       $tab[82]['name']  = $LANG['users'][2];
 
-      $tab[78]['table']     = 'glpi_entities';
-      $tab[78]['field']     = 'name';
-      $tab[78]['name']      = $LANG['profiles'][37];
-
       $tab[79]['table'] = 'glpi_profiles';
       $tab[79]['field'] = 'name';
       $tab[79]['name']  = $LANG['profiles'][13];
