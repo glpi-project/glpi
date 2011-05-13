@@ -105,7 +105,10 @@ class CommonGLPI {
    }
 
    static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
-      if (method_exists($tab,'showTabContent')) {
+      if (Plugin::displayAction($item, $tab, $withtemplate)) {
+         return true;
+      }
+      if (!is_integer($tab) && method_exists($tab,'showTabContent')) {
          $obj = new $tab();
          return $obj->showTabContent($item,$withtemplate);
       } else {
