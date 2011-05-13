@@ -117,7 +117,11 @@ class Document extends CommonDBTM {
       global $LANG;
 
       if (haveRight("document","r")) {
-         return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
+         } else {
+            return $LANG['Menu'][27];
+         }
       }
       return '';
 

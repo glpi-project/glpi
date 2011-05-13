@@ -88,8 +88,12 @@ class ComputerDisk extends CommonDBChild {
       global $LANG;
 
       if (haveRight("computer","r")) {
-         return self::createTabEntry($LANG['computers'][8],
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['computers'][8],
                      countElementsInTable('glpi_computerdisks',"computers_id = '".$item->getID()."'"));
+         } else {
+            return $LANG['computers'][8];
+         }
       }
       return '';
    }

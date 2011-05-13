@@ -1930,7 +1930,7 @@ $LANG['search'][24] = "après";
 
 
 $LANG['setup'][0]   = "Intitulés";
-
+$LANG['setup'][1]   = "Voir les comptes dans les onglets";
 $LANG['setup'][2]   = "Ajouter utilisateur...";
 $LANG['setup'][3]   = "Liaison annuaire LDAP";
 $LANG['setup'][4]   = "Types d'ordinateurs";
