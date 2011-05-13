@@ -104,16 +104,8 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          $config->showFormUserPrefs($user->fields);
          break;
 
-      case 11 :
-         Reservation::showForUser($_POST["id"]);
-         break;
-
       case 12 :
          Auth::showSynchronizationForm($_POST["id"]);
-         break;
-
-      case 13 :
-         Log::showForItem($user);
          break;
 
       default :

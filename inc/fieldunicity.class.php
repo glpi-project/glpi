@@ -93,7 +93,7 @@ class FieldUnicity extends CommonDropdown {
       global $LANG;
 
       $ong = array();
-      $ong[12] = $LANG['title'][38];
+      self::addStandardTab('Log',$ong);
       $ong[2]  = $LANG['setup'][826];
       return $ong;
    }

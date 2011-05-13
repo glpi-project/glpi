@@ -87,7 +87,7 @@ class ComputerDisk extends CommonDBChild {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
+      if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][8],
                      countElementsInTable('glpi_computerdisks',"computers_id = '".$item->getID()."'"));
@@ -98,14 +98,7 @@ class ComputerDisk extends CommonDBChild {
       return '';
    }
 
-   /**
-    * show Tab content
-    *
-    * @param $item CommonDBTM object for which the tab need to be displayed
-    * @param $withtemplate boolean is a template object ?
-    *
-    * @return true
-   **/
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
       self::showForComputer($item, $withtemplate);
       return true;

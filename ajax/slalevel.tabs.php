@@ -58,10 +58,6 @@ if ($_POST['id'] >0 && $slalevel->can($_POST['id'],'r')) {
          $slalevel->showActionsList($_POST["id"]);
          break;
 
-      case 12 :
-            Log::showForItem($slalevel);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($slalevel, $_REQUEST['glpi_tab'])) {
          }

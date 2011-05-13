@@ -158,17 +158,13 @@ class ReservationItem extends CommonDBTM {
    }
 
 
-   static function showActivationFormForItem($itemtype, $items_id) {
+   static function showActivationFormForItem(CommonDBTM $item) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("reservation_central","w")) {
          return false;
       }
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-         if (!$item->getFromDB($items_id)) {
-            return false;
-         }
+      if ($item->getID()) {
          // Recursive type case => need entity right
          if ($item->isRecursive()) {
             if (!haveAccessToEntity($item->fields["entities_id"])) {
@@ -186,7 +182,7 @@ class ReservationItem extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['reservation'][9]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      if ($ri->getFromDBbyItem($itemtype,$items_id)) {
+      if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
          echo "<td class='center'>";
          //Switch reservation state
          echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
@@ -205,8 +201,8 @@ class ReservationItem extends CommonDBTM {
          echo "</span></td>";
       } else {
          echo "<td class='center'>";
-         echo "<input type='hidden' name='items_id' value='$items_id'>";
-         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+         echo "<input type='hidden' name='items_id' value='".$item->getID()."'>";
+         echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
          echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
          echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";

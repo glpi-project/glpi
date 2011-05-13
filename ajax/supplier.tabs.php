@@ -81,10 +81,6 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          Link::showForItem('Supplier',$_POST["id"]);
          break;
 
-      case 12 :
-         Log::showForItem($supplier);
-         break;
-
       case 15 :
          $supplier->showInfocoms();
          break;

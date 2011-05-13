@@ -104,14 +104,6 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Link::showForItem('Phone', $_POST["id"]);
             break;
 
-         case 11 :
-            Reservation::showForItem('Phone', $_POST["id"]);
-            break;
-
-         case 12 :
-            Log::showForItem($phone);
-            break;
-
          default :
             if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($phone);

@@ -97,7 +97,7 @@ class CommonGLPI {
 
       switch ($itemtype) {
          case 'Note' :
-            if (haveRight("notes","r")) {
+            if ($item->getID() && haveRight("notes","r")) {
                $ong['Note'] = $LANG['title'][37];
             }
             break;
@@ -137,6 +137,15 @@ class CommonGLPI {
       return false;
    }
 
+   /**
+    * display standard tab contents
+    *
+    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $tab string tab name
+    * @param $withtemplate boolean is a template object ?
+    *
+    * @return true
+   **/
    static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
       if (Plugin::displayAction($item, $tab, $withtemplate)) {
          return true;

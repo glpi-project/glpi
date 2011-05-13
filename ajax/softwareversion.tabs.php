@@ -67,10 +67,6 @@ if ($_POST["id"]>0 && $version->can($_POST["id"],'r')) {
          Computer_SoftwareVersion::showForVersion($version);
          break;
 
-      case 12 :
-         Log::showForItem($version);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($version, $_REQUEST['glpi_tab'])) {
             Computer_SoftwareVersion::showForVersionByEntity($version);

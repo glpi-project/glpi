@@ -58,10 +58,6 @@ if (isset($_POST['id']) && $_POST['id'] > 0) {
          $templatelanguage->showSummary($template);
          break;
 
-      case 12 :
-         Log::showForItem($template);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($template, $_REQUEST['glpi_tab'])) {
          }

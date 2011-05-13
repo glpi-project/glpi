@@ -65,10 +65,6 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             Profile_User::showForProfile($prof);
             break;
 
-         case 12 :
-            Log::showForItem($prof);
-         break;
-
          default :
             if (!CommonGLPI::displayStandardTab($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
@@ -100,10 +96,6 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
 
          case 5 :
             $prof->showFormLifeCycle($_POST['target']);
-            break;
-
-         case 12 :
-            Log::showForItem($prof);
             break;
 
          default :

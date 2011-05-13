@@ -81,10 +81,6 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          break;
 
-      case 12 :
-            Log::showForItem($authldap);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($authldap, $_REQUEST['glpi_tab'])) {
             $authldap->showFormTestLDAP ($_POST['id'], $_POST['target']);

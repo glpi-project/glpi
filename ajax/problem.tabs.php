@@ -78,10 +78,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          $problem->showSolutionForm($_POST['load_kb_sol']);
          break;
 
-      case 6 :
-         Log::showForItem($problem);
-         break;
-
       case 7 :
          Item_Problem::showForProblem($problem);
          break;

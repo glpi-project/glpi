@@ -137,7 +137,7 @@ class SoftwareLicense extends CommonDBTM {
 
          self::addStandardTab('Document',$ong);
 
-         $ong[12] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
       }
       return $ong;
    }

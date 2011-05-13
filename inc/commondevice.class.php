@@ -46,7 +46,7 @@ abstract class CommonDevice extends CommonDropdown {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
+      if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = 0;
 

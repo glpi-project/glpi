@@ -57,10 +57,6 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          Plugin::displayAction($doc, $_REQUEST['glpi_tab']);
          break;
 
-      case 12 :
-         Log::showForItem($doc);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($doc, $_REQUEST['glpi_tab'])) {
             $doc->showItems();

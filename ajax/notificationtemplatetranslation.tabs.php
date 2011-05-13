@@ -51,9 +51,6 @@ if (isset($_POST['id']) && $_POST['id'] > 0) {
    $translation->getFromDB($_POST['id']);
 
    switch($_REQUEST['glpi_tab']) {
-      case 12 :
-         Log::showForItem($translation);
-         break;
 
       default :
          if (!CommonGLPI::displayStandardTab($translation, $_REQUEST['glpi_tab'])) {

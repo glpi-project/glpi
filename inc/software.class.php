@@ -66,7 +66,7 @@ class Software extends CommonDBTM {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("software","r")) {
+      if ($item->getType() == 'Computer' && $item->getID() && haveRight("software","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][4],
                      countElementsInTable('glpi_computers_softwareversions',"computers_id = '".$item->getID()."'"));
@@ -107,10 +107,9 @@ class Software extends CommonDBTM {
 
             self::addStandardTab('Note',$ong);
 
-            if (haveRight("reservation_central", "r")) {
-               $ong[11] = $LANG['Menu'][17];
-            }
-            $ong[12] = $LANG['title'][38];
+            self::addStandardTab('Reservation',$ong);
+
+            self::addStandardTab('Log',$ong);
             if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
                $ong[21] = $LANG['software'][47];
             }

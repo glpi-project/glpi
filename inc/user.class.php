@@ -158,13 +158,12 @@ class User extends CommonDBTM {
 
          self::addStandardTab('Document',$ong);
 
-         if (haveRight("reservation_central", "r")) {
-            $ong[11] = $LANG['Menu'][17];
-         }
+         self::addStandardTab('Reservation',$ong);
+
          if (haveRight("user_authtype", "w")) {
             $ong[12] = $LANG['ldap'][12];
          }
-         $ong[13] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

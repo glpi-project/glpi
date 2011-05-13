@@ -51,6 +51,24 @@ class Reservation extends CommonDBChild {
    }
 
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("reservation_central","r")) {
+         return $LANG['Menu'][17];
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+      if ($item->getType() == 'User') {
+         self::showForUser($_POST["id"]);
+      } else {
+         self::showForItem($item);
+      }
+      return true;
+   }
+
    function pre_deleteItem() {
       global $CFG_GLPI;
 
@@ -770,10 +788,10 @@ class Reservation extends CommonDBChild {
    /**
     * Display reservations for an item
     *
-    * @param $ID ID a the item
+    * @param $item CommonDBTM object for which the reservation tab need to be displayed
     * @param $itemtype item type
    **/
-   static function showForItem($itemtype,$ID) {
+   static function showForItem(CommonDBTM $item) {
       global $DB, $LANG, $CFG_GLPI;
 
       $resaID = 0;
@@ -782,10 +800,10 @@ class Reservation extends CommonDBChild {
       }
 
       echo "<div class='firstbloc'>";
-      ReservationItem::showActivationFormForItem($itemtype, $ID);
+      ReservationItem::showActivationFormForItem($item);
 
       $ri = new ReservationItem;
-      if ($ri->getFromDBbyItem($itemtype,$ID)) {
+      if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
          $now = $_SESSION["glpi_currenttime"];
 
          // Print reservation in progress

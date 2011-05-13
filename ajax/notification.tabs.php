@@ -67,11 +67,6 @@ if (isset($_POST['id']) && $_POST['id'] > 0 && $notification->can($_POST['id'],'
          }
          break;
 
-      case 12 :
-            $notification->getFromDB($_POST["id"]);
-            Log::showForItem($notification);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($notification, $_REQUEST['glpi_tab'])) {
          }

@@ -69,10 +69,6 @@ if ($_POST["id"]>0 && $ocs->can($_POST["id"],'r')) {
          $ocs->ocsFormConfig($_POST['target'], $_POST["id"]);
          break;
 
-      case 12 :
-            Log::showForItem($ocs);
-            break;
-
       default :
          if (!CommonGLPI::displayStandardTab($ocs, $_REQUEST['glpi_tab'])) {
             $ocs->showDBConnectionStatus($_POST["id"]);

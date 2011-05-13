@@ -270,7 +270,7 @@ class Ticket extends CommonITILObject {
          self::addStandardTab('Document',$ong);
 
          $ong[11] = $LANG['Menu'][7].' / '.$LANG['Menu'][8];
-         $ong[6]  = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
 
          if (haveRight('observe_ticket','1')) {
             $ong[8] = $LANG['Menu'][13];

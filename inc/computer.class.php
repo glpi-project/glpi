@@ -122,11 +122,9 @@ class Computer extends CommonDBTM {
 
             self::addStandardTab('Note',$ong);
 
-            if (haveRight("reservation_central","r")) {
-               $ong[11] = $LANG['Menu'][17];
-            }
+            self::addStandardTab('Reservation',$ong);
 
-            $ong[12] = $LANG['title'][38];
+            self::addStandardTab('Log',$ong);
 
             if ($CFG_GLPI["use_ocs_mode"]
                 && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
