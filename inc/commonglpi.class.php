@@ -93,28 +93,26 @@ class CommonGLPI {
     *  @return array containing the onglets
    **/
    function addStandardTab($itemtype, &$ong) {
-      switch ($itemtype) {
-         case 'Document' :
-            $ong[5] = Document::getTabName($this);
-            break;
-         case 'ComputerDisk' :
-            $ong[20] = ComputerDisk::getTabName($this);
-            break;
+      if (method_exists($itemtype,'getTabName')) {
+         $obj = new $itemtype();
+         $ong[$itemtype] = $obj->getTabName($this);
+      } else {
+         switch ($itemtype) {
+            default :
+               break;
+         }
       }
    }
 
    static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
-      switch ($tab) {
-         case 5 :
-            Document::showAssociated($item, $withtemplate);
-            return true;
-            break;
-         case 20 :
-            ComputerDisk::showForComputer($item, $withtemplate);
-            return true;
-            break;
-         default :
-            return Plugin::displayAction($item, $tab, $withtemplate);
+      if (method_exists($tab,'showTabContent')) {
+         $obj = new $tab();
+         return $obj->showTabContent($item,$withtemplate);
+      } else {
+         switch ($tab) {
+            default :
+               return Plugin::displayAction($item, $tab, $withtemplate);
+         }
       }
       
    }
