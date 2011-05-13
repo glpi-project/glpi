@@ -114,6 +114,7 @@ class CommonGLPI {
                return Plugin::displayAction($item, $tab, $withtemplate);
          }
       }
+      return false;
       
    }
 
