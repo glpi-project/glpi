@@ -70,10 +70,6 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          Link::showForItem('Budget',$_POST["id"]);
          break;
 
-      case 10 :
-         showNotesForm($_POST['target'],'Budget',$_POST["id"]);
-         break;
-
       case 12 :
             Log::showForItem($budget);
          break;

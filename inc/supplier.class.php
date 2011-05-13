@@ -108,9 +108,9 @@ class Supplier extends CommonDBTM {
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];
          }
-         if (haveRight("notes","r")) {
-            $ong[10] = $LANG['title'][37];
-         }
+
+         self::addStandardTab('Note',$ong);
+
          $ong[12] = $LANG['title'][38];
 
       } else { // New item

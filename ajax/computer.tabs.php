@@ -61,9 +61,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
-         case 2 :
-            Computer_SoftwareVersion::showForComputer($computer, $_POST["withtemplate"]);
-            break;
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer, $_POST["withtemplate"]);
@@ -99,10 +96,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Plugin::displayAction($computer, $_REQUEST['glpi_tab']);
             break;
 
-         case 2 :
-            Computer_SoftwareVersion::showForComputer($computer);
-            break;
-
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer);
             NetworkPort::showForItem('Computer', $_POST["id"]);
@@ -121,10 +114,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Link::showForItem('Computer', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'],'Computer', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Computer', $_POST["id"]);
             break;
@@ -140,11 +129,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 14:
             RegistryKey::showForComputer($_POST["id"]);
-            break;
-
-         case 21 :
-            ComputerVirtualMachine::showForVirtualMachine($computer);
-            ComputerVirtualMachine::showForComputer($computer);
             break;
 
          default :

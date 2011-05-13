@@ -86,10 +86,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          Item_Problem::showForProblem($problem);
          break;
 
-      case 10 :
-         showNotesForm($_POST['target'], 'Problem', $_POST["id"]);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($problem, $_REQUEST['glpi_tab'])) {
             Problem_Ticket::showForProblem($problem);

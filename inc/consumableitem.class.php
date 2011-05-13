@@ -127,9 +127,7 @@ class ConsumableItem extends CommonDBTM {
             $ong[7] = $LANG['title'][34];
          }
 
-         if (haveRight("notes","r")) {
-            $ong[10] = $LANG['title'][37];
-         }
+         self::addStandardTab('Note',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

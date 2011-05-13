@@ -100,10 +100,6 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Link::showForItem('Peripheral', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'],'Peripheral', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Peripheral', $_POST["id"]);
             break;

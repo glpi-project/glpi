@@ -104,10 +104,6 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Link::showForItem('Phone', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'], 'Phone', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Phone', $_POST["id"]);
             break;

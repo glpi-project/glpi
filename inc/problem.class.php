@@ -174,9 +174,9 @@ class Problem extends CommonITILObject {
          self::addStandardTab('Document',$ong);
          // Solution
          $ong[4] = $LANG['jobresolution'][2];
-         if (haveRight("notes","r")) {
-            $ong[10] = $LANG['title'][37];
-         }
+
+         self::addStandardTab('Note',$ong);
+
          // History
          $ong[6] = $LANG['title'][38];
       } else {

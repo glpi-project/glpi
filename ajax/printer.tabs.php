@@ -106,10 +106,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Link::showForItem('Printer', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'], 'Printer', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Printer',$_POST["id"]);
             break;

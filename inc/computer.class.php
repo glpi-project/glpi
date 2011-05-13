@@ -84,16 +84,12 @@ class Computer extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
 
-//         $ong[1]  = $LANG['title'][30];
-
          // All devices : use one to define tab
          self::addStandardTab('DeviceProcessor',$ong);
 
          self::addStandardTab('ComputerDisk',$ong);
 
-         if (haveRight("software","r")) {
-            $ong[2] = $LANG['Menu'][4];
-         }
+         self::addStandardTab('Software',$ong);
 
          if (haveRight("networking","r")
              || haveRight("printer","r")
@@ -112,7 +108,7 @@ class Computer extends CommonDBTM {
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
 
-            $ong[21] = $LANG['computers'][57];
+            self::addStandardTab('ComputerVirtualMachine',$ong);
 
             if ($CFG_GLPI["use_ocs_mode"]) {
                $ong[14] = $LANG['title'][43];
@@ -123,9 +119,9 @@ class Computer extends CommonDBTM {
             if (haveRight("link","r")) {
                $ong[7] = $LANG['title'][34];
             }
-            if (haveRight("notes","r")) {
-               $ong[10] = $LANG['title'][37];
-            }
+
+            self::addStandardTab('Note',$ong);
+
             if (haveRight("reservation_central","r")) {
                $ong[11] = $LANG['Menu'][17];
             }

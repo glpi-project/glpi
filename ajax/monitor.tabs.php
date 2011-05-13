@@ -98,10 +98,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Link::showForItem('Monitor', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'], 'Monitor', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Monitor', $_POST["id"]);
             break;
