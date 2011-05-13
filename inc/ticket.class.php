@@ -438,6 +438,27 @@ class Ticket extends CommonITILObject {
          $input = $ret;
       }
 
+      // Manage fields from auto update : map rule actions to standard ones
+      if (isset($input['_auto_update'])) {
+         if (isset($input['_users_id_assign'])) {
+            $input['_ticket_assign']['_type']    = 'user';
+            $input['_ticket_assign']['users_id'] = $input['_users_id_assign'];
+         }
+         if (isset($input['_users_id_requester'])) {
+            $input['_ticket_requester']['_type']    = 'user';
+            $input['_ticket_requester']['users_id'] = $input['_users_id_requester'];
+         }
+         if (isset($input['_groups_id_requester'])) {
+            $input['_ticket_assign']['_type']    = 'group';
+            $input['_ticket_assign']['users_id'] = $input['_groups_id_requester'];
+         }
+         if (isset($input['_groups_id_assign'])) {
+            $input['_ticket_requester']['_type']    = 'group';
+            $input['_ticket_requester']['users_id'] = $input['_groups_id_assign'];
+         }
+      }
+
+
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
          if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
