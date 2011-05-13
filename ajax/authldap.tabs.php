@@ -58,7 +58,7 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          Log::showForItem($authldap);
-         Plugin::displayAction($authldap, $_REQUEST['glpi_tab'])
+         Plugin::displayAction($authldap, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
