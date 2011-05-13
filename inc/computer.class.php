@@ -82,6 +82,7 @@ class Computer extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       if ($this->fields['id'] > 0) {
+
          $ong[1]  = $LANG['title'][30];
 
          self::addStandardTab('ComputerDisk',$ong);
