@@ -510,6 +510,10 @@ function update080to083($output='HTML') {
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
 
+   $migration->addField("glpi_configs", "show_count_on_tabs", "tinyint( 1 ) NOT NULL DEFAULT 1");
+
+   $migration->addField("glpi_users", "show_count_on_tabs", "tinyint( 1 ) NULL DEFAULT NULL");
+
    $migration->addField("glpi_users", "token", "varchar( 255 ) NULL DEFAULT ''");
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {

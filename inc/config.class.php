@@ -721,7 +721,9 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='2'></td>";
+      echo "<td>".$LANG['setup'][1]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("show_count_on_tabs", $data["show_count_on_tabs"]);
+      echo "</td>";
       echo "<td>".$LANG['setup'][7]."&nbsp;:</td><td>";
       $values = array(';' =>';',
                       ',' =>',');
