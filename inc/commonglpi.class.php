@@ -90,10 +90,10 @@ class CommonGLPI {
     * @param $itemtype itemtype link to the tab
     * @param $ong array defined tab array
     *
-    *  @return array containing the onglets
+    *  @return nothing (set the tab array)
    **/
    function addStandardTab($itemtype, &$ong) {
-      if (method_exists($itemtype,'getTabName')) {
+      if (!is_integer($itemtype) && class_exists($itemtype)) {
          $obj = new $itemtype();
          $ong[$itemtype] = $obj->getTabName($this);
       } else {
@@ -104,13 +104,36 @@ class CommonGLPI {
       }
    }
 
+   /**
+    * Get Tab Name used for itemtype
+    *
+    * @param $item CommonDBTM object for which the tab need to be displayed
+    *
+    *  @return string tab name
+   **/
+   function getTabName(CommonDBTM $item) {
+      return '';
+   }
+
+   /**
+    * show Tab content
+    *
+    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $withtemplate boolean is a template object ?
+    *
+    * @return true
+   **/
+   static function displayTabContent(CommonDBTM $item, $withtemplate = 0) {
+      return false;
+   }
+
    static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
       if (Plugin::displayAction($item, $tab, $withtemplate)) {
          return true;
       }
-      if (!is_integer($tab) && method_exists($tab,'showTabContent')) {
+      if (!is_integer($tab) && class_exists($tab)) {
          $obj = new $tab();
-         return $obj->showTabContent($item,$withtemplate);
+         return $obj->displayTabContent($item,$withtemplate);
       } else {
          switch ($tab) {
             default :

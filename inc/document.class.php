@@ -134,7 +134,7 @@ class Document extends CommonDBTM {
     *
     * @return true
    **/
-   static function showTabContent(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContent(CommonDBTM $item, $withtemplate = 0) {
       self::showAssociated($item, $withtemplate);
       return true;
    }
