@@ -1642,18 +1642,36 @@ class Ticket extends CommonITILObject {
 
          $tab[40]['table']         = 'glpi_tickets_tickets';
          $tab[40]['field']         = 'tickets_id_1';
-         $tab[40]['name']          = $LANG['job'][55];
+         $tab[40]['name']          = $LANG['job'][55].' - '.$LANG['common'][66];
          $tab[40]['massiveaction'] = false;
          $tab[40]['searchtype']    = 'equals';
          $tab[40]['joinparams']    = array('jointype' => 'item_item');
 
+         $tab[47]['table']         = 'glpi_tickets_tickets';
+         $tab[47]['field']         = 'tickets_id_1';
+         $tab[47]['name']          = $LANG['job'][57];
+         $tab[47]['massiveaction'] = false;
+         $tab[47]['searchtype']    = 'equals';
+         $tab[47]['joinparams']    = array('jointype' => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".Ticket_Ticket::DUPLICATE_WITH);
+
          $tab[41]['table']         = 'glpi_tickets_tickets';
          $tab[41]['field']         = 'count';
-         $tab[41]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29];
+         $tab[41]['name']          = $LANG['job'][55].' - '.$LANG['common'][66]." - ".$LANG['tracking'][29];
          $tab[41]['massiveaction'] = false;
          $tab[41]['datatype']      = 'number';
          $tab[41]['usehaving']     = true;
          $tab[41]['joinparams']    = array('jointype' => 'item_item');
+
+         $tab[46]['table']         = 'glpi_tickets_tickets';
+         $tab[46]['field']         = 'count';
+         $tab[46]['name']          = $LANG['job'][57]." - ".$LANG['tracking'][29];
+         $tab[46]['massiveaction'] = false;
+         $tab[46]['datatype']      = 'number';
+         $tab[46]['usehaving']     = true;
+         $tab[46]['joinparams']    = array('jointype' => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".Ticket_Ticket::DUPLICATE_WITH);
+
 
          $tab['task'] = $LANG['job'][7];
 
