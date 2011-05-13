@@ -485,15 +485,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($event != 'alertnotclosed') {
          $this->datas = $this->getDatasForObject($this->obj);
       } else {
-         $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
-                                                                            $options['entities_id']);
-         $item = new $this->obj->getType();
-         $objettypes = getPlural($objettype);
-         $items = array();
-         foreach ($options['items'] as $object) {
-            $item->getFromDB($object['id']);
-            $tmp = $this->getDatasForObject($item, true);
-            $this->datas[$objettypes][] = $tmp;
+         if (isset($options['entities_id']) && isset($options['items'])) {
+            $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
+                                                                              $options['entities_id']);
+            $item = new $this->obj->getType();
+            $objettypes = getPlural($objettype);
+            $items = array();
+            foreach ($options['items'] as $object) {
+               $item->getFromDB($object['id']);
+               $tmp = $this->getDatasForObject($item, true);
+               $this->datas[$objettypes][] = $tmp;
+            }
          }
       }
 
