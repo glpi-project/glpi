@@ -1087,141 +1087,144 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
       } else {
-         $this->datas['##ticket.entity##']      = Dropdown::getDropdownName('glpi_entities',
-                                                                            $options['entities_id']);
-         $this->datas['##ticket.action##']      = $LANG['crontask'][15];
-         $t = new Ticket();
-         foreach ($options['tickets'] as $ticket) {
-            $tmp = array();
+         if (isset($options['entities_id']) && isset($options['tickets'])) {
+            $this->datas['##ticket.entity##']      = Dropdown::getDropdownName('glpi_entities',
+                                                                              $options['entities_id']);
+            $this->datas['##ticket.action##']      = $LANG['crontask'][15];
+            $t = new Ticket();
 
-            $t->getFromDB($ticket['id']);
+            foreach ($options['tickets'] as $ticket) {
+               $tmp = array();
 
-            $tmp['##ticket.id##']           = sprintf("%07d",$ticket['id']);
-            $tmp['##ticket.url##']          = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=ticket_".$ticket['id']);
+               $t->getFromDB($ticket['id']);
 
-            $tmp['##ticket.title##']       = $ticket['name'];
-            $tmp['##ticket.status##']      = Ticket::getStatus($ticket['status']);
-            $tmp['##ticket.globalvalidation##']
-                                           = TicketValidation::getStatus($ticket['global_validation']);
-            $tmp['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                       $ticket['requesttypes_id']);
+               $tmp['##ticket.id##']           = sprintf("%07d",$ticket['id']);
+               $tmp['##ticket.url##']          = urldecode($CFG_GLPI["url_base"].
+                                                         "/index.php?redirect=ticket_".$ticket['id']);
 
-            $tmp['##ticket.urgency##']          = Ticket::getUrgencyName($ticket['urgency']);
-            $tmp['##ticket.impact##']           = Ticket::getImpactName($ticket['impact']);
-            $tmp['##ticket.priority##']         = Ticket::getPriorityName($ticket['priority']);
-            $tmp['##ticket.time##']             = Ticket::getActionTime($ticket['actiontime']);
-            $tmp['##ticket.costtime##']         = $ticket['cost_time'];
-            $tmp['##ticket.creationdate##']     = convDateTime($ticket['date']);
-            $tmp['##ticket.content##']          = $ticket['content'];
+               $tmp['##ticket.title##']       = $ticket['name'];
+               $tmp['##ticket.status##']      = Ticket::getStatus($ticket['status']);
+               $tmp['##ticket.globalvalidation##']
+                                             = TicketValidation::getStatus($ticket['global_validation']);
+               $tmp['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                        $ticket['requesttypes_id']);
 
-
-            if ($t->getField('ticketsolutiontypes_id')) {
-               $tmp['##ticket.solution.type##']
-                           = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                       $t->getField('ticketsolutiontypes_id'));
-            } else {
-               $this->datas['##ticket.solution.type##'] = '';
-            }
-            $tmp['##ticket.solution.description##']
-                           = unclean_cross_side_scripting_deep($t->getField('solution'));
+               $tmp['##ticket.urgency##']          = Ticket::getUrgencyName($ticket['urgency']);
+               $tmp['##ticket.impact##']           = Ticket::getImpactName($ticket['impact']);
+               $tmp['##ticket.priority##']         = Ticket::getPriorityName($ticket['priority']);
+               $tmp['##ticket.time##']             = Ticket::getActionTime($ticket['actiontime']);
+               $tmp['##ticket.costtime##']         = $ticket['cost_time'];
+               $tmp['##ticket.creationdate##']     = convDateTime($ticket['date']);
+               $tmp['##ticket.content##']          = $ticket['content'];
 
 
-            if ($t->countUsers(Ticket::REQUESTER)) {
-               $users = array();
-               foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $val) {
-                  $user_tmp = new User;
-                  $user_tmp->getFromDB($uid);
+               if ($t->getField('ticketsolutiontypes_id')) {
+                  $tmp['##ticket.solution.type##']
+                              = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                         $t->getField('ticketsolutiontypes_id'));
+               } else {
+                  $this->datas['##ticket.solution.type##'] = '';
+               }
+               $tmp['##ticket.solution.description##']
+                              = unclean_cross_side_scripting_deep($t->getField('solution'));
 
-                  $users[$uid] = $user_tmp->getName();
+
+               if ($t->countUsers(Ticket::REQUESTER)) {
+                  $users = array();
+                  foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $val) {
+                     $user_tmp = new User;
+                     $user_tmp->getFromDB($uid);
+
+                     $users[$uid] = $user_tmp->getName();
 
 
-                  $tmp2 = array();
-                  $tmp2['##author##']      = $uid;
-                  $tmp2['##author.name##'] = $user_tmp->getName();
+                     $tmp2 = array();
+                     $tmp2['##author##']      = $uid;
+                     $tmp2['##author.name##'] = $user_tmp->getName();
 
-                  if ($user_tmp->getField('locations_id')) {
-                     $tmp2['##author.location##']
-                                 = Dropdown::getDropdownName('glpi_locations',
-                                                             $user_tmp->getField('locations_id'));
-                  } else {
-                     $tmp2['##author.location##'] = '';
+                     if ($user_tmp->getField('locations_id')) {
+                        $tmp2['##author.location##']
+                                    = Dropdown::getDropdownName('glpi_locations',
+                                                               $user_tmp->getField('locations_id'));
+                     } else {
+                        $tmp2['##author.location##'] = '';
+                     }
+
+                     $tmp2['##author.phone##']  = $user_tmp->getField('phone');
+                     $tmp2['##author.phone2##'] = $user_tmp->getField('phone2');
+
+                     $tmp['##authors##'][] = $tmp2;
                   }
-
-                  $tmp2['##author.phone##']  = $user_tmp->getField('phone');
-                  $tmp2['##author.phone2##'] = $user_tmp->getField('phone2');
-
-                  $tmp['##authors##'][] = $tmp2;
+                  $tmp['##ticket.authors##'] = implode(', ',$users);
+               } else {
+                  $tmp['##ticket.authors##'] = '';
                }
-               $tmp['##ticket.authors##'] = implode(', ',$users);
-            } else {
-               $tmp['##ticket.authors##'] = '';
-            }
 
 
-            if ($t->countUsers(Ticket::ASSIGN)) {
-               $users = array();
-               foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $val) {
-                  $user_tmp = new User;
-                  $user_tmp->getFromDB($uid);
+               if ($t->countUsers(Ticket::ASSIGN)) {
+                  $users = array();
+                  foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $val) {
+                     $user_tmp = new User;
+                     $user_tmp->getFromDB($uid);
 
-                  $users[$uid] = $user_tmp->getName();
+                     $users[$uid] = $user_tmp->getName();
+                  }
+                  $tmp['##ticket.assigntousers##'] = implode(', ',$users);
+               } else {
+                  $tmp['##ticket.assigntousers##'] = '';
                }
-               $tmp['##ticket.assigntousers##'] = implode(', ',$users);
-            } else {
-               $tmp['##ticket.assigntousers##'] = '';
-            }
 
-            if ($t->countGroups(Ticket::ASSIGN)) {
-               $groups = array();
-               foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $val) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+               if ($t->countGroups(Ticket::ASSIGN)) {
+                  $groups = array();
+                  foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $val) {
+                     $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                  }
+                  $tmp['##ticket.assigntogroups##'] = implode(', ',$groups);
+               } else {
+                  $tmp['##ticket.assigntogroups##'] = '';
                }
-               $tmp['##ticket.assigntogroups##'] = implode(', ',$groups);
-            } else {
-               $tmp['##ticket.assigntogroups##'] = '';
-            }
 
-            if ($t->countGroups(Ticket::REQUESTER)) {
-               $groups = array();
-               foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $val) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+               if ($t->countGroups(Ticket::REQUESTER)) {
+                  $groups = array();
+                  foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $val) {
+                     $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                  }
+                  $tmp['##ticket.groups##'] = implode(', ',$groups);
+               } else {
+                  $tmp['##ticket.groups##'] = '';
                }
-               $tmp['##ticket.groups##'] = implode(', ',$groups);
-            } else {
-               $tmp['##ticket.groups##'] = '';
-            }
 
-            if ($t->countUsers(Ticket::OBSERVER)) {
-               $users = array();
-               foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
-                  $user_tmp = new User;
-                  $user_tmp->getFromDB($uid);
-                  $users[$uid] = $user_tmp->getName();
+               if ($t->countUsers(Ticket::OBSERVER)) {
+                  $users = array();
+                  foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
+                     $user_tmp = new User;
+                     $user_tmp->getFromDB($uid);
+                     $users[$uid] = $user_tmp->getName();
+                  }
+                  $tmp['##ticket.observerusers##'] = implode(', ',$users);
+               } else {
+                  $tmp['##ticket.observerusers##'] = '';
                }
-               $tmp['##ticket.observerusers##'] = implode(', ',$users);
-            } else {
-               $tmp['##ticket.observerusers##'] = '';
-            }
 
-            if ($t->countGroups(Ticket::OBSERVER)) {
-               $groups = array();
-               foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+               if ($t->countGroups(Ticket::OBSERVER)) {
+                  $groups = array();
+                  foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
+                     $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
+                  }
+                  $tmp['##ticket.observergroups##'] = implode(', ',$groups);
+               } else {
+                  $tmp['##ticket.observergroups##'] = '';
                }
-               $tmp['##ticket.observergroups##'] = implode(', ',$groups);
-            } else {
-               $tmp['##ticket.observergroups##'] = '';
-            }
 
-            if ($ticket['suppliers_id_assign']) {
-               $tmp['##ticket.assigntosupplier##']
-                     = Dropdown::getDropdownName('glpi_suppliers', $ticket['suppliers_id_assign']);
-            } else {
-               $tmp['##ticket.assigntosupplier##'] = '';
-            }
+               if ($ticket['suppliers_id_assign']) {
+                  $tmp['##ticket.assigntosupplier##']
+                        = Dropdown::getDropdownName('glpi_suppliers', $ticket['suppliers_id_assign']);
+               } else {
+                  $tmp['##ticket.assigntosupplier##'] = '';
+               }
 
-            $this->datas['tickets'][] = $tmp;
+               $this->datas['tickets'][] = $tmp;
+            }
          }
       }
 
