@@ -50,7 +50,7 @@ if ($_POST['id'] >0 && $slalevel->can($_POST['id'],'r')) {
       case -1 :
          $slalevel->getRuleWithCriteriasAndActions($_POST['id'], 0, 1);
          $slalevel->showActionsList($_POST["id"]);
-         Plugin::displayAction($slalevel, $_REQUEST['glpi_tab'])
+         Plugin::displayAction($slalevel, $_REQUEST['glpi_tab']);
          break;
 
       case 1 :
