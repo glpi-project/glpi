@@ -83,7 +83,10 @@ class Computer extends CommonDBTM {
 
       if ($this->fields['id'] > 0) {
 
-         $ong[1]  = $LANG['title'][30];
+//         $ong[1]  = $LANG['title'][30];
+
+         // All devices : use one to define tab
+         self::addStandardTab('DeviceProcessor',$ong);
 
          self::addStandardTab('ComputerDisk',$ong);
 
