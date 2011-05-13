@@ -98,10 +98,6 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          Group_User::showForUser($user);
          break;
 
-      case 5 :
-         Document::showAssociated($user);
-         break;
-
       case 6 :
          $config = new Config();
          $user->computePreferences();
@@ -121,7 +117,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($user, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($user, $_REQUEST['glpi_tab'])) {
             Profile_User::showForUser($user);
          }
    }

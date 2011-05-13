@@ -47,6 +47,7 @@ if ($_POST['id'] >0 && $rule->can($_POST['id'],'r')) {
          $rule->getRuleWithCriteriasAndActions($_POST['id'], 1, 1);
          $rule->showCriteriasList($_POST["id"]);
          $rule->showActionsList($_POST["id"]);
+         Plugin::displayAction($rule, $_REQUEST['glpi_tab']);
          break;
 
       case 1 :
@@ -60,7 +61,7 @@ if ($_POST['id'] >0 && $rule->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($rule, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($rule, $_REQUEST['glpi_tab'])) {
          }
    }
 }

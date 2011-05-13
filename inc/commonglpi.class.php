@@ -103,6 +103,22 @@ class CommonGLPI {
       }
    }
 
+   static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
+      switch ($tab) {
+         case 5 :
+            Document::showAssociated($item, $withtemplate);
+            return true;
+            break;
+         case 20 :
+            ComputerDisk::showForComputer($item, $withtemplate);
+            return true;
+            break;
+         default :
+            return Plugin::displayAction($item, $tab, $withtemplate);
+      }
+      
+   }
+
    /**
     * create tab text entry
     *

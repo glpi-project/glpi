@@ -69,12 +69,8 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Contract::showAssociated($printer, $_POST["withtemplate"]);
             break;
 
-         case 5 :
-            Document::showAssociated($printer, $_POST["withtemplate"]);
-            break;
-
          default :
-            Plugin::displayAction($printer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            CommonGLPI::displayStandardTab($printer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
 
    } else {
@@ -102,10 +98,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Contract::showAssociated($printer);
             break;
 
-         case 5 :
-            Document::showAssociated($printer);
-            break;
-
          case 6 :
             Ticket::showListForItem('Printer', $_POST["id"]);
             break;
@@ -127,7 +119,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($printer, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($printer, $_REQUEST['glpi_tab'])) {
                Cartridge::showInstalled($printer);
                Cartridge::showInstalled($printer, 1);
             }

@@ -66,7 +66,7 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($group,$_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($group,$_REQUEST['glpi_tab'])) {
             Group_User::showForGroup($_POST['target'], $group);
          }
    }

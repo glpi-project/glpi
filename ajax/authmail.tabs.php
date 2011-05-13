@@ -54,6 +54,7 @@ if ($_POST['id'] >0 && $authmail->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Log::showForItem($authmail);
+         Plugin::displayAction($authmail, $_REQUEST['glpi_tab']);
          break;
 
       case 12 :
@@ -61,7 +62,7 @@ if ($_POST['id'] >0 && $authmail->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($authmail, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($authmail, $_REQUEST['glpi_tab'])) {
             $authmail->showFormTestMail ($_POST['id']);
          }
    }

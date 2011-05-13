@@ -88,10 +88,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          }
          break;
 
-      case 5 :
-         Document::showAssociated($ticket);
-         break;
-
       case 6 :
          Log::showForItem($ticket);
          break;
@@ -120,7 +116,7 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       default :
-         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($ticket, $_REQUEST['glpi_tab'])) {
             $fup = new TicketFollowup();
             $fup->showSummary($ticket);
          }

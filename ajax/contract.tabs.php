@@ -64,10 +64,6 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          $contract->showItems();
          break;
 
-      case 5 :
-         Document::showAssociated($contract);
-         break;
-
       case 7 :
          Link::showForItem('Contract', $_POST["id"]);
          break;
@@ -81,7 +77,7 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($contract,$_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($contract, $_REQUEST['glpi_tab'])) {
             $contract->showSuppliers();
          }
    }

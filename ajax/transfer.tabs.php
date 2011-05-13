@@ -55,7 +55,7 @@ if ($_POST['id']>0 && $transfer->can($_POST['id'],'r')) {
 
    switch ($_REQUEST['glpi_tab']) {
       default :
-         if (!Plugin::displayAction($transfer, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($transfer, $_REQUEST['glpi_tab'])) {
          }
    }
 }

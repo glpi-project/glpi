@@ -85,8 +85,8 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    default :
-      if (!Plugin::displayAction($config, $_REQUEST['glpi_tab'])) {
-      $config->showFormDisplay();
+      if (!CommonGLPI::displayStandardTab($config, $_REQUEST['glpi_tab'])) {
+         $config->showFormDisplay();
       }
 }
 

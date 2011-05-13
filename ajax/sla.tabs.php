@@ -70,7 +70,7 @@ if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
          break;
 
       default :
-         if (!Plugin::displayAction($sla, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($sla, $_REQUEST['glpi_tab'])) {
             $slalevel->showForSLA($sla);
          }
    }

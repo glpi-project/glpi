@@ -62,7 +62,7 @@ if ($_POST['id']>0 && $kb->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($kb, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($kb, $_REQUEST['glpi_tab'])) {
             $kb->showMenu();
             Document::showAssociated($kb);
          }

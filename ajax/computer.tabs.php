@@ -75,16 +75,8 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Contract::showAssociated($computer, $_POST["withtemplate"]);
             break;
 
-         case 5 :
-            Document::showAssociated($computer, $_POST["withtemplate"]);
-            break;
-
-         case 20 :
-            ComputerDisk::showForComputer($computer, $_POST["withtemplate"]);
-            break;
-
          default :
-            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
                Computer_Device::showForComputer($computer, $_POST["withtemplate"]);
             }
       }
@@ -122,10 +114,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Contract::showAssociated($computer);
             break;
 
-         case 5 :
-            Document::showAssociated($computer);
-            break;
-
          case 6 :
             Ticket::showListForItem('Computer', $_POST["id"]);
             break;
@@ -155,17 +143,13 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             RegistryKey::showForComputer($_POST["id"]);
             break;
 
-         case 20 :
-            ComputerDisk::showForComputer($computer);
-            break;
-
          case 21 :
             ComputerVirtualMachine::showForVirtualMachine($computer);
             ComputerVirtualMachine::showForComputer($computer);
             break;
 
          default :
-            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'])) {
                Computer_Device::showForComputer($computer);
             }
       }

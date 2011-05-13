@@ -54,7 +54,7 @@ if (isset($_POST["id"]) && $_POST['id']>0 && $disk->can($_POST['id'],'r')) {
 
    switch($_REQUEST['glpi_tab']) {
       default :
-         if (!Plugin::displayAction($disk, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($disk, $_REQUEST['glpi_tab'])) {
          }
    }
 }

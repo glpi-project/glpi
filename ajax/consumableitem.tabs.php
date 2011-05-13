@@ -67,10 +67,6 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          Infocom::showForItem($consumable);
          break;
 
-      case 5 :
-         Document::showAssociated($consumable);
-         break;
-
       case 7 :
          Link::showForItem('ConsumableItem', $_POST["id"]);
          break;
@@ -80,7 +76,7 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($consumable, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($consumable, $_REQUEST['glpi_tab'])) {
             Consumable::showAddForm($consumable);
             Consumable::showForItem($consumable);
             Consumable::showForItem($consumable, 1);

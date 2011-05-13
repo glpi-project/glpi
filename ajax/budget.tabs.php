@@ -65,9 +65,6 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          $budget->showItems();
          break;
 
-      case 5 :
-         Document::showAssociated($budget);
-         break;
 
       case 7 :
          Link::showForItem('Budget',$_POST["id"]);
@@ -82,7 +79,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($budget, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+         if (!CommonGLPI::displayStandardTab($budget, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
             $budget->showValuesByEntity();
          }
          break;

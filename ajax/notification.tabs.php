@@ -73,7 +73,7 @@ if (isset($_POST['id']) && $_POST['id'] > 0 && $notification->can($_POST['id'],'
          break;
 
       default :
-         if (!Plugin::displayAction($notification, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($notification, $_REQUEST['glpi_tab'])) {
          }
    }
 }

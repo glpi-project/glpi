@@ -68,12 +68,8 @@ if (!empty($_POST["withtemplate"])) {
             Contract::showAssociated($netdevice, $_POST["withtemplate"]);
             break;
 
-         case 5 :
-            Document::showAssociated($netdevice, $_POST["withtemplate"]);
-            break;
-
          default :
-            if (!Plugin::displayAction($netdevice, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                NetworkPort::showForItem('NetworkEquipment', $_POST["id"], $_POST["withtemplate"]);
             }
       }
@@ -94,10 +90,6 @@ if (!empty($_POST["withtemplate"])) {
       case 4 :
          Infocom::showForItem($netdevice);
          Contract::showAssociated($netdevice);
-         break;
-
-      case 5 :
-         Document::showAssociated($netdevice, $_POST["withtemplate"]);
          break;
 
       case 6 :
@@ -121,7 +113,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!Plugin::displayAction($netdevice, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'])) {
             NetworkPort::showForItem('NetworkEquipment',$_POST["id"]);
          }
    }
