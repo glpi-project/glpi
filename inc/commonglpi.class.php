@@ -97,7 +97,7 @@ class CommonGLPI {
 
       switch ($itemtype) {
          case 'Note' :
-            if ($item->getID() && haveRight("notes","r")) {
+            if ($this->getID() && haveRight("notes","r")) {
                $ong['Note'] = $LANG['title'][37];
             }
             break;
