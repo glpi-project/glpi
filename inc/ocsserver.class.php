@@ -1147,7 +1147,6 @@ class OcsServer extends CommonDBTM {
       return false;
    }
 
-
    static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,
                                    $defaultlocation = -1) {
       global $DB;
@@ -5622,7 +5621,7 @@ class OcsServer extends CommonDBTM {
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
                $task->log("Update computer " . $data["ID"] . "\n");
-               self::processComputer($data["ID"], $ocsservers_id, 0, -1, -1, 1);
+               self::processComputer($data["ID"], $ocsservers_id, 0, -1, -1);
             }
             $task->setVolume($nbcomp);
          } else {
