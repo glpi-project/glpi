@@ -114,14 +114,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Link::showForItem('Computer', $_POST["id"]);
             break;
 
-         case 11 :
-            Reservation::showForItem('Computer', $_POST["id"]);
-            break;
-
-         case 12 :
-            Log::showForItem($computer);
-            break;
-
          case 13 :
             OcsLink::showForItem($computer);
             OcsServer::editLock($_POST['target'], $_POST["id"]);

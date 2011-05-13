@@ -54,10 +54,6 @@ if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
          Plugin::displayAction($port, $_REQUEST['glpi_tab']);
          break;
 
-      case 12 :
-         Log::showForItem($port);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($port, $_REQUEST['glpi_tab'])) {
             NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);

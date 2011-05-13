@@ -116,7 +116,7 @@ class Document extends CommonDBTM {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if (haveRight("document","r")) {
+      if ($item->getID() && haveRight("document","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
          } else {
@@ -150,7 +150,7 @@ class Document extends CommonDBTM {
 
          self::addStandardTab('Note',$ong);
 
-         $ong[12] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

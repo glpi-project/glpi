@@ -68,10 +68,6 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          Link::showForItem('Contract', $_POST["id"]);
          break;
 
-      case 12 :
-         Log::showForItem($contract);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($contract, $_REQUEST['glpi_tab'])) {
             $contract->showSuppliers();

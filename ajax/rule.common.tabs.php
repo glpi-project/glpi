@@ -56,10 +56,6 @@ if ($_POST['id'] >0 && $rule->can($_POST['id'],'r')) {
          $rule->showActionsList($_POST["id"]);
          break;
 
-      case 12 :
-            Log::showForItem($rule);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($rule, $_REQUEST['glpi_tab'])) {
          }

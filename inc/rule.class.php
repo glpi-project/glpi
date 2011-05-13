@@ -1843,7 +1843,7 @@ class Rule extends CommonDBTM {
       $ong[1] = $LANG['title'][26];
 
       if ($this->fields['id'] > 0) {
-         $ong[12] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
       }
       return $ong;
    }

@@ -177,8 +177,7 @@ class Problem extends CommonITILObject {
 
          self::addStandardTab('Note',$ong);
 
-         // History
-         $ong[6] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
       } else {
 
       }

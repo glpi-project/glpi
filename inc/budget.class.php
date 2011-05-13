@@ -76,7 +76,7 @@ class Budget extends CommonDropdown{
 
             self::addStandardTab('Note',$ong);
 
-            $ong[12] = $LANG['title'][38];
+            self::addStandardTab('Log',$ong);
          }
       }
 

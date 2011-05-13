@@ -99,10 +99,9 @@ class Monitor extends CommonDBTM {
 
             self::addStandardTab('Note',$ong);
 
-            if (haveRight("reservation_central","r")) {
-               $ong[11] = $LANG['Menu'][17];
-            }
-            $ong[12] = $LANG['title'][38];
+            self::addStandardTab('Reservation',$ong);
+
+            self::addStandardTab('Log',$ong);
          }
 
       } else { // New item

@@ -66,10 +66,6 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          Link::showForItem('Contact', $_POST["id"]);
          break;
 
-      case 12 :
-         Log::showForItem($contact);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($contact, $_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();

@@ -98,14 +98,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Link::showForItem('Monitor', $_POST["id"]);
             break;
 
-         case 11 :
-            Reservation::showForItem('Monitor', $_POST["id"]);
-            break;
-
-         case 12 :
-            Log::showForItem($monitor);
-            break;
-
          default :
             if (!CommonGLPI::displayStandardTab($monitor, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($monitor);

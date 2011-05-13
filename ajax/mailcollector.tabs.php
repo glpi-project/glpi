@@ -60,10 +60,6 @@ if ($_POST['id']>0 && $collector->can($_POST['id'],'r')) {
          Plugin::displayAction($collector, $_REQUEST['glpi_tab']);
          break;
 
-      case 12 :
-            Log::showForItem($collector);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($collector, $_REQUEST['glpi_tab'])) {
             $collector->showGetMessageForm($_POST['id']);

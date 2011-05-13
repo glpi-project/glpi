@@ -95,7 +95,7 @@ class Contract extends CommonDBTM {
 
          self::addStandardTab('Note',$ong);
 
-         $ong[12] = $LANG['title'][38];
+         self::addStandardTab('Log',$ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];
