@@ -83,7 +83,8 @@ class Computer extends CommonDBTM {
 
       if ($this->fields['id'] > 0) {
          $ong[1]  = $LANG['title'][30];
-         $ong[20] = $LANG['computers'][8];
+
+         self::addStandardTab('ComputerDisk',$ong);
 
          if (haveRight("software","r")) {
             $ong[2] = $LANG['Menu'][4];
@@ -102,7 +103,7 @@ class Computer extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
 

@@ -121,7 +121,7 @@ class ConsumableItem extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];

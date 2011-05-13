@@ -123,7 +123,7 @@ class CartridgeItem extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("link","r")) {

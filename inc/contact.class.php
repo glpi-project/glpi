@@ -75,7 +75,7 @@ class Contact extends CommonDBTM{
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][23];
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];

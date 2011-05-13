@@ -267,7 +267,7 @@ class Ticket extends CommonITILObject {
             $ong[10] = $LANG['satisfaction'][0];
          }
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          $ong[11] = $LANG['Menu'][7].' / '.$LANG['Menu'][8];
          $ong[6]  = $LANG['title'][38];
