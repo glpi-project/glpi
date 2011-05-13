@@ -95,7 +95,10 @@ class CommonGLPI {
    function addStandardTab($itemtype, &$ong) {
       if (!is_integer($itemtype) && class_exists($itemtype)) {
          $obj = new $itemtype();
-         $ong[$itemtype] = $obj->getTabName($this);
+         $title = $obj->getTabNameForItem($this);
+         if (!empty($title)) {
+            $ong[$itemtype] = $title;
+         }
       } else {
          switch ($itemtype) {
             default :
@@ -111,7 +114,7 @@ class CommonGLPI {
     *
     *  @return string tab name
    **/
-   function getTabName(CommonDBTM $item) {
+   function getTabNameForItem(CommonDBTM $item) {
       return '';
    }
 
@@ -123,7 +126,7 @@ class CommonGLPI {
     *
     * @return true
    **/
-   static function displayTabContent(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
       return false;
    }
 
@@ -133,7 +136,7 @@ class CommonGLPI {
       }
       if (!is_integer($tab) && class_exists($tab)) {
          $obj = new $tab();
-         return $obj->displayTabContent($item,$withtemplate);
+         return $obj->displayTabContentForItem($item,$withtemplate);
       } else {
          switch ($tab) {
             default :
