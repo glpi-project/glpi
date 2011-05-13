@@ -67,7 +67,7 @@ switch ($_REQUEST['glpi_tab']) {
       break;
 
    default :
-      if (!Plugin::displayAction($central, $_REQUEST['glpi_tab'])) {
+      if (!CommonGLPI::displayStandardTab($central, $_REQUEST['glpi_tab'])) {
          $central->showMyView();
       }
 }

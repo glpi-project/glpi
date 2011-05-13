@@ -65,7 +65,7 @@ if ($_POST['id']>0 && $collector->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($collector, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($collector, $_REQUEST['glpi_tab'])) {
             $collector->showGetMessageForm($_POST['id']);
          }
          break;

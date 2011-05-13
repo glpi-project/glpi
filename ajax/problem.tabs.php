@@ -59,6 +59,7 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          Document::showAssociated($problem);
          $problem->showSolutionForm();
          Log::showForItem($problem);
+         Plugin::displayAction($problem, $_REQUEST['glpi_tab'])
          break;
 
       case 2 :
@@ -77,10 +78,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          $problem->showSolutionForm($_POST['load_kb_sol']);
          break;
 
-      case 5 :
-         Document::showAssociated($problem);
-         break;
-
       case 6 :
          Log::showForItem($problem);
          break;
@@ -94,7 +91,7 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          break;
 
       default :
-         if (!Plugin::displayAction($problem, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($problem, $_REQUEST['glpi_tab'])) {
             Problem_Ticket::showForProblem($problem);
          }
    }

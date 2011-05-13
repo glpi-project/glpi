@@ -61,7 +61,7 @@ switch ($_REQUEST['glpi_tab']) {
 
    default :
       $pref = new Preference();
-      if (!Plugin::displayAction($pref, $_REQUEST['glpi_tab'])) {
+      if (!CommonGLPI::displayStandardTab($pref, $_REQUEST['glpi_tab'])) {
          $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", getLoginUserID());
       }
 }

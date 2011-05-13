@@ -69,12 +69,8 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Contract::showAssociated($monitor, $_POST["withtemplate"]);
             break;
 
-         case 5 :
-            Document::showAssociated($monitor, $_POST["withtemplate"]);
-            break;
-
          default :
-            Plugin::displayAction($monitor, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            CommonGLPI::displayStandardTab($monitor, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
 
    } else  {
@@ -92,10 +88,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
          case 4 :
             Infocom::showForItem($monitor);
             Contract::showAssociated($monitor);
-            break;
-
-         case 5 :
-            Document::showAssociated($monitor, $_POST["withtemplate"]);
             break;
 
          case 6 :
@@ -119,7 +111,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($monitor, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($monitor, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($monitor);
             }
       }

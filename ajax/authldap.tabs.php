@@ -58,6 +58,7 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
          $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
          Log::showForItem($authldap);
+         Plugin::displayAction($authldap, $_REQUEST['glpi_tab'])
          break;
 
       case 2 :
@@ -85,7 +86,7 @@ if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($authldap, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($authldap, $_REQUEST['glpi_tab'])) {
             $authldap->showFormTestLDAP ($_POST['id'], $_POST['target']);
          }
    }

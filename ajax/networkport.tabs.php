@@ -50,8 +50,8 @@ if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1: // All
          NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);
-         Plugin::displayAction($port, $_REQUEST['glpi_tab']);
          Log::showForItem($port);
+         Plugin::displayAction($port, $_REQUEST['glpi_tab']);
          break;
 
       case 12 :
@@ -59,7 +59,7 @@ if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($port, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($port, $_REQUEST['glpi_tab'])) {
             NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);
          }
    }

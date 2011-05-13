@@ -57,10 +57,6 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          Plugin::displayAction($doc, $_REQUEST['glpi_tab']);
          break;
 
-      case 5 :
-         Document::showAssociated($doc);
-         break;
-
       case 10 :
          showNotesForm( $_POST['target'], 'Document', $_POST["id"]);
          break;
@@ -70,7 +66,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($doc, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($doc, $_REQUEST['glpi_tab'])) {
             $doc->showItems();
          }
    }

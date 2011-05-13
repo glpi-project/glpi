@@ -73,10 +73,6 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          $supplier->showContracts();
          break;
 
-      case 5 :
-         Document::showAssociated($supplier);
-         break;
-
       case 6 :
          Ticket::showListForSupplier($_POST["id"]);
          break;
@@ -98,7 +94,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($supplier, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($supplier, $_REQUEST['glpi_tab'])) {
             $supplier->showContacts();
          }
    }

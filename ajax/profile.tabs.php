@@ -70,7 +70,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
          break;
 
          default :
-            if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
             }
       }
@@ -107,7 +107,7 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
             break;
 
          default :
-            if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormInventory($_POST['target']);
             }
       }

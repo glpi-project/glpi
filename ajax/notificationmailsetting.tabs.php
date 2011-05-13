@@ -69,7 +69,7 @@ if ($_POST['id'] > 0) {
          break;
 
       default :
-         if (!Plugin::displayAction($target,$_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($target,$_REQUEST['glpi_tab'])) {
          }
    }
 }

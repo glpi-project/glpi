@@ -509,6 +509,7 @@ class User extends CommonDBTM {
             //loadLanguage();
          }
       }
+
       foreach ($CFG_GLPI['user_pref_field'] as $f) {
          if (isset($input[$f])) {
             if (getLoginUserID() === $input['id']) {
@@ -521,7 +522,6 @@ class User extends CommonDBTM {
             }
          }
       }
-
       return $input;
    }
 

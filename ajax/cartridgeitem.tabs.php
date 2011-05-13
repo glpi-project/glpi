@@ -69,10 +69,6 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Infocom::showForItem($cartridge);
          break;
 
-      case 5 :
-         Document::showAssociated($cartridge);
-         break;
-
       case 7 :
          Link::showForItem('CartridgeItem', $_POST["id"]);
          break;
@@ -82,7 +78,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($cartridge, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($cartridge, $_REQUEST['glpi_tab'])) {
             $cartridge->showCompatiblePrinters();
             Cartridge::showAddForm($cartridge);
             Cartridge::showForCartridgeItem($cartridge);

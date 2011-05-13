@@ -62,10 +62,6 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          Plugin::displayAction($contact, $_REQUEST['glpi_tab']);
          break;
 
-      case 5 :
-         Document::showAssociated($contact);
-         break;
-
       case 7 :
          Link::showForItem('Contact', $_POST["id"]);
          break;
@@ -79,7 +75,7 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          break;
 
       default :
-         if (!Plugin::displayAction($contact, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($contact, $_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();
          }
    }

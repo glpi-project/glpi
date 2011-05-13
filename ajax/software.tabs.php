@@ -67,12 +67,8 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Contract::showAssociated($soft, $_POST["withtemplate"]);
             break;
 
-         case 5 :
-            Document::showAssociated($soft, $_POST["withtemplate"]);
-            break;
-
          default :
-            Plugin::displayAction($soft, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            CommonGLPI::displayStandardTab($soft, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
 
    } else {
@@ -96,10 +92,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
          case 4 :
             Infocom::showForItem($soft);
             Contract::showAssociated($soft);
-            break;
-
-         case 5 :
-            Document::showAssociated($soft);
             break;
 
          case 6 :
@@ -127,7 +119,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($soft, $_REQUEST['glpi_tab'])) {
+            if (!CommonGLPI::displayStandardTab($soft, $_REQUEST['glpi_tab'])) {
                SoftwareVersion::showForSoftware($soft);
                SoftwareLicense::showForSoftware($soft);
             }

@@ -56,7 +56,7 @@ if (isset($_POST['id']) && $_POST['id'] > 0) {
          break;
 
       default :
-         if (!Plugin::displayAction($translation, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($translation, $_REQUEST['glpi_tab'])) {
          }
    }
 }
