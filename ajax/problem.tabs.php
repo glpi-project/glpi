@@ -59,7 +59,7 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          Document::showAssociated($problem);
          $problem->showSolutionForm();
          Log::showForItem($problem);
-         Plugin::displayAction($problem, $_REQUEST['glpi_tab'])
+         Plugin::displayAction($problem, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
