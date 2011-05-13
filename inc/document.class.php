@@ -1368,6 +1368,7 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='items_id' value='$ID'>";
             if ($item->getType()=='Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
+               echo "<input type='hidden' name='documentcategories_id' value='".$CFG_GLPI["documentcategories_id_forticket"]."'>";
             }
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
