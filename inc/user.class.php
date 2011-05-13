@@ -156,7 +156,7 @@ class User extends CommonDBTM {
             $ong[3] = $LANG['title'][28]; // tickets
          }
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (haveRight("reservation_central", "r")) {
             $ong[11] = $LANG['Menu'][17];

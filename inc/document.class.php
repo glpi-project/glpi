@@ -113,12 +113,14 @@ class Document extends CommonDBTM {
    }
 
 
-   static function addTab(CommonDBTM $item, &$tab) {
+   static function getTabName(CommonDBTM $item) {
       global $LANG;
 
       if (haveRight("document","r")) {
-         $tab[5] = self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
+         return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
       }
+      return '';
+
    }
 
    function defineTabs($options=array()) {
@@ -128,8 +130,7 @@ class Document extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['document'][19];
 
-         self::addTab($this,$ong);
-//         $ong[5] = $LANG['document'][20];
+         self::addStandardTab('Document',$ong);
 
          if (haveRight("notes","r")) {
             $ong[10] = $LANG['title'][37];

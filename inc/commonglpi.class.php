@@ -85,6 +85,25 @@ class CommonGLPI {
    }
 
    /**
+    * Add standard define tab 
+    *
+    * @param $itemtype itemtype link to the tab
+    * @param $ong array defined tab array
+    *
+    *  @return array containing the onglets
+   **/
+   function addStandardTab($itemtype, &$ong) {
+      switch ($itemtype) {
+         case 'Document' :
+            $ong[5] = Document::getTabName($this);
+            break;
+         case 'ComputerDisk' :
+            $ong[20] = ComputerDisk::getTabName($this);
+            break;
+      }
+   }
+
+   /**
     * create tab text entry
     *
     * @param $text string text to display

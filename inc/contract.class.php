@@ -87,7 +87,7 @@ class Contract extends CommonDBTM {
          $ong[1] = $LANG['Menu'][23];
          $ong[2] = $LANG['common'][96];
 
-         Document::addTab($this,$ong);
+         self::addStandardTab('Document',$ong);
 
          if (haveRight("link","r")) {
             $ong[7] = $LANG['title'][34];

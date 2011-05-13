@@ -97,8 +97,7 @@ class Document_Item extends CommonDBRelation{
 
       // Document case : search in both
       if ($item->getType() == 'Document') {
-         $restrict = "`glpi_documents_items`.`items_id` = `glpi_documents`.`id`
-                      AND `glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
+         $restrict = "`glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
          if (getLoginUserID()) {

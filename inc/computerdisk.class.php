@@ -84,6 +84,16 @@ class ComputerDisk extends CommonDBChild {
       $this->fields["freesize"]  = '0';
    }
 
+   static function getTabName(Computer $item) {
+      global $LANG;
+
+      if (haveRight("computer","r")) {
+         return self::createTabEntry($LANG['computers'][8],
+                     countElementsInTable('glpi_computerdisks',"computers_id = '".$item->getID()."'"));
+      }
+      return '';
+   }
+
 
    /**
     * Print the version form
