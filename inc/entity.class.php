@@ -116,9 +116,9 @@ class Entity extends CommonTreeDropdown {
          if (haveRight('entity_helpdesk','r')) {
             $ong[8] = $LANG['title'][24];       // Helpdesk
          }
-         if (haveRight("notes","r")) {
-            $ong[9] = $LANG['title'][37];
-         }
+
+         self::addStandardTab('Note',$ong);
+
          $ong[10] = $LANG['Menu'][38];       // Inventory
       }
       return $ong;
@@ -207,16 +207,12 @@ class Entity extends CommonTreeDropdown {
                EntityData::showHelpdeskOptions($this);
                break;
 
-            case 9 :
-               showNotesForm(getItemTypeFormURL('EntityData'), 'EntityData', $_POST["id"]);
-               break;
-
             case 10 :
                EntityData::showInventoryOptions($this);
                break;
 
             default :
-               if (!Plugin::displayAction($this, $tab)) {
+               if (!CommonGLPI::displayStandardTab($this, $tab)) {
                   $this->showChildren($ID);
                }
                return false;
@@ -595,6 +591,17 @@ class Entity extends CommonTreeDropdown {
       }
    }
 
+
+   function showNotesForm() {
+      if (isset($this->fields['id'])) {
+         $entitydata = new EntityData();
+         if (!$entitydata->getFromDB($this->fields['id'])) {
+            $entitydata->add(array('entities_id' =>$this->fields['id']));
+            $entitydata->getFromDB($this->fields['id']);
+         }
+         $entitydata->showNotesForm();
+      }
+   }
 }
 
 ?>

@@ -101,9 +101,7 @@ class Printer  extends CommonDBTM {
                $ong[7] = $LANG['title'][34];
             }
 
-            if (haveRight("notes","r")) {
-               $ong[10] = $LANG['title'][37];
-            }
+            self::addStandardTab('Note',$ong);
 
             if (haveRight("reservation_central","r")) {
                $ong[11] = $LANG['Menu'][17];

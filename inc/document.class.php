@@ -148,9 +148,8 @@ class Document extends CommonDBTM {
 
          self::addStandardTab('Document',$ong);
 
-         if (haveRight("notes","r")) {
-            $ong[10] = $LANG['title'][37];
-         }
+         self::addStandardTab('Note',$ong);
+
          $ong[12] = $LANG['title'][38];
 
       } else { // New item

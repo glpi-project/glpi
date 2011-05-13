@@ -100,10 +100,6 @@ if (!empty($_POST["withtemplate"])) {
          Link::showForItem('NetworkEquipment', $_POST["id"]);
          break;
 
-      case 10 :
-         showNotesForm($_POST['target'], 'NetworkEquipment', $_POST["id"]);
-         break;
-
       case 11 :
          Reservation::showForItem('NetworkEquipment', $_POST["id"]);
          break;

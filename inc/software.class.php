@@ -63,6 +63,24 @@ class Software extends CommonDBTM {
       return haveRight('software', 'r');
    }
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getType() == 'Computer' && haveRight("software","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][4],
+                     countElementsInTable('glpi_computers_softwareversions',"computers_id = '".$item->getID()."'"));
+         } else {
+            return $LANG['Menu'][4];
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+      Computer_SoftwareVersion::showForComputer($item, $withtemplate);
+      return true;
+   }
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
@@ -86,9 +104,9 @@ class Software extends CommonDBTM {
             if (haveRight("link","r")) {
                $ong[7] = $LANG['title'][34];
             }
-            if (haveRight("notes","r")) {
-               $ong[10] = $LANG['title'][37];
-            }
+
+            self::addStandardTab('Note',$ong);
+
             if (haveRight("reservation_central", "r")) {
                $ong[11] = $LANG['Menu'][17];
             }

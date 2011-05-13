@@ -73,10 +73,6 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Link::showForItem('CartridgeItem', $_POST["id"]);
          break;
 
-      case 10 :
-         showNotesForm($_POST['target'],'CartridgeItem',$_POST["id"]);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($cartridge, $_REQUEST['glpi_tab'])) {
             $cartridge->showCompatiblePrinters();

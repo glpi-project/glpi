@@ -93,17 +93,24 @@ class CommonGLPI {
     *  @return nothing (set the tab array)
    **/
    function addStandardTab($itemtype, &$ong) {
-      if (!is_integer($itemtype) && class_exists($itemtype)) {
-         $obj = new $itemtype();
-         $title = $obj->getTabNameForItem($this);
-         if (!empty($title)) {
-            $ong[$itemtype] = $title;
-         }
-      } else {
-         switch ($itemtype) {
-            default :
-               break;
-         }
+      global $LANG;
+
+      switch ($itemtype) {
+         case 'Note' :
+            if (haveRight("notes","r")) {
+               $ong['Note'] = $LANG['title'][37];
+            }
+            break;
+
+         default :
+            if (!is_integer($itemtype) && class_exists($itemtype)) {
+               $obj = new $itemtype();
+               $title = $obj->getTabNameForItem($this);
+               if (!empty($title)) {
+                  $ong[$itemtype] = $title;
+               }
+            }
+            break;
       }
    }
 
@@ -134,14 +141,18 @@ class CommonGLPI {
       if (Plugin::displayAction($item, $tab, $withtemplate)) {
          return true;
       }
-      if (!is_integer($tab) && class_exists($tab)) {
-         $obj = new $tab();
-         return $obj->displayTabContentForItem($item,$withtemplate);
-      } else {
-         switch ($tab) {
-            default :
-               return Plugin::displayAction($item, $tab, $withtemplate);
-         }
+      switch ($tab) {
+         case 'Note' :
+            $item->showNotesForm();
+            return true;
+            break;
+
+         default :
+            if (!is_integer($tab) && class_exists($tab)) {
+               $obj = new $tab();
+               return $obj->displayTabContentForItem($item,$withtemplate);
+            }
+            break;
       }
       return false;
       

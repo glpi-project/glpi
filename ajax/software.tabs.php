@@ -102,10 +102,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Link::showForItem('Software', $_POST["id"]);
             break;
 
-         case 10 :
-            showNotesForm($_POST['target'], 'Software', $_POST["id"]);
-            break;
-
          case 11 :
             Reservation::showForItem('Software', $_POST["id"]);
             break;

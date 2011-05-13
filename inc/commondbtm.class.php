@@ -2725,6 +2725,60 @@ class CommonDBTM extends CommonGLPI {
 
       }
    }
+
+   /**
+   *  show notes for item
+   *
+   * @param @param $item CommonDBTM object for which the notes need to be displayed
+   *
+   * @return nothing
+   */
+   function showNotesForm() {
+      global $LANG;
+
+      if (!haveRight("notes","r")) {
+         return false;
+      }
+      if (!$this->isField('notepad') || !isset($this->fields[$this->getIndexName()])) {
+         return false;
+      }
+
+      //getFromDB
+      $canedit = (haveRight("notes", "w")
+                  && (!$this->isEntityAssign() || haveAccessToEntity($this->getEntityID())));
+      $target = $this->getFormURL();
+
+      if ($canedit) {
+         echo "<form name='form' method='post' action='".$target."'>";
+      }
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe' >";
+      echo "<tr><th class='center'>".$LANG['title'][37]."</th></tr>";
+
+      echo "<tr><td class='tab_bg_1 center middle'>";
+      echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
+            $this->getField('notepad')."</textarea></td></tr>";
+
+      echo "<tr><td class='tab_bg_2 center'>";
+      echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+      // for all objects without id as primary key (like entitydata)
+      if ($this->getIndexName() != 'id') {
+            echo "<input type='hidden' name='".$this->getIndexName()."' ".
+                  "value='".$this->fields[$this->getIndexName()]."'>";
+      }
+
+      if ($canedit) {
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      }
+      echo "</td></tr>";
+      echo "</table></div>";
+
+      if ($canedit) {
+         echo "</form>";
+      }
+   }
+
 }
 
 ?>

@@ -3110,64 +3110,6 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
 
 /**
- *  show notes for item
- *
- * @param $target target page to update item
- * @param $itemtype item type of the device to display notes
- * @param $id id of the device to display notes
- *
- * @return nothing
- */
-function showNotesForm($target, $itemtype, $id) {
-   global $LANG;
-
-   if (!haveRight("notes","r")) {
-      return false;
-   }
-
-   if (!class_exists($itemtype)) {
-      return false;
-   }
-
-   $item = new $itemtype();
-   //getFromDB
-   $item->getFromDB ($id);
-   $canedit = (haveRight("notes", "w")
-               && (!$item->isEntityAssign() || haveAccessToEntity($item->getEntityID())));
-
-   if ($canedit) {
-      echo "<form name='form' method='post' action='".$target."'>";
-   }
-
-   echo "<div class='center'>";
-   echo "<table class='tab_cadre_fixe' >";
-   echo "<tr><th class='center'>".$LANG['title'][37]."</th></tr>";
-
-   echo "<tr><td class='tab_bg_1 center middle'>";
-   echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
-          $item->getField('notepad')."</textarea></td></tr>";
-
-   echo "<tr><td class='tab_bg_2 center'>";
-   echo "<input type='hidden' name='id' value='".$item->fields['id']."'>";
-   // for all objects without id as primary key (like entitydata)
-   if ($item->getIndexName() != $id) {
-         echo "<input type='hidden' name='".$item->getIndexName()."' ".
-               "value='".$item->fields[$item->getIndexName()]."'>";
-   }
-
-   if ($canedit) {
-      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-   }
-   echo "</td></tr>";
-   echo "</table></div>";
-
-   if ($canedit) {
-      echo "</form>";
-   }
-}
-
-
-/**
  * Set page not to use the cache
  **/
 function header_nocache() {
