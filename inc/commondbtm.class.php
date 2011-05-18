@@ -664,7 +664,7 @@ class CommonDBTM extends CommonGLPI {
 
          if (($name=$this->getName()) == NOT_AVAILABLE) {
             $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
-         } 
+         }
          $display=(isset($this->input['_no_message_link'])?$this->getNameID():$this->getLink());
 
          // Do not display quotes
@@ -1772,7 +1772,8 @@ class CommonDBTM extends CommonGLPI {
       if ($this->maybeRecursive()) {
          return $this->fields["is_recursive"];
       }
-      return false;
+      // Return integer value to be used to fill is_recursive field
+      return 0;
    }
 
    /**
