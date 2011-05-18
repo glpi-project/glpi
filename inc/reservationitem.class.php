@@ -204,7 +204,7 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='items_id' value='$items_id'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
-         echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
+         echo "<input type='hidden' name='is_recursive' value='".($item->isRecursive()?1:0)."'>";
          echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
          echo "</td>";
       }
