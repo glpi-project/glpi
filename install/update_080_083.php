@@ -54,8 +54,8 @@ function update080to083($output='HTML') {
    }
 
     $backup_tables = false;
-    $newtables     = array('glpi_groups_problems','glpi_items_problems','glpi_problems',
-                           'glpi_problemtasks','glpi_problems_ticket','glpi_problems_users',);
+    $newtables     = array('glpi_groups_problems', 'glpi_items_problems', 'glpi_problems',
+                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users');
 
     foreach ($newtables as $new_table) {
        // rename new tables if exists ?
@@ -90,20 +90,20 @@ function update080to083($output='HTML') {
    // Problems management
    if (!TableExists('glpi_problems')) {
       $query = "CREATE TABLE `glpi_problems` (
-                  `id` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) default NULL,
-                  `entities_id` int(11) NOT NULL default '0',
-                  `is_recursive` tinyint(1) NOT NULL default '0',
-                  `status` varchar(255) default NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `status` varchar(255) DEFAULT NULL,
                   `content` longtext DEFAULT NULL,
-                  `date_mod` DATETIME DEFAULT NULL ,
-                  `date` DATETIME DEFAULT NULL ,
-                  `solvedate` DATETIME DEFAULT NULL ,
-                  `closedate` DATETIME DEFAULT NULL ,
-                  `due_date` DATETIME DEFAULT NULL ,
-                  `users_id_recipient` int(11) NOT NULL default '0',
-                  `users_id_lastupdater` int(11) NOT NULL default '0',
-                  `suppliers_id_assign` int(11) NOT NULL default '0',
+                  `date_mod` DATETIME DEFAULT NULL,
+                  `date` DATETIME DEFAULT NULL,
+                  `solvedate` DATETIME DEFAULT NULL,
+                  `closedate` DATETIME DEFAULT NULL,
+                  `due_date` DATETIME DEFAULT NULL,
+                  `users_id_recipient` int(11) NOT NULL DEFAULT '0',
+                  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
+                  `suppliers_id_assign` int(11) NOT NULL DEFAULT '0',
                   `urgency` int(11) NOT NULL DEFAULT '1',
                   `impact` int(11) NOT NULL DEFAULT '1',
                   `priority` int(11) NOT NULL DEFAULT '1',
@@ -115,7 +115,7 @@ function update080to083($output='HTML') {
                   `solution` text COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
-                  PRIMARY KEY  (`id`),
+                  PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),

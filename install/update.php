@@ -722,6 +722,7 @@ function updateDbUpTo031() {
       case "0.80" :
          include("update_080_083.php");
          update080to083();
+
       case "0.83" :
          break;
 
@@ -756,7 +757,7 @@ function updateDbUpTo031() {
    $query = "UPDATE `glpi_configs`
              SET `version` = ' 0.83',
                  `language` = '".$glpilanguage."',
-                 `founded_new_version` = '' ;";
+                 `founded_new_version` = ''";
    $DB->query($query) or die($LANG['update'][90].$DB->error());
 
    // Update process desactivate all plugins
