@@ -164,6 +164,12 @@ class TicketValidation  extends CommonDBChild {
              || $job->fields['global_validation'] == 'none') {
             $input['id'] = $this->fields["tickets_id"];
             $input['global_validation'] = 'waiting';
+
+            // to fix lastupdater
+            if (!isset($this->input['_auto_update'])) {
+               $input['_auto_update'] = $this->input['_auto_update'];
+            }
+
             $job->update($input);
          }
          if ($CFG_GLPI["use_mailing"]) {
