@@ -1407,16 +1407,10 @@ function update0782to080($output='HTML') {
       }
    }
 
-   // For beta-testers
-   $migration->dropField('glpi_profiles', 'delete_own_followup');
-
    $migration->addField('glpi_profiles', 'update_own_followups',
                         'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','1',
                         " WHERE `update_followups` = 1");
    $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
-
-   //Pour les beta-testeurs
-   $migration->dropField('glpi_configs', 'ocs_deleted_behavior');
 
    $migration->addField('glpi_ocsservers', 'deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
 
@@ -1598,7 +1592,7 @@ function update0782to080($output='HTML') {
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT users_id
                 FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type';";
+                WHERE `itemtype` = '$type'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -1616,7 +1610,7 @@ function update0782to080($output='HTML') {
                             FROM `glpi_displaypreferences`
                             WHERE `users_id` = '".$data['users_id']."'
                                   AND `num` = '$newval'
-                                  AND `itemtype` = '$type';";
+                                  AND `itemtype` = '$type'";
                   if ($result2=$DB->query($query)) {
                      if ($DB->numrows($result2)==0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
