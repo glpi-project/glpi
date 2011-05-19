@@ -166,7 +166,7 @@ class TicketValidation  extends CommonDBChild {
             $input['global_validation'] = 'waiting';
 
             // to fix lastupdater
-            if (!isset($this->input['_auto_update'])) {
+            if (isset($this->input['_auto_update'])) {
                $input['_auto_update'] = $this->input['_auto_update'];
             }
 
