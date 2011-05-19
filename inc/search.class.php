@@ -1983,7 +1983,7 @@ class Search {
    *@return select string
    *
    **/
-   static function addSelect($itemtype, $ID, $num, $meta=0, $meta_type=0) {
+   static function addSelect ($itemtype, $ID, $num, $meta=0, $meta_type=0) {
 
       $searchopt   = &self::getOptions($itemtype);
       $table       = $searchopt[$ID]["table"];

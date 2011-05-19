@@ -2480,8 +2480,9 @@ class Ticket extends CommonDBTM {
                                           => array('table'      => 'glpi_ticketfollowups',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')
-            || haveRight("own_ticket","1")) {
+      if (haveRight("show_all_ticket","1")
+          || haveRight("show_assign_ticket","1")
+          || haveRight("own_ticket","1")) {
 
          $tab['linktickets'] = $LANG['job'][55];
 
@@ -2497,12 +2498,14 @@ class Ticket extends CommonDBTM {
          $tab[47]['name']          = $LANG['job'][55]." - ".$LANG['common'][98];
          $tab[47]['massiveaction'] = false;
          $tab[47]['searchtype']    = 'equals';
-         $tab[47]['joinparams']    = array('jointype' => 'item_item',
-                                           'condition' => "AND NEWTABLE.`link` = ".Ticket_Ticket::DUPLICATE_WITH);
+         $tab[47]['joinparams']    = array('jointype'  => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".
+                                                          Ticket_Ticket::DUPLICATE_WITH);
 
          $tab[41]['table']         = 'glpi_tickets_tickets';
          $tab[41]['field']         = 'count';
-         $tab[41]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29]." - ".$LANG['common'][66];
+         $tab[41]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29]." - ".
+                                     $LANG['common'][66];
          $tab[41]['massiveaction'] = false;
          $tab[41]['datatype']      = 'number';
          $tab[41]['usehaving']     = true;
@@ -2510,12 +2513,14 @@ class Ticket extends CommonDBTM {
 
          $tab[46]['table']         = 'glpi_tickets_tickets';
          $tab[46]['field']         = 'count';
-         $tab[46]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29]." - ".$LANG['common'][98];
+         $tab[46]['name']          = $LANG['job'][55]." - ".$LANG['tracking'][29]." - ".
+                                     $LANG['common'][98];
          $tab[46]['massiveaction'] = false;
          $tab[46]['datatype']      = 'number';
          $tab[46]['usehaving']     = true;
-         $tab[46]['joinparams']    = array('jointype' => 'item_item',
-                                           'condition' => "AND NEWTABLE.`link` = ".Ticket_Ticket::DUPLICATE_WITH);
+         $tab[46]['joinparams']    = array('jointype'  => 'item_item',
+                                           'condition' => "AND NEWTABLE.`link` = ".
+                                                          Ticket_Ticket::DUPLICATE_WITH);
 
 
 
@@ -5200,8 +5205,6 @@ class Ticket extends CommonDBTM {
 
       if ($number > 0) {
          initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
-
-
 
          echo "<tr><th colspan='11'>";
          if ($number==1) {
