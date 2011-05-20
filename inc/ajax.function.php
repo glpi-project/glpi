@@ -74,11 +74,10 @@ function ajaxDropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;
    echo "<script type='text/javascript'>";
    echo "function update_results_$rand() {";
    if ($use_ajax) {
-      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, true,
-                           "search_$rand");
+      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, "search_$rand");
    } else {
       $initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
-      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, true,"");
+      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, "");
    }
    echo "}";
    echo "</script>";
@@ -184,7 +183,7 @@ function ajaxUpdateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=ar
                '$event',
                function() {";
                   $condition = '';
-                  if ($minsize>0) {
+                  if ($minsize >= 0) {
                      $condition = " Ext.get('$toobserve').getValue().length >= $minsize ";
                   }
                   if (count($forceloadfor)) {
