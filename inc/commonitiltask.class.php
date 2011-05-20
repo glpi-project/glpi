@@ -655,7 +655,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                          $item->getForeignKeyField() => $this->fields[$item->getForeignKeyField()],
                          'id'         => $this->fields["id"]);
          ajaxUpdateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
       }
@@ -900,7 +900,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                          $item->getForeignKeyField() => $item->fields['id'],
                          'id'         => -1);
          ajaxUpdateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params, false);
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
          if ($item->fields["status"] != 'solved' && $item->fields["status"] != 'closed') {
