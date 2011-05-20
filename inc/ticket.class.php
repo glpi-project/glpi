@@ -3857,26 +3857,34 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      //List all users in the active entities
-      $rand = User::dropdown(array('name'        => '_users_id_'.$typename,
-                                   'value'       => $options["_users_id_".$typename],
-                                   'entity'      => $_SESSION['glpiactiveentities'],
-                                   'right'       => $right,
-                                   'auto_submit' => $type==self::REQUESTER,
-                                   'ldap_import' => true));
 
+      $rand = mt_rand();
+      $params = array('name'        => '_users_id_'.$typename,
+                      'value'       => $options["_users_id_".$typename],
+                      'entity'      => $_SESSION['glpiactiveentities'],
+                      'right'       => $right,
+                      'rand'        => $rand,
+                      'auto_submit' => $type==self::REQUESTER,
+                      'ldap_import' => true);
       if ($CFG_GLPI['use_mailing']) {
-         echo "<div id='notif_".$typename."_$rand'>";
-         echo "</div>";
          $paramscomment = array('value' => '__VALUE__',
                                 'field' => "_users_id_".$typename."_notif",
                                 'use_notification'
                                         => $options["_users_id_".$typename."_notif"]['use_notification']);
 
-         ajaxUpdateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,
-                                     "notif_".$typename."_$rand",
-                                     $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                     $paramscomment, false);
+         $params['toupdate'] = array('value_fieldname' => 'value',
+                                     'to_update'  => "notif_".$typename."_$rand",
+                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                     'moreparams' => $paramscomment);
+
+      }
+      //List all users in the active entities
+      User::dropdown($params);
+
+      if ($CFG_GLPI['use_mailing']) {
+         echo "<div id='notif_".$typename."_$rand'>";
+         echo "</div>";
+
          echo "<script type='text/javascript'>";
          ajaxUpdateItemJsCode("notif_".$typename."_$rand",
                               $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,

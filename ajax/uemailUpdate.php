@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
 }
 
 checkLoginUser();
-
+// print_r($_REQUEST);
 if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
    $user = new User;
    $email = "";
@@ -66,6 +66,8 @@ if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
       echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
             value='$email'>";
    }
+
 }
+commonDropdownUpdateItem($_POST);
 
 ?>
