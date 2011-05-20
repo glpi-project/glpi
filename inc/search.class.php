@@ -185,7 +185,8 @@ class Search {
       // Construct the request
 
       //// 1 - SELECT
-      $SELECT = "SELECT ".self::addDefaultSelect($itemtype);
+      // request currentuser for SQL supervision, not displayed
+      $SELECT = "SELECT '".$_SESSION['glpiname']."' AS currentuser, ".self::addDefaultSelect($itemtype);
 
       // Add select for all toview item
       foreach ($toview as $key => $val) {
@@ -572,7 +573,8 @@ class Search {
          } else {
             $count = "count(DISTINCT `$itemtable`.`id`)";
          }
-         $query_num = "SELECT $count
+         // request currentuser for SQL supervision, not displayed
+         $query_num = "SELECT $count, '".$_SESSION['glpiname']."' AS currentuser
                        FROM `$itemtable`".
                        $COMMONLEFTJOIN;
 
