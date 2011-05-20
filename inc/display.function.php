@@ -99,6 +99,8 @@ function includeCommonHtmlHeader($title='') {
           $CFG_GLPI["root_doc"]."/lib/extjs/resources/css/ext-all.css' media='screen' >\n";
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.css' media='screen' >\n";
+   echo "<link rel='stylesheet' type='text/css' href='".
+          $CFG_GLPI["root_doc"]."/css/tab-scroller-menu.css' media='screen' >\n";
 
 
    echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
@@ -116,6 +118,8 @@ function includeCommonHtmlHeader($title='') {
    // EXTRA EXTJS
    echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
+   echo "<script type='text/javascript' src='".
+          $CFG_GLPI["root_doc"]."/lib/extrajs/TabScrollerMenu.js'></script>\n";
    echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
    echo "<script type='text/javascript' src='".
@@ -3038,15 +3042,20 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
    $active_tabs = getActiveTab($type);
 
    if (count($tabs)>0) {
-      echo "<script type='text/javascript'>";
+      echo "<script type='text/javascript'>
 
-         echo " var tabpanel = new Ext.TabPanel({
+            var tabpanel = new Ext.TabPanel({
             applyTo: '$tabdiv_id',
             width:$size,
             enableTabScroll: true,
             resizeTabs: false,
             collapsed: true,
             plain: true,
+            plugins: [{
+                ptype: 'tabscrollermenu',
+                maxText  : 50,
+                pageSize : 30
+            }],
             items: [";
             $first = true;
             $default_tab = $active_tabs;
