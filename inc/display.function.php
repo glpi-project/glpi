@@ -2854,6 +2854,12 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
    $output .= ",timeConfig: {
       altFormats:'H:i:s',increment: $time_step,$empty";
 
+   if (!empty($minTime)) {
+      $output .= ",minValue: '".convDate($minTime)."'";
+   }
+   if (!empty($maxTime)) {
+      $output .= ",maxValue: '".convDate($maxTime)."'";
+   }
    $output .= "}";
 
    switch ($_SESSION['glpidate_format']) {
