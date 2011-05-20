@@ -2755,7 +2755,7 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
  * @param $can_edit could not modify element
  * @param $minDate minimum allowed date
  * @param $maxDate maximum allowed date
- * @param $minTime minimum allowed time
+ * @param $minTime minimum allowed time 
  * @param $maxTime maximum allowed time
  *
  * @return rand value used
@@ -2809,26 +2809,26 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
       $value = $date_value.' '.$hour_value;
    }
 
-   $output .= "<table><tr class='top'><td><div id='date$rand-date'></div></td>";
-   $output .= "<td><select name='_date$rand-hour' id='date$rand-hour'>";
-
-   for ($i=$minHour ; $i<=$maxHour ; $i++) {
-      if ($i<10 && strlen($i)==1) {
-         $i = '0'.$i;
-      }
-      $output .= "<option value='$i'>$i</option>";
-   }
-   $output .= "</select></td>";
-   $output .= "<td><select name='_date$rand-minute' id='date$rand-minute'>";
-
-   for ($i=$minMinute ; $i<=$maxMinute ; $i+=$time_step) {
-      if ($i<10  && strlen($i)==1) {
-         $i = '0'.$i;
-      }
-      $output .= "<option value='$i'>$i</option>";
-   }
-   $output .= "</select></td>";
-   $output .= '</tr></table>';
+//    $output .= "<table><tr class='top'><td><div id='date$rand-date'></div></td>";
+//    $output .= "<td><select name='_date$rand-hour' id='date$rand-hour'>";
+// 
+//    for ($i=$minHour ; $i<=$maxHour ; $i++) {
+//       if ($i<10 && strlen($i)==1) {
+//          $i = '0'.$i;
+//       }
+//       $output .= "<option value='$i'>$i</option>";
+//    }
+//    $output .= "</select></td>";
+//    $output .= "<td><select name='_date$rand-minute' id='date$rand-minute'>";
+// 
+//    for ($i=$minMinute ; $i<=$maxMinute ; $i+=$time_step) {
+//       if ($i<10  && strlen($i)==1) {
+//          $i = '0'.$i;
+//       }
+//       $output .= "<option value='$i'>$i</option>";
+//    }
+//    $output .= "</select></td>";
+//    $output .= '</tr></table>';
 
 
    $output .= "<script type='text/javascript'>";
@@ -2838,9 +2838,9 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
          ,id: 'date$rand'
          ,value: '$value'
          ,hiddenFormat:'Y-m-d H:i:s'
-         ,renderTo: 'showdate$rand'
+         ,applyTo: 'showdate$rand'
          ,timeFormat:'H:i'
-         ,timeWidth: 40
+         ,timeWidth: 55
          ,dateWidth: 90
          ,startDay: 1";
 
@@ -2852,7 +2852,8 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
    }
    $output .= ",$empty";
    $output .= ",timeConfig: {
-      altFormats:'H:i',increment: $time_step,$empty";
+      altFormats:'H:i:s',increment: $time_step,$empty";
+
    $output .= "}";
 
    switch ($_SESSION['glpidate_format']) {
