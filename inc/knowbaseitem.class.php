@@ -839,13 +839,6 @@ class KnowbaseItem extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         =  'name';
-      $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
-
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = $LANG['common'][2];
