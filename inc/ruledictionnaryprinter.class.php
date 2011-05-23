@@ -114,7 +114,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = $LANG['common'][5];
       $criterias['manufacturer']['table'] = '';
-
+/*
       $criterias['PORT']['field'] = 'PORT';
       $criterias['PORT']['name']  = $LANG['setup'][175];
       $criterias['PORT']['table'] = '';
@@ -130,6 +130,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['type']['field'] = 'type';
       $criterias['type']['name']  = $LANG['common'][17];
       $criterias['type']['table'] = '';
+*/
 
       $criterias['comment']['field'] = 'comment';
       $criterias['comment']['name']  = $LANG['common'][25];
@@ -149,9 +150,9 @@ class RuleDictionnaryPrinter extends RuleCached {
       $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
-      $actions['manufacturers_id']['name']  = $LANG['common'][5];
-      $actions['manufacturers_id']['table'] = 'glpi_manufacturers';
-      $actions['manufacturers_id']['type']  = 'dropdown';
+      $actions['manufacturer']['name']  = $LANG['common'][5];
+      $actions['manufacturer']['table'] = 'glpi_manufacturers';
+      $actions['manufacturer']['type']  = 'dropdown';
 
       $actions['is_global']['name']  = $LANG['peripherals'][33];
       $actions['is_global']['type']  = 'dropdown_management';
