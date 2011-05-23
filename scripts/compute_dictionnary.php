@@ -36,18 +36,18 @@ ini_set("memory_limit","-1");
 ini_set("max_execution_time", "0");
 
 if ($argv) {
-	for ($i=1;$i<count($argv);$i++)
-	{
-		//To be able to use = in search filters, enter \= instead in command line
-		//Replace the \= by ° not to match the split function
-		$arg=str_replace('\=','°',$argv[$i]);
-		$it = explode("=",$arg);
-		$it[0] = preg_replace('/^--/','',$it[0]);
+   for ($i=1;$i<count($argv);$i++)
+   {
+      //To be able to use = in search filters, enter \= instead in command line
+      //Replace the \= by ° not to match the split function
+      $arg=str_replace('\=','°',$argv[$i]);
+      $it = explode("=",$arg);
+      $it[0] = preg_replace('/^--/','',$it[0]);
 
-		//Replace the ° by = the find the good filter
-		$it=str_replace('°','=',$it);
-		$_GET[$it[0]] = $it[1];
-	}
+      //Replace the ° by = the find the good filter
+      $it=str_replace('°','=',$it);
+      $_GET[$it[0]] = $it[1];
+   }
 }
 
 define('GLPI_ROOT', '..');
@@ -58,38 +58,38 @@ $_SESSION['glpi_use_mode']==NORMAL_MODE;
 
 if (isset($_GET["dictionnary"]))
 {
-	$rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);
-	if ($rulecollection)
-		if ($_GET["dictionnary"]=='RuleDictionnarySoftware' && isset($_GET["manufacturer"])) {
-			$rulecollection->replayRulesOnExistingDB(0,0,array(),$_GET["manufacturer"]);
-		} else {
-			$rulecollection->replayRulesOnExistingDB();
-		}
+   $rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);
+   if ($rulecollection)
+      if ($_GET["dictionnary"]=='RuleDictionnarySoftware' && isset($_GET["manufacturer"])) {
+         $rulecollection->replayRulesOnExistingDB(0,0,array(),$_GET["manufacturer"]);
+      } else {
+         $rulecollection->replayRulesOnExistingDB();
+      }
 }
 else
 {
 
-	echo "Usage : php -q -f compute_dictionnary.php dictionnary=<option>  [ manufacturer=ID ]\n";
-	echo "Options values :\n";
-	echo "RuleDictionnarySoftware : softwares\n";
-	echo "RuleDictionnaryManufacturer : manufacturers\n";
+   echo "Usage : php -q -f compute_dictionnary.php dictionnary=<option>  [ manufacturer=ID ]\n";
+   echo "Options values :\n";
+   echo "RuleDictionnarySoftware : softwares\n";
+   echo "RuleDictionnaryManufacturer : manufacturers\n";
    echo "RuleDictionnaryPrinter : printers\n";
 
-	echo "--- Models ---\n";
-	echo "RuleDictionnaryComputerModel : computers\n";
-	echo "RuleDictionnaryMonitorModel : monitors\n";
-	echo "RuleDictionnaryPeripheralModel : peripherals\n";
-	echo "RuleDictionnaryNetworkEquipmentModel : networking\n";
-	echo "RuleDictionnaryPrinterModel : printers\n";
-	echo "RuleDictonnaryPhoneModel : phones\n";
+   echo "--- Models ---\n";
+   echo "RuleDictionnaryComputerModel : computers\n";
+   echo "RuleDictionnaryMonitorModel : monitors\n";
+   echo "RuleDictionnaryPeripheralModel : peripherals\n";
+   echo "RuleDictionnaryNetworkEquipmentModel : networking\n";
+   echo "RuleDictionnaryPrinterModel : printers\n";
+   echo "RuleDictonnaryPhoneModel : phones\n";
 
-	echo "--- Types ---\n";
-	echo "RuleDictionnaryComputerType : computers\n";
-	echo "RuleDictionnaryMonitorType : monitors\n";
-	echo "RuleDictionnaryPeripheralType : peripherals\n";
-	echo "RuleDictionnaryNetworkEquipmentType : networking\n";
-	echo "RuleDictionnaryPrinterType : printers\n";
-	echo "RuleDictionnaryPhoneType : phones\n";
+   echo "--- Types ---\n";
+   echo "RuleDictionnaryComputerType : computers\n";
+   echo "RuleDictionnaryMonitorType : monitors\n";
+   echo "RuleDictionnaryPeripheralType : peripherals\n";
+   echo "RuleDictionnaryNetworkEquipmentType : networking\n";
+   echo "RuleDictionnaryPrinterType : printers\n";
+   echo "RuleDictionnaryPhoneType : phones\n";
 
 }
 ?>
