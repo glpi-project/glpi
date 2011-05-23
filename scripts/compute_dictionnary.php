@@ -73,6 +73,7 @@ else
 	echo "Options values :\n";
 	echo "RuleDictionnarySoftware : softwares\n";
 	echo "RuleDictionnaryManufacturer : manufacturers\n";
+   echo "RuleDictionnaryPrinter : printers\n";
 
 	echo "--- Models ---\n";
 	echo "RuleDictionnaryComputerModel : computers\n";
