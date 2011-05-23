@@ -45,15 +45,15 @@ class Ticket extends CommonITILObject {
    protected $forward_entity_to = array('TicketValidation');
 
    // From CommonITIL
-   public $userlinkclass = 'Ticket_User';
+   public $userlinkclass  = 'Ticket_User';
    public $grouplinkclass = 'Group_Ticket';
 
    protected $userentity_oncreate = true;
 
-   const MATRIX_FIELD = 'priority_matrix';
-   const URGENCY_MASK_FIELD = 'urgency_mask';
-   const IMPACT_MASK_FIELD = 'impact_mask';
-   const STATUS_MATRIX_FIELD = 'ticket_status';
+   const MATRIX_FIELD         = 'priority_matrix';
+   const URGENCY_MASK_FIELD   = 'urgency_mask';
+   const IMPACT_MASK_FIELD    = 'impact_mask';
+   const STATUS_MATRIX_FIELD  = 'ticket_status';
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData

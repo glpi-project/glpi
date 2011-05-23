@@ -430,8 +430,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
       $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
       if (haveRight("edit_all_problem","1")) {
-         $menu['maintain']['content']['problem']['links']['add']
-                                                               = '/front/problem.form.php';
+         $menu['maintain']['content']['problem']['links']['add'] = '/front/problem.form.php';
       }
    }
 
@@ -441,8 +440,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['maintain']['content']['change']['page']            = '/front/change.php';
       $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
       if (haveRight("change","w")) {
-         $menu['maintain']['content']['change']['links']['add']
-                                                               = '/front/change.form.php';
+         $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
       }
    }
 
