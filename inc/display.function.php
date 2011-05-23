@@ -2839,7 +2839,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
 
 //    $output .= "<table><tr class='top'><td><div id='date$rand-date'></div></td>";
 //    $output .= "<td><select name='_date$rand-hour' id='date$rand-hour'>";
-// 
+//
 //    for ($i=$minHour ; $i<=$maxHour ; $i++) {
 //       if ($i<10 && strlen($i)==1) {
 //          $i = '0'.$i;
@@ -2848,7 +2848,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
 //    }
 //    $output .= "</select></td>";
 //    $output .= "<td><select name='_date$rand-minute' id='date$rand-minute'>";
-// 
+//
 //    for ($i=$minMinute ; $i<=$maxMinute ; $i+=$time_step) {
 //       if ($i<10  && strlen($i)==1) {
 //          $i = '0'.$i;
@@ -2883,10 +2883,10 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
       altFormats:'H:i:s',increment: $time_step,$empty";
 
    if (!empty($minTime)) {
-      $output .= ",minValue: '".convDate($minTime)."'";
+      $output .= ",minValue: '".$minTime."'";
    }
    if (!empty($maxTime)) {
-      $output .= ",maxValue: '".convDate($maxTime)."'";
+      $output .= ",maxValue: '".$maxTime."'";
    }
 
    $output .= "}";
