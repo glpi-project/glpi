@@ -113,6 +113,7 @@ if (isset($_REQUEST['searchtype'])) {
                   Problem::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;
                   break;
+
                case "glpi_problems.priority" :
                   Problem::dropdownPriority($inputname, $_REQUEST['value'], true, true);
                   $display = true;
@@ -127,6 +128,7 @@ if (isset($_REQUEST['searchtype'])) {
                   Problem::dropdownUrgency($inputname, $_REQUEST['value'], true);
                   $display = true;
                   break;
+
                case "glpi_tickets.status" :
                   Ticket::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;
