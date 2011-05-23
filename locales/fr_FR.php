@@ -1888,7 +1888,7 @@ $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
 $LANG['rulesengine'][151] = "est déjà présent dans GLPI";
 $LANG['rulesengine'][152] = "Ordinateur à importer";
-$LANG['rulesengine'][154] = "est vide";
+$LANG['rulesengine'][154] = "est vide dans GLPI";
 $LANG['rulesengine'][155] = "Lier avec l'ordinateur";
 
 
