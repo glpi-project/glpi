@@ -621,6 +621,20 @@ class Problem extends CommonITILObject {
    }
 
    /**
+    * Compute Priority
+    *
+    * @param $name select name
+    * @param $urgency integer from 1 to 5
+    * @param $impact integer from 1 to 5
+    *
+    * @return integer from 1 to 5 (priority)
+   **/
+   static function computePriority($urgency, $impact) {
+      return CommonITILObject::computegenericPriority('Problem',$urgency, $impact);
+   }
+
+
+   /**
     * Dropdown of problem Urgency
     *
     * @param $name select name
