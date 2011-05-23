@@ -857,16 +857,17 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Compute Priority
     *
+    * @param $itemtype itemtype
     * @param $urgency integer from 1 to 5
     * @param $impact integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
-   static function computePriority ($urgency, $impact) {
+   static function computeGenericPriority ($itemtype, $urgency, $impact) {
       global $CFG_GLPI;
 
-      if (isset($CFG_GLPI[self::MATRIX_FIELD][$urgency][$impact])) {
-         return $CFG_GLPI[self::MATRIX_FIELD][$urgency][$impact];
+      if (isset($CFG_GLPI[constant($itemtype.'::MATRIX_FIELD')][$urgency][$impact])) {
+         return $CFG_GLPI[constant($itemtype.'::MATRIX_FIELD')][$urgency][$impact];
       }
       // Failback to trivial
       return round(($urgency+$impact)/2);
