@@ -681,7 +681,96 @@ class Printer  extends CommonDBTM {
 
       return $tab;
    }
+      /**
+    * Add a printer. If already exist in trash restore it
+    *
+    * @param name the printer's name
+    * @param manufacturer the software's manufacturer
+    * @param entity the entity in which the software must be added
+    * @param comment comment
+   */
+   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='') {
+      global $DB;
 
+      //Look for the software by his name in GLPI for a specific entity
+      $query_search = "SELECT `glpi_printers`.`id`, `glpi_printers`.`is_deleted`
+                       FROM `glpi_printers`
+                       WHERE `name` = '$name'
+                             AND `is_template` = '0'
+                             AND `entities_id` = '$entity'";
+
+      $result_search = $DB->query($query_search);
+
+      if ($DB->numrows($result_search) > 0) {
+         //Printer already exists for this entity, get his ID
+         $data = $DB->fetch_array($result_search);
+         $ID   = $data["id"];
+
+         // restore software
+         if ($data['is_deleted']) {
+            $this->removeFromTrash($ID);
+         }
+
+      } else {
+         $ID = 0;
+      }
+
+      if (!$ID) {
+         $ID = $this->addPrinter($name, $manufacturer, $entity, $comment);
+      }
+      return $ID;
+   }
+   
+
+   /**
+    * Create a new printer
+    *
+    * @param name the printer's name
+    * @param manufacturer the printer's manufacturer
+    * @param entity the entity in which the printer must be added
+    * @param comment
+    *
+    * @return the printer's ID
+   **/
+   function addPrinter($name, $manufacturer, $entity, $comment = '') {
+      global $DB, $CFG_GLPI;
+
+      $manufacturer_id = 0;
+      if ($manufacturer != '') {
+         $manufacturer_id = Dropdown::importExternal('Manufacturer', $manufacturer);
+      }
+
+      //If there's a printer in a parent entity with the same name and manufacturer
+      $sql = "SELECT `id`
+              FROM `glpi_printers`
+              WHERE `manufacturers_id` = '$manufacturer_id'
+                    AND `name` = '$name' " .
+                    getEntitiesRestrictRequest('AND', 'glpi_printers', 'entities_id', $entity,
+                                               true);
+
+      $res_printer = $DB->query($sql);
+      if ($printer = $DB->fetch_array($res_printer)) {
+         $id = $printer["id"];
+      } else {
+         $input["name"]                = $name;
+         $input["manufacturers_id"]    = $manufacturer_id;
+         $input["entities_id"]         = $entity;
+
+         $id = $this->add($input);
+      }
+      return $id;
+   }
+   
+   /**
+    * Restore a software from trash
+    *
+    * @param $ID  the ID of the software to put in trash
+    *
+    * @return boolean (success)
+   **/
+   function removeFromTrash($ID) {
+      return $this->restore(array("id" => $ID));
+   }
 }
 
 ?>
