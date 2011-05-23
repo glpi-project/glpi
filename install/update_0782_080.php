@@ -1492,7 +1492,7 @@ function update0782to080($output='HTML') {
             }
             $query = "INSERT INTO `glpi_ruleactions`
                              (`rules_id`, `action_type`, `field`, `value`)
-                      VALUES ('$rule_id', 'assign', '_fusion', '1')";
+                      VALUES ('$rule_id', 'assign', '_fusion', '0')";
             $DB->query($query)
             or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
 
