@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
 
 checkLoginUser();
 
-$problem = new Problem;
+$problem = new Problem();
 if (isset($_POST["add"])) {
    $problem->check(-1, 'w', $_POST);
 

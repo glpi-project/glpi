@@ -679,8 +679,9 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
-            if (isset($options['itemtype']) && isset($options['items_id'])
-                  && $output_type==HTML_OUTPUT) {
+            if (isset($options['itemtype'])
+                && isset($options['items_id'])
+                && $output_type==HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -722,10 +723,13 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
 
-               if (isset($options['itemtype']) && isset($options['items_id'])
-                     && $output_type==HTML_OUTPUT) {
-                  $content = "<a href='".getItemTypeFormURL($options['itemtype'])."?load_kb_sol=".$data['id']
-                              ."&amp;id=".$options['items_id']."&amp;forcetab=4'>".$LANG['job'][24]."</a>";
+               if (isset($options['itemtype'])
+                   && isset($options['items_id'])
+                   && $output_type==HTML_OUTPUT) {
+
+                  $content = "<a href='".getItemTypeFormURL($options['itemtype'])."?load_kb_sol=".
+                               $data['id']."&amp;id=".$options['items_id']."&amp;forcetab=4'>".
+                               $LANG['job'][24]."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 

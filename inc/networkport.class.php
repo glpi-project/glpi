@@ -147,12 +147,12 @@ class NetworkPort extends CommonDBChild {
       $query = "DELETE
                 FROM `glpi_networkports_networkports`
                 WHERE `networkports_id_1` = '".$this->fields['id']."'
-                      OR `networkports_id_2` = '".$this->fields['id']."';";
+                      OR `networkports_id_2` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $query = "DELETE
                 FROM `glpi_networkports_vlans`
-                WHERE `networkports_id` = '".$this->fields['id']."';";
+                WHERE `networkports_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
 
