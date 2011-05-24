@@ -2607,16 +2607,15 @@ class Ticket extends CommonITILObject {
          echo self::getStatus($this->fields["status"]);
       }
       echo "</td>";
-
-      echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
-      echo "<td>";
-      if ($canupdate) {
-         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td >";
+      // Permit to set type when creating ticket without update right
+      if ($canupdate || !$ID) {
+         self::dropdownType('type', $this->fields["type"]);
       } else {
-         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+         echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
-
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2735,13 +2734,12 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
-      echo "<td >";
-      // Permit to set type when creating ticket without update right
-      if ($canupdate || !$ID) {
-         self::dropdownType('type', $this->fields["type"]);
+      echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
+      echo "<td>";
+      if ($canupdate) {
+         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       } else {
-         echo self::getTicketTypeName($this->fields["type"]);
+         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
       }
       echo "</td>";
 
