@@ -1121,12 +1121,12 @@ class NotificationTargetTicket extends NotificationTarget {
                if ($t->getField('ticketsolutiontypes_id')) {
                   $tmp['##ticket.solution.type##']
                               = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                         $t->getField('ticketsolutiontypes_id'));
+                                                          $t->getField('ticketsolutiontypes_id'));
                } else {
                   $this->datas['##ticket.solution.type##'] = '';
                }
                $tmp['##ticket.solution.description##']
-                              = unclean_cross_side_scripting_deep($t->getField('solution'));
+                                    = unclean_cross_side_scripting_deep($t->getField('solution'));
 
 
                if ($t->countUsers(Ticket::REQUESTER)) {

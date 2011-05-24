@@ -144,7 +144,9 @@ abstract class CommonDBRelation extends CommonDBTM {
       // Check entity compatibility / no check for delete just check write access
       // No check if checking only itemtype1
       if (!$this->checks_and_logs_only_for_itemtype1
-          && $this->check_entities && $right!='d') {
+          && $this->check_entities
+          && $right!='d') {
+
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
             // get items if needed : need to have entity set
