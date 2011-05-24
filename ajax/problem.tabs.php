@@ -46,6 +46,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
 }
 
 $problem = new Problem();
+$task    = new ProblemTask();
 
 if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
 
@@ -53,7 +54,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
       case -1 :
          Problem_Ticket::showForProblem($problem);
          $problem->showAnalysisForm();
-         $task = new ProblemTask();
          $task->showSummary($problem);
          Item_Problem::showForProblem($problem);
          Document::showAssociated($problem);
@@ -63,7 +63,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          break;
 
       case 2 :
-         $task = new ProblemTask();
          $task->showSummary($problem);
          break;
 
