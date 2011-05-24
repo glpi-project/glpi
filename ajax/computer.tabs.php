@@ -104,7 +104,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Link::showForItem('Computer', $_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
             ComputerVirtualMachine::showForVirtualMachine($computer);
-            ComputerVirtualMachine::showForComputer($computer, $_POST["withtemplate"]);
+            ComputerVirtualMachine::showForComputer($computer);
             Plugin::displayAction($computer, $_REQUEST['glpi_tab']);
             break;
 
