@@ -1722,6 +1722,7 @@ class Ticket extends CommonITILObject {
          $tab[24]['field']         = 'solution';
          $tab[24]['name']          = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
          $tab[24]['datatype']      = 'text';
+         $tab[24]['htmltext']      = true;
          $tab[24]['massiveaction'] = false;
 
          $tab['cost'] = $LANG['financial'][5];
