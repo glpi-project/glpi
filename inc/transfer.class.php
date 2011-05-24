@@ -502,7 +502,7 @@ class Transfer extends CommonDBTM {
                $this->createSearchConditionUsingArray($this->noneedtobe_transfer['Software']);
 
       // Move license of software
-      // TODO : should we transfert "affected license" ?
+      // TODO : should we transfer "affected license" ?
       $query = "SELECT `id`, `softwareversions_id_buy`, `softwareversions_id_use`
                 FROM `glpi_softwarelicenses`
                 WHERE `softwares_id` IN ".$this->item_search['Software'];
@@ -2362,7 +2362,7 @@ class Transfer extends CommonDBTM {
          $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
       }
 
-      // Transfert ticket category
+      // Transfer ticket category
       $catid = 0;
       if ($data['ticketcategories_id']>0) {
          $categ = new TicketCategory();
@@ -2500,7 +2500,7 @@ class Transfer extends CommonDBTM {
 
             // Keep
             default :
-               // transfert enterprise
+               // Transfer enterprise
                $suppliers_id = 0;
                if ($ic->fields['suppliers_id']>0) {
                   $suppliers_id = $this->transferSingleSupplier($ic->fields['suppliers_id']);
