@@ -63,6 +63,7 @@ class Problem_Ticket extends CommonDBRelation{
       return parent::getSearchOptions();
    }
 
+
    /**
     * Show tickets for a problem
     *
@@ -78,11 +79,11 @@ class Problem_Ticket extends CommonDBRelation{
 
       $canedit = $problem->can($ID,'w');
 
-      $rand=mt_rand();
+      $rand = mt_rand();
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
-      $colspan=1;
+      $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
@@ -127,12 +128,11 @@ class Problem_Ticket extends CommonDBRelation{
       }
 
       if ($canedit) {
-         
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Dropdown::show('Ticket', array('used'   => $used,
-                                         'entity' => $problem->getEntityID(),
-                                         'entity_sons' => $problem->isRecursive()));
+         Dropdown::show('Ticket', array('used'        => $used,
+                                        'entity'      => $problem->getEntityID(),
+                                        'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
@@ -141,16 +141,17 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("problemticket_form$rand",true);
+         openArrowMassive("problemticket_form$rand", true);
          closeArrowMassive('delete', $LANG['buttons'][6]);
       }
       echo "</form>";
    }
 
+
    /**
     * Show problems for a ticket
     *
-    * @param $problem Problem object
+    * @param $ticket Ticket object
    **/
    static function showForTicket(Ticket $ticket) {
       global $DB, $CFG_GLPI, $LANG;
@@ -162,11 +163,11 @@ class Problem_Ticket extends CommonDBRelation{
 
       $canedit = $ticket->can($ID,'w');
 
-      $rand=mt_rand();
+      $rand = mt_rand();
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
-      $colspan=1;
+      $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
@@ -207,7 +208,6 @@ class Problem_Ticket extends CommonDBRelation{
       }
 
       if ($canedit) {
-         
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
          Dropdown::show('Problem', array('used'   => $used,
@@ -220,7 +220,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("problemticket_form$rand",true);
+         openArrowMassive("problemticket_form$rand", true);
          closeArrowMassive('delete', $LANG['buttons'][6]);
       }
       echo "</form>";

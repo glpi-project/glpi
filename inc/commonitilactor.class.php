@@ -56,6 +56,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       return $this->items_id_2;
    }
 
+
    function getItilObjectForeignKey() {
       return $this->items_id_1;
    }
@@ -77,8 +78,10 @@ abstract class CommonITILActor extends CommonDBRelation {
 
 
    function canUpdateItem() {
+
       return (parent::canUpdateItem()
-            || (isset($this->fields['users_id']) && $this->fields['users_id'] == getLoginUserID()));
+              || (isset($this->fields['users_id'])
+                  && $this->fields['users_id'] == getLoginUserID()));
    }
 
 
@@ -194,9 +197,7 @@ abstract class CommonITILActor extends CommonDBRelation {
             }
          }
 
-
       }
-
       parent::post_deleteFromDB();
    }
 
@@ -209,7 +210,6 @@ abstract class CommonITILActor extends CommonDBRelation {
       if ($this->input['type']==CommonITILObject::ASSIGN) {
          $no_stat_computation = false;
       }
-//      print_r($this);
       $item->updateDateMod($this->fields[$this->getItilObjectForeignKey()], $no_stat_computation);
 
       parent::post_addItem();

@@ -37,33 +37,33 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class ProblemTask  extends CommonITILTask {
+class ProblemTask extends CommonITILTask {
 
 
    function canCreate() {
-
-      return (haveRight('show_my_problem', '1')
-            || haveRight('edit_all_problem', '1'));
+      return (haveRight('show_my_problem', '1') || haveRight('edit_all_problem', '1'));
    }
+
 
    function canView() {
-
-      return (haveRight('show_all_problem', 1)
-              || haveRight('show_my_problem', 1));
+      return (haveRight('show_all_problem', 1) || haveRight('show_my_problem', 1));
    }
+
 
    function canUpdate() {
-      return (haveRight('edit_all_problem', 1)
-              || haveRight('show_my_problem', 1));
+      return (haveRight('edit_all_problem', 1) || haveRight('show_my_problem', 1));
    }
+
 
    function canViewPrivates () {
       return true;
    }
 
+
    function canEditAll () {
       return haveRight('edit_all_problem', 1);
    }
+
 
    /**
     * Is the current user have right to show the current task ?
@@ -88,12 +88,10 @@ class ProblemTask  extends CommonITILTask {
 
       return (haveRight("edit_all_problem","1")
               || (haveRight("show_my_problem","1")
-                  && ($ticket->isUser(Ticket::ASSIGN, getLoginUserID())
-                        || (isset($_SESSION["glpigroups"])
-                           && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups']))
-                     )
-                  )
-             );
+                  && ($ticket->isUser(CommonITILObject::ASSIGN, getLoginUserID())
+                      || (isset($_SESSION["glpigroups"])
+                          && $ticket->haveAGroup(CommonITILObject::ASSIGN,
+                                                 $_SESSION['glpigroups'])))));
    }
 
 
@@ -138,8 +136,10 @@ class ProblemTask  extends CommonITILTask {
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
-      return CommonITILTask::genericPopulatePlanning('ProblemTask',$options);
+      return parent::genericPopulatePlanning('ProblemTask', $options);
    }
+
+
    /**
     * Display a Planning Item
     *
@@ -148,8 +148,9 @@ class ProblemTask  extends CommonITILTask {
     * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
-      return CommonITILTask::genericGetAlreadyPlannedInformation('ProblemTask',$val);
+      return parent::genericGetAlreadyPlannedInformation('ProblemTask', $val);
    }
+
 
    /**
     * Display a Planning Item
@@ -162,8 +163,10 @@ class ProblemTask  extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
-      return CommonITILTask::genericDisplayPlanningItem('ProblemTask',$val, $who, $type, $complete);
+      return parent::genericDisplayPlanningItem('ProblemTask',$val, $who, $type, $complete);
    }
+
+
 }
 
 ?>
