@@ -44,13 +44,14 @@ class Problem extends CommonITILObject {
    public $dohistory = true;
 
    // From CommonITIL
-   public $userlinkclass = 'Problem_User';
+   public $userlinkclass  = 'Problem_User';
    public $grouplinkclass = 'Group_Problem';
 
-   const MATRIX_FIELD = 'priority_matrix';
-   const URGENCY_MASK_FIELD = 'urgency_mask';
-   const IMPACT_MASK_FIELD = 'impact_mask';
-   const STATUS_MATRIX_FIELD = 'problem_status';
+   const MATRIX_FIELD         = 'priority_matrix';
+   const URGENCY_MASK_FIELD   = 'urgency_mask';
+   const IMPACT_MASK_FIELD    = 'impact_mask';
+   const STATUS_MATRIX_FIELD  = 'problem_status';
+
 
    /**
     * Name of the type
@@ -65,28 +66,30 @@ class Problem extends CommonITILObject {
       return $LANG['problem'][0];
    }
 
+
    function canAdminActors(){
       return haveRight('edit_all_problem', '1');
    }
+
 
    function canAssign(){
       return haveRight('edit_all_problem', '1');
    }
 
+
    function canAssignToMe(){
       return haveRight('edit_all_problem', '1');
    }
 
+
    function canSolve(){
+
       return (self::isAllowedStatus($this->fields['status'], 'solved')
-               && (haveRight("edit_all_problem","1")
+              && (haveRight("edit_all_problem","1")
                   || (haveRight('show_my_problem', 1)
-                     && ($this->isUser(self::ASSIGN, getLoginUserID())
-                        || (isset($_SESSION["glpigroups"])
-                        && $this->haveAGroup(self::ASSIGN, $_SESSION["glpigroups"])))
-                     )
-                  )
-            );
+                      && ($this->isUser(parent::ASSIGN, getLoginUserID())
+                          || (isset($_SESSION["glpigroups"])
+                              && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
    }
 
 
@@ -96,8 +99,7 @@ class Problem extends CommonITILObject {
 
 
    function canView() {
-      return haveRight('show_all_problem', '1') ||
-            haveRight('show_my_problem', '1');
+      return haveRight('show_all_problem', '1') || haveRight('show_my_problem', '1');
    }
 
 
@@ -113,17 +115,16 @@ class Problem extends CommonITILObject {
       }
       return (haveRight('show_all_problem', 1)
               || (haveRight('show_my_problem', 1)
-                  && ($this->isUser(self::REQUESTER,getLoginUserID())
-                     || $this->isUser(self::OBSERVER,getLoginUserID())
-                     || (isset($_SESSION["glpigroups"])
-                           && ($this->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"])
-                              || $this->haveAGroup(self::OBSERVER,$_SESSION["glpigroups"])))
-                     || ($this->isUser(self::ASSIGN,getLoginUserID())
-                              || (isset($_SESSION["glpigroups"])
-                                 && $this->haveAGroup(self::ASSIGN,$_SESSION["glpigroups"])))
-                     ))
-             );
+                  && ($this->isUser(parent::REQUESTER, getLoginUserID())
+                      || $this->isUser(parent::OBSERVER, getLoginUserID())
+                      || (isset($_SESSION["glpigroups"])
+                          && ($this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])
+                              || $this->haveAGroup(parent::OBSERVER, $_SESSION["glpigroups"])))
+                      || ($this->isUser(parent::ASSIGN, getLoginUserID())
+                          || (isset($_SESSION["glpigroups"])
+                              && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
    }
+
 
    /**
     * Is the current user have right to approve solution of the current problem ?
@@ -133,10 +134,11 @@ class Problem extends CommonITILObject {
    function canApprove() {
 
       return ($this->fields["users_id_recipient"] === getLoginUserID()
-              || $this->isUser(self::REQUESTER, getLoginUserID())
+              || $this->isUser(parent::REQUESTER, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(self::REQUESTER, $_SESSION["glpigroups"])));
+                  && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
    }
+
 
    /**
     * Is the current user have right to create the current problem ?
@@ -151,9 +153,10 @@ class Problem extends CommonITILObject {
       return haveRight('edit_all_problem', 1);
    }
 
+
    function pre_deleteItem() {
 
-      NotificationEvent::raiseEvent('delete',$this);
+      NotificationEvent::raiseEvent('delete', $this);
       return true;
    }
 
@@ -178,12 +181,10 @@ class Problem extends CommonITILObject {
          $this->addStandardTab('Note',$ong);
 
          $this->addStandardTab('Log',$ong);
-      } else {
-
       }
-
       return $ong;
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -192,7 +193,7 @@ class Problem extends CommonITILObject {
 //                 FROM `glpi_problemtasks`
 //                 WHERE `problems_id` = '".$this->fields['id']."'";
 //       $result = $DB->query($query);
-// 
+//
 //       if ($DB->numrows($result)>0) {
 //          while ($data=$DB->fetch_array($result)) {
 //             $querydel = "DELETE
@@ -207,7 +208,6 @@ class Problem extends CommonITILObject {
 //       $DB->query($query1);
 
       parent::cleanDBonPurge();
-
    }
 
 
@@ -226,10 +226,10 @@ class Problem extends CommonITILObject {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
-
       if ($this->fields['status'] == 'new') {
          if (in_array("suppliers_id_assign",$this->updates)
-              && $this->input["suppliers_id_assign"]>0) {
+             && $this->input["suppliers_id_assign"]>0) {
+
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
                $this->updates[]           = 'status';
@@ -238,16 +238,15 @@ class Problem extends CommonITILObject {
             $this->input['status']  = 'assign';
          }
       }
+
       // Setting a solution or solution type means the problem is solved
-      if ((in_array("solutiontypes_id",$this->updates)
-            && $this->input["solutiontypes_id"] >0)
+      if ((in_array("solutiontypes_id",$this->updates) && $this->input["solutiontypes_id"] >0)
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
             $this->oldvalues['status'] = $this->fields['status'];
             $this->updates[]           = 'status';
          }
-
          $this->fields['status'] = 'solved';
          $this->input['status']  = 'solved';
       }
@@ -259,6 +258,7 @@ class Problem extends CommonITILObject {
          unset($this->updates[$key]);
       }
    }
+
 
    function post_updateItem($history=1) {
       global $CFG_GLPI, $LANG;
@@ -295,7 +295,6 @@ class Problem extends CommonITILObject {
          // Read again problem to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
-
       }
    }
 
@@ -328,7 +327,6 @@ class Problem extends CommonITILObject {
    function post_addItem() {
       global $LANG, $CFG_GLPI;
 
-
       parent::post_addItem();
 
       if (isset($this->input['_tickets_id'])) {
@@ -337,11 +335,12 @@ class Problem extends CommonITILObject {
             $pt = new Problem_Ticket();
             $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
                            'problems_id' => $this->fields['id']));
+
             if (!empty($ticket->fields['itemtype']) && $ticket->fields['items_id']>0) {
                $it = new Item_Problem();
                $it->add(array('problems_id' => $this->fields['id'],
-                              'itemtype' => $ticket->fields['itemtype'],
-                              'items_id' => $ticket->fields['items_id']));
+                              'itemtype'    => $ticket->fields['itemtype'],
+                              'items_id'    => $ticket->fields['items_id']));
             }
          }
       }
@@ -359,6 +358,7 @@ class Problem extends CommonITILObject {
       }
 
    }
+
 
    /**
     * Get default values to search engine to override
@@ -551,7 +551,7 @@ class Problem extends CommonITILObject {
       $tab[35]['name']       = $LANG['job'][19];
       $tab[35]['datatype']   = 'bool';
       $tab[35]['joinparams'] = array('jointype'  => 'child',
-                                       'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
+                                     'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
 
 
       $tab[34]['table']      = 'glpi_problems_users';
@@ -559,7 +559,7 @@ class Problem extends CommonITILObject {
       $tab[34]['name']       = $LANG['joblist'][27];
       $tab[34]['datatype']   = 'email';
       $tab[34]['joinparams'] = array('jointype'  => 'child',
-                                       'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
+                                     'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
 
       return $tab;
    }
@@ -596,16 +596,15 @@ class Problem extends CommonITILObject {
    }
 
 
-
-
    /**
     * Get problem status Name
     *
     * @param $value status ID
    **/
    static function getStatus($value) {
-      return CommonITILObject::getGenericStatus('Problem',$value);
+      return parent::getGenericStatus('Problem', $value);
    }
+
 
    /**
     * Dropdown of problem status
@@ -617,20 +616,20 @@ class Problem extends CommonITILObject {
     * @return nothing (display)
    **/
    static function dropdownStatus($name, $value='new', $option=0) {
-      return CommonITILObject::dropdownGenericStatus('Problem',$name, $value, $option);
+      return parent::dropdownGenericStatus('Problem', $name, $value, $option);
    }
+
 
    /**
     * Compute Priority
     *
-    * @param $name select name
     * @param $urgency integer from 1 to 5
     * @param $impact integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
    static function computePriority($urgency, $impact) {
-      return CommonITILObject::computegenericPriority('Problem',$urgency, $impact);
+      return parent::computeGenericPriority('Problem', $urgency, $impact);
    }
 
 
@@ -644,8 +643,9 @@ class Problem extends CommonITILObject {
     * @return string id of the select
    **/
    static function dropdownUrgency($name, $value=0, $complete=false) {
-      return CommonITILObject::dropdownGenericUrgency('Problem',$name, $value, $complete);
+      return parent::dropdownGenericUrgency('Problem', $name, $value, $complete);
    }
+
 
    /**
     * Dropdown of problem Impact
@@ -657,8 +657,9 @@ class Problem extends CommonITILObject {
     * @return string id of the select
    **/
    static function dropdownImpact($name, $value=0, $complete=false) {
-      return CommonITILObject::dropdownGenericImpact('Problem',$name, $value, $complete);
+      return parent::dropdownGenericImpact('Problem', $name, $value, $complete);
    }
+
 
    /**
     * check is the user can change from / to a status
@@ -669,8 +670,9 @@ class Problem extends CommonITILObject {
     * @return boolean
    **/
    static function isAllowedStatus($old, $new) {
-      return CommonITILObject::genericIsAllowedStatus('Problem',$old, $new);
+      return parent::genericIsAllowedStatus('Problem', $old, $new);
    }
+
 
    function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI, $DB;
@@ -681,28 +683,28 @@ class Problem extends CommonITILObject {
 
       // Set default options
       if (!$ID) {
-         $values = array('_users_id_requester'      => getLoginUserID(),
-                        '_users_id_requester_notif' => array('use_notification' => 1),
-                        '_groups_id_requester'      => 0,
-                        '_users_id_assign'          => 0,
-                        '_users_id_assign_notif'    => array('use_notification' => 1),
-                        '_groups_id_assign'         => 0,
-                        '_users_id_observer'        => 0,
-                        '_users_id_observer_notif'  => array('use_notification' => 1),
-                        '_groups_id_observer'       => 0,
-                        'suppliers_id_assign'       => 0,
-                        'priority'                  => 3,
-                        'urgency'                   => 3,
-                        'impact'                    => 3,
-                        'content'                   => '',
-                        'name'                      => '',
-                        'ticketcategories_id'       => 0,
-                  );
+         $values = array('_users_id_requester'       => getLoginUserID(),
+                         '_users_id_requester_notif' => array('use_notification' => 1),
+                         '_groups_id_requester'      => 0,
+                         '_users_id_assign'          => 0,
+                         '_users_id_assign_notif'    => array('use_notification' => 1),
+                         '_groups_id_assign'         => 0,
+                         '_users_id_observer'        => 0,
+                         '_users_id_observer_notif'  => array('use_notification' => 1),
+                         '_groups_id_observer'       => 0,
+                         'suppliers_id_assign'       => 0,
+                         'priority'                  => 3,
+                         'urgency'                   => 3,
+                         'impact'                    => 3,
+                         'content'                   => '',
+                         'name'                      => '',
+                         'ticketcategories_id'       => 0);
          foreach ($values as $key => $val) {
             if (!isset($options[$key])) {
                $options[$key] = $val;
             }
          }
+
          if (isset($options['tickets_id'])) {
             $ticket = new Ticket();
             if ($ticket->getFromDB($options['tickets_id'])) {
@@ -716,7 +718,6 @@ class Problem extends CommonITILObject {
          }
       }
 
-
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -728,7 +729,6 @@ class Problem extends CommonITILObject {
       if (haveRight('user','r')) {
          $showuserlink = 1;
       }
-
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -781,7 +781,7 @@ class Problem extends CommonITILObject {
       echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
       echo "<td>";
       if ($this->fields["due_date"]=='NULL') {
-         $this->fields["due_date"]='';
+         $this->fields["due_date"] = '';
       }
       showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
       echo "</td></tr>";
@@ -814,7 +814,6 @@ class Problem extends CommonITILObject {
       echo "<td>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       echo "</td>";
-
       echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
@@ -822,38 +821,32 @@ class Problem extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
       $opt = array('value'  => $this->fields["ticketcategories_id"],
-                     'entity' => $this->fields["entities_id"]);
+                   'entity' => $this->fields["entities_id"]);
       Dropdown::show('TicketCategory', $opt);
       echo "</td>";
-
       echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
       echo "<td>";
       $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       echo "</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][20]."</td>";
-      echo "<td>".self::getActionTime($this->fields["actiontime"])."</td>";
-
+      echo "<td>".$LANG['job'][20]."</td>";
+      echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
       echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
       echo "<td>";
-
-      $idpriority = self::dropdownPriority("priority", $this->fields["priority"], false, true);
+      $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
       $idajax     = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-
       $params = array('urgency'  => '__VALUE0__',
-                        'impact'   => '__VALUE1__',
-                        'priority' => $idpriority);
+                      'impact'   => '__VALUE1__',
+                      'priority' => $idpriority);
       ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
-                                    $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+                                  $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
 
@@ -867,9 +860,9 @@ class Problem extends CommonITILObject {
       echo "function showName$rand() {\n";
       echo "Ext.get('name$rand').setDisplayed('none');";
       $params = array('maxlength' => 250,
-                        'size'      => 50,
-                        'name'      => 'name',
-                        'data'      => rawurlencode($this->fields["name"]));
+                      'size'      => 50,
+                      'name'      => 'name',
+                      'data'      => rawurlencode($this->fields["name"]));
       ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
       echo "}";
       echo "</script>\n";
@@ -880,32 +873,27 @@ class Problem extends CommonITILObject {
          echo $this->fields["name"];
       }
       echo "</div>\n";
-
-      echo "<div id='viewname$rand'>\n";
-      echo "</div>\n";
+      echo "<div id='viewname$rand'></div>\n";
       if (!$ID) {
          echo "<script type='text/javascript' >\n
          showName$rand();
          </script>";
       }
-
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='3'>";
-
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
       echo "Ext.get('desc$rand').setDisplayed('none');";
       $params = array('rows'  => 6,
-                        'cols'  => 50,
-                        'name'  => 'content',
-                        'data'  => rawurlencode($this->fields["content"]));
+                      'cols'  => 50,
+                      'name'  => 'content',
+                      'data'  => rawurlencode($this->fields["content"]));
       ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
       echo "}";
       echo "</script>\n";
@@ -916,14 +904,12 @@ class Problem extends CommonITILObject {
          echo $LANG['job'][33];
       }
       echo "</div>\n";
-
       echo "<div id='viewdesc$rand'></div>\n";
       if (!$ID) {
          echo "<script type='text/javascript' >\n
          showDesc$rand();
          </script>";
       }
-
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
@@ -933,12 +919,11 @@ class Problem extends CommonITILObject {
 
       return true;
 
-   }   
+   }
 
 
    /**
     * Form to add an analysis to a problem
-    *
    **/
    function showAnalysisForm() {
       global $LANG, $CFG_GLPI;
@@ -946,13 +931,12 @@ class Problem extends CommonITILObject {
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');
 
-      $options = array();
+      $options            = array();
       $options['canedit'] = false;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['problem'][4]."&nbsp;: </td><td colspan='3'>";
-
       if ($canedit) {
          echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='80'>";
          echo $this->getField('impactcontent');
@@ -964,7 +948,6 @@ class Problem extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['problem'][5]."&nbsp;: </td><td colspan='3'>";
-
       if ($canedit) {
          echo "<textarea id='causecontent' name='causecontent' rows='6' cols='80'>";
          echo $this->getField('causecontent');
@@ -976,7 +959,6 @@ class Problem extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['problem'][6]."&nbsp;: </td><td colspan='3'>";
-
       if ($canedit) {
          echo "<textarea id='symptomcontent' name='symptomcontent' rows='6' cols='80'>";
          echo $this->getField('symptomcontent');
