@@ -431,10 +431,10 @@ class DBmysql {
     * @return TRUE on success or FALSE on failure.
    **/
    function close() {
+
       if ($this->dbh) {
          return @mysql_close($this->dbh);
       }
-
       return false;
    }
 
