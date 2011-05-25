@@ -365,21 +365,21 @@ function addTracking($type, $ID, $ID_entity) {
 
       // Add users and groups
       $query = "INSERT INTO `glpi_tickets_users`
-                VALUES(NULL, '$tID', '".$users[0]."', '".Ticket::REQUESTER."', '1', '')";
+                VALUES(NULL, '$tID', '".$users[0]."', '".CommonITILObject::REQUESTER."', '1', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_tickets_users`
-                VALUES(NULL, '$tID', '".$users[1]."', '".Ticket::ASSIGN."', '1', '')";
+                VALUES(NULL, '$tID', '".$users[1]."', '".CommonITILObject::ASSIGN."', '1', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_tickets`
                 VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
-                       '".Ticket::ASSIGN."')";
+                       '".CommonITILObject::ASSIGN."')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_tickets`
                 VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
-                       '".Ticket::REQUESTER."')";
+                       '".CommonITILObject::REQUESTER."')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
 

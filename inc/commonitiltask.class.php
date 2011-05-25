@@ -127,9 +127,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input["end"]           = $input['plan']["end"];
          $input["users_id_tech"] = $input['plan']["users_id"];
 
-         $timestart           = strtotime($input["begin"]);
-         $timeend             = strtotime($input["end"]);
-         $input["actiontime"] = $timeend-$timestart;
+         $timestart              = strtotime($input["begin"]);
+         $timeend                = strtotime($input["end"]);
+         $input["actiontime"]    = $timeend-$timestart;
 
          unset($input["plan"]);
 
@@ -202,9 +202,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input["end"]           = $input['plan']["end"];
          $input["users_id_tech"] = $input['plan']["users_id"];
 
-         $timestart           = strtotime($input["begin"]);
-         $timeend             = strtotime($input["end"]);
-         $input["actiontime"] = $timeend-$timestart;
+         $timestart              = strtotime($input["begin"]);
+         $timeend                = strtotime($input["end"]);
+         $input["actiontime"]    = $timeend-$timestart;
 
          unset($input["plan"]);
          if (!$this->test_valid_date($input)) {

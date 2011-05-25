@@ -46,6 +46,7 @@ class TicketTask  extends CommonITILTask {
               || haveRight('own_ticket', 1));
    }
 
+
    function canView() {
 
       return (haveRight('observe_ticket', 1)
@@ -53,19 +54,24 @@ class TicketTask  extends CommonITILTask {
               || haveRight('own_ticket', 1));
    }
 
+
    function canUpdate() {
+
       return (haveRight('global_add_tasks', 1)
               || haveRight('own_ticket', 1)
               || haveRight('update_tasks', 1) );
    }
 
+
    function canViewPrivates () {
       return haveRight('show_full_ticket', 1);
    }
 
+
    function canEditAll () {
       return haveRight('update_tasks', 1);
    }
+
 
    /**
     * Is the current user have right to show the current task ?
@@ -81,9 +87,11 @@ class TicketTask  extends CommonITILTask {
       if (haveRight('show_full_ticket', 1)) {
          return true;
       }
+
       if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
          return true;
       }
+
       if ($this->fields["users_id"] === getLoginUserID()) {
          return true;
       }
@@ -103,9 +111,9 @@ class TicketTask  extends CommonITILTask {
       }
 
       return (haveRight("global_add_tasks","1")
-              || $ticket->isUser(Ticket::ASSIGN, getLoginUserID())
+              || $ticket->isUser(CommonITILObject::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
    }
 
 
@@ -150,8 +158,10 @@ class TicketTask  extends CommonITILTask {
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
-      return CommonITILTask::genericPopulatePlanning('TicketTask',$options);
+      return parent::genericPopulatePlanning('TicketTask',$options);
    }
+
+
    /**
     * Display a Planning Item
     *
@@ -160,7 +170,7 @@ class TicketTask  extends CommonITILTask {
     * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
-      return CommonITILTask::genericGetAlreadyPlannedInformation('TicketTask',$val);
+      return parent::genericGetAlreadyPlannedInformation('TicketTask',$val);
    }
 
    /**
@@ -174,8 +184,10 @@ class TicketTask  extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
-      return CommonITILTask::genericDisplayPlanningItem('TicketTask',$val, $who, $type, $complete);
+      return parent::genericDisplayPlanningItem('TicketTask',$val, $who, $type, $complete);
    }
+
+
 }
 
 ?>

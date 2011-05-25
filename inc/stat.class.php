@@ -541,7 +541,7 @@ class Stat {
          case "technicien" :
             $LEFTJOIN = $LEFTJOINUSER;
             $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
-                              AND `glpi_tickets_users`.`type`='".Ticket::ASSIGN."')";
+                              AND `glpi_tickets_users`.`type`='".CommonITILObject::ASSIGN."')";
             break;
 
          case "technicien_followup" :
@@ -557,7 +557,7 @@ class Stat {
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
             $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
-                              AND `glpi_tickets_users`.`type` ='".Ticket::REQUESTER."')";
+                              AND `glpi_tickets_users`.`type` ='".CommonITILObject::REQUESTER."')";
             break;
 
          case "usertitles_id" :
@@ -565,7 +565,7 @@ class Stat {
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
             $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
+                              AND `glpi_tickets_users`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "usercategories_id" :
@@ -573,7 +573,7 @@ class Stat {
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
             $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."')";
+                              AND `glpi_tickets_users`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "users_id_recipient" :
@@ -603,13 +603,13 @@ class Stat {
          case "group" :
             $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
-                              AND `glpi_groups_tickets`.`type` = '".Ticket::REQUESTER."')";
+                              AND `glpi_groups_tickets`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
             $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
-                              AND `glpi_groups_tickets`.`type` = '".Ticket::ASSIGN."')";
+                              AND `glpi_groups_tickets`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
 
          case "requesttypes_id" :
