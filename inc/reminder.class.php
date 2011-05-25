@@ -57,19 +57,26 @@ class Reminder extends CommonDBTM {
       return haveRight('reminder_public', 'r');
    }
 
+
    function post_addItem() {
+
       if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
-                                             array('Reminder' => array($this->fields['id'])));
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                       $this->fields["end"],
+                                       array('Reminder' => array($this->fields['id'])));
       }
    }
 
+
    function post_updateItem($history=1) {
+
       if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
-                                             array('Reminder' => array($this->fields['id'])));
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                       $this->fields["end"],
+                                       array('Reminder' => array($this->fields['id'])));
       }
    }
+
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -289,7 +296,7 @@ class Reminder extends CommonDBTM {
       echo "<td>";
       Planning::dropdownState("state", $this->fields["state"]);
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td class='center'>";
 
@@ -439,7 +446,7 @@ class Reminder extends CommonDBTM {
          if ($DB->numrows($result2)>0) {
             for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
                $interv[$data["begin"]."$$".$i]["reminders_id"] = $data["id"];
-               $interv[$data["begin"]."$$".$i]["id"] = $data["id"];
+               $interv[$data["begin"]."$$".$i]["id"]           = $data["id"];
 
                if (strcmp($begin,$data["begin"])>0) {
                   $interv[$data["begin"]."$$".$i]["begin"] = $begin;

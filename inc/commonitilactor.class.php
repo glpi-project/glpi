@@ -184,7 +184,7 @@ abstract class CommonITILActor extends CommonDBRelation {
              && $item->countGroups(CommonITILObject::ASSIGN) == 0) {
 
             $item->update(array('id'     => $this->fields[$this->getItilObjectForeignKey()],
-                             'status' => 'new'));
+                                'status' => 'new'));
          } else {
             $item->updateDateMod($this->fields[$this->getItilObjectForeignKey()]);
 
