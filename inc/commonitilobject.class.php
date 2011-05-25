@@ -1979,7 +1979,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $DB;
 
       $tot       = 0;
-      $tasktable = getTableForItemtype($this->getType().'Task');
+      $tasktable = getTableForItemType($this->getType().'Task');
 
       $query = "SELECT SUM(`actiontime`)
                 FROM `$tasktable`

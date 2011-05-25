@@ -4680,7 +4680,7 @@ class Ticket extends CommonITILObject {
 
          if (!empty($tickets)) {
             if (NotificationEvent::raiseEvent('alertnotclosed', new self(),
-                                              array('items'     => $tickets,
+                                              array('items'       => $tickets,
                                                     'entities_id' => $entity))) {
 // To be clean : do not mark ticket as already send : always send all
 //                $alert = new Alert();
