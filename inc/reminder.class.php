@@ -71,8 +71,9 @@ class Reminder extends CommonDBTM {
    function post_updateItem($history=1) {
 
       if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"], $this->fields["end"],
-                                             array('Reminder' => array($this->fields['id'])));
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                       $this->fields["end"],
+                                       array('Reminder' => array($this->fields['id'])));
       }
    }
 
