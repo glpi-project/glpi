@@ -552,7 +552,7 @@ class Search {
                if ($citem->canView()) {
                   // State case
                   if ($itemtype == 'States') {
-                     $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
+                     $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable,$tmpquery);
                      $query_num .= " AND $ctable.`states_id` > '0' ";
                   } else {// Ref table case
@@ -562,13 +562,14 @@ class Search {
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`
                                     AND `$reftable`.`itemtype` = '$ctype')";
 
-                     $query_num=str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
+                     $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
                                           $replace,$tmpquery);
-                     $query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],
+                     $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable,$query_num);
                   }
-                  $query_num=str_replace("ENTITYRESTRICT",
-                                       getEntitiesRestrictRequest('',$ctable,'','',$citem->maybeRecursive()),
+                  $query_num = str_replace("ENTITYRESTRICT",
+                                           getEntitiesRestrictRequest('', $ctable, '', '',
+                                                                      $citem->maybeRecursive()),
                                        $query_num);
                   $result_num = $DB->query($query_num);
                   $numrows+= $DB->result($result_num,0,0);
@@ -1334,23 +1335,30 @@ class Search {
          reset($options);
          $first_group=true;
          $selected='view';
+         $nb_in_group = 0;
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
                if (!$first_group) {
-                  echo "</optgroup>\n";
+                  $group .= "</optgroup>\n";
                } else {
                   $first_group=false;
                }
-               echo "<optgroup label='$val'>";
+               if ($nb_in_group) {
+                  echo $group;
+               }
+               $group       = '';
+               $nb_in_group = 0;
+               $group .= "<optgroup label='$val'>";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
-                  echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
+                  $nb_in_group ++;
+                  $group .= "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
-                     echo "selected";
+                     $group .= "selected";
                      $selected=$key;
                   }
-                  echo ">". utf8_substr($val["name"],0,28) ."</option>\n";
+                  $group .= ">". utf8_substr($val["name"],0,28) ."</option>\n";
                }
             }
          }

@@ -1826,6 +1826,28 @@ class Ticket extends CommonDBTM {
 
       }
 
+      // Filter search fields for helpdesk
+      if (getLoginUserID(true) === getLoginUserID(false) // no filter for cron
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $tokeep = array('common');
+         if (haveRight('validate_ticket',1) || haveRight('create_validation',1)) {
+            $tokeep[] = 'validation';
+         }
+         $keep = false;
+         foreach($tab as $key => $val) {
+            if (!is_array($val)) {
+               $keep = in_array($key, $tokeep);
+            }
+            if (!$keep) {
+               if (is_array($val)) {
+                  $tab[$key]['nosearch'] = true;
+               }
+            }
+         }
+         // last updater no search
+         $tab[64]['nosearch'] = true;
+      }
+
       return $tab;
    }
 
