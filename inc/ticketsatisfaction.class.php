@@ -70,10 +70,10 @@ class TicketSatisfaction extends CommonDBTM {
          return false;
       }
 
-      if ($ticket->isUser(Ticket::REQUESTER,getLoginUserID())
+      if ($ticket->isUser(CommonITILObject::REQUESTER,getLoginUserID())
           || $ticket->fields["users_id_recipient"] === getLoginUserID()
           || (isset($_SESSION["glpigroups"])
-              && $ticket->haveAGroup(Ticket::REQUESTER,$_SESSION["glpigroups"]))) {
+              && $ticket->haveAGroup(CommonITILObject::REQUESTER,$_SESSION["glpigroups"]))) {
          return true;
       }
       return false;
