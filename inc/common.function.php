@@ -1809,6 +1809,10 @@ function manageRedirect($where) {
          if (isset($data[2])) {
             $forcetab='forcetab='.$data[2];
          }
+         // Plugin tab
+         if (isset($data[3])) {
+            $forcetab .= '_'.$data[3];
+         }
 
          switch ($_SESSION["glpiactiveprofile"]["interface"]) {
             case "helpdesk" :
