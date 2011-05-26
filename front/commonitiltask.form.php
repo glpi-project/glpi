@@ -44,10 +44,10 @@ if (!$task->canView()) {
 }
 
 $itemtype = $task->getItilObjectItemType();
-$fk = getForeignKeyFieldForItemType($itemtype);
+$fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {
-   $task->check(-1,'w',$_POST);
+   $task->check(-1, 'w', $_POST);
    $task->add($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    glpi_header(getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
 } else if (isset($_POST["update"])) {
-   $task->check($_POST["id"],'w');
+   $task->check($_POST["id"], 'w');
    $task->update($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
