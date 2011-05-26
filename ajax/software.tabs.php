@@ -80,7 +80,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Infocom::showForItem($soft);
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
-            Ticket::showListForItem('Software', $_POST["id"]);
+            Ticket::showListForItem($soft);
             Link::showForItem($soft);
             Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
@@ -92,10 +92,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
          case 4 :
             Infocom::showForItem($soft);
             Contract::showAssociated($soft);
-            break;
-
-         case 6 :
-            Ticket::showListForItem('Software', $_POST["id"]);
             break;
 
          case 21 :

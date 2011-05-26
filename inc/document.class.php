@@ -126,14 +126,6 @@ class Document extends CommonDBTM {
       return '';
    }
 
-   /**
-    * show Tab content
-    *
-    * @param $item CommonDBTM object for which the tab need to be displayed
-    * @param $withtemplate boolean is a template object ?
-    *
-    * @return true
-   **/
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
       self::showAssociated($item, $withtemplate);
       return true;

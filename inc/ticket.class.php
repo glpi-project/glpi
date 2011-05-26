@@ -252,6 +252,51 @@ class Ticket extends CommonITILObject {
       return true;
    }
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if (haveRight("show_all_ticket","1")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = 0;
+            switch ($item->getType()) {
+               case 'User' :
+                  $nb = countElementsInTable('glpi_tickets_users', "`users_id` = '".$item->getID()."'
+                                                                  AND `type` = ".Ticket::REQUESTER);
+                  break;
+
+               case 'Supplier' :
+                  $nb = countElementsInTable('glpi_tickets', "`suppliers_id_assign` = '".$item->getID()."'");
+                  break;
+
+               case 'Sla' :
+                  $nb = countElementsInTable('glpi_tickets', "`slas_id` = '".$item->getID()."'");
+                  break;
+
+               default :
+                  // Direct one
+                  $nb = countElementsInTable('glpi_tickets', " `itemtype` = '".$item->getType()."'
+                                                             AND `items_id` = '".$item->getID()."'");
+                  // Linked items
+                  if ($subquery = $item->getSelectLinkedItem()) {
+                     $nb += countElementsInTable('glpi_tickets',
+                                                "(`itemtype`,`items_id`) IN (" . $subquery . ")");
+                  }
+                  break;
+            }
+
+            return self::createTabEntry($LANG['title'][28],$nb);
+         }
+         return $LANG['title'][28];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
+      self::showListForItem($item);
+      return true;
+   }
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI, $DB;
@@ -3458,31 +3503,79 @@ class Ticket extends CommonITILObject {
     *
     * Will also display tickets of linked items
     *
-    * @param $itemtype
-    * @param $items_id
+    * @param $item CommonDBTM object
     *
     * @return nothing (display a table)
    **/
-   static function showListForItem($itemtype, $items_id) {
+   static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")) {
          return false;
       }
-      if (!class_exists($itemtype)) {
-         return false;
-      }
-      $item = new $itemtype();
-      if (!$item->getFromDB($items_id)) {
+
+      if ($item->isNewID($item->getID())) {
          return false;
       }
 
+      $restrict         = '';
+      $order            = '';
+      $options['reset'] = 'reset';
+
+      switch ($item->getType()) {
+         case 'User' :
+
+            $restrict                 = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
+                                       " AND `glpi_tickets_users`.`type` = ".parent::REQUESTER.")";
+            $order                    = '`glpi_tickets`.`date_mod` DESC';
+            $options['reset']         = 'reset';
+            $options['field'][0]      = 4; // status
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+         case 'Sla' :
+            $restrict                 = "(`slas_id` = '".$item->getID()."')";
+            $order                    = '`glpi_tickets`.`due_date` DESC';
+            $options['field'][0]      = 30;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         case 'Supplier' :
+            $restrict                 = "(`suppliers_id_assign` = '".$item->getID()."')";
+            $order                    = '`glpi_tickets`.`date_mod` DESC';
+            $options['field'][0]      = 6;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         default :
+            $restrict                 = "(`items_id` = '".$item->getID()."' AND `itemtype` = '".$item->getType()."')";
+            $order                    = '`glpi_tickets`.`date_mod` DESC';
+
+            $options['field'][0]      = 12;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = 'all';
+            $options['link'][0]       = 'AND';
+
+            $options['itemtype2'][0]   = $item->getType();
+            $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
+            $options['searchtype2'][0] = 'equals';
+            $options['contains2'][0]   = $item->getID();
+            $options['link2'][0]       = 'AND';
+            break;
+      }
+
+
+
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`items_id` = '$items_id'
-                      AND `itemtype` = '$itemtype') ".
+                WHERE $restrict ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
-                ORDER BY `glpi_tickets`.`date_mod` DESC
+                ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -3492,19 +3585,6 @@ class Ticket extends CommonITILObject {
 
       if ($number > 0) {
          initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
-
-         $options['field'][0]      = 12;
-         $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = 'all';
-         $options['link'][0]       = 'AND';
-
-         $options['itemtype2'][0]   = $itemtype;
-         $options['field2'][0]      = Search::getOptionNumber($itemtype, 'id');
-         $options['searchtype2'][0] = 'equals';
-         $options['contains2'][0]   = $items_id;
-         $options['link2'][0]       = 'AND';
-
-         $options['reset'] = 'reset';
 
          echo "<tr><th colspan='10'>";
          if ($number==1) {
@@ -3523,10 +3603,10 @@ class Ticket extends CommonITILObject {
       }
 
       // Link to open a new ticcket
-      if ($items_id && in_array($itemtype,$_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
+      if ($item->getID() && in_array($item->getType(),$_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
          echo "<tr><td class='tab_bg_2 center' colspan='10'>";
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".
-              "$items_id&amp;itemtype="."$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
+              "&amp;itemtype=".$item->getType()."\"><strong>".$LANG['joblist'][7]."</strong></a>";
          echo "</td></tr>";
       }
 
@@ -3573,120 +3653,6 @@ class Ticket extends CommonITILObject {
          echo "</table></div>";
 
       } // Subquery for linked item
-   }
-
-
-   static function showListForSupplier($entID) {
-      global $DB,$CFG_GLPI, $LANG;
-
-      if (!haveRight("show_all_ticket","1")) {
-         return false;
-      }
-
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`suppliers_id_assign` = '$entID') ".
-                      getEntitiesRestrictRequest("AND","glpi_tickets")."
-                ORDER BY `glpi_tickets`.`date_mod` DESC
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
-      if ($number > 0) {
-         $ent  =new Supplier();
-         $ent->getFromDB($entID);
-         initNavigateListItems('Ticket',$LANG['financial'][26]." = ".$ent->fields['name']);
-
-
-         $options['field'][0]      = 6;
-         $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = $entID;
-         $options['link'][0]       = 'AND';
-
-         $options['reset'] = 'reset';
-
-         echo "<tr><th colspan='10'>";
-         if ($number==1) {
-            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
-         } else {
-            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
-         }
-         echo "</th></tr>";
-
-         self::commonListHeader(HTML_OUTPUT);
-
-         while ($data = $DB->fetch_assoc($result)) {
-            addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], 0);
-         }
-
-      } else {
-         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
-      }
-      echo "</table></div>";
-   }
-
-
-   static function showListForUser($userID) {
-      global $DB,$CFG_GLPI, $LANG;
-
-      if (!haveRight("show_all_ticket","1")) {
-         return false;
-      }
-
-      $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_tickets` ".self::getCommonLeftJoin()."
-                WHERE (`glpi_tickets_users`.`users_id` = '$userID'
-                        AND `glpi_tickets_users`.`type` = ".parent::REQUESTER.") ".
-                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
-                ORDER BY `glpi_tickets`.`date_mod` DESC
-                LIMIT ".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-
-      if ($number > 0) {
-         $user = new User();
-         $user->getFromDB($userID);
-         initNavigateListItems('Ticket',$LANG['common'][34]." = ".$user->getName());
-
-         $options['reset']         = 'reset';
-         $options['field'][0]      = 4; // status
-         $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = $userID;
-         $options['link'][0]       = 'AND';
-
-         echo "<tr><th colspan='10'>";
-         if ($number==1) {
-            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></SPAN>";
-
-         } else {
-            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></SPAN>";
-         }
-         echo "</th></tr>";
-
-         self::commonListHeader(HTML_OUTPUT);
-
-         while ($data = $DB->fetch_assoc($result)) {
-            addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], 0);
-         }
-
-      } else {
-         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
-      }
-      echo "</table></div>";
    }
 
 

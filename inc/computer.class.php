@@ -113,9 +113,8 @@ class Computer extends CommonDBTM {
             if ($CFG_GLPI["use_ocs_mode"]) {
                $ong[14] = $LANG['title'][43];
             }
-            if (haveRight("show_all_ticket","1")) {
-               $ong[6] = $LANG['title'][28];
-            }
+            $this->addStandardTab('Ticket',$ong);
+
             $this->addStandardTab('Link',$ong);
 
             $this->addStandardTab('Note',$ong);
