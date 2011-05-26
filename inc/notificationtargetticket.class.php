@@ -314,7 +314,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
          }
 
-      } 
+      }
 
       // Get tasks, followups, log, validation, satisfaction, linked tickets
       if (!$simple) {
@@ -331,7 +331,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   $tmp['##linkedticket.url##']  = urldecode($CFG_GLPI["url_base"]."/index.php".
                                                             "?redirect=ticket_".$data['tickets_id']);
 
-                  
+
                   $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
                   $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
 
@@ -382,7 +382,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
-            $tmp['##task.time##']        = Ticket::getActionTime($task['actiontime']);
+            $tmp['##task.time##']        = CommonITILObject::getActionTime($task['actiontime']);
 
 
             $tmp['##task.user##']   = "";
