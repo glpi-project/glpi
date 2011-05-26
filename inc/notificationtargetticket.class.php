@@ -195,7 +195,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple = false) {
+   function getDatasForObject(CommonDBTM $item, $simple=false) {
       global $CFG_GLPI, $LANG;
 
       // Common ITIL datas

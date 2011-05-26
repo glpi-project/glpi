@@ -541,7 +541,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple) {
+   function getDatasForObject(CommonDBTM $item, $simple=false) {
       global $CFG_GLPI, $LANG;
 
       $objettype = strtolower($item->getType());
