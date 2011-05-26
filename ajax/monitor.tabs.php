@@ -81,7 +81,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor, $_POST["withtemplate"]);
             Ticket::showListForItem('Monitor', $_POST["id"]);
-            Link::showForItem('Monitor', $_POST["id"]);
+            Link::showForItem($monitor);
             Plugin::displayAction($monitor, $_REQUEST['glpi_tab']);
             break;
 
@@ -92,10 +92,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
 
          case 6 :
             Ticket::showListForItem('Monitor', $_POST["id"]);
-            break;
-
-         case 7 :
-            Link::showForItem('Monitor', $_POST["id"]);
             break;
 
          default :

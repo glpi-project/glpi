@@ -89,7 +89,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Contract::showAssociated($computer ,$_POST["withtemplate"]);
             Document::showAssociated($computer);
             Ticket::showListForItem('Computer', $_POST["id"]);
-            Link::showForItem('Computer', $_POST["id"]);
+            Link::showForItem($computer);
             RegistryKey::showForComputer($_POST["id"]);
             ComputerVirtualMachine::showForVirtualMachine($computer);
             ComputerVirtualMachine::showForComputer($computer);
@@ -108,10 +108,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 6 :
             Ticket::showListForItem('Computer', $_POST["id"]);
-            break;
-
-         case 7 :
-            Link::showForItem('Computer', $_POST["id"]);
             break;
 
          case 13 :

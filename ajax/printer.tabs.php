@@ -84,7 +84,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
             Ticket::showListForItem('Printer',$_POST["id"]);
-            Link::showForItem('Printer',$_POST["id"]);
+            Link::showForItem($printer);
             Plugin::displayAction($printer, $_REQUEST['glpi_tab']);
             break;
 
@@ -100,10 +100,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
 
          case 6 :
             Ticket::showListForItem('Printer', $_POST["id"]);
-            break;
-
-         case 7 :
-            Link::showForItem('Printer', $_POST["id"]);
             break;
 
          default :

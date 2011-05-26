@@ -77,9 +77,7 @@ class Contact extends CommonDBTM{
 
          $this->addStandardTab('Document',$ong);
 
-         if (haveRight("link","r")) {
-            $ong[7] = $LANG['title'][34];
-         }
+         $this->addStandardTab('Link',$ong);
 
          $this->addStandardTab('Note',$ong);
 

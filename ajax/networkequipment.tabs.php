@@ -83,7 +83,7 @@ if (!empty($_POST["withtemplate"])) {
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice, $_POST["withtemplate"]);
          Ticket::showListForItem('NetworkEquipment', $_POST["id"]);
-         Link::showForItem('NetworkEquipment', $_POST["id"]);
+         Link::showForItem($netdevice);
          Plugin::displayAction($netdevice, $_REQUEST['glpi_tab']);
          break;
 
@@ -96,11 +96,7 @@ if (!empty($_POST["withtemplate"])) {
          Ticket::showListForItem('NetworkEquipment', $_POST["id"]);
          break;
 
-      case 7 :
-         Link::showForItem('NetworkEquipment', $_POST["id"]);
-         break;
-
-      default :
+         default :
          if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'])) {
             NetworkPort::showForItem('NetworkEquipment',$_POST["id"]);
          }

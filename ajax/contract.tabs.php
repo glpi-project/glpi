@@ -56,16 +56,12 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          $contract->showSuppliers();
          $contract->showItems();
          Document::showAssociated($contract);
-         Link::showForItem('Contact', $_POST["id"]);
+         Link::showForItem($contract);
          Plugin::displayAction($contract, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
          $contract->showItems();
-         break;
-
-      case 7 :
-         Link::showForItem('Contract', $_POST["id"]);
          break;
 
       default :

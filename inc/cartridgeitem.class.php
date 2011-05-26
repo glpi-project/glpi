@@ -126,9 +126,7 @@ class CartridgeItem extends CommonDBTM {
          $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            if (haveRight("link","r")) {
-               $ong[7] = $LANG['title'][34];
-            }
+            $this->addStandardTab('Link',$ong);
 
             $this->addStandardTab('Note',$ong);
          }
