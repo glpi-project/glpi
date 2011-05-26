@@ -68,10 +68,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          Plugin::displayAction($ticket, $_REQUEST['glpi_tab']);
          break;
 
-      case 2 :
-         $task = new TicketTask();
-         $task->showSummary($ticket);
-         break;
 
       case 3 :
          $ticket->showCost($_POST['target']);
@@ -113,8 +109,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
 
       default :
          if (!CommonGLPI::displayStandardTab($ticket, $_REQUEST['glpi_tab'])) {
-            $fup = new TicketFollowup();
-            $fup->showSummary($ticket);
          }
    }
 }

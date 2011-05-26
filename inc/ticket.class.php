@@ -301,16 +301,15 @@ class Ticket extends CommonITILObject {
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI, $DB;
 
+      $ong = array();
+      $this->addStandardTab('TicketFollowup',$ong);
+
       if ($this->fields['id'] > 0) {
-         if (haveRight('observe_ticket','1')) {
-            $ong[1] = $LANG['mailing'][141];
-         }
          if (haveRight('create_validation','1') ||haveRight('validate_ticket','1')) {
             $ong[7] = $LANG['validation'][8];
          }
-         if (haveRight('observe_ticket','1')) {
-            $ong[2] = $LANG['mailing'][142];
-         }
+         $this->addStandardTab('TicketTask',$ong);
+
          $ong[3] = $LANG['job'][47];
          $ong[4] = $LANG['jobresolution'][2];
          // enquete si statut clos
@@ -328,8 +327,6 @@ class Ticket extends CommonITILObject {
          }
 
       //   $ong['no_all_tab'] = true;
-      } else {
-         $ong[1] = $LANG['job'][13];
       }
 
       return $ong;

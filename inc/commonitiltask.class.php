@@ -90,6 +90,33 @@ abstract class CommonITILTask  extends CommonDBTM {
       return $LANG['job'][7];
    }
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getType() == $this->getItilObjectItemType() && haveRight('observe_ticket','1')) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $restrict = "`tickets_id` = '".$item->getID()."'";
+
+            if ($this->maybePrivate() && !$this->canViewPrivates()) {
+               $restrict .= " AND (`is_private` = '0'
+                                 OR `users_id` ='" . getLoginUserID() . "') ";
+            }
+
+            return self::createTabEntry($LANG['mailing'][142],
+                        countElementsInTable('glpi_tickettasks', $restrict));
+         } else {
+            return $LANG['mailing'][142];
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+      $itemtype = $item->getType().'Task';
+      $task = new $itemtype();
+      $task->showSummary($item);
+      return true;
+   }
 
    function post_deleteFromDB() {
 
