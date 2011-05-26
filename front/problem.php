@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkSeveralRightsOr(array('show_all_problem' => '1',
                            'show_my_problem'  => '1'));
 
-commonHeader($LANG['Menu'][7],'',"maintain","problem");
+commonHeader($LANG['Menu'][7], '', "maintain", "problem");
 
 Search::show('Problem');
 

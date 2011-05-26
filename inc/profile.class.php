@@ -160,7 +160,7 @@ class Profile extends CommonDBTM {
       }
 
       if (isset($input["_cycles_ticket"])) {
-         $tab = Ticket::getAllStatusArray();
+         $tab   = Ticket::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
@@ -172,9 +172,8 @@ class Profile extends CommonDBTM {
          $input["ticket_status"] = exportArrayToDB($cycle);
       }
 
-
       if (isset($input["_cycles_problem"])) {
-         $tab = Problem::getAllStatusArray();
+         $tab   = Problem::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
@@ -187,7 +186,7 @@ class Profile extends CommonDBTM {
       }
 
       if (isset($input["_cycles_change"])) {
-         $tab = Change::getAllStatusArray();
+         $tab   = Change::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
@@ -939,6 +938,7 @@ class Profile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
+
       if (($canedit=haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
@@ -1000,7 +1000,7 @@ class Profile extends CommonDBTM {
          echo "</tr>\n";
       }
 
-      
+
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";

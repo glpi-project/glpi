@@ -94,10 +94,11 @@ class Planning {
       $message = '';
 
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $data = call_user_func(array($itemtype, 'populatePlanning'), array('who'       => $users_id,
-                                                                            'who_group' => 0,
-                                                                            'begin'     => $begin,
-                                                                            'end'       => $end));
+         $data = call_user_func(array($itemtype, 'populatePlanning'),
+                                array('who'       => $users_id,
+                                      'who_group' => 0,
+                                      'begin'     => $begin,
+                                      'end'       => $end));
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
                if (!isset($except[$itemtype])
@@ -354,20 +355,20 @@ class Planning {
 
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
-                                                       'who_group' => $who_group,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+                                                   'who_group' => $who_group,
+                                                   'begin'     => $begin,
+                                                   'end'       => $end));
       // ---------------Problem
       $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
-                                                       'who_group' => $who_group,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+                                                     'who_group' => $who_group,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
 
       // ---------------reminder
-      $datareminders = Reminder::populatePlanning(array('who'      => $who,
-                                                       'who_group' => $who_group,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+      $datareminders = Reminder::populatePlanning(array('who'       => $who,
+                                                        'who_group' => $who_group,
+                                                        'begin'     => $begin,
+                                                        'end'       => $end));
 
       $interv = array_merge($interv, $interv2, $datareminders);
 
@@ -593,8 +594,10 @@ class Planning {
 
       } else if (isset($val["tickets_id"])) {  // show tracking
          TicketTask::displayPlanningItem($val, $who, $type, $complete);
+
       } else if (isset($val["problems_id"])) {  // show tracking
          ProblemTask::displayPlanningItem($val, $who, $type, $complete);
+
       } else {  // show Reminder
          Reminder::displayPlanningItem($val, $who, $type, $complete);
       }
@@ -646,9 +649,9 @@ class Planning {
 
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
-                                                       'who_group' => 0,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+                                                   'who_group' => 0,
+                                                   'begin'     => $begin,
+                                                   'end'       => $end));
 
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,
@@ -733,15 +736,15 @@ class Planning {
 
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
-                                                       'who_group' => $who_group,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+                                                   'who_group' => $who_group,
+                                                   'begin'     => $begin,
+                                                   'end'       => $end));
 
       // ---------------Problem
       $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
-                                                       'who_group' => $who_group,
-                                                       'begin'     => $begin,
-                                                       'end'       => $end));
+                                                     'who_group' => $who_group,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
 
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,

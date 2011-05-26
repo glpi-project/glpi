@@ -219,79 +219,85 @@ define("ERROR",1);
 define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
 
-$CFG_GLPI["unicity_types"] = array('Budget', 'Computer', 'Contact', 'Contract', 'Infocom', 'Monitor',
-                                   'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'Software',
-                                   'SoftwareLicense', 'Supplier','User');
+$CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact', 'Contract',
+                                                  'Infocom', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense', 'Supplier','User');
 
-$CFG_GLPI["state_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                 'Printer');
+$CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer');
 
-$CFG_GLPI["document_types"]= array('Budget', 'CartridgeItem', 'Computer', 'ConsumableItem',
-                                   'Contact', 'Contract', 'Entity', 'Monitor', 'NetworkEquipment',
-                                   'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
-                                   'Supplier', 'Ticket','User');
+$CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Computer',
+                                                  'ConsumableItem', 'Contact', 'Contract', 'Entity',
+                                                  'Monitor', 'NetworkEquipment', 'Peripheral',
+                                                  'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                                                  'Supplier', 'Ticket','User');
 
-$CFG_GLPI["contract_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                    'Phone', 'Printer', 'Software');
+$CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["infocom_types"] = array('Cartridge', 'CartridgeItem', 'Computer', 'Consumable',
-                                   'ConsumableItem', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                   'Phone', 'Printer', 'Software', 'SoftwareLicense');
+$CFG_GLPI["infocom_types"]                = array('Cartridge', 'CartridgeItem', 'Computer',
+                                                  'Consumable', 'ConsumableItem', 'Monitor',
+                                                  'NetworkEquipment', 'Peripheral', 'Phone',
+                                                  'Printer', 'Software', 'SoftwareLicense');
 
-$CFG_GLPI["reservation_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                       'Phone', 'Printer', 'Software');
+$CFG_GLPI["reservation_types"]            = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["linkuser_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                    'Phone', 'Printer', 'Software');
+$CFG_GLPI["linkuser_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["linkgroup_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                                     'Phone', 'Printer', 'Software');
+$CFG_GLPI["linkgroup_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["ticket_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                  'Printer', 'Software');
+$CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["link_types"] = array('Budget', 'CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
-                                'Contract', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                'Printer', 'Software', 'Supplier');
+$CFG_GLPI["link_types"]                   = array('Budget', 'CartridgeItem', 'Computer',
+                                                  'ConsumableItem', 'Contact', 'Contract', 'Monitor',
+                                                  'NetworkEquipment', 'Peripheral', 'Phone',
+                                                  'Printer', 'Software', 'Supplier');
 
-$CFG_GLPI["dictionnary_types"] = array('ComputerModel', 'ComputerType', 'Manufacturer',
-                                       'MonitorModel', 'MonitorType', 'NetworkEquipmentModel',
-                                       'NetworkEquipmentType', 'OperatingSystem',
-                                       'OperatingSystemServicePack', 'OperatingSystemVersion',
-                                       'PeripheralModel', 'PeripheralType', 'PhoneModel',
-                                       'PhoneType', 'Printer', 'PrinterModel', 'PrinterType',
-                                       'Software');
+$CFG_GLPI["dictionnary_types"]            = array('ComputerModel', 'ComputerType', 'Manufacturer',
+                                                  'MonitorModel', 'MonitorType',
+                                                  'NetworkEquipmentModel', 'NetworkEquipmentType',
+                                                  'OperatingSystem', 'OperatingSystemServicePack',
+                                                  'OperatingSystemVersion', 'PeripheralModel',
+                                                  'PeripheralType', 'PhoneModel', 'PhoneType',
+                                                  'Printer', 'PrinterModel', 'PrinterType',
+                                                  'Software');
 
-$CFG_GLPI["helpdesk_visible_types"] = array('Software');
+$CFG_GLPI["helpdesk_visible_types"]       = array('Software');
 
-$CFG_GLPI["networkport_types"] = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                       'Printer');
+$CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
+                                                  'Phone', 'Printer');
 
 $CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'OcsServer', 'Profile',
                                                   'TicketValidation');
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('CronTask', 'Entity', 'NotImportedEmail');
 
-$CFG_GLPI["notificationtemplates_types"] = array('Cartridge', 'Consumable', 'Contract', 'Crontask',
-                                                 'DBConnection', 'FieldUnicity', 'Infocom',
-                                                 'Problem', 'Reservation', 'SoftwareLicense',
-                                                 'Ticket', 'User');
+$CFG_GLPI["notificationtemplates_types"]  = array('Cartridge', 'Consumable', 'Contract', 'Crontask',
+                                                  'DBConnection', 'FieldUnicity', 'Infocom',
+                                                  'Problem', 'Reservation', 'SoftwareLicense',
+                                                  'Ticket', 'User');
 
-$CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
+$CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
-$CFG_GLPI["union_search_type"] = array('ReservationItem' => "reservation_types",
-                                       'States'          => "state_types");
+$CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservation_types",
+                                                  'States'          => "state_types");
 
-$CFG_GLPI["systeminformations_types"] = array('AuthLDAP', 'DBConnection', 'MailCollector',
-                                              'OcsServer', 'Plugin');
+$CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'MailCollector',
+                                                  'OcsServer', 'Plugin');
 
-$CFG_GLPI["rulecollections_types"] = array('RuleImportComputerCollection',
-                                           'RuleMailCollectorCollection', 'RuleOcsCollection',
-                                           'RuleRightCollection', 'RuleSoftwareCategoryCollection',
-                                           'RuleTicketCollection');
+$CFG_GLPI["rulecollections_types"]        = array('RuleImportComputerCollection',
+                                                  'RuleMailCollectorCollection', 'RuleOcsCollection',
+                                                  'RuleRightCollection',
+                                                  'RuleSoftwareCategoryCollection',
+                                                  'RuleTicketCollection');
 
 // Items which can planned something
-$CFG_GLPI['planning_types'] = array('Reminder','TicketTask','ProblemTask');
+$CFG_GLPI['planning_types'] = array('ProblemTask', 'Reminder', 'TicketTask');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
@@ -309,7 +315,7 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'is_not_categorized_soft_expanded', 'language', 'list_limit',
                                      'names_format', 'number_format', 'priority_1', 'priority_2',
                                      'priority_3', 'priority_4', 'priority_5', 'priority_6',
-                                     'show_count_on_tabs',
-                                     'show_jobs_at_login', 'task_private','use_flat_dropdowntree');
+                                     'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
+                                     'use_flat_dropdowntree');
 
 ?>
