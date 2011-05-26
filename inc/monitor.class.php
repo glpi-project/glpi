@@ -89,9 +89,7 @@ class Monitor extends CommonDBTM {
          $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            if (haveRight("show_all_ticket","1")) {
-               $ong[6] = $LANG['title'][28];
-            }
+            $this->addStandardTab('Ticket',$ong);
 
             $this->addStandardTab('Link',$ong);
 

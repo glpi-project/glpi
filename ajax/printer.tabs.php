@@ -83,7 +83,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             Infocom::showForItem($printer);
             Contract::showAssociated($printer);
             Document::showAssociated($printer);
-            Ticket::showListForItem('Printer',$_POST["id"]);
+            Ticket::showListForItem($printer);
             Link::showForItem($printer);
             Plugin::displayAction($printer, $_REQUEST['glpi_tab']);
             break;
@@ -96,10 +96,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
          case 4 :
             Infocom::showForItem($printer);
             Contract::showAssociated($printer);
-            break;
-
-         case 6 :
-            Ticket::showListForItem('Printer', $_POST["id"]);
             break;
 
          default :

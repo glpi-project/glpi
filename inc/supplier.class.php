@@ -102,9 +102,7 @@ class Supplier extends CommonDBTM {
 
          $this->addStandardTab('Document',$ong);
 
-         if (haveRight("show_all_ticket","1")) {
-            $ong[6] = $LANG['title'][28];
-         }
+         $this->addStandardTab('Ticket',$ong);
 
          $this->addStandardTab('Link',$ong);
 

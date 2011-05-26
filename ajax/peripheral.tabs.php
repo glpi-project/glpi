@@ -82,7 +82,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Infocom::showForItem($periph);
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
-            Ticket::showListForItem('Peripheral', $_POST["id"]);
+            Ticket::showListForItem($periph);
             Link::showForItem($periph);
             Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
             break;
@@ -90,10 +90,6 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          case 4 :
             Infocom::showForItem($periph);
             Contract::showAssociated($periph);
-            break;
-
-         case 6 :
-            Ticket::showListForItem('Peripheral', $_POST["id"]);
             break;
 
          default :

@@ -152,9 +152,7 @@ class User extends CommonDBTM {
          }
          $ong[2] = $LANG['common'][96]; // materiel
 
-         if (haveRight("show_all_ticket", "1")) {
-            $ong[3] = $LANG['title'][28]; // tickets
-         }
+         $this->addStandardTab('Ticket',$ong);
 
          $this->addStandardTab('Document',$ong);
 
