@@ -62,7 +62,7 @@ class NotificationTargetInfocom extends NotificationTarget {
          $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
          $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".
-                                                        strtolower($item['itemtype'])."_".$id."_4");
+                                                        strtolower($item['itemtype'])."_".$item['items_id']."_4");
          $this->datas['infocoms'][] = $tmp;
       }
 
