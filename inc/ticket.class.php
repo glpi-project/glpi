@@ -305,9 +305,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('TicketFollowup',$ong);
 
       if ($this->fields['id'] > 0) {
-         if (haveRight('create_validation','1') ||haveRight('validate_ticket','1')) {
-            $ong[7] = $LANG['validation'][8];
-         }
+         $this->addStandardTab('TicketValidation',$ong);
          $this->addStandardTab('TicketTask',$ong);
 
          $ong[3] = $LANG['job'][47];

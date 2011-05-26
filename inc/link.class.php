@@ -63,7 +63,8 @@ class Link extends CommonDBTM {
       if (haveRight("link","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['title'][34],
-                     countElementsInTable('glpi_links_itemtypes',"itemtype = '".$item->getType()."'"));
+                     countElementsInTable('glpi_links_itemtypes',
+                                          "`itemtype` = '".$item->getType()."'"));
          }
          return $LANG['title'][34];
       }
