@@ -93,7 +93,7 @@ if (isset($_POST["send"])) {
    echo " <tr class='tab_bg3'>";
    echo " <td class='center b' width='30%'>".$LANG['reports'][19]."</td>";
    echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
-   echo " <td class='center b' width='30%'>".$LANG['common'][1]."</td>";
+   echo " <td class='center b' width='30%'>".$LANG['document'][14]."</td>";
    echo " <td class='center b' width='5%'>".$LANG['common'][2]."</td>";
    echo " <td class='center b' width='20%'>".$LANG['common'][19]."&nbsp;/&nbsp;".
                                              $LANG['common'][20]."</td>";
