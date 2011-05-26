@@ -206,7 +206,7 @@ class Item_Problem extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          $types = array();
-         foreach (CommonITILObject::getAllTypesForHelpdesk() as $key => $val) {
+         foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
          Dropdown::showAllItems("items_id", 0, 0,
