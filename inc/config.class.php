@@ -551,7 +551,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
       Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'], 0, 99, 1,
-                            array(-1 => $LANG['setup'][307]));
+                            array(-10 => $LANG['setup'][307]));
       echo "&nbsp;".$LANG['stats'][31]."</td>";
       echo "<td>" . $LANG['setup'][608] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
