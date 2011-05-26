@@ -4778,7 +4778,7 @@ class Ticket extends CommonITILObject {
          }
 
          // conservation de toutes les max_closedate des entites filles
-         if ($max_closedate
+         if (!empty($max_closedate)
              && (!isset($maxentity[$parent]) || $max_closedate > $maxentity[$parent])) {
 
             $maxentity[$parent] = $max_closedate;
