@@ -95,8 +95,8 @@ class MailCollector  extends CommonDBTM {
       $this->fields['is_active']=1;
    }
 
-
    function prepareInputForUpdate($input) {
+
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -104,6 +104,10 @@ class MailCollector  extends CommonDBTM {
          } else {
             $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
          }
+      }
+
+      if (isset($input["_blank_passwd"])) {
+         $input['passwd'] = '';
       }
 
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
@@ -186,7 +190,11 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td>";
-      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'></td>";
+      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
+      if ($ID > 0) {
+         echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+      }
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
