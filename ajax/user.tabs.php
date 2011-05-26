@@ -82,16 +82,12 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
 
          $user->showItems();
          Reservation::showForUser($_POST["id"]);
-         Ticket::showListForUser($_POST["id"]);
+         Ticket::showListForItem($user);
          Plugin::displayAction($user, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
          $user->showItems();
-         break;
-
-      case 3 :
-         Ticket::showListForUser($_POST["id"]);
          break;
 
       case 4 :
