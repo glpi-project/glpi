@@ -1402,7 +1402,7 @@ class Rule extends CommonDBTM {
 
             case "dropdown_tracking_itemtype" :
                Dropdown::dropdownTypes($name, 0 ,
-                                       array_keys(CommonITILObject::getAllTypesForHelpdesk()));
+                                       array_keys(Ticket::getAllTypesForHelpdesk()));
                $display = true;
                break;
 
