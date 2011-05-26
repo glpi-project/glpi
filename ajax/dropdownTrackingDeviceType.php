@@ -41,7 +41,7 @@ header_nocache();
 checkLoginUser();
 
 // Make a select box
-if (isset($_POST["itemtype"]) && Ticket::isPossibleToAssignType($_POST["itemtype"])) {
+if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $rand  =mt_rand();
    echo "&nbsp;";

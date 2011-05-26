@@ -54,16 +54,18 @@ class Calendar_Holiday extends CommonDBRelation {
       return $calendar->can($this->fields['calendars_id'],'w');
    }
 
+
    function prepareInputForAdd($input) {
-      if (!isset($input['holidays_id']) 
-            || !isset($input['calendars_id'])
-            || $input['calendars_id'] <= 0
-            || $input['holidays_id'] <= 0
-      ) {
+
+      if (!isset($input['holidays_id'])
+          || !isset($input['calendars_id'])
+          || $input['calendars_id'] <= 0
+          || $input['holidays_id'] <= 0) {
          return false;
       }
       return $input;
    }
+
 
    /**
     * Show holidays for a calendar
