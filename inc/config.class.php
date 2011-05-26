@@ -571,6 +571,7 @@ class Config extends CommonDBTM {
       echo "</td><td>" . $LANG['setup'][219] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
       echo "</td></tr>";
+
       echo "</table><br>";
 
       echo "<table class='tab_cadre_fixe'>";
@@ -768,6 +769,13 @@ class Config extends CommonDBTM {
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td>";
+         echo "<td>" . $LANG['setup'][11] . "&nbsp;:</td><td>";
+         Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30,1,
+                              array(0=>$LANG['setup'][307]));
+         echo "&nbsp;".$LANG['job'][22];
+         echo "</td>";
+         echo "</tr>";
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $LANG['setup'][114] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
