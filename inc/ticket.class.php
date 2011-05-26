@@ -2218,7 +2218,7 @@ class Ticket extends CommonDBTM {
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'items_id';
-      $tab[13]['name']          = $LANG['common'][1];
+      $tab[13]['name']          = $LANG['document'][14];
       $tab[13]['nosearch']      = true;
       $tab[13]['nosort']        = true;
       $tab[13]['massiveaction'] = false;
@@ -4354,7 +4354,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
+      echo "<td class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: </td>";
       echo "<td rowspan='2'>";
 
       // Select hardware on creation or if have update right
@@ -4913,7 +4913,7 @@ class Ticket extends CommonDBTM {
          echo "</th></tr>";
          echo "<tr><th></th>";
          echo "<th>".$LANG['job'][4]."</th>";
-         echo "<th>".$LANG['common'][1]."</th>";
+         echo "<th>".$LANG['document'][14]."</th>";
          echo "<th>".$LANG['joblist'][6]."</th></tr>";
          while ($i < $number) {
             $ID = $DB->result($result, $i, "id");
@@ -5130,7 +5130,7 @@ class Ticket extends CommonDBTM {
       $items[$LANG['joblist'][2]]  = "glpi_tickets.priority";
       $items[$LANG['job'][4]]      = "glpi_tickets.users_id";
       $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
-      $items[$LANG['common'][1]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
+      $items[$LANG['document'][14]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
       $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
       $items[$LANG['sla'][5]]      = "glpi_tickets.due_date";
       $items[$LANG['common'][57]]  = "glpi_tickets.name";

@@ -321,7 +321,7 @@ class RuleTicket extends Rule {
       $actions['status']['name'] = $LANG['joblist'][0];
       $actions['status']['type'] = 'dropdown_status';
 
-      $actions['affectobject']['name']          = $LANG['common'][1];
+      $actions['affectobject']['name']          = $LANG['document'][14];
       $actions['affectobject']['type']          = 'text';
       $actions['affectobject']['force_actions'] = array('affectbyip', 'affectbyfqdn', 'affectbymac');
 
