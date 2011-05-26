@@ -657,12 +657,15 @@ function update0782to080($output='HTML') {
    $migration->addKey("glpi_budgets", "end_date");
 
    $migration->addField("glpi_authldaps", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $migration->addKey("glpi_authldaps", "is_active");
    $ADDTODISPLAYPREF['AuthLdap'] = array(30);
 
    $migration->addField("glpi_authmails", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $migration->addKey("glpi_authmails", "is_active");
    $ADDTODISPLAYPREF['AuthMail'] = array(6);
 
    $migration->addField("glpi_ocsservers", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'", "'1'");
+   $migration->addKey("glpi_ocsservers", "is_active");
    $ADDTODISPLAYPREF['OcsServer'] = array(6);
 
    $migration->changeField("glpi_configs", "use_auto_assign_to_tech", "auto_assign_mode",
