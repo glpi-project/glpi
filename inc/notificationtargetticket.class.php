@@ -208,7 +208,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
                                                                "/index.php?redirect=ticket_".
-                                                               $this->obj->getField("id")."_7");
+                                                               $this->obj->getField("id")."_TicketValidation");
 
       $datas['##ticket.globalvalidation##']
                   = TicketValidation::getStatus($this->obj->getField('global_validation'));

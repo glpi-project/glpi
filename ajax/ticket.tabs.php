@@ -84,11 +84,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          }
          break;
 
-      case 7 :
-         $validation = new Ticketvalidation();
-         $validation->showSummary($ticket);
-         break;
-
       case 8 :
          $ticket->showStats();
          break;

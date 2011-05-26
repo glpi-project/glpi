@@ -105,6 +105,30 @@ class TicketValidation  extends CommonDBChild {
       return false;
    }
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID()
+            && (haveRight('create_validation','1') || haveRight('validate_ticket','1'))) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $restrict = "`tickets_id` = '".$item->getID()."'";
+            if (!haveRight('create_validation','1')) {
+              $restrict .= " AND `users_id_validate` = '".getLoginUserID()."' ";
+            }
+            return self::createTabEntry($LANG['validation'][8],
+                                       countElementsInTable('glpi_ticketvalidations',$restrict));
+         } else {
+            return $LANG['validation'][8];
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+      $validation = new Ticketvalidation();
+      $validation->showSummary($item);
+      return true;
+   }
 
    function post_getEmpty() {
 
@@ -495,7 +519,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand() {\n";
          $params = array('type'       => __CLASS__,
-                         'parentype'  => 'Ticket',
+                         'parenttype'  => 'Ticket',
                          'tickets_id' => $tID,
                          'id'         => -1);
          ajaxUpdateItemJsCode("viewfollowup" . $tID . "$rand",
