@@ -90,6 +90,10 @@ if (isset($_POST["update"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
 
       $_POST['_ok'] = true;
+      if ($times >1 ) {
+         $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
+      }
+
       for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
          $_POST["begin"] = date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
          $_POST["end"] = date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);

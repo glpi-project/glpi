@@ -94,7 +94,7 @@ class Config extends CommonDBTM {
          }
       }
 
-      if (isset($input["_blank_smtp_passwd"])) {
+      if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
          $input['smtp_passwd'] = '';
       }
 
@@ -106,7 +106,7 @@ class Config extends CommonDBTM {
          }
       }
 
-      if (isset($input["_blank_proxy_passwd"])) {
+      if (isset($input["_blank_proxy_passwd"]) && $input["_blank_proxy_passwd"]) {
          $input['proxy_passwd'] = '';
       }
 
