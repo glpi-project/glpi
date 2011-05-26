@@ -569,8 +569,8 @@ class Log extends CommonDBTM {
                   break;
 
                case "actiontime" :
-                  $data["old_value"] = Ticket::getActionTime($data["old_value"]);
-                  $data["new_value"] = Ticket::getActionTime($data["new_value"]);
+                  $data["old_value"] = CommonITILObject::getActionTime($data["old_value"]);
+                  $data["new_value"] = CommonITILObject::getActionTime($data["new_value"]);
                   break;
 
                case "number" :
