@@ -185,6 +185,7 @@ class Profile extends CommonDBTM {
          $input["problem_status"] = exportArrayToDB($cycle);
       }
 
+/* No Change.class
       if (isset($input["_cycles_change"])) {
          $tab   = Change::getAllStatusArray();
          $cycle = array();
@@ -197,7 +198,7 @@ class Profile extends CommonDBTM {
          }
          $input["change_status"] = exportArrayToDB($cycle);
       }
-
+*/
       return $input;
    }
 
