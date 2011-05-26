@@ -1308,7 +1308,7 @@ class Search {
 
          case 'Ticket' :
             if (haveRight("show_all_ticket","1")) {
-               $linked = array_keys(Ticket::getAllTypesForHelpdesk());
+               $linked = array_keys(CommonITILObject::getAllTypesForHelpdesk());
             }
             break;
 
