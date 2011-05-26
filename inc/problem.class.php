@@ -170,7 +170,7 @@ class Problem extends CommonITILObject {
          // Analysis
          $ong[3] = $LANG['problem'][3];
          // Tasks
-         $ong[2] = $LANG['mailing'][142];
+         $this->addStandardTab('ProblemTask',$ong);
          // Hardware
          $ong[7] = $LANG['common'][96];
          // Documents
