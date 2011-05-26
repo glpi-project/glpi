@@ -45,6 +45,14 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    commonHeader($LANG['title'][10],'',"maintain","ticket");
 }
 
+if ($_SESSION['glpirefresh_ticket_list'] > 0) {
+   // Refresh automatique  sur tracking.php
+   echo "<script type=\"text/javascript\">\n";
+   echo "setInterval(\"window.location.reload()\",".
+         (60000 * $_SESSION['glpirefresh_ticket_list']).");\n";
+   echo "</script>\n";
+}
+
 Search::show('Ticket');
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

@@ -1943,6 +1943,7 @@ $LANG['setup'][7]   = "Délimiteur CSV";
 $LANG['setup'][8]   = "Activer les informations financières et administratives par défaut";
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
+$LANG['setup'][11]  = "Rafraichissement automatique de la liste des tickets";
 
 $LANG['setup'][14]  = "Adresse de messagerie";
 

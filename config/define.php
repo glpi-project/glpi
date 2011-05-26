@@ -315,6 +315,7 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'is_not_categorized_soft_expanded', 'language', 'list_limit',
                                      'names_format', 'number_format', 'priority_1', 'priority_2',
                                      'priority_3', 'priority_4', 'priority_5', 'priority_6',
+                                     'refresh_ticket_list',
                                      'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
                                      'use_flat_dropdowntree');
 
