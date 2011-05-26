@@ -148,6 +148,10 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
+      if (isset($input["_blank_passwd"])) {
+         $input['rootdn_passwd'] = '';
+      }
+
       // Set attributes in lower case
       if (count($input)) {
          foreach ($input as $key => $val) {
@@ -238,7 +242,12 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
-         echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'></td>";
+         echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'>";
+         if ($ID) {
+            echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+         }
+
+         echo "</td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";

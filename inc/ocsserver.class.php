@@ -558,7 +558,12 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
-      echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
+      echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'>";
+      if ($ID > 0) {
+         echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+      }
+
+      echo "</td>";
 
       echo "</tr>\n";
       echo "<tr class='tab_bg_1'><td class='center'>" .
@@ -627,6 +632,11 @@ class OcsServer extends CommonDBTM {
       } else {
          unset($input["ocs_db_passwd"]);
       }
+
+      if (isset($input["_blank_passwd"])) {
+         $input['ocs_db_passwd'] = '';
+      }
+
       return $input;
    }
 

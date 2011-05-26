@@ -94,12 +94,20 @@ class Config extends CommonDBTM {
          }
       }
 
+      if (isset($input["_blank_smtp_passwd"])) {
+         $input['smtp_passwd'] = '';
+      }
+
       if (isset($input["proxy_passwd"])) {
          if (empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
          } else {
             $input["proxy_passwd"] = encrypt($input["proxy_passwd"], GLPIKEY);
          }
+      }
+
+      if (isset($input["_blank_proxy_passwd"])) {
+         $input['proxy_passwd'] = '';
       }
 
       // Manage DB Slave process
@@ -868,7 +876,10 @@ class Config extends CommonDBTM {
       echo "<td>" . $LANG['login'][6] . "&nbsp;:</td>";
       echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
-      echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'></td>";
+      echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'>";
+      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>&nbsp;".$LANG['setup'][284];
+
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";

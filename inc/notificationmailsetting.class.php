@@ -184,6 +184,8 @@ class NotificationMailSetting extends CommonDBTM {
          echo "</td>";
          echo "<td >" . $LANG['setup'][235] . "&nbsp;:</td>";
          echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
+         echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".$LANG['setup'][284];
+
          echo "</td></tr>";
 
       } else {
