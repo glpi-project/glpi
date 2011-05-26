@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //sl_SI
 
@@ -1952,16 +1951,16 @@ $LANG['sla'][10]="24/7";
 
 $LANG['software'][1]="Nakup verzije"; 
 $LANG['software'][2]="Uporabi verzijo"; 
-$LANG['software'][3]="Ne inštalirane neprizadete licence"; 
+$LANG['software'][3]="Neinstalirane licence"; 
 $LANG['software'][4]="Neskončno"; 
 $LANG['software'][5]="Verzije"; 
 $LANG['software'][6]="Založnik"; 
 $LANG['software'][7]="Dodaj verzijo"; 
 $LANG['software'][8]="Dodaj licenco"; 
-$LANG['software'][9]="Affected computers"; 
+$LANG['software'][9]="Prizadeti računalniki"; 
 $LANG['software'][11]="Licence"; 
-$LANG['software'][16]="installed software"; 
-$LANG['software'][17]="Installed softwares"; 
+$LANG['software'][16]="instalirano programje"; 
+$LANG['software'][17]="Nameščena programska oprema"; 
 $LANG['software'][19]="Namestitve"; 
 $LANG['software'][20]="Preostalo"; 
 $LANG['software'][28]="OEM"; 
@@ -1970,7 +1969,7 @@ $LANG['software'][30]="Tipi licenc";
 $LANG['software'][32]="Poteklo"; 
 $LANG['software'][44]="Namesti programsko opremo"; 
 $LANG['software'][45]="Izbriši programsko opremo"; 
-$LANG['software'][46]="Associable to a ticket"; 
+$LANG['software'][46]="Vidno v Helpdesku"; 
 $LANG['software'][47]="Združevati"; 
 $LANG['software'][48]="Združiti"; 
 $LANG['software'][49]="Software, ki je dan v smeti po združevanju"; 

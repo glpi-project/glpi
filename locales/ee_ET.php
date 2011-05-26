@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //ee_ET
 
@@ -1239,7 +1238,7 @@ $LANG['ocsconfig'][50]="Deletion";
 $LANG['ocsconfig'][52]="Automatic connection of computers"; 
 $LANG['ocsconfig'][53]="Enable the automatic link"; 
 $LANG['ocsconfig'][54]="Existence criteria of a computer"; 
-$LANG['ocsconfig'][55]="Find computers in GLPI having the status"; 
+$LANG['ocsconfig'][55]="Arvutid mille olek"; 
 $LANG['ocsconfig'][56]="empty"; 
 $LANG['ocsconfig'][57]="equal"; 
 $LANG['ocsconfig'][58]="The link automatically connects a GLPI computer with one in OCSNG.<br>This option is taken into account during manual link and by synchronization scripts."; 
@@ -1295,7 +1294,7 @@ $LANG['ocsng'][54]="Software deleted by OCSNG synchronization";
 $LANG['ocsng'][55]="Volume(s) locked(s)"; 
 $LANG['ocsng'][56]="Lukustatud komponendid"; 
 $LANG['ocsng'][57]="OCSNG Interface"; 
-$LANG['ocsng'][58]="OCSNG link"; 
+$LANG['ocsng'][58]="OCSNG seos"; 
 $LANG['ocsng'][59]="Existing in GLPI"; 
 $LANG['ocsng'][60]="Existing in OCSNG"; 
 $LANG['ocsng'][61]="No item to clean"; 
@@ -1311,8 +1310,8 @@ $LANG['ocsng'][74]="Unmodified computers";
 $LANG['ocsng'][75]="Duplicate computers"; 
 $LANG['ocsng'][76]="Statistics of the OCS link"; 
 $LANG['ocsng'][77]="process completed"; 
-$LANG['ocsng'][78]="Link if possible, otherwise imports declined"; 
-$LANG['ocsng'][79]="Link if possible"; 
+$LANG['ocsng'][78]="Seosta kui võimalik, muidu keela importimine"; 
+$LANG['ocsng'][79]="Seosta kui võimalik"; 
 $LANG['ocsng'][80]="Computers whose import is refused by a rule"; 
 
 $LANG['pager'][1]=".."; 
@@ -1504,23 +1503,23 @@ $LANG['rulesengine'][7]="Tegevused";
 $LANG['rulesengine'][8]="Rules management"; 
 $LANG['rulesengine'][9]="Loogiline tehe"; 
 $LANG['rulesengine'][10]="Position"; 
-$LANG['rulesengine'][11]="Action type"; 
-$LANG['rulesengine'][12]="Fields"; 
-$LANG['rulesengine'][13]="Value"; 
+$LANG['rulesengine'][11]="Tegevus"; 
+$LANG['rulesengine'][12]="Väli"; 
+$LANG['rulesengine'][13]="Väärtus"; 
 $LANG['rulesengine'][14]="Operaator"; 
 $LANG['rulesengine'][15]="Väärtus"; 
 $LANG['rulesengine'][16]="Tingimus"; 
 $LANG['rulesengine'][17]="Reeglid"; 
 $LANG['rulesengine'][18]="Arvuti olemisse määramise reeglid"; 
-$LANG['rulesengine'][19]="Olemi ja õiguste määramise reeglid"; 
+$LANG['rulesengine'][19]="Kasutaja olemi ja õiguste määramise reeglid"; 
 $LANG['rulesengine'][20]="Rules applied"; 
 $LANG['rulesengine'][21]="Rules applicable in the sub-entities"; 
-$LANG['rulesengine'][22]="Assign"; 
+$LANG['rulesengine'][22]="Määra"; 
 $LANG['rulesengine'][23]="Local rules"; 
-$LANG['rulesengine'][24]="Rule type"; 
+$LANG['rulesengine'][24]="Reegli tüüp"; 
 $LANG['rulesengine'][25]="Arvuti nimi"; 
-$LANG['rulesengine'][26]="regular expression checks"; 
-$LANG['rulesengine'][27]="regular expression does not match"; 
+$LANG['rulesengine'][26]="regulaaravaldis sobib"; 
+$LANG['rulesengine'][27]="regulaaravaldis ei sobi"; 
 $LANG['rulesengine'][28]="Teadete reeglid"; 
 $LANG['rulesengine'][29]="List rules"; 
 $LANG['rulesengine'][30]="Tegevus"; 
@@ -1546,7 +1545,7 @@ $LANG['rulesengine'][53]="Peripheral model dictionary";
 $LANG['rulesengine'][54]="Printeri mudeli sõnastik"; 
 $LANG['rulesengine'][55]="Networking model dictionary"; 
 $LANG['rulesengine'][56]="Models"; 
-$LANG['rulesengine'][57]="Rules for import and link computers"; 
+$LANG['rulesengine'][57]="Arvutite automaatse inventeerimise reeglid"; 
 $LANG['rulesengine'][60]="Arvuti tüübi sõnastik"; 
 $LANG['rulesengine'][61]="Monitori tüübi sõnastik"; 
 $LANG['rulesengine'][62]="Telefoni tüübi sõnastik"; 
@@ -1577,7 +1576,7 @@ $LANG['rulesengine'][93]="Warning! This operation can put merged software in the
 $LANG['rulesengine'][94]="FUSION"; 
 $LANG['rulesengine'][95]="Manufacturer choice"; 
 $LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; 
-$LANG['rulesengine'][97]="No element to be tested"; 
+$LANG['rulesengine'][97]="Kontrollitavad asjad puuduvad"; 
 $LANG['rulesengine'][100]="Cache informations"; 
 $LANG['rulesengine'][102]="Reegli nimi"; 
 $LANG['rulesengine'][103]="Objects in cache"; 
@@ -1589,13 +1588,13 @@ $LANG['rulesengine'][108]="original";
 $LANG['rulesengine'][110]="Rights assignment"; 
 $LANG['rulesengine'][111]="Entities assignment"; 
 $LANG['rulesengine'][112]="Rights and entities assignment"; 
-$LANG['rulesengine'][120]="The engine stops on the first checked rule."; 
-$LANG['rulesengine'][121]="The engine treats all the rules."; 
+$LANG['rulesengine'][120]="Täidetakse ainult esimene tingimustele vastav reegel"; 
+$LANG['rulesengine'][121]="Kõik tingimustele vastavad reeglid täidetakse"; 
 $LANG['rulesengine'][122]="The engine passes the result of a rule to the following ones."; 
 $LANG['rulesengine'][129]="Entity from mail domain"; 
 $LANG['rulesengine'][130]="Entity based on LDAP information"; 
 $LANG['rulesengine'][131]="Entity from TAG"; 
-$LANG['rulesengine'][132]="To be unaware of import"; 
+$LANG['rulesengine'][132]="Puudub automaatne inventeerimine"; 
 $LANG['rulesengine'][133]="Entity from domain"; 
 $LANG['rulesengine'][134]="Reject email (without email response)"; 
 $LANG['rulesengine'][135]="Reject email (with email response)"; 
