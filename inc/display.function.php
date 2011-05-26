@@ -762,7 +762,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']
                         = $LANG['setup'][94];
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']
-                        = '/front/ruledictionnarymodelmonitor.php';
+                        = '/front/ruledictionnarymonitormodel.php';
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
                         = '/front/ruledictionnarymonitormodel.php';
 
