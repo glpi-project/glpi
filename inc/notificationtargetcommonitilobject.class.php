@@ -223,7 +223,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $validationtable = getTableForItemType($this->obj->getType.'Validation');
+         $validationtable = getTableForItemType($this->obj->getType().'Validation');
 
          $query = $this->getDistinctUserSql()."
                   FROM `$validationtable`
@@ -248,7 +248,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $validationtable = getTableForItemType($this->obj->getType.'Validation');
+         $validationtable = getTableForItemType($this->obj->getType().'Validation');
 
          $query = $this->getDistinctUserSql()."
                   FROM `$validationtable`
@@ -273,7 +273,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (isset($options['followup_id'])) {
-         $followuptable = getTableForItemType($this->obj->getType.'Followup');
+         $followuptable = getTableForItemType($this->obj->getType().'Followup');
 
          $query = $this->getDistinctUserSql()."
                   FROM `$followuptable`
@@ -322,7 +322,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $tasktable = getTableForItemType($this->obj->getType.'Task');
+         $tasktable = getTableForItemType($this->obj->getType().'Task');
 
          /// TODO : Review it when task / planning management have been updated
 
