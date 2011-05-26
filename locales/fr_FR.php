@@ -794,7 +794,7 @@ $LANG['install'][9]   = "Vous devez installer au moins PHP version 5.";
 $LANG['install'][10]  = "GLPI n'est pas compatible avec la directive zend.ze1_compatibility_mode = On.";
 $LANG['install'][11]  = "La version de PHP est supérieure au minimum requis - Parfait !";
 $LANG['install'][12]  = "Test des Sessions";
-$LANG['install'][13]  = "Votre parseur PHP n'a pas été compilé avec le support des sessions !";
+$LANG['install'][13]  = "Votre parseur PHP n'a pas été installé avec le support des sessions !";
 $LANG['install'][14]  = "Le support des sessions est opérationnel - Parfait !";
 $LANG['install'][15]  = "Vérifiez que le support des sessions est bien activé dans votre php.ini";
 $LANG['install'][16]  = "Test d'écriture de fichiers dump";
