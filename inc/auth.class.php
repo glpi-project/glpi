@@ -487,8 +487,8 @@ class Auth {
    function getAuthMethods() {
 
       //Return all the authentication methods in an array
-      $this->authtypes = array('ldap' => getAllDatasFromTable('glpi_authldaps', 'is_active = 1'),
-                               'mail' => getAllDatasFromTable('glpi_authmails', 'is_active = 1'));
+      $this->authtypes = array('ldap' => getAllDatasFromTable('glpi_authldaps'),
+                               'mail' => getAllDatasFromTable('glpi_authmails'));
    }
 
 
