@@ -381,7 +381,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
-            $tmp['##task.time##']        = CommonITILObject::getActionTime($task['actiontime']);
+            $tmp['##task.time##']        = Ticket::getActionTime($task['actiontime']);
 
 
             $tmp['##task.user##']   = "";
