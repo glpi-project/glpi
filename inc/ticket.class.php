@@ -407,7 +407,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'status';
          }
          // for post-only with validate right
-         if (TicketValidation::canValidate($this->fields['id'])) {
+         if (TicketValidation::canValidate($this->fields['id']) || TicketValidation::canCreate()) {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
