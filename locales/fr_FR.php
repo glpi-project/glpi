@@ -91,6 +91,7 @@ $LANG['buttons'][31] = "Exporter";
 $LANG['buttons'][32] = "Fin";
 $LANG['buttons'][33] = "Début";
 $LANG['buttons'][34] = "Annuler";
+$LANG['buttons'][35] = "Supprimer toutes les répétitions";
 
 $LANG['buttons'][37] = "Importer";
 $LANG['buttons'][38] = "Déverrouiller";

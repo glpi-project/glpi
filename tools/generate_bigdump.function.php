@@ -152,7 +152,7 @@ function addReservation($type, $ID, $ID_entity) {
          $query = "INSERT INTO `glpi_reservations`
                    VALUES (NULL, '$tID', '".date("Y-m-d H:i:s", $date1)."',
                            '".date("Y-m-d H:i:s", $date2)."', '".mt_rand($FIRST['users_normal'],
-                           $LAST['users_postonly'])."', 'comments $i ".getRandomString(15)."')";
+                           $LAST['users_postonly'])."', 'comments $i ".getRandomString(15)."',0)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $DB->insert_id();

@@ -50,7 +50,6 @@ class Reservation extends CommonDBChild {
       return $LANG['Menu'][17];
    }
 
-
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
@@ -163,6 +162,20 @@ class Reservation extends CommonDBChild {
 
 
    // SPECIFIC FUNCTIONS
+   function getUniqueGroupFor($reservationitems_id) {
+      global $DB;
+      do {
+         $rand = mt_rand(1,mt_getrandmax());
+
+         $query = "SELECT COUNT(*) as CPT
+                  FROM `glpi_reservations`
+                  WHERE `reservationitems_id` = '$reservationitems_id' AND `group` = '$rand';";
+         $result = $DB->query($query);
+         $count = $DB->result($result,0,0);
+      } while ($count > 0);
+
+      return $rand;
+   }
 
    /**
     * Is the item already reserved ?
@@ -276,6 +289,19 @@ class Reservation extends CommonDBChild {
       return haveAccessToEntity($item->getEntityID());
    }
 
+   function post_purgeItem () {
+      global $DB;
+      if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
+         $query = "SELECT *
+                  FROM `glpi_reservations`
+                  WHERE `reservationitems_id` = '".$this->fields['reservationitems_id']."'
+                  AND `group` = '".$this->fields['group']."' ";
+         $rr = new Reservation();
+         foreach($DB->request($query) as $data) {
+            $rr->delete(array('id' => $data['id']));
+         }
+      }
+   }
 
    /**
    * Show reservation calendar
@@ -632,6 +658,9 @@ class Reservation extends CommonDBChild {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
          echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         if ($resa->fields["group"] > 0) {
+            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".$LANG['buttons'][35];
+         }
          echo "</td><td class='top center'>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
          echo "</td></tr>\n";

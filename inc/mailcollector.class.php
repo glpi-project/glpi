@@ -106,7 +106,7 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      if (isset($input["_blank_passwd"])) {
+      if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
          $input['passwd'] = '';
       }
 

@@ -633,7 +633,7 @@ class OcsServer extends CommonDBTM {
          unset($input["ocs_db_passwd"]);
       }
 
-      if (isset($input["_blank_passwd"])) {
+      if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
          $input['ocs_db_passwd'] = '';
       }
 
