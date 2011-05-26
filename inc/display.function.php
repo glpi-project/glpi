@@ -630,7 +630,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
 
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']=$LANG['setup'][94];
-         $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']='/front/ruledictionnarymodelmonitor.php';
+         $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']='/front/ruledictionnarymonitormodel.php';
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']='/front/ruledictionnarymonitormodel.php';
          if (haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['add']='/front/ruledictionnarymonitormodel.form.php';
