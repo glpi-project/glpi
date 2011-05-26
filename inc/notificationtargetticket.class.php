@@ -319,7 +319,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Get tasks, followups, log, validation, satisfaction, linked tickets
       if (!$simple) {
          // Linked tickets
-         $linked_tickets = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
+         $linked_tickets         = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
          $datas['linkedtickets'] = array();
          if (count($linked_tickets)) {
             $linkedticket = new Ticket();
@@ -342,7 +342,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberoflinkedtickets##'] = count($datas['linkedtickets']);
 
-
          $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
          $problems = getAllDatasFromTable('glpi_problems_tickets',$restrict);
          $datas['problems'] = array();
@@ -351,11 +350,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             foreach ($problems as $data) {
                if ($problem->getFromDB($data['problems_id'])) {
                   $tmp = array();
-                  $tmp['##problem.id##']    = $data['problems_id'];
-                  $tmp['##problem.date##']  = $problem->getField('date');
-                  $tmp['##problem.title##'] = $problem->getField('name');
-                  $tmp['##problem.url##']   = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                            "?redirect=problem_".$data['problems_id']);
+                  $tmp['##problem.id##']     = $data['problems_id'];
+                  $tmp['##problem.date##']   = $problem->getField('date');
+                  $tmp['##problem.title##']  = $problem->getField('name');
+                  $tmp['##problem.url##']    = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                         "?redirect=problem_".$data['problems_id']);
                   $tmp['##problem.content##'] = $problem->getField('content');
 
                   $datas['problems'][] = $tmp;

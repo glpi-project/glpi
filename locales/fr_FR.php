@@ -1587,19 +1587,21 @@ $LANG['printers'][30] = "Compteur de page initial";
 $LANG['printers'][31] = "Pages imprimées";
 $LANG['printers'][32] = "Pilote";
 
-$LANG['problem'][0] = "Problème";
-$LANG['problem'][1] = "Accepté";
-$LANG['problem'][2] = "En observation";
-$LANG['problem'][3] = "Analyse";
-$LANG['problem'][4] = "Impacts";
-$LANG['problem'][5] = "Causes";
-$LANG['problem'][6] = "Symptômes";
-$LANG['problem'][7] = "Créer un problème à partir de ce ticket";
-$LANG['problem'][8] = "Nouveau problème";
-$LANG['problem'][9] = "Modification d'un problème";
+
+$LANG['problem'][0]  = "Problème";
+$LANG['problem'][1]  = "Accepté";
+$LANG['problem'][2]  = "En observation";
+$LANG['problem'][3]  = "Analyse";
+$LANG['problem'][4]  = "Impacts";
+$LANG['problem'][5]  = "Causes";
+$LANG['problem'][6]  = "Symptômes";
+$LANG['problem'][7]  = "Créer un problème à partir de ce ticket";
+$LANG['problem'][8]  = "Nouveau problème";
+$LANG['problem'][9]  = "Modification d'un problème";
 $LANG['problem'][10] = "Problème résolu";
 $LANG['problem'][11] = "Clôture d'un problème";
 $LANG['problem'][12] = "Suppression d'un problème";
+
 
 $LANG['profiles'][0]  = "Droit global";
 $LANG['profiles'][1]  = "Droit local";

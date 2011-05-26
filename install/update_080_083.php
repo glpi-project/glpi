@@ -397,25 +397,24 @@ function update080to083($output='HTML') {
          or die("0.83 add problem notification translation ".$LANG['update'][90].$DB->error());
 
 
+         $notifications = array('new'         => array(),
+                                'update'      => array(Notification::ASSIGN_TECH,
+                                                       Notification::OLD_TECH_IN_CHARGE),
+                                'solved'      => array(),
+                                'add_task'    => array(),
+                                'update_task' => array(),
+                                'delete_task' => array(),
+                                'closed'      => array(),
+                                'delete'      => array());
 
-         $notifications = array('new'        => array(),
-                               'update'      => array(Notification::ASSIGN_TECH,
-                                                      Notification::OLD_TECH_IN_CHARGE),
-                               'solved'      => array(),
-                               'add_task'    => array(),
-                               'update_task' => array(),
-                               'delete_task' => array(),
-                               'closed'      => array(),
-                               'delete'      => array());
-
-         $notif_names   = array('new'        => 'New Problem',
-                               'update'      => 'Update Problem',
-                               'solved'      => 'Resolve Problem',
-                               'add_task'    => 'Add Task',
-                               'update_task' => 'Update Task',
-                               'delete_task' => 'Delete Task',
-                               'closed'      => 'Close Problem',
-                               'delete'      => 'Delete Problem');
+         $notif_names   = array('new'         => 'New Problem',
+                                'update'      => 'Update Problem',
+                                'solved'      => 'Resolve Problem',
+                                'add_task'    => 'Add Task',
+                                'update_task' => 'Update Task',
+                                'delete_task' => 'Delete Task',
+                                'closed'      => 'Close Problem',
+                                'delete'      => 'Delete Problem');
 
          foreach ($notifications as $key => $val) {
             $notifications[$key][] = Notification::AUTHOR;

@@ -50,17 +50,17 @@ class Notification extends CommonDBTM {
    // MAILING USERS TYPE
 
    //Notification to the GLPI global administrator
-   const GLOBAL_ADMINISTRATOR              = 1;
+   const GLOBAL_ADMINISTRATOR       = 1;
    //Notification to the technicial who's assign to a ticket
    const ASSIGN_TECH                = 2;
    //Notification to the owner of the item
-   const AUTHOR                            = 3;
+   const AUTHOR                     = 3;
    //Notification to the technician previously in charge of the ticket
-   const OLD_TECH_IN_CHARGE = 4;
+   const OLD_TECH_IN_CHARGE         = 4;
    //Notification to the technician in charge of the item
-   const ITEM_TECH_IN_CHARGE               = 5;
+   const ITEM_TECH_IN_CHARGE        = 5;
    //Notification to the item's user
-   const ITEM_USER                         = 6;
+   const ITEM_USER                  = 6;
    //Notification to the ticket's recipient
    const RECIPIENT                  = 7;
    //Notificartion to the ticket's assigned supplier
@@ -70,7 +70,7 @@ class Notification extends CommonDBTM {
    //Notification to the supervisor of the ticket's assigned group
    const SUPERVISOR_ASSIGN_GROUP    = 10;
    //Notification to the entity administrator
-   const ENTITY_ADMINISTRATOR              = 11;
+   const ENTITY_ADMINISTRATOR       = 11;
    //Notification to the supervisor of the ticket's requester group
    const SUPERVISOR_REQUESTER_GROUP = 12;
    //Notification to the ticket's requester group
@@ -86,7 +86,7 @@ class Notification extends CommonDBTM {
    //Notification to the followup author
    const FOLLOWUP_AUTHOR            = 18;
    //Notification to the user
-   const USER                              = 19;
+   const USER                       = 19;
    //Notification to the ticket's observer group
    const OBSERVER_GROUP             = 20;
    //Notification to the ticket's observer user
