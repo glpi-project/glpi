@@ -87,7 +87,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
             Ticket::showListForItem('Phone', $_POST["id"]);
-            Link::showForItem('Phone', $_POST["id"]);
+            Link::showForItem($phone);
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
@@ -98,10 +98,6 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
 
          case 6 :
             Ticket::showListForItem('Phone', $_POST["id"]);
-            break;
-
-         case 7 :
-            Link::showForItem('Phone', $_POST["id"]);
             break;
 
          default :

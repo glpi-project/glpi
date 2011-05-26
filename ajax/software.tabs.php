@@ -81,7 +81,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
             Ticket::showListForItem('Software', $_POST["id"]);
-            Link::showForItem('Software' ,$_POST["id"]);
+            Link::showForItem($soft);
             Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
 
@@ -96,10 +96,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
 
          case 6 :
             Ticket::showListForItem('Software', $_POST["id"]);
-            break;
-
-         case 7 :
-            Link::showForItem('Software', $_POST["id"]);
             break;
 
          case 21 :

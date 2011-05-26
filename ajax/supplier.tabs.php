@@ -65,7 +65,7 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          $supplier->showContracts();
          Document::showAssociated($supplier);
          Ticket::showListForSupplier($_POST["id"]);
-         Link::showForItem('Supplier', $_POST["id"]);
+         Link::showForItem($supplier);
          Plugin::displayAction($supplier, $_REQUEST['glpi_tab']);
          break;
 
@@ -75,10 +75,6 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
 
       case 6 :
          Ticket::showListForSupplier($_POST["id"]);
-         break;
-
-      case 7 :
-         Link::showForItem('Supplier',$_POST["id"]);
          break;
 
       case 15 :

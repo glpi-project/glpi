@@ -58,12 +58,8 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
       case -1 :
          $contact->showSuppliers();
          Document::showAssociated($contact);
-         Link::showForItem('Contact', $_POST["id"]);
+         Link::showForItem($contact);
          Plugin::displayAction($contact, $_REQUEST['glpi_tab']);
-         break;
-
-      case 7 :
-         Link::showForItem('Contact', $_POST["id"]);
          break;
 
       default :

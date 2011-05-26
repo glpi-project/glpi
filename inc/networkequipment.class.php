@@ -89,9 +89,7 @@ class NetworkEquipment extends CommonDBTM {
             if (haveRight("show_all_ticket","1")) {
                $ong[6] = $LANG['title'][28];
             }
-            if (haveRight("link","r")) {
-               $ong[7] = $LANG['title'][34];
-            }
+            $this->addStandardTab('Link',$ong);
 
             $this->addStandardTab('Note',$ong);
 

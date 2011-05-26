@@ -57,6 +57,26 @@ class Link extends CommonDBTM {
    }
 
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if (haveRight("link","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['title'][34],
+                     countElementsInTable('glpi_links_itemtypes',"itemtype = '".$item->getType()."'"));
+         }
+         return $LANG['title'][34];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+      self::showForItem($item);
+      return true;
+   }
+
+
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -302,22 +322,16 @@ class Link extends CommonDBTM {
    /**
     * Show Links for an item
     *
-    * @param $itemtype integer : item type
-    * @param $ID integer : item ID
+    * @param $item CommonDBTM object
     */
-   static function showForItem($itemtype, $ID) {
+   static function showForItem(CommonDBTM $item) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!class_exists($itemtype)) {
-         return false;
-      }
-
-      $item = new $itemtype;
-      if (!$item->getFromDB($ID)) {
-         return false;
-      }
-
       if (!haveRight("link","r")) {
+         return false;
+      }
+
+      if ($item->isNewID($item->getID())) {
          return false;
       }
 
@@ -328,7 +342,7 @@ class Link extends CommonDBTM {
                 FROM `glpi_links`
                 INNER JOIN `glpi_links_itemtypes`
                      ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
-                WHERE `glpi_links_itemtypes`.`itemtype`='$itemtype' " .
+                WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .
                       getEntitiesRestrictRequest(" AND", "glpi_links", "entities_id",
                                                  $item->getEntityID(), true)."
                 ORDER BY name";
@@ -366,7 +380,7 @@ class Link extends CommonDBTM {
                   $url = $link;
                   if ($tosend) {
                      $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
-                            "&amp;itemtype=$itemtype&amp;id=$ID";
+                            "&amp;itemtype=".$item->getType()."&amp;id=".$item->getID();
                   }
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='center'><a href='$url' target='_blank'>".$clean_name[0]."</a>";
