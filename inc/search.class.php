@@ -602,6 +602,15 @@ class Search {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num .= " AND $ctable.`states_id` > '0' ";
+                     // Add deleted if item have it
+                     if ($citem && $citem->maybeDeleted()) {
+                        $query_num .= " AND `$ctable`.`is_deleted` = '0' ";
+                     }
+
+                     // Remove template items
+                     if ($citem && $citem->maybeTemplate()) {
+                        $query_num .= " AND `$ctable`.`is_template` = '0' ";
+                     }
 
                   } else {// Ref table case
                      $reftable = getTableForItemType($itemtype);
@@ -671,6 +680,16 @@ class Search {
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
                   $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
+                  // Add deleted if item have it
+                  if ($citem && $citem->maybeDeleted()) {
+                     $tmpquery .= " AND `$ctable`.`is_deleted` = '0' ";
+                  }
+
+                  // Remove template items
+                  if ($citem && $citem->maybeTemplate()) {
+                     $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
+                  }
+
                } else {// Ref table case
                   $reftable = getTableForItemType($itemtype);
 
