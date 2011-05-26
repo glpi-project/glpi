@@ -93,9 +93,9 @@ abstract class CommonITILTask  extends CommonDBTM {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getType() == $this->getItilObjectItemType() && haveRight('observe_ticket','1')) {
+      if ($item->getType() == $this->getItilObjectItemType() && $item->canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $restrict = "`tickets_id` = '".$item->getID()."'";
+            $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
 
             if ($this->maybePrivate() && !$this->canViewPrivates()) {
                $restrict .= " AND (`is_private` = '0'
@@ -103,7 +103,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
 
             return self::createTabEntry($LANG['mailing'][142],
-                        countElementsInTable('glpi_tickettasks', $restrict));
+                        countElementsInTable($this->getTable(), $restrict));
          } else {
             return $LANG['mailing'][142];
          }
