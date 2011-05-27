@@ -45,7 +45,7 @@ class Software extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('Infocom', 'SoftwareVersion', 'ReservationItem');
+   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
 
    static function getTypeName() {
@@ -59,9 +59,11 @@ class Software extends CommonDBTM {
       return haveRight('software', 'w');
    }
 
+
    function canView() {
       return haveRight('software', 'r');
    }
+
 
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
@@ -69,18 +71,21 @@ class Software extends CommonDBTM {
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("software","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][4],
-                     countElementsInTable('glpi_computers_softwareversions',"computers_id = '".$item->getID()."'"));
-         } else {
-            return $LANG['Menu'][4];
+                   countElementsInTable('glpi_computers_softwareversions',
+                                        "computers_id = '".$item->getID()."'"));
          }
+         return $LANG['Menu'][4];
       }
       return '';
    }
+
+
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
       Computer_SoftwareVersion::showForComputer($item, $withtemplate);
       return true;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
@@ -95,18 +100,18 @@ class Software extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket',$ong);
+            $this->addStandardTab('Ticket', $ong);
 
-            $this->addStandardTab('Link',$ong);
+            $this->addStandardTab('Link', $ong);
 
-            $this->addStandardTab('Note',$ong);
+            $this->addStandardTab('Note', $ong);
 
-            $this->addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation', $ong);
 
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log', $ong);
             if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
                $ong[21] = $LANG['software'][47];
             }
@@ -141,7 +146,7 @@ class Software extends CommonDBTM {
 
       //If category was not set by user (when manually adding a user)
       if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
-         $softcatrule = new RuleSoftwareCategoryCollection;
+         $softcatrule = new RuleSoftwareCategoryCollection();
          $result = $softcatrule->processAllRules(null,null,$input);
 
          if (!empty($result) && isset($result["softwarecategories_id"])) {
@@ -160,8 +165,8 @@ class Software extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          $query = "SELECT `contracts_id`
@@ -209,7 +214,7 @@ class Software extends CommonDBTM {
 
       if ($result2 = $DB->query($query2)) {
          if ($DB->numrows($result2)) {
-            $lic = new SoftwareLicense;
+            $lic = new SoftwareLicense();
             while ($data = $DB->fetch_array($result2)) {
                $lic->delete(array("id" => $data["id"]));
             }
@@ -641,7 +646,7 @@ class Software extends CommonDBTM {
          $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 
          //Process software's category rules
-         $softcatrule = new RuleSoftwareCategoryCollection;
+         $softcatrule = new RuleSoftwareCategoryCollection();
          $result      = $softcatrule->processAllRules(null, null, $input);
 
          if (!empty ($result) && isset ($result["softwarecategories_id"])) {
@@ -736,7 +741,7 @@ class Software extends CommonDBTM {
    function removeFromTrash($ID) {
 
       $res         = $this->restore(array("id" => $ID));
-      $softcatrule = new RuleSoftwareCategoryCollection;
+      $softcatrule = new RuleSoftwareCategoryCollection();
       $result      = $softcatrule->processAllRules(null, null, $this->fields);
 
       if (!empty($result)
@@ -895,8 +900,8 @@ class Software extends CommonDBTM {
 
       if ($i==($nb+1)) {
          //error_log ("All merge operations ok.");
+         $soft = new self();
          foreach ($item as $old) {
-            $soft = new Software();
             $soft->putInTrash($old, $LANG['software'][49]);
          }
       }

@@ -43,7 +43,8 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
 
    static function getTypeName() {
       global $LANG;
@@ -73,18 +74,18 @@ class Phone extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket',$ong);
+            $this->addStandardTab('Ticket', $ong);
 
-            $this->addStandardTab('Link',$ong);
+            $this->addStandardTab('Link', $ong);
 
-            $this->addStandardTab('Note',$ong);
+            $this->addStandardTab('Note', $ong);
 
-            $this->addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation', $ong);
 
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log', $ong);
          }
 
       } else { // New item
@@ -113,8 +114,8 @@ class Phone extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          $query = "SELECT `id`

@@ -48,10 +48,14 @@ class Item_Problem extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    function prepareInputForAdd($input) {
 
-      if (empty($input['itemtype']) || empty($input['items_id']) || $input['items_id']==0
-         || empty($input['problems_id']) || $input['problems_id']==0) {
+      if (empty($input['itemtype'])
+          || empty($input['items_id'])
+          || $input['items_id']==0
+          || empty($input['problems_id'])
+          || $input['problems_id']==0) {
          return false;
       }
 
@@ -70,14 +74,14 @@ class Item_Problem extends CommonDBRelation{
 
       $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
                    AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
-
-      $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_problems", '', '', true);
+                   AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'".
+                   getEntitiesRestrictRequest(" AND ", "glpi_problems", '', '', true);
 
       $nb = countElementsInTable(array('glpi_items_problems', 'glpi_problems'), $restrict);
 
       return $nb ;
    }
+
 
    /**
    * Print the HTML array for Items linked to a problem
@@ -95,7 +99,7 @@ class Item_Problem extends CommonDBRelation{
          return false;
       }
       $canedit = $problem->can($instID,'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_items_problems`
@@ -145,10 +149,12 @@ class Item_Problem extends CommonDBRelation{
                              `glpi_entities`.`id` AS entity
                       FROM `glpi_items_problems`,
                            `$itemtable`";
+
             if ($itemtype != 'Entity') {
                $query .= " LEFT JOIN `glpi_entities`
                                  ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
             }
+
             $query .= " WHERE `$itemtable`.`id` = `glpi_items_problems`.`items_id`
                               AND `glpi_items_problems`.`itemtype` = '$itemtype'
                               AND `glpi_items_problems`.`problems_id` = '$instID'";
@@ -156,12 +162,13 @@ class Item_Problem extends CommonDBRelation{
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
-            $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', '',
+
+            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
                                                  $item->maybeRecursive())."
                       ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
             $result_linked = $DB->query($query);
-            $nb = $DB->numrows($result_linked);
+            $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
                $ID = "";
@@ -185,7 +192,7 @@ class Item_Problem extends CommonDBRelation{
                         ($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                }
                echo "<td class='center'>";
-               echo Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
+               echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
                echo "<td class='center".
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";
@@ -210,11 +217,10 @@ class Item_Problem extends CommonDBRelation{
             $types[] = $key;
          }
          Dropdown::showAllItems("items_id", 0, 0,
-                                 ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
-                                 $types);
+                                ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
+                                $types);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\"
-                  class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
 

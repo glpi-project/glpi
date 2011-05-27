@@ -86,18 +86,18 @@ class Monitor extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket',$ong);
+            $this->addStandardTab('Ticket', $ong);
 
-            $this->addStandardTab('Link',$ong);
+            $this->addStandardTab('Link', $ong);
 
-            $this->addStandardTab('Note',$ong);
+            $this->addStandardTab('Note', $ong);
 
-            $this->addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation', $ong);
 
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log', $ong);
          }
 
       } else { // New item
@@ -129,8 +129,8 @@ class Monitor extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          $query = "SELECT `contracts_id`

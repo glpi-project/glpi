@@ -1590,7 +1590,6 @@ abstract class CommonITILObject extends CommonDBTM {
              && $options["_users_id_".$typename] == 0) {
             $options["_users_id_".$typename] = getLoginUserID();
          }
-
       }
 
       $rand   = mt_rand();
