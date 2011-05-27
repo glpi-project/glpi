@@ -364,7 +364,7 @@ class Computer extends CommonDBTM {
 
          // ADD Infocoms
          $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD volumes
          $query = "SELECT `id`

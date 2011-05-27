@@ -41,7 +41,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
 
    /**
-    *Get events related to tickets
+    * Get events related to tickets
    **/
    function getEvents() {
       global $LANG;
@@ -59,9 +59,8 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple = false) {
+   function getDatasForObject(CommonDBTM $item, $simple=false) {
       global $CFG_GLPI;
-
 
       // Common ITIL datas
       $datas = parent::getDatasForObject($item, $simple);
@@ -98,8 +97,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $datas['##problem.numberoftickets##'] = count($datas['tickets']);
          }
 
-         $restrict  = "`problems_id`='".$this->obj->getField('id')."'
-                       ORDER BY `date` DESC, `id` ASC";
+         $restrict  = "`problems_id` = '".$this->obj->getField('id')."'
+                       ORDER BY `date` DESC,
+                                `id` ASC";
 
          //Task infos
          $tasks = getAllDatasFromTable('glpi_problemtasks', $restrict);

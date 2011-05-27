@@ -43,7 +43,7 @@ class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
    /**
@@ -83,19 +83,20 @@ class NetworkEquipment extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket',$ong);
+            $this->addStandardTab('Ticket', $ong);
 
-            $this->addStandardTab('Link',$ong);
+            $this->addStandardTab('Link', $ong);
 
-            $this->addStandardTab('Note',$ong);
+            $this->addStandardTab('Note', $ong);
 
-            $this->addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation', $ong);
 
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log', $ong);
          }
+
       } else { // New item
          $ong[1] = $LANG['title'][26];
       }
@@ -121,8 +122,8 @@ class NetworkEquipment extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          $query = "SELECT `id`
@@ -232,7 +233,7 @@ class NetworkEquipment extends CommonDBTM {
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
-               $item = new $data["itemtype"];
+               $item = new $data["itemtype"]();
                // For each itemtype which are entity dependant
                if ($item->isEntityAssign()) {
                   if (countElementsInTable($itemtable, "id IN (".$data["ids"].")

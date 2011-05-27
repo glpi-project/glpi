@@ -43,7 +43,7 @@ class Printer  extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
 /**
@@ -90,18 +90,18 @@ class Printer  extends CommonDBTM {
             $ong[4] = $LANG['Menu'][26];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket',$ong);
+            $this->addStandardTab('Ticket', $ong);
 
-            $this->addStandardTab('Link',$ong);
+            $this->addStandardTab('Link', $ong);
 
-            $this->addStandardTab('Note',$ong);
+            $this->addStandardTab('Note', $ong);
 
-            $this->addStandardTab('Reservation',$ong);
+            $this->addStandardTab('Reservation', $ong);
 
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log', $ong);
          }
 
       } else { // New item
@@ -163,8 +163,8 @@ class Printer  extends CommonDBTM {
 
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
-               $itemtable=getTableForItemType($data["itemtype"]);
-               $item = new $data["itemtype"];
+               $itemtable = getTableForItemType($data["itemtype"]);
+               $item      = new $data["itemtype"]();
                // For each itemtype which are entity dependant
                if ($item->isEntityAssign()) {
 
@@ -214,8 +214,8 @@ class Printer  extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          $query = "SELECT `id`
@@ -710,7 +710,7 @@ class Printer  extends CommonDBTM {
       }
       return $ID;
    }
-   
+
 
    /**
     * Create a new printer
@@ -742,15 +742,16 @@ class Printer  extends CommonDBTM {
       if ($printer = $DB->fetch_array($res_printer)) {
          $id = $printer["id"];
       } else {
-         $input["name"]                = $name;
-         $input["manufacturers_id"]    = $manufacturer_id;
-         $input["entities_id"]         = $entity;
+         $input["name"]             = $name;
+         $input["manufacturers_id"] = $manufacturer_id;
+         $input["entities_id"]      = $entity;
 
          $id = $this->add($input);
       }
       return $id;
    }
-   
+
+
    /**
     * Restore a software from trash
     *
