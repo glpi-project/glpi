@@ -43,7 +43,8 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
 
    static function getTypeName() {
       global $LANG;
@@ -123,8 +124,8 @@ class Phone extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          $query = "SELECT `id`

@@ -42,8 +42,8 @@ if (!defined('GLPI_ROOT')) {
 class Monitor extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory=true;
-   protected $forward_entity_to=array('Infocom', 'ReservationItem');
+   public $dohistory = true;
+   protected $forward_entity_to = array('Infocom', 'ReservationItem');
 
 
 /**
@@ -138,8 +138,8 @@ class Monitor extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
-         $ic->cloneItem($this->getType(),$this->input["_oldID"],$this->fields['id']);
+         $ic = new Infocom();
+         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          $query = "SELECT `contracts_id`

@@ -104,15 +104,13 @@ class Infocom extends CommonDBChild {
                $this->fields[$key] = $val;
             }
             return true;
-         } else {
-            $this->getEmpty();
-            $this->fields["items_id"] = $ID;
-            $this->fields["itemtype"] = $itemtype;
-            return false;
          }
-      } else {
+         $this->getEmpty();
+         $this->fields["items_id"] = $ID;
+         $this->fields["itemtype"] = $itemtype;
          return false;
       }
+      return false;
    }
 
 
@@ -124,7 +122,7 @@ class Infocom extends CommonDBChild {
          if (class_exists($input['itemtype'])) {
             $item = new $input['itemtype']();
             if ($item->getFromDB($input['items_id'])) {
-               $input['entities_id'] = $item->getEntityID();
+               $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
                return $input;
             }
@@ -149,10 +147,10 @@ class Infocom extends CommonDBChild {
       $changes  = $item->fields;
 
       //Autofill date on item's status change ?
-      $infocom = new Infocom();
+      $infocom = new self();
       $infocom->getFromDB($changes['id']);
-      $tmp = array('itemtype' => $itemtype,
-                   'items_id' => $changes['id']);
+      $tmp           = array('itemtype' => $itemtype,
+                             'items_id' => $changes['id']);
       $add_or_update = false;
 
       //For each date that can be automatically filled
@@ -244,7 +242,7 @@ class Infocom extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      $infocom = new Infocom();
+      $infocom = new self();
       $infocom->getFromDB($input['id']);
 
       $entitydata = new EntityData();
@@ -369,9 +367,9 @@ class Infocom extends CommonDBChild {
          return 0;
       }
 
-      $message = array();
-      $cron_status = 0;
-      $items_infos = array();
+      $message        = array();
+      $cron_status    = 0;
+      $items_infos    = array();
       $items_messages = array();
 
       foreach (Entity::getEntitiesToNotify('use_infocoms_alert') as $entity => $value) {
@@ -393,12 +391,12 @@ class Infocom extends CommonDBChild {
          foreach ($DB->request($query_end) as $data) {
             $item_infocom = new $data["itemtype"]();
             if ($item_infocom->getFromDB($data["items_id"])) {
-               $entity = $data['entities_id'];
+               $entity   = $data['entities_id'];
                $warranty = getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
-               $message = $LANG['mailing'][40]." ".$item_infocom->getTypeName()." - ".
+               $message  = $LANG['mailing'][40]." ".$item_infocom->getTypeName()." - ".
                            $item_infocom->getName()." : ".$warranty."<br>";
-               $data['warrantyexpiration'] = $warranty;
-               $data['item_name'] = $item_infocom->getName();
+               $data['warrantyexpiration']        = $warranty;
+               $data['item_name']                 = $item_infocom->getName();
                $items_infos[$entity][$data['id']] = $data;
 
                if (!isset($items_messages[$entity])) {
@@ -410,9 +408,9 @@ class Infocom extends CommonDBChild {
       }
 
       foreach ($items_infos as $entity => $items) {
-         if (NotificationEvent::raiseEvent("alert", new Infocom(), array('entities_id' => $entity,
-                                                                         'items'       => $items))) {
-            $message = $items_messages[$entity];
+         if (NotificationEvent::raiseEvent("alert", new self(), array('entities_id' => $entity,
+                                                                      'items'       => $items))) {
+            $message     = $items_messages[$entity];
             $cron_status = 1;
             if ($task) {
                $task->log(Dropdown::getDropdownName("glpi_entities", $entity).":  $message\n");
@@ -437,7 +435,7 @@ class Infocom extends CommonDBChild {
                           ":  Send infocom alert failed\n");
             } else {
                addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
-                                       ":  Send infocom alert failed",false,ERROR);
+                                       ":  Send infocom alert failed", false, ERROR);
             }
          }
       }
@@ -558,8 +556,8 @@ class Infocom extends CommonDBChild {
               WHERE `items_id` = '$device_id'
                     AND `itemtype` = '$itemtype'";
 
-      $add = "add";
-      $text = $LANG['buttons'][8];
+      $add    = "add";
+      $text   = $LANG['buttons'][8];
       $result = $DB->query($query);
       if ($DB->result($result,0,0)>0) {
          $add = "";
@@ -607,10 +605,10 @@ class Infocom extends CommonDBChild {
          }
       }
 
-      $prorata = 0;
+      $prorata             = 0;
       $ecartfinmoiscourant = 0;
-      $ecartmoisexercice = 0;
-      $date_Y = $date_m = $date_d = $date_H = $date_i = $date_s=0;
+      $ecartmoisexercice   = 0;
+      $date_Y  =  $date_m  =  $date_d  =  $date_H  =  $date_i  =  $date_s  =  0;
       sscanf($date_achat, "%4s-%2s-%2s %2s:%2s:%2s",
              $date_Y, $date_m, $date_d,
              $date_H, $date_i, $date_s); // un traitement sur la date mysql pour recuperer l'annee
@@ -638,33 +636,33 @@ class Infocom extends CommonDBChild {
                } // si l'annee fiscale debute au dela de l'annee courante
                $ecartmois = (($date_m2-$date_m)*30); // calcul ecart entre mois d'acquisition
                                                      // et debut annee fiscale
-               $prorata = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
+               $prorata   = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
                ## calcul tableau d'amortissement ##
                $txlineaire = (100/$duree); // calcul du taux lineaire
-               $annuite = ($va*$txlineaire)/100; // calcul de l'annuitee
-               $mrt = $va; //
+               $annuite    = ($va*$txlineaire)/100; // calcul de l'annuitee
+               $mrt        = $va; //
                // si prorata temporis la derniere annnuite cours sur la duree n+1
                if ($prorata>0) {
                   $duree = $duree+1;
                }
                for($i=1 ;  $i<=$duree ; $i++) {
-                  $tab['annee'][$i] = $date_Y+$i-1;
-                  $tab['annuite'][$i] = $annuite;
+                  $tab['annee'][$i]    = $date_Y+$i-1;
+                  $tab['annuite'][$i]  = $annuite;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcul la valeur comptable nette
                                                // de debut d'exercice
                   $tab['vcnetfin'][$i] = abs(($mrt - $annuite)); // Pour chaque annee on calcule la valeur
                                                                // comptable nette de fin d'exercice
                   // calcul de la premiere annuite si prorata temporis
                   if ($prorata>0) {
-                     $tab['annuite'][1] = $annuite*($prorata/360);
+                     $tab['annuite'][1]  = $annuite*($prorata/360);
                      $tab['vcnetfin'][1] = abs($va - $tab['annuite'][1]);
                   }
                   $mrt = $tab['vcnetfin'][$i];
                }
                // calcul de la derniere annuite si prorata temporis
                if ($prorata>0) {
-                  $tab['annuite'][$duree] = $tab['vcnetdeb'][$duree];
-                  $tab['vcnetfin'][$duree] = $tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+                  $tab['annuite'][$duree]  = $tab['vcnetdeb'][$duree];
+                  $tab['vcnetfin'][$duree] = $tab['vcnetfin'][$duree-1] - $tab['annuite'][$duree];
                }
             } else {
                return "-";
@@ -680,27 +678,27 @@ class Infocom extends CommonDBChild {
                   $date_m2 = $date_m2+12;
                }
                $ecartmois = ($date_m2-$date_m)+1; // calcul ecart entre mois d'acquisition
-                                                // et debut annee fiscale
-               $prorata = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
+                                                  // et debut annee fiscale
+               $prorata   = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
                ## calcul tableau d'amortissement ##
-               $txlineaire = (100/$duree); // calcul du taux lineaire virtuel
-               $txdegressif = $txlineaire*$coef; // calcul du taux degressif
-               $dureelineaire = (int) (100/$txdegressif); // calcul de la duree de l'amortissement
+               $txlineaire     = (100/$duree); // calcul du taux lineaire virtuel
+               $txdegressif    = $txlineaire*$coef; // calcul du taux degressif
+               $dureelineaire  = (int) (100/$txdegressif); // calcul de la duree de l'amortissement
                                                          // en mode lineaire
                $dureedegressif = $duree-$dureelineaire; // calcul de la duree de l'amortissement
                                                       // en mode degressif
                $mrt = $va;
                // amortissement degressif pour les premieres annees
                for($i=1 ; $i<=$dureedegressif ; $i++) {
-                  $tab['annee'][$i] = $date_Y+$i-1;
+                  $tab['annee'][$i]    = $date_Y+$i-1;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcule la valeur comptable nette
-                                             // de debut d'exercice
-                  $tab['annuite'][$i] = $tab['vcnetdeb'][$i]*$txdegressif/100;
+                                               // de debut d'exercice
+                  $tab['annuite'][$i]  = $tab['vcnetdeb'][$i]*$txdegressif/100;
                   $tab['vcnetfin'][$i] = $mrt - $tab['annuite'][$i]; //Pour chaque annee on calcule la valeur
                                                                    //comptable nette de fin d'exercice
                   // calcul de la premiere annuite si prorata temporis
                   if ($prorata>0) {
-                     $tab['annuite'][1] = ($va*$txdegressif/100)*($prorata/12);
+                     $tab['annuite'][1]  = ($va*$txdegressif/100)*($prorata/12);
                      $tab['vcnetfin'][1] = $va - $tab['annuite'][1];
                   }
                   $mrt = $tab['vcnetfin'][$i];
@@ -712,21 +710,21 @@ class Infocom extends CommonDBChild {
                   $txlineaire = 100;
                }
                $annuite = ($tab['vcnetfin'][$dureedegressif]*$txlineaire)/100; // calcul de l'annuite
-               $mrt = $tab['vcnetfin'][$dureedegressif];
+               $mrt     = $tab['vcnetfin'][$dureedegressif];
                for($i=$dureedegressif+1 ; $i<=$dureedegressif+$dureelineaire ; $i++) {
-                  $tab['annee'][$i] = $date_Y+$i-1;
-                  $tab['annuite'][$i] = $annuite;
+                  $tab['annee'][$i]    = $date_Y+$i-1;
+                  $tab['annuite'][$i]  = $annuite;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcule la valeur comptable nette
                                                // de debut d'exercice
                   $tab['vcnetfin'][$i] = abs(($mrt - $annuite)); // Pour chaque annee on calcule la valeur
                                                                // comptable nette de fin d'exercice
-                  $mrt = $tab['vcnetfin'][$i];
+                  $mrt                 = $tab['vcnetfin'][$i];
                }
                // calcul de la derniere annuite si prorata temporis
                if ($prorata>0) {
                   $tab['annuite'][$duree] = $tab['vcnetdeb'][$duree];
                   if (isset($tab['vcnetfin'][$duree-1])) {
-                     $tab['vcnetfin'][$duree] = $tab['vcnetfin'][$duree-1]- $tab['annuite'][$duree];
+                     $tab['vcnetfin'][$duree] = $tab['vcnetfin'][$duree-1] - $tab['annuite'][$duree];
                   } else {
                      $tab['vcnetfin'][$duree] = 0;
                   }
@@ -744,25 +742,25 @@ class Infocom extends CommonDBChild {
       if ($view=="all") {
          // on retourne le tableau complet
          return $tab;
-      } else {
-         // on retourne juste la valeur residuelle
-         // si on ne trouve pas l'annee en cours dans le tableau d'amortissement dans le tableau,
-         // le materiel est amorti
-         if (!array_search(date("Y"),$tab["annee"])) {
-            $vnc = 0;
-         } else if (mktime(0 , 0 , 0, $date_m2, $date_d2, date("Y"))
-                    - mktime(0 , 0 , 0 , date("m") , date("d") , date("Y")) < 0 ) {
-            // on a depasse la fin d'exercice de l'annee en cours
-            //on prend la valeur residuelle de l'annee en cours
-            $vnc = $tab["vcnetfin"][array_search(date("Y"),$tab["annee"])];
-         } else {
-            // on se situe avant la fin d'exercice
-            // on prend la valeur residuelle de l'annee n-1
-            $vnc = $tab["vcnetdeb"][array_search(date("Y"),$tab["annee"])];
-         }
-         return $vnc;
       }
+      // on retourne juste la valeur residuelle
+      // si on ne trouve pas l'annee en cours dans le tableau d'amortissement dans le tableau,
+      // le materiel est amorti
+      if (!array_search(date("Y"),$tab["annee"])) {
+         $vnc = 0;
+      } else if (mktime(0 , 0 , 0, $date_m2, $date_d2, date("Y"))
+                 - mktime(0 , 0 , 0 , date("m") , date("d") , date("Y")) < 0 ) {
+         // on a depasse la fin d'exercice de l'annee en cours
+         //on prend la valeur residuelle de l'annee en cours
+         $vnc = $tab["vcnetfin"][array_search(date("Y"), $tab["annee"])];
+      } else {
+         // on se situe avant la fin d'exercice
+         // on prend la valeur residuelle de l'annee n-1
+         $vnc = $tab["vcnetdeb"][array_search(date("Y"), $tab["annee"])];
+      }
+      return $vnc;
    }
+
 
    /**
     * Show Infocom form for an item (not a standard showForm)
@@ -782,19 +780,19 @@ class Infocom extends CommonDBChild {
          echo "<div class='spaced'>".$LANG['financial'][85]."</div>";
       } else {
          $date_tax = $CFG_GLPI["date_tax"];
-         $dev_ID = $item->getField('id');
-         $ic = new Infocom;
-         $option = "";
+         $dev_ID   = $item->getField('id');
+         $ic       = new self();
+         $option   = "";
          if ($withtemplate==2) {
             $option = " readonly ";
          }
 
          if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")
-             && in_array($item->getType(), array('Software',
-                                                 'CartridgeItem',
-                                                 'ConsumableItem'))) {
+             && in_array($item->getType(),
+                         array('CartridgeItem', 'ConsumableItem', 'Software'))) {
             echo "<div class='firstbloc center'>".$LANG['financial'][84]."</div>";
          }
+
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             $input = array('itemtype'    => $item->getType(),
                            'items_id'    => $dev_ID,
@@ -935,16 +933,18 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
-                                                  'Consumable', 'Cartridge', 'SoftwareLicense'))) {
+            if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
+                                                  'ConsumableItem', 'Software',
+                                                  'SoftwareLicense'))) {
                echo "<td>".$LANG['financial'][89]."&nbsp;:</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
             } else {
                 echo "<td colspan='2'>";
             }
             echo "</td>";
-            if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
-                                                  'Consumable', 'Cartridge', 'SoftwareLicense'))) {
+            if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
+                                                  'ConsumableItem', 'Software',
+                                                  'SoftwareLicense'))) {
                echo "<td>".$LANG['financial'][90]."&nbsp;:</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
                                   $ic->fields["warranty_date"]);
@@ -1042,28 +1042,28 @@ class Infocom extends CommonDBChild {
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table'      => 'glpi_softwarelicenses',
-                                'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = array('table'      => 'glpi_softwarelicenses',
+                                       'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'SoftwareLicense';
             break;
 
          case 'CartridgeItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table'      => 'glpi_cartridges',
-                                'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = array('table'      => 'glpi_cartridges',
+                                       'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'Cartridge';
             break;
 
          case 'ConsumableItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table'      => 'glpi_consumables',
-                                'joinparams' => array('jointype' => 'child'));
+            $beforejoin        = array('table'      => 'glpi_consumables',
+                                       'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'Consumable';
             break;
       }
 
-      $joinparams = array('jointype'          => 'itemtype_item',
-                          'specific_itemtype' => $specific_itemtype);
+      $joinparams        = array('jointype'          => 'itemtype_item',
+                                 'specific_itemtype' => $specific_itemtype);
       $complexjoinparams = array();
       if (count($beforejoin)) {
          $complexjoinparams['beforejoin'][] = $beforejoin;
@@ -1379,6 +1379,7 @@ class Infocom extends CommonDBChild {
       return $tab;
    }
 
+
    /**
     * Display debug information for infocom of current object
    **/
@@ -1389,9 +1390,10 @@ class Infocom extends CommonDBChild {
                      'itemtype'           => $this->fields['itemtype']);
 
       $options['entities_id'] = $this->getEntityID();
-      $options['items'] = array($item);
+      $options['items']       = array($item);
       NotificationEvent::debugEvent($this, $options);
    }
+
 
    /**
     * Duplicate infocoms from an item template to its clone
@@ -1405,14 +1407,15 @@ class Infocom extends CommonDBChild {
 
 
       if ($this->getFromDBforDevice($itemtype, $oldid)) {
-         $input = $this->fields;
+         $input             = $this->fields;
          $input['items_id'] = $newid;
          unset ($input["id"]);
          if (isset($input["immo_number"])) {
-            $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1,
-                                                   'Infocom', $input['entities_id']);
+            $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',
+                                    $input['entities_id']);
          }
-         $date_fields = array('use_date', 'buy_date', 'order_date', 'delivery_date', 'inventory_date', 'warranty_date');
+         $date_fields = array('buy_date', 'delivery_date', 'inventory_date', 'order_date',
+                              'use_date', 'warranty_date');
          foreach ($date_fields as $f) {
             if (empty($input[$f])) {
                unset($input[$f]);

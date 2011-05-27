@@ -1051,7 +1051,7 @@ class Ticket extends CommonDBTM {
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
             $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
-                                                            $_SESSION["glpi_currenttime"]);
+                                                          $_SESSION["glpi_currenttime"]);
          } else { // Not calendar defined
             $delay_time = strtotime($_SESSION["glpi_currenttime"])
                            -strtotime($this->fields['begin_waiting_date']);
@@ -1061,14 +1061,14 @@ class Ticket extends CommonDBTM {
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
-               $delay_time_sla = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
-                                                        $_SESSION["glpi_currenttime"]);
+               $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                             $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
                $this->fields["sla_waiting_duration"] += $delay_time_sla;
             }
 
             // Compute new due date
-            $this->updates[] = "due_date";
+            $this->updates[]          = "due_date";
             $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
@@ -1094,22 +1094,22 @@ class Ticket extends CommonDBTM {
             }
          }
 
-         $this->updates[] = "ticket_waiting_duration";
+         $this->updates[]                          = "ticket_waiting_duration";
          $this->fields["ticket_waiting_duration"] += $delay_time;
 
          // Reset begin_waiting_date
-         $this->updates[] = "begin_waiting_date";
+         $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = 'NULL';
       }
 
       // solve_delay_stat : use delay between opendate and solvedate
       if (in_array("solvedate",$this->updates)) {
-         $this->updates[] = "solve_delay_stat";
+         $this->updates[]                  = "solve_delay_stat";
          $this->fields['solve_delay_stat'] = $this->computeSolveDelayStat();
       }
       // close_delay_stat : use delay between opendate and closedate
       if (in_array("closedate",$this->updates)) {
-         $this->updates[] = "close_delay_stat";
+         $this->updates[]                  = "close_delay_stat";
          $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
       }
 
@@ -3540,7 +3540,8 @@ class Ticket extends CommonDBTM {
       echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
       echo "<td class='b'>";
       echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
-                                   $this->fields["cost_fixed"], $this->fields["cost_material"], false);
+                                   $this->fields["cost_fixed"], $this->fields["cost_material"],
+                                   false);
       echo "</td></tr>\n";
 
       $options['candel']  = false;
@@ -3592,7 +3593,8 @@ class Ticket extends CommonDBTM {
     *
     * @return total cost formatted string
    **/
-   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material, $edit = true) {
+   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
+                                     $edit = true) {
       return formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material, $edit);
    }
 
