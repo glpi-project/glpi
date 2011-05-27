@@ -506,8 +506,10 @@ function update080to083($output='HTML') {
 
    // to have correct name of key
    $migration->dropKey('glpi_tickets', 'ticketsolutiontypes_id');
+   $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'ticketsolutiontypes_id');
    $migration->dropKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
+   $migration->migrationOneTable('glpi_solutiontemplates');
    $migration->addKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
 
 
