@@ -4075,7 +4075,7 @@ class Ticket extends CommonITILObject {
     *
     * @return array contains the distinct users which have any followup assigned to.
    **/
-   static function getUsedTechFollowupBetween($date1='',$date2='') {
+   static function getUsedTechTaskBetween($date1='',$date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
@@ -4083,9 +4083,9 @@ class Ticket extends CommonITILObject {
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
-                LEFT JOIN `glpi_ticketfollowups`
-                     ON (`glpi_tickets`.`id` = `glpi_ticketfollowups`.`tickets_id`)
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
+                LEFT JOIN `glpi_tickettasks`
+                     ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)
                 LEFT JOIN `glpi_profiles_users`
                      ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 LEFT JOIN `glpi_profiles`
