@@ -245,7 +245,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $ticket = new Ticket();
 
       if ($ticket->getfromDB($ID)) {
-         $input['solution']               = addslashes($ticket->fields['solution']);
+         $input['solution']         = addslashes($ticket->fields['solution']);
          $input['solutiontypes_id'] = addslashes($ticket->fields['solutiontypes_id']);
 
          $tickets = self::getLinkedTicketsTo($ID);

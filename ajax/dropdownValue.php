@@ -125,7 +125,6 @@ if (isset($_POST['used'])) {
 }
 
 if (isset($_POST['toadd'])) {
-
    if (is_array($_POST['toadd'])) {
       $toadd = $_POST['toadd'];
    } else {

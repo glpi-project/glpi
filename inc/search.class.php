@@ -914,14 +914,14 @@ class Search {
                       && strlen($p['contains2'][$i])>0) {
                      if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
                         if (!isset($metanames[$p['itemtype2'][$i]])) {
-                           $metaitem = new $p['itemtype2'][$i]();
+                           $metaitem                       = new $p['itemtype2'][$i]();
                            $metanames[$p['itemtype2'][$i]] = $metaitem->getTypeName();
                         }
 
                         echo self::showHeaderItem($output_type,
-                                                $metanames[$p['itemtype2'][$i]]." - ".
-                                                   $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
-                                                $header_num);
+                                                  $metanames[$p['itemtype2'][$i]]." - ".
+                                                    $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
+                                                  $header_num);
                         $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
                      }
                   }
@@ -1024,20 +1024,20 @@ class Search {
 
                            // General case
                            if (strpos($data["META_$j"],"$$$$")===false) {
-                              $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data, $j,
-                                                   1);
+                              $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data,
+                                                     $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
 
                            // Case of GROUP_CONCAT item : split item and multilline display
                            } else {
-                              $split = explode("$$$$", $data["META_$j"]);
+                              $split         = explode("$$$$", $data["META_$j"]);
                               $count_display = 0;
-                              $out  = "";
-                              $unit = "";
-                              $separate = '<br>';
+                              $out           = "";
+                              $unit          = "";
+                              $separate      = '<br>';
 
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
-                                 && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
+                                  && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
 
                                  $separate = '<hr>';
                               }
@@ -1048,9 +1048,9 @@ class Search {
 
                               for ($k=0 ; $k<count($split) ; $k++) {
                                  if ($p['contains2'][$j]=="NULL"
-                                    || strlen($p['contains2'][$j])==0
-                                    ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
-                                    || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
+                                     || strlen($p['contains2'][$j])==0
+                                     ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
+                                     || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
 
                                     if ($count_display) {
                                        $out .= $separate;
