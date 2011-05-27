@@ -81,10 +81,12 @@ $items =
                      'impact'                 => array('title' => $LANG['joblist'][30]),
                      'priority'               => array('title' => $LANG['joblist'][2]),
                      'requesttypes_id'        => array('title' => $LANG['job'][44]),
-                     'solutiontypes_id' => array('title' => $LANG['job'][48])),
+                     'solutiontypes_id'       => array('title' => $LANG['job'][48])),
          $LANG['job'][5]
-            => array('technicien'          => array('title' => $LANG['job'][6]." ".$LANG['stats'][48]),
-                     'technicien_followup' => array('title' => $LANG['job'][6]." ".$LANG['stats'][49]),
+            => array('technicien'          => array('title' => $LANG['job'][6]." ".
+                                                               $LANG['stats'][48]),
+                     'technicien_followup' => array('title' => $LANG['job'][6]." ".
+                                                               $LANG['stats'][49]),
                      'groups_id_assign'    => array('title' => $LANG['common'][35]),
                      'enterprise'          => array('title' => $LANG['financial'][26])));
 
@@ -107,7 +109,8 @@ showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\"></td></tr>";
+echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\"></td>".
+     "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 showDateFormItem("date2", $_REQUEST["date2"]);

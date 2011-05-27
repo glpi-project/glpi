@@ -85,7 +85,7 @@ class CommonGLPI {
    }
 
    /**
-    * Add standard define tab 
+    * Add standard define tab
     *
     * @param $itemtype itemtype link to the tab
     * @param $ong array defined tab array
@@ -164,8 +164,9 @@ class CommonGLPI {
             break;
       }
       return false;
-      
+
    }
+
 
    /**
     * create tab text entry
@@ -176,6 +177,7 @@ class CommonGLPI {
     *  @return array containing the onglets
    **/
    static function createTabEntry($text, $nb=0) {
+
       if ($nb) {
          $text .= "<sup>($nb)</sup>";
       }

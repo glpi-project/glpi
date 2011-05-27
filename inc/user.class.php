@@ -152,16 +152,16 @@ class User extends CommonDBTM {
          }
          $ong[2] = $LANG['common'][96]; // materiel
 
-         $this->addStandardTab('Ticket',$ong);
+         $this->addStandardTab('Ticket', $ong);
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
-         $this->addStandardTab('Reservation',$ong);
+         $this->addStandardTab('Reservation', $ong);
 
          if (haveRight("user_authtype", "w")) {
             $ong[12] = $LANG['ldap'][12];
          }
-         $this->addStandardTab('Log',$ong);
+         $this->addStandardTab('Log', $ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

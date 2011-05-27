@@ -305,8 +305,8 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('TicketFollowup',$ong);
 
       if ($this->fields['id'] > 0) {
-         $this->addStandardTab('TicketValidation',$ong);
-         $this->addStandardTab('TicketTask',$ong);
+         $this->addStandardTab('TicketValidation', $ong);
+         $this->addStandardTab('TicketTask', $ong);
 
          $ong[3] = $LANG['job'][47];
          $ong[4] = $LANG['jobresolution'][2];
@@ -315,10 +315,10 @@ class Ticket extends CommonITILObject {
             $ong[10] = $LANG['satisfaction'][0];
          }
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
          $ong[11] = $LANG['Menu'][7].' / '.$LANG['Menu'][8];
-         $this->addStandardTab('Log',$ong);
+         $this->addStandardTab('Log', $ong);
 
          if (haveRight('observe_ticket','1')) {
             $ong[8] = $LANG['Menu'][13];
