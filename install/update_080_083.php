@@ -528,7 +528,6 @@ function update080to083($output='HTML') {
 
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
 
-   $migration->addField("glpi_users", "token", "varchar( 255 ) NULL DEFAULT ''");
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
