@@ -504,6 +504,13 @@ function update080to083($output='HTML') {
    $migration->changeField('glpi_solutiontemplates', 'ticketsolutiontypes_id', 'solutiontypes_id',
                            'INT( 11 ) NOT NULL DEFAULT 0');
 
+   // to have correct name of key
+   $migration->dropKey('glpi_tickets', 'ticketsolutiontypes_id');
+   $migration->addKey('glpi_tickets', 'ticketsolutiontypes_id');
+   $migration->dropKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
+   $migration->addKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
+
+
    /// TODO rename glpi_ticketcategories TO ? -> glpi_itilcategories ? -> glpi_helpdeskcategories ?
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
