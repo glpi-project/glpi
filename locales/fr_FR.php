@@ -2260,6 +2260,7 @@ $LANG['sla'][7]  = "Sortir de la SLA";
 $LANG['sla'][8]  = "Prochaine escalade";
 $LANG['sla'][9]  = "Rappels automatiques des SLAs";
 $LANG['sla'][10] = "24 heures sur 24, 7 jours sur 7";
+$LANG['sla'][11] = "Calendrier du ticket";
 
 
 $LANG['software'][1]  = "Version d'achat";

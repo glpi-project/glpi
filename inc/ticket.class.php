@@ -1061,6 +1061,7 @@ class Ticket extends CommonDBTM {
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
+               $sla->setTicketCalendar($calendars_id);
                $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
@@ -1541,9 +1542,10 @@ class Ticket extends CommonDBTM {
       }
 
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
-
-         $sla = new SLA();
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $sla          = new SLA();
          if ($sla->getFromDB($input["slas_id"])) {
+            $sla->setTicketCalendar($calendars_id);
             // Get first SLA Level
             $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
             // Compute due_date
@@ -1648,8 +1650,10 @@ class Ticket extends CommonDBTM {
           && isset($this->input["slalevels_id"])
           && $this->input["slalevels_id"]>0) {
 
-         $sla = new SLA();
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $sla          = new SLA();
          if ($sla->getFromDB($this->input["slas_id"])) {
+            $sla->setTicketCalendar($calendars_id);
             // Add first level in working table
             if ($this->input["slalevels_id"]>0) {
                $sla->addLevelToDo($this);

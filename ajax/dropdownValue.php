@@ -124,6 +124,14 @@ if (isset($_POST['used'])) {
    }
 }
 
+if (isset($_POST['toadd'])) {
+   if (is_array($_POST['toadd'])) {
+      $toadd = $_POST['toadd'];
+   } else {
+      $toadd = unserialize(stripslashes($_POST['toadd']));
+   }
+}
+
 $where .= ") ";
 
 if (isset($_POST['condition']) && $_POST['condition'] != '') {
@@ -197,6 +205,14 @@ if ($item instanceof CommonTreeDropdown) {
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
          echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
+      }
+
+      if (count($toadd)) {
+         foreach ($toadd as $key => $val) {
+            echo "<option class='tree' ".($_POST['value']==$key?'selected':'').
+                 " value='$key' title=\"".cleanInputText($val)."\">".
+                  utf8_substr($val, 0, $_POST["limit"])."</option>";
+         }
       }
       $display_selected = true;
 
@@ -450,6 +466,14 @@ if ($item instanceof CommonTreeDropdown) {
 
       } else if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
          echo "<option value='0'>".$_POST["emptylabel"]."</option>";
+      }
+
+      if (count($toadd)) {
+         foreach ($toadd as $key => $val) {
+            echo "<option title=\"".cleanInputText($val)."\" value='$key' ".
+                  ($_POST['value']==$key?'selected':'').">".
+                  utf8_substr($val, 0, $_POST["limit"])."</option>";
+         }
       }
 
       $output = Dropdown::getDropdownName($table,$_POST['value']);
