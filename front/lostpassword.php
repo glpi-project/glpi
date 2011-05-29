@@ -45,12 +45,12 @@ simpleHeader($LANG['users'][3]);
 if (!$CFG_GLPI['use_mailing']) {
    exit();
 }
-if (isset($_REQUEST['token'])) {
+if (isset($_REQUEST['password_forget_token'])) {
 
    if (isset($_REQUEST['email'])) {
       $user->updateForgottenPassword($_REQUEST);
    } else {
-      User::showPasswordForgetChangeForm($_REQUEST['token']);
+      User::showPasswordForgetChangeForm($_REQUEST['password_forget_token']);
    }
 
 } else {

@@ -507,10 +507,10 @@ function update080to083($output='HTML') {
    // to have correct name of key
    $migration->dropKey('glpi_tickets', 'ticketsolutiontypes_id');
    $migration->migrationOneTable('glpi_tickets');
-   $migration->addKey('glpi_tickets', 'ticketsolutiontypes_id');
+   $migration->addKey('glpi_tickets', 'solutiontypes_id');
    $migration->dropKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
    $migration->migrationOneTable('glpi_solutiontemplates');
-   $migration->addKey('glpi_solutiontemplates', 'ticketsolutiontypes_id');
+   $migration->addKey('glpi_solutiontemplates', 'solutiontypes_id');
 
 
    /// TODO rename glpi_ticketcategories TO ? -> glpi_itilcategories ? -> glpi_helpdeskcategories ?
@@ -529,6 +529,15 @@ function update080to083($output='HTML') {
    $migration->addField("glpi_reservations", "group", "int( 11 ) NOT NULL DEFAULT 0");
 
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
+
+
+   $migration->changeField("glpi_users", 'token','password_forget_token',
+                           "char( 40 ) NULL DEFAULT ''");
+
+   $migration->changeField("glpi_users", 'tokendate','password_forget_token_date',
+                           "datetime NULL DEFAULT NULL");
+
+   $migration->addField("glpi_users", "personal_token", "varchar( 255 ) NULL DEFAULT ''");
 
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {

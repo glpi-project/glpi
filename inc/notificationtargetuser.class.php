@@ -75,12 +75,12 @@ class NotificationTargetUser extends NotificationTarget {
       $this->datas['##user.name##']      = $this->obj->getField("name");
       $this->datas['##user.realname##']  = $this->obj->getField("realname");
       $this->datas['##user.firstname##'] = $this->obj->getField("firstname");
-      $this->datas['##user.token##']     = $this->obj->getField("token");
+      $this->datas['##user.token##']     = $this->obj->getField("password_forget_token");
 
       $this->datas['##user.action##']            = $events[$event];
       $this->datas['##user.passwordforgeturl##'] = urldecode($CFG_GLPI["url_base"].
-                                                             "/front/lostpassword.php?token=".
-                                                             $this->obj->getField("token"));
+                                                             "/front/lostpassword.php?password_forget_token=".
+                                                             $this->obj->getField("password_forget_token"));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
