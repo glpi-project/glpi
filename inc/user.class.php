@@ -444,9 +444,9 @@ class User extends CommonDBTM {
                if (isset($input['id'])
                    && ($input['id'] == getLoginUserID()
                        || $this->currentUserHaveMoreRightThan($input['id'])
-                       || ($input['token'] == $this->fields['token'] // Permit to change password with token and email
+                       || ($input['password_forget_token'] == $this->fields['password_forget_token'] // Permit to change password with token and email
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
-                               -strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)
+                               -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $input['email'] == $this->fields['email']))) {
                   $input["password"]
                         = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
@@ -2459,8 +2459,8 @@ class User extends CommonDBTM {
       $token_ok = false;
       $query = "SELECT *
                 FROM `glpi_users`
-                WHERE `token` = '$token'
-                      AND NOW() < ADDDATE(`tokendate`, INTERVAL 1 DAY)";
+                WHERE `password_forget_token` = '$token'
+                      AND NOW() < ADDDATE(`password_forget_token_date`, INTERVAL 1 DAY)";
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)==1) {
@@ -2489,7 +2489,7 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2 center'><td colspan='2'>";
-         echo "<input type='hidden' name='token' value='$token'>";
+         echo "<input type='hidden' name='password_forget_token' value='$token'>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>";
 
@@ -2532,17 +2532,17 @@ class User extends CommonDBTM {
       if ($this->getFromDBbyEmail($input['email'])) {
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
 
-            if ($input['token']==$this->fields['token']
+            if ($input['password_forget_token']==$this->fields['password_forget_token']
                 && (abs(strtotime($_SESSION["glpi_currenttime"])
-                        -strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)) {
+                        -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)) {
 
                $input['id'] = $this->fields['id'];
 
                if ($this->update($input)) {
                  echo $LANG['users'][13];
                  //
-                 $input2['token']     = '';
-                 $input2['tokendate'] = NULL;
+                 $input2['password_forget_token']     = '';
+                 $input2['password_forget_token_date'] = NULL;
                  $input2['id']        = $this->fields['id'];
                  $this->update($input2);
                } else {
@@ -2585,8 +2585,8 @@ class User extends CommonDBTM {
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
 
             if (NotificationMail::isUserAddressValid($email)) {
-               $input['token']     = sha1(getRandomString(30));
-               $input['tokendate'] = $_SESSION["glpi_currenttime"];
+               $input['password_forget_token']     = sha1(getRandomString(30));
+               $input['password_forget_token_date'] = $_SESSION["glpi_currenttime"];
                $input['id']        = $this->fields['id'];
                $this->update($input);
                NotificationEvent::raiseEvent('passwordforget',$this);
