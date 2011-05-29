@@ -839,9 +839,9 @@ class Search {
                       && strlen($p['contains2'][$i])>0
                       && !empty($p['itemtype2'][$i])
                       && (!isset($p['link2'][$i]) || !strstr($p['link2'][$i],"NOT"))) {
-                      if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
+                      if (!isset($already_printed[$p['itemtype2'][$i].$p['field2'][$i]])) {
                         $nbcols++;
-                        $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
+                        $already_printed[$p['itemtype2'][$i].$p['field2'][$i]] = 1;
                      }
                   }
                }
@@ -912,7 +912,7 @@ class Search {
                       && !empty($p['itemtype2'][$i])
                       && isset($p['contains2'][$i])
                       && strlen($p['contains2'][$i])>0) {
-                     if (!isset($already_printed[$p['itemtype2'].$p['field2'][$i]])) {
+                     if (!isset($already_printed[$p['itemtype2'][$i].$p['field2'][$i]])) {
                         if (!isset($metanames[$p['itemtype2'][$i]])) {
                            $metaitem                       = new $p['itemtype2'][$i]();
                            $metanames[$p['itemtype2'][$i]] = $metaitem->getTypeName();
@@ -922,7 +922,7 @@ class Search {
                                                   $metanames[$p['itemtype2'][$i]]." - ".
                                                     $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
                                                   $header_num);
-                        $already_printed[$p['itemtype2'].$p['field2'][$i]] = 1;
+                        $already_printed[$p['itemtype2'][$i].$p['field2'][$i]] = 1;
                      }
                   }
                }
@@ -1020,7 +1020,7 @@ class Search {
                          && !empty($p['itemtype2'][$j])
                          && isset($p['contains2'][$j])
                          && strlen($p['contains2'][$j])>0) {
-                        if (!isset($already_printed[$p['itemtype2'].$p['field2'][$j]])) {
+                        if (!isset($already_printed[$p['itemtype2'][$j].$p['field2'][$j]])) {
 
                            // General case
                            if (strpos($data["META_$j"],"$$$$")===false) {
@@ -1076,7 +1076,7 @@ class Search {
                               }
                               echo self::showItem($output_type, $out, $item_num, $row_num);
                            }
-                           $already_printed[$p['itemtype2'].$p['field2'][$j]] = 1;
+                           $already_printed[$p['itemtype2'][$j].$p['field2'][$j]] = 1;
                         }
                      }
                   }
