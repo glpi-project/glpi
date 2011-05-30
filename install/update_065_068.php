@@ -130,7 +130,7 @@ function update065to068(){
 	}
 
 	$profiles=array("post-only"=>1,"normal"=>2,"admin"=>3,"super-admin"=>4);
-	if(!TableExists("glpi_users_profiles")) {	
+	if(!TableExists("glpi_users_profiles")) {
 		$query="CREATE TABLE `glpi_users_profiles` (
 			`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`FK_users` INT NOT NULL DEFAULT '0',
@@ -254,7 +254,7 @@ function update065to068(){
 			if ($data["mailing_attrib_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".Notification::OLD_TECH_IN_CHARGE."','".Notification::USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG['update'][90].$DB->error());
-			}	
+			}
 			if ($data["mailing_new_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".Notification::AUTHOR."','".Notification::USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new user ".$LANG['update'][90].$DB->error());
@@ -328,20 +328,20 @@ function update065to068(){
 		}
 	} // fin convert
 
-	// Add Level To Dropdown 
+	// Add Level To Dropdown
 	$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
 	foreach ($dropdowntree_tables as $t)
-		if(!FieldExists($t,"level")) {	
+		if(!FieldExists($t,"level")) {
 			$query="ALTER TABLE `$t` ADD `level` INT(11)";
 			$DB->query($query) or die("0.68 add level to $t ".$LANG['update'][90].$DB->error());
 		}
 
-	if(FieldExists("glpi_config","root_doc")) {	
+	if(FieldExists("glpi_config","root_doc")) {
 		$query="ALTER TABLE `glpi_config` DROP  `root_doc`";
 		$DB->query($query) or die("0.68 drop root_doc ".$LANG['update'][90].$DB->error());
 	}
 	// add smtp config
-	if(!FieldExists("glpi_config","smtp_mode")) {	
+	if(!FieldExists("glpi_config","smtp_mode")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `smtp_mode` tinyint(4) DEFAULT '0' NOT NULL,
 			ADD  `smtp_host` varchar(255),
 			ADD  `smtp_port` int(11) DEFAULT '25' NOT NULL,
@@ -365,7 +365,7 @@ function update065to068(){
 	}
 
 	// Improve link management
-	if(!FieldExists("glpi_links","link")) {	
+	if(!FieldExists("glpi_links","link")) {
 		$query="ALTER TABLE `glpi_links` CHANGE `name` `link` VARCHAR( 255 ) NULL DEFAULT NULL ";
 		$DB->query($query) or die("0.68 rename name in link ".$LANG['update'][90].$DB->error());
 		$query="ALTER TABLE `glpi_links` ADD `name` VARCHAR( 255 ) NULL AFTER `ID`";
@@ -385,96 +385,96 @@ function update065to068(){
 	$query="UPDATE glpi_users SET password='', active='0' WHERE name='Helpdesk';";
 	$DB->query($query) or die("0.68 security update for user Helpdesk ".$LANG['update'][90].$DB->error());
 
-	if(!FieldExists("glpi_ocs_config","import_general_name")) {	
-		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_general_name` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_printer`"; 
+	if(!FieldExists("glpi_ocs_config","import_general_name")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_general_name` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_printer`";
 		$DB->query($query) or die("0.68 add import_name in ocs_config ".$LANG['update'][90].$DB->error());
 	}
 	// Clean default values for devices
-	if(FieldExists("glpi_device_drive","speed")) {	
-		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_drive","speed")) {
+		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_gfxcard","ram")) {	
-		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `ram` `ram` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_gfxcard","ram")) {
+		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `ram` `ram` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter ram in device_gfxcard ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_hdd","rpm")) {	
-		$query = "ALTER TABLE `glpi_device_hdd` CHANGE `rpm` `rpm` VARCHAR( 255 ) NULL , CHANGE `cache` `cache` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_hdd","rpm")) {
+		$query = "ALTER TABLE `glpi_device_hdd` CHANGE `rpm` `rpm` VARCHAR( 255 ) NULL , CHANGE `cache` `cache` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter rpm and cache in device_hdd ".$LANG['update'][90].$DB->error());
-	}	
+	}
 
-	if(FieldExists("glpi_device_iface","bandwidth")) {	
-		$query = "ALTER TABLE `glpi_device_iface` CHANGE `bandwidth` `bandwidth` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_iface","bandwidth")) {
+		$query = "ALTER TABLE `glpi_device_iface` CHANGE `bandwidth` `bandwidth` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter bandwidth in device_iface ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_moboard","chipset")) {	
-		$query = "ALTER TABLE `glpi_device_moboard` CHANGE `chipset` `chipset` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_moboard","chipset")) {
+		$query = "ALTER TABLE `glpi_device_moboard` CHANGE `chipset` `chipset` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter chipset in device_moboard ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_drive","speed")) {	
-		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_drive","speed")) {
+		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_power","power")) {	
-		$query = "ALTER TABLE `glpi_device_power` CHANGE `power` `power` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_power","power")) {
+		$query = "ALTER TABLE `glpi_device_power` CHANGE `power` `power` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter power in device_power ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_ram","frequence")) {	
-		$query = "ALTER TABLE `glpi_device_ram` CHANGE `frequence` `frequence` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_ram","frequence")) {
+		$query = "ALTER TABLE `glpi_device_ram` CHANGE `frequence` `frequence` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter frequence in device_ram ".$LANG['update'][90].$DB->error());
 	}
 
-	if(FieldExists("glpi_device_sndcard","type")) {	
-		$query = "ALTER TABLE `glpi_device_sndcard` CHANGE `type` `type` VARCHAR( 255 ) NULL "; 
+	if(FieldExists("glpi_device_sndcard","type")) {
+		$query = "ALTER TABLE `glpi_device_sndcard` CHANGE `type` `type` VARCHAR( 255 ) NULL ";
 		$DB->query($query) or die("0.68 alter type in device_sndcard ".$LANG['update'][90].$DB->error());
-	}	
+	}
 
-	if(!FieldExists("glpi_display","FK_users")) {	
-		$query = "ALTER TABLE `glpi_display` ADD `FK_users` INT NOT NULL DEFAULT '0'"; 
+	if(!FieldExists("glpi_display","FK_users")) {
+		$query = "ALTER TABLE `glpi_display` ADD `FK_users` INT NOT NULL DEFAULT '0'";
 		$DB->query($query) or die("0.68 alter display add FK_users".$LANG['update'][90].$DB->error());
 		$query="ALTER TABLE `glpi_display` DROP INDEX `type_2`, ADD UNIQUE `type_2` ( `type` , `num` , `FK_users` )";
 		$DB->query($query) or die("0.68 alter display update unique key".$LANG['update'][90].$DB->error());
-	}	
+	}
 
 	// Proxy configuration
 
-	if(!FieldExists("glpi_config","proxy_name")) {	
-		$query = "ALTER TABLE `glpi_config` ADD `proxy_name` VARCHAR( 255 ) NULL, ADD `proxy_port` VARCHAR( 255 ) DEFAULT '8080' NOT NULL, ADD `proxy_user` VARCHAR( 255 ) NULL, ADD `proxy_password` VARCHAR( 255 ) NULL"; 
+	if(!FieldExists("glpi_config","proxy_name")) {
+		$query = "ALTER TABLE `glpi_config` ADD `proxy_name` VARCHAR( 255 ) NULL, ADD `proxy_port` VARCHAR( 255 ) DEFAULT '8080' NOT NULL, ADD `proxy_user` VARCHAR( 255 ) NULL, ADD `proxy_password` VARCHAR( 255 ) NULL";
 		$DB->query($query) or die("0.68 add proxy fields to glpi_config".$LANG['update'][90].$DB->error());
-	}	
+	}
 	// Log update with followups
-	if(!FieldExists("glpi_config","followup_on_update_ticket")) {	
-		$query = "ALTER TABLE `glpi_config` ADD `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL;"; 
+	if(!FieldExists("glpi_config","followup_on_update_ticket")) {
+		$query = "ALTER TABLE `glpi_config` ADD `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL;";
 		$DB->query($query) or die("0.68 add followup_on_update_ticket to glpi_config".$LANG['update'][90].$DB->error());
-	}	
+	}
 
 
 	// Ticket Category -> Tree mode
-	if(!FieldExists("glpi_dropdown_tracking_category","completename")) {	
+	if(!FieldExists("glpi_dropdown_tracking_category","completename")) {
 		$query = "ALTER TABLE glpi_dropdown_tracking_category ADD `parentID` INT NOT NULL DEFAULT '0' AFTER `ID`,
 			ADD `completename` TEXT NULL AFTER `name`,
-			ADD `level` INT NULL AFTER `comments` "; 
+			ADD `level` INT NULL AFTER `comments` ";
 				$DB->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$LANG['update'][90].$DB->error());
 	}
 	// User to Document
-	if(!FieldExists("glpi_docs","FK_users")) {	
-		$query = "ALTER TABLE `glpi_docs` ADD `FK_users` int DEFAULT '0' NOT NULL, ADD `FK_tracking` int DEFAULT '0' NOT NULL;"; 
+	if(!FieldExists("glpi_docs","FK_users")) {
+		$query = "ALTER TABLE `glpi_docs` ADD `FK_users` int DEFAULT '0' NOT NULL, ADD `FK_tracking` int DEFAULT '0' NOT NULL;";
 		$DB->query($query) or die("0.68 add FK_users to docs".$LANG['update'][90].$DB->error());
-	}	
+	}
 	// Import Ocs TAG
-	if(!FieldExists("glpi_ocs_config","import_tag_field")) {	
-		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_tag_field` varchar( 255 ) NULL;"; 
+	if(!FieldExists("glpi_ocs_config","import_tag_field")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_tag_field` varchar( 255 ) NULL;";
 		$DB->query($query) or die("0.68 add import_tag_field to ocs_config".$LANG['update'][90].$DB->error());
 	}
 	// Use ocs soft dict
-	if(!FieldExists("glpi_ocs_config","use_soft_dict")) {	
-		$query = "ALTER TABLE `glpi_ocs_config` ADD `use_soft_dict` char( 1 ) DEFAULT '1';"; 
+	if(!FieldExists("glpi_ocs_config","use_soft_dict")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `use_soft_dict` char( 1 ) DEFAULT '1';";
 		$DB->query($query) or die("0.68 add use_soft_dict to ocs_config".$LANG['update'][90].$DB->error());
 	}
 
@@ -482,7 +482,7 @@ function update065to068(){
 	$new_link=array("computers","software","monitors","networking","peripherals","printers","phones");
 
 	foreach ($new_link as $table)
-		if(!FieldExists("glpi_$table","FK_users")) {	
+		if(!FieldExists("glpi_$table","FK_users")) {
 			$query="ALTER TABLE `glpi_$table` ADD `FK_users` INT(11) DEFAULT '0', ADD `FK_groups` INT(11) DEFAULT '0';";
 			$DB->query($query) or die("0.65 add link user group field in $table ".$LANG['update'][90].$DB->error());
 
@@ -550,18 +550,18 @@ function update065to068(){
 		$DB->query($query) or die("0.68 add users_groups ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","ldap_field_group")) {	
+	if(!FieldExists("glpi_config","ldap_field_group")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_group` varchar(255) NULL;";
 		$DB->query($query) or die("0.68 add ldap_field_group in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_tracking","request_type")) {	
+	if(!FieldExists("glpi_tracking","request_type")) {
 		$query="ALTER TABLE  `glpi_tracking` ADD  `request_type` tinyint(2) DEFAULT '0' AFTER `author`;";
 		$DB->query($query) or die("0.68 add request_type in tracking ".$LANG['update'][90].$DB->error());
 	}
 
 	// History update for software
-	if(FieldExists("glpi_history","device_internal_action")) {	
+	if(FieldExists("glpi_history","device_internal_action")) {
 		$query="ALTER TABLE `glpi_history` CHANGE `device_internal_action` `linked_action` TINYINT( 4 ) NULL DEFAULT '0'";
 		$DB->query($query) or die("0.68 alater glpi_history ".$LANG['update'][90].$DB->error());
 	}
@@ -585,72 +585,72 @@ function update065to068(){
 		$DB->query($query) or die("0.68 add alerts ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_contracts","alert")) {	
+	if(!FieldExists("glpi_contracts","alert")) {
 		$query="ALTER TABLE  `glpi_contracts` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.68 add alert in contracts ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_infocoms","alert")) {	
+	if(!FieldExists("glpi_infocoms","alert")) {
 		$query="ALTER TABLE  `glpi_infocoms` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.68 add alert in infocoms ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","contract_alerts")) {	
+	if(!FieldExists("glpi_config","contract_alerts")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `contract_alerts` tinyint(2) NOT NULL  DEFAULT '0';";
 		$DB->query($query) or die("0.68 add contract_alerts in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","infocom_alerts")) {	
+	if(!FieldExists("glpi_config","infocom_alerts")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `infocom_alerts` tinyint(2) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.68 add infocom_alerts in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_tracking","FK_group")) {	
+	if(!FieldExists("glpi_tracking","FK_group")) {
 		$query="ALTER TABLE  `glpi_tracking` ADD  `FK_group` int(11) NOT NULL  DEFAULT '0' AFTER `author`;";
 		$DB->query($query) or die("0.68 add FK_group in tracking ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","cartridges_alert")) {	
+	if(!FieldExists("glpi_config","cartridges_alert")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `cartridges_alert` int(11) NOT NULL  DEFAULT '0';";
 		$DB->query($query) or die("0.68 add cartridges_alert in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","consumables_alert")) {	
+	if(!FieldExists("glpi_config","consumables_alert")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `consumables_alert` int(11) NOT NULL  DEFAULT '0';";
 		$DB->query($query) or die("0.68 add consumables_alert in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_contacts","firstname")) {	
+	if(!FieldExists("glpi_contacts","firstname")) {
 		$query="ALTER TABLE  `glpi_contacts` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `name`;";
 		$DB->query($query) or die("0.68 add firstname in contacts ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_contacts","mobile")) {	
+	if(!FieldExists("glpi_contacts","mobile")) {
 		$query="ALTER TABLE  `glpi_contacts` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone2`;";
 		$DB->query($query) or die("0.68 add mobile in contacts ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_enterprises","country")) {	
+	if(!FieldExists("glpi_enterprises","country")) {
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `country` varchar(255)  DEFAULT '' AFTER `address`;";
 		$DB->query($query) or die("0.68 add country in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_enterprises","state")) {	
+	if(!FieldExists("glpi_enterprises","state")) {
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `state` varchar(255)  DEFAULT '' AFTER `address`;";
 		$DB->query($query) or die("0.68 add state in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_enterprises","town")) {	
+	if(!FieldExists("glpi_enterprises","town")) {
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `town` varchar(255)  DEFAULT '' AFTER `address`;";
 		$DB->query($query) or die("0.68 add town in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_enterprises","postcode")) {	
+	if(!FieldExists("glpi_enterprises","postcode")) {
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `postcode` varchar(255)  DEFAULT '' AFTER `address`;";
 		$DB->query($query) or die("0.68 add postcode in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_contracts","renewal")) {	
+	if(!FieldExists("glpi_contracts","renewal")) {
 		$query="ALTER TABLE  `glpi_contracts` ADD  `renewal` tinyint(2) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.68 add renewal in contracts ".$LANG['update'][90].$DB->error());
 	}
@@ -667,35 +667,35 @@ function update065to068(){
 	}
 
 	// Add user fields
-	if(!FieldExists("glpi_users","mobile")) {	
+	if(!FieldExists("glpi_users","mobile")) {
 		$query="ALTER TABLE  `glpi_users` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone`;";
 		$DB->query($query) or die("0.68 add mobile in users ".$LANG['update'][90].$DB->error());
 	}
-	if(!FieldExists("glpi_users","phone2")) {	
+	if(!FieldExists("glpi_users","phone2")) {
 		$query="ALTER TABLE  `glpi_users` ADD  `phone2` varchar(255)  DEFAULT '' AFTER `phone`;";
 		$DB->query($query) or die("0.68 add phone2 in users ".$LANG['update'][90].$DB->error());
 	}
-	if(!FieldExists("glpi_users","firstname")) {	
+	if(!FieldExists("glpi_users","firstname")) {
 		$query="ALTER TABLE  `glpi_users` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `realname`;";
 		$DB->query($query) or die("0.68 add firstname in users ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_users","comments")) {	
+	if(!FieldExists("glpi_users","comments")) {
 		$query="ALTER TABLE  `glpi_users` ADD  `comments` TEXT ;";
 		$DB->query($query) or die("0.68 add comments in users ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","ldap_field_firstname")) {	
+	if(!FieldExists("glpi_config","ldap_field_firstname")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_firstname` varchar(200)  DEFAULT 'givenname' AFTER `ldap_field_realname`;";
 		$DB->query($query) or die("0.68 add ldap_field_firstname in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","ldap_field_mobile")) {	
+	if(!FieldExists("glpi_config","ldap_field_mobile")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_mobile` varchar(200)  DEFAULT 'mobile' AFTER `ldap_field_phone`;";
 		$DB->query($query) or die("0.68 add ldap_mobile in config ".$LANG['update'][90].$DB->error());
 	}
 
-	if(!FieldExists("glpi_config","ldap_field_phone2")) {	
+	if(!FieldExists("glpi_config","ldap_field_phone2")) {
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_phone2` varchar(200)  DEFAULT 'homephone' AFTER `ldap_field_phone`;";
 		$DB->query($query) or die("0.68 add ldap_field_phone2 in config ".$LANG['update'][90].$DB->error());
 	}
@@ -721,10 +721,12 @@ function rembo($string) {
 
    // If the message contains a code tag we have to split it up
    // (text within [code][/code] shouldn't be touched)
-   if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false) {
+   if (strpos($string, '[code]') !== false
+       && strpos($string, '[/code]') !== false) {
+
       list($inside, $outside) = split_text($string, '[code]', '[/code]');
-      $outside = array_map('trim', $outside);
-      $string  = implode('<">', $outside);
+      $outside                = array_map('trim', $outside);
+      $string                 = implode('<">', $outside);
    }
 
    $pattern = array('#\[b\](.*?)\[/b\]#s',
@@ -749,7 +751,6 @@ function rembo($string) {
 
    // This thing takes a while! :)
    $string = preg_replace($pattern, $replace, $string);
-
    $string = clicurl($string);
    $string = autop($string);
 
@@ -771,40 +772,42 @@ function rembo($string) {
    return $string;
 }
 
+
 /**
  * Rend une url cliquable htp/https/ftp meme avec une variable Get
  *
  * @param $chaine
- * 
- * 
- * 
+ *
  * @return $string
- */
-function clicurl($chaine){
+**/
+function clicurl($chaine) {
 
-        $text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine);
-
-                return $text;
+   $text = preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine);
+   return $text;
 }
 
+
 /**
- *Met en "ordre" une chaine avant affichage
- * Remplace trés AVANTAGEUSEMENT nl2br 
- * 
+ * Met en "ordre" une chaine avant affichage
+ * Remplace trés AVANTAGEUSEMENT nl2br
+ *
  * @param $pee
  * @param $br
- * 
+ *
  * @return $string
- */
+**/
 function autop($pee, $br=1) {
 
-        // Thanks  to Matthew Mullenweg
+   // Thanks  to Matthew Mullenweg
 
-        $pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
-        $pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-        $pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
-        if ($br) $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
-        return $pee;
+   $pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
+   $pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+   $pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
+
+   if ($br) {
+      $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+   }
+   return $pee;
 }
 
 
@@ -814,30 +817,25 @@ function autop($pee, $br=1) {
  * @param $text
  * @param $start
  * @param $end
- * 
- * @return array 
- */
-function split_text($text, $start, $end)
-{
+ *
+ * @return array
+**/
+function split_text($text, $start, $end) {
 
-        // Adapté de PunBB 
-        //Copyright (C)  Rickard Andersson (rickard@punbb.org)
+   // Adapté de PunBB
+   //Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
-        $tokens = explode($start, $text);
+   $tokens     = explode($start, $text);
+   $outside[]  = $tokens[0];
+   $num_tokens = count($tokens);
 
-        $outside[] = $tokens[0];
+   for ($i=1 ; $i<$num_tokens ; ++$i) {
+      $temp      = explode($end, $tokens[$i]);
+      $inside[]  = $temp[0];
+      $outside[] = $temp[1];
+   }
 
-        $num_tokens = count($tokens);
-        for ($i = 1; $i < $num_tokens; ++$i)
-        {
-                $temp = explode($end, $tokens[$i]);
-                $inside[] = $temp[0];
-                $outside[] = $temp[1];
-        }
-
-
-
-        return array($inside, $outside);
+   return array($inside, $outside);
 }
 
 ?>

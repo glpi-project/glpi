@@ -53,7 +53,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    function __construct() {
 
       //Init cache system values
-      $this->initCache("glpi_rulecacheprinters", 
+      $this->initCache("glpi_rulecacheprinters",
                        array("name"               => "old_value",
                              "manufacturer"       => "manufacturer"),
                        array("name"               => "new_value",
@@ -108,7 +108,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       if ($offset) {
          $sql .= " LIMIT " . intval($offset) . ",999999999";
       }
-      
+
       $res  = $DB->query($sql);
       $nb   = $DB->numrows($res) + $offset;
       $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
@@ -133,7 +133,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
                unset($res_rule[$attr]);
             }
          }
-         
+
          //If the software's name or version has changed
          if (self::somethingHasChanged($res_rule, $input)) {
 
@@ -146,11 +146,11 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
             $res_printer = $DB->query($sql);
 
             if ($DB->numrows($res_printer) > 0) {
-               //Store all the software's IDs in an array
+               //Store all the printer's IDs in an array
                while ($result = $DB->fetch_array($res_printer)) {
                   $IDs[] = $result["id"];
                }
-               //Replay dictionnary on all the softwares
+               //Replay dictionnary on all the printers
                $this->replayDirectionnaryOnPrintersByID($IDs, $res_rule);
             }
          }
@@ -179,15 +179,15 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
 
    static function somethingHasChanged($res_rule, $input) {
+
       if ((isset ($res_rule["name"]) && $res_rule["name"] != $input["name"])
-          || (isset($res_rule["manufacturer"]))
-            && $res_rule["manufacturer"] != ''
-               || isset($res_rule['is_global'])
-                  && $res_rule['is_global'] != '') {
-            return true;
+          || (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"] != '')
+          || (isset($res_rule['is_global']) && $res_rule['is_global'] != '')) {
+         return true;
       }
       return false;
    }
+
 
    /**
     * Replay dictionnary on several printers
@@ -197,23 +197,23 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
     *
     * @return Query result handler
    **/
-   function replayDirectionnaryOnPrintersByID($IDs, $res_rule = array()) {
+   function replayDirectionnaryOnPrintersByID($IDs, $res_rule=array()) {
       global $DB;
 
       $new_printers  = array();
-      $delete_ids = array();
+      $delete_ids    = array();
 
       foreach ($IDs as $ID) {
-         $sql = "SELECT `gp`.`id`,
-                        `gp`.`name` AS name,
-                        `gp`.`entities_id` AS entities_id,
-                        `gp`.`is_global` AS is_global,
-                        `gm`.`name` AS manufacturer
-                 FROM `glpi_printers` AS gp
-                 LEFT JOIN `glpi_manufacturers` AS gm
-                    ON (`gp`.`manufacturers_id` = `gm`.`id`)
-                 WHERE `gp`.`is_template` = '0'
-                    AND `gp`.`id` = '$ID'";
+         $sql = "SELECT `glpi_printers`.`id`,
+                        `glpi_printers`.`name` AS name,
+                        `glpi_printers`.`entities_id` AS entities_id,
+                        `glpi_printers`.`is_global` AS is_global,
+                        `glpi_manufacturers`.`name` AS manufacturer
+                 FROM `glpi_printers`
+                 LEFT JOIN `glpi_manufacturers`
+                    ON (`glpi_printers`.`manufacturers_id` = `glpi_manufacturers`.`id`)
+                 WHERE `glpi_printers`.`is_template` = '0'
+                       AND `glpi_printers`.`id` = '$ID'";
 
          $res_printer = $DB->query($sql);
          if ($DB->numrows($res_printer)) {
@@ -225,26 +225,26 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       //Delete printer if needed
       $this->putOldPrintersInTrash($delete_ids);
    }
-   
+
+
    function putOldPrintersInTrash($IDS = array()) {
-      $printer = new Printer;
+
+      $printer = new Printer();
       foreach ($IDS as $id) {
          $printer->delete(array('id' => $id));
       }
    }
-   
+
+
    /**
     * Replay dictionnary on one printer
     *
-    * @param $new_softs array containing new printers already computed
+    * @param $new_printers array containing new printers already computed
     * @param $res_rule array of rule results
-    * @param $ID ID of the software
-    * @param $entity working entity ID
-    * @param $name printer name
-    * @param $manufacturer manufacturer ID
+    * @param $params array
     * @param $printers_ids array containing replay printer need to be trashed
    **/
-   function replayDictionnaryOnOnePrinter(& $new_printers, $res_rule, $params = array(), 
+   function replayDictionnaryOnOnePrinter(& $new_printers, $res_rule, $params = array(),
                                           & $printers_ids) {
       global $DB;
 
@@ -256,7 +256,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       foreach ($params as $key => $value) {
          $p[$key] = $value;
       }
-      
+
       $input["name"]         = $p['name'];
       $input["manufacturer"] = $p['manufacturer'];
       $input                 = addslashes_deep($input);
@@ -270,13 +270,13 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
       //Printer's name has changed
       if (isset ($res_rule["name"])
-            && $res_rule["name"] != $p['name']) {
+          && $res_rule["name"] != $p['name']) {
 
          $manufacturer = "";
+
          if (isset ($res_rule["manufacturer"])) {
             $manufacturer = Dropdown::getDropdownName("glpi_manufacturers",
                                                       $res_rule["manufacturer"]);
-                                                      
          }
 
          //New printer not already present in this entity
@@ -288,7 +288,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          } else {
             $new_printer_id = $new_printers[$p['entity']][$res_rule["name"]];
          }
-         
+
          // Move direct connections
          $this->moveDirectConnections($p['id'], $new_printer_id);
 
@@ -312,27 +312,29 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
    }
 
+
    /**
     * Move direct connections from old printer to the new one
-    * @params $ID the old printer's id
-    * @params $new_printers_id the new printer's id
-    * 
+    * @param $ID the old printer's id
+    * @param $new_printers_id the new printer's id
+    *
     * @return nothing
-    */
+   **/
    function moveDirectConnections($ID, $new_printers_id) {
       global $DB;
+
       $computeritem = new Computer_Item();
       //For each direct connection of this printer
-      foreach (getAllDatasFromTable("glpi_computers_items", 
+      foreach (getAllDatasFromTable("glpi_computers_items",
                                     "`itemtype` = 'Printer' AND `items_id` = '$ID'") as $connection) {
-         
+
          //Direct connection exists in the target printer ?
-         if (!countElementsInTable("glpi_computers_items", 
-                                   "`itemtype` = 'Printer' 
-                                      AND `items_id` = '$new_printers_id' 
-                                         AND `computers_id`='".$connection["computers_id"]."'")) {
+         if (!countElementsInTable("glpi_computers_items",
+                                   "`itemtype` = 'Printer'
+                                       AND `items_id` = '$new_printers_id'
+                                       AND `computers_id`='".$connection["computers_id"]."'")) {
             //Direct connection doesn't exists in the target printer : move it
-            $computeritem->update(array ('id'       => $connection['id'], 
+            $computeritem->update(array ('id'       => $connection['id'],
                                          'items_id' => $new_printers_id));
          } else {
             //Direct connection already exists in the target printer : delete it
@@ -340,6 +342,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          }
       }
    }
+
 }
 
 ?>
