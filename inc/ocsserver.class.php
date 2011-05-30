@@ -122,7 +122,7 @@ class OcsServer extends CommonDBTM {
 
          $tabs[2]  = $LANG['ocsconfig'][5];
          $tabs[3]  = $LANG['ocsconfig'][27];
-         $tabs[12] = $LANG['title'][38];
+         self::addStandardTab('Log', $tabs);
       }
       return $tabs;
    }
