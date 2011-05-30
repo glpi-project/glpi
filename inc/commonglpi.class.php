@@ -114,6 +114,7 @@ class CommonGLPI {
       }
    }
 
+
    /**
     * Get Tab Name used for itemtype
     *
@@ -124,6 +125,7 @@ class CommonGLPI {
    function getTabNameForItem(CommonDBTM $item) {
       return '';
    }
+
 
    /**
     * show Tab content
@@ -137,6 +139,7 @@ class CommonGLPI {
       return false;
    }
 
+
    /**
     * display standard tab contents
     *
@@ -146,20 +149,22 @@ class CommonGLPI {
     *
     * @return true
    **/
-   static function displayStandardTab(CommonGLPI $item,$tab,$withtemplate = 0) {
+   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0) {
+
+
       if (Plugin::displayAction($item, $tab, $withtemplate)) {
          return true;
       }
+
       switch ($tab) {
          case 'Note' :
             $item->showNotesForm();
             return true;
-            break;
 
          default :
             if (!is_integer($tab) && class_exists($tab)) {
                $obj = new $tab();
-               return $obj->displayTabContentForItem($item,$withtemplate);
+               return $obj->displayTabContentForItem($item, $withtemplate);
             }
             break;
       }

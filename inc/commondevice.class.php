@@ -32,6 +32,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
 // CommonDevice Class for Device*class
 abstract class CommonDevice extends CommonDropdown {
 
@@ -39,36 +40,36 @@ abstract class CommonDevice extends CommonDropdown {
       return haveRight('device','w');
    }
 
+
    function canView() {
       return haveRight('device','r');
    }
+
 
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = 0;
-
+            $nb    = 0;
             $types =  Computer_Device::getDeviceTypes();
             foreach ($types as $type) {
                $table = getTableForItemType('Computer_'.$type);
-               $nb += countElementsInTable($table,"computers_id = '".$item->getID()."'");
+               $nb   += countElementsInTable($table, "computers_id = '".$item->getID()."'");
             }
-
             return self::createTabEntry($LANG['title'][30],$nb);
-         } else {
-            return $LANG['title'][30];
          }
+         return $LANG['title'][30];
       }
       return '';
    }
 
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       Computer_Device::showForComputer($item, $withtemplate);
       return true;
    }
-
 
 
    function getAdditionalFields() {

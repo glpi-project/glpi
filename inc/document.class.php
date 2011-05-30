@@ -119,17 +119,19 @@ class Document extends CommonDBTM {
       if ($item->getID() && haveRight("document","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
-         } else {
-            return $LANG['Menu'][27];
          }
+         return $LANG['Menu'][27];
       }
       return '';
    }
 
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       self::showAssociated($item, $withtemplate);
       return true;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -138,11 +140,11 @@ class Document extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['document'][19];
 
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Document', $ong);
 
-         $this->addStandardTab('Note',$ong);
+         $this->addStandardTab('Note', $ong);
 
-         $this->addStandardTab('Log',$ong);
+         $this->addStandardTab('Log', $ong);
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

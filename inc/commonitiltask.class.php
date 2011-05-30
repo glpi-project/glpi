@@ -90,6 +90,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       return $LANG['job'][7];
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
@@ -99,24 +100,26 @@ abstract class CommonITILTask  extends CommonDBTM {
 
             if ($this->maybePrivate() && !$this->canViewPrivates()) {
                $restrict .= " AND (`is_private` = '0'
-                                 OR `users_id` ='" . getLoginUserID() . "') ";
+                                   OR `users_id` = '" . getLoginUserID() . "') ";
             }
 
             return self::createTabEntry($LANG['mailing'][142],
-                        countElementsInTable($this->getTable(), $restrict));
-         } else {
-            return $LANG['mailing'][142];
+                                        countElementsInTable($this->getTable(), $restrict));
          }
+         return $LANG['mailing'][142];
       }
       return '';
    }
 
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       $itemtype = $item->getType().'Task';
-      $task = new $itemtype();
+      $task     = new $itemtype();
       $task->showSummary($item);
       return true;
    }
+
 
    function post_deleteFromDB() {
 

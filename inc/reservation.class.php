@@ -44,11 +44,13 @@ class Reservation extends CommonDBChild {
    public $itemtype = 'ReservationItem';
    public $items_id = 'reservationitems_id';
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['Menu'][17];
    }
+
 
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
@@ -59,7 +61,9 @@ class Reservation extends CommonDBChild {
       return '';
    }
 
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       if ($item->getType() == 'User') {
          self::showForUser($_POST["id"]);
       } else {
@@ -67,6 +71,7 @@ class Reservation extends CommonDBChild {
       }
       return true;
    }
+
 
    function pre_deleteItem() {
       global $CFG_GLPI;
@@ -818,7 +823,6 @@ class Reservation extends CommonDBChild {
     * Display reservations for an item
     *
     * @param $item CommonDBTM object for which the reservation tab need to be displayed
-    * @param $itemtype item type
    **/
    static function showForItem(CommonDBTM $item) {
       global $DB, $LANG, $CFG_GLPI;
