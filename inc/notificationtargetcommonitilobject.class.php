@@ -103,7 +103,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
-      $fkfield        = $this->obj->getForreignKeyField();
+      $fkfield        = $this->obj->getForeignKeyField();
 
       //Look for the user by his id
       $query = "SELECT `groups_id`
@@ -127,7 +127,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
-      $fkfield        = $this->obj->getForreignKeyField();
+      $fkfield        = $this->obj->getForeignKeyField();
 
       //Look for the user by his id
       $query =        $this->getDistinctUserSql()."
