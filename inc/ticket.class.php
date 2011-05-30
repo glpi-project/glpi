@@ -5138,7 +5138,7 @@ class Ticket extends CommonDBTM {
       $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
       $items[$LANG['document'][14]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
       $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
-      $items[$LANG['sla'][5]]      = "glpi_tickets.due_date";
+      //$items[$LANG['sla'][5]]      = "glpi_tickets.due_date";
       $items[$LANG['common'][57]]  = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
@@ -5482,6 +5482,15 @@ class Ticket extends CommonDBTM {
             }
             $second_col .= convDateTime($job->fields['solvedate']);
 
+         } else if ($job->fields['begin_waiting_date']) {
+            $second_col = $LANG['joblist'][26];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= convDateTime($job->fields['due_date']);
+
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
             if ($output_type == HTML_OUTPUT) {
@@ -5609,8 +5618,8 @@ class Ticket extends CommonDBTM {
                                $item_num, $row_num, $align);
 
          // Eight column
-         echo Search::showItem($output_type, convDateTime($job->fields['due_date']),
-                               $item_num, $row_num, $align);
+         // echo Search::showItem($output_type, convDateTime($job->fields['due_date']),
+         //                       $item_num, $row_num, $align);
 
          // ninth column
          $ninth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
