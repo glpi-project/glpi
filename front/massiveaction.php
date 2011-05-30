@@ -609,14 +609,14 @@ if (isset($_POST["itemtype"])) {
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $input = array('id' => $key);
-                  if (isset($_POST['_ticket_requester'])) {
-                     $input['_ticket_requester'] = $_POST['_ticket_requester'];
+                  if (isset($_POST['_itil_requester'])) {
+                     $input['_itil_requester'] = $_POST['_itil_requester'];
                   }
-                  if (isset($_POST['_ticket_observer'])) {
-                     $input['_ticket_observer'] = $_POST['_ticket_observer'];
+                  if (isset($_POST['_itil_observer'])) {
+                     $input['_itil_observer'] = $_POST['_itil_observer'];
                   }
-                  if (isset($_POST['_ticket_assign'])) {
-                     $input['_ticket_assign'] = $_POST['_ticket_assign'];
+                  if (isset($_POST['_itil_assign'])) {
+                     $input['_itil_assign'] = $_POST['_itil_assign'];
                   }
                   if ($ticket->can($key,'w')) {
                      $ticket->update($input);

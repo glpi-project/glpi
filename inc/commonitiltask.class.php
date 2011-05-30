@@ -129,7 +129,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $item->updateActiontime($this->fields[$item->getForeignKeyField()]);
       $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
-      // Add log entry in the ticket
+      // Add log entry in the itil object
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
@@ -210,7 +210,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($update_done) {
-         // Add log entry in the ticket
+         // Add log entry in the itil object
          $changes[0] = 0;
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
@@ -312,7 +312,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
-      // Add log entry in the ticket
+      // Add log entry in the itil object
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
@@ -426,7 +426,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * Populate the planning with planned ticket tasks
+    * Populate the planning with planned tasks
     *
     * @param $itemtype itemtype
     * @param $options options array must contains :
@@ -759,7 +759,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *
     * @param $ID Integer : Id of the task
     * @param $options array
-    *     -  ticket Object : the ticket
+    *     -  parent Object : the object
    **/
    function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
