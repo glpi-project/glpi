@@ -5464,37 +5464,41 @@ class Ticket extends CommonDBTM {
          echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
 
          // Second column
-         $second_col = "";
-         if (!strstr($job->fields["status"],"old_")) {
-            $second_col .= "<span class='tracking_open'>".$LANG['joblist'][11]."&nbsp;:";
+         if ($job->fields['status']=='closed') {
+            $second_col = $LANG['joblist'][12];
             if ($output_type == HTML_OUTPUT) {
-               $second_col .= "<br>";
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
             }
-            $second_col .= "&nbsp;".convDateTime($job->fields["date"])."</span>";
+            $second_col .= convDateTime($job->fields['closedate']);
+
+         } else if ($job->fields['status']=='solved') {
+            $second_col = $LANG['joblist'][14];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= convDateTime($job->fields['solvedate']);
+
+         } else if ($job->fields['due_date']) {
+            $second_col = $LANG['sla'][5];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= convDateTime($job->fields['due_date']);
 
          } else {
-            $second_col .= "<div class='tracking_hour'>".$LANG['joblist'][11]."&nbsp;:";
-
+            $second_col = $LANG['joblist'][11];
             if ($output_type == HTML_OUTPUT) {
-               $second_col .= "<br>";
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
             }
-            $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($job->fields["date"]).
-                           "</span><br>".$LANG['joblist'][12]."&nbsp;:";
-
-            if ($output_type == HTML_OUTPUT) {
-               $second_col .= "<br>";
-            }
-            $second_col .= "&nbsp;<span class='tracking_bold'>".
-                                   convDateTime($job->fields["closedate"])."</span><br>";
-
-            if ($job->fields["actiontime"] > 0) {
-               $second_col .= $LANG['job'][20]."&nbsp;: ";
-            }
-
-            if ($output_type == HTML_OUTPUT) {
-               $second_col .= "<br>";
-            }
-            $second_col .= "&nbsp;".self::getActionTime($job->fields["actiontime"])."</div>";
+            $second_col .= convDateTime($job->fields['date']);
          }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
