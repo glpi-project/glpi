@@ -74,10 +74,11 @@ function ajaxDropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;
    echo "<script type='text/javascript'>";
    echo "function update_results_$rand() {";
    if ($use_ajax) {
-      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, "search_$rand");
+      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams,
+                           "search_$rand");
    } else {
       $initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
-      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, "");
+      ajaxUpdateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams);
    }
    echo "}";
    echo "</script>";

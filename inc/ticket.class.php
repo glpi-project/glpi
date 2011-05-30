@@ -2846,8 +2846,7 @@ class Ticket extends CommonITILObject {
                          'size'      => 50,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
-         ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
-                              false);
+         ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
          echo "}";
          echo "</script>\n";
          echo "<div id='name$rand' class='tracking left' onClick='showName$rand()'>\n";
@@ -2903,8 +2902,7 @@ class Ticket extends CommonITILObject {
                          'cols'  => 50,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
-         ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params,
-                              false);
+         ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
          echo "}";
          echo "</script>\n";
          echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
