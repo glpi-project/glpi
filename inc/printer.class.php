@@ -671,14 +671,16 @@ class Printer  extends CommonDBTM {
 
       return $tab;
    }
-      /**
+
+
+  /**
     * Add a printer. If already exist in trash restore it
     *
     * @param name the printer's name
     * @param manufacturer the software's manufacturer
     * @param entity the entity in which the software must be added
     * @param comment comment
-   */
+   **/
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='') {
       global $DB;
 
@@ -762,6 +764,7 @@ class Printer  extends CommonDBTM {
    function removeFromTrash($ID) {
       return $this->restore(array("id" => $ID));
    }
+
 }
 
 ?>
