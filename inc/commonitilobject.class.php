@@ -116,7 +116,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Is a user linked to the ticket ?
+    * Is a user linked to the object ?
     *
     * @param $type type to search (see constants)
     * @param $users_id integer user ID
@@ -134,7 +134,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * get users linked to a ticket
+    * get users linked to a object
     *
     * @param $type type to search (see constants)
     *
@@ -151,7 +151,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * get groups linked to a ticket
+    * get groups linked to a object
     *
     * @param $type type to search (see constants)
     *
@@ -168,7 +168,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * count users linked to tickets by type or global
+    * count users linked to object by type or global
     *
     * @param $type type to search (see constants) / 0 for all
     *
@@ -195,7 +195,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * count groups linked to tickets by type or global
+    * count groups linked to object by type or global
     *
     * @param $type type to search (see constants) / 0 for all
     *
@@ -222,7 +222,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Is a group linked to the ticket ?
+    * Is a group linked to the object ?
     *
     * @param $type type to search (see constants)
     * @param $groups_id integer group ID
@@ -239,7 +239,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Is one of groups linked to the ticket ?
+    * Is one of groups linked to the object ?
     *
     * @param $type type to search (see constants)
     * @param $groups array of group ID
@@ -308,17 +308,17 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
-      if (isset($input['_ticket_requester'])) {
-         if (isset($input['_ticket_requester']['_type'])) {
-            $input['_ticket_requester']['type']                      = self::REQUESTER;
-            $input['_ticket_requester'][$this->getForeignKeyField()] = $input['id'];
+      if (isset($input['_itil_requester'])) {
+         if (isset($input['_itil_requester']['_type'])) {
+            $input['_itil_requester']['type']                      = self::REQUESTER;
+            $input['_itil_requester'][$this->getForeignKeyField()] = $input['id'];
 
-            switch ($input['_ticket_requester']['_type']) {
+            switch ($input['_itil_requester']['_type']) {
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_ticket_requester'])) {
-                        $useractors->add($input['_ticket_requester']);
+                     if ($useractors->can(-1,'w',$input['_itil_requester'])) {
+                        $useractors->add($input['_itil_requester']);
                         $input['_forcenotif'] = true;
                      }
                   }
@@ -327,8 +327,8 @@ abstract class CommonITILObject extends CommonDBTM {
                case "group" :
                   if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
-                     if ($groupactors->can(-1,'w',$input['_ticket_requester'])) {
-                        $groupactors->add($input['_ticket_requester']);
+                     if ($groupactors->can(-1,'w',$input['_itil_requester'])) {
+                        $groupactors->add($input['_itil_requester']);
                         $input['_forcenotif'] = true;
                      }
                   }
@@ -337,17 +337,17 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input['_ticket_observer'])) {
-         if (isset($input['_ticket_observer']['_type'])) {
-            $input['_ticket_observer']['type']                      = self::OBSERVER;
-            $input['_ticket_observer'][$this->getForeignKeyField()] = $input['id'];
+      if (isset($input['_itil_observer'])) {
+         if (isset($input['_itil_observer']['_type'])) {
+            $input['_itil_observer']['type']                      = self::OBSERVER;
+            $input['_itil_observer'][$this->getForeignKeyField()] = $input['id'];
 
-            switch ($input['_ticket_observer']['_type']) {
+            switch ($input['_itil_observer']['_type']) {
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_ticket_observer'])) {
-                        $useractors->add($input['_ticket_observer']);
+                     if ($useractors->can(-1,'w',$input['_itil_observer'])) {
+                        $useractors->add($input['_itil_observer']);
                         $input['_forcenotif'] = true;
                      }
                   }
@@ -356,8 +356,8 @@ abstract class CommonITILObject extends CommonDBTM {
                case "group" :
                    if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
-                     if ($groupactors->can(-1,'w',$input['_ticket_observer'])) {
-                        $groupactors->add($input['_ticket_observer']);
+                     if ($groupactors->can(-1,'w',$input['_itil_observer'])) {
+                        $groupactors->add($input['_itil_observer']);
                         $input['_forcenotif'] = true;
                      }
                   }
@@ -366,17 +366,17 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input['_ticket_assign'])) {
-         if (isset($input['_ticket_assign']['_type'])) {
-            $input['_ticket_assign']['type']                      = self::ASSIGN;
-            $input['_ticket_assign'][$this->getForeignKeyField()] = $input['id'];
+      if (isset($input['_itil_assign'])) {
+         if (isset($input['_itil_assign']['_type'])) {
+            $input['_itil_assign']['type']                      = self::ASSIGN;
+            $input['_itil_assign'][$this->getForeignKeyField()] = $input['id'];
 
-            switch ($input['_ticket_assign']['_type']) {
+            switch ($input['_itil_assign']['_type']) {
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_ticket_assign'])) {
-                        $useractors->add($input['_ticket_assign']);
+                     if ($useractors->can(-1,'w',$input['_itil_assign'])) {
+                        $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
                             || $input['status'] == 'new') {
@@ -391,8 +391,8 @@ abstract class CommonITILObject extends CommonDBTM {
                      $groupactors = new $this->grouplinkclass();
 
                      $groupactors = new Group_Ticket();
-                     if ($groupactors->can(-1,'w',$input['_ticket_assign'])) {
-                        $groupactors->add($input['_ticket_assign']);
+                     if ($groupactors->can(-1,'w',$input['_itil_assign'])) {
+                        $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
                             || $input['status'] == 'new') {
@@ -1532,16 +1532,16 @@ abstract class CommonITILObject extends CommonDBTM {
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
                       'user'  => $LANG['common'][34],
                       'group' => $LANG['common'][35]);
-      $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
+      $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
                       'entity_restrict' => $entities_id);
 
-      ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$typename."[_type]$rand",
-                                  "showticket".$typename."_$rand",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
+      ajaxUpdateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
+                                  "showitilactor".$typename."_$rand",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
                                   $params);
-      echo "<span id='showticket".$typename."_$rand'>&nbsp;</span>";
+      echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
       if ($inticket) {
          echo "<hr>";
       }

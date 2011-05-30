@@ -48,6 +48,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
    switch ($_POST["type"]) {
       case "user" :
          $right = 'all';
+         /// TODO : review depending of itil object
          // Only steal or own ticket whit empty assign
          if ($_POST["actortype"]=='assign') {
             $right = "own_ticket";
@@ -55,7 +56,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                $right = 'id';
             }
          }
-         $rand = User::dropdown(array('name'        => '_ticket_'.$_POST["actortype"].'[users_id]',
+         $rand = User::dropdown(array('name'        => '_itil_'.$_POST["actortype"].'[users_id]',
                                       'entity'      => $_POST['entity_restrict'],
                                       'right'       => $right,
                                       'ldap_import' => true));
@@ -64,9 +65,9 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
             echo "<br><span id='notif_user_$rand'>";
             echo "</span>";
             $paramscomment = array('value' => '__VALUE__',
-                                   'field' => "_ticket_".$_POST["actortype"]);
+                                   'field' => "_itil_".$_POST["actortype"]);
 
-            ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$_POST["actortype"]."[users_id]".$rand,
+            ajaxUpdateItemOnSelectEvent("dropdown__itil_".$_POST["actortype"]."[users_id]".$rand,
                                         "notif_user_$rand",
                                         $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
                                         $paramscomment, false);
@@ -75,7 +76,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          break;
 
       case "group" :
-         Dropdown::show('Group', array('name'   => '_ticket_'.$_POST["actortype"].'[groups_id]',
+         Dropdown::show('Group', array('name'   => '_itil_'.$_POST["actortype"].'[groups_id]',
                                        'entity' => $_POST['entity_restrict']));
          break;
    }

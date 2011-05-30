@@ -410,24 +410,24 @@ class Ticket extends CommonITILObject {
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
-         if (isset($input["_ticket_assign"])
-             && isset($input['_ticket_assign']['_type'])
-             && $input['_ticket_assign']['_type'] == 'user') {
+         if (isset($input["_itil_assign"])
+             && isset($input['_itil_assign']['_type'])
+             && $input['_itil_assign']['_type'] == 'user') {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(parent::ASSIGN)==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
-                   || !isset($input["_ticket_assign"]['users_id'])
-                   || ($input["_ticket_assign"]['users_id'] != getLoginUserID())) {
-                  unset($input["_ticket_assign"]);
+                   || !isset($input["_itil_assign"]['users_id'])
+                   || ($input["_itil_assign"]['users_id'] != getLoginUserID())) {
+                  unset($input["_itil_assign"]);
                }
 
             } else {
                // Can not steal or can steal and not assign to me
                if (!haveRight("steal_ticket","1")
-                   || !isset($input["_ticket_assign"]['users_id'])
-                   || ($input["_ticket_assign"]['users_id'] != getLoginUserID())) {
-                  unset($input["_ticket_assign"]);
+                   || !isset($input["_itil_assign"]['users_id'])
+                   || ($input["_itil_assign"]['users_id'] != getLoginUserID())) {
+                  unset($input["_itil_assign"]);
                }
             }
          }
@@ -438,10 +438,10 @@ class Ticket extends CommonITILObject {
          }
 
          // No group
-         if (isset($input["_ticket_assign"])
-             && isset($input['_ticket_assign']['_type'])
-             && $input['_ticket_assign']['_type'] == 'group') {
-            unset($input["_ticket_assign"]);
+         if (isset($input["_itil_assign"])
+             && isset($input['_itil_assign']['_type'])
+             && $input['_itil_assign']['_type'] == 'group') {
+            unset($input["_itil_assign"]);
          }
       }
 
@@ -458,7 +458,7 @@ class Ticket extends CommonITILObject {
          }
          // Manage assign and steal right
          if (haveRight('assign_ticket',1) || haveRight('steal_ticket',1)) {
-            $allowed_fields[] = '_ticket_assign';
+            $allowed_fields[] = '_itil_assign';
          }
          if (haveRight('assign_ticket',1)) {
             $allowed_fields[] = 'suppliers_id_assign';
@@ -493,20 +493,20 @@ class Ticket extends CommonITILObject {
       // Manage fields from auto update : map rule actions to standard ones
       if (isset($input['_auto_update'])) {
          if (isset($input['_users_id_assign'])) {
-            $input['_ticket_assign']['_type']    = 'user';
-            $input['_ticket_assign']['users_id'] = $input['_users_id_assign'];
+            $input['_itil_assign']['_type']    = 'user';
+            $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
          }
          if (isset($input['_users_id_requester'])) {
-            $input['_ticket_requester']['_type']    = 'user';
-            $input['_ticket_requester']['users_id'] = $input['_users_id_requester'];
+            $input['_itil_requester']['_type']    = 'user';
+            $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
          }
          if (isset($input['_groups_id_requester'])) {
-            $input['_ticket_assign']['_type']    = 'group';
-            $input['_ticket_assign']['users_id'] = $input['_groups_id_requester'];
+            $input['_itil_assign']['_type']    = 'group';
+            $input['_itil_assign']['users_id'] = $input['_groups_id_requester'];
          }
          if (isset($input['_groups_id_assign'])) {
-            $input['_ticket_requester']['_type']    = 'group';
-            $input['_ticket_requester']['users_id'] = $input['_groups_id_assign'];
+            $input['_itil_requester']['_type']    = 'group';
+            $input['_itil_requester']['users_id'] = $input['_groups_id_assign'];
          }
       }
 
