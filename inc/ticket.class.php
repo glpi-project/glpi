@@ -5489,7 +5489,7 @@ class Ticket extends CommonDBTM {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['due_date']);
+            $second_col .= convDateTime($job->fields['begin_waiting_date']);
 
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
