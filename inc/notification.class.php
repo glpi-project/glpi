@@ -110,7 +110,7 @@ class Notification extends CommonDBTM {
 
       $tabs[1]  = $LANG['common'][12];
       if ($this->fields['id'] > 0) {
-         self::addStandardTab('Log', $tabs);
+         $this->addStandardTab('Log', $tabs);
       }
 
       return $tabs;
