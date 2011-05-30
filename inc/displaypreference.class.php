@@ -512,19 +512,21 @@ class DisplayPreference extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * show defined display preferences for a user
     *
     * @param $users_id integer user ID
-    */
+   **/
    static function showForUser($users_id) {
       global $DB, $LANG;
 
       $url = getItemTypeFormURL(__CLASS__);
 
-      $query = "SELECT `itemtype`, COUNT(*) as nb
+      $query = "SELECT `itemtype`,
+                       COUNT(*) AS nb
                 FROM `glpi_displaypreferences`
-                WHERE `users_id`='$users_id'
+                WHERE `users_id` = '$users_id'
                 GROUP BY `itemtype`";
 
       $req = $DB->request($query);
@@ -537,7 +539,7 @@ class DisplayPreference extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td width='10'>";
             echo "<input  type='checkbox' name='itemtype[".$data["itemtype"]."]' value='1'></td>";
             if (class_exists($data["itemtype"])) {
-               $item = new $data["itemtype"];
+               $item = new $data["itemtype"]();
                $name = $item->getTypeName();
             } else {
                $name = $data["itemtype"];
@@ -549,12 +551,14 @@ class DisplayPreference extends CommonDBTM {
          openArrowMassive('formprefs', true);
          closeArrowMassive('delete_for_user', $LANG['buttons'][6]);
          echo "</form>";
+
       } else {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><td class='b center'>".$LANG['search'][15]."</td></tr>";
          echo "</table>";
       }
    }
+
 }
 
 ?>

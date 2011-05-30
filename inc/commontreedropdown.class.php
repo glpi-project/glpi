@@ -360,7 +360,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @param $value string
     *
     * @return string
-    */
+   **/
    static function cleanTreeText($value) {
 
       $tmp = explode('>', $value);

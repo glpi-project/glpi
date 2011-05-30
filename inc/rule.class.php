@@ -970,7 +970,6 @@ class Rule extends CommonDBTM {
                   if ($action->fields["action_type"] == "append_regex_result") {
                      $res = (isset($params[$action->fields["field"]])
                              ?$params[$action->fields["field"]]:"");
-                  //logDebug($params, $res);
 
                   } else {
                      $res = "";
