@@ -2726,19 +2726,19 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
    /**
-   *  show notes for item
-   *
-   * @param @param $item CommonDBTM object for which the notes need to be displayed
-   *
-   * @return nothing
-   */
+    *  show notes for item
+    *
+    * @return nothing
+   **/
    function showNotesForm() {
       global $LANG;
 
       if (!haveRight("notes","r")) {
          return false;
       }
+
       if (!$this->isField('notepad') || !isset($this->fields[$this->getIndexName()])) {
          return false;
       }
@@ -2754,7 +2754,7 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe' >";
-      echo "<tr><th class='center'>".$LANG['title'][37]."</th></tr>";
+      echo "<tr><th>".$LANG['title'][37]."</th></tr>";
 
       echo "<tr><td class='tab_bg_1 center middle'>";
       echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".
@@ -2764,8 +2764,8 @@ class CommonDBTM extends CommonGLPI {
       echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
       // for all objects without id as primary key (like entitydata)
       if ($this->getIndexName() != 'id') {
-            echo "<input type='hidden' name='".$this->getIndexName()."' ".
-                  "value='".$this->fields[$this->getIndexName()]."'>";
+         echo "<input type='hidden' name='".$this->getIndexName()."' value='".
+                $this->fields[$this->getIndexName()]."'>";
       }
 
       if ($canedit) {
