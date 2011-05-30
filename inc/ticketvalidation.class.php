@@ -187,16 +187,23 @@ class TicketValidation  extends CommonDBChild {
    function post_addItem() {
       global $LANG,$CFG_GLPI;
 
-      $job = new Ticket;
+      $job      = new Ticket();
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"])) {
          // Set global validation to waiting
          if ($job->fields['global_validation'] == 'accepted'
              || $job->fields['global_validation'] == 'none') {
-            $input['id'] = $this->fields["tickets_id"];
+            $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = 'waiting';
+
+            // to fix lastupdater
+            if (isset($this->input['_auto_update'])) {
+               $input['_auto_update'] = $this->input['_auto_update'];
+            }
+
             $job->update($input);
          }
+
          if ($CFG_GLPI["use_mailing"]) {
             $options = array('validation_id'     => $this->fields["id"],
                              'validation_status' => $this->fields["status"]);
