@@ -593,10 +593,11 @@ class Entity extends CommonTreeDropdown {
 
 
    function showNotesForm() {
+
       if (isset($this->fields['id'])) {
          $entitydata = new EntityData();
          if (!$entitydata->getFromDB($this->fields['id'])) {
-            $entitydata->add(array('entities_id' =>$this->fields['id']));
+            $entitydata->add(array('entities_id' => $this->fields['id']));
             $entitydata->getFromDB($this->fields['id']);
          }
          $entitydata->showNotesForm();

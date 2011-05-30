@@ -252,6 +252,7 @@ class Ticket extends CommonITILObject {
       return true;
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
@@ -260,22 +261,26 @@ class Ticket extends CommonITILObject {
             $nb = 0;
             switch ($item->getType()) {
                case 'User' :
-                  $nb = countElementsInTable('glpi_tickets_users', "`users_id` = '".$item->getID()."'
-                                                                  AND `type` = ".Ticket::REQUESTER);
+                  $nb = countElementsInTable('glpi_tickets_users',
+                                             "`users_id` = '".$item->getID()."'
+                                                AND `type` = ".Ticket::REQUESTER);
                   break;
 
                case 'Supplier' :
-                  $nb = countElementsInTable('glpi_tickets', "`suppliers_id_assign` = '".$item->getID()."'");
+                  $nb = countElementsInTable('glpi_tickets',
+                                             "`suppliers_id_assign` = '".$item->getID()."'");
                   break;
 
                case 'Sla' :
-                  $nb = countElementsInTable('glpi_tickets', "`slas_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable('glpi_tickets',
+                                             "`slas_id` = '".$item->getID()."'");
                   break;
 
                default :
                   // Direct one
-                  $nb = countElementsInTable('glpi_tickets', " `itemtype` = '".$item->getType()."'
-                                                             AND `items_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable('glpi_tickets',
+                                             " `itemtype` = '".$item->getType()."'
+                                                AND `items_id` = '".$item->getID()."'");
                   // Linked items
                   if ($subquery = $item->getSelectLinkedItem()) {
                      $nb += countElementsInTable('glpi_tickets',
@@ -297,6 +302,7 @@ class Ticket extends CommonITILObject {
       self::showListForItem($item);
       return true;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI, $DB;

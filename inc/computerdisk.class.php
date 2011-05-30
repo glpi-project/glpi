@@ -84,22 +84,24 @@ class ComputerDisk extends CommonDBChild {
       $this->fields["freesize"]  = '0';
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][8],
-                     countElementsInTable('glpi_computerdisks',"computers_id = '".$item->getID()."'"));
-         } else {
-            return $LANG['computers'][8];
+                                        countElementsInTable('glpi_computerdisks',
+                                                             "computers_id = '".$item->getID()."'"));
          }
+         return $LANG['computers'][8];
       }
       return '';
    }
 
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       self::showForComputer($item, $withtemplate);
       return true;
    }

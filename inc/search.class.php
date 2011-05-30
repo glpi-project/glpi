@@ -3753,10 +3753,10 @@ class Search {
 
          case "glpi_tickets_tickets.tickets_id_1" :
 
-               $out    = "";
-               $split  = explode("$$$$",$data[$NAME.$num]);
-               $split2 = explode("$$$$",$data[$NAME.$num."_2"]);
-               $displayed = array();
+               $out        = "";
+               $split      = explode("$$$$",$data[$NAME.$num]);
+               $split2     = explode("$$$$",$data[$NAME.$num."_2"]);
+               $displayed  = array();
                for ($k=0 ; $k<count($split) ; $k++) {
                   $linkid = $split[$k]==$data['id'] ? $split2[$k] : $split[$k];
                   if ($linkid>0 && !isset($displayed[$linkid])) {
@@ -3765,7 +3765,7 @@ class Search {
                         $out .= "<br>";
                      }
                      $displayed[$linkid] = $linkid;
-                     $out .= $text;
+                     $out               .= $text;
                   }
                }
                return $out;

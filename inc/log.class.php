@@ -48,26 +48,29 @@ class Log extends CommonDBTM {
       return $LANG['title'][38];
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
       if ($item->getID()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['title'][38],
-                     countElementsInTable('glpi_logs',"itemtype = '".$item->getType()."'
-                                                      AND items_id = '".$item->getID()."'"));
-         } else {
-            return $LANG['title'][38];
+                                        countElementsInTable('glpi_logs',
+                                                             "itemtype = '".$item->getType()."'
+                                                               AND items_id = '".$item->getID()."'"));
          }
+         return $LANG['title'][38];
       }
       return '';
    }
 
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       self::showForItem($item);
       return true;
    }
+
 
    /**
     * Construct  history for an item

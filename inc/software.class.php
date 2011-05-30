@@ -71,8 +71,8 @@ class Software extends CommonDBTM {
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("software","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][4],
-                   countElementsInTable('glpi_computers_softwareversions',
-                                        "computers_id = '".$item->getID()."'"));
+                                        countElementsInTable('glpi_computers_softwareversions',
+                                                             "computers_id = '".$item->getID()."'"));
          }
          return $LANG['Menu'][4];
       }
@@ -82,6 +82,7 @@ class Software extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       Computer_SoftwareVersion::showForComputer($item, $withtemplate);
       return true;
    }

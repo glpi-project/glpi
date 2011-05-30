@@ -49,22 +49,28 @@ $setupdisplay = new DisplayPreference();
 
 if (isset($_POST["activate"])) {
    $setupdisplay->activatePerso($_POST);
+
 } else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
+
 } else if (isset($_POST["delete"]) || isset($_POST["delete_x"])) {
    $setupdisplay->delete($_POST);
+
 } else if (isset($_POST["up"]) || isset($_POST["up_x"])) {
    $setupdisplay->orderItem($_POST,'up');
+
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
    $setupdisplay->orderItem($_POST,'down');
+
 } else if (isset($_POST['delete_for_user'])) {
-   foreach($_POST['itemtype'] as $itemtype => $val) {
+   foreach ($_POST['itemtype'] as $itemtype => $val) {
       $crit = array('users_id' => $_POST['users_id'],
                     'itemtype' => $itemtype);
       $setupdisplay->deleteByCriteria($crit);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 }
+
 if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
    $tabs[1] = array('title'  => $LANG['central'][13],
                     'url'    => $CFG_GLPI['root_doc']."/ajax/displaypreference.tabs.php",
@@ -81,6 +87,7 @@ if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
    echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
+
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    commonFooter();
 }

@@ -171,35 +171,42 @@ class TicketFollowup  extends CommonDBTM {
                   && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
       if ($item->getType() == 'Ticket') {
          if ($item->isNewID($item->getID())) {
             return $LANG['job'][13];
-         } else if (haveRight('observe_ticket','1')){
+         }
+
+         if (haveRight('observe_ticket','1')){
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry($LANG['mailing'][141],
-                           countElementsInTable('glpi_ticketfollowups', "`tickets_id` = '".$item->getID()."'"));
-            } else {
-               return $LANG['mailing'][141];
+                                           countElementsInTable('glpi_ticketfollowups',
+                                                                "`tickets_id` = '".$item->getID()."'"));
             }
+            return $LANG['mailing'][141];
          }
       }
       return '';
    }
 
+
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
       $fup = new TicketFollowup();
       $fup->showSummary($item);
       return true;
    }
+
 
    function post_getEmpty() {
 
       if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
          $this->fields['is_private'] = 1;
       }
+
       if (isset ($_SESSION["glpiname"])) {
          $this->fields['requesttypes_id'] = RequestType::getDefault('helpdesk');
       }
