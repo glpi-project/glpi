@@ -266,6 +266,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
    **/
    function getDefaultActor($type) {
+      /// TODO own_ticket -> own_itilobject
       if ($type == self::ASSIGN) {
          if (haveRight("own_ticket","1")) {
             return getLoginUserID();
@@ -420,7 +421,6 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
 
-                     $groupactors = new Group_Ticket();
                      if ($groupactors->can(-1,'w',$input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
@@ -677,7 +677,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->addFiles($this->fields['id']);
 
       $useractors = NULL;
-      // Add user groups linked to tickets
+      // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {
          $useractors = new $this->userlinkclass();
       }
@@ -815,11 +815,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * add files (from $_FILES) to a ticket
+    * add files (from $_FILES) to an ITIL object
     * create document if needed
-    * create link from document to ticket
+    * create link from document to ITIL object
     *
-    * @param $id of the ticket
+    * @param $id of the ITIL object
     *
     * @return array of doc added name
    **/
@@ -905,7 +905,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Dropdown of ticket priority
+    * Dropdown of ITIL object priority
     *
     * @param $name select name
     * @param $value default value
@@ -950,7 +950,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get ticket priority Name
+    * Get ITIL object priority Name
     *
     * @param $value status ID
    **/
@@ -980,7 +980,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Dropdown of ticket Urgency
+    * Dropdown of ITIL object Urgency
     *
     * @param $itemtype itemtype
     * @param $name select name
@@ -1036,7 +1036,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get ticket Urgency Name
+    * Get ITIL object Urgency Name
     *
     * @param $value urgency ID
    **/
@@ -1063,7 +1063,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Dropdown of ticket Impact
+    * Dropdown of ITIL object Impact
     *
     * @param $itemtype itemtype
     * @param $name select name
@@ -1119,7 +1119,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get ticket Impact Name
+    * Get ITIL object Impact Name
     *
     * @param $value status ID
    **/
@@ -1146,7 +1146,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get the ticket status list
+    * Get the ITIL object status list
     *
     * @param $withmetaforsearch boolean
     *
@@ -1187,7 +1187,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get the ticket status allowed for a current status
+    * Get the ITIL object status allowed for a current status
     *
     * @param $itemtype itemtype
     * @param $current status
@@ -1558,7 +1558,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
-      echo "<div ".($inobject?"style='display:none'":'')." id='ticketactor$rand_type'>";
+      echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
                       'user'  => $LANG['common'][34],
                       'group' => $LANG['common'][35]);
@@ -1678,7 +1678,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($ID && $this->canAdminActors()) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_requester').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleterequester = true;
@@ -1692,7 +1692,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($ID && $this->canAdminActors()) {
          $rand_observer = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_observer').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleteobserver = true;
@@ -1705,7 +1705,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($ID && ($this->canAssign() || $this->canAssignToMe())) {
          $rand_assign = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_assign').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
       }
@@ -1969,9 +1969,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Update date mod of the ticket
+    * Update date mod of the ITIL object
     *
-    * @param $ID ID of the ticket
+    * @param $ID ID of the ITIL object
     * @param $no_stat_computation boolean do not cumpute take into account stat
    **/
    function updateDateMod($ID, $no_stat_computation=false) {
@@ -2024,11 +2024,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get all available types to which a ticket can be assigned
+    * Get all available types to which an ITIL object can be assigned
     *
    **/
    static function getAllTypesForHelpdesk() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
+
+      /// TODO ticket_types -> itil_types
 
       $types = array();
 
@@ -2056,7 +2058,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Check if it's possible to assign ticket to a type (core or plugin)
+    * Check if it's possible to assign ITIL object to a type (core or plugin)
     *
     * @param $itemtype the object's type
     *
@@ -2064,7 +2066,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function isPossibleToAssignType($itemtype) {
       global $PLUGIN_HOOKS;
-
+      /// TODO : assign_to_ticket to assign_to_itil
       // Plugin case
       if (isPluginItemType($itemtype)) {
          /// TODO maybe only check plugin of itemtype ?
