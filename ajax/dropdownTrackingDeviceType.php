@@ -55,7 +55,7 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
 
    ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand, "results_ID$rand",
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",
-                                  $paramstrackingdt, false);
+                                  $paramstrackingdt);
 
    echo "<span id='results_ID$rand'>";
    echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";

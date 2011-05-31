@@ -50,8 +50,7 @@ function ajaxDropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;
       ajaxDisplaySearchTextForDropdown($rand);
       ajaxUpdateItemOnInputTextEvent("search_$rand", "results_$rand",
                                      $CFG_GLPI["root_doc"].$relativeurl, $params,
-                                     $CFG_GLPI['ajax_min_textsearch_load'],
-                                     array($CFG_GLPI['ajax_wildcard']));
+                                     $CFG_GLPI['ajax_min_textsearch_load']);
    }
    echo "<span id='results_$rand'>\n";
    if (!$use_ajax) {
@@ -114,6 +113,10 @@ function ajaxDisplaySearchTextForDropdown($id, $size=4) {
  **/
 function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
                                           $minsize=-1, $forceloadfor = array()) {
+   global $CFG_GLPI;
+   if (count($forceloadfor)==0) {
+      $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+   }
    ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
                         $minsize, $forceloadfor);
 }
