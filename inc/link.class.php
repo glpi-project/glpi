@@ -72,7 +72,7 @@ class Link extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate=0) {
       self::showForItem($item);
       return true;
    }
@@ -324,8 +324,9 @@ class Link extends CommonDBTM {
     * Show Links for an item
     *
     * @param $item CommonDBTM object
-    */
-   static function showForItem(CommonDBTM $item) {
+    * @param $withtemplate integer : withtemplate param
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("link","r")) {
