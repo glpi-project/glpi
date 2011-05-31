@@ -810,11 +810,11 @@ class Problem extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr>";
-      echo "<td>".$LANG['joblist'][0]."&nbsp;: </td>";
+      echo "<th>".$LANG['joblist'][0]."&nbsp;: </th>";
       echo "<td>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       echo "</td>";
-      echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
+      echo "<th>".$LANG['joblist'][29]."&nbsp;: </th>";
       echo "<td>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
@@ -822,22 +822,22 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
+      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
       echo "<td >";
       $opt = array('value'  => $this->fields["ticketcategories_id"],
                    'entity' => $this->fields["entities_id"]);
       Dropdown::show('TicketCategory', $opt);
       echo "</td>";
-      echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
+      echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
       echo "<td>";
       $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][20]."</td>";
+      echo "<th>".$LANG['job'][20]."</th>";
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
-      echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
+      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;: </th>";
       echo "<td>";
       $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
       $idajax     = 'change_priority_' . mt_rand();
@@ -849,11 +849,13 @@ class Problem extends CommonITILObject {
                                   $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
+      echo "</table>";
 
       $this->showActorsPartForm($ID,$options);
 
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b'>".$LANG['common'][57]."</td>";
+      echo "<th>".$LANG['common'][57]."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
@@ -884,7 +886,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
+      echo "<th>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
