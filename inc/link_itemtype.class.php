@@ -45,35 +45,25 @@ class Link_ItemType extends CommonDBTM{
    /**
     * Print the HTML array for device on link
     *
-    * Print the HTML array for device on link for link $instID
-    *
-    *@param $links_id array : Link identifier.
+    *@param $links : Link
     *
     *@return Nothing (display)
-    *
-    **/
-   static function showForItem($links_id) {
+   **/
+   static function showForLink($link) {
       global $DB,$CFG_GLPI, $LANG;
 
-      $link = new Link();
-      if ($links_id > 0) {
-         $link->check($links_id,'r');
-      } else {
-         // Create item
-         $link->check(-1,'w');
-         $link->getEmpty();
-      }
+      $links_id = $link->getField('id');
 
-      $canedit=$link->can($links_id,'w');
-      $canrecu=$link->can($links_id,'recursive');
+      $canedit = $link->can($links_id, 'w');
+      $canrecu = $link->can($links_id, 'recursive');
 
-      if (!haveRight("link","r")) {
+      if (!haveRight("link","r") || !$link->can($links_id, 'r')) {
          return false;
       }
-      //$canedit= haveRight("link","w");
+
       $query = "SELECT *
                 FROM `glpi_links_itemtypes`
-                WHERE `links_id`='$links_id'
+                WHERE `links_id` = '$links_id'
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -87,9 +77,9 @@ class Link_ItemType extends CommonDBTM{
       echo "<th>&nbsp;</th></tr>";
 
       while ($i < $number) {
-         $ID=$DB->result($result, $i, "id");
+         $ID       = $DB->result($result, $i, "id");
          $itemtype = $DB->result($result, $i, "itemtype");
-         $typename=NOT_AVAILABLE;
+         $typename = NOT_AVAILABLE;
          if (class_exists($itemtype)) {
             $item = new $itemtype();
             $typename = $item->getTypeName();

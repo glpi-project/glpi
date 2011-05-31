@@ -56,13 +56,13 @@ if ($_POST['id']>0 && $link->can($_POST['id'],'r')) {
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         Link_ItemType::showForItem($_POST["id"]);
+         Link_ItemType::showForLink($link);
          Plugin::displayAction($link, $_REQUEST['glpi_tab']);
          break;
 
       default :
          if (!CommonGLPI::displayStandardTab($link, $_REQUEST['glpi_tab'])) {
-            Link_ItemType::showForItem($_POST["id"]);
+            Link_ItemType::showForLink($link);
          }
    }
 }
