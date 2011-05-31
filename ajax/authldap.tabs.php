@@ -49,7 +49,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
 
 checkRight('config','r');
 
-$authldap = new AuthLDAP;
+$authldap = new AuthLDAP();
 if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :

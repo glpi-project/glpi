@@ -49,7 +49,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
 
 checkRight('config','r');
 
-$authmail = new AuthMail;
+$authmail = new AuthMail();
 if ($_POST['id'] >0 && $authmail->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :

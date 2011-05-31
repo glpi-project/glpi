@@ -64,7 +64,6 @@ if (isset($_GET["add"])) {
    popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 
    if (isset($_GET["id"])) {
-      $ic = new Infocom();
       $ic->getFromDB($_GET["id"]);
       $_GET["itemtype"] = $ic->fields["itemtype"];
       $_GET["items_id"] = $ic->fields["items_id"];
@@ -82,7 +81,7 @@ if (isset($_GET["add"])) {
    } else {
       $withtemplate = 2;
    }
-   Infocom::showForItem($item,$withtemplate);
+   Infocom::showForItem($item, $withtemplate);
 
    popFooter();
 }

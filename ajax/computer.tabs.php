@@ -64,7 +64,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer, $_POST["withtemplate"]);
-            NetworkPort::showForItem('Computer', $_POST["id"], $_POST["withtemplate"]);
+            NetworkPort::showForItem($computer, $_POST["withtemplate"]);
             break;
 
          case 4 :
@@ -81,12 +81,12 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Device::showForComputer($computer);
-            ComputerDisk::showForComputer($computer, $_POST["withtemplate"]);
+            ComputerDisk::showForComputer($computer);
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
-            NetworkPort::showForItem('Computer', $_POST["id"]);
+            NetworkPort::showForItem($computer);
             Infocom::showForItem($computer);
-            Contract::showAssociated($computer ,$_POST["withtemplate"]);
+            Contract::showAssociated($computer);
             Document::showAssociated($computer);
             Ticket::showListForItem($computer);
             Link::showForItem($computer);
@@ -98,7 +98,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer);
-            NetworkPort::showForItem('Computer', $_POST["id"]);
+            NetworkPort::showForItem($computer);
             break;
 
          case 4 :

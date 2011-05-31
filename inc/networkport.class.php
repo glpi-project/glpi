@@ -267,25 +267,22 @@ class NetworkPort extends CommonDBChild {
    /**
     * Show ports for an item
     *
-    * @param $itemtype integer : item type
-    * @param $ID integer : item ID
+    * @param $item CommonDBTM object
     * @param $withtemplate integer : withtemplate param
    **/
-   static function showForItem($itemtype, $ID, $withtemplate = '') {
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
 
-      if (!class_exists($itemtype)) {
+      $itemtype = $item->getType();
+      $items_id = $item->getField('id');
+
+      if (!haveRight('networking','r') || !$item->can($items_id, 'r')) {
          return false;
       }
 
-      $item = new $itemtype();
-      if (!haveRight('networking','r') || !$item->can($ID, 'r')) {
-         return false;
-      }
-
-      $canedit = $item->can($ID, 'w');
+      $canedit = $item->can($items_id, 'w');
 
       // Show Add Form
       if ($canedit
@@ -306,7 +303,7 @@ class NetworkPort extends CommonDBChild {
 
       $query = "SELECT `id`
                 FROM `glpi_networkports`
-                WHERE `items_id` = '$ID'
+                WHERE `items_id` = '$items_id'
                       AND `itemtype` = '$itemtype'
                 ORDER BY `name`,
                          `logical_number`";

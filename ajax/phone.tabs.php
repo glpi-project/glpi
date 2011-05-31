@@ -74,7 +74,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
 
          default :
             if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
-               NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
+               NetworkPort::showForItem($phone, $_POST["withtemplate"]);
             }
       }
 
@@ -82,7 +82,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Item::showForItem($phone);
-            NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
+            NetworkPort::showForItem($phone);
             Infocom::showForItem($phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
@@ -99,7 +99,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
          default :
             if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($phone);
-               NetworkPort::showForItem('Phone', $_POST["id"], 'Phone',$_POST["withtemplate"]);
+               NetworkPort::showForItem($phone);
             }
       }
    }

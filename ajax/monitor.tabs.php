@@ -79,7 +79,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Computer_Item::showForItem($monitor);
             Infocom::showForItem($monitor);
             Contract::showAssociated($monitor);
-            Document::showAssociated($monitor, $_POST["withtemplate"]);
+            Document::showAssociated($monitor);
             Ticket::showListForItem($monitor);
             Link::showForItem($monitor);
             Plugin::displayAction($monitor, $_REQUEST['glpi_tab']);
