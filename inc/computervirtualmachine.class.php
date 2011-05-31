@@ -339,11 +339,9 @@ class ComputerVirtualMachine extends CommonDBChild {
                                $LANG['help'][25]." = ". (empty($comp->fields['name'])
                                                          ? "($ID)" : $comp->fields['name']));
 
-         $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
             echo "<tr class='tab_bg_2'>";
-            $vm->fields = $virtualmachines;
             echo "<td>$href".$virtualmachine['name']."</a></td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
