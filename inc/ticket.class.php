@@ -1914,6 +1914,7 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
+
    /**
     * Get ticket status Name
     *
@@ -1922,6 +1923,7 @@ class Ticket extends CommonITILObject {
    static function getStatus($value) {
       return parent::getGenericStatus('Ticket',$value);
    }
+
 
    /**
     * Dropdown of ticket status
@@ -1936,17 +1938,17 @@ class Ticket extends CommonITILObject {
       return parent::dropdownGenericStatus('Ticket',$name, $value, $option);
    }
 
+
    /**
     * Compute Priority
     *
-    * @param $name select name
     * @param $urgency integer from 1 to 5
     * @param $impact integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
    static function computePriority($urgency, $impact) {
-      return parent::computeGenericPriority('Ticket',$urgency, $impact);
+      return parent::computeGenericPriority('Ticket', $urgency, $impact);
    }
 
 
@@ -1962,6 +1964,7 @@ class Ticket extends CommonITILObject {
    static function dropdownUrgency($name, $value=0, $complete=false) {
       return parent::dropdownGenericUrgency('Ticket',$name, $value, $complete);
    }
+
 
    /**
     * Dropdown of ticket Impact
@@ -2819,7 +2822,7 @@ class Ticket extends CommonITILObject {
       if (!$ID && haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
-         echo "<td class='left' colspan='3'>";
+         echo "<td colspan='3'>";
          Dropdown::showInteger('hour',$options['hour'],0,100);
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
          Dropdown::showInteger('minute',$options['minute'],0,59);
