@@ -855,7 +855,7 @@ class Problem extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['common'][57]."</th>";
+      echo "<th width='10%'>".$LANG['common'][57]."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
