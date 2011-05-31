@@ -2837,7 +2837,7 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%' class='b'>".$LANG['common'][57]."&nbsp;:</th>";
+      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
       echo "<td width='50%'>";
       if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
@@ -2928,7 +2928,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       if ($view_linked_tickets) {
-         echo "<th>";
+         echo "<th width='10%'>";
          echo $LANG['job'][55];
 
          if ($canupdate) {
@@ -2939,10 +2939,7 @@ class Ticket extends CommonITILObject {
             echo "</a>\n";
          }
          echo '</th>';
-      }
 
-
-      if ($view_linked_tickets) {
          echo "<td>";
          Ticket_Ticket::displayLinkedTicketsTo($ID);
 
