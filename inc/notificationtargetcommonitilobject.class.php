@@ -192,7 +192,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get supplier related to the ticket
+    * Get supplier related to the ITIL object
     *
     * @param $sendprivate false
    **/
@@ -215,7 +215,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get approuver related to the ticket validation
+    * Get approuver related to the ITIL object validation
     *
     * @param $options array
    **/
@@ -240,7 +240,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get requester related to the ticket validation
+    * Get requester related to the ITIL object validation
     *
     * @param $options array
    **/
@@ -324,12 +324,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if (isset($options['task_id'])) {
          $tasktable = getTableForItemType($this->obj->getType().'Task');
 
-         /// TODO : Review it when task / planning management have been updated
-
          $query = $this->getDistinctUserSql()."
                   FROM `$tasktable`
                   INNER JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)".
+                        ON (`glpi_users`.`id` = `$tasktable`.`users_id_tech`)".
                   $this->getProfileJoinSql()."
                   WHERE `$tasktable`.`id` = '".$options['task_id']."'";
 
@@ -341,7 +339,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get additionnals targets for Tickets
+    * Get additionnals targets for ITIL objects
     *
     * @param $event
    **/
@@ -397,14 +395,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get specifics targets for Tickets
+    * Get specifics targets for ITIL objects
     *
     * @param $data
     * @param $options
    **/
    function getSpecificTargets($data, $options) {
 
-      /// TODO clean constant names
       //Look for all targets whose type is Notification::ITEM_USER
       switch ($data['type']) {
          case Notification::USER_TYPE :
@@ -414,7 +411,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->getLinkedUserByType(CommonITILObject::ASSIGN);
                   break;
 
-               //Send to the group in charge of the ticket supervisor
+               //Send to the supervisor of group in charge of the ITIL object
                case Notification::SUPERVISOR_ASSIGN_GROUP :
                   $this->getLinkedGroupSupervisorByType(CommonITILObject::ASSIGN);
                   break;
@@ -429,7 +426,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->getLinkedGroupSupervisorByType(CommonITILObject::REQUESTER);
                   break;
 
-               //Send to the technician previously in charge of the ticket (before reassignation)
+               //Send to the technician previously in charge of the ITIL object (before reassignation)
                case Notification::OLD_TECH_IN_CHARGE :
                   $this->getOldAssignTechnicianAddress();
                   break;
@@ -447,42 +444,42 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   $this->getLinkedGroupByType(CommonITILObject::ASSIGN);
                   break;
 
-               //Send to the ticket validation approver
+               //Send to the ITIL object validation approver
                case Notification::VALIDATION_APPROVER :
                   $this->getValidationApproverAddress($options);
                   break;
 
-               //Send to the ticket validation requester
+               //Send to the ITIL object validation requester
                case Notification::VALIDATION_REQUESTER :
                   $this->getValidationRequesterAddress($options);
                   break;
 
-               //Send to the ticket followup author
+               //Send to the ITIL object followup author
                case Notification::FOLLOWUP_AUTHOR :
                   $this->getFollowupAuthor($options);
                   break;
 
-               //Send to the ticket followup author
+               //Send to the ITIL object followup author
                case Notification::TASK_AUTHOR :
                   $this->getTaskAuthor($options);
                   break;
 
-               //Send to the ticket followup author
+               //Send to the ITIL object followup author
                case Notification::TASK_ASSIGN_TECH :
                   $this->getTaskAssignUser($options);
                   break;
 
-               //Notification to the ticket's observer group
+               //Notification to the ITIL object's observer group
                case Notification::OBSERVER_GROUP :
                   $this->getLinkedGroupByType(CommonITILObject::OBSERVER);
                   break;
 
-               //Notification to the ticket's observer user
+               //Notification to the ITIL object's observer user
                case Notification::OBSERVER :
                   $this->getLinkedUserByType(CommonITILObject::OBSERVER);
                   break;
 
-               //Notification to the supervisor of the ticket's observer group
+               //Notification to the supervisor of the ITIL object's observer group
                case Notification::SUPERVISOR_OBSERVER_GROUP :
                   $this->getLinkedGroupSupervisorByType(CommonITILObject::OBSERVER);
                   break;
@@ -503,7 +500,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $events    = $this->getAllEvents();
       $objettype = strtolower($this->obj->getType());
 
-      // Get datas from itil objects
+      // Get datas from ITIL objects
       if ($event != 'alertnotclosed') {
          $this->datas = $this->getDatasForObject($this->obj);
 
@@ -564,7 +561,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                         $this->getEntity());
 
       $datas["##$objettype.storestatus##"]  = $this->obj->getField('status');
-      $datas["##$objettype.status##"]       = Ticket::getStatus($this->obj->getField('status'));
+      $datas["##$objettype.status##"]       = CommonITILObject::getGenericStatus($item->getType(),$this->obj->getField('status'));
 
       $datas["##$objettype.urgency##"]
                            = CommonITILObject::getUrgencyName($this->obj->getField('urgency'));

@@ -1214,7 +1214,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get ticket status Name
+    * Get ITIL object status Name
     *
     * @param $itemtype itemtype
     * @param $value status ID
@@ -1504,11 +1504,11 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $type string : actor type
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
-    * @param $inticket boolean display in ticket ?
+    * @param $inobject boolean display in ITIL object ?
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
       switch ($type) {
@@ -1528,7 +1528,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
-      echo "<div ".($inticket?"style='display:none'":'')." id='ticketactor$rand_type'>";
+      echo "<div ".($inobject?"style='display:none'":'')." id='ticketactor$rand_type'>";
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
                       'user'  => $LANG['common'][34],
                       'group' => $LANG['common'][35]);
@@ -1542,7 +1542,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
                                   $params);
       echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
-      if ($inticket) {
+      if ($inobject) {
          echo "<hr>";
       }
       echo "</div>";
@@ -1630,9 +1630,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * show actor part in ticket form
+    * show actor part in ITIL object form
     *
-    * @param $ID integer ticket ID
+    * @param $ID integer ITIL object ID
     * @param $options array options for default values ($options of showForm)
     *
     * @return nothing display
@@ -1649,13 +1649,13 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='10%'>".$LANG['common'][103]."&nbsp;:</th>";
       echo "<th width='30%'>".$LANG['job'][4];
-      $rand_requester_ticket = -1;
+      $rand_requester = -1;
       $candeleterequester    = false;
 
       if ($ID && $this->canAdminActors()) {
-         $rand_requester_ticket = mt_rand();
+         $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_requester_ticket').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('ticketactor$rand_requester').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleterequester = true;
@@ -1663,13 +1663,13 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</th>";
 
       echo "<th width='30%'>".$LANG['common'][104];
-      $rand_observer_ticket = -1;
+      $rand_observer = -1;
       $candeleteobserver    = false;
 
       if ($ID && $this->canAdminActors()) {
-         $rand_observer_ticket = mt_rand();
+         $rand_observer = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_observer_ticket').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('ticketactor$rand_observer').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleteobserver = true;
@@ -1677,12 +1677,12 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</th>";
 
       echo "<th width='30%'>".$LANG['job'][5];
-      $rand_assign_ticket = -1;
+      $rand_assign = -1;
       $candeleteassign    = false;
       if ($ID && ($this->canAssign() || $this->canAssignToMe())) {
-         $rand_assign_ticket = mt_rand();
+         $rand_assign = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('ticketactor$rand_assign_ticket').setDisplayed('block')\">\n";
+               onClick=\"Ext.get('ticketactor$rand_assign').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
       }
@@ -1695,8 +1695,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_1 top'>";
       echo "<td>";
 
-      if ($rand_requester_ticket>=0) {
-         self::showActorAddForm(self::REQUESTER, $rand_requester_ticket,
+      if ($rand_requester>=0) {
+         self::showActorAddForm(self::REQUESTER, $rand_requester,
                                 $this->fields['entities_id']);
       }
 
@@ -1739,8 +1739,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td>";
 
       echo "<td>";
-      if ($rand_observer_ticket>=0) {
-         self::showActorAddForm(self::OBSERVER, $rand_observer_ticket, $this->fields['entities_id']);
+      if ($rand_observer>=0) {
+         self::showActorAddForm(self::OBSERVER, $rand_observer, $this->fields['entities_id']);
       }
 
       // Observer
@@ -1765,8 +1765,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td>";
 
       echo "<td>";
-      if ($rand_assign_ticket>=0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign_ticket, $this->fields['entities_id']);
+      if ($rand_assign>=0) {
+         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id']);
       }
 
       // Assign User
@@ -1852,7 +1852,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Form to add a solution to a ticket
+    * Form to add a solution to an ITIL object
     *
     * @param $knowbase_id_toload integer load a kb article as solution (0 = no load)
    **/

@@ -106,7 +106,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
 
    /**
-    * Print the ticket user form for notification
+    * Print the object user form for notification
     *
     * @param $ID integer ID of the item
     * @param $options array
