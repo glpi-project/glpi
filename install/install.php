@@ -349,7 +349,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB;
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80.1-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
 
