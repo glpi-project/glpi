@@ -38,17 +38,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-include_once (GLPI_ROOT . "/inc/autoload.php");
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
 // Init Timer to compute time of display
 $TIMER_DEBUG=new Timer;
 $TIMER_DEBUG->start();
 
-// Security of PHP_SELF
-$_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
-
 
 include_once (GLPI_ROOT . "/inc/common.function.php");
+
+// Security of PHP_SELF
+$_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
 
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/plugin.function.php");

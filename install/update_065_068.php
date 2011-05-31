@@ -156,8 +156,6 @@ function update065to068(){
 
 	if(!TableExists("glpi_mailing")) {
 
-		include_once(GLPI_ROOT.'/inc/notification.class.php');
-
 		$query="CREATE TABLE `glpi_mailing` (
 			`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 			`type`  varchar(255) default NULL,

@@ -38,12 +38,11 @@ define('GLPI_ROOT', '..');
 
 include_once (GLPI_ROOT . "/config/define.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
-include_once (GLPI_ROOT . "/inc/timer.class.php");
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
-include_once (GLPI_ROOT . "/inc/dropdown.class.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
-
+Config::detectRootDoc();
 
 //Print a correct  Html header for application
 function header_html($etape) {

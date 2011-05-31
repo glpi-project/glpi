@@ -264,8 +264,6 @@ function update080to083($output='HTML') {
       $migration->migrationOneTable('glpi_tickettasks');
 
       // migrate DATA
-      include_once (GLPI_ROOT . "/inc/commonitiltask.class.php");
-      include_once (GLPI_ROOT . "/inc/tickettask.class.php");
       $task = new TicketTask();
       foreach ($DB->request('glpi_ticketplannings') as $data) {
          if ($task->getFromDB($data['tickettasks_id'])) {
@@ -319,8 +317,6 @@ function update080to083($output='HTML') {
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
-         include_once (GLPI_ROOT . "/inc/notification.class.php");
-
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Problems', 'Problem', NOW())";

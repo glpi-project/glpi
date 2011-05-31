@@ -1138,7 +1138,7 @@ function update042to05(){
 
 }
 /// Update to 0.5 : date difference used for update
-function date_diff($from, $to) {
+function date_diff050($from, $to) {
 	$from=strtotime($from);
 	$to=strtotime($to);
 	if ($from > $to) {
@@ -1198,7 +1198,7 @@ function updateWarrantyInfos($table,$type){
 			else $achat_date=$data['achat_date'];
 			$duration=0;
 			if ($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))
-				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
+				$duration=round(date_diff050($achat_date,$data['date_fin_garantie']),2);
 			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration,comments) VALUES ('$type','$IDitem','".$achat_date."','$duration','')";
 			$result_insert=$DB->query($query_insert) or die("0.5 insert for update warranty ".$LANG['update'][90].$DB->error());
 		}

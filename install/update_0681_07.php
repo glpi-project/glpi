@@ -521,8 +521,6 @@ function update0681to07() {
                     NETWORKING_TYPE => 'glpi_networking',
                     PHONE_TYPE      => 'glpi_phones');
 
-// include (GLPI_ROOT . "/inc/tracking.function.php");
-
    foreach ($tco_tbl as $type => $table) {
       if (!FieldExists($table, "ticket_tco")) {
          $query = "ALTER TABLE `$table`
