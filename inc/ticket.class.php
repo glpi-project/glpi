@@ -3482,12 +3482,12 @@ class Ticket extends CommonITILObject {
          $items[$LANG['Menu'][37]] = "glpi_entities.completename";
       }
 
-      $items[$LANG['joblist'][2]]  = "glpi_tickets.priority";
-      $items[$LANG['job'][4]]      = "glpi_tickets.users_id";
-      $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
-      $items[$LANG['document'][14]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
-      $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
-      $items[$LANG['common'][57]]  = "glpi_tickets.name";
+      $items[$LANG['joblist'][2]]   = "glpi_tickets.priority";
+      $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
+      $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
+      $items[$LANG['document'][14]] = "glpi_tickets.itemtype, glpi_tickets.items_id";
+      $items[$LANG['common'][36]]   = "glpi_ticketcategories.completename";
+      $items[$LANG['common'][57]]   = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
          $issort = 0;

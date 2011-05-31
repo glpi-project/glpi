@@ -530,7 +530,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand() {\n";
          $params = array('type'       => __CLASS__,
-                         'parenttype'  => 'Ticket',
+                         'parenttype' => 'Ticket',
                          'tickets_id' => $tID,
                          'id'         => -1);
          ajaxUpdateItemJsCode("viewfollowup" . $tID . "$rand",

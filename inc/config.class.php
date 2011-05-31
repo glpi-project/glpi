@@ -779,8 +779,8 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td>";
          echo "<td>" . $LANG['setup'][11] . "&nbsp;:</td><td>";
-         Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30,1,
-                              array(0=>$LANG['setup'][307]));
+         Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30, 1,
+                               array(0 => $LANG['setup'][307]));
          echo "&nbsp;".$LANG['job'][22];
          echo "</td>";
          echo "</tr>";
