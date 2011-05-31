@@ -1645,9 +1645,10 @@ abstract class CommonITILObject extends CommonDBTM {
          $showuserlink = 1;
       }
       // Manage actors : requester and assign
+      echo "<table class='tab_cadre_fixe'>"; 
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2'>".$LANG['common'][103]."&nbsp;:</th>";
-      echo "<th>".$LANG['job'][4];
+      echo "<th rowspan='2' width='10%'>".$LANG['common'][103]."&nbsp;:</th>";
+      echo "<th width='30%'>".$LANG['job'][4];
       $rand_requester_ticket = -1;
       $candeleterequester    = false;
 
@@ -1661,7 +1662,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th>".$LANG['common'][104];
+      echo "<th width='30%'>".$LANG['common'][104];
       $rand_observer_ticket = -1;
       $candeleteobserver    = false;
 
@@ -1675,7 +1676,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th>".$LANG['job'][5];
+      echo "<th width='30%'>".$LANG['job'][5];
       $rand_assign_ticket = -1;
       $candeleteassign    = false;
       if ($ID && ($this->canAssign() || $this->canAssignToMe())) {
@@ -1816,6 +1817,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
+      echo "</table>";
    }
 
 
