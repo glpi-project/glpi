@@ -165,10 +165,6 @@ function update0782to080($output='HTML') {
          }
 
          // Update calendar
-         include_once (GLPI_ROOT . "/inc/commondropdown.class.php");
-         include_once (GLPI_ROOT . "/inc/commondbchild.class.php");
-         include_once (GLPI_ROOT . "/inc/calendarsegment.class.php");
-         include_once (GLPI_ROOT . "/inc/calendar.class.php");
          $calendar = new Calendar();
          if ($calendar->getFromDB($default_calendar_id)) {
             $query = "UPDATE `glpi_calendars`
@@ -575,7 +571,6 @@ function update0782to080($output='HTML') {
                 FROM `glpi_computers_softwareversions`";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            include_once (GLPI_ROOT . "/inc/computer.class.php");
 
             while ($data = $DB->fetch_assoc($result)) {
                $comp = new Computer();
@@ -833,9 +828,6 @@ function update0782to080($output='HTML') {
                         "int(11) NOT NULL DEFAULT '30' AFTER `list_limit_max`");
 
    $migration->displayMessage($LANG['update'][142] . ' - Multi user group for tickets');
-
-   include_once (GLPI_ROOT . "/inc/commonitilobject.class.php");
-   include_once (GLPI_ROOT . "/inc/ticket.class.php");
 
    if (!TableExists('glpi_groups_tickets')) {
       $query = "CREATE TABLE `glpi_groups_tickets` (

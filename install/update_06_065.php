@@ -463,10 +463,13 @@ function update06to065(){
 
 
 	if(TableExists("glpi_type_docs")){
-		$query="SELECT * from glpi_type_docs WHERE ext='odt' OR ext='ods' OR ext='odp' OR ext='otp' OR ext='ott' OR ext='ots' OR ext='odf' OR ext='odg' OR ext='otg' OR ext='odb' OR ext='oth' OR ext='odm' OR ext='odc' OR ext='odi'";
+		$query="SELECT * from glpi_type_docs
+            WHERE ext IN ('odt', 'ods', 'odp', 'otp', 'ott', 'ots', 'odf', 'odg', 'otg', 'odb',
+                          'oth', 'odm', 'odc', 'odi')";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==0){
-			$query2="INSERT INTO `glpi_type_docs` ( `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES ('Oasis Open Office Writer', 'odt', 'odt-dist.png', '', 'Y', '2006-01-21 17:41:13'),
+			$query2="INSERT INTO `glpi_type_docs` ( `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` )
+         VALUES ('Oasis Open Office Writer', 'odt', 'odt-dist.png', '', 'Y', '2006-01-21 17:41:13'),
 				( 'Oasis Open Office Calc', 'ods', 'ods-dist.png', '', 'Y', '2006-01-21 17:41:31'),
 				('Oasis Open Office Impress', 'odp', 'odp-dist.png', '', 'Y', '2006-01-21 17:42:54'),
 				('Oasis Open Office Impress Template', 'otp', 'odp-dist.png', '', 'Y', '2006-01-21 17:43:58'),
@@ -478,8 +481,9 @@ function update06to065(){
 				('Oasis Open Office Base', 'odb', 'odb-dist.png', '', 'Y', '2006-01-21 18:03:34'),
 				('Oasis Open Office HTML', 'oth', 'oth-dist.png', '', 'Y', '2006-01-21 18:05:27'),
 				('Oasis Open Office Writer Master', 'odm', 'odm-dist.png', '', 'Y', '2006-01-21 18:06:34'),
-				('Oasis Open Office Chart', 'odc', NULL, '', 'Y', '2006-01-21 18:07:48'),
-				('Oasis Open Office Image', 'odi', NULL, '', 'Y', '2006-01-21 18:08:18');";
+				('Oasis Open Office Chart', 'odc', '', '', 'Y', '2006-01-21 18:07:48'),
+				('Oasis Open Office Image', 'odi', '', '', 'Y', '2006-01-21 18:08:18');";
+
 			$DB->query($query2) or die("0.65 add new type docs ".$LANG['update'][90].$DB->error());
 		}
 	}

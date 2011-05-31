@@ -38,17 +38,15 @@ if (!defined('GLPI_ROOT')) {
 }
 
 include_once (GLPI_ROOT . "/config/define.php");
-include_once (GLPI_ROOT . "/inc/timer.class.php");
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
-include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
-include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
-include_once (GLPI_ROOT . "/inc/plugin.class.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
-include_once (GLPI_ROOT . "/inc/migration.class.php");
+include_once (GLPI_ROOT . "/inc/setup.function.php");
+Config::detectRootDoc();
 
 // Old itemtype for compatibility
 define("GENERAL_TYPE",         0);
@@ -456,10 +454,12 @@ function showLocationUpdateForm() {
       echo "<h4>".$LANG['update'][137]." : </h4>";
       display_new_locations();
       echo "<p>".$LANG['update'][136]."</p>";
+      echo "<div align='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<input type='submit' class='submit' name='validate_location' value='".
              $LANG['buttons'][2]."'>";
       echo "<input type='hidden' name='from_update' value='from_update'>";
+      echo "</div>";
       echo "</form>";
 
    } else if (isset($_POST["validate_location"])) {
