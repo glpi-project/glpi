@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi collet
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -37,6 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$dropdown = new TicketCategory();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$dropdown = new ITILCategory();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>

@@ -470,7 +470,7 @@ class Ticket extends CommonITILObject {
              && $this->isUser(parent::REQUESTER,getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
-            $allowed_fields[] = 'ticketcategories_id';
+            $allowed_fields[] = 'itilcategories_id';
             $allowed_fields[] = 'itemtype';
             $allowed_fields[] = 'items_id';
             $allowed_fields[] = 'name';
@@ -878,7 +878,7 @@ class Ticket extends CommonITILObject {
          }
 
          if ($CFG_GLPI["is_ticket_category_mandatory"]
-             && (!isset($input['ticketcategories_id']) || empty($input['ticketcategories_id']))) {
+             && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
 
             addMessageAfterRedirect($LANG['help'][41], false, ERROR);
             $mandatory_ok = false;
@@ -910,7 +910,7 @@ class Ticket extends CommonITILObject {
 
       // Set default dropdown
       $dropdown_fields = array('entities_id', 'items_id', 'suppliers_id_assign',
-                               'ticketcategories_id');
+                               'itilcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -963,11 +963,11 @@ class Ticket extends CommonITILObject {
                }
             }
             // Auto assign tech/group from Category
-            if ($input['ticketcategories_id']>0
+            if ($input['itilcategories_id']>0
                 && (!$input['_users_id_assign'] || !$input['_groups_id_assign'])) {
 
-               $cat = new TicketCategory();
-               $cat->getFromDB($input['ticketcategories_id']);
+               $cat = new ITILCategory();
+               $cat->getFromDB($input['itilcategories_id']);
                if (!$input['_users_id_assign'] && $cat->isField('users_id')) {
                   $input['_users_id_assign'] = $cat->getField('users_id');
                }
@@ -979,11 +979,11 @@ class Ticket extends CommonITILObject {
 
          case AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
-            if ($input['ticketcategories_id']>0
+            if ($input['itilcategories_id']>0
                 && (!$input['_users_id_assign'] || !$input['_groups_id_assign'])) {
 
-               $cat = new TicketCategory();
-               $cat->getFromDB($input['ticketcategories_id']);
+               $cat = new ITILCategory();
+               $cat->getFromDB($input['itilcategories_id']);
                if (!$input['_users_id_assign'] && $cat->isField('users_id')) {
                   $input['_users_id_assign'] = $cat->getField('users_id');
                }
@@ -1501,7 +1501,7 @@ class Ticket extends CommonITILObject {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table'] = 'glpi_ticketcategories';
+      $tab[7]['table'] = 'glpi_itilcategories';
       $tab[7]['field'] = 'completename';
       $tab[7]['name']  = $LANG['common'][36];
 
@@ -2689,15 +2689,15 @@ class Ticket extends CommonITILObject {
       echo "<td >";
       // Permit to set category when creating ticket without update right
       if ($canupdate || !$ID || $canupdate_descr) {
-         $opt = array('value'  => $this->fields["ticketcategories_id"],
+         $opt = array('value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
             $opt['condition'] = '`is_helpdeskvisible`=1';
          }
-         Dropdown::show('TicketCategory', $opt);
+         Dropdown::show('ITILCategory', $opt);
 
       } else {
-         echo Dropdown::getDropdownName("glpi_ticketcategories", $this->fields["ticketcategories_id"]);
+         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
       }
       echo "</td>";
       echo "</tr>";
@@ -3486,7 +3486,7 @@ class Ticket extends CommonITILObject {
       $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
       $items[$LANG['document'][14]] = "glpi_tickets.itemtype, glpi_tickets.items_id";
-      $items[$LANG['common'][36]]   = "glpi_ticketcategories.completename";
+      $items[$LANG['common'][36]]   = "glpi_itilcategories.completename";
       $items[$LANG['common'][57]]   = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
@@ -3866,8 +3866,8 @@ class Ticket extends CommonITILObject {
          // Seventh column
          echo Search::showItem($output_type,
                                "<strong>".
-                                 Dropdown::getDropdownName('glpi_ticketcategories',
-                                                           $job->fields["ticketcategories_id"]).
+                                 Dropdown::getDropdownName('glpi_itilcategories',
+                                                           $job->fields["itilcategories_id"]).
                                "</strong>",
                                $item_num, $row_num, $align);
 
@@ -3992,7 +3992,7 @@ class Ticket extends CommonITILObject {
       }
 
       return " DISTINCT `glpi_tickets`.*,
-                        `glpi_ticketcategories`.`completename` AS catname
+                        `glpi_itilcategories`.`completename` AS catname
                $SELECT";
    }
 
@@ -4009,8 +4009,8 @@ class Ticket extends CommonITILObject {
                   ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
                LEFT JOIN `glpi_tickets_users`
                   ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
-               LEFT JOIN `glpi_ticketcategories`
-                  ON (`glpi_tickets`.`ticketcategories_id` = `glpi_ticketcategories`.`id`)
+               LEFT JOIN `glpi_itilcategories`
+                  ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
    }
 

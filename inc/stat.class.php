@@ -68,12 +68,12 @@ class Stat {
             $val = Ticket::getUsedRecipientBetween($date1, $date2);
             break;
 
-         case "ticketcategories_id" :
+         case "itilcategories_id" :
             // Get all ticket categories for tree merge management
-            $query = "SELECT DISTINCT `glpi_ticketcategories`.`id`,
-                             `glpi_ticketcategories`.`completename` AS category
-                      FROM `glpi_ticketcategories`".
-                      getEntitiesRestrictRequest(" WHERE", "glpi_ticketcategories", '', '', true)."
+            $query = "SELECT DISTINCT `glpi_itilcategories`.`id`,
+                             `glpi_itilcategories`.`completename` AS category
+                      FROM `glpi_itilcategories`".
+                      getEntitiesRestrictRequest(" WHERE", "glpi_itilcategories", '', '', true)."
                       ORDER BY category";
 
             $result = $DB->query($query);
@@ -584,19 +584,19 @@ class Stat {
             $WHERE .= " AND `glpi_tickets`.`type` = '$value'";
             break;
 
-         case "ticketcategories_id" :
+         case "itilcategories_id" :
             if (!empty($value)) {
                // do not merge for pie chart
                if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
-                  $categories = getSonsOf("glpi_ticketcategories", $value);
+                  $categories = getSonsOf("glpi_itilcategories", $value);
                   $condition  = implode("','",$categories);
-                  $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` IN ('$condition')";
+                  $WHERE .= " AND `glpi_tickets`.`itilcategories_id` IN ('$condition')";
                } else {
-                  $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` = '$value' ";
+                  $WHERE .= " AND `glpi_tickets`.`itilcategories_id` = '$value' ";
                }
 
             } else {
-               $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` = '$value' ";
+               $WHERE .= " AND `glpi_tickets`.`itilcategories_id` = '$value' ";
             }
             break;
 

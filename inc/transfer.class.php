@@ -2364,10 +2364,10 @@ class Transfer extends CommonDBTM {
 
       // Transfer ticket category
       $catid = 0;
-      if ($data['ticketcategories_id']>0) {
-         $categ = new TicketCategory();
+      if ($data['itilcategories_id']>0) {
+         $categ = new ITILCategory();
 
-         if ($categ->getFromDB($data['ticketcategories_id'])) {
+         if ($categ->getFromDB($data['itilcategories_id'])) {
             $inputcat['entities_id']  = $this->to;
             $inputcat['completename'] = $categ->fields['completename'];
             $catid                    = $categ->findID($inputcat);
@@ -2378,7 +2378,7 @@ class Transfer extends CommonDBTM {
 
       }
 
-      $input['ticketcategories_id'] = $catid;
+      $input['itilcategories_id'] = $catid;
       return $input;
    }
 

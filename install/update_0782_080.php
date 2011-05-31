@@ -1223,7 +1223,7 @@ function update0782to080($output='HTML') {
    // For Rule::RULE_TRACKING_AUTO_ACTION
    $changes['RuleMailCollector'] = array('username' => '_users_id_requester');
 
-   $DB->query("SET SESSION group_concat_max_len = 9999999;");
+   $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(`id`)

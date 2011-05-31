@@ -107,12 +107,12 @@ switch($_GET["type"]) {
       $title = $LANG['stats'][20]."&nbsp;: ".getUserName($_GET["id"],1);
       break;
 
-   case "ticketcategories_id" :
+   case "itilcategories_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_ticketcategories", $_GET["id"], '', 'completename');
-      $prev  = getPreviousItem("glpi_ticketcategories", $_GET["id"], '', 'completename');
-      $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_ticketcategories",
+      $next  = getNextItem("glpi_itilcategories", $_GET["id"], '', 'completename');
+      $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], '', 'completename');
+      $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_itilcategories",
                                                                         $_GET["id"]);
       break;
 

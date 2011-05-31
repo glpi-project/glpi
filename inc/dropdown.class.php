@@ -214,7 +214,7 @@ class Dropdown {
             }
          }
 
-         if ($itemtype=='TicketCategory' && haveRight('knowbase','r')) {
+         if ($itemtype=='ITILCategory' && haveRight('knowbase','r')) {
             if ($params['value'] && $item->getFromDB($params['value'])) {
                echo '&nbsp;'.$item->getLinks();
             }
@@ -597,12 +597,11 @@ class Dropdown {
                                                'State'           => $LANG['setup'][83],
                                                'Manufacturer'    => $LANG['common'][5]),
 
-                  $LANG['title'][24]  => array('TicketCategory'      => $LANG['setup'][79],
-                                               'TaskCategory'        => $LANG['setup'][98],
-                                               'SolutionType'  => $LANG['job'][48],
-                                               'RequestType'         => $LANG['job'][44],
-                                               'SolutionTemplate'
-                                                                     => $LANG['jobresolution'][6]),
+                  $LANG['title'][24]  => array('ITILCategory'     => $LANG['setup'][79],
+                                               'TaskCategory'     => $LANG['setup'][98],
+                                               'SolutionType'     => $LANG['job'][48],
+                                               'RequestType'      => $LANG['job'][44],
+                                               'SolutionTemplate' => $LANG['jobresolution'][6]),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
