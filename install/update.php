@@ -720,8 +720,12 @@ function updateDbUpTo031() {
          update0782to080();
 
       case "0.80" :
-         include("update_080_083.php");
-         update080to083();
+         include("update_080_0801.php");
+         update080to0801();
+
+      case "0.80.1" :
+         include("update_0801_083.php");
+         update0801to083();
 
       case "0.83" :
          break;

@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------
 
 /**
- * Update from 0.80 to 0.83
+ * Update from 0.80.1 to 0.83
  *
  * @param $output string for format
  *       HTML (default) for standard upgrade
@@ -43,7 +43,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update080to083($output='HTML') {
+function update0801to083($output='HTML') {
    global $DB, $LANG, $migration;
 
    $updateresult     = true;
@@ -457,38 +457,6 @@ function update080to083($output='HTML') {
    or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
 
-   if ($migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
-      $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
-      $migration->migrationOneTable('glpi_slalevels');
-
-      $entities    = getAllDatasFromTable('glpi_entities');
-      $entities[0] = "Root";
-
-
-      foreach ($entities as $entID => $val) {
-         // Non recursive ones
-         $query3 = "UPDATE `glpi_slalevels`
-                    SET `entities_id` = $entID, `is_recursive` = 0
-                    WHERE `slas_id` IN (SELECT `id`
-                                        FROM `glpi_slas`
-                                        WHERE `entities_id` = $entID
-                                              AND `is_recursive` = 0)";
-         $DB->query($query3)
-         or die("0.83 update entities_id and is_recursive=0 in glpi_slalevels ".$LANG['update'][90].
-                $DB->error());
-
-         // Recursive ones
-         $query3 = "UPDATE `glpi_slalevels`
-                    SET `entities_id` = $entID, `is_recursive` = 1
-                    WHERE `slas_id` IN (SELECT `id`
-                                        FROM `glpi_slas`
-                                        WHERE `entities_id` = $entID
-                                              AND `is_recursive` = 1)";
-         $DB->query($query3)
-         or die("0.83 update entities_id and is_recursive=1 in glpi_slalevels ".$LANG['update'][90].
-                $DB->error());
-      }
-   }
 
    // rename glpi_ticketsolutiontypes to glpi_solutiontypes
    $migration->renameTable('glpi_ticketsolutiontypes', 'glpi_solutiontypes');
