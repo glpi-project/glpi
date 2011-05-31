@@ -258,6 +258,36 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Get Default actor when creating the object
+    *
+    * @param $type type to search (see constants)
+    *
+    * @return boolean
+   **/
+   function getDefaultActor($type) {
+      if ($type == self::ASSIGN) {
+         if (haveRight("own_ticket","1")) {
+            return getLoginUserID();
+         }
+      }
+      return 0;
+   }
+
+   /**
+    * Get Default actor when creating the object
+    *
+    * @param $type type to search (see constants)
+    *
+    * @return boolean
+   **/
+   function getDefaultActorRightSearch($type) {
+      
+      if ($type == self::ASSIGN) {
+         return "own_ticket";
+      }
+      return "all";
+   }
 
    function cleanDBonPurge() {
 
@@ -547,7 +577,7 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($this->oldvalues['status']);
       }
 
-      /// TODO : store solved status ? for change status not available : use review instead
+      /// TODO : store solved status ? for change status not available : use review instead for changes
       // Status solved : check dates
       if ($this->fields["status"]=="solved"
           && (in_array("date",$this->updates) || in_array("solvedate",$this->updates))) {
@@ -1557,7 +1587,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showUserAddFormOnCreate($type, $options) {
+   function showActorAddFormOnCreate($type, $options) {
       global $LANG, $CFG_GLPI;
 
       switch ($type) {
@@ -1579,19 +1609,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo self::getActorIcon('user', $type)."&nbsp;";
 
-      $right = 'all';
-      if ($type == self::ASSIGN) {
-         /// TODO : review it : specific right to assign ? right to own ?
-         $right = "own_ticket";
-         if (!haveRight("assign_ticket","1")) {
-            $right = 'id';
-         }
-         if (haveRight("own_ticket","1")
-             && $options["_users_id_".$typename] == 0) {
-            $options["_users_id_".$typename] = getLoginUserID();
-         }
-      }
+      $right = $this->getDefaultActorRightSearch($type);
 
+      if ($options["_users_id_".$typename] == 0) {
+         $options["_users_id_".$typename] = $this->getDefaultActor($type);
+      }
+      echo $options["_users_id_".$typename];
       $rand   = mt_rand();
       $params = array('name'        => '_users_id_'.$typename,
                       'value'       => $options["_users_id_".$typename],
@@ -1704,7 +1727,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
 
          if ($this->canAdminActors()) {
-            $this->showUserAddFormOnCreate(self::REQUESTER, $options);
+            $this->showActorAddFormOnCreate(self::REQUESTER, $options);
          } else {
             echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
             echo getUserName($options["_users_id_requester"], $showuserlink);
@@ -1746,7 +1769,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Observer
       if (!$ID) {
          if ($this->canAdminActors()) {
-            $this->showUserAddFormOnCreate(self::OBSERVER, $options);
+            $this->showActorAddFormOnCreate(self::OBSERVER, $options);
             echo '<hr>';
          }
       } else {
@@ -1772,7 +1795,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Assign User
       if (!$ID) {
          if ($this->canAssign()) {
-            $this->showUserAddFormOnCreate(self::ASSIGN, $options);
+            $this->showActorAddFormOnCreate(self::ASSIGN, $options);
             echo '<hr>';
          } else if ($this->canAssignToMe()) {
             echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
