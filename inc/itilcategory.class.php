@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TicketsCategory class
-class TicketCategory extends CommonTreeDropdown {
+/// ITILCategory class
+class ITILCategory extends CommonTreeDropdown {
 
    function canCreate() {
       return haveRight('entity_dropdown', 'w');

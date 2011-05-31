@@ -578,10 +578,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.duedate##"]      = convDateTime($this->obj->getField('due_date'));
 
       $datas["##$objettype.category##"] = '';
-      if ($this->obj->getField('ticketcategories_id')) {
+      if ($this->obj->getField('itilcategories_id')) {
          $datas["##$objettype.category##"]
-                              = Dropdown::getDropdownName('glpi_ticketcategories',
-                                                          $this->obj->getField('ticketcategories_id'));
+                              = Dropdown::getDropdownName('glpi_itilcategories',
+                                                          $this->obj->getField('itilcategories_id'));
       }
 
       $datas["##$objettype.authors##"] = '';

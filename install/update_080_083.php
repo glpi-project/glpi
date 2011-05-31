@@ -107,7 +107,7 @@ function update080to083($output='HTML') {
                   `urgency` int(11) NOT NULL DEFAULT '1',
                   `impact` int(11) NOT NULL DEFAULT '1',
                   `priority` int(11) NOT NULL DEFAULT '1',
-                  `ticketcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `itilcategories_id` int(11) NOT NULL DEFAULT '0',
                   `impactcontent` longtext DEFAULT NULL,
                   `causecontent` longtext DEFAULT NULL,
                   `symptomcontent` longtext DEFAULT NULL,
@@ -125,7 +125,7 @@ function update080to083($output='HTML') {
                   KEY `priority` (`priority`),
                   KEY `date_mod` (`date_mod`),
                   KEY `suppliers_id_assign` (`suppliers_id_assign`),
-                  KEY `ticketcategories_id` (`ticketcategories_id`),
+                  KEY `itilcategories_id` (`itilcategories_id`),
                   KEY `users_id_recipient` (`users_id_recipient`),
                   KEY `solvedate` (`solvedate`),
                   KEY `solutiontypes_id` (`solutiontypes_id`),
@@ -509,7 +509,17 @@ function update080to083($output='HTML') {
    $migration->addKey('glpi_solutiontemplates', 'solutiontypes_id');
 
 
-   /// TODO rename glpi_ticketcategories TO ? -> glpi_itilcategories ? -> glpi_helpdeskcategories ?
+   $migration->renameTable('glpi_ticketcategories','glpi_itilcategories');
+   $migration->changeField('glpi_itilcategories', 'ticketcategories_id', 'itilcategories_id',
+                           'INT( 11 ) NOT NULL DEFAULT 0');
+   $migration->migrationOneTable('glpi_itilcategories');
+   $migration->addKey('glpi_itilcategories', 'itilcategories_id');
+   $migration->dropKey('glpi_itilcategories', 'ticketcategories_id');
+   $migration->changeField('glpi_tickets', 'ticketcategories_id', 'itilcategories_id',
+                           'INT( 11 ) NOT NULL DEFAULT 0');
+   $migration->migrationOneTable('glpi_tickets');
+   $migration->addKey('glpi_tickets', 'itilcategories_id');
+   $migration->dropKey('glpi_tickets', 'ticketcategories_id');
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
@@ -573,6 +583,44 @@ function update080to083($output='HTML') {
       $migration->addKey("glpi_documents_items",
                          array('itemtype', 'items_id', 'entities_id', 'is_recursive'),
                          'item');
+   }
+
+   $migration->displayMessage($LANG['update'][142] . ' - rule ticket migration');
+
+   $changes['RuleTicket'] = array('ticketcategories_id'         => 'itilcategories_id');
+
+   $DB->query("SET SESSION group_concat_max_len = 4194304;");
+   foreach ($changes as $ruletype => $tab) {
+      // Get rules
+      $query = "SELECT GROUP_CONCAT(`id`)
+                FROM `glpi_rules`
+                WHERE `sub_type` = '".$ruletype."'
+                GROUP BY `sub_type`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            // Get rule string
+            $rules = $DB->result($result,0,0);
+            // Update actions
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_ruleactions`
+                         SET `field` = '$new'
+                         WHERE `field` = '$old'
+                               AND `rules_id` IN ($rules)";
+
+               $DB->query($query)
+               or die("0.83 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+            }
+            // Update criterias
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_rulecriterias`
+                         SET `criteria` = '$new'
+                         WHERE `criteria` = '$old'
+                               AND `rules_id` IN ($rules)";
+               $DB->query($query)
+               or die("0.83 update datas for rules criterias ".$LANG['update'][90] .$DB->error());
+            }
+         }
+      }
    }
 
 

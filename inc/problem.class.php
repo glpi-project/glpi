@@ -305,7 +305,7 @@ class Problem extends CommonITILObject {
       $input =  parent::prepareInputForAdd($input);
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id', 'suppliers_id_assign', 'ticketcategories_id');
+      $dropdown_fields = array('entities_id', 'suppliers_id_assign', 'itilcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -452,7 +452,7 @@ class Problem extends CommonITILObject {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table'] = 'glpi_ticketcategories';
+      $tab[7]['table'] = 'glpi_itilcategories';
       $tab[7]['field'] = 'completename';
       $tab[7]['name']  = $LANG['common'][36];
 
@@ -698,7 +698,7 @@ class Problem extends CommonITILObject {
                          'impact'                    => 3,
                          'content'                   => '',
                          'name'                      => '',
-                         'ticketcategories_id'       => 0);
+                         'itilcategories_id'       => 0);
          foreach ($values as $key => $val) {
             if (!isset($options[$key])) {
                $options[$key] = $val;
@@ -713,7 +713,7 @@ class Problem extends CommonITILObject {
                $options['impact']              = $ticket->getField('impact');
                $options['urgency']             = $ticket->getField('urgency');
                $options['priority']            = $ticket->getField('priority');
-               $options['ticketcategories_id'] = $ticket->getField('ticketcategories_id');
+               $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
             }
          }
       }
@@ -824,9 +824,9 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
       echo "<td >";
-      $opt = array('value'  => $this->fields["ticketcategories_id"],
+      $opt = array('value'  => $this->fields["itilcategories_id"],
                    'entity' => $this->fields["entities_id"]);
-      Dropdown::show('TicketCategory', $opt);
+      Dropdown::show('ITILCategory', $opt);
       echo "</td>";
       echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
       echo "<td>";

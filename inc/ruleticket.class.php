@@ -196,11 +196,11 @@ class RuleTicket extends Rule {
       $criterias['content']['name']      = $LANG['joblist'][6];
       $criterias['content']['linkfield'] = 'content';
 
-      $criterias['ticketcategories_id']['table']     = 'glpi_ticketcategories';
-      $criterias['ticketcategories_id']['field']     = 'name';
-      $criterias['ticketcategories_id']['name']      = $LANG['common'][36];
-      $criterias['ticketcategories_id']['linkfield'] = 'ticketcategories_id';
-      $criterias['ticketcategories_id']['type']      = 'dropdown';
+      $criterias['itilcategories_id']['table']     = 'glpi_itilcategories';
+      $criterias['itilcategories_id']['field']     = 'name';
+      $criterias['itilcategories_id']['name']      = $LANG['common'][36];
+      $criterias['itilcategories_id']['linkfield'] = 'itilcategories_id';
+      $criterias['itilcategories_id']['type']      = 'dropdown';
 
       $criterias['type']['table']     = 'glpi_tickets';
       $criterias['type']['field']     = 'type';
@@ -285,9 +285,9 @@ class RuleTicket extends Rule {
       global $LANG;
 
       $actions = array();
-      $actions['ticketcategories_id']['name']  = $LANG['common'][36];
-      $actions['ticketcategories_id']['type']  = 'dropdown';
-      $actions['ticketcategories_id']['table'] = 'glpi_ticketcategories';
+      $actions['itilcategories_id']['name']  = $LANG['common'][36];
+      $actions['itilcategories_id']['type']  = 'dropdown';
+      $actions['itilcategories_id']['table'] = 'glpi_itilcategories';
 
       $actions['_users_id_requester']['name'] = $LANG['job'][4]." - ".$LANG['common'][34];
       $actions['_users_id_requester']['type'] = 'dropdown_users';

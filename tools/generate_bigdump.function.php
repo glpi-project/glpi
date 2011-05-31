@@ -979,21 +979,21 @@ function generateGlobalDropdowns() {
 
    // GLobal ticket categories : also specific ones by entity
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
-      $query = "INSERT INTO `glpi_ticketcategories`
+      $query = "INSERT INTO `glpi_itilcategories`
                 VALUES (NULL, '0', '1', '0', 'categorie $i', '', 'comment categorie $i', '1', '0',
                         '0', '0', '', '', 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $newID = $DB->insert_id();
       for ($j=0 ; $j<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $j++) {
-         $query = "INSERT INTO `glpi_ticketcategories`
+         $query = "INSERT INTO `glpi_itilcategories`
                    VALUES (NULL, '0', '1', '$newID', 's-categorie $j', '', 'comment s-categorie $j',
                            '2', '0', '0', '0', '', '', 1)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $k++) {
-            $query = "INSERT INTO `glpi_ticketcategories`
+            $query = "INSERT INTO `glpi_itilcategories`
                       VALUES (NULL, '0', '1', '$newID2', 'ss-categorie $k', '',
                               'comment ss-categorie $k', '3', '0', '0', '0', '', '', 1)";
             $DB->query($query) or die("PB REQUETE ".$query);
@@ -1001,14 +1001,14 @@ function generateGlobalDropdowns() {
       }
    }
 
-   $query = "OPTIMIZE TABLE `glpi_ticketcategories`";
+   $query = "OPTIMIZE TABLE `glpi_itilcategories`";
    $DB->query($query) or die("PB REQUETE ".$query);
 
-   regenerateTreeCompleteName("glpi_ticketcategories");
+   regenerateTreeCompleteName("glpi_itilcategories");
 
    $MAX['tracking_category'] = 0;
    $query = "SELECT MAX(`id`)
-             FROM `glpi_ticketcategories`";
+             FROM `glpi_itilcategories`";
    $result = $DB->query($query) or die("PB REQUETE ".$query);
 
    $MAX['tracking_category'] = $DB->result($result, 0, 0) or die (" PB RESULT ".$query);
@@ -1479,7 +1479,7 @@ function generate_entity($ID_entity) {
 
 
    // Specific ticket categories
-   $query = "INSERT INTO `glpi_ticketcategories`
+   $query = "INSERT INTO `glpi_itilcategories`
              VALUES (NULL, '$ID_entity', '1', '0', 'category for entity $ID_entity', '',
                      'comment category for entity $ID_entity', '1', '0',
                      '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
@@ -1488,7 +1488,7 @@ function generate_entity($ID_entity) {
 
    $newID = $DB->insert_id();
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
-      $query = "INSERT INTO `glpi_ticketcategories`
+      $query = "INSERT INTO `glpi_itilcategories`
                 VALUES (NULL, '$ID_entity', '1', '$newID', 'categorie $i', '',
                         'comment categorie $i', '1', '0',
                         '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
@@ -1497,7 +1497,7 @@ function generate_entity($ID_entity) {
       $newID=$DB->insert_id();
    }
 
-   regenerateTreeCompleteName("glpi_ticketcategories");
+   regenerateTreeCompleteName("glpi_itilcategories");
 
    $FIRST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates")+1;
    $nb_items = mt_rand(0,$MAX['solutiontemplates']);

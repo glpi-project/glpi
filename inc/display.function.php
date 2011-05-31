@@ -2248,7 +2248,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $items_id            = "";
    $content             = "";
    $title               = "";
-   $ticketcategories_id = 0;
+   $itilcategories_id = 0;
    $urgency             = 3;
    $type                = 0;
 
@@ -2271,8 +2271,8 @@ function printHelpDesk ($ID, $from_helpdesk) {
    if (isset($_SESSION["helpdeskSaved"]["name"])) {
       $title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
    }
-   if (isset($_SESSION["helpdeskSaved"]["ticketcategories_id"])) {
-      $ticketcategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketcategories_id"]);
+   if (isset($_SESSION["helpdeskSaved"]["itilcategories_id"])) {
+      $itilcategories_id = stripslashes($_SESSION["helpdeskSaved"]["itilcategories_id"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["type"])) {
       $type = stripslashes($_SESSION["helpdeskSaved"]["type"]);
@@ -2340,7 +2340,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;</td><td>";
-   Dropdown::show('TicketCategory', array('value'     => $ticketcategories_id,
+   Dropdown::show('ITILCategory', array('value'     => $itilcategories_id,
                                           'condition' => '`is_helpdeskvisible`=1'));
    echo "</td></tr>";
 

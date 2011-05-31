@@ -76,7 +76,7 @@ $items =
                      'usercategories_id'  => array('title' => $LANG['users'][2])),
          $LANG['common'][32]
             => array('type'                   => array('title' => $LANG['common'][17]),
-                     'ticketcategories_id'    => array('title' => $LANG['common'][36]),
+                     'itilcategories_id'      => array('title' => $LANG['common'][36]),
                      'urgency'                => array('title' => $LANG['joblist'][29]),
                      'impact'                 => array('title' => $LANG['joblist'][30]),
                      'priority'               => array('title' => $LANG['joblist'][2]),
