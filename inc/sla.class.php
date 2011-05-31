@@ -61,20 +61,6 @@ class SLA extends CommonDBTM {
    }
 
 
-   /**
-    * Define calendar of the ticket using the SLA when using this calendar as sla-s calendar
-    *
-    * @param $calendars_id calendars_id of the ticket
-    *
-   **/
-   function setTicketCalendar($calendars_id) {
-
-      if ($this->fields['calendars_id'] == -1 ) {
-         $this->fields['calendars_id'] = $calendars_id;
-      }
-   }
-
-
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -177,8 +163,7 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['buttons'][15]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Calendar', array('value'      => $this->fields["calendars_id"],
-                                       'emptylabel' => $LANG['sla'][10],
-                                       'toadd'      => array('-1' => $LANG['sla'][11])));
+                                       'emptylabel' => $LANG['sla'][10]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['sla'][2]."&nbsp;:</td>";

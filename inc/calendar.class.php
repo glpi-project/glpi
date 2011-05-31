@@ -311,10 +311,10 @@ class Calendar extends CommonDropdown {
          }
 
          // If > last working hour set last working hour
-         $dayofweek   = self::getDayNumberInWeek($actualtime);
+         $dayofweek       = self::getDayNumberInWeek($actualtime);
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
          if ($lastworkinghour< date('H:i:s', $actualtime)) {
-            $actualtime    = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
+            $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
          }
 
          return date('Y-m-d H:i:s', $actualtime);

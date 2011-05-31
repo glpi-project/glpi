@@ -42,7 +42,6 @@ class Dropdown {
     *    - name : string / name of the select (default is depending itemtype)
     *    - value : integer / preselected value (default -1)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
-    *    - toadd : array / array of specific values to add at the begining
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - entity_sons : boolean / if entity restrict specified auto select its sons
@@ -78,7 +77,6 @@ class Dropdown {
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
       $params['used']        = array();
-      $params['toadd']        = array();
       $params['auto_submit'] = 0;
       $params['condition']   = '';
       $params['rand']        = mt_rand();
@@ -167,7 +165,6 @@ class Dropdown {
                       'itemtype'            => $itemtype,
                       'myname'              => $params['name'],
                       'limit'               => $limit_length,
-                      'toadd'               => $params['toadd'],
                       'comment'             => $params['comments'],
                       'rand'                => $params['rand'],
                       'entity_restrict'     => $params['entity'],
@@ -177,7 +174,6 @@ class Dropdown {
                       'condition'           => $params['condition'],
                       'emptylabel'          => $params['emptylabel'],
                       'display_emptychoice' => $params['display_emptychoice']);
-
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";

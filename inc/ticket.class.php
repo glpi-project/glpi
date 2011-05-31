@@ -1061,7 +1061,6 @@ class Ticket extends CommonDBTM {
          // SLA case : compute sla duration
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
-               $sla->setTicketCalendar($calendars_id);
                $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
@@ -1542,10 +1541,8 @@ class Ticket extends CommonDBTM {
       }
 
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
-         $sla          = new SLA();
+         $sla = new SLA();
          if ($sla->getFromDB($input["slas_id"])) {
-            $sla->setTicketCalendar($calendars_id);
             // Get first SLA Level
             $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
             // Compute due_date
@@ -1650,10 +1647,8 @@ class Ticket extends CommonDBTM {
           && isset($this->input["slalevels_id"])
           && $this->input["slalevels_id"]>0) {
 
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
-         $sla          = new SLA();
+         $sla = new SLA();
          if ($sla->getFromDB($this->input["slas_id"])) {
-            $sla->setTicketCalendar($calendars_id);
             // Add first level in working table
             if ($this->input["slalevels_id"]>0) {
                $sla->addLevelToDo($this);
@@ -3916,10 +3911,9 @@ class Ticket extends CommonDBTM {
          $showuserlink = 1;
       }
       // Manage actors : requester and assign
-      echo "<table  class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2' width='10%'>".$LANG['common'][103]."&nbsp;:</th>";
-      echo "<th width='30%'>".$LANG['job'][4];
+      echo "<th rowspan='2'>".$LANG['common'][103]."&nbsp;:</th>";
+      echo "<th>".$LANG['job'][4];
       $rand_requester_ticket = -1;
       $candeleterequester    = false;
       if ($ID && haveRight("update_ticket","1")) {
@@ -3932,7 +3926,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".$LANG['common'][104];
+      echo "<th>".$LANG['common'][104];
       $rand_observer_ticket = -1;
       $candeleteobserver    = false;
 
@@ -3946,7 +3940,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".$LANG['job'][5];
+      echo "<th>".$LANG['job'][5];
       $rand_assign_ticket = -1;
       $candeleteassign    = false;
       if ($ID
@@ -4092,7 +4086,6 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      echo "</table>";
    }
 
 
@@ -4288,23 +4281,22 @@ class Ticket extends CommonDBTM {
       echo "</table>";
 
       echo "</th></tr>";
-      echo "</table>";
+
       if (!$ID) {
          $this->showActorsPartForm($ID,$options);
       }
 
 
-      echo "<table  class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;: </th>";
-      echo "<td width='40%'>";
+      echo "<td>".$LANG['joblist'][0]."&nbsp;: </td>";
+      echo "<td>";
       if ($canupdate) {
          self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       } else {
          echo self::getStatus($this->fields["status"]);
       }
       echo "</td>";
-      echo "<th>".$LANG['common'][17]."&nbsp;: </th>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td >";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
@@ -4316,7 +4308,7 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][29]."&nbsp;: </th>";
+      echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
 
       if (($canupdate && $canpriority)
@@ -4332,7 +4324,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
+      echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
       if ($canupdate || !$ID || $canupdate_descr) {
@@ -4354,7 +4346,7 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
+      echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
          $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
@@ -4363,7 +4355,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: </th>";
+      echo "<td class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: </td>";
       echo "<td rowspan='2'>";
 
       // Select hardware on creation or if have update right
@@ -4410,7 +4402,7 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;: </th>";
+      echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
       echo "<td>";
 
       if ($canupdate && $canpriority) {
@@ -4435,7 +4427,7 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['job'][44]."&nbsp;: </th>";
+      echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
@@ -4445,13 +4437,13 @@ class Ticket extends CommonDBTM {
       echo "</td>";
 
       // Display validation state
-      echo "<th>";
+      echo "<td>";
       if (!$ID) {
          echo $LANG['validation'][26]."&nbsp;:&nbsp;";
       } else {
          echo $LANG['validation'][0]."&nbsp;:&nbsp;";
       }
-      echo "</th>";
+      echo "</td>";
       echo "<td>";
       if (!$ID) {
          User::dropdown(array('name'   => "_add_validation",
@@ -4472,7 +4464,7 @@ class Ticket extends CommonDBTM {
       // Need comment right to add a followup with the actiontime
       if (!$ID && haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
+         echo "<td>".$LANG['job'][20]."&nbsp;: </td>";
          echo "<td class='left' colspan='3'>";
          Dropdown::showInteger('hour',$options['hour'],0,100);
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
@@ -4481,26 +4473,25 @@ class Ticket extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
       }
-      echo '</table>';
 
       if ($ID) {
          $this->showActorsPartForm($ID,$options);
       }
 
-      echo "<table  class='tab_cadre_fixe'>";
 
       $view_linked_tickets = ($ID || $canupdate);
+      $titlecolspan        = ($view_linked_tickets?1:3);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
-      echo "<td width='50%'>";
+      echo "<td class='b'>".$LANG['common'][57]."</td>";
+      echo "<td colspan='$titlecolspan'>";
       if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showName$rand() {\n";
          echo "Ext.get('name$rand').setDisplayed('none');";
          $params = array('maxlength' => 250,
-                         'size'      => 60,
+                         'size'      => 50,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
          ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
@@ -4532,32 +4523,32 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      // Permit to add doc when creating a ticket
-      if (!$ID) {
-         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
-               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
-         echo "</th>";
-         echo "<td>";
-         echo "<input type='file' name='filename' value=\"\" size='25'></td>";
-      } else {
+
+      if ($view_linked_tickets) {
          echo "<th colspan='2'>";
-         echo $LANG['document'][20].'&nbsp;: '.Document_Item::countForItem($this);
-         echo "</th>";
+         echo $LANG['job'][55];
+
+         if ($canupdate) {
+            $rand_linked_ticket = mt_rand();
+            echo "&nbsp;&nbsp;<a class='tracking'
+                  onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
+            echo $LANG['buttons'][8];
+            echo "</a>\n";
+         }
+         echo '</th>';
       }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
-      echo "<td width='50%'>";
+      echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='$titlecolspan'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showDesc$rand() {\n";
          echo "Ext.get('desc$rand').setDisplayed('none');";
          $params = array('rows'  => 6,
-                         'cols'  => 60,
+                         'cols'  => 50,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
          ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params,
@@ -4585,19 +4576,7 @@ class Ticket extends CommonDBTM {
       echo "</td>";
 
       if ($view_linked_tickets) {
-         echo "<th width='10%'>";
-         echo $LANG['job'][55];
-
-         if ($canupdate) {
-            $rand_linked_ticket = mt_rand();
-            echo "&nbsp;&nbsp;<a class='tracking'
-                  onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
-            echo $LANG['buttons'][8];
-            echo "</a>\n";
-         }
-         echo '</th>';
-
-         echo "<td>";
+         echo "<td colspan='2'>";
          Ticket_Ticket::displayLinkedTicketsTo($ID);
 
          if ($canupdate) {
@@ -4613,6 +4592,20 @@ class Ticket extends CommonDBTM {
 
       }
       echo "</tr>";
+
+
+      // Permit to add doc when creating a ticket
+      if (!$ID) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
+               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
+               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='file' name='filename' value=\"\" size='25'></td>";
+         echo "<td colspan='2'>&nbsp;</td></tr>";
+      }
 
       if (!$ID
           || $canupdate
