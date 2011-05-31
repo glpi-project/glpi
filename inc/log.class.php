@@ -65,7 +65,7 @@ class Log extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate=0) {
 
       self::showForItem($item);
       return true;
@@ -271,8 +271,10 @@ class Log extends CommonDBTM {
     * Show History of an item
     *
     * @param $item CommonDBTM object
+    * @param $withtemplate integer : withtemplate param
+
    **/
-   static function showForItem(CommonDBTM $item) {
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB,$LANG;
 
       $itemtype = $item->getType();

@@ -61,10 +61,10 @@ class Ocslink extends CommonDBTM {
    * Show OcsLink of an item
    *
    * @param $item CommonDBTM object
-   *
+   * @param $withtemplate integer : withtemplate param
    * @return nothing
    **/
-   static function showForItem(CommonDBTM $item) {
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $LANG;
 
       if (in_array($item->getType(),array('Computer'))) {

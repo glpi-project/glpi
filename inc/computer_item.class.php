@@ -479,13 +479,14 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-   * Prints a direct connection to a computer
-   *
-   * @param $item the Monitor/Phone/Peripheral/Printer
-   *
-   * @return nothing (print out a table)
-   */
-   static function showForItem(CommonDBTM $item) {
+    * Prints a direct connection to a computer
+    *
+    * @param $item the Monitor/Phone/Peripheral/Printer
+    * @param $withtemplate integer : withtemplate param
+    *
+    * @return nothing (print out a table)
+   **/
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       // Prints a direct connection to a computer
       global $DB, $LANG;
 
@@ -502,11 +503,11 @@ class Computer_Item extends CommonDBRelation{
       // Is global connection ?
       $global=$item->getField('is_global');
 
-      $used = array();
+      $used    = array();
       $compids = array();
-      $crit = array('FIELDS'   => array('id', 'computers_id'),
-                    'itemtype' => $item->getType(),
-                    'items_id' => $ID);
+      $crit    = array('FIELDS'   => array('id', 'computers_id'),
+                       'itemtype' => $item->getType(),
+                       'items_id' => $ID);
       foreach ($DB->request('glpi_computers_items', $crit) as $data) {
          $compids[$data['id']] = $data['computers_id'];
       }
@@ -517,7 +518,7 @@ class Computer_Item extends CommonDBRelation{
          echo $LANG['connect'][4];
       } else if (count($compids)==1) {
          echo $LANG['connect'][3]."&nbsp;:&nbsp;".count($compids);
-      }else {
+      } else {
          echo $LANG['connect'][2]."&nbsp;:&nbsp;".count($compids);
       }
       echo "</th></tr>";

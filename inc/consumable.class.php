@@ -378,7 +378,7 @@ class Consumable extends CommonDBTM {
    /**
     * Print out the consumables of a defined type
     *
-    *@param $consitem oject of ConsumableItem class
+    *@param $consitem object of ConsumableItem class
     *@param $show_old boolean : show old consumables or not.
     *
     *@return Nothing (displays)

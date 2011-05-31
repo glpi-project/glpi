@@ -70,7 +70,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
 
          default :
             if (!CommonGLPI::displayStandardTab($periph, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
-               NetworkPort::showForItem('Peripheral', $_POST["id"], $_POST["withtemplate"]);
+               NetworkPort::showForItem($periph, $_POST["withtemplate"]);
             }
       }
 
@@ -78,7 +78,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Item::showForItem($periph);
-            NetworkPort::showForItem('Peripheral', $_POST["id"], $_POST["withtemplate"]);
+            NetworkPort::showForItem($periph);
             Infocom::showForItem($periph);
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
@@ -95,7 +95,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
          default :
             if (!CommonGLPI::displayStandardTab($periph, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($periph);
-               NetworkPort::showForItem('Peripheral', $_POST["id"], $_POST["withtemplate"]);
+               NetworkPort::showForItem($periph);
             }
       }
    }

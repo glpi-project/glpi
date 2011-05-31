@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate=0) {
 
       if ($item->getType() == 'User') {
          self::showForUser($_POST["id"]);
@@ -823,8 +823,9 @@ class Reservation extends CommonDBChild {
     * Display reservations for an item
     *
     * @param $item CommonDBTM object for which the reservation tab need to be displayed
+    * @param $withtemplate integer : withtemplate param
    **/
-   static function showForItem(CommonDBTM $item) {
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $LANG, $CFG_GLPI;
 
       $resaID = 0;
