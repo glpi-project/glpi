@@ -164,8 +164,8 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    commonHeader($LANG['job'][13],'',"maintain","ticket");
 
    $users_id_requester = getLoginUserID();
-   // No default requester if own ticket right = tech
-   if (haveRight('own_ticket',1)) {
+   // No default requester if own ticket right = tech and update_ticket right to update requester
+   if (haveRight('own_ticket',1) && haveRight('update_ticket',1)) {
       $users_id_requester = 0;
    }
 
