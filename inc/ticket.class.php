@@ -5138,7 +5138,6 @@ class Ticket extends CommonDBTM {
       $items[$LANG['joblist'][4]]  = "glpi_tickets.users_id_assign";
       $items[$LANG['document'][14]]   = "glpi_tickets.itemtype,glpi_tickets.items_id";
       $items[$LANG['common'][36]]  = "glpi_ticketcategories.completename";
-      //$items[$LANG['sla'][5]]      = "glpi_tickets.due_date";
       $items[$LANG['common'][57]]  = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
@@ -5616,10 +5615,6 @@ class Ticket extends CommonDBTM {
                                                            $job->fields["ticketcategories_id"]).
                                "</strong>",
                                $item_num, $row_num, $align);
-
-         // Eight column
-         // echo Search::showItem($output_type, convDateTime($job->fields['due_date']),
-         //                       $item_num, $row_num, $align);
 
          // ninth column
          $ninth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
