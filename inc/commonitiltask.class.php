@@ -129,7 +129,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $item->updateActiontime($this->fields[$item->getForeignKeyField()]);
       $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
-      // Add log entry in the itil object
+      // Add log entry in the ITIL object
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
@@ -210,7 +210,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($update_done) {
-         // Add log entry in the itil object
+         // Add log entry in the ITIL object
          $changes[0] = 0;
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
@@ -312,7 +312,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
-      // Add log entry in the itil object
+      // Add log entry in the ITIL object
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
