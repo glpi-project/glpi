@@ -67,9 +67,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('Log', $tabs);
-      }
+      $this->addStandardTab('Log', $tabs);
       return $tabs;
    }
 
