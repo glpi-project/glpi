@@ -151,7 +151,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
                   $IDs[] = $result["id"];
                }
                //Replay dictionnary on all the printers
-               $this->replayDirectionnaryOnPrintersByID($IDs, $res_rule);
+               $this->replayDictionnaryOnPrintersByID($IDs, $res_rule);
             }
          }
          $i++;
@@ -197,7 +197,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
     *
     * @return Query result handler
    **/
-   function replayDirectionnaryOnPrintersByID($IDs, $res_rule=array()) {
+   function replayDictionnaryOnPrintersByID($IDs, $res_rule=array()) {
       global $DB;
 
       $new_printers  = array();
