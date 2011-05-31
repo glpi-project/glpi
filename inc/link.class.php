@@ -73,6 +73,7 @@ class Link extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate=0) {
+
       self::showForItem($item);
       return true;
    }

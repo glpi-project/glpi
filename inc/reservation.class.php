@@ -169,18 +169,21 @@ class Reservation extends CommonDBChild {
    // SPECIFIC FUNCTIONS
    function getUniqueGroupFor($reservationitems_id) {
       global $DB;
+
       do {
          $rand = mt_rand(1,mt_getrandmax());
 
-         $query = "SELECT COUNT(*) as CPT
-                  FROM `glpi_reservations`
-                  WHERE `reservationitems_id` = '$reservationitems_id' AND `group` = '$rand';";
+         $query = "SELECT COUNT(*) AS CPT
+                   FROM `glpi_reservations`
+                   WHERE `reservationitems_id` = '$reservationitems_id'
+                         AND `group` = '$rand';";
          $result = $DB->query($query);
-         $count = $DB->result($result,0,0);
+         $count  = $DB->result($result,0,0);
       } while ($count > 0);
 
       return $rand;
    }
+
 
    /**
     * Is the item already reserved ?
@@ -294,19 +297,22 @@ class Reservation extends CommonDBChild {
       return haveAccessToEntity($item->getEntityID());
    }
 
+
    function post_purgeItem () {
       global $DB;
+
       if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
          $query = "SELECT *
-                  FROM `glpi_reservations`
-                  WHERE `reservationitems_id` = '".$this->fields['reservationitems_id']."'
-                  AND `group` = '".$this->fields['group']."' ";
-         $rr = new Reservation();
+                   FROM `glpi_reservations`
+                   WHERE `reservationitems_id` = '".$this->fields['reservationitems_id']."'
+                         AND `group` = '".$this->fields['group']."' ";
+         $rr = clone $this;
          foreach($DB->request($query) as $data) {
             $rr->delete(array('id' => $data['id']));
          }
       }
    }
+
 
    /**
    * Show reservation calendar
