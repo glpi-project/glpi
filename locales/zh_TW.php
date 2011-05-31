@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="查看SLA";
 $LANG['sla'][8]="下一個申告"; 
 $LANG['sla'][9]="服務水平協議自動提醒"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="採購版本"; 
 $LANG['software'][2]="使用版本"; 

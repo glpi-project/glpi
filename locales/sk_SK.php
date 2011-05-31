@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="Opustiť SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatické pripomienky SLAs"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Zakúpená verzia"; 
 $LANG['software'][2]="Použiť verziu"; 

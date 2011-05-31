@@ -1312,7 +1312,7 @@ $LANG['ocsng'][76]="Statistik for OCS linket";
 $LANG['ocsng'][77]="behandling færdig"; 
 $LANG['ocsng'][78]="Link hvis muligt, eller afvis import"; 
 $LANG['ocsng'][79]="Link hvis muligt"; 
-$LANG['ocsng'][80]="Computer der ikke importeres på grund a regel"; 
+$LANG['ocsng'][80]="Computer der ikke importeres på grund af en regel"; 
 
 $LANG['pager'][1]="til"; 
 $LANG['pager'][2]="fra"; 
@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="Leave the SLA";
 $LANG['sla'][8]="Næste eskalering"; 
 $LANG['sla'][9]="Automatic reminders of SLAs"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Købt version"; 
 $LANG['software'][2]="Brug version"; 

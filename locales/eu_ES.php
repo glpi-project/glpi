@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="SLA utzi";
 $LANG['sla'][8]="Hurrengo maila"; 
 $LANG['sla'][9]="SLA ohar automatikoak"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Erositako bertsioa"; 
 $LANG['software'][2]="Erabiltzen ari den bertsioa"; 

@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="Ακυρώστε το SLA";
 $LANG['sla'][8]="Επόμενη κλιμάκωση"; 
 $LANG['sla'][9]="Αυτόματες υπενθυμίσεις SLA"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Έκδοση αγοράς"; 
 $LANG['software'][2]="Έκδοση σε χρήση"; 

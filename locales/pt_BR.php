@@ -1948,6 +1948,7 @@ $LANG['sla'][7]="Deixar o SLA";
 $LANG['sla'][8]="Próxima escalação"; 
 $LANG['sla'][9]="Lembrete automático de SLAs"; 
 $LANG['sla'][10]="24/7"; 
+$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Versão comprada"; 
 $LANG['software'][2]="Versão de uso"; 
