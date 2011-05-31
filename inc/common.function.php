@@ -172,26 +172,6 @@ function getItemEntity ($itemtype, $items_id) {
 
 
 /**
- * Determine if an object name is a plugin one
- *
- * @param $classname class name to analyze
- *
- * @return false or an object containing plugin name and class name
-**/
-function isPluginItemType($classname) {
-
-   if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/",$classname,$matches)) {
-      $plug = array();
-      $plug['plugin'] = $matches[1];
-      $plug['class']  = $matches[2];
-      return $plug;
-   }
-   // Standard case
-   return false;
-}
-
-
-/**
  * Is GLPI used in mutli-entities mode ?
  *
  * @return boolean
@@ -352,14 +332,6 @@ function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars) {
 }
 
 
-/**
- * Is the script launch in Command line ?
- *
- * @return boolean
-**/
-function isCommandLine() {
-   return (!isset($_SERVER["SERVER_NAME"]));
-}
 
 
 /**
