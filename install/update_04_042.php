@@ -34,47 +34,51 @@
 // ----------------------------------------------------------------------
 
 /// Update from 0.4 and 0.41 to 0.42
-function update04to042(){
-	global $DB,$LANG;
+function update04to042() {
+   global $DB,$LANG;
 
-	echo "<p class='center'>Version 0.42 </p>";
+   echo "<p class='center'>Version 0.42 </p>";
 
-	if(!TableExists("glpi_reservation_item")) {
+   if (!TableExists("glpi_reservation_item")) {
+      $query = "CREATE TABLE `glpi_reservation_item` (
+                  `ID` int(11) NOT NULL auto_increment,
+                  `device_type` tinyint(4) NOT NULL default '0',
+                  `id_device` int(11) NOT NULL default '0',
+                  `comments` text NOT NULL,
+                  PRIMARY KEY  (`ID`),
+                  KEY `device_type` (`device_type`)
+                )";
+      $DB->query($query) or die("4201 ".$LANG['update'][90].$DB->error());
+   }
 
+   if (!TableExists("glpi_reservation_resa")) {
+      $query = "CREATE TABLE `glpi_reservation_resa` (
+                  `ID` bigint(20) NOT NULL auto_increment,
+                  `id_item` int(11) NOT NULL default '0',
+                  `begin` datetime NOT NULL default '0000-00-00 00:00:00',
+                  `end` datetime NOT NULL default '0000-00-00 00:00:00',
+                  `id_user` int(11) NOT NULL default '0',
+                  PRIMARY KEY  (`ID`),
+                  KEY `id_item` (`id_item`),
+                  KEY `id_user` (`id_user`),
+                  KEY `begin` (`begin`),
+                  KEY `end` (`end`)
+                )";
+      $DB->query($query) or die("4202 ".$LANG['update'][90].$DB->error());
+   }
 
-		$query = "CREATE TABLE glpi_reservation_item (ID int(11) NOT NULL auto_increment,device_type tinyint(4) NOT NULL default '0', id_device int(11) NOT NULL default '0', comments text NOT NULL, PRIMARY KEY  (ID), KEY device_type (device_type));";
+   if (!FieldExists("glpi_tracking","device_type")) {
+      $query = "ALTER TABLE `glpi_tracking`
+                ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ";
+      $DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
+   }
 
-		$DB->query($query) or die("4201 ".$LANG['update'][90].$DB->error());
-	}
-
-	if(!TableExists("glpi_reservation_resa")) {
-		$query = "CREATE TABLE glpi_reservation_resa (  
-			ID bigint(20) NOT NULL auto_increment,  
-			   id_item int(11) NOT NULL default '0',  
-			   begin datetime NOT NULL default '0000-00-00 00:00:00',  
-			   end datetime NOT NULL default '0000-00-00 00:00:00',  
-			   id_user int(11) NOT NULL default '0',  
-			   PRIMARY KEY  (`ID`),  
-			   KEY id_item (`id_item`),  
-			   KEY id_user (`id_user`),  
-			   KEY begin (`begin`),  
-			   KEY end (`end`));";
-
-		$DB->query($query) or die("4202 ".$LANG['update'][90].$DB->error());
-	}
-
-	if(!FieldExists("glpi_tracking","device_type")) {
-		$query = "ALTER TABLE `glpi_tracking` ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ;";
-		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
-	}
-
-	// Ajout language par defaut
-	if(!FieldExists("glpi_config","default_language")) {
-
-		$query = "ALTER TABLE `glpi_config` ADD `default_language` VARCHAR(255) DEFAULT 'english' NOT NULL ;";
-		$DB->query($query) or die("4204 ".$LANG['update'][90].$DB->error());
-
-	}
+   // Ajout language par defaut
+   if (!FieldExists("glpi_config","default_language")) {
+      $query = "ALTER TABLE `glpi_config`
+                ADD `default_language` VARCHAR(255) DEFAULT 'english' NOT NULL ";
+      $DB->query($query) or die("4204 ".$LANG['update'][90].$DB->error());
+   }
 
 }
 
