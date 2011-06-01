@@ -50,7 +50,7 @@ function update080to0801($output='HTML') {
    $ADDTODISPLAYPREF = array();
 
    if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
+      echo "<h3>".$LANG['install'][4]." -&gt; 0.80.1</h3>";
    }
 
 
