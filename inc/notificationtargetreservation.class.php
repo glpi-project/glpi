@@ -65,8 +65,11 @@ class NotificationTargetReservation extends NotificationTarget {
       $this->datas['##reservation.action##'] = $events[$event];
 
       if ($event != 'alert') {
-         $this->datas['##reservation.user##']
-                     = Dropdown::getDropdownName('glpi_users', $this->obj->getField('users_id'));
+         $this->datas['##reservation.user##'] = "";
+         $user_tmp = new User;
+         if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
+            $this->datas['##reservation.user##'] = $user_tmp->getName();
+         }
          $this->datas['##reservation.begin##']   = convDateTime($this->obj->getField('begin'));
          $this->datas['##reservation.end##']     = convDateTime($this->obj->getField('end'));
          $this->datas['##reservation.comment##'] = $this->obj->getField('comment');
