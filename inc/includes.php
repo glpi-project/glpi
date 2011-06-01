@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
 // Init Timer to compute time of display
-$TIMER_DEBUG=new Timer;
+$TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
 

@@ -47,6 +47,7 @@ function isCommandLine() {
    return (!isset($_SERVER["SERVER_NAME"]));
 }
 
+
 /**
  * Determine if an object name is a plugin one
  *
@@ -76,12 +77,11 @@ function __autoload($classname) {
       return false;
    }
 
-   $dir=GLPI_ROOT . "/inc/";
-   //$classname="PluginExampleProfile";
+   $dir = GLPI_ROOT . "/inc/";
    if ($plug=isPluginItemType($classname)) {
-      $plugname=strtolower($plug['plugin']);
-      $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
-      $item=strtolower($plug['class']);
+      $plugname = strtolower($plug['plugin']);
+      $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
+      $item     = strtolower($plug['class']);
       // Is the plugin activate ?
       // Command line usage of GLPI : need to do a real check plugin activation
       if (isCommandLine()) {
@@ -97,21 +97,21 @@ function __autoload($classname) {
             return false;
          }
       }
+
    } else {
       // Is ezComponent class ?
       if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
          include_once(GLPI_EZC_BASE);
          ezcBase::autoload($classname);
          return true;
-      } else {
-         $item=strtolower($classname);
       }
+      $item = strtolower($classname);
    }
 
    if (file_exists("$dir$item.class.php")) {
       include_once ("$dir$item.class.php");
       if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-         $DEBUG_AUTOLOAD[]=$classname;
+         $DEBUG_AUTOLOAD[] = $classname;
       }
 
    } else if (!isset($notfound["x$classname"])) {
