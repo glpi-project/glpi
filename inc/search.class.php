@@ -1355,6 +1355,7 @@ class Search {
          $first_group=true;
          $selected='view';
          $nb_in_group = 0;
+         $group = '';
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
@@ -1382,8 +1383,12 @@ class Search {
             }
          }
          if (!$first_group) {
-            echo "</optgroup>\n";
+            $group .= "</optgroup>\n";
          }
+         if ($nb_in_group) {
+            echo $group;
+         }
+
          echo "<option value='all' ";
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
             echo "selected";
