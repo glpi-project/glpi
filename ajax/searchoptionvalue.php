@@ -145,7 +145,8 @@ if (isset($_REQUEST['searchtype'])) {
                   User::dropdown(array('name'     => $inputname,
                                        'value'    => $_REQUEST['value'],
                                        'comments' => false,
-                                       'right'    => 'all'));
+                                       'right'    => isset($searchopt['filter'])?$searchopt['filter']
+                                                                                :'all'));
                   $display = true;
                   break;
 

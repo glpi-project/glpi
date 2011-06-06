@@ -2434,6 +2434,8 @@ class Ticket extends CommonDBTM {
                                                         => array('jointype'  => 'child',
                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                 '= '.self::ASSIGN)));
+      $tab[5]['filter']        = 'own_ticket';
+
       $tab[6]['table']     = 'glpi_suppliers';
       $tab[6]['field']     = 'name';
       $tab[6]['linkfield'] = 'suppliers_id_assign';
