@@ -1383,8 +1383,9 @@ class Infocom extends CommonDBChild {
    function showDebug() {
 
       $item = array('item_name'           => '',
-                     'warrantyexpiration' => '',
-                     'itemtype'           => $this->fields['itemtype']);
+                    'warrantyexpiration' => '',
+                    'itemtype'           => $this->fields['itemtype'],
+                    'items_id'           => $this->fields['items_id']);
 
       $options['entities_id'] = $this->getEntityID();
       $options['items']       = array($item);
