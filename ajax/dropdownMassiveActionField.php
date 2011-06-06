@@ -87,6 +87,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Ticket::dropdownStatus($search["linkfield"]);
             break;
 
+         case "glpi_tickets.type" :
+            Ticket::dropdownType($search["linkfield"]);
+            break;
+
          case "glpi_tickets.priority" :
             Ticket::dropdownPriority($search["linkfield"]);
             break;
