@@ -114,7 +114,7 @@ if (empty($_REQUEST["dropdown"]) || !class_exists($_REQUEST["dropdown"])) {
    commonFooter();
    exit();
 }
-$item = new $_REQUEST["dropdown"];
+$item = new $_REQUEST["dropdown"]();
 if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";

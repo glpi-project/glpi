@@ -70,7 +70,7 @@ if (isset ($_POST["update"])) {
    $config_ldap->redirectToList();
 
 } else if (isset ($_POST["test_ldap"])) {
-   $ldap = new AuthLDAP;
+   $ldap = new AuthLDAP();
    $ldap->getFromDB($_POST["id"]);
 
    if (AuthLdap::testLDAPConnection($_POST["id"])) {
@@ -84,7 +84,7 @@ if (isset ($_POST["update"])) {
 
 } else if (isset ($_POST["test_ldap_replicate"])) {
    foreach ($_POST["test_ldap_replicate"] as $replicate_id => $value) {
-      $replicate = new AuthLdapReplicate;
+      $replicate = new AuthLdapReplicate();
       $replicate->getFromDB($replicate_id);
 
       if (AuthLdap::testLDAPConnection($_POST["id"],$replicate_id)) {
@@ -98,14 +98,14 @@ if (isset ($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete_replicate"])) {
-   $replicate = new AuthLdapReplicate;
+   $replicate = new AuthLdapReplicate();
    foreach ($_POST["item"] as $index=>$val) {
       $replicate->delete(array("id" => $index));
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_replicate"])) {
-   $replicate = new AuthLdapReplicate;
+   $replicate = new AuthLdapReplicate();
    unset($_POST["next"]);
    unset($_POST["id"]);
    $replicate->add($_POST);

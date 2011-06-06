@@ -219,7 +219,7 @@ class Computer_Item extends CommonDBRelation{
 
       if (!isset($this->input['_no_auto_action'])) {
          //Get the computer name
-         $computer = new Computer;
+         $computer = new Computer();
          $computer->getFromDB($this->fields['computers_id']);
 
          //Get device fields

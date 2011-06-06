@@ -3892,7 +3892,7 @@ class Search {
 
          case 'glpi_tickets.items_id' :
             if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {
-               $item = new $data[$NAME.$num."_2"];
+               $item = new $data[$NAME.$num."_2"]();
                if ($item->getFromDB($data[$NAME.$num])) {
                   return $item->getLink(true);
                }
@@ -3954,7 +3954,7 @@ class Search {
 
          case 'glpi_fieldunicities.fields':
             $values  = explode(',',$data[$NAME.$num]);
-            $item    = new $data['ITEMTYPE'];
+            $item    = new $data['ITEMTYPE']();
             $message = array();
             foreach ($values as $field) {
                $table = getTableNameForForeignKeyField($field);
@@ -4152,7 +4152,7 @@ class Search {
 
             case "itemtypename":
                if (class_exists($data[$NAME.$num])) {
-                  $obj = new $data[$NAME.$num] ();
+                  $obj = new $data[$NAME.$num]();
                   return $obj->getTypeName();
                }
                return "";

@@ -84,11 +84,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $sport = $this->fields['networkports_id_1'];
       $dport = $this->fields['networkports_id_2'];
 
-      $ps = new NetworkPort;
+      $ps = new NetworkPort();
       if (!$ps->getFromDB($sport)) {
          return false;
       }
-      $pd = new NetworkPort;
+      $pd = new NetworkPort();
       if (!$pd->getFromDB($dport)) {
          return false;
       }
@@ -224,8 +224,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
 
       // Update to blank networking item
       // clean datas of linked ports if network one
-      $np1 = new NetworkPort;
-      $np2 = new NetworkPort;
+      $np1 = new NetworkPort();
+      $np2 = new NetworkPort();
       if ($np1->getFromDB($this->fields['networkports_id_1'])
           && $np2->getFromDB($this->fields['networkports_id_2'])) {
          $npnet = NULL;
@@ -268,7 +268,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $dohistory = false;
 
          if (class_exists($np2->fields["itemtype"])) {
-            $item = new $np2->fields["itemtype"];
+            $item = new $np2->fields["itemtype"]();
             if ($item->getFromDB($np2->fields["items_id"])) {
                $name      = $item->getName();
                $dohistory = $item->dohistory;
@@ -294,7 +294,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $name      = NOT_AVAILABLE;
          $dohistory = false;
          if (class_exists($np1->fields["itemtype"])) {
-            $item = new $np1->fields["itemtype"];
+            $item = new $np1->fields["itemtype"]();
             if ($item->getFromDB($np1->fields["items_id"])) {
                $name      = $item->getName();
                $dohistory = $item->dohistory;

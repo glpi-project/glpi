@@ -897,7 +897,7 @@ class AuthLDAP extends CommonDBTM {
 
       //Test connection to a replicate
       if ($replicate_id != -1) {
-         $replicate = new AuthLdapReplicate;
+         $replicate = new AuthLdapReplicate();
          $replicate->getFromDB($replicate_id);
          $host = $replicate->fields["host"];
          $port = $replicate->fields["port"];
@@ -1804,7 +1804,7 @@ class AuthLDAP extends CommonDBTM {
    static function importUserFromServers($options=array()) {
       global $LANG;
 
-      $auth   = new Auth;
+      $auth   = new Auth();
       $params = array();
       if (isset($options['name'])) {
          $params['value']  = $options['name'];
@@ -2069,7 +2069,7 @@ class AuthLDAP extends CommonDBTM {
          $authldap = new self();
          //Filter computation
          if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
-            $entitydata = new EntityData;
+            $entitydata = new EntityData();
 
             if ($entitydata->getFromDB($_SESSION['ldap_import']['entities_id'])
                 && $entitydata->getField('authldaps_id') > 0) {

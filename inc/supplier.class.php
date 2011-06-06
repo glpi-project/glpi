@@ -75,7 +75,7 @@ class Supplier extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $job = new Ticket;
+      $job = new Ticket();
 
       $cs = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);

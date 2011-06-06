@@ -66,7 +66,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
       if ($event != 'alert') {
          $this->datas['##reservation.user##'] = "";
-         $user_tmp = new User;
+         $user_tmp = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
          }
@@ -74,7 +74,7 @@ class NotificationTargetReservation extends NotificationTarget {
          $this->datas['##reservation.end##']     = convDateTime($this->obj->getField('end'));
          $this->datas['##reservation.comment##'] = $this->obj->getField('comment');
 
-         $reservationitem = new ReservationItem;
+         $reservationitem = new ReservationItem();
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
          $itemtype = $reservationitem->getField('itemtype');
 
@@ -102,7 +102,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
          foreach ($options['items'] as $id => $item) {
             $tmp = array();
-            $obj = new $item['itemtype'] ();
+            $obj = new $item['itemtype']();
             $tmp['##reservation.itemtype##']       = $obj->getTypeName();
             $tmp['##reservation.item##']           = $item['item_name'];
             $tmp['##reservation.expirationdate##'] = convDateTime($item['end']);

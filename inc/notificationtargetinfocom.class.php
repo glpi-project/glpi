@@ -56,7 +56,7 @@ class NotificationTargetInfocom extends NotificationTarget {
 
       foreach ($options['items'] as $id => $item) {
          $tmp = array();
-         $obj = new $item['itemtype'] ();
+         $obj = new $item['itemtype']();
          $tmp['##infocom.itemtype##']       = $obj->getTypeName();
          $tmp['##infocom.item##']           = $item['item_name'];
          $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];

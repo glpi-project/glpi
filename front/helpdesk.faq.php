@@ -64,7 +64,7 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
 }
 
 if (isset($_GET["id"])) {
-   $kb = new KnowbaseItem;
+   $kb = new KnowbaseItem();
    if ($kb->getFromDB($_GET["id"])) {
       $kb->showFull(false);
    }

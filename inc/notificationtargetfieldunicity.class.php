@@ -54,7 +54,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $this->datas['##unicity.action_user##'] = $options['action_user'];
       $this->datas['##unicity.message##']     = $options['message'];
       $this->datas['##unicity.date##']        = convDateTime($options['date']);
-      $item = new $options['itemtype'];
+      $item = new $options['itemtype']();
       $this->datas['##unicity.itemtype##']    = $item->getTypeName();
       $this->datas['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);

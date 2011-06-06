@@ -93,7 +93,7 @@ if ($max_time>5) {
    $defaultrowlimit = 1;
 }
 
-$DB = new DB;
+$DB = new DB();
 
 
 function init_time() {

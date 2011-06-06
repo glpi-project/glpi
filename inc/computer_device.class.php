@@ -113,7 +113,7 @@ class Computer_Device extends CommonDBTM {
       if (count($dev->getSpecifityLabel()) > 0
           && (!isset($input['specificity']) || empty($input['specificity']))) {
 
-         $dev = new $input['_itemtype'];
+         $dev = new $input['_itemtype']();
          $dev->getFromDB($input[$dev->getForeignKeyField()]);
          $input['specificity'] = $dev->getField('specif_default');
       }
@@ -213,7 +213,7 @@ class Computer_Device extends CommonDBTM {
       foreach ($devtypes as $itemtype) {
          initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
 
-         $device        = new $itemtype;
+         $device        = new $itemtype();
          $specificities = $device->getSpecifityLabel();
          $specif_fields = array_keys($specificities);
          $specif_text   = implode(',',$specif_fields);

@@ -104,7 +104,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
 
       case "show_kb" :
          popHeader($LANG['title'][5], $_SERVER['PHP_SELF']);
-         $kb = new KnowbaseItem;
+         $kb = new KnowbaseItem();
          $kb->check($_GET["id"],'r');
          $kb->showFull(true);
          popHeader($LANG['mailing'][138], $_SERVER['PHP_SELF']);

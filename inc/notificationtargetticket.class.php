@@ -111,7 +111,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $itemtype = $this->obj->getField('itemtype');
 
          if ($itemtype != NOT_AVAILABLE && $itemtype != '' &&  class_exists($itemtype)) {
-            $item = new  $itemtype ();
+            $item = new $itemtype();
             $item->getFromDB($this->obj->getField('items_id'));
             $this->target_object = $item;
          }
@@ -217,7 +217,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   = Dropdown::getDropdownName('glpi_requesttypes',
                                                 $this->obj->getField('requesttypes_id'));
 
-      $entitydata = new EntityData;
+      $entitydata = new EntityData();
       $autoclose_value = $CFG_GLPI['autoclose_delay'];
 
       if ($entitydata->getFromDB($this->getEntity())) {
@@ -294,7 +294,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          //Object user
          if ($this->obj->getField('users_id')) {
-            $user_tmp = new User;
+            $user_tmp = new User();
             if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
                $datas['##ticket.item.user##'] = $user_tmp->getName();
             }

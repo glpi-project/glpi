@@ -1196,7 +1196,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getAllowedStatusArray($itemtype, $current) {
 
-      $item = new $itemtype;
+      $item = new $itemtype();
       $tab = $item->getAllStatusArray();
 
       if (!isset($current)) {
@@ -1225,7 +1225,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function dropdownGenericStatus($itemtype, $name, $value='new', $option=0) {
 
-      $item = new $itemtype;
+      $item = new $itemtype();
 
       if ($option == 2) {
          $tab = $item->getAllowedStatusArray($itemtype, $value);
@@ -1251,7 +1251,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function getGenericStatus($itemtype, $value) {
 
-      $item = new $itemtype;
+      $item = new $itemtype();
       $tab  = $item->getAllStatusArray(true);
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
@@ -1468,7 +1468,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $showuserlink = 2;
       }
       $usericon = self::getActorIcon('user',$type);
-      $user     = new User;
+      $user     = new User();
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $k => $d) {

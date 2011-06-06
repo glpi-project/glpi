@@ -1276,7 +1276,7 @@ class Stat {
          $csvfilename = $filename.'.csv';
          $filename   .= '.'.$extension;
          foreach ($entrees as $label => $data) {
-            $graph->data[$label]         = new ezcGraphArrayDataSet( $data );
+            $graph->data[$label]         = new ezcGraphArrayDataSet($data);
             $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL;
          }
 

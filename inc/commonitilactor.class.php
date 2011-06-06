@@ -133,7 +133,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       echo "</td></tr>";
 
-      $user  = new User;
+      $user  = new User();
       $email = "";
       if ($user->getFromDB($this->fields["users_id"])) {
          $email = $user->getField('email');

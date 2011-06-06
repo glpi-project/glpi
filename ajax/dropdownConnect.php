@@ -65,7 +65,7 @@ if (isset($_POST["entity_restrict"])
 
 // Make a select box
 $table = getTableForItemType($_POST["idtable"]);
-$item  = new $_POST["idtable"];
+$item  = new $_POST["idtable"]();
 $where = "";
 
 if ($item->maybeDeleted()) {

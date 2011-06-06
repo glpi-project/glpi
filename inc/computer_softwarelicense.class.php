@@ -284,7 +284,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
 
-            $soft = new Software;
+            $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
             $title      =$LANG['help'][31] ." = ". $soft->fields["name"]." - " . $data["vername"];

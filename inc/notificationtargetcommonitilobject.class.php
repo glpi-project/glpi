@@ -588,7 +588,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($this->obj->countUsers(CommonITILObject::REQUESTER)) {
          $users = array();
          foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $uid => $tmp) {
-            $user_tmp = new User;
+            $user_tmp = new User();
             $user_tmp->getFromDB($uid);
             $users[$uid] = $user_tmp->getName();
 
@@ -614,7 +614,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $datas["##$objettype.openbyuser##"] = '';
       if ($this->obj->getField('users_id_recipient')) {
-         $user_tmp = new User;
+         $user_tmp = new User();
          $user_tmp->getFromDB($this->obj->getField('users_id_recipient'));
          $datas["##$objettype.openbyuser##"] = $user_tmp->getName();
       }
@@ -623,7 +623,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($this->obj->countUsers(CommonITILObject::ASSIGN)) {
          $users = array();
          foreach ($this->obj->getUsers(CommonITILObject::ASSIGN) as $uid => $tmp) {
-            $user_tmp = new User;
+            $user_tmp = new User();
             $user_tmp->getFromDB($uid);
 
             $users[$uid] = $user_tmp->getName();
@@ -660,7 +660,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($this->obj->countUsers(CommonITILObject::OBSERVER)) {
          $users = array();
          foreach ($this->obj->getUsers(CommonITILObject::OBSERVER) as $uid => $tmp) {
-            $user_tmp = new User;
+            $user_tmp = new User();
             $user_tmp->getFromDB($uid);
             $users[$uid] = $user_tmp->getName();
          }

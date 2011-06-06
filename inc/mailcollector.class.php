@@ -293,7 +293,7 @@ class MailCollector  extends CommonDBTM {
       foreach ($DB->request($query) as $data) {
          $todelete[$data['mailcollectors_id']][$data['messageid']] = $data;
       }
-      $ticket = new Ticket;
+      $ticket = new Ticket();
       foreach ($todelete as $mailcollector_id => $rejected) {
          if ($this->getFromDB($mailcollector_id)) {
             $this->mid          = -1;
@@ -361,7 +361,7 @@ class MailCollector  extends CommonDBTM {
          $this->fetch_emails = 0;
          //Connect to the Mail Box
          $this->connect();
-         $rejected = new NotImportedEmail;
+         $rejected = new NotImportedEmail();
 
          if ($this->marubox) {
             // Get Total Number of Unread Email in mail box
@@ -1285,7 +1285,7 @@ class MailCollector  extends CommonDBTM {
    function sendMailRefusedResponse($to='', $subject='') {
       global $CFG_GLPI, $LANG;
 
-      $mmail           = new NotificationMail;
+      $mmail           = new NotificationMail();
       $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);

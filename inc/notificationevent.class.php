@@ -70,7 +70,7 @@ class NotificationEvent extends CommonDBTM {
          $email_processed    = array();
          $email_notprocessed = array();
          //Get template's informations
-         $template = new NotificationTemplate;
+         $template = new NotificationTemplate();
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
          $entity             = $notificationtarget->getEntity();

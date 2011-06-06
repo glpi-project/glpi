@@ -489,7 +489,7 @@ class SoftwareLicense extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $softwares_id = $software->getField('id');
-      $license  = new SoftwareLicense;
+      $license  = new SoftwareLicense();
       $computer = new Computer();
 
       if (!$software->can($softwares_id,"r")) {

@@ -176,7 +176,7 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $ri = new ReservationItem;
+      $ri = new ReservationItem();
 
       echo "<div><form method='post' name=form action='".getItemTypeFormURL('ReservationItem')."'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -219,7 +219,7 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $r = new ReservationItem;
+      $r = new ReservationItem();
 
       if ($r->getFromDB($ID)) {
          $type = $r->fields["itemtype"];
@@ -265,7 +265,7 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $ri = new ReservationItem;
+      $ri = new ReservationItem();
       $ok = false;
       $showentity = isMultiEntitiesMode();
 
@@ -399,7 +399,7 @@ class ReservationItem extends CommonDBTM {
       }
 
       foreach ($items_infos as $entity => $items) {
-         $resitem = new ReservationItem;
+         $resitem = new ReservationItem();
          if (NotificationEvent::raiseEvent("alert", new Reservation(),
                                            array('entities_id' => $entity,
                                                  'items'       => $items))) {

@@ -63,7 +63,7 @@ class RuleCriteria extends CommonDBChild {
 
    function getNameID($with_comment=0) {
 
-      $rule = new $this->itemtype ();
+      $rule = new $this->itemtype();
       return html_clean($rule->getMinimalCriteriaText($this->fields));
    }
 

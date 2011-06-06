@@ -179,7 +179,7 @@ class NotificationTarget extends CommonDBChild {
    static function getInstanceByType($itemtype, $event='', $options=array()) {
 
       if ($itemtype != '' && class_exists($itemtype)) {
-         return self::getInstance(new $itemtype (), $event, $options);
+         return self::getInstance(new $itemtype(), $event, $options);
       }
       return false;
    }
@@ -416,7 +416,7 @@ class NotificationTarget extends CommonDBChild {
          $username = $data['name'];
       }
       if (isset($data['id']) && $data['id'] > 0) {
-         $user = new User;
+         $user = new User();
          if (!$user->getFromDB($data['id'])
              || $user->getField('is_deleted')==1
              || $user->getField('is_active')==0) {
@@ -466,7 +466,7 @@ class NotificationTarget extends CommonDBChild {
    **/
    function getItemAuthorAddress() {
 
-      $user = new User;
+      $user = new User();
       if ($this->obj->isField('users_id') && $user->getFromDB($this->obj->getField('users_id'))) {
 
          $this->addToAddressesList(array('email'    => $user->getField('email'),

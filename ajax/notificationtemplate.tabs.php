@@ -54,7 +54,7 @@ if (isset($_POST['id']) && $_POST['id'] > 0) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
       case 1 :
-         $templatelanguage = new NotificationTemplateTranslation;
+         $templatelanguage = new NotificationTemplateTranslation();
          $templatelanguage->showSummary($template);
          break;
 

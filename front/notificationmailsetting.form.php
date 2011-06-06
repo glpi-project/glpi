@@ -43,7 +43,7 @@ if (!empty($_POST["test_smtp_send"])) {
    NotificationMail::testNotification();
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (!empty($_POST["update"])) {
-   $config = new Config;
+   $config = new Config();
    $config->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }

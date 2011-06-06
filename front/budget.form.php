@@ -43,7 +43,7 @@ if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = '';
 }
 
-$budget = new Budget;
+$budget = new Budget();
 if (isset($_POST["add"])) {
    $budget->check(-1,'w',$_POST);
 

@@ -318,12 +318,12 @@ class Rule extends CommonDBTM {
       } else if ($ret=$this->getFromDB($ID)) {
 
          if ($withactions) {
-            $RuleAction    = new $this->ruleactionclass;
+            $RuleAction    = new $this->ruleactionclass();
             $this->actions = $RuleAction->getRuleActions($ID);
          }
 
          if ($withcriterias) {
-            $RuleCriterias   = new $this->rulecriteriaclass;
+            $RuleCriterias   = new $this->rulecriteriaclass();
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
 
@@ -1151,7 +1151,7 @@ class Rule extends CommonDBTM {
       //Process the rule
       $this->process($input, $output, $params, false);
 
-      $criteria = new $this->rulecriteriaclass;
+      $criteria = new $this->rulecriteriaclass();
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadrehov'>";
@@ -1731,7 +1731,7 @@ class Rule extends CommonDBTM {
       }
 
       foreach ($DB->request($query) as $rule) {
-         $affect_rule = new Rule;
+         $affect_rule = new Rule();
          $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
          $rules[] = $affect_rule;
       }

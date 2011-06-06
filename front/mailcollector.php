@@ -52,7 +52,7 @@ if (!canUseImapPop()) {
    exit();
 
 } else {
-   $mailcollector = new MailCollector;
+   $mailcollector = new MailCollector();
    $mailcollector->title();
    Search::show('MailCollector');
    commonFooter();

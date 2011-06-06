@@ -946,7 +946,7 @@ class Config extends CommonDBTM {
 
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
-         $tmp = new $type;
+         $tmp = new $type();
          $tmp->showSystemInformations($width);
       }
       loadLanguage($oldlang);

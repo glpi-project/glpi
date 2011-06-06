@@ -347,7 +347,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-      $DB = new DB;
+      $DB = new DB();
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.83-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
@@ -441,7 +441,7 @@ function step7() {
    require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
    require_once (GLPI_ROOT . "/inc/common.function.php");
    require_once (GLPI_CONFIG_DIR . "/config_db.php");
-   $DB = new DB;
+   $DB = new DB();
 
    $query = "UPDATE `glpi_configs`
              SET `url_base` = '".str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER'])."'

@@ -83,7 +83,7 @@ class NetworkPort extends CommonDBChild {
 
       if (count($updates)) {
          $save_ID = $this->fields["id"];
-         $n       = new NetworkPort_NetworkPort;
+         $n       = new NetworkPort_NetworkPort();
 
          if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
             $this->updateInDB($updates);
@@ -166,7 +166,7 @@ class NetworkPort extends CommonDBChild {
    **/
    function getContact($ID) {
 
-      $wire = new NetworkPort_NetworkPort;
+      $wire = new NetworkPort_NetworkPort();
       if ($contact_id = $wire->getOppositeContact($ID)) {
          return $contact_id;
       }
@@ -429,7 +429,7 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
-      $contact = new NetworkPort_NetworkPort;
+      $contact = new NetworkPort_NetworkPort();
       $canedit = $device1->can($device1->fields["id"], 'w');
       $ID      = $netport->fields["id"];
 

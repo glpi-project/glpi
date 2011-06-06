@@ -513,7 +513,7 @@ class Entity extends CommonTreeDropdown {
 
       if ($ruleid) {
          //Add an action associated to the rule
-         $ruleAction = new RuleAction;
+         $ruleAction = new RuleAction();
 
          //Action is : affect computer to this entity
          $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id",

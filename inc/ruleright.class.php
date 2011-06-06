@@ -118,7 +118,7 @@ class RuleRight extends Rule {
    **/
    function filterActions($actions) {
 
-      $RuleAction    = new RuleAction;
+      $RuleAction    = new RuleAction();
       $this->actions = $RuleAction->getRuleActions($this->fields["id"]);
 
       foreach ($this->actions as $action) {

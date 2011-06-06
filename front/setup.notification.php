@@ -42,7 +42,7 @@ checkSeveralRightsOr(array('notification'=>'r','config'=>'w'));
 commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing",-1);
 
 if (isset($_GET['activate'])) {
-   $config = new Config;
+   $config = new Config();
    $tmp['id'] = $CFG_GLPI['id'];
    $tmp['use_mailing'] = 1;
    $config->update($tmp);

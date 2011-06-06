@@ -295,7 +295,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($data=$DB->fetch_assoc($result)) {
             $softwares_id = $data['sID'];
 
-            $soft       = new Software;
+            $soft       = new Software();
             $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
             $linkUser   = haveRight('user', 'r');
             $title      = $LANG['help'][31] ." = ". $soft->fields["name"];
