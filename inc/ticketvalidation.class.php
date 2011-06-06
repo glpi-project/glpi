@@ -164,7 +164,7 @@ class TicketValidation  extends CommonDBChild {
          }*/
 
          if (!isset($input['entities_id'])) { // Massive modif case
-            $job = new Ticket;
+            $job = new Ticket();
             $job->getFromDB($input["tickets_id"]);
 
             $input['entities_id'] = $job->fields["entities_id"];
@@ -232,7 +232,7 @@ class TicketValidation  extends CommonDBChild {
    function prepareInputForUpdate($input) {
       global $LANG;
 
-      $job = new Ticket;
+      $job = new Ticket();
       $forbid_fields = array();
 
       if ($this->fields["users_id_validate"] == getLoginUserID()) {
@@ -270,7 +270,7 @@ class TicketValidation  extends CommonDBChild {
    function post_updateItem($history=1) {
       global $LANG,$CFG_GLPI;
 
-      $job = new Ticket;
+      $job = new Ticket();
       $mailsend = false;
 
       if ($job->getFromDB($this->fields["tickets_id"])) {

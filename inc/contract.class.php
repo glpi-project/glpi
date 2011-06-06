@@ -1024,7 +1024,7 @@ class Contract extends CommonDBTM {
          addToNavigateListItems('Contract',$cID);
          $contracts[] = $cID;
          $assocID = $DB->result($result, $i, "id");
-         $con = new Contract;
+         $con = new Contract();
          $con->getFromDB($cID);
          echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
          echo "<td class='center'>";

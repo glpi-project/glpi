@@ -243,7 +243,7 @@ class TicketFollowup  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      $job = new Ticket;
+      $job = new Ticket();
       $mailsend = false;
 
       if ($job->getFromDB($this->input["tickets_id"])) {
@@ -272,7 +272,7 @@ class TicketFollowup  extends CommonDBTM {
       global $LANG;
 
 //      $input["_isadmin"] = haveRight("global_add_followups","1");
-      $input["_job"] = new Ticket;
+      $input["_job"] = new Ticket();
 
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;

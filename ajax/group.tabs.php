@@ -45,7 +45,7 @@ if (!isset($_POST["id"])) {
 
 checkRight("group", "r");
 
-$group = new Group;
+$group = new Group();
 
 if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
 

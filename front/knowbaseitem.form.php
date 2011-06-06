@@ -55,7 +55,7 @@ if (!isset($_GET["removefromfaq"])) {
    $_GET["removefromfaq"] = "";
 }
 
-$kb = new KnowbaseItem;
+$kb = new KnowbaseItem();
 
 if ($_GET["id"] == "new") {
    // on affiche le formulaire de saisie de l'item

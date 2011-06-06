@@ -168,7 +168,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    static function testNotification() {
       global $CFG_GLPI,$LANG;
 
-      $mmail = new NotificationMail;
+      $mmail = new NotificationMail();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);

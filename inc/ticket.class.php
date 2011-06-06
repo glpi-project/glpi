@@ -960,7 +960,7 @@ class Ticket extends CommonITILObject {
 //       }
 
       // Manage auto assign
-      $entitydata = new EntityData;
+      $entitydata = new EntityData();
       $auto_assign_mode = $CFG_GLPI['auto_assign_mode'];
       if ($entitydata->getFromDB($input['entities_id'])) {
          $auto_assign_mode = $entitydata->getField('auto_assign_mode');
@@ -3625,8 +3625,9 @@ class Ticket extends CommonITILObject {
          echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
       }
 
-      // Link to open a new ticcket
-      if ($item->getID() && in_array($item->getType(),$_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
+      // Link to open a new ticket
+      if ($item->getID() && in_array($item->getType(),
+                                     $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
          echo "<tr><td class='tab_bg_2 center' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
               "&amp;itemtype=".$item->getType()."\"><strong>".$LANG['joblist'][7]."</strong></a>";

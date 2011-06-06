@@ -150,7 +150,7 @@ class Fieldblacklist extends CommonDropdown {
       global $CFG_GLPI;
 
       if ($this->fields['id'] > 0) {
-         $item = new $this->fields['itemtype'];
+         $item = new $this->fields['itemtype']();
          echo $item->getTypeName();
          echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
 
@@ -191,7 +191,7 @@ class Fieldblacklist extends CommonDropdown {
       if (!isset($this->fields['entities_id'])) {
          $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
-      $target = new $this->fields['itemtype'];
+      $target = new $this->fields['itemtype']();
 
       $criteria = array();
       foreach ($DB->list_fields($target->getTable()) as $field) {

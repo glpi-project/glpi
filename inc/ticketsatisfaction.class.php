@@ -162,7 +162,7 @@ class TicketSatisfaction extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_mailing"]) {
-         $ticket = new Ticket;
+         $ticket = new Ticket();
          if ($ticket->getFromDB($this->fields['tickets_id'])) {
             NotificationEvent::raiseEvent("satisfaction", $ticket);
          }

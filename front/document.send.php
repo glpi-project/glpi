@@ -41,7 +41,7 @@ if (!$CFG_GLPI["use_public_faq"]) {
    checkLoginUser();
 }
 
-$doc = new Document;
+$doc = new Document();
 
 if (isset($_GET['docid'])) { // docid for document
    if (!$doc->getFromDB($_GET['docid'])) {

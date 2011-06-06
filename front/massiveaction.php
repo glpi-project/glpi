@@ -296,7 +296,7 @@ if (isset($_POST["itemtype"])) {
             $inst = new Computer_SoftwareVersion();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $comp = new Computer;
+                  $comp = new Computer();
                   if ($comp->getFromDB($key)
                       && $comp->fields["entities_id"] == $_SESSION["glpiactive_entity"]) {
                      $inst->add(array('computers_id'        => $key,
@@ -502,8 +502,8 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "compute_software_category" :
-            $softcatrule = new RuleSoftwareCategoryCollection;
-            $soft = new Software;
+            $softcatrule = new RuleSoftwareCategoryCollection();
+            $soft = new Software();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $params = array();
@@ -531,7 +531,7 @@ if (isset($_POST["itemtype"])) {
 
          case "force_user_ldap_update" :
             checkRight("user", "w");
-            $user = new User;
+            $user = new User();
             $ids = array();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
@@ -718,7 +718,7 @@ if (isset($_POST["itemtype"])) {
                }
             }
             if (!empty($emails_ids)) {
-               $mailcollector = new MailCollector;
+               $mailcollector = new MailCollector();
                if ($_POST["action"] == 'delete_email') {
                   $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
                }

@@ -357,7 +357,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals('Indepnet', $manu, "Fail: manufacturer not altered");
 
       // Apply Rule to software
-      $rulecollection = new RuleDictionnarySoftwareCollection;
+      $rulecollection = new RuleDictionnarySoftwareCollection();
       $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.78',
                                                          "manufacturer" => $manu,
                                                          "old_version"  => ''),

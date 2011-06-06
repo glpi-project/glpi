@@ -253,7 +253,7 @@ class RuleCollection extends CommonDBTM {
 
       $name = $this->getRuleClassName();
       if ($name !=  '') {
-         return new $name ();
+         return new $name();
       }
       return null;
    }
@@ -566,7 +566,7 @@ class RuleCollection extends CommonDBTM {
    function moveRule($ID, $ref_ID, $type='after') {
       global $DB;
 
-      $ruleDescription = new Rule;
+      $ruleDescription = new Rule();
 
       // Get actual ranking of Rule to move
       $ruleDescription->getFromDB($ID);

@@ -320,7 +320,7 @@ class Notification extends CommonDBTM {
 
    static function send ($mailing_options) {
 
-      $mail = new NotificationMail;
+      $mail = new NotificationMail();
       $mail->sendNotification($mailing_options);
       $mail->ClearAddresses();
    }

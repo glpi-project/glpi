@@ -62,7 +62,7 @@ class RuleAction extends CommonDBChild {
 
    function getNameID($with_comment=0) {
 
-      $rule = new $this->itemtype ();
+      $rule = new $this->itemtype();
       return html_clean($rule->getMinimalActionText($this->fields));
    }
 
@@ -110,7 +110,7 @@ class RuleAction extends CommonDBChild {
 
       $rules_actions = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $tmp = new RuleAction;
+         $tmp = new RuleAction();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
       }
@@ -302,7 +302,7 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   default :
-                     $rule = new $options["sub_type"];
+                     $rule = new $options["sub_type"]();
                      $display = $rule->displayAdditionalRuleAction($actions[$options["field"]],
                                                                    $options);
                      break;

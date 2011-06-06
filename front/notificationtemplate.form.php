@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete_languages"])) {
    $notificationtemplate->check(-1,'d');
-   $language = new NotificationTemplateTranslation;
+   $language = new NotificationTemplateTranslation();
    if (isset($_POST['languages'])) {
       foreach ($_POST['languages'] as $key =>$val) {
          if ($val=='on') {

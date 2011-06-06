@@ -112,8 +112,9 @@ function ajaxDisplaySearchTextForDropdown($id, $size=4) {
  *
  **/
 function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                          $minsize=-1, $forceloadfor = array()) {
+                                          $minsize=-1, $forceloadfor=array()) {
    global $CFG_GLPI;
+
    if (count($forceloadfor)==0) {
       $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
    }

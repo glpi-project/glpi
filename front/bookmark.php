@@ -45,7 +45,7 @@ if (!isset($_GET["url"])) {
    $_GET["url"] = "";
 }
 
-$bookmark = new Bookmark;
+$bookmark = new Bookmark();
 
 if (isset($_POST["add"])) {
    $bookmark->check(-1, 'w', $_POST);

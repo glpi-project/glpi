@@ -701,7 +701,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
       if ($sector=='admin' && $item == 'rule') {
          foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
-            $rulecollection = new $rulecollectionclass;
+            $rulecollection = new $rulecollectionclass();
             if ($rulecollection->canList()) {
                $ruleclassname = $rulecollection->getRuleClassName();
                $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['title']

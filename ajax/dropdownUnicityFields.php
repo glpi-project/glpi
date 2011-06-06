@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownUnicityFields.php")) {
 
 checkRight("config", "w");
 
-$field = new FieldUnicity;
+$field = new FieldUnicity();
 if ($_POST['id'] > 0) {
    $field->getFromDB($_POST['id']);
 } else {

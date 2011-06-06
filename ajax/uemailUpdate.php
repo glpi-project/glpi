@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
 checkLoginUser();
 
 if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
-   $user = new User;
+   $user = new User();
    $email = "";
    if ($user->getFromDB($_REQUEST["value"])) {
       $email = $user->getField('email');

@@ -255,7 +255,7 @@ class RuleRightCollection extends RuleCollection {
    **/
    function getFieldsForQuery() {
 
-      $rule      = new RuleRight;
+      $rule      = new RuleRight();
       $criterias = $rule->getCriterias();
 
       $fields = array();

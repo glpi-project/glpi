@@ -59,7 +59,7 @@ if (isset($_GET['order'])) {
 if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target'] = $_SERVER['PHP_SELF'];
 
-   $authldap = new AuthLDAP;
+   $authldap = new AuthLDAP();
    $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
 
    AuthLdap::showUserImportForm($authldap);

@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 if (isset($_POST["sub_type"])) {
-   $rule      = new $_POST["sub_type"];
+   $rule      = new $_POST["sub_type"]();
    $criterias = $rule->getCriterias();
 
    if (count($criterias)) {

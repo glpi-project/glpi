@@ -42,7 +42,7 @@ if (!class_exists($_POST["itemtype"])) {
    exit();
 }
 
-$item = new $_POST["itemtype"];
+$item = new $_POST["itemtype"]();
 $item->checkGlobal('r');
 
 $first_group    = true;

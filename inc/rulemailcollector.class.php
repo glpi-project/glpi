@@ -271,7 +271,7 @@ class RuleMailCollector extends Rule {
 
                                  //Rights on more than one entity : get the user's prefered entity
                                  if (isset($params['users_id'])) { // Not set when testing
-                                    $user = new User;
+                                    $user = new User();
                                     $user->getFromDB($params['users_id']);
 
                                     //If an entity is defined in user's preferences, use this one

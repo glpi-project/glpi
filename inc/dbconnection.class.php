@@ -154,7 +154,7 @@ class DBConnection extends CommonDBTM {
 
       if (self::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
-         $DB = new DBSlave;
+         $DB = new DBSlave();
          return $DB->connected;
       }
       return false;
@@ -167,7 +167,7 @@ class DBConnection extends CommonDBTM {
    static function switchToMaster() {
       global $DB;
 
-      $DB = new DB;
+      $DB = new DB();
       return $DB->connected;
    }
 
@@ -409,7 +409,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function changeCronTaskStatus($enable=true) {
 
-      $cron = new CronTask;
+      $cron = new CronTask();
       $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');
       $input['id']    = $cron->fields['id'];
       $input['state'] = ($enable?1:0);

@@ -359,7 +359,7 @@ class Reservation extends CommonDBChild {
                        "annee_courante=$annee_precedente";
 
       if (!empty($ID)) {
-         $m = new ReservationItem;
+         $m = new ReservationItem();
          $m->getFromDB($ID);
 
          if ((!isset($m->fields['is_active'])) || !$m->fields['is_active']) {
@@ -551,7 +551,7 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      $resa = new Reservation;
+      $resa = new Reservation();
 
       if (!empty($ID)) {
          if (!$resa->getFromDB($ID)) {
@@ -588,7 +588,7 @@ class Reservation extends CommonDBChild {
       echo "<tr><th colspan='2'>".$LANG['reservation'][9]."</th></tr>\n";
 
       // Add Hardware name
-      $r = new ReservationItem;
+      $r = new ReservationItem();
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][1]."&nbsp;:</td>";
       echo "<td>";
@@ -707,7 +707,7 @@ class Reservation extends CommonDBChild {
          $result = $DB->query($query);
 
          if ($DB->numrows($result)>0) {
-            $m = new ReservationItem;
+            $m = new ReservationItem();
             while ($data=$DB->fetch_array($result)) {
                $m->getFromDB($data['id']);
 
@@ -842,7 +842,7 @@ class Reservation extends CommonDBChild {
       echo "<div class='firstbloc'>";
       ReservationItem::showActivationFormForItem($item);
 
-      $ri = new ReservationItem;
+      $ri = new ReservationItem();
       if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
          $now = $_SESSION["glpi_currenttime"];
 
@@ -993,7 +993,7 @@ class Reservation extends CommonDBChild {
                $link = "&nbsp;";
 
                if (class_exists($ri->fields['itemtype'])) {
-                  $item = new $ri->fields['itemtype'];
+                  $item = new $ri->fields['itemtype']();
                   if ($item->getFromDB($ri->fields['items_id'])) {
                      $link = $item->getLink();
                   }
@@ -1049,7 +1049,7 @@ class Reservation extends CommonDBChild {
                $link = "&nbsp;";
 
                if (class_exists($ri->fields['itemtype'])) {
-                  $item = new $ri->fields['itemtype'];
+                  $item = new $ri->fields['itemtype']();
                   if ($item->getFromDB($ri->fields['items_id'])) {
                      $link=$item->getLink();
                   }

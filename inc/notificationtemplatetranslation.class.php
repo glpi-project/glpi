@@ -102,7 +102,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $canedit = haveRight("config", "w");
 
-      $template = new NotificationTemplate;
+      $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
       initEditorSystem('content_html');

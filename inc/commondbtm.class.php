@@ -493,7 +493,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Clean ticket open against the item
       if (in_array($this->getType(),$CFG_GLPI["ticket_types"])) {
-         $job = new Ticket;
+         $job = new Ticket();
 
          $query = "SELECT *
                    FROM `glpi_tickets`
@@ -2552,9 +2552,9 @@ class CommonDBTM extends CommonGLPI {
 
          if (in_array('CommonDBChild',class_parents($this))) {
             if ($this->getField($this->itemtype)) {
-               $item = new $double['itemtype'];
+               $item = new $double['itemtype']();
             } else {
-               $item = new $this->itemtype;
+               $item = new $this->itemtype();
             }
 
             $item->getFromDB($double['items_id']);

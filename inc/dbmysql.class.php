@@ -519,7 +519,7 @@ class DBmysql {
     * @return DBIterator
    **/
    public function request ($tableorsql, $crit="") {
-      return new DBmysqlIterator ($this, $tableorsql, $crit);
+      return new DBmysqlIterator($this, $tableorsql, $crit);
    }
 
 }

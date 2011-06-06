@@ -42,7 +42,7 @@ echo "<table class='tab_cadre'>";
 echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
 
 foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
-   $rulecollection = new $rulecollectionclass;
+   $rulecollection = new $rulecollectionclass();
    if ($rulecollection->canList()) {
       if ($plug = isPluginItemType($rulecollectionclass)) {
          $function = 'plugin_version_'.strtolower($plug['plugin']);

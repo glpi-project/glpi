@@ -275,7 +275,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $res_rule = $this->processAllRules($input, array(), array());
          $res_rule = addslashes_deep($res_rule);
       }
-     $soft = new Software;
+     $soft = new Software();
 
       //Software's name has changed
       if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
@@ -358,7 +358,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                           HAVING `cpt` = '0'
                           ORDER BY `cpt`");
 
-         $software = new Software;
+         $software = new Software();
          while ($soft = $DB->fetch_array($res_countsoftinstall)) {
             $software->putInTrash($soft["id"], $LANG['rulesengine'][87]);
          }
@@ -405,7 +405,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                         SET `softwareversions_id_use` = '$new_versionID'
                         WHERE `softwareversions_id_use` = '$version_id'");
             //Delete old version
-            $old_version = new SoftwareVersion;
+            $old_version = new SoftwareVersion();
             $old_version->delete(array("id" => $version_id));
          }
       }

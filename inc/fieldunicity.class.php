@@ -156,7 +156,7 @@ class FieldUnicity extends CommonDropdown {
 
       //Criteria already added : only display the selected itemtype
       if ($ID > 0) {
-          $item = new $this->fields['itemtype'];
+          $item = new $this->fields['itemtype']();
           echo $item->getTypeName();
           echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'";
 
@@ -252,7 +252,7 @@ class FieldUnicity extends CommonDropdown {
 
       $unicity_fields = explode(',', $unicity->fields['fields']);
       //Search option for this type
-      $target = new $unicity->fields['itemtype'];
+      $target = new $unicity->fields['itemtype']();
 
       //Construct list
       echo "<span id='span_fields' name='span_fields'>";
@@ -408,7 +408,7 @@ class FieldUnicity extends CommonDropdown {
 
       $fields       = array();
       $where_fields = array();
-      $item         = new $unicity->fields['itemtype'];
+      $item         = new $unicity->fields['itemtype']();
       foreach (explode(',',$unicity->fields['fields']) as $field) {
          $fields[]       = $field;
          $where_fields[] = $field;
@@ -436,7 +436,7 @@ class FieldUnicity extends CommonDropdown {
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
                    WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
-                        $where_template 
+                        $where_template
                    GROUP BY $fields_string
                    ORDER BY cpt DESC";
          $results = array();

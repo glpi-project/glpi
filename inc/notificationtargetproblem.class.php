@@ -138,7 +138,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $datas['items'] = array();
          if (count($tickets)) {
             foreach ($items as $data) {
-               $item = new $data['itemtype'];
+               $item = new $data['itemtype']();
                if ($item->getFromDB($data['items_id'])) {
                   $tmp = array();
                   $tmp['##item.itemtype##']    = $item->getTypeName();
@@ -161,7 +161,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
                   //Object user
                   if ($item->getField('users_id')) {
-                     $user_tmp = new User;
+                     $user_tmp = new User();
                      if ($user_tmp->getFromDB($item->getField('users_id'))) {
                         $tmp['##item.user##'] = $user_tmp->getName();
                      }

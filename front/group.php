@@ -41,7 +41,7 @@ checkRight("group","r");
 
 commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
 
-$group = new Group;
+$group = new Group();
 $group->title();
 
 Search::show('Group');
