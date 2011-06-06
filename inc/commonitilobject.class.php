@@ -283,7 +283,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
    **/
    function getDefaultActorRightSearch($type) {
-      
+
       if ($type == self::ASSIGN) {
          return "own_ticket";
       }
@@ -1370,6 +1370,8 @@ abstract class CommonITILObject extends CommonDBTM {
                                                         => array('jointype'  => 'child',
                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                 '= '.self::ASSIGN)));
+      $tab[5]['filter']        = 'own_ticket';
+
       $tab[6]['table']     = 'glpi_suppliers';
       $tab[6]['field']     = 'name';
       $tab[6]['linkfield'] = 'suppliers_id_assign';
@@ -1668,7 +1670,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $showuserlink = 1;
       }
       // Manage actors : requester and assign
-      echo "<table class='tab_cadre_fixe'>"; 
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='10%'>".$LANG['common'][103]."&nbsp;:</th>";
       echo "<th width='30%'>".$LANG['job'][4];
