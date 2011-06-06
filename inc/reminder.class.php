@@ -553,6 +553,11 @@ class Reminder extends CommonDBTM {
       $users_id = getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];
 
+      $is_helpdesk_visible = '';
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
+      }
+
       if ($entity < 0) {
          $query = "SELECT *
                    FROM `glpi_reminders`
@@ -568,12 +573,17 @@ class Reminder extends CommonDBTM {
       } else if ($entity == $_SESSION["glpiactive_entity"]) {
          $query = "SELECT *
                    FROM `glpi_reminders`
-                   WHERE `is_private` = '0' ".
+                   WHERE `is_private` = '0'
+                         $is_helpdesk_visible ".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
-         $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
-                  "</a> (".Dropdown::getDropdownName("glpi_entities", $entity).")";
+         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+            $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
+                     "</a> (".Dropdown::getDropdownName("glpi_entities", $entity).")";
+         } else {
+            $titre = $LANG['reminder'][1]." (".Dropdown::getDropdownName("glpi_entities", $entity).")";
+         }
 
          if (haveRight("reminder_public","w")) {
             $is_private = 0;
@@ -583,7 +593,8 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         AND `is_recursive` = '1' ".
+                         AND `is_recursive` = '1'
+                         $is_helpdesk_visible ".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -592,7 +603,8 @@ class Reminder extends CommonDBTM {
       } else { // Filles
          $query = "SELECT *
                    FROM `glpi_reminders`
-                   WHERE `is_private` = '0' ".
+                   WHERE `is_private` = '0'
+                         $is_helpdesk_visible ".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -654,11 +666,17 @@ class Reminder extends CommonDBTM {
       $planningRight = haveRight("show_planning", "1");
       $users_id      = getLoginUserID();
 
+      $is_helpdesk_visible = '';
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
+      }
+
       if (!$is_private && $is_recursive) { // show public reminder
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         AND `is_recursive` = '1' ".
+                         AND `is_recursive` = '1'
+                         $is_helpdesk_visible ".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", "", true);
 
          $titre = $LANG['reminder'][16];
@@ -667,7 +685,8 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         AND `is_recursive` = '0' ".
+                         AND `is_recursive` = '0'
+                         $is_helpdesk_visible".
                          getEntitiesRestrictRequest("AND", "glpi_reminders");
 
          $titre = $LANG['reminder'][1];
@@ -676,7 +695,8 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `users_id` = '$users_id'
-                         AND `is_private` = '1'";
+                         AND `is_private` = '1'
+                         $is_helpdesk_visible";
 
          $titre = $LANG['reminder'][0];
       }
