@@ -245,7 +245,9 @@ class Ticket extends CommonITILObject {
       return haveRight('delete_ticket', '1');
    }
 
+
    function getDefaultActor($type) {
+
       if ($type == self::ASSIGN) {
          if (haveRight("own_ticket","1")) {
             return getLoginUserID();
@@ -256,6 +258,7 @@ class Ticket extends CommonITILObject {
 
 
    function getDefaultActorRightSearch($type) {
+
       $right = "all";
       if ($type == self::ASSIGN) {
          $right = "own_ticket";

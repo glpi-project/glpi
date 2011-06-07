@@ -478,16 +478,17 @@ function update0801to083($output='HTML') {
 
 
    $migration->renameTable('glpi_ticketcategories','glpi_itilcategories');
+   $migration->dropKey('glpi_itilcategories', 'ticketcategories_id');
    $migration->changeField('glpi_itilcategories', 'ticketcategories_id', 'itilcategories_id',
                            'INT( 11 ) NOT NULL DEFAULT 0');
    $migration->migrationOneTable('glpi_itilcategories');
    $migration->addKey('glpi_itilcategories', 'itilcategories_id');
-   $migration->dropKey('glpi_itilcategories', 'ticketcategories_id');
+
+   $migration->dropKey('glpi_tickets', 'ticketcategories_id');
    $migration->changeField('glpi_tickets', 'ticketcategories_id', 'itilcategories_id',
                            'INT( 11 ) NOT NULL DEFAULT 0');
    $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'itilcategories_id');
-   $migration->dropKey('glpi_tickets', 'ticketcategories_id');
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
@@ -555,7 +556,7 @@ function update0801to083($output='HTML') {
 
    $migration->displayMessage($LANG['update'][142] . ' - rule ticket migration');
 
-   $changes['RuleTicket'] = array('ticketcategories_id'         => 'itilcategories_id');
+   $changes['RuleTicket'] = array('ticketcategories_id' => 'itilcategories_id');
 
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $tab) {

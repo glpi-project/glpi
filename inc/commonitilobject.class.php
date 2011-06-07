@@ -258,6 +258,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Get Default actor when creating the object
     *
@@ -266,6 +267,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
    **/
    function getDefaultActor($type) {
+
       /// TODO own_ticket -> own_itilobject
       if ($type == self::ASSIGN) {
          if (haveRight("own_ticket","1")) {
@@ -274,6 +276,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return 0;
    }
+
 
    /**
     * Get Default actor when creating the object
@@ -289,6 +292,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return "all";
    }
+
 
    function cleanDBonPurge() {
 
@@ -823,7 +827,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array of doc added name
    **/
-   function addFiles ($id) {
+   function addFiles($id) {
       global $LANG, $CFG_GLPI;
 
       if (!isset($_FILES)) {
@@ -893,7 +897,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer from 1 to 5 (priority)
    **/
-   static function computeGenericPriority ($itemtype, $urgency, $impact) {
+   static function computeGenericPriority($itemtype, $urgency, $impact) {
       global $CFG_GLPI;
 
       if (isset($CFG_GLPI[constant($itemtype.'::MATRIX_FIELD')][$urgency][$impact])) {

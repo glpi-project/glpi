@@ -65,8 +65,8 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $ent1 = $this->sharedFixture['entity'][1];
       $ent2 = $this->sharedFixture['entity'][2];
 
-      $obj = new TicketCategory();
-      $fk = 'ticketcategories_id';
+      $obj = new ITILCategory();
+      $fk = 'itilcategories_id';
 
       // root entity - A - new
       $id[0] = $obj->import(array('name'         => 'A',
