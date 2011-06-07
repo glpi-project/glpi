@@ -2248,7 +2248,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $items_id            = "";
    $content             = "";
    $title               = "";
-   $itilcategories_id = 0;
+   $itilcategories_id   = 0;
    $urgency             = 3;
    $type                = 0;
 

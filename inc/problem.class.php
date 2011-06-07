@@ -698,7 +698,7 @@ class Problem extends CommonITILObject {
                          'impact'                    => 3,
                          'content'                   => '',
                          'name'                      => '',
-                         'itilcategories_id'       => 0);
+                         'itilcategories_id'         => 0);
          foreach ($values as $key => $val) {
             if (!isset($options[$key])) {
                $options[$key] = $val;

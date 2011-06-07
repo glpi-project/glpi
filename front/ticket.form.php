@@ -182,7 +182,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'suppliers_id_assign'       => 0,
                    'name'                      => '',
                    'content'                   => '',
-                   'itilcategories_id'       => 0,
+                   'itilcategories_id'         => 0,
                    'urgency'                   => 3,
                    'impact'                    => 3,
                    'priority'                  => Ticket::computePriority(3,3),
