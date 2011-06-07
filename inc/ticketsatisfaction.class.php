@@ -70,6 +70,12 @@ class TicketSatisfaction extends CommonDBTM {
          return false;
       }
 
+      // you can't change if your answer > 12h
+      if (!is_null($this->fields['date_answered'])
+          && (strtotime("now") - strtotime($this->fields['date_answered']) > 43200)) {
+         return false;
+      }
+
       if ($ticket->isUser(Ticket::REQUESTER,getLoginUserID())
           || $ticket->fields["users_id_recipient"] === getLoginUserID()
           || (isset($_SESSION["glpigroups"])
