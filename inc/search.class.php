@@ -2341,10 +2341,15 @@ class Search {
                $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
+               $observer_table      = '`glpi_tickets_users_ticket_users_id_'.self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
+               $observergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
+
                $condition = "(";
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                  $condition .= " $requester_table.users_id = '".getLoginUserID()."' ";
+                  $condition .= " $requester_table.users_id = '".getLoginUserID()."'
+                                 OR $observer_table.users_id = '".getLoginUserID()."'";
+
                } else { // Can own ticket : show my and assign to me
                   $condition .= " $requester_table.users_id = '".getLoginUserID()."'
                                  OR $assign_table.users_id = '".getLoginUserID()."' ";
@@ -2946,11 +2951,16 @@ class Search {
 //                $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
 //                $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
 //                $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
+//               $observer_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
+//               $observergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "ticket_users_id", 0, 0,
                                             $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_tickets_users", "ticket_users_id", 0, 0,
+                                            $searchopt[66]['joinparams']['beforejoin']['joinparams']);
                } else { // Can own ticket : show my and assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "ticket_users_id", 0, 0,
