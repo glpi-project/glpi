@@ -257,6 +257,21 @@ class NotificationTargetTicket extends NotificationTarget {
                                             'id'       => $author_id));
          }
       }
+
+      // Anonymous user
+      $query = "SELECT `alternative_email`
+                FROM `glpi_tickets_users`
+                WHERE `glpi_tickets_users`.`tickets_id` = '".$this->obj->fields["id"]."'
+                      AND `glpi_tickets_users`.`users_id` = 0
+                      AND `glpi_tickets_users`.`use_notification` = 1
+                      AND `glpi_tickets_users`.`type` = '$type'";
+      foreach ($DB->request($query) as $data) {
+         if (NotificationMail::isUserAddressValid($data['alternative_email'])) {
+            $this->addToAddressesList(array('email'    => $data['alternative_email'],
+                                            'language' => $CFG_GLPI["language"],
+                                            'id'       => -1));
+         }
+      }
    }
 
 
