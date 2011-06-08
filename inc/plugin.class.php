@@ -453,9 +453,14 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::NOTACTIVATED :
-                  echo "<td><a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
-                             $LANG['buttons'][41]."</a></td>";
                   echo "<td>";
+                  $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                  if (function_exists($function) && $function()) {
+                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
+                                $LANG['buttons'][41]."</a>";
+                  }
+                  // Else : reason displayed by the plugin
+                  echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             $LANG['buttons'][5]."</a>";
