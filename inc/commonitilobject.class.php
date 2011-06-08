@@ -1496,8 +1496,6 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $userdata;
             }
 
-            $showuserlink = $save_showuserlink;
-
             if ($CFG_GLPI['use_mailing']) {
                $text = $LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).
                        '<br>';
@@ -1516,8 +1514,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if ($canedit
                    || $d['users_id'] == getLoginUserID()) {
-                  showToolTip($text, array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                           'popup' => 'edit_user_notification&amp;id='.$d['id']));
+                  $opt = array();
+                  if ($showuserlink) {
+                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                  'popup' => 'edit_user_notification&amp;id='.$d['id']);
+                  }
+                  showToolTip($text, $opt);
                }
             }
 
@@ -1529,6 +1531,8 @@ abstract class CommonITILObject extends CommonDBTM {
                       alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
             }
             echo "<br>";
+
+            $showuserlink = $save_showuserlink;
          }
       }
    }
