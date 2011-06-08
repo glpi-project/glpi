@@ -3735,7 +3735,6 @@ class Ticket extends CommonDBTM {
             } else {
                echo $userdata;
             }
-            $showuserlink = $save_showuserlink;
 
             if ($CFG_GLPI['use_mailing']) {
                $text = $LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).
@@ -3753,8 +3752,12 @@ class Ticket extends CommonDBTM {
                }
                echo "&nbsp;";
                if ($canedit || $d['users_id'] == getLoginUserID()) {
-                  showToolTip($text, array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                           'popup' => 'edit_user_notification&amp;id='.$d['id']));
+                  $opt = array();
+                  if ($showuserlink) {
+                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                  'popup' => 'edit_user_notification&amp;id='.$d['id']);
+                  }
+                  showToolTip($text, $opt);
                }
             }
             if ($canedit) {
@@ -3765,6 +3768,7 @@ class Ticket extends CommonDBTM {
                      alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
             }
             echo "<br>";
+            $showuserlink = $save_showuserlink;
          }
       }
    }
