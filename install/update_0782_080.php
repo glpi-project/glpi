@@ -1642,6 +1642,23 @@ function update0782to080($output='HTML') {
       }
    }
 
+   // Change value of autoclose ticket
+   $query = "UPDATE `glpi_configs`
+             SET `autoclose_delay` = '-1'
+             WHERE `id` = '1'
+                   AND `autoclose_delay` = '0'";
+
+   $DB->query($query)
+   or die("0.80 change autoclose ticket in glpi_configs " . $LANG['update'][90] . $DB->error());
+
+   $query = "UPDATE `glpi_entitydatas`
+             SET `autoclose_delay` = '-1'
+             WHERE `autoclose_delay` = '0'";
+
+   $DB->query($query)
+   or die("0.80 change autoclose ticket in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
+
+
    // must always be at the end
    $migration->executeMigration();
 
