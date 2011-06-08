@@ -696,9 +696,11 @@ class Search {
          $globallinkto = Search::getArrayUrlLink("field",$p['field']).
                         Search::getArrayUrlLink("link",$p['link']).
                         Search::getArrayUrlLink("contains",$p['contains']).
+                        Search::getArrayUrlLink("searchtype",$p['searchtype']).
                         Search::getArrayUrlLink("field2",$p['field2']).
                         Search::getArrayUrlLink("contains2",$p['contains2']).
                         Search::getArrayUrlLink("itemtype2",$p['itemtype2']).
+                        Search::getArrayUrlLink("searchtype2",$p['searchtype2']).
                         Search::getArrayUrlLink("link2",$p['link2']);
 
          $parameters = "sort=".$p['sort']."&amp;order=".$p['order'].$globallinkto;
