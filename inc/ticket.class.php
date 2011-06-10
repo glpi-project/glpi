@@ -718,7 +718,7 @@ class Ticket extends CommonDBTM {
                      $ticket_user->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
                      if ((!isset($input['status']) && $this->fields['status']=='new')
-                         || $input['status'] == 'new') {
+                         || (isset($input['status']) && $input['status'] == 'new')) {
                         $input['status'] = 'assign';
                      }
                   }
@@ -730,7 +730,7 @@ class Ticket extends CommonDBTM {
                      $group_ticket->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
                      if ((!isset($input['status']) && $this->fields['status']=='new')
-                         || $input['status'] == 'new') {
+                         || (isset($input['status']) && $input['status'] == 'new')) {
                         $input['status'] = 'assign';
                      }
                   }
