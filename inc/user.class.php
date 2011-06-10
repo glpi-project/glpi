@@ -930,9 +930,10 @@ class User extends CommonDBTM {
       $groups = array ();
       $listgroups = array ();
 
+      //User dn may contain ( or ), need to espace it!
+      $user_dn = str_replace(array("(", ")"), array("\(", "\)"), $user_dn);
       //Only retrive cn and member attributes from groups
       $attrs = array ('dn');
-
       if (!$use_dn) {
          $filter = "(& $group_condition (|($group_member_field=$user_dn)($group_member_field=$login_field=$user_dn)))";
       } else {
