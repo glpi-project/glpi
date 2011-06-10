@@ -290,11 +290,11 @@ class NetworkPort extends CommonDBChild {
          echo "\n<div class='firstbloc'><table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<a href='" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype'><strong>".
+               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype'><strong>".
                $LANG['networking'][19]."</strong></a></td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
          echo "<a href='" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=1'>
+               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype&amp;several=1'>
                <strong>".$LANG['networking'][46]."</strong></a></td>\n";
          echo "</tr></table></div>\n";
       }
