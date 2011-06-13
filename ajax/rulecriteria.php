@@ -81,10 +81,10 @@ if (isset($_POST["sub_type"])) {
 
       ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span$randcrit",
                                   $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
-                                  $paramscriteria, false);
+                                  $paramscriteria);
 
       ajaxUpdateItem("condition_span$randcrit", $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
-                     $paramscriteria, false, "dropdown_condition$randcrit");
+                     $paramscriteria, "dropdown_condition$randcrit");
    }
 }
 
