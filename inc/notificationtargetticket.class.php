@@ -1295,7 +1295,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.duedate'               => $LANG['sla'][5],
                     'ticket.requesttype'           => $LANG['job'][44],
                     'ticket.authors'               => $LANG['job'][18],
-                    'author'                       => $LANG['common'][2].' '.$LANG['job'][4],
+                    'author.id'                    => $LANG['common'][2].' '.$LANG['job'][4],
                     'author.name'                  => $LANG['job'][4],
                     'author.location'              => $LANG['common'][15],
                     'author.phone'                 => $LANG['help'][35],
