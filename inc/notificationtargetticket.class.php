@@ -23,8 +23,8 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
 
@@ -767,7 +767,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $users[$uid] = $user_tmp->getName();
 
                $tmp = array();
-               $tmp['##author.id##']      = $uid;
+               $tmp['##author.id##']   = $uid;
                $tmp['##author.name##'] = $user_tmp->getName();
 
                if ($user_tmp->getField('locations_id')) {
@@ -1147,14 +1147,14 @@ class NotificationTargetTicket extends NotificationTarget {
                if ($t->countUsers(Ticket::REQUESTER)) {
                   $users = array();
                   foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $val) {
-                     $user_tmp = new User;
+                     $user_tmp = new User();
                      $user_tmp->getFromDB($uid);
 
                      $users[$uid] = $user_tmp->getName();
 
 
                      $tmp2 = array();
-                     $tmp2['##author##']      = $uid;
+                     $tmp2['##author.id##']   = $uid;
                      $tmp2['##author.name##'] = $user_tmp->getName();
 
                      if ($user_tmp->getField('locations_id')) {
@@ -1168,7 +1168,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      $tmp2['##author.phone##']  = $user_tmp->getField('phone');
                      $tmp2['##author.phone2##'] = $user_tmp->getField('phone2');
 
-                     $tmp['##authors##'][] = $tmp2;
+                     $tmp['authors'][] = $tmp2;
                   }
                   $tmp['##ticket.authors##'] = implode(', ',$users);
                } else {
@@ -1179,7 +1179,7 @@ class NotificationTargetTicket extends NotificationTarget {
                if ($t->countUsers(Ticket::ASSIGN)) {
                   $users = array();
                   foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $val) {
-                     $user_tmp = new User;
+                     $user_tmp = new User();
                      $user_tmp->getFromDB($uid);
 
                      $users[$uid] = $user_tmp->getName();
@@ -1212,7 +1212,7 @@ class NotificationTargetTicket extends NotificationTarget {
                if ($t->countUsers(Ticket::OBSERVER)) {
                   $users = array();
                   foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
-                     $user_tmp = new User;
+                     $user_tmp = new User();
                      $user_tmp->getFromDB($uid);
                      $users[$uid] = $user_tmp->getName();
                   }
