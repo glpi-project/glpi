@@ -767,7 +767,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $users[$uid] = $user_tmp->getName();
 
                $tmp = array();
-               $tmp['##author##']      = $uid;
+               $tmp['##author.id##']      = $uid;
                $tmp['##author.name##'] = $user_tmp->getName();
 
                if ($user_tmp->getField('locations_id')) {
@@ -781,7 +781,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##author.phone##']  = $user_tmp->getField('phone');
                $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
 
-               $this->datas['##authors##'][] = $tmp;
+               $this->datas['authors'][] = $tmp;
             }
             $this->datas['##ticket.authors##'] = implode(', ',$users);
          } else {
