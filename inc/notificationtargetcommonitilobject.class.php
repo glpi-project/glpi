@@ -608,7 +608,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $users[$uid] = $user_tmp->getName();
 
             $tmp = array();
-            $tmp['##author##']      = $uid;
+            $tmp['##author.id##']   = $uid;
             $tmp['##author.name##'] = $user_tmp->getName();
 
             if ($user_tmp->getField('locations_id')) {
@@ -622,7 +622,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##author.phone##']  = $user_tmp->getField('phone');
             $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
 
-            $datas['##authors##'][] = $tmp;
+            $datas['authors'][] = $tmp;
          }
          $datas["##$objettype.authors##"] = implode(', ',$users);
       }
@@ -744,7 +744,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.solvedate'             => $LANG['reports'][64],
                     $objettype.'.duedate'               => $LANG['sla'][5],
                     $objettype.'.authors'               => $LANG['job'][18],
-                    'author'                            => $LANG['common'][2].' '.$LANG['job'][4],
+                    'author.id'                         => $LANG['common'][2].' '.$LANG['job'][4],
                     'author.name'                       => $LANG['job'][4],
                     'author.location'                   => $LANG['common'][15],
                     'author.phone'                      => $LANG['help'][35],
