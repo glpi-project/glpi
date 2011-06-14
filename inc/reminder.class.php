@@ -555,7 +555,7 @@ class Reminder extends CommonDBTM {
 
       $is_helpdesk_visible = '';
       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-          $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
+          $is_helpdesk_visible = " AND `is_helpdesk_visible` = 1 ";
       }
 
       if ($entity < 0) {
