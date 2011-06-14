@@ -318,7 +318,7 @@ function commonDropdownUpdateItem($options) {
          }
 
          ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
-                                     $data['to_update'], $data['url'], $paramsupdate, false);
+                                     $data['to_update'], $data['url'], $paramsupdate);
       }
    }
 
