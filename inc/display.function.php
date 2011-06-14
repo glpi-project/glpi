@@ -2758,9 +2758,8 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
                     'withtime'      => $with_time,
                     'specificvalue' => $specific_value);
 
-   ajaxUpdateItemOnSelectEvent("genericdate$element$rand",
-                               "displaygenericdate$element$rand",
-                               $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, false);
+   ajaxUpdateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
+                               $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
 
    $params['value'] = $value;
    ajaxUpdateItem("displaygenericdate$element$rand", $CFG_GLPI["root_doc"]."/ajax/genericdate.php",

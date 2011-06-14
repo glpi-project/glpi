@@ -118,7 +118,7 @@ $params = array('duration'     => '__VALUE__',
                 'global_end'   => $CFG_GLPI["planning_end"]);
 
 ajaxUpdateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
-                            $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params, false);
+                            $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 
 if ($default_delay==0) {
    $params['duration'] = 0;

@@ -70,7 +70,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
             ajaxUpdateItemOnSelectEvent("dropdown__itil_".$_POST["actortype"]."[users_id]".$rand,
                                         "notif_user_$rand",
                                         $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                        $paramscomment, false);
+                                        $paramscomment);
 
          }
          break;

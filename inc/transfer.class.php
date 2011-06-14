@@ -3268,8 +3268,7 @@ class Transfer extends CommonDBTM {
          } else {
             $params = array('id' => '__VALUE__');
             ajaxUpdateItemOnSelectEvent("dropdown_ID$rand", "transfer_form",
-                                        $CFG_GLPI["root_doc"]."/ajax/transfers.php", $params,
-                                        false);
+                                        $CFG_GLPI["root_doc"]."/ajax/transfers.php", $params);
          }
 
          echo "<div class='center' id='transfer_form'>";

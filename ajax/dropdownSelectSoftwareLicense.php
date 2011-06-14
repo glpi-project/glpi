@@ -83,7 +83,7 @@ $paramsselsoft = array('softwares_id' => '__VALUE__',
 
 ajaxUpdateItemOnSelectEvent("item_type$rand", "show_".$_POST["myname"].$rand,
                             $CFG_GLPI["root_doc"]."/ajax/dropdownSoftwareLicense.php",
-                            $paramsselsoft, false);
+                            $paramsselsoft);
 
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";
 

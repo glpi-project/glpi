@@ -1534,7 +1534,7 @@ class Search {
                          'value'      => $_POST["value"],
                          'searchtype' => $_POST["searchtype"]);
          ajaxUpdateItemOnSelectEvent("Search$itemtype$i", "SearchSpan$itemtype$i",
-                                     $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params, false);
+                                     $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 
          echo "</td></tr>\n";
       }
@@ -1602,7 +1602,7 @@ class Search {
 
             ajaxUpdateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".
                                           $i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",
-                                        $params, false);
+                                        $params);
 
             if (is_array($p['itemtype2'])
                 && isset($p['itemtype2'][$i])
