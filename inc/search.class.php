@@ -4515,7 +4515,7 @@ class Search {
             $search[$itemtype] = $item->getSearchOptions();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+         if (getLoginUserID && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
