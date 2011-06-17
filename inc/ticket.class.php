@@ -660,8 +660,20 @@ class Ticket extends CommonDBTM {
          if (isset($input['_ticket_requester']['_type'])) {
             $input['_ticket_requester']['type']       = self::REQUESTER;
             $input['_ticket_requester']['tickets_id'] = $input['id'];
-
             switch ($input['_ticket_requester']['_type']) {
+               case "email" :
+                  if (NotificationMail::isUserAddressValid($input['_ticket_requester']['alternative_email'])) {
+                     $ticket_user = new Ticket_User();
+                     if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
+                        $ticket_user->add($input['_ticket_requester']);
+                        $input['_forcenotif'] = true;
+                     }
+                  } else {
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                  }
+                  break;
+
                case "user" :
                   $ticket_user = new Ticket_User();
                   if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
@@ -687,6 +699,19 @@ class Ticket extends CommonDBTM {
             $input['_ticket_observer']['tickets_id'] = $input['id'];
 
             switch ($input['_ticket_observer']['_type']) {
+               case "email" :
+                  if (NotificationMail::isUserAddressValid($input['_ticket_observer']['alternative_email'])) {
+                     $ticket_user = new Ticket_User();
+                     if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
+                        $ticket_user->add($input['_ticket_observer']);
+                        $input['_forcenotif'] = true;
+                     }
+                  } else {
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                  }
+                  break;
+
                case "user" :
                   $ticket_user = new Ticket_User();
                   if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
@@ -3781,19 +3806,30 @@ class Ticket extends CommonDBTM {
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
     * @param $inticket boolean display in ticket ?
+    * @param $withemail boolean : allow adding a email (only one possible)
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true, $withemail=true) {
       global $LANG, $CFG_GLPI;
+
+      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
+                      'user'  => $LANG['common'][34],
+                      'group' => $LANG['common'][35]);
 
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
+            if ($withemail) {
+               $types['email'] = $LANG['mailing'][118];
+            }
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
+            if ($withemail) {
+               $types['email'] = $LANG['mailing'][118];
+            }
             break;
 
          case self::ASSIGN :
@@ -3805,9 +3841,6 @@ class Ticket extends CommonDBTM {
       }
 
       echo "<div ".($inticket?"style='display:none'":'')." id='ticketactor$rand_type'>";
-      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                      'user'  => $LANG['common'][34],
-                      'group' => $LANG['common'][35]);
       $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
@@ -3970,7 +4003,8 @@ class Ticket extends CommonDBTM {
 
       if ($rand_requester_ticket>=0) {
          self::showActorAddForm(self::REQUESTER, $rand_requester_ticket,
-                                $this->fields['entities_id']);
+                                $this->fields['entities_id'],
+                                true, !isset($this->users[self::REQUESTER][0]));
       }
 
       // Requester
@@ -4012,7 +4046,9 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_observer_ticket>=0) {
-         self::showActorAddForm(self::OBSERVER,$rand_observer_ticket,$this->fields['entities_id']);
+         self::showActorAddForm(self::OBSERVER, $rand_observer_ticket,
+                                $this->fields['entities_id'],
+                                true, !isset($this->users[self::OBSERVER][0]));
       }
 
       // Observer
@@ -4039,7 +4075,7 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign_ticket>=0) {
-         self::showActorAddForm(self::ASSIGN,$rand_assign_ticket,$this->fields['entities_id']);
+         self::showActorAddForm(self::ASSIGN, $rand_assign_ticket, $this->fields['entities_id']);
       }
 
       // Assign User

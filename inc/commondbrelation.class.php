@@ -131,7 +131,8 @@ abstract class CommonDBRelation extends CommonDBTM {
             return false;
          }
       } else {
-         if (!$item2->getFromDB($input[$this->items_id_2])) {
+         // id==0 is used in some relation (tickets_users)
+         if ($input[$this->items_id_2]>0 && !$item2->getFromDB($input[$this->items_id_2])) {
             return false;
          }
       }

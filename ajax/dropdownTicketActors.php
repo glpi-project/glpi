@@ -82,6 +82,14 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          Dropdown::show('Group', array('name'   => '_ticket_'.$_POST["actortype"].'[groups_id]',
                                        'entity' => $_POST['entity_restrict']));
          break;
+
+      case "email" :
+         $n = '_ticket_'.$_POST["actortype"];
+         echo "<input type='hidden' name='".$n."[use_notification]'  value='1'>";
+         echo "<input type='hidden' name='".$n."[users_id]' value='0'>";
+         echo "<input type='text'   name='".$n."[alternative_email]' size='25'>";
+
+         break;
    }
 }
 
