@@ -3810,7 +3810,7 @@ class Ticket extends CommonDBTM {
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true, $withemail=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $inticket=true, $withemail=false) {
       global $LANG, $CFG_GLPI;
 
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
