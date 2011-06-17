@@ -1535,7 +1535,8 @@ class OcsServer extends CommonDBTM {
                            if (self::linkComputer($ocsid, $ocsservers_id, $computers_id)) {
                               return array('status'       => self::COMPUTER_LINKED,
                                            'entities_id'  => $data['entities_id'],
-                                           'rule_matched' => $rules_matched);
+                                           'rule_matched' => $rules_matched,
+                                           'computers_id' => $computers_id);
                            }
                         }
                      break;
@@ -5631,7 +5632,7 @@ class OcsServer extends CommonDBTM {
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
                $task->log("Update computer " . $data["ID"] . "\n");
-               self::processComputer($data["ID"], $ocsservers_id, 0, -1, -1);
+               self::processComputer($data["ID"], $ocsservers_id, 0);
             }
             $task->setVolume($nbcomp);
          } else {
