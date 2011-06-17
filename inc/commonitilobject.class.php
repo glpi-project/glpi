@@ -309,6 +309,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+      global $LANG;
 
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
@@ -349,6 +350,19 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_requester'][$this->getForeignKeyField()] = $input['id'];
 
             switch ($input['_itil_requester']['_type']) {
+               case "email" :
+                  if (NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
+                     $useractors = new $this->userlinkclass();
+                     if ($useractors->can(-1,'w',$input['_itil_requester'])) {
+                        $useractors->add($input['_itil_requester']);
+                        $input['_forcenotif'] = true;
+                     }
+                  } else {
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                  }
+                  break;
+
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
@@ -378,6 +392,19 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_observer'][$this->getForeignKeyField()] = $input['id'];
 
             switch ($input['_itil_observer']['_type']) {
+               case "email" :
+                  if (NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
+                     $useractors = new $this->userlinkclass();
+                     if ($useractors->can(-1,'w',$input['_itil_observer'])) {
+                        $useractors->add($input['_itil_observer']);
+                        $input['_forcenotif'] = true;
+                     }
+                  } else {
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                  }
+                  break;
+
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
@@ -1545,19 +1572,29 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
     * @param $inobject boolean display in ITIL object ?
+    * @param $withemail boolean : allow adding a email (only one possible)
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true, $withemail=false) {
       global $LANG, $CFG_GLPI;
 
+      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
+                      'user'  => $LANG['common'][34],
+                      'group' => $LANG['common'][35]);
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
+            if ($withemail) {
+               $types['email'] = $LANG['mailing'][118];
+            }
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
+            if ($withemail) {
+               $types['email'] = $LANG['mailing'][118];
+            }
             break;
 
          case self::ASSIGN :
@@ -1569,9 +1606,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
-      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                      'user'  => $LANG['common'][34],
-                      'group' => $LANG['common'][35]);
       $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
@@ -1730,7 +1764,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($rand_requester>=0) {
          self::showActorAddForm(self::REQUESTER, $rand_requester,
-                                $this->fields['entities_id']);
+                                $this->fields['entities_id'],
+                                true, !isset($this->users[self::REQUESTER][0]));
       }
 
       // Requester
@@ -1773,7 +1808,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_observer>=0) {
-         self::showActorAddForm(self::OBSERVER, $rand_observer, $this->fields['entities_id']);
+         self::showActorAddForm(self::OBSERVER, $rand_observer,
+                                $this->fields['entities_id'],
+                                true, !isset($this->users[self::OBSERVER][0]));
       }
 
       // Observer
