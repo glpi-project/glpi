@@ -2418,6 +2418,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'integer' :
                   case 'number' :
                   case 'decimal' :
+                     $value = str_replace(',','.',$value);
                      if ($searchOption['datatype'] == 'decimal') {
                         $this->input[$key] = floatval($value);
                      } else {
