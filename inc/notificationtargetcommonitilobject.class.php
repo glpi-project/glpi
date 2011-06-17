@@ -602,7 +602,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.authors##"] = '';
       if ($this->obj->countUsers(CommonITILObject::REQUESTER)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $uid => $tmp) {
+         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $tmp) {
+            $uid = $tmp['users_id'];
             $user_tmp = new User();
             $user_tmp->getFromDB($uid);
             $users[$uid] = $user_tmp->getName();
@@ -637,7 +638,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.assigntousers##"] = '';
       if ($this->obj->countUsers(CommonITILObject::ASSIGN)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::ASSIGN) as $uid => $tmp) {
+         foreach ($this->obj->getUsers(CommonITILObject::ASSIGN) as $tmp) {
+            $uid = $tmp['users_id'];
             $user_tmp = new User();
             $user_tmp->getFromDB($uid);
 
@@ -656,7 +658,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.groups##"] = '';
       if ($this->obj->countGroups(CommonITILObject::REQUESTER)) {
          $groups = array();
-         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $gid => $tmp) {
+         foreach ($this->obj->getGroups(CommonITILObject::REQUESTER) as $tmp) {
+            $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.groups##"] = implode(', ',$groups);
@@ -665,7 +668,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.observergroups##"] = '';
       if ($this->obj->countGroups(CommonITILObject::OBSERVER)) {
          $groups = array();
-         foreach ($this->obj->getGroups(CommonITILObject::OBSERVER) as $gid => $tmp) {
+         foreach ($this->obj->getGroups(CommonITILObject::OBSERVER) as $tmp) {
+            $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.observergroups##"] = implode(', ',$groups);
@@ -674,7 +678,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.observerusers##"] = '';
       if ($this->obj->countUsers(CommonITILObject::OBSERVER)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::OBSERVER) as $uid => $tmp) {
+         foreach ($this->obj->getUsers(CommonITILObject::OBSERVER) as $tmp) {
+            $uid = $tmp['users_id'];
             $user_tmp = new User();
             $user_tmp->getFromDB($uid);
             $users[$uid] = $user_tmp->getName();
@@ -685,7 +690,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.assigntogroups##"] = '';
       if ($this->obj->countGroups(CommonITILObject::ASSIGN)) {
          $groups = array();
-         foreach ($this->obj->getGroups(CommonITILObject::ASSIGN) as $gid => $tmp) {
+         foreach ($this->obj->getGroups(CommonITILObject::ASSIGN) as $tmp) {
+            $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.assigntogroups##"] = implode(', ',$groups);

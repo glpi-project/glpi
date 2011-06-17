@@ -71,7 +71,7 @@ abstract class CommonITILActor extends CommonDBRelation {
                 WHERE `".$this->getItilObjectForeignKey()."` = '$items_id'";
 
       foreach ($DB->request($query) as $data) {
-         $users[$data['type']][$data[$this->getActorForeignKey()]] = $data;
+         $users[$data['type']][] = $data;
       }
       return $users;
    }

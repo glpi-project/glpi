@@ -1308,7 +1308,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $group     = new Group();
 
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
-         foreach ($this->groups[$type] as $k => $d) {
+         foreach ($this->groups[$type] as $d) {
+            $k = $d['groups_id'];
             echo "$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
                echo $group->getLink($showgrouplink);
@@ -1502,7 +1503,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $user     = new User();
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
-         foreach ($this->users[$type] as $k => $d) {
+         foreach ($this->users[$type] as $d) {
+            $k = $d['users_id'];
             $save_showuserlink = $showuserlink;
 
             echo "$usericon&nbsp;";
