@@ -2039,7 +2039,6 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
    **/
    function maybeRecursive() {
-
       if (!array_key_exists('id',$this->fields)) {
          $this->getEmpty();
       }
@@ -2418,6 +2417,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'integer' :
                   case 'number' :
                   case 'decimal' :
+                     $value = str_replace(',','.',$value);
                      if ($searchOption['datatype'] == 'decimal') {
                         $this->input[$key] = floatval($value);
                      } else {
