@@ -62,6 +62,9 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
          Plugin::displayAction($problem, $_REQUEST['glpi_tab']);
          break;
 
+      case 2 :
+         Problem_Ticket::showForProblem($problem);
+         break;
 
       case 3 :
          $problem->showAnalysisForm();
@@ -80,7 +83,6 @@ if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
 
       default :
          if (!CommonGLPI::displayStandardTab($problem, $_REQUEST['glpi_tab'])) {
-            Problem_Ticket::showForProblem($problem);
          }
    }
 }
