@@ -2069,8 +2069,15 @@ class Search {
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                  $addaltemail = "";
+                  if ($itemtype == 'Ticket') { // For tickets_users
+                     $ticket_user_table = "glpi_tickets_users_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
+                     $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
+                                                         ' ',`$ticket_user_table`.`alternative_email`)
+                                                         SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+                  }
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
-                              AS ".$NAME."_".$num.",";
+                              AS ".$NAME."_".$num.", $addaltemail";
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num,
                        `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
@@ -3560,6 +3567,23 @@ class Search {
                      }
                   }
                }
+
+               // Manage alternative_email for tickets_users
+               if ($itemtype == 'Ticket' && isset($data[$NAME.$num.'_2'])) {
+                  $split = explode("$$$$",$data[$NAME.$num.'_2']);
+                  for ($k=0 ; $k<count($split) ; $k++) {
+                     $split2 = explode(" ",$split[$k]);
+                     if (count($split2) == 2 && $split2[0]==0 && !empty($split2[1])) {
+                        if ($count_display) {
+                           $out .= "<br>";
+                        }
+                        $count_display++;
+                        $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
+                     }
+                  }
+               }
+
+
                return $out;
             }
             if ($itemtype!='User') {
