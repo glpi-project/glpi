@@ -133,9 +133,6 @@ if (!function_exists('loadLang')) {
    function loadLang($LANGuage) {
       global $LANG;
 
-      if (isset($LANG)) {
-         unset($LANG);
-      }
       $file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 
       if (file_exists($file)) {
