@@ -2352,10 +2352,10 @@ class Search {
                $condition .= " $requester_table.users_id = '".getLoginUserID()."'
                               OR $observer_table.users_id = '".getLoginUserID()."'";
 
-                  if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $observergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
-                  }
+               if (count($_SESSION['glpigroups'])) {
+                  $condition .= " OR $observergroup_table.`groups_id`
+                                          IN ('".implode("','",$_SESSION['glpigroups'])."')";
+               }
 
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
@@ -2379,12 +2379,7 @@ class Search {
                      $condition .= " OR `glpi_tickets`.`status`='new'";
                   }
                }
-               if (haveRight("show_group_ticket",1)) {
-                  if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $requestergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."') ";
-                  }
-               }
+
                if (haveRight("validate_ticket",1)) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
                }
@@ -3007,14 +3002,6 @@ class Search {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,
                                                $searchopt[8]['joinparams']['beforejoin']['joinparams']);
-                  }
-               }
-
-               if (haveRight("show_group_ticket",1)) {
-                  if (count($_SESSION['glpigroups'])) {
-                     $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                               $searchopt[71]['joinparams']['beforejoin']['joinparams']);
                   }
                }
 
