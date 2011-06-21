@@ -110,7 +110,7 @@ function __autoload($classname) {
 
    if (file_exists("$dir$item.class.php")) {
       include_once ("$dir$item.class.php");
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+      if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode']==DEBUG_MODE) {
          $DEBUG_AUTOLOAD[] = $classname;
       }
 
