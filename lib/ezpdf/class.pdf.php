@@ -2286,6 +2286,8 @@ function getTextWidth($size,$text){
         }
       } else if (isset($this->fonts[$cf]['C'][$char]['WX'])){
         $w+=$this->fonts[$cf]['C'][$char]['WX'];
+      } else { /// GLPI fix add default width
+         $w += 560;
       }
     }
   }
@@ -2373,6 +2375,8 @@ function addTextWrap($x,$y,$width,$size,$text,$justification='left',$angle=0,$te
   
       if (isset($this->fonts[$cf]['C'][$cOrd2]['WX'])){
         $w+=$this->fonts[$cf]['C'][$cOrd2]['WX'];
+      } else { /// GLPI fix add default width when not set
+         $w+=560;
       }
       if ($w>$tw){
         // then we need to truncate this line
