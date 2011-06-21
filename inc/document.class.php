@@ -1371,7 +1371,11 @@ class Document extends CommonDBTM {
             $result = $DB->query($q);
             $nb = $DB->result($result,0,0);
 
-            echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center' colspan='2'>";
+            Dropdown::show('DocumentCategory',array('entity' => $entities));
+            echo "</td>";
+            echo "<td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
@@ -1382,19 +1386,21 @@ class Document extends CommonDBTM {
             }
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
-
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td>";
-
+            echo "<td class='left' colspan='2'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "</td></tr>";
+            
             if ($item->getType() == 'Document') {
                $used[$ID] = $ID;
             }
 
             if (haveRight('document','r') && $nb>count($used)) {
-               echo "<td class='left' colspan='2'>";
+               echo "<tr class='tab_bg_1'><td class='left' colspan='3'>";
+
                self::dropdown(array('entity' => $entities ,
                                     'used'   => $used));
-               echo "</td><td class='center'>";
+               echo "</td><td class='left' colspan='4'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";
                echo "</td><td>&nbsp;</td>";
