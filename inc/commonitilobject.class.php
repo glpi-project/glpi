@@ -516,7 +516,9 @@ abstract class CommonITILObject extends CommonDBTM {
              && isset($this->input["suppliers_id_assign"])
              && $this->input["suppliers_id_assign"] == 0
              && $this->countUsers(self::ASSIGN) == 0
-             && $this->countGroups(self::ASSIGN) == 0) {
+             && $this->countGroups(self::ASSIGN) == 0
+             && $this->fields['status'] != 'closed'
+             && $this->fields['status'] != 'solved') {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
