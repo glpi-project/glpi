@@ -855,6 +855,7 @@ class Ticket extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
+
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates)) !== false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
@@ -929,7 +930,9 @@ class Ticket extends CommonDBTM {
              && isset($this->input["suppliers_id_assign"])
              && $this->input["suppliers_id_assign"] == 0
              && $this->countUsers(self::ASSIGN) == 0
-             && $this->countGroups(self::ASSIGN) == 0) {
+             && $this->countGroups(self::ASSIGN) == 0
+             && $this->fields['status'] != 'closed'
+             && $this->fields['status'] != 'solved') {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
@@ -1042,6 +1045,7 @@ class Ticket extends CommonDBTM {
             $this->fields["user_email"] = $user->fields["email"];
          }
       }*/
+
       if (($key=array_search('status',$this->updates)) !== false
           && $this->oldvalues['status'] == $this->fields['status']) {
          unset($this->updates[$key]);

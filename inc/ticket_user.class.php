@@ -161,7 +161,9 @@ class Ticket_User extends CommonDBRelation {
       if ($t->getFromDB($this->fields['tickets_id'])) {
          if ($t->fields["suppliers_id_assign"] == 0
              && $t->countUsers(Ticket::ASSIGN) == 0
-             && $t->countGroups(Ticket::ASSIGN) == 0) {
+             && $t->countGroups(Ticket::ASSIGN) == 0
+             && $t->fields['status'] != 'closed'
+             && $t->fields['status'] != 'solved') {
 
             $t->update(array('id'     => $this->fields['tickets_id'],
                              'status' => 'new'));
