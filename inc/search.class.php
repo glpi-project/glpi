@@ -3210,10 +3210,14 @@ class Search {
          if (empty($specific_leftjoin)) {
             switch ($joinparams['jointype']) {
                case 'child' :
+                  $linkfield = getForeignKeyFieldForTable($rt);
+                  if (isset($joinparams['linkfield'])) {
+                     $linkfield = $joinparams['linkfield'];
+                  }
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id`
-                                                      = `$nt`.`".getForeignKeyFieldForTable($rt)."`
+                                                      = `$nt`.`$linkfield`
                                                          $addcondition)";
                   break;
 
@@ -5097,6 +5101,12 @@ class Search {
 //      printCleanArray($joinparams);
       if (isset($joinparams['condition'])) {
          $complexjoin .= $joinparams['condition'];
+      }
+
+      // For jointype == child
+      if (isset($joinparams['jointype']) && $joinparams['jointype'] == 'child'
+            && isset($joinparams['linkfield'])) {
+         $complexjoin .= $joinparams['linkfield'];
       }
 
       if (isset($joinparams['beforejoin'])) {
