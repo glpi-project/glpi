@@ -2362,7 +2362,7 @@ class Search {
                   }
                }
 
-               if (!haveRight("own_ticket","1")) {// Can own ticket : show assign to me
+               if (haveRight("own_ticket","1")) {// Can own ticket : show assign to me
                   $condition .= " OR $assign_table.users_id = '".getLoginUserID()."' ";
                }
 
