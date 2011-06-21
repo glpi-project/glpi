@@ -1574,11 +1574,10 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
     * @param $inobject boolean display in ITIL object ?
-    * @param $withemail boolean : allow adding a email (only one possible)
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true, $withemail=false) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
@@ -1587,16 +1586,12 @@ abstract class CommonITILObject extends CommonDBTM {
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
-            if ($withemail) {
-               $types['email'] = $LANG['mailing'][118];
-            }
+            $types['email'] = $LANG['mailing'][118];
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
-            if ($withemail) {
-               $types['email'] = $LANG['mailing'][118];
-            }
+            $types['email'] = $LANG['mailing'][118];
             break;
 
          case self::ASSIGN :
@@ -1767,7 +1762,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($rand_requester>=0) {
          self::showActorAddForm(self::REQUESTER, $rand_requester,
                                 $this->fields['entities_id'],
-                                true, !isset($this->users[self::REQUESTER][0]));
+                                true);
       }
 
       // Requester
@@ -1812,7 +1807,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($rand_observer>=0) {
          self::showActorAddForm(self::OBSERVER, $rand_observer,
                                 $this->fields['entities_id'],
-                                true, !isset($this->users[self::OBSERVER][0]));
+                                true);
       }
 
       // Observer
