@@ -125,8 +125,12 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function isUser($type, $users_id) {
 
-      if (isset($this->users[$type]) && isset($this->users[$type][$users_id])) {
-         return true;
+      if (isset($this->users[$type])) {
+         foreach ($this->users[$type] as $data) {
+            if ($data['users_id'] == $users_id) {
+               return true;
+            }
+         }
       }
 
       return false;
@@ -231,8 +235,12 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function isGroup($type, $groups_id) {
 
-      if (isset($this->groups[$type]) && isset($this->groups[$type][$groups_id])) {
-         return true;
+      if (isset($this->groups[$type])) {
+         foreach ($this->groups[$type] as $data) {
+            if ($data['groups_id']==$groups_id) {
+               return true;
+            }
+         }
       }
       return false;
    }
@@ -250,8 +258,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (is_array($groups) && count($groups) && isset($this->groups[$type])) {
          foreach ($groups as $groups_id) {
-            if (isset($this->groups[$type][$groups_id])) {
-               return true;
+            foreach ($this->groups[$type] as $data) {
+               if ($data['groups_id']==$groups_id) {
+                  return true;
+               }
             }
          }
       }
