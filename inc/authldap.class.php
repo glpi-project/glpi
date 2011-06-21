@@ -144,7 +144,7 @@ class AuthLDAP extends CommonDBTM {
          if (empty($input["rootdn_passwd"])) {
             unset($input["rootdn_passwd"]);
          } else {
-            $input["rootdn_passwd"] = encrypt($input["rootdn_passwd"], GLPIKEY);
+            $input["rootdn_passwd"] = encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
          }
       }
 
@@ -238,6 +238,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
+      
          echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'></td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
@@ -2416,7 +2417,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = encrypt($input["rootdn_passwd"], GLPIKEY);
+         $input["rootdn_passwd"] = encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
       }
 
       return $input;

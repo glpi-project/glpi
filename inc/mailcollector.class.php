@@ -102,7 +102,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
+            $input["passwd"] = encrypt(stripslashes($input["passwd"]), GLPIKEY);
          }
       }
 
@@ -119,7 +119,7 @@ class MailCollector  extends CommonDBTM {
          if (empty($input["passwd"])) {
             unset($input["passwd"]);
          } else {
-            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
+            $input["passwd"] = encrypt(stripslashes($input["passwd"]), GLPIKEY);
          }
       }
 
