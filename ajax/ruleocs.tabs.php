@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight('rule_ticket', 'r');
+checkRight('rule_ocs', 'r');
 
 $rule = new RuleOcs();
 include ("rule.common.tabs.php");
