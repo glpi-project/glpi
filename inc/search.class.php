@@ -2350,10 +2350,10 @@ class Search {
                $condition .= " $requester_table.users_id = '".getLoginUserID()."'
                               OR $observer_table.users_id = '".getLoginUserID()."'";
 
-                  if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $observergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
-                  }
+               if (count($_SESSION['glpigroups'])) {
+                  $condition .= " OR $observergroup_table.`groups_id`
+                                          IN ('".implode("','",$_SESSION['glpigroups'])."')";
+               }
 
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
@@ -2377,12 +2377,7 @@ class Search {
                      $condition .= " OR `glpi_tickets`.`status`='new'";
                   }
                }
-               if (haveRight("show_group_ticket",1)) {
-                  if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR $requestergroup_table.`groups_id`
-                                             IN ('".implode("','",$_SESSION['glpigroups'])."') ";
-                  }
-               }
+
                if (haveRight("validate_ticket",1)) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
                }
