@@ -48,7 +48,7 @@ $rand  = mt_rand();
 $where = "";
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $where .=" AND `name` ".makeTextSearch($_POST['searchText'])." ";
+   $where .=" AND `glpi_softwares`.`name` ".makeTextSearch($_POST['searchText'])." ";
 }
 
 $where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares', 'entities_id',
@@ -63,6 +63,7 @@ $query = "SELECT DISTINCT `glpi_softwares`.`id`,
                 AND `glpi_softwares`.`is_template` = '0'
                 $where
           ORDER BY `glpi_softwares`.`name`";
+
 $result = $DB->query($query);
 
 echo "<select name='softwares_id' id='item_type$rand'>\n";
