@@ -777,6 +777,9 @@ function ezTable(&$data,$cols='',$title='',$options=''){
             $widest=$w;
           } else if ($w==$widest){
             $aWidest[]=$colName;
+          } else if ($w > $nWidest) {
+            /// GLPI FIX : set nWidest if not set
+            $nWidest = $w;
           }
         }
         // then figure out what the width of the widest columns would have to be to take up all the slack
