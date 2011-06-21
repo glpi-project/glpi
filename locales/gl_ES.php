@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //gl_ES
 
@@ -193,7 +193,7 @@ $LANG['central'][12]="Vista persoal";
 $LANG['central'][13]="Vista global"; 
 $LANG['central'][14]="Vista de Grupo"; 
 $LANG['central'][18]="As súas incidencias a pechar"; 
-$LANG['central'][19]="Your tickets to validate"; 
+$LANG['central'][19]="As súas peticións a validar"; 
 
 $LANG['choice'][0]="Non"; 
 $LANG['choice'][1]="Si"; 
@@ -343,10 +343,10 @@ $LANG['computers'][58]="UUID";
 $LANG['computers'][59]="Ningunha máquina virtual asociada á computadora"; 
 $LANG['computers'][60]="Modelo de virtualización"; 
 $LANG['computers'][61]="Número de procesadores"; 
-$LANG['computers'][62]="Virtualization system"; 
+$LANG['computers'][62]="Sistema de virtualización"; 
 $LANG['computers'][63]="Estado da máquina virtual"; 
 $LANG['computers'][64]="Máquina"; 
-$LANG['computers'][65]="List of host machines"; 
+$LANG['computers'][65]="Lista de computadores cliente"; 
 $LANG['computers'][66]="Listado das máquinas virtuais"; 
 
 $LANG['connect'][0]="Conexións directas"; 
@@ -380,7 +380,7 @@ $LANG['contract'][0]="Contrato vencido desde o";
 $LANG['contract'][1]="Contrato en preaviso desde o"; 
 
 $LANG['crontask'][0]="Tarefas programadas"; 
-$LANG['crontask'][1]="Synchronize equipments from OCSNG"; 
+$LANG['crontask'][1]="Sincroniza equipos dende OCSNG"; 
 $LANG['crontask'][2]="Alertas sobre cartuchos"; 
 $LANG['crontask'][3]="Envío aviso material de consumo"; 
 $LANG['crontask'][4]="Envío de alertas por licenzas expiradas"; 
@@ -396,7 +396,7 @@ $LANG['crontask'][13]="Limpeza dos gráficos xerados";
 $LANG['crontask'][14]="Pechado administrativo das incidencias"; 
 $LANG['crontask'][15]="Incidencias sen resolver"; 
 $LANG['crontask'][16]="Accións automáticas de SLA"; 
-$LANG['crontask'][17]="Monitoring of automatic actions"; 
+$LANG['crontask'][17]="Seguimento das accións automáticas"; 
 $LANG['crontask'][18]="Xeneración de enquisas de satisfación"; 
 $LANG['crontask'][31]="Desactivada"; 
 $LANG['crontask'][32]="Programado"; 
@@ -411,9 +411,9 @@ $LANG['crontask'][40]="Última execución";
 $LANG['crontask'][41]="Próxima execución"; 
 $LANG['crontask'][42]="O antes posible"; 
 $LANG['crontask'][43]="Sen tarefa a realizar"; 
-$LANG['crontask'][44]="Action completed, partially processed"; 
-$LANG['crontask'][45]="Action completed, fully processed"; 
-$LANG['crontask'][46]="Action completed, no processing required"; 
+$LANG['crontask'][44]="Tarefa rematada, proceso parcial"; 
+$LANG['crontask'][45]="Tarefa rematada, proceso completo"; 
+$LANG['crontask'][46]="Tarefa rematada. Nada que facer"; 
 $LANG['crontask'][47]="Listado das últimas execucións"; 
 $LANG['crontask'][48]="Comezo"; 
 $LANG['crontask'][49]="Erro nas seguintes accións automáticas. Require intervención"; 
@@ -530,15 +530,15 @@ $LANG['entity'][16]="Filtro de procura (se fose necesario)";
 $LANG['entity'][17]="Configuración para o peche administrativo"; 
 $LANG['entity'][18]="Peche administrativo das incidencias despois de resoltas"; 
 $LANG['entity'][19]="Configuración da enquisa de satisfación"; 
-$LANG['entity'][20]="Create survey after"; 
+$LANG['entity'][20]="Crear unha enquisa despois"; 
 $LANG['entity'][21]="Rate to trigger survey"; 
-$LANG['entity'][22]="For tickets closed after"; 
-$LANG['entity'][23]="Values for the generic rules for assignment to entities"; 
-$LANG['entity'][24]="Values used in the interface to search users from an LDAP directory"; 
+$LANG['entity'][22]="Para incidencias pechadas despois"; 
+$LANG['entity'][23]="Valores das regras xenéricas para a asignación ás entidades"; 
+$LANG['entity'][24]="Valores utilizados na interface de busca dos usuarios dun directorio LDAP"; 
 $LANG['entity'][25]="Filtro LDAP asociado á entidade (se fose necesario)"; 
 $LANG['entity'][26]="Estos parámetros empréganse como accións nas regras xenéricas para a asignación ás entidades"; 
 $LANG['entity'][27]="Mail domain surrogate entity"; 
-$LANG['entity'][28]="Tickets default type"; 
+$LANG['entity'][28]="Tipo por defecto para as incidencias"; 
 
 $LANG['event'][0]="Source"; 
 $LANG['event'][2]="Incidencia"; 
@@ -639,12 +639,12 @@ $LANG['financial'][104]="Material conectado";
 $LANG['financial'][105]="Tácito"; 
 $LANG['financial'][106]="Expresa"; 
 $LANG['financial'][107]="Renovación"; 
-$LANG['financial'][108]="Total spent on the budget"; 
-$LANG['financial'][109]="Total remaining on the budget"; 
+$LANG['financial'][108]="Total gastado no presuposto"; 
+$LANG['financial'][109]="Total restante do presuposto"; 
 $LANG['financial'][110]="Presupostos"; 
-$LANG['financial'][111]="Autofill dates"; 
+$LANG['financial'][111]="Autorrecheo de datas"; 
 $LANG['financial'][112]="Fill when shifting to state"; 
-$LANG['financial'][113]="No autofill"; 
+$LANG['financial'][113]="Non autocompletar"; 
 $LANG['financial'][114]="Data do último inventario físico"; 
 
 $LANG['gmt'][0]="GMT"; 
@@ -780,7 +780,7 @@ $LANG['install'][104]="Proba da extensión mbstring";
 $LANG['install'][105]="A extensión mbstring do interprete PHP non está instalada"; 
 $LANG['install'][106]="Proba de escritura dos ficheiros gráficos"; 
 
-$LANG['job'][1]="Incident"; 
+$LANG['job'][1]="Incidencia"; 
 $LANG['job'][2]="Request"; 
 $LANG['job'][3]="Técnicos"; 
 $LANG['job'][4]="Solicitante"; 
@@ -803,9 +803,9 @@ $LANG['job'][20]="Duración total";
 $LANG['job'][21]="Horas"; 
 $LANG['job'][22]="Minutos"; 
 $LANG['job'][23]="Buscar unha solución"; 
-$LANG['job'][24]="Use as a solution"; 
+$LANG['job'][24]="Utilizar como solución"; 
 $LANG['job'][25]="Gardar e engadir á base de coñecementos"; 
-$LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
+$LANG['job'][26]="Vostede foi redirixido porque xa non teñen acceso a esta incidencia"; 
 $LANG['job'][27]="Engadir actor"; 
 $LANG['job'][29]="Engadir un novo seguimento"; 
 $LANG['job'][30]="Engadir unha nova tarefa"; 
@@ -825,15 +825,15 @@ $LANG['job'][44]="Orixe da solicitude";
 $LANG['job'][45]="Orixe do seguimento"; 
 $LANG['job'][46]="The ticket will be added in the entity"; 
 $LANG['job'][47]="Costas"; 
-$LANG['job'][48]="Type of solution"; 
+$LANG['job'][48]="Tipo de solución"; 
 $LANG['job'][49]="Nova tarefa"; 
-$LANG['job'][50]="No task for this ticket"; 
+$LANG['job'][50]="Sen tarefas para esta incidencia"; 
 $LANG['job'][51]="Aprobación da solución"; 
 $LANG['job'][52]="Actualizar unha tarefa"; 
 $LANG['job'][53]="Supresión dunha tarefa"; 
-$LANG['job'][54]="Without a reply, the ticket will be automatically closed after"; 
+$LANG['job'][54]="Sen unha resposta a incidencia borrarase despois de"; 
 $LANG['job'][55]="Incidencias ligadas"; 
-$LANG['job'][56]="Link tickets"; 
+$LANG['job'][56]="Enlace ás incidencias"; 
 
 $LANG['joblist'][0]="Estado"; 
 $LANG['joblist'][1]="Só os meus"; 
@@ -864,7 +864,7 @@ $LANG['joblist'][32]="Resolto";
 $LANG['joblist'][33]="Pechado"; 
 $LANG['joblist'][34]="Sen resolver"; 
 $LANG['joblist'][35]="Sen pechar"; 
-$LANG['joblist'][36]="Status value in database"; 
+$LANG['joblist'][36]="Valor do estado na base de datos"; 
 
 $LANG['jobresolution'][1]="Solución"; 
 $LANG['jobresolution'][2]="Solucións"; 
@@ -914,7 +914,7 @@ $LANG['ldap'][22]="Réplica(s)";
 $LANG['ldap'][23]="Bulk import groups from a LDAP directory"; 
 $LANG['ldap'][24]="Importación de novos grupos"; 
 $LANG['ldap'][25]="Ningún grupo para ser importado"; 
-$LANG['ldap'][26]="User DN"; 
+$LANG['ldap'][26]="Usuario DN"; 
 $LANG['ldap'][30]="Cómo deben manipularse os alias do LDAP"; 
 $LANG['ldap'][31]="Nunca (predeterminado)"; 
 $LANG['ldap'][32]="Sempre desferenciado"; 
@@ -1016,9 +1016,9 @@ $LANG['log'][115]="cambio de version dos programas instalados";
 $LANG['log'][116]="asociación dun ordenador a unha licenza"; 
 $LANG['log'][117]="cambio de licenza para varios equipos"; 
 $LANG['log'][118]="disociación de licenza e computadora"; 
-$LANG['log'][120]="deletion of a link between tickets"; 
+$LANG['log'][120]="supresión dun vínculo entre entradas"; 
 $LANG['log'][122]="borrado dun actor para a incidencia"; 
-$LANG['log'][123]="trying to add an item that already exists"; 
+$LANG['log'][123]="tratando de agregar un elemento que xa existe"; 
 
 $LANG['login'][0]="Última conexión"; 
 $LANG['login'][1]="Volver"; 
@@ -1060,9 +1060,9 @@ $LANG['mailgate'][4]="A extensión mbstring non está dispoñible. Teña coidado
 $LANG['mailgate'][5]="Ficheiro adxunto inválido"; 
 $LANG['mailgate'][6]="Ficheiro adxunto demasiado grande"; 
 $LANG['mailgate'][7]="Maximum size of each file imported by the mail receiver"; 
-$LANG['mailgate'][9]="Your email could not be processed.\nIf the problem persists, contact the administrator"; 
+$LANG['mailgate'][9]="O seu correo non pode ser tratado. \n Contactar co administrador se o problema persiste"; 
 $LANG['mailgate'][10]="Correo rexeitado"; 
-$LANG['mailgate'][11]="Process of emails import"; 
+$LANG['mailgate'][11]="Proceso de importación de correos electrónicos"; 
 $LANG['mailgate'][12]="Non se pode asociar o correo electrónico a unha entidade"; 
 $LANG['mailgate'][13]="Razón do rexeitamento"; 
 $LANG['mailgate'][14]="A dirección de correo non existe. Imposible importala"; 
@@ -1108,7 +1108,7 @@ $LANG['mailing'][122]="Tarefa(s) executada(s)";
 $LANG['mailing'][123]="Incidencia resolta"; 
 $LANG['mailing'][124]="Engadir unha nova tradución"; 
 $LANG['mailing'][125]="Tradución por defecto"; 
-$LANG['mailing'][126]="Template translation"; 
+$LANG['mailing'][126]="Plantilla de traducción"; 
 $LANG['mailing'][127]="Peche da incidencia"; 
 $LANG['mailing'][128]="deixar o campo valeiro para unha xeneración a partir do HTML"; 
 $LANG['mailing'][129]="Supresión dunha incidencia"; 
@@ -1358,7 +1358,7 @@ $LANG['plugins'][6]="A actualizar";
 $LANG['plugins'][7]="Ningún plugin instalado"; 
 $LANG['plugins'][8]="Ver lista de plugins"; 
 $LANG['plugins'][9]="Autores"; 
-$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
+$LANG['plugins'][10]="Plugin incompatible con esta versión de GLPI"; 
 
 $LANG['printers'][14]="Serie"; 
 $LANG['printers'][15]="Paralelo"; 
@@ -1592,20 +1592,20 @@ $LANG['rulesengine'][112]="Dereitos e asignación de entidades";
 $LANG['rulesengine'][120]="O motor párase cando se verifique unha das regras."; 
 $LANG['rulesengine'][121]="O motor executa todas as regras."; 
 $LANG['rulesengine'][122]="O motor pasa o resultado dunha regra ás seguintes."; 
-$LANG['rulesengine'][129]="Entity from mail domain"; 
+$LANG['rulesengine'][129]="Entidade de dominio do correo"; 
 $LANG['rulesengine'][130]="Entity based on LDAP information"; 
 $LANG['rulesengine'][131]="Entidade desde TAG"; 
 $LANG['rulesengine'][132]="Ignorar a importación"; 
 $LANG['rulesengine'][133]="Entidade do dominio"; 
-$LANG['rulesengine'][134]="Reject email (without email response)"; 
-$LANG['rulesengine'][135]="Reject email (with email response)"; 
+$LANG['rulesengine'][134]="Rexeitar correo (sen resposta)"; 
+$LANG['rulesengine'][135]="Rexeitar correo (con resposta)"; 
 $LANG['rulesengine'][138]="Criterios LDAP"; 
 $LANG['rulesengine'][140]="Engadir criterio"; 
 $LANG['rulesengine'][142]="Listado de correos non importados"; 
 $LANG['rulesengine'][144]="Entidade desde o perfíl de usuario"; 
 $LANG['rulesengine'][145]="Usuario cun único perfil"; 
 $LANG['rulesengine'][146]="Co perfil do usuario"; 
-$LANG['rulesengine'][147]="User featuring a single profile"; 
+$LANG['rulesengine'][147]="Usuario cun único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico coñecido"; 
 $LANG['rulesengine'][149]="Grupo importado dun directorio LDAP"; 
 $LANG['rulesengine'][150]="As regras que afectan á entidade están desactivadas"; 
@@ -1615,10 +1615,10 @@ $LANG['rulesengine'][154]="está valeiro";
 $LANG['rulesengine'][155]="Ligazón co equipo"; 
 
 $LANG['satisfaction'][0]="Satisfacción"; 
-$LANG['satisfaction'][1]="Satisfaction with the resolution of the ticket"; 
+$LANG['satisfaction'][1]="Satisfación sobre a resolución da incidencia"; 
 $LANG['satisfaction'][2]="Non hai enquisa xerada"; 
 $LANG['satisfaction'][3]="Enquisa de satisfación"; 
-$LANG['satisfaction'][4]="Response date to the satisfaction survey"; 
+$LANG['satisfaction'][4]="Data da resposta da enquisa de satisfacción"; 
 $LANG['satisfaction'][6]="Data de creación da enquisa de satisfacción"; 
 $LANG['satisfaction'][7]="Grao de satisfación"; 
 $LANG['satisfaction'][8]="Comentario á enquisa de satisfación"; 
@@ -1664,14 +1664,14 @@ $LANG['setup'][20]="Confirmar contrasinal";
 $LANG['setup'][21]="Erro : os dous contrasinais non son idénticos"; 
 $LANG['setup'][35]="MHz"; 
 $LANG['setup'][39]="Seguimento privado predeterminado"; 
-$LANG['setup'][40]="Private tasks by default"; 
+$LANG['setup'][40]="Tarefas predeterminadas por defecto"; 
 $LANG['setup'][41]="Idioma"; 
 $LANG['setup'][42]="Networking equipment types"; 
 $LANG['setup'][43]="Tipos de impresoras"; 
 $LANG['setup'][44]="Tipos de monitores"; 
 $LANG['setup'][45]="Tipos de caixa"; 
 $LANG['setup'][46]="Valor predeterminado"; 
-$LANG['setup'][47]="Default chart format"; 
+$LANG['setup'][47]="Tipo de gráfica por defecto"; 
 $LANG['setup'][48]="Valores predeterminados"; 
 $LANG['setup'][50]="Baseado na categoría, a continuación o elemento"; 
 $LANG['setup'][51]="Baseado no elemento, a continuación na categoría"; 
@@ -1735,7 +1735,7 @@ $LANG['setup'][126]="Engadir directamente un usuario dunha fonte externa";
 $LANG['setup'][127]="Autocompletion of text fields"; 
 $LANG['setup'][128]="Formato de datas"; 
 $LANG['setup'][129]="Show GLPI ID"; 
-$LANG['setup'][130]="Number of days this action logs are stored"; 
+$LANG['setup'][130]="Tempo en días que se conservarán os rexistros desta tarefa (0 para infinito)"; 
 $LANG['setup'][132]="Display the complete name in the tree dropdowns"; 
 $LANG['setup'][133]="Activar o modo OCSNG"; 
 $LANG['setup'][134]="Modo OCSNG"; 
@@ -1849,9 +1849,9 @@ $LANG['setup'][283]="Copiar";
 $LANG['setup'][284]="Limpar"; 
 $LANG['setup'][285]="Non copiar"; 
 $LANG['setup'][286]="Non borrar"; 
-$LANG['setup'][290]="Automatic transfer of computers"; 
-$LANG['setup'][291]="Template for the automatic transfer of computers in another entity"; 
-$LANG['setup'][292]="No automatic transfer"; 
+$LANG['setup'][290]="Transferencia automática de computadores"; 
+$LANG['setup'][291]="Plantilla para a transferencia automática dos ordenadores noutra entidade"; 
+$LANG['setup'][292]="Sen transferencia automática"; 
 $LANG['setup'][300]="Comprobar si hai unha nova versión dispoñible"; 
 $LANG['setup'][301]="Hai dispoñible unha nova versión:"; 
 $LANG['setup'][302]="You will find it on the GLPI-PROJECT.org site"; 
@@ -1911,13 +1911,13 @@ $LANG['setup'][708]="Alertas de incidencias sen resolver dende fai";
 $LANG['setup'][720]="Info. Sistema"; 
 $LANG['setup'][721]="Información sobre a instalación e configuración do sistema"; 
 $LANG['setup'][722]="Para pegar/copiar na súa petición de soporte"; 
-$LANG['setup'][731]="Value of the global configuration"; 
+$LANG['setup'][731]="Valor da configuración xeral"; 
 $LANG['setup'][732]="Dominio do servizo de correo electrónico"; 
 $LANG['setup'][800]="Replicar Mysql"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; 
 $LANG['setup'][802]="Base de datos"; 
 $LANG['setup'][803]="Diferencia entre maestro e esclavo"; 
-$LANG['setup'][804]="Use the slave for the search engine"; 
+$LANG['setup'][804]="Emprege o escravo para o motor de busca"; 
 $LANG['setup'][806]="Max delay between master and slave (minutes)"; 
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; 
 $LANG['setup'][808]="Base de datos escrava desincronizada!"; 
@@ -1930,7 +1930,7 @@ $LANG['setup'][817]="É necesario escoller un tipo e polo menos un campo";
 $LANG['setup'][818]="Existen outros elementos"; 
 $LANG['setup'][819]="Cambio de estado a :"; 
 $LANG['setup'][820]="Acción cando un computador é borrado de OCSNG"; 
-$LANG['setup'][821]="Record into the database denied"; 
+$LANG['setup'][821]="Rexistro na base de datos denegado"; 
 $LANG['setup'][822]="Enviar unha notificación"; 
 $LANG['setup'][823]="Artigo engadido con éxito, pero rexistro duplicado en"; 
 $LANG['setup'][824]="Autor da acción"; 
@@ -1939,8 +1939,8 @@ $LANG['setup'][826]="Duplicados";
 $LANG['setup'][827]="Alerta sobre rexistro duplicado"; 
 $LANG['setup'][828]="Valor non válido"; 
 
-$LANG['sla'][1]="SLA"; 
-$LANG['sla'][2]="Maximum time to solve"; 
+$LANG['sla'][1]="SLA (acordo de nivel de servizo)"; 
+$LANG['sla'][2]="Tempo máximo de resolución"; 
 $LANG['sla'][3]="Execución"; 
 $LANG['sla'][4]="Data vencemento"; 
 $LANG['sla'][5]="Vencemento"; 
@@ -1949,7 +1949,7 @@ $LANG['sla'][7]="Saír de SLA";
 $LANG['sla'][8]="Próximo nivel"; 
 $LANG['sla'][9]="Avisos automáticos de SLA"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
+$LANG['sla'][11]="Calendario das incidencias"; 
 
 $LANG['software'][1]="Versión comprada"; 
 $LANG['software'][2]="Versión en uso"; 
@@ -1959,7 +1959,7 @@ $LANG['software'][5]="Versións";
 $LANG['software'][6]="Editor"; 
 $LANG['software'][7]="Engadir versión"; 
 $LANG['software'][8]="Engadir unha licenza"; 
-$LANG['software'][9]="Affected computers"; 
+$LANG['software'][9]="Computadores afectados"; 
 $LANG['software'][11]="Licenzas"; 
 $LANG['software'][16]="programa instalado"; 
 $LANG['software'][17]="Installed softwares"; 
@@ -2037,9 +2037,9 @@ $LANG['title'][43]="Rexistro do sistema";
 $LANG['tracking'][1]="Os meus materiais"; 
 $LANG['tracking'][2]="Ou procura completa"; 
 $LANG['tracking'][3]="Datos inválidos. Actualización cancelada"; 
-$LANG['tracking'][4]="There is no urgency in your ticket, please correct."; 
-$LANG['tracking'][6]="The ticket's title is required: update not done"; 
-$LANG['tracking'][7]="The ticket's description is required: update not done"; 
+$LANG['tracking'][4]="A súa petición non ten urxencia, mirar de corrixir"; 
+$LANG['tracking'][6]="O título da incidencia é obrigatorio: actualización non realizada"; 
+$LANG['tracking'][7]="A descrición da incidencia é obrigatoria: actualización non realizada"; 
 $LANG['tracking'][8]="Sen descrición. Por favor, comece de novo"; 
 $LANG['tracking'][9]="Orixe por defecto para helpdesk"; 
 $LANG['tracking'][10]="Orixe por defecto para os recolectores"; 
@@ -2093,16 +2093,16 @@ $LANG['users'][2]="Categoría";
 $LANG['users'][3]="Contrasinal esquecido?"; 
 $LANG['users'][4]="Token"; 
 $LANG['users'][5]="Solicitou resetear o seu contrasinal"; 
-$LANG['users'][6]="Just follow this link (you have one day) :"; 
-$LANG['users'][7]="Please enter your email address. A email will be sent to you and you will be able to choose a new password."; 
+$LANG['users'][6]="Só tes que seguir este enlace (ten un día de validez):"; 
+$LANG['users'][7]="Por favor, introduza a súa dirección de correo electrónico. Un correo electrónico seralle enviado e poderá elixir un contrasinal novo."; 
 $LANG['users'][8]="Direción de correo non existe"; 
 $LANG['users'][9]="A configuración de autenticación non lle permite cambiar o seu contrasinal."; 
-$LANG['users'][10]="An email has been sent to your email address. The email contains informations for reset your password."; 
-$LANG['users'][11]="Please confirm your email address and enter your new password."; 
-$LANG['users'][12]="Your password reset request has expired or is invalid. Please renew it."; 
+$LANG['users'][10]="Enviouse un correo á súa dirección de correo. Este correo ten información para resetear o seu contrasinal"; 
+$LANG['users'][11]="Por favor, confirme o seu correo electronico e introduza o seu novo contrasinal."; 
+$LANG['users'][12]="A súa pregunta para reiniciar o contrasinal expirou ou é inválida. Volva configurala"; 
 $LANG['users'][13]="Contrasinal cambiada."; 
 $LANG['users'][14]="Autorizacións"; 
-$LANG['users'][15]="Import from directories"; 
+$LANG['users'][15]="Importar dende os directorios"; 
 $LANG['users'][16]="Importar desde outras fontes"; 
 $LANG['users'][17]="Matrícula"; 
 
@@ -2113,26 +2113,26 @@ $LANG['validation'][3]="Data da solicitude";
 $LANG['validation'][4]="Data da validación"; 
 $LANG['validation'][5]="Comentario da solicitude"; 
 $LANG['validation'][6]="Comentario da validación"; 
-$LANG['validation'][7]="Approval(s) for the ticket"; 
+$LANG['validation'][7]="Validación (s) para a incidencia"; 
 $LANG['validation'][8]="Validacións"; 
 $LANG['validation'][9]="En espera de validación"; 
 $LANG['validation'][10]="Rexeitado"; 
 $LANG['validation'][11]="Aceptada"; 
 $LANG['validation'][12]="Non está suxeito á validación"; 
-$LANG['validation'][13]="Approval request sent to"; 
+$LANG['validation'][13]="Solicitude de validación enviada a"; 
 $LANG['validation'][15]="Incidencia na espera da súa validación"; 
 $LANG['validation'][16]="Opcional se aceptada"; 
-$LANG['validation'][18]="Approval requester"; 
+$LANG['validation'][18]="Solicitante da validación"; 
 $LANG['validation'][19]="Validación aceptada"; 
 $LANG['validation'][21]="Usuario de validación"; 
 $LANG['validation'][23]="O usuario elixido non ten correo electrónico. A petición creouse pero o envío de correo fallou."; 
 $LANG['validation'][25]="Estado de validación global"; 
 $LANG['validation'][26]="Solicitude de validación"; 
-$LANG['validation'][27]="An approval request has been submitted"; 
+$LANG['validation'][27]="Solicitouse unha petición de validación"; 
 $LANG['validation'][28]="Estado da petición de validación"; 
 $LANG['validation'][29]="En caso de rexeitar a validación, debe indicar un motivo"; 
-$LANG['validation'][30]="Cancel the approval request to"; 
+$LANG['validation'][30]="Suprimir a solicitude de validación"; 
 $LANG['validation'][31]="Actualizar a solicitude de validación"; 
-$LANG['validation'][32]="An answer to a Approval request was produced"; 
+$LANG['validation'][32]="Levouse a cabo unha resposta a unha solicitude de validación"; 
 $LANG['validation'][33]="Incidencias esperan a súa aprobación"; 
 ?>

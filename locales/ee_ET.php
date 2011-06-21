@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ee_ET
 
@@ -797,7 +797,7 @@ $LANG['job'][14]="Avatud";
 $LANG['job'][15]="Lahendatud"; 
 $LANG['job'][16]="Suletud"; 
 $LANG['job'][17]="Hilinenud"; 
-$LANG['job'][18]="Requesters"; 
+$LANG['job'][18]="Nõudjad"; 
 $LANG['job'][19]="Täiendused e-postiga"; 
 $LANG['job'][20]="Kestvus kokku"; 
 $LANG['job'][21]="h"; 
@@ -1104,7 +1104,7 @@ $LANG['mailing'][118]="Aadress";
 $LANG['mailing'][119]="Occurrence"; 
 $LANG['mailing'][120]="Notification method"; 
 $LANG['mailing'][121]="Vastuvõtjad"; 
-$LANG['mailing'][122]="Task(s) already done"; 
+$LANG['mailing'][122]="Eelnevad tegevused"; 
 $LANG['mailing'][123]="Lahendatud teade"; 
 $LANG['mailing'][124]="Lisa uus tõlge"; 
 $LANG['mailing'][125]="Vaikimisi tõlge"; 

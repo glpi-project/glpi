@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //es_ES
 
@@ -533,7 +533,7 @@ $LANG['entity'][19]="Configuración de la encuesta de satisfacción";
 $LANG['entity'][20]="Create survey after"; 
 $LANG['entity'][21]="Rate to trigger survey"; 
 $LANG['entity'][22]="For tickets closed after"; 
-$LANG['entity'][23]="Values for the generic rules for assignment to entities"; 
+$LANG['entity'][23]="Valores para las reglas genéricas de asociación a las entidades"; 
 $LANG['entity'][24]="Valores utilizados en la interfaz de búsqueda de los usuarios de un directorio LDAP"; 
 $LANG['entity'][25]="Filtro LDAP asociado a la entidad (si fuese necesario)"; 
 $LANG['entity'][26]="Estos parámetros se utilizan como acciones en las reglas genéricas para la asignación a las entidades"; 
@@ -644,7 +644,7 @@ $LANG['financial'][109]="Total restante del presupuesto";
 $LANG['financial'][110]="Presupuestos"; 
 $LANG['financial'][111]="Autofill dates"; 
 $LANG['financial'][112]="Fill when shifting to state"; 
-$LANG['financial'][113]="No autofill"; 
+$LANG['financial'][113]="No autocompletar"; 
 $LANG['financial'][114]="Fecha del último inventario físico"; 
 
 $LANG['gmt'][0]="GMT"; 
@@ -780,7 +780,7 @@ $LANG['install'][104]="Prueba de la extensión mbstring";
 $LANG['install'][105]="La extensión mbstring del interprete PHP no está instalada"; 
 $LANG['install'][106]="Prueba de escritura de los ficheros gráficos"; 
 
-$LANG['job'][1]="Incident"; 
+$LANG['job'][1]="Incidencia"; 
 $LANG['job'][2]="por"; 
 $LANG['job'][3]="Técnicos"; 
 $LANG['job'][4]="Solicitante"; 
@@ -833,7 +833,7 @@ $LANG['job'][52]="Actualizar una tarea";
 $LANG['job'][53]="Supresión de una tarea"; 
 $LANG['job'][54]="Sin una respuesta la incidencia se borrará después de"; 
 $LANG['job'][55]="Incidencias enlazadas"; 
-$LANG['job'][56]="Link tickets"; 
+$LANG['job'][56]="Enlace a las incidencias"; 
 
 $LANG['joblist'][0]="Estado"; 
 $LANG['joblist'][1]="Sólo los míos"; 
@@ -914,7 +914,7 @@ $LANG['ldap'][22]="Réplica(s)";
 $LANG['ldap'][23]="Importación masiva de grupos desde un servidor LDAP"; 
 $LANG['ldap'][24]="Importación de nuevos grupos"; 
 $LANG['ldap'][25]="Ningún grupo para ser importado"; 
-$LANG['ldap'][26]="User DN"; 
+$LANG['ldap'][26]="Usuario DN"; 
 $LANG['ldap'][30]="Tratamiento de los alias LDAP"; 
 $LANG['ldap'][31]="Nunca (defecto)"; 
 $LANG['ldap'][32]="Siempre"; 
@@ -1949,7 +1949,7 @@ $LANG['sla'][7]="Salir de SLA";
 $LANG['sla'][8]="Próximo nivel"; 
 $LANG['sla'][9]="Avisos automáticos de SLA"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
+$LANG['sla'][11]="Calendario de las incidencias"; 
 
 $LANG['software'][1]="Versión comprada"; 
 $LANG['software'][2]="Versión en uso"; 
@@ -2038,8 +2038,8 @@ $LANG['tracking'][1]="Mis materiales";
 $LANG['tracking'][2]="O búsqueda completa"; 
 $LANG['tracking'][3]="Datos inválidos. Actualización cancelada"; 
 $LANG['tracking'][4]="Su petición no tiene urgencia, mirar de corregir"; 
-$LANG['tracking'][6]="The ticket's title is required: update not done"; 
-$LANG['tracking'][7]="The ticket's description is required: update not done"; 
+$LANG['tracking'][6]="El título de la incidencia es obligatorio : actualización no realizada"; 
+$LANG['tracking'][7]="La descripción de la incidencia es obligatoria : actualización no realizada"; 
 $LANG['tracking'][8]="Su incidencia no tiene descripción. Por favor, complétela."; 
 $LANG['tracking'][9]="Origen por defecto para helpdesk"; 
 $LANG['tracking'][10]="Origen por defecto para los recolectores"; 

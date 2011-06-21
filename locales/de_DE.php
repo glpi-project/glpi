@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //de_DE
 
@@ -299,7 +299,7 @@ $LANG['common'][95]="By";
 $LANG['common'][96]="Items"; 
 $LANG['common'][97]="Verbunden mit"; 
 $LANG['common'][98]="duplicates"; 
-$LANG['common'][99]="Dates"; 
+$LANG['common'][99]="Daten"; 
 $LANG['common'][100]="Times"; 
 $LANG['common'][101]="Letzte Änderung durch"; 
 $LANG['common'][102]="Vererbung durch die Elterneinheit"; 
@@ -781,7 +781,7 @@ $LANG['install'][105]="Die mbstring-Erweiterung des PHP-Parsers ist nicht instal
 $LANG['install'][106]="Das Schreiben von Grafikdateien wird getestet"; 
 
 $LANG['job'][1]="Vorfall"; 
-$LANG['job'][2]="Request"; 
+$LANG['job'][2]="Anfrage"; 
 $LANG['job'][3]="Techniker"; 
 $LANG['job'][4]="Anforderer"; 
 $LANG['job'][5]="zugewiesen zu"; 
@@ -804,7 +804,7 @@ $LANG['job'][21]="Stunde(n)";
 $LANG['job'][22]="Minute(n)"; 
 $LANG['job'][23]="Eine Lösung suchen"; 
 $LANG['job'][24]="Use as a solution"; 
-$LANG['job'][25]="Save and add to the knowledge base"; 
+$LANG['job'][25]="Speichern und der WissensDB hinzufügen"; 
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket"; 
 $LANG['job'][27]="Einen Bearbeiter hinzufügen"; 
 $LANG['job'][29]="Anmerkung hinzufügen"; 
@@ -1418,7 +1418,7 @@ $LANG['profiles'][46]="Alle Tätigkeiten bearbeiten";
 $LANG['profiles'][47]="Add users from an external source"; 
 $LANG['profiles'][48]="Genehmigung des Tickets beantragen"; 
 $LANG['profiles'][49]="Ticket genehmigen"; 
-$LANG['profiles'][50]="Update my followups"; 
+$LANG['profiles'][50]="Meine Anmerkungen aktualisieren"; 
 $LANG['profiles'][51]="Delete all followups"; 
 
 $LANG['registry'][1]="Zweig"; 
@@ -2114,7 +2114,7 @@ $LANG['validation'][4]="Datum der Genehmigung";
 $LANG['validation'][5]="Kommentar der Genehmigungsanfrage"; 
 $LANG['validation'][6]="Kommentar der Genehmigung"; 
 $LANG['validation'][7]="Genehmigungen für das Ticket"; 
-$LANG['validation'][8]="Validations"; 
+$LANG['validation'][8]="Genehmigungen"; 
 $LANG['validation'][9]="Wartet auf Genehmigung"; 
 $LANG['validation'][10]="Abgelehnt"; 
 $LANG['validation'][11]="Genehmigt"; 

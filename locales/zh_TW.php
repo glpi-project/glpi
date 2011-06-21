@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //zh_TW
 
@@ -1949,7 +1949,7 @@ $LANG['sla'][7]="查看SLA";
 $LANG['sla'][8]="下一個申告"; 
 $LANG['sla'][9]="服務水平協議自動提醒"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
+$LANG['sla'][11]="問題單的日程表"; 
 
 $LANG['software'][1]="採購版本"; 
 $LANG['software'][2]="使用版本"; 

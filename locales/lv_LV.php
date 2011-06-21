@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //lv_LV
 
@@ -299,7 +299,7 @@ $LANG['common'][95]="By";
 $LANG['common'][96]="Vienības"; 
 $LANG['common'][97]="Savienots ar"; 
 $LANG['common'][98]="duplicates"; 
-$LANG['common'][99]="Dates"; 
+$LANG['common'][99]="Datumi"; 
 $LANG['common'][100]="Times"; 
 $LANG['common'][101]="Pēdējoreiz rediģēja"; 
 $LANG['common'][102]="Inheritance of the parent entity"; 
@@ -345,7 +345,7 @@ $LANG['computers'][60]="Virtualizācijas modulis";
 $LANG['computers'][61]="Processor(s) number"; 
 $LANG['computers'][62]="Virtualizācijas sistēma"; 
 $LANG['computers'][63]="Virtuālās darbstacijas stāvoklis"; 
-$LANG['computers'][64]="Machine"; 
+$LANG['computers'][64]="Darbstacija"; 
 $LANG['computers'][65]="List of host machines"; 
 $LANG['computers'][66]="Virtuālo darbstaciju saraksts"; 
 
@@ -397,7 +397,7 @@ $LANG['crontask'][14]="Automātiska pieteikumu aizvēršana";
 $LANG['crontask'][15]="Neatrisināti pieteikumi"; 
 $LANG['crontask'][16]="Automatic actions of SLAs"; 
 $LANG['crontask'][17]="Automātisko darbību uzraudzība"; 
-$LANG['crontask'][18]="Generation of satisfaction surveys"; 
+$LANG['crontask'][18]="Apmierinātības apsekojumu ģenerēšana"; 
 $LANG['crontask'][31]="Izslēgts"; 
 $LANG['crontask'][32]="Ieplānots"; 
 $LANG['crontask'][33]="Darbojas"; 
@@ -529,8 +529,8 @@ $LANG['entity'][15]="LDAP directory of an entity";
 $LANG['entity'][16]="Meklēšanas filtrs (ja nepieciešams)"; 
 $LANG['entity'][17]="Automātiska konfigurācijas aizvēršana"; 
 $LANG['entity'][18]="Automātiska pieteikumu aizvēršana pēc"; 
-$LANG['entity'][19]="Configuring the satisfaction survey"; 
-$LANG['entity'][20]="Create survey after"; 
+$LANG['entity'][19]="Apmierinātības apsekojuma konfigurācija"; 
+$LANG['entity'][20]="Izveidot apsekojumu pēc"; 
 $LANG['entity'][21]="Rate to trigger survey"; 
 $LANG['entity'][22]="For tickets closed after"; 
 $LANG['entity'][23]="Values for the generic rules for assignment to entities"; 
@@ -796,7 +796,7 @@ $LANG['job'][13]="Jauns pieteikums";
 $LANG['job'][14]="Atvērts"; 
 $LANG['job'][15]="Atrisināts"; 
 $LANG['job'][16]="Aizvērts"; 
-$LANG['job'][17]="Late"; 
+$LANG['job'][17]="Kavējums"; 
 $LANG['job'][18]="Pieprasītāji"; 
 $LANG['job'][19]="Nosūtīt sekojumus uz epastu"; 
 $LANG['job'][20]="Atvēlētais laiks"; 
@@ -949,7 +949,7 @@ $LANG['log'][1]="sistēma";
 $LANG['log'][16]="plānošana"; 
 $LANG['log'][18]="sastāvdaļas"; 
 $LANG['log'][20]="add the item"; 
-$LANG['log'][21]="update the item"; 
+$LANG['log'][21]="atjaunina objektu"; 
 $LANG['log'][22]="item's deletion"; 
 $LANG['log'][23]="restoration of the item"; 
 $LANG['log'][24]="purge the item"; 
@@ -988,10 +988,10 @@ $LANG['log'][77]="tīkla ligzdas pievienošana VLAN";
 $LANG['log'][78]="tīkla ligzdu pievienošana VLAN"; 
 $LANG['log'][79]="vlan dissociated from a network port"; 
 $LANG['log'][80]="vairāku tīkla ligzdu atsaiste no VLAN"; 
-$LANG['log'][82]="versijas pievienošana"; 
+$LANG['log'][82]="pievieno versiju"; 
 $LANG['log'][83]="versijas modificēšana"; 
 $LANG['log'][84]="version's deletion"; 
-$LANG['log'][85]="licences pievienošana"; 
+$LANG['log'][85]="pievieno licenci"; 
 $LANG['log'][86]="modification of licence"; 
 $LANG['log'][87]="licence's deletion"; 
 $LANG['log'][88]="kasetņu pievienošana"; 
@@ -1123,8 +1123,8 @@ $LANG['mailing'][137]="Iekārtas lietotājs";
 $LANG['mailing'][138]="List of available tags"; 
 $LANG['mailing'][139]="Nosaukums"; 
 $LANG['mailing'][140]="Tag"; 
-$LANG['mailing'][141]="Followups"; 
-$LANG['mailing'][142]="Sekojumi"; 
+$LANG['mailing'][141]="Sekojumi"; 
+$LANG['mailing'][142]="Uzdevumi"; 
 $LANG['mailing'][143]="Apstiprinājumi"; 
 $LANG['mailing'][144]="Vēsturiski"; 
 $LANG['mailing'][145]="Vērtību saraksts"; 
@@ -1169,7 +1169,7 @@ $LANG['Menu'][38]="Inventārs";
 $LANG['Menu'][39]="Receivers"; 
 $LANG['Menu'][40]="Grāmatzīmes"; 
 $LANG['Menu'][41]="Tiesības"; 
-$LANG['Menu'][42]="Agendas"; 
+$LANG['Menu'][42]="Darba kārtība"; 
 $LANG['Menu'][43]="SLAs"; 
 
 $LANG['monitors'][14]="Mikrofons"; 
@@ -1302,18 +1302,18 @@ $LANG['ocsng'][61]="nav vienību, ko iztīrīt";
 $LANG['ocsng'][62]="target entity for the computer"; 
 $LANG['ocsng'][67]="Link possible"; 
 $LANG['ocsng'][68]="Imports atteikts"; 
-$LANG['ocsng'][69]="New computer created in GLPI"; 
+$LANG['ocsng'][69]="Jauns dators izveidots GLPI sistēmā"; 
 $LANG['ocsng'][70]="Importētie datori"; 
 $LANG['ocsng'][71]="Synchronized computers"; 
 $LANG['ocsng'][72]="Computers not checking any rule"; 
 $LANG['ocsng'][73]="Linked computers"; 
 $LANG['ocsng'][74]="Unmodified computers"; 
-$LANG['ocsng'][75]="Duplicate computers"; 
+$LANG['ocsng'][75]="Dublicētie datori"; 
 $LANG['ocsng'][76]="Statistics of the OCS link"; 
 $LANG['ocsng'][77]="process izpildīts"; 
 $LANG['ocsng'][78]="Link if possible, otherwise imports declined"; 
 $LANG['ocsng'][79]="Savienot, ja iespējams"; 
-$LANG['ocsng'][80]="Computers whose import is refused by a rule"; 
+$LANG['ocsng'][80]="Datori, kuru imports ir atteikts ar noteikumu"; 
 
 $LANG['pager'][1]="līdz"; 
 $LANG['pager'][2]="no"; 
@@ -1610,21 +1610,21 @@ $LANG['rulesengine'][148]="E-pasta domēns ir zināms";
 $LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
 $LANG['rulesengine'][150]="The rules linked with the entity have been disabled."; 
 $LANG['rulesengine'][151]="is already present in GLPI"; 
-$LANG['rulesengine'][152]="Computer to import"; 
+$LANG['rulesengine'][152]="Dators, ko importēt"; 
 $LANG['rulesengine'][154]="ir tukšs"; 
 $LANG['rulesengine'][155]="Link with computer"; 
 
-$LANG['satisfaction'][0]="Satisfaction"; 
+$LANG['satisfaction'][0]="Apmierinātība"; 
 $LANG['satisfaction'][1]="Satisfaction with the resolution of the ticket"; 
-$LANG['satisfaction'][2]="No generated survey"; 
-$LANG['satisfaction'][3]="Satisfaction survey"; 
-$LANG['satisfaction'][4]="Response date to the satisfaction survey"; 
-$LANG['satisfaction'][6]="Creation date of the satisfaction survey"; 
-$LANG['satisfaction'][7]="Satisfaction"; 
-$LANG['satisfaction'][8]="Comments to the satisfaction survey"; 
-$LANG['satisfaction'][9]="Internal survey"; 
-$LANG['satisfaction'][10]="External survey"; 
-$LANG['satisfaction'][12]="Invitation to fill out the survey"; 
+$LANG['satisfaction'][2]="Nav ģenerēta apsekojuma"; 
+$LANG['satisfaction'][3]="Apmierinātības apsekojums"; 
+$LANG['satisfaction'][4]="Reaģēšanas datums uz apmierinātības aptauju"; 
+$LANG['satisfaction'][6]="Apmierinātības apsekojuma izveidošanas datums"; 
+$LANG['satisfaction'][7]="Apmierinātība"; 
+$LANG['satisfaction'][8]="Komentāri apmierinātības apsekojumam"; 
+$LANG['satisfaction'][9]="Iekšējs apsekojums"; 
+$LANG['satisfaction'][10]="Ārējs apsekojums"; 
+$LANG['satisfaction'][12]="Uzaicinājums aizpildīt apsekojumu"; 
 $LANG['satisfaction'][13]="Atvērts"; 
 $LANG['satisfaction'][14]="Atbildes"; 
 
@@ -1642,9 +1642,9 @@ $LANG['search'][17]="Pievienot meklēšanas kritēriju";
 $LANG['search'][18]="Dzēst meklēšanas kritēriju"; 
 $LANG['search'][19]="Pievienot globālu meklēšanas kritēriju"; 
 $LANG['search'][20]="Dzēst globālu meklēšanas kritēriju"; 
-$LANG['search'][21]="Less than"; 
-$LANG['search'][22]="More than"; 
-$LANG['search'][23]="before"; 
+$LANG['search'][21]="Mazāk kā"; 
+$LANG['search'][22]="Vairāk kā"; 
+$LANG['search'][23]="pirms"; 
 $LANG['search'][24]="pēc"; 
 
 $LANG['setup'][0]="Izkrītošās izvēlnes"; 
@@ -1695,7 +1695,7 @@ $LANG['setup'][83]="Ieraksta statuss";
 $LANG['setup'][84]="Kasetnes tips"; 
 $LANG['setup'][85]="Līguma tips"; 
 $LANG['setup'][86]="Operatīvās atmiņas tips"; 
-$LANG['setup'][87]="Knowledge base categories"; 
+$LANG['setup'][87]="Zināšanu bāzes kategorijas"; 
 $LANG['setup'][88]="Tīkls"; 
 $LANG['setup'][89]="Domēns"; 
 $LANG['setup'][90]="VLANi"; 
@@ -1706,7 +1706,7 @@ $LANG['setup'][94]="Monitoru modeļi";
 $LANG['setup'][95]="Tīklošanas modeļi"; 
 $LANG['setup'][96]="Printeru modeļi"; 
 $LANG['setup'][97]="Perifērijas modeļi"; 
-$LANG['setup'][98]="Tasks category"; 
+$LANG['setup'][98]="Uzdevumu kategorija"; 
 $LANG['setup'][99]="Ēkas numurs"; 
 $LANG['setup'][100]="Telpas numurs"; 
 $LANG['setup'][101]="Maximal number of automatic actions (run by CLI)"; 
@@ -1925,7 +1925,7 @@ $LANG['setup'][809]="MYSQL replica: tikai lasāma";
 $LANG['setup'][810]="Desynchronization MySQL replication"; 
 $LANG['setup'][811]="Fields unicity"; 
 $LANG['setup'][813]="Impossible record for"; 
-$LANG['setup'][815]="Unique(s) field(s)"; 
+$LANG['setup'][815]="Unikāls(-i) lauks(-i)"; 
 $LANG['setup'][817]="It's mandatory to select a type and at least one field"; 
 $LANG['setup'][818]="<br/>Other items exist"; 
 $LANG['setup'][819]="Change to state"; 
@@ -1949,30 +1949,30 @@ $LANG['sla'][7]="Leave the SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatic reminders of SLAs"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
+$LANG['sla'][11]="Pieteikumu kalendārs"; 
 
-$LANG['software'][1]="Purchase version"; 
-$LANG['software'][2]="Version in use"; 
+$LANG['software'][1]="Iegādes versija"; 
+$LANG['software'][2]="Versija lietošanā"; 
 $LANG['software'][3]="Not installed affected licenses"; 
-$LANG['software'][4]="Unlimited"; 
+$LANG['software'][4]="Neierobežots"; 
 $LANG['software'][5]="Versijas"; 
-$LANG['software'][6]="Publisher"; 
+$LANG['software'][6]="Izdevējs"; 
 $LANG['software'][7]="Pievienot versiju"; 
 $LANG['software'][8]="Pievienot licenci"; 
-$LANG['software'][9]="Affected computers"; 
+$LANG['software'][9]="Ietekmētie datori"; 
 $LANG['software'][11]="Licences"; 
-$LANG['software'][16]="installed software"; 
+$LANG['software'][16]="instalētā programmatūra"; 
 $LANG['software'][17]="Uzstādītā programmatūra"; 
 $LANG['software'][19]="Instalācijas"; 
 $LANG['software'][20]="Atlikušas"; 
 $LANG['software'][28]="OEM"; 
 $LANG['software'][29]="Jaunināt"; 
-$LANG['software'][30]="Type of license"; 
+$LANG['software'][30]="Licences tips"; 
 $LANG['software'][32]="Beidzas derīgums"; 
 $LANG['software'][44]="Uzstādīt programmatūru"; 
 $LANG['software'][45]="Noinstalēt programmatūru"; 
 $LANG['software'][46]="Piesaistāms pieteikumam"; 
-$LANG['software'][47]="Merging"; 
+$LANG['software'][47]="Apvienošana"; 
 $LANG['software'][48]="Apvienot"; 
 $LANG['software'][49]="Software deleted after merging"; 
 
@@ -1982,7 +1982,7 @@ $LANG['softwarecategories'][4]="Unfold the software belonging to a category";
 $LANG['softwarecategories'][5]="Programmatūras kategorija"; 
 
 $LANG['state'][0]="Statuss"; 
-$LANG['state'][1]="Summary"; 
+$LANG['state'][1]="Kopsavilkums"; 
 $LANG['state'][6]="Ieraksta tips"; 
 $LANG['state'][7]="Nekas nav atrasts"; 
 
@@ -1993,14 +1993,14 @@ $LANG['stats'][3]="Pēc objekta";
 $LANG['stats'][5]="Number of opened tickets"; 
 $LANG['stats'][7]="Show graphics"; 
 $LANG['stats'][8]="Vidējais laiks"; 
-$LANG['stats'][9]="Résolution"; 
+$LANG['stats'][9]="Rezolūcija"; 
 $LANG['stats'][10]="Closing"; 
 $LANG['stats'][11]="Number of resolved tickets"; 
 $LANG['stats'][12]="Take into account"; 
 $LANG['stats'][13]="Pieteikumu skaits"; 
 $LANG['stats'][14]="Real duration"; 
 $LANG['stats'][16]="Tehniķa vārds"; 
-$LANG['stats'][17]="Number of closed tickets"; 
+$LANG['stats'][17]="Aizvērto pieteikumu skaits"; 
 $LANG['stats'][19]="Number of tickets resolved late"; 
 $LANG['stats'][20]="Lietotājvārds"; 
 $LANG['stats'][23]="Statistika nav pieejama"; 
@@ -2107,7 +2107,7 @@ $LANG['users'][16]="Import from other sources";
 $LANG['users'][17]="Administratīvais numurs"; 
 
 $LANG['validation'][0]="Apstiprinājums"; 
-$LANG['validation'][1]="Send a Approval request"; 
+$LANG['validation'][1]="Sūtīt apstiprinājuma pieprasījumu"; 
 $LANG['validation'][2]="Stāvoklis"; 
 $LANG['validation'][3]="Request date"; 
 $LANG['validation'][4]="Apstiprinājuma datums"; 

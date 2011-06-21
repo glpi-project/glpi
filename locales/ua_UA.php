@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ua_UA
 
@@ -1644,7 +1644,7 @@ $LANG['search'][19]="Додати глобальний критерій пошу
 $LANG['search'][20]="Видалити глобальний критерій пошуку"; 
 $LANG['search'][21]="Less than"; 
 $LANG['search'][22]="Більше"; 
-$LANG['search'][23]="before"; 
+$LANG['search'][23]="до"; 
 $LANG['search'][24]="після"; 
 
 $LANG['setup'][0]="Випадаючі списки"; 
@@ -1925,7 +1925,7 @@ $LANG['setup'][809]="MySQL репліка: тільки для читання";
 $LANG['setup'][810]="Розсинхронізація реплікації MySQL"; 
 $LANG['setup'][811]="Унікальне поле"; 
 $LANG['setup'][813]="Неможливий запис для"; 
-$LANG['setup'][815]="Unique(s) field(s)"; 
+$LANG['setup'][815]="Унікальне(і) поле(я)"; 
 $LANG['setup'][817]="Обов'язково вибрати тип і принаймні одне поле"; 
 $LANG['setup'][818]="<br/>Other items exist"; 
 $LANG['setup'][819]="Зміна статусу"; 

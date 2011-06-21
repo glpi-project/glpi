@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //sk_SK
 
@@ -1837,11 +1837,11 @@ $LANG['setup'][261]="Skupina DN";
 $LANG['setup'][262]="Použiť DN vo vyhľadávaní"; 
 $LANG['setup'][263]="Vyhľadávací filter užívateľov"; 
 $LANG['setup'][264]="Upozornenia o expirovaných licenciách"; 
-$LANG['setup'][271]="Obmedziť správu sledovania"; 
-$LANG['setup'][272]="Obmedziť riadenie zariadenia"; 
-$LANG['setup'][273]="Obmedziť správu telefónu"; 
+$LANG['setup'][271]="Obmedziť správu monitorov"; 
+$LANG['setup'][272]="Obmedziť správu zariadení"; 
+$LANG['setup'][273]="Obmedziť správu telefónov"; 
 $LANG['setup'][274]="pre ručné pridávanie"; 
-$LANG['setup'][275]="Obmedziť správu tlačiarne"; 
+$LANG['setup'][275]="Obmedziť správu tlačiarní"; 
 $LANG['setup'][280]="Automatická aktualizácia častí vzťahujúcich sa k počítačom"; 
 $LANG['setup'][281]="Ak sa pripojí alebo aktualizuje"; 
 $LANG['setup'][282]="Ak sa odpojí"; 
@@ -1949,7 +1949,7 @@ $LANG['sla'][7]="Opustiť SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatické pripomienky SLAs"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
+$LANG['sla'][11]="Kalendár požiadaviek"; 
 
 $LANG['software'][1]="Zakúpená verzia"; 
 $LANG['software'][2]="Použiť verziu"; 
@@ -1979,7 +1979,7 @@ $LANG['software'][49]="Software zmazaný po zlúčení";
 $LANG['softwarecategories'][2]="Nekategorizovaný softvér"; 
 $LANG['softwarecategories'][3]="Otvoriť softvér bez kategórie"; 
 $LANG['softwarecategories'][4]="Otvoriť kategorizovaný softvér"; 
-$LANG['softwarecategories'][5]="Kategória programov"; 
+$LANG['softwarecategories'][5]="Kategórie softvéru"; 
 
 $LANG['state'][0]="Stav"; 
 $LANG['state'][1]="Sumár"; 

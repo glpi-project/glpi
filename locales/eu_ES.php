@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //eu_ES
 
@@ -160,7 +160,7 @@ $LANG['cartridges'][0]="Kartutxoa";
 $LANG['cartridges'][9]="Ez dago kartutxorik"; 
 $LANG['cartridges'][10]="Tonerra"; 
 $LANG['cartridges'][11]="Ink-Jet"; 
-$LANG['cartridges'][12]="Cartridge Type"; 
+$LANG['cartridges'][12]="Kartutxo mota"; 
 $LANG['cartridges'][13]="Berria"; 
 $LANG['cartridges'][14]="Used"; 
 $LANG['cartridges'][15]="Worn"; 
@@ -179,7 +179,7 @@ $LANG['cartridges'][37]="Zinta";
 $LANG['cartridges'][39]="Printer counter"; 
 $LANG['cartridges'][40]="Average Time in stock"; 
 $LANG['cartridges'][41]="Batezbesteko erabilera"; 
-$LANG['cartridges'][42]="Average number of printed pages"; 
+$LANG['cartridges'][42]="Inprimatutako orrien betez bestekoa"; 
 
 $LANG['central'][2]="Azkenak"; 
 $LANG['central'][4]="Gertaerarik ez"; 
@@ -390,12 +390,12 @@ $LANG['crontask'][7]="Log zaharrak ezabatu";
 $LANG['crontask'][8]="Datu basea optimizatu"; 
 $LANG['crontask'][9]="Posta berreskuratu"; 
 $LANG['crontask'][10]="Check the MySQL replica"; 
-$LANG['crontask'][11]="Check for new updates"; 
+$LANG['crontask'][11]="Eguneraketak bilatu"; 
 $LANG['crontask'][12]="Iraungitako sesioan garbiketa"; 
 $LANG['crontask'][13]="Clean generated graphics"; 
-$LANG['crontask'][14]="Automatic tickets closing"; 
+$LANG['crontask'][14]="Intzidentzien itxiera administratiboa"; 
 $LANG['crontask'][15]="Konpondu gabeko intzidentziak"; 
-$LANG['crontask'][16]="Automatic actions of SLAs"; 
+$LANG['crontask'][16]="SLA ekintza automatikoak"; 
 $LANG['crontask'][17]="Monitoring of automatic actions"; 
 $LANG['crontask'][18]="Generation of satisfaction surveys"; 
 $LANG['crontask'][31]="Ezgaituta"; 
@@ -579,12 +579,12 @@ $LANG['financial'][30]="Faxa";
 $LANG['financial'][33]="Kontaktua gehitu"; 
 $LANG['financial'][36]="Kontratua gehitu"; 
 $LANG['financial'][40]="No associated contact"; 
-$LANG['financial'][41]="Associated contact"; 
+$LANG['financial'][41]="Esleitutako kontaktua"; 
 $LANG['financial'][42]="Komertziala"; 
 $LANG['financial'][43]="Teknikoa"; 
 $LANG['financial'][44]="Helbidea"; 
 $LANG['financial'][45]="Web gunea"; 
-$LANG['financial'][46]="Associated contacts"; 
+$LANG['financial'][46]="Esleitutako kontaktuak"; 
 $LANG['financial'][47]="Linear"; 
 $LANG['financial'][48]="Decreasing"; 
 $LANG['financial'][50]="Loan"; 
@@ -617,7 +617,7 @@ $LANG['financial'][82]="Faktura zenbakia";
 $LANG['financial'][83]="Max number of items"; 
 $LANG['financial'][84]="For this type of element, the financial and administrative information are only a model for the elements which you should add."; 
 $LANG['financial'][85]="Requested item not found"; 
-$LANG['financial'][86]="End of contract"; 
+$LANG['financial'][86]="Kontratuaren iraungitze-data"; 
 $LANG['financial'][87]="Aurrekontua"; 
 $LANG['financial'][88]="Valid to:"; 
 $LANG['financial'][89]="TCO (value + tracking cost)"; 
@@ -709,7 +709,7 @@ $LANG['install'][18]="Unofficial translations are also available";
 $LANG['install'][19]="The file was created but can't be deleted."; 
 $LANG['install'][20]="A file and a directory have be created and deleted - Perfect !"; 
 $LANG['install'][21]="Checking write permissions for document files"; 
-$LANG['install'][22]="A file was created - Perfect !"; 
+$LANG['install'][22]="Fitxategia sortu da - Primeran !"; 
 $LANG['install'][23]="Checking write permissions for setting files"; 
 $LANG['install'][24]="Initialization of the database"; 
 $LANG['install'][25]="Jarraitu?"; 
@@ -1213,7 +1213,7 @@ $LANG['ocsconfig'][2]="OCSNG zerbitzaria";
 $LANG['ocsconfig'][3]="OCSNG user password"; 
 $LANG['ocsconfig'][4]="Name of the OCSNG database"; 
 $LANG['ocsconfig'][5]="Inportazio aukerak"; 
-$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
+$LANG['ocsconfig'][7]="OCSNG datu basea UTF8 formatuan"; 
 $LANG['ocsconfig'][9]="Exclude the following tags (separator $, nothing for all)"; 
 $LANG['ocsconfig'][10]="Inportazio orokorra"; 
 $LANG['ocsconfig'][11]="Ez inportatu"; 
@@ -1304,7 +1304,7 @@ $LANG['ocsng'][67]="Link possible";
 $LANG['ocsng'][68]="Import refused"; 
 $LANG['ocsng'][69]="New computer created in GLPI"; 
 $LANG['ocsng'][70]="Inportatutako ordenagailuak"; 
-$LANG['ocsng'][71]="Synchronized computers"; 
+$LANG['ocsng'][71]="Sinkronizatutako ordenagailuak"; 
 $LANG['ocsng'][72]="Computers not checking any rule"; 
 $LANG['ocsng'][73]="Lotutako ordenagailuak"; 
 $LANG['ocsng'][74]="Aldatu ez diren ordenagailuak"; 
@@ -1469,7 +1469,7 @@ $LANG['reports'][64]="Konpontze data";
 $LANG['reservation'][1]="Reservable Items"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 
 $LANG['reservation'][3]="Make unavailable"; 
-$LANG['reservation'][4]="Available"; 
+$LANG['reservation'][4]="Erabilgarri"; 
 $LANG['reservation'][5]="Make available"; 
 $LANG['reservation'][6]="Prohibit reservations"; 
 $LANG['reservation'][7]="Mailegua baimendu"; 
@@ -1692,7 +1692,7 @@ $LANG['setup'][80]="Third party Type";
 $LANG['setup'][81]="Dokumentuen gaia"; 
 $LANG['setup'][82]="Contact Type"; 
 $LANG['setup'][83]="Item Status"; 
-$LANG['setup'][84]="Cartridge Type"; 
+$LANG['setup'][84]="Kartutxo mota"; 
 $LANG['setup'][85]="Contract Type"; 
 $LANG['setup'][86]="Type of memory"; 
 $LANG['setup'][87]="Ezagutza bilmunako kategoriak"; 
@@ -1726,7 +1726,7 @@ $LANG['setup'][115]="Default threshold for cartridge and consumable count";
 $LANG['setup'][117]="Authorize anonymous view of the FAQs"; 
 $LANG['setup'][118]="Text on the login page"; 
 $LANG['setup'][120]="Use dynamic display for dropdowns and text fields"; 
-$LANG['setup'][121]="Character to force the full display of dropdowns (wildcard)"; 
+$LANG['setup'][121]="Ajax komodina"; 
 $LANG['setup'][122]="Maximum number of items to display in the dropdowns when wildcard is not used"; 
 $LANG['setup'][123]="Don't use dynamic display if the number of items is less than"; 
 $LANG['setup'][124]="Automatically add users from an external authentication source"; 
@@ -1762,8 +1762,8 @@ $LANG['setup'][165]="Your PHP parser was compiled without the IMAP functions";
 $LANG['setup'][166]="Impossible to use email server as external source of connection"; 
 $LANG['setup'][167]="GLPI/LDAP lotura"; 
 $LANG['setup'][168]="Connection options"; 
-$LANG['setup'][169]="Mail folder (optional, often INBOX)"; 
-$LANG['setup'][170]="Connection string"; 
+$LANG['setup'][169]="Posta karpeta (aukerakoa, normalean INBOX)"; 
+$LANG['setup'][170]="Konexio-katea"; 
 $LANG['setup'][171]="Port (optional)"; 
 $LANG['setup'][172]="Port (default=389)"; 
 $LANG['setup'][174]="CAS Host"; 
@@ -1868,7 +1868,7 @@ $LANG['setup'][312]="No data available on the web site";
 $LANG['setup'][313]="Adi: ez dago lehenetsitako baliorik"; 
 $LANG['setup'][314]="Maximum capacity of displayed characters for URLs"; 
 $LANG['setup'][350]="Link with items for the creation of tickets"; 
-$LANG['setup'][351]="All Items"; 
+$LANG['setup'][351]="Item guztiak"; 
 $LANG['setup'][352]="Linkable items to a ticket"; 
 $LANG['setup'][360]="Eremu automatikoak (* ikurraz markatuta)"; 
 $LANG['setup'][400]="Proxy-aren ezarpenak"; 
@@ -1892,7 +1892,7 @@ $LANG['setup'][611]="Compulsory ticket content";
 $LANG['setup'][612]="Compulsory ticket category"; 
 $LANG['setup'][613]="Baimenik gabeko LDAP erabiltzailea gehitu"; 
 $LANG['setup'][614]="Unable to update login. A user already exists."; 
-$LANG['setup'][615]="Life cycle of tickets"; 
+$LANG['setup'][615]="Intzidentzien bizi-zikloa"; 
 $LANG['setup'][616]="From \ To"; 
 $LANG['setup'][620]="Link"; 
 $LANG['setup'][621]="Search filter for entities"; 
@@ -1923,7 +1923,7 @@ $LANG['setup'][807]="The slave base is desynchronized. The difference is of:";
 $LANG['setup'][808]="Slave database out of sync!"; 
 $LANG['setup'][809]="MySQL replica: read only"; 
 $LANG['setup'][810]="Desynchronization MySQL replication"; 
-$LANG['setup'][811]="Fields unicity"; 
+$LANG['setup'][811]="Eremu bakarrak"; 
 $LANG['setup'][813]="Impossible record for"; 
 $LANG['setup'][815]="Eremu bakarra(k)"; 
 $LANG['setup'][817]="It's mandatory to select a type and at least one field"; 

@@ -1,10 +1,10 @@
 <?php 
-/* 
- * @version $Id$
+/*
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -23,9 +23,9 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software  Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ru_RU
 
@@ -1418,7 +1418,7 @@ $LANG['profiles'][46]="Отредактировать все задания";
 $LANG['profiles'][47]="Add users from an external source"; 
 $LANG['profiles'][48]="Создать запрос на утверждение"; 
 $LANG['profiles'][49]="Утвердить заявку"; 
-$LANG['profiles'][50]="Update my followups"; 
+$LANG['profiles'][50]="Обновлять мои замечания"; 
 $LANG['profiles'][51]="Delete all followups"; 
 
 $LANG['registry'][1]="Ветка журнала записей"; 
