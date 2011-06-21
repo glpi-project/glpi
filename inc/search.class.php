@@ -735,7 +735,6 @@ class Search {
                   $LIMIT;
       }
 
-
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
       $result = $DBread->query($QUERY);
       /// Check group concat limit : if warning : increase limit
@@ -3207,10 +3206,14 @@ class Search {
          if (empty($specific_leftjoin)) {
             switch ($joinparams['jointype']) {
                case 'child' :
+                  $linkfield = getForeignKeyFieldForTable($rt);
+                  if (isset($joinparams['linkfield'])) {
+                     $linkfield = $joinparams['linkfield'];
+                  }
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                              ON (`$rt`.`id`
-                                                      = `$nt`.`".getForeignKeyFieldForTable($rt)."`
+                                                      = `$nt`.`$linkfield`
                                                          $addcondition)";
                   break;
 
@@ -5090,6 +5093,12 @@ class Search {
          $complexjoin .= $joinparams['condition'];
       }
 
+      // For jointype == child
+      if (isset($joinparams['jointype']) && $joinparams['jointype'] == 'child'
+            && isset($joinparams['linkfield'])) {
+         $complexjoin .= $joinparams['linkfield'];
+      }
+
       if (isset($joinparams['beforejoin'])) {
 
          if (isset($joinparams['beforejoin']['table'])) {
@@ -5104,8 +5113,8 @@ class Search {
                $complexjoin .= $tab['joinparams']['condition'];
             }
          }
-
       }
+
 //      echo $complexjoin.'--';
       if (!empty($complexjoin)) {
          $complexjoin = md5($complexjoin);

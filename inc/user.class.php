@@ -1836,16 +1836,25 @@ class User extends CommonDBTM {
 
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';
-      $tab[60]['name']          = $LANG['stats'][13];
+      $tab[60]['name']          = $LANG['stats'][13].' - '.$LANG['job'][4];
       $tab[60]['forcegroupby']  = true;
       $tab[60]['usehaving']     = true;
       $tab[60]['datatype']      = 'number';
       $tab[60]['massiveaction'] = false;
-      $tab[60]['joinparams']    = array('condition'
-                                         => "OR NEWTABLE.`users_id_recipient` = REFTABLE.`users_id`",
-                                        'beforejoin'
+      $tab[60]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_tickets_users',
                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[61]['table']         = 'glpi_tickets';
+      $tab[61]['field']         = 'count';
+      $tab[61]['name']          = $LANG['stats'][13].' - '.$LANG['common'][37];
+      $tab[61]['forcegroupby']  = true;
+      $tab[61]['usehaving']     = true;
+      $tab[61]['datatype']      = 'number';
+      $tab[61]['massiveaction'] = false;
+      $tab[61]['joinparams']    = array('jointype' => 'child',
+                                        'linkfield' => 'users_id_recipient');
+
 
       return $tab;
    }
