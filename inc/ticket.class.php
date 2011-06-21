@@ -3981,7 +3981,13 @@ class Ticket extends CommonDBTM {
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleteobserver = true;
+      } else if (!$this->isUser(self::OBSERVER, getLoginUserID())) {
+         echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
+              "/front/ticket.form.php?addme_observer=addme_observer".
+              "&amp;tickets_id=".$this->fields['id']."' title=\"".$LANG['buttons'][8]."\">".
+              $LANG['buttons'][8]."&nbsp;".$_SESSION['glpiname']."</a>";
       }
+
       echo "</th>";
 
       echo "<th width='30%'>".$LANG['job'][5];

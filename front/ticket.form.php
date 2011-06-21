@@ -40,7 +40,6 @@ checkLoginUser();
 $fup   = new TicketFollowup();
 $track = new Ticket();
 
-
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
@@ -141,6 +140,21 @@ if (isset($_POST["add"])) {
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][122]);
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+
+} else if (isset($_REQUEST['addme_observer'])) {
+   $ticket_user = new Ticket_User();
+   $track->check($_REQUEST['tickets_id'], 'r');
+   $input = array('tickets_id'       => $_REQUEST['tickets_id'],
+                  'users_id'         => getLoginUserID(),
+                  'use_notification' => 1,
+                  'type'             => Ticket::OBSERVER);
+   $ticket_user->add($input);
+
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+
+
 }
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
