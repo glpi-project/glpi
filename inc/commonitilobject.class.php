@@ -441,7 +441,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
-                            || $input['status'] == 'new') {
+                            || (isset($input['status']) && $input['status'] == 'new')) {
                            $input['status'] = 'assign';
                         }
                      }
@@ -456,7 +456,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
-                            || $input['status'] == 'new') {
+                            || (isset($input['status']) && $input['status'] == 'new')) {
                            $input['status'] = 'assign';
                         }
                      }
