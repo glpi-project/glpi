@@ -167,6 +167,8 @@ class Problem extends CommonITILObject {
       // show related tickets and changes
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
+         $ong[2] = $LANG['job'][55];
+
          // Analysis
          $ong[3] = $LANG['problem'][3];
          // Tasks
@@ -882,7 +884,7 @@ class Problem extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -913,9 +915,9 @@ class Problem extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
-
+      $options['colspan'] = 3;
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
