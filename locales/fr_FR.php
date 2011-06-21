@@ -2407,7 +2407,7 @@ $LANG['tracking'][1]  = "Mes éléments";
 $LANG['tracking'][2]  = "Ou recherche complète";
 $LANG['tracking'][3]  = "Dates invalides. Modification annulée.";
 $LANG['tracking'][4]  = "Votre ticket ne contient pas d'urgence, veuillez corriger.";
-
+$LANG['tracking'][5]  = "M'associer à ce ticket";
 $LANG['tracking'][6]  = "Le titre du ticket est obligatoire : modification non effectuée";
 $LANG['tracking'][7]  = "La description du ticket est obligatoire : modification non effectuée";
 $LANG['tracking'][8]  = "Votre ticket ne contient pas de description, veuillez corriger.";
