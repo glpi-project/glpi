@@ -132,6 +132,7 @@ class Log extends CommonDBTM {
                                             addslashes(TicketValidation::getStatus($oldval)),
                                             addslashes(TicketValidation::getStatus($values[$key])));
                            break;
+
                         case 'status' :
                            $changes = array($id_search_option,
                                             addslashes(Ticket::getStatus($oldval)),
