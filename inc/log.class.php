@@ -125,8 +125,13 @@ class Log extends CommonDBTM {
 
                   // 1st case : Ticket specific dropdown case (without table)
                   if ($real_type=='Ticket' && in_array($key, array('status', 'urgency', 'impact',
-                                                                   'priority'))) {
+                                                                   'priority', 'global_validation'))) {
                      switch ($key) {
+                        case 'global_validation' :
+                           $changes = array($id_search_option,
+                                            addslashes(TicketValidation::getStatus($oldval)),
+                                            addslashes(TicketValidation::getStatus($values[$key])));
+                           break;
                         case 'status' :
                            $changes = array($id_search_option,
                                             addslashes(Ticket::getStatus($oldval)),
