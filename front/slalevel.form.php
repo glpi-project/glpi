@@ -43,6 +43,7 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add"])) {
+   $item->check(-1, 'w', $_POST);
 
    if ($item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][32]);
