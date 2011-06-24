@@ -360,25 +360,23 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_requester'][$this->getForeignKeyField()] = $input['id'];
 
             switch ($input['_itil_requester']['_type']) {
-               case "email" :
-                  if (NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
-                     $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_itil_requester'])) {
-                        $useractors->add($input['_itil_requester']);
-                        $input['_forcenotif'] = true;
-                     }
-                  } else {
-                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                             false, ERROR);
-                  }
-                  break;
-
                case "user" :
                   if (!empty($this->userlinkclass)) {
-                     $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_itil_requester'])) {
-                        $useractors->add($input['_itil_requester']);
-                        $input['_forcenotif'] = true;
+                     if (isset($input['_itil_requester']['alternative_email'])
+                         && $input['_itil_requester']['alternative_email']
+                         && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
+                        $input['_itil_requester']['alternative_email'] = '';
+                        addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                                false, ERROR);
+                     }
+                     if ((isset($input['_itil_requester']['alternative_email'])
+                          && $input['_itil_requester']['alternative_email'])
+                         || $input['_itil_requester']['users_id']>0) {
+                        $useractors = new $this->userlinkclass();
+                        if ($useractors->can(-1,'w',$input['_itil_requester'])) {
+                           $useractors->add($input['_itil_requester']);
+                           $input['_forcenotif'] = true;
+                        }
                      }
                   }
                   break;
@@ -402,25 +400,23 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_observer'][$this->getForeignKeyField()] = $input['id'];
 
             switch ($input['_itil_observer']['_type']) {
-               case "email" :
-                  if (NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
-                     $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_itil_observer'])) {
-                        $useractors->add($input['_itil_observer']);
-                        $input['_forcenotif'] = true;
-                     }
-                  } else {
-                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                             false, ERROR);
-                  }
-                  break;
-
                case "user" :
                   if (!empty($this->userlinkclass)) {
-                     $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_itil_observer'])) {
-                        $useractors->add($input['_itil_observer']);
-                        $input['_forcenotif'] = true;
+                     if (isset($input['_itil_observer']['alternative_email'])
+                         && $input['_itil_observer']['alternative_email']
+                         && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
+                        $input['_itil_observer']['alternative_email'] = '';
+                        addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                                false, ERROR);
+                     }
+                     if ((isset($input['_itil_observer']['alternative_email'])
+                          && $input['_itil_observer']['alternative_email'])
+                         || $input['_itil_observer']['users_id']>0) {
+                        $useractors = new $this->userlinkclass();
+                        if ($useractors->can(-1,'w',$input['_itil_observer'])) {
+                           $useractors->add($input['_itil_observer']);
+                           $input['_forcenotif'] = true;
+                        }
                      }
                   }
                   break;
@@ -749,7 +745,10 @@ abstract class CommonITILObject extends CommonDBTM {
             $useractors->add($input2);
          }
 
-         if (isset($this->input["_users_id_observer"]) && $this->input["_users_id_observer"]>0) {
+         if (isset($this->input["_users_id_observer"])
+             && ($this->input["_users_id_observer"]>0
+                 || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
+                     && !empty($this->input["_users_id_observer_notif"]['alternative_email'])))) {
             $input2 = array($useractors->getItilObjectForeignKey()
                                        => $this->fields['id'],
                            'users_id'  => $this->input["_users_id_observer"],
@@ -1618,6 +1617,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
+                      'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
                       'entity_restrict' => $entities_id);
 
       ajaxUpdateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
@@ -1680,6 +1680,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment = array('value' => '__VALUE__',
                                 'field' => "_users_id_".$typename."_notif",
+                                'allow_email'
+                                        => ($type==self::REQUESTER || $type==self::OBSERVER),
                                 'use_notification'
                                         => $options["_users_id_".$typename."_notif"]['use_notification']);
 
