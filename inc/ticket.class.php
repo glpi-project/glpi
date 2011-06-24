@@ -3830,6 +3830,7 @@ class Ticket extends CommonITILObject {
                $fourth_col .= "<br>";
             }
          }
+
          echo Search::showItem($output_type, $fourth_col, $item_num, $row_num, $align);
 
          // Fifth column
@@ -3950,13 +3951,16 @@ class Ticket extends CommonITILObject {
          echo "<td class='center' bgcolor='$bgcolor' >ID : ".$job->fields["id"]."</td>";
          echo "<td class='center'>";
 
-
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
             foreach ($job->users[parent::REQUESTER] as $k => $d) {
-               $userdata = getUserName($k,2);
-               echo "<strong>".$userdata['name']."</strong>&nbsp;";
-               if ($viewusers) {
-                  showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+               if ($d["users_id"] > 0) {
+                  $userdata = getUserName($d["users_id"],2);
+                  echo "<strong>".$userdata['name']."</strong>&nbsp;";
+                  if ($viewusers) {
+                     showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+                  }
+               } else {
+                  echo $d['alternative_email'];
                }
                echo "<br>";
             }
@@ -3965,7 +3969,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($job->groups[parent::REQUESTER]) && count($job->groups[parent::REQUESTER])) {
             foreach ($job->groups[parent::REQUESTER] as $k => $d) {
-               echo Dropdown::getDropdownName("glpi_groups", $k);
+               echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                echo "<br>";
             }
          }
