@@ -3981,7 +3981,8 @@ class Ticket extends CommonDBTM {
          echo $LANG['buttons'][8];
          echo "</a>\n";
          $candeleteobserver = true;
-      } else if (!$this->isUser(self::OBSERVER, getLoginUserID())
+      } else if ($ID > 0
+                 && !$this->isUser(self::OBSERVER, getLoginUserID())
                  && !$this->isUser(self::REQUESTER, getLoginUserID())) {
          echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
               "/front/ticket.form.php?addme_observer=addme_observer".
