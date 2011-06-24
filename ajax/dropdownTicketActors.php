@@ -61,19 +61,27 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                           'right'       => $right,
                           'ldap_import' => true);
          if ($CFG_GLPI["use_mailing"]) {
+            $withemail = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
+            $paramscomment = array('value'       => '__VALUE__',
+                                   'allow_email' => $withemail,
+                                   'field'       => "_ticket_".$_POST["actortype"]);
             // Fix rand value
             $options['rand']     = $rand;
             $options['toupdate'] = array('value_fieldname' => 'value',
                                          'to_update'  => "notif_user_$rand",
                                          'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                         'moreparams' => array('value' => '__VALUE__',
-                                                               'field' => "_ticket_".
-                                                                          $_POST["actortype"]));
+                                         'moreparams' => $paramscomment);
          }
 
          $rand = User::dropdown($options);
          if ($CFG_GLPI["use_mailing"]) {
             echo "<br><span id='notif_user_$rand'>";
+            if ($withemail) {
+               echo $LANG['job'][19].'&nbsp;:&nbsp;';
+               $rand = Dropdown::showYesNo('_ticket_'.$_POST["actortype"].'[use_notification]', 1);
+               echo '<br>'.$LANG['mailing'][118].'&nbsp;:&nbsp;';
+               echo "<input type='text' size='25' name='_ticket_".$_POST["actortype"]."[alternative_email]'>";
+            }
             echo "</span>";
          }
          break;
@@ -81,13 +89,6 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
       case "group" :
          Dropdown::show('Group', array('name'   => '_ticket_'.$_POST["actortype"].'[groups_id]',
                                        'entity' => $_POST['entity_restrict']));
-         break;
-
-      case "email" :
-         $n = '_ticket_'.$_POST["actortype"];
-         echo "<input type='hidden' name='".$n."[use_notification]'  value='1'>";
-         echo "<input type='hidden' name='".$n."[users_id]' value='0'>";
-         echo "<input type='text'   name='".$n."[alternative_email]' size='25'>";
          break;
    }
 }

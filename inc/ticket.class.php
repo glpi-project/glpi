@@ -661,24 +661,23 @@ class Ticket extends CommonDBTM {
             $input['_ticket_requester']['type']       = self::REQUESTER;
             $input['_ticket_requester']['tickets_id'] = $input['id'];
             switch ($input['_ticket_requester']['_type']) {
-               case "email" :
-                  if (NotificationMail::isUserAddressValid($input['_ticket_requester']['alternative_email'])) {
+               case "user" :
+                  if (isset($input['_ticket_requester']['alternative_email'])
+                      && $input['_ticket_requester']['alternative_email']
+                      && !NotificationMail::isUserAddressValid($input['_ticket_requester']['alternative_email'])) {
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                     $input['_ticket_requester']['alternative_email'] = '';
+                  }
+
+                  if ((isset($input['_ticket_requester']['alternative_email'])
+                       && $input['_ticket_requester']['alternative_email'])
+                      || $input['_ticket_requester']['users_id']>0) {
                      $ticket_user = new Ticket_User();
                      if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
                         $ticket_user->add($input['_ticket_requester']);
                         $input['_forcenotif'] = true;
                      }
-                  } else {
-                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                             false, ERROR);
-                  }
-                  break;
-
-               case "user" :
-                  $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
-                     $ticket_user->add($input['_ticket_requester']);
-                     $input['_forcenotif'] = true;
                   }
                   break;
 
@@ -699,24 +698,22 @@ class Ticket extends CommonDBTM {
             $input['_ticket_observer']['tickets_id'] = $input['id'];
 
             switch ($input['_ticket_observer']['_type']) {
-               case "email" :
-                  if (NotificationMail::isUserAddressValid($input['_ticket_observer']['alternative_email'])) {
+               case "user" :
+                  if (isset($input['_ticket_observer']['alternative_email'])
+                      && $input['_ticket_observer']['alternative_email']
+                      && !NotificationMail::isUserAddressValid($input['_ticket_observer']['alternative_email'])) {
+                     $input['_ticket_observer']['alternative_email'] = '';
+                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                             false, ERROR);
+                  }
+                  if ((isset($input['_ticket_observer']['alternative_email'])
+                       && $input['_ticket_observer']['alternative_email'])
+                      || $input['_ticket_observer']['users_id']>0) {
                      $ticket_user = new Ticket_User();
                      if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
                         $ticket_user->add($input['_ticket_observer']);
                         $input['_forcenotif'] = true;
                      }
-                  } else {
-                     addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                             false, ERROR);
-                  }
-                  break;
-
-               case "user" :
-                  $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
-                     $ticket_user->add($input['_ticket_observer']);
-                     $input['_forcenotif'] = true;
                   }
                   break;
 
@@ -3827,20 +3824,15 @@ class Ticket extends CommonDBTM {
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
-            if ($withemail) {
-               $types['email'] = $LANG['mailing'][118];
-            }
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
-            if ($withemail) {
-               $types['email'] = $LANG['mailing'][118];
-            }
             break;
 
          case self::ASSIGN :
-            $typename = 'assign';
+            $withemail = false;
+            $typename  = 'assign';
             break;
 
          default :
@@ -3851,6 +3843,7 @@ class Ticket extends CommonDBTM {
       $rand   = Dropdown::showFromArray("_ticket_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
+                      'allow_email'     => $withemail,
                       'entity_restrict' => $entities_id);
 
       ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$typename."[_type]$rand",
