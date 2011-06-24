@@ -5728,11 +5728,15 @@ class Ticket extends CommonDBTM {
 
 
          if (isset($job->users[self::REQUESTER]) && count($job->users[self::REQUESTER])) {
-            foreach ($job->users[self::REQUESTER] as $k => $d) {
-               $userdata = getUserName($k,2);
-               echo "<strong>".$userdata['name']."</strong>&nbsp;";
-               if ($viewusers) {
-                  showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+            foreach ($job->users[self::REQUESTER] as $d) {
+               if ($d["users_id"] > 0) {
+                  $userdata = getUserName($d["users_id"],2);
+                  echo "<strong>".$userdata['name']."</strong>&nbsp;";
+                  if ($viewusers) {
+                     showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+                  }
+               } else {
+                  echo $d['alternative_email']."&nbsp;";
                }
                echo "<br>";
             }
@@ -5740,8 +5744,8 @@ class Ticket extends CommonDBTM {
 
 
          if (isset($job->groups[self::REQUESTER]) && count($job->groups[self::REQUESTER])) {
-            foreach ($job->groups[self::REQUESTER] as $k => $d) {
-               echo Dropdown::getDropdownName("glpi_groups", $k);
+            foreach ($job->groups[self::REQUESTER] as $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                echo "<br>";
             }
          }
