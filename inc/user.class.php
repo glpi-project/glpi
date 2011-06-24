@@ -1849,7 +1849,7 @@ class User extends CommonDBTM {
       $tab[61]['usehaving']     = true;
       $tab[61]['datatype']      = 'number';
       $tab[61]['massiveaction'] = false;
-      $tab[61]['joinparams']    = array('jointype' => 'child',
+      $tab[61]['joinparams']    = array('jointype'  => 'child',
                                         'linkfield' => 'users_id_recipient');
 
       return $tab;

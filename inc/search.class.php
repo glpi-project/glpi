@@ -2077,8 +2077,9 @@ class Search {
                   if ($itemtype == 'Ticket') { // For tickets_users
                      $ticket_user_table = "glpi_tickets_users_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
                      $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
-                                                         ' ',`$ticket_user_table`.`alternative_email`)
-                                                         SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+                                                                  ' ',
+                                                                  `$ticket_user_table`.`alternative_email`)
+                                                  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
                   }
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.", $addaltemail";
@@ -2973,8 +2974,9 @@ class Search {
 
                // show mine : requester
                $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                          "glpi_tickets_users", "tickets_users_id", 0, 0,
-                                          $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                                         "glpi_tickets_users", "tickets_users_id", 0, 0,
+                                         $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
@@ -2990,8 +2992,8 @@ class Search {
 
                if (count($_SESSION['glpigroups'])) {
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                             "glpi_groups_tickets", "groups_tickets_id", 0, 0,
-                                             $searchopt[65]['joinparams']['beforejoin']['joinparams']);
+                                            "glpi_groups_tickets", "groups_tickets_id", 0, 0,
+                                            $searchopt[65]['joinparams']['beforejoin']['joinparams']);
                }
 
                if (haveRight("own_ticket","1")) { // Can own ticket : show assign to me
@@ -5128,8 +5130,9 @@ class Search {
       }
 
       // For jointype == child
-      if (isset($joinparams['jointype']) && $joinparams['jointype'] == 'child'
-            && isset($joinparams['linkfield'])) {
+      if (isset($joinparams['jointype'])
+          && $joinparams['jointype'] == 'child'
+          && isset($joinparams['linkfield'])) {
          $complexjoin .= $joinparams['linkfield'];
       }
 

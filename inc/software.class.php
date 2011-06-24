@@ -440,7 +440,8 @@ class Software extends CommonDBTM {
                                         'condition'  => "AND NEWTABLE.`is_deleted` = '0'
                                                          AND NEWTABLE.`is_template` = '0'",
                                         'beforejoin' => array('table' => 'glpi_softwareversions',
-                                                         'joinparams' => array('jointype' => 'child')));
+                                                              'joinparams'
+                                                                      => array('jointype' => 'child')));
 
 
       $tab[86]['table']         = $this->getTable();
