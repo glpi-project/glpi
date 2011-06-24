@@ -3952,7 +3952,7 @@ class Ticket extends CommonITILObject {
          echo "<td class='center'>";
 
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
-            foreach ($job->users[parent::REQUESTER] as $k => $d) {
+            foreach ($job->users[parent::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
                   echo "<strong>".$userdata['name']."</strong>&nbsp;";
@@ -3960,7 +3960,7 @@ class Ticket extends CommonITILObject {
                      showToolTip($userdata["comment"], array('link' => $userdata["link"]));
                   }
                } else {
-                  echo $d['alternative_email'];
+                  echo $d['alternative_email']."&nbsp;";
                }
                echo "<br>";
             }
@@ -3968,7 +3968,7 @@ class Ticket extends CommonITILObject {
 
 
          if (isset($job->groups[parent::REQUESTER]) && count($job->groups[parent::REQUESTER])) {
-            foreach ($job->groups[parent::REQUESTER] as $k => $d) {
+            foreach ($job->groups[parent::REQUESTER] as $d) {
                echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                echo "<br>";
             }
