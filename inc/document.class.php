@@ -1387,20 +1387,19 @@ class Document extends CommonDBTM {
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "</td>";
-            echo "<td class='left' colspan='2'>";
+            echo "<td colspan='2'>";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td></tr>";
-            
+
             if ($item->getType() == 'Document') {
                $used[$ID] = $ID;
             }
 
             if (haveRight('document','r') && $nb>count($used)) {
-               echo "<tr class='tab_bg_1'><td class='left' colspan='3'>";
-
+               echo "<tr class='tab_bg_1'><td colspan='3'>";
                self::dropdown(array('entity' => $entities ,
                                     'used'   => $used));
-               echo "</td><td class='left' colspan='4'>";
+               echo "</td><td colspan='4'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";
                echo "</td><td>&nbsp;</td>";
