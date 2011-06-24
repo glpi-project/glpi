@@ -171,7 +171,7 @@ class MailCollector  extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['mailgate'][4]."</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]." (".$LANG['mailing'][111].")&nbsp;:</td><td>";
       autocompletionTextField($this, "name");
       echo "</td></tr>";
 
@@ -514,7 +514,9 @@ class MailCollector  extends CommonDBTM {
       // Add to and cc as additional observer if user found
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
-            if ($cc != $head['from'] && ($tmp=User::getOrImportByEmail($cc))>0) {
+            if ($cc != $head['from']
+                && $cc != $this->fields['name']
+                && ($tmp=User::getOrImportByEmail($cc, false))>0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
             }
@@ -522,7 +524,9 @@ class MailCollector  extends CommonDBTM {
       }
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
-            if ($to != $head['from'] && ($tmp=User::getOrImportByEmail($to))>0) {
+            if ($to != $head['from']
+                && $to != $this->fields['name']
+                && ($tmp=User::getOrImportByEmail($to, false))>0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
             }
