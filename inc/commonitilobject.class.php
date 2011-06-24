@@ -1597,12 +1597,10 @@ abstract class CommonITILObject extends CommonDBTM {
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
-            $types['email'] = $LANG['mailing'][118];
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
-            $types['email'] = $LANG['mailing'][118];
             break;
 
          case self::ASSIGN :
