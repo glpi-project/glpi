@@ -1704,7 +1704,10 @@ class Ticket extends CommonDBTM {
          }
          $ticket_user->add($input2);
       }
-      if (isset($this->input["_users_id_observer"]) && $this->input["_users_id_observer"]>0) {
+      if (isset($this->input["_users_id_observer"])
+          && ($this->input["_users_id_observer"]>0
+              || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
+                  && !empty($this->input["_users_id_observer_notif"]['alternative_email'])))) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'users_id'   => $this->input["_users_id_observer"],
                          'type'       => self::OBSERVER);
@@ -3913,6 +3916,8 @@ class Ticket extends CommonDBTM {
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment = array('value' => '__VALUE__',
                                 'field' => "_users_id_".$typename."_notif",
+                                'allow_email'
+                                        => ($type==self::REQUESTER || $type==self::OBSERVER),
                                 'use_notification'
                                         => $options["_users_id_".$typename."_notif"]['use_notification']);
 

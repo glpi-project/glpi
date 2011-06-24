@@ -43,7 +43,8 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
 
 checkLoginUser();
 // print_r($_REQUEST);
-if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
+if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
+    || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {
    $user = new User;
    $email = "";
    if ($user->getFromDB($_REQUEST["value"])) {
