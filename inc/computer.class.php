@@ -1138,7 +1138,7 @@ class Computer extends CommonDBTM {
       $tab[111]['massiveaction'] = false;
       $tab[111]['joinparams']    = array('jointype' => 'child');
 
-      $tab['virtulamachine'] = $LANG['computers'][57];
+      $tab['virtualmachine'] = $LANG['computers'][57];
 
       $tab[160]['table']         = 'glpi_computervirtualmachines';
       $tab[160]['field']         = 'name';
