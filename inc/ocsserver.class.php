@@ -132,7 +132,7 @@ class OcsServer extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['login'][2];
+      $tab['common'] = $LANG['ocsng'][29];
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
