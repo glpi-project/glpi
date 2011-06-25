@@ -734,10 +734,11 @@ class OcsServer extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_ocslinks`
-                WHERE `ocsservers_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $link = new Ocslink();
+      $link->deleteByCriteria(array('ocsservers_id' => $this->fields['id']));
+      
+      $admin = new OcsAdminInfosLink();
+      $admin->deleteByCriteria(array('ocsservers_id' => $this->fields['id']));
    }
 
 
