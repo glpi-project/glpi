@@ -52,6 +52,9 @@ class OcsServer extends CommonDBTM {
    // not used const CASE_DEVICE=11;
    // not used const POWER_DEVICE=12;
 
+   const OCS_VERSION_LIMIT  = 4020;
+   const OCS2_VERSION_LIMIT = 6000;
+
    // Class constants - import_ management
    const FIELD_SEPARATOR = '$$$$$';
    const IMPORT_TAG_070  = '_version_070_';
@@ -526,7 +529,7 @@ class OcsServer extends CommonDBTM {
          return false;
       }
 
-      $rowspan = 6;
+      $rowspan = 5;
       //If no ID provided, or if the server is created using an existing template
       if (empty ($ID)) {
          $this->getEmpty();
@@ -540,14 +543,16 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
       echo "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td>\n";
-      echo "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
-      echo "<td rowspan='$rowspan'>";
-      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "<td class='center'>" . $LANG['rulesengine'][78] . "&nbsp;: </td>\n";
+      echo "<td>".$this->fields["ocs_version"]."</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
       echo "<td><input type='text' name='ocs_db_host' value=\"" .
-                    $this->fields["ocs_db_host"] ."\"></td></tr>\n";
+                    $this->fields["ocs_db_host"] ."\"></td>";
+      echo "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
+      echo "<td rowspan='$rowspan'>";
+      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
       echo "<td><input type='text' name='ocs_db_name' value=\"" .
@@ -581,7 +586,7 @@ class OcsServer extends CommonDBTM {
          echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
          echo "</td>";
-      }
+      } 
 
       echo "</tr>\n";
 
@@ -1185,8 +1190,15 @@ class OcsServer extends CommonDBTM {
                                   FROM `config`
                                   WHERE `NAME` = 'GUI_VERSION'");
 
+         // Update OCS version on ocsservers
+         if ($DBocs->numrows($result)) {
+            $server = new OcsServer();
+            $server->update(array('id'        => $DBocs->ocsservers_id,
+                                'ocs_version' => $DBocs->result($result,0,0)));
+         }
+
          if ($DBocs->numrows($result) != 1
-             || ($DBocs->result($result, 0, 0) < 4020
+             || ($DBocs->result($result, 0, 0) < self::OCS_VERSION_LIMIT
                  && strpos($DBocs->result($result, 0, 0),'2.0') !== 0)) { // hack for 2.0 RC
             return false;
          }
@@ -3934,7 +3946,11 @@ class OcsServer extends CommonDBTM {
          if (!preg_match("/\/$/i",$ocs_config["ocs_url"])) {
             $url .= '/';
          }
-         $url = $url."machine.php?systemid=$ocsid";
+         if ($ocs_config['ocs_version'] > self::OCS2_VERSION_LIMIT) {
+            $url = $url."index.php?function=computer&amp;head=1&amp;systemid=$ocsid";
+         } else {
+            $url = $url."machine.php?systemid=$ocsid";
+         }
 
          if ($only_url) {
             return $url;
