@@ -1027,6 +1027,12 @@ class Ticket extends CommonITILObject {
             break;
       }
 
+      // Business Rules do not override manual SLA
+      $manual_slas_id = 0;
+      if (isset($input['slas_id']) && $input['slas_id'] > 0) {
+         $manual_slas_id = $input['slas_id'];
+      }
+
       // Process Business Rules
       $rules = new RuleTicketCollection($input['entities_id']);
 
@@ -1038,6 +1044,11 @@ class Ticket extends CommonITILObject {
       }
 
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
+
+      // Restore slas_id
+      if ($manual_slas_id > 0) {
+         $input['slas_id'] = $manual_slas_id;
+      }
 
 //       if (isset($input["use_email_notification"])
 //           && $input["use_email_notification"]
@@ -1070,8 +1081,10 @@ class Ticket extends CommonITILObject {
       }
 
       //// Manage SLA assignment
-      // due date defined : no SLA
-      if (isset($input["due_date"]) && $input['due_date'] != 'NULL') {
+      // Manual SLA defined : reset due date
+      // No manual SLA and due date defined : reset auto SLA
+      if ($manual_slas_id == 0
+         && isset($input["due_date"]) && $input['due_date'] != 'NULL') {
          // Valid due date
          if ($input['due_date']>$input['date']) {
             if (isset($input["slas_id"])) {
@@ -2631,14 +2644,18 @@ class Ticket extends CommonITILObject {
          }
 
       } else { // New Ticket
+         echo "<table><tr><td>";
          if ($this->fields["due_date"]=='NULL') {
             $this->fields["due_date"]='';
          }
          showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
-/*         echo $LANG['choice'][2]." ".$LANG['sla'][1]." : ";
+         echo '</td><td>';
+         echo $LANG['choice'][2]." ".$LANG['sla'][1]." : ";
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
-                                    'value' =>$this->fields["slas_id"]));*/
+                                    'value' =>$this->fields["slas_id"]));
+         echo "</td></tr></table>";
       }
+
       echo "</td></tr>";
 
       if ($ID) {
