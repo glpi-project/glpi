@@ -252,8 +252,8 @@ class RuleMailCollector extends Rule {
 
                         if ($profile) {
                            $entities = array();
-                           if (isset($params['users_id'])) { // Not set when testing
-                              $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
+                           if (isset($params['_users_id_requester'])) { // Not set when testing
+                              $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
                                                                                     $profile);
                            }
 
@@ -270,9 +270,9 @@ class RuleMailCollector extends Rule {
                               } else {
 
                                  //Rights on more than one entity : get the user's prefered entity
-                                 if (isset($params['users_id'])) { // Not set when testing
+                                 if (isset($params['_users_id_requester'])) { // Not set when testing
                                     $user = new User;
-                                    $user->getFromDB($params['users_id']);
+                                    $user->getFromDB($params['_users_id_requester']);
 
                                     //If an entity is defined in user's preferences, use this one
                                     //else do not set the rule as matched
