@@ -127,6 +127,8 @@ function update080to0801($output='HTML') {
                      array('tickets_id', 'type','users_id','alternative_email'),
                      "unicity", "UNIQUE");
 
+   $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");
+
    if ($migration->addField("glpi_slalevels", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_slalevels", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
       $migration->migrationOneTable('glpi_slalevels');
