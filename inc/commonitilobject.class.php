@@ -1780,8 +1780,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($rand_requester>=0) {
          self::showActorAddForm(self::REQUESTER, $rand_requester,
-                                $this->fields['entities_id'],
-                                true);
+                                $this->fields['entities_id']);
       }
 
       // Requester
@@ -1825,8 +1824,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_observer>=0) {
          self::showActorAddForm(self::OBSERVER, $rand_observer,
-                                $this->fields['entities_id'],
-                                true);
+                                $this->fields['entities_id']);
       }
 
       // Observer
