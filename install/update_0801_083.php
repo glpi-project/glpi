@@ -514,6 +514,8 @@ function update0801to083($output='HTML') {
 
    $migration->addField("glpi_users", "personal_token", "varchar( 255 ) NULL DEFAULT ''");
 
+   $migration->addField("glpi_users", "personal_token_date", "datetime default NULL");
+
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
