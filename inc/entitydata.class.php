@@ -748,7 +748,9 @@ class EntityData extends CommonDBChild {
       // No inherit from parent for root entity
       if ($entdata->fields['entities_id'] == 0) {
          unset($typeinquest[0]);
-         $entdata->fields['inquest_config'] = 1;
+         if ($entdata->fields['inquest_config'] == 0) {
+            $entdata->fields['inquest_config'] = 1;
+         }
       }
       $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
                                       $options = array('value' => $entdata->fields['inquest_config']));
