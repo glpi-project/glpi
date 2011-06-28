@@ -58,6 +58,14 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
       $this->datas['##dbconnection.delay##'] = timestampToString($options['diff'], true).
                                                " (".$options['name'].")";
+
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         if (!isset($this->datas[$tag])) {
+            $this->datas[$tag] = $values['label'];
+         }
+      }
+
    }
 
 
