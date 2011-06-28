@@ -52,8 +52,9 @@ class OcsServer extends CommonDBTM {
    // not used const CASE_DEVICE=11;
    // not used const POWER_DEVICE=12;
 
-   const OCS_VERSION_LIMIT  = 4020;
-   const OCS2_VERSION_LIMIT = 6000;
+   const OCS_VERSION_LIMIT    = 4020;
+   const OCS1_3_VERSION_LIMIT = 5000;
+   const OCS2_VERSION_LIMIT   = 6000;
 
    // Class constants - import_ management
    const FIELD_SEPARATOR = '$$$$$';
@@ -433,9 +434,11 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_registry", $this->fields["import_registry"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][57] . " </td>\n<td>";
-      Dropdown::showYesNo("import_vms", $this->fields["import_vms"]);
-      echo "</td></tr>\n";
+      if ($this->fields['ocs_version'] > self::OCS1_3_VERSION_LIMIT) {
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][57] . " </td>\n<td>";
+         Dropdown::showYesNo("import_vms", $this->fields["import_vms"]);
+         echo "</td></tr>\n";
+      }
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
       Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
@@ -4480,10 +4483,14 @@ class OcsServer extends CommonDBTM {
       return ($isNewVers);
    }
 
-
-   static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $import_vm,
+   static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_vm,
                                          $dohistory) {
       global $DBocs;
+
+      // No VM before OCS 1.3
+      if ($cfg_ocs['ocs_version'] < self::OCS1_3_VERSION_LIMIT) {
+         return false;
+      }
 
       self::checkOCSconnection($ocsservers_id);
 
