@@ -355,6 +355,9 @@ class MailCollector  extends CommonDBTM {
          $this->connect();
          $rejected = new NotImportedEmail;
 
+         // Clean from previous collect (from GUI, cron already truncate the table)
+         $rejected->deleteByCriteria(array('mailcollectors_id' => $this->fields['id']));
+
          if ($this->marubox) {
             // Get Total Number of Unread Email in mail box
             $tot  =$this->getTotalMails(); //Total Mails in Inbox Return integer value
