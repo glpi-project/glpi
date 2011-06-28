@@ -1260,7 +1260,7 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_users`
                        (`name`, `password`, `email`, `phone`, `phone2`, `mobile`, `realname`,
                         `firstname`, `comment`, `usertitles_id`, `usercategories_id`)
-                VALUES ('sadmin$i-$ID_entity', SHA1('sadmin$i'), 'sadmin$i-$ID_entity@tutu.com',
+                VALUES ('sadmin$i-$ID_entity', SHA1('sadmin$i'), '',
                         'tel $i', 'tel2 $i', 'mobile $i', 'sadmin$i name', 'sadmin$i firstname',
                         'comment $i', '".mt_rand(0,$MAX['user_title'])."',
                         '".mt_rand(0,$MAX['user_type'])."')";
@@ -1283,7 +1283,7 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_users`
                        (`name`, `password`, `email`, `phone`, `phone2`, `mobile`, `realname`,
                         `firstname`, `comment`, `usertitles_id`, `usercategories_id`)
-                VALUES ('admin$i-$ID_entity', SHA1('admin$i'), 'admin$i-$ID_entity@tutu.com',
+                VALUES ('admin$i-$ID_entity', SHA1('admin$i'), '',
                         'tel $i', 'tel2 $i', 'mobile $i', 'admin$i name', 'admin$i firstname',
                         'comment $i', '".mt_rand(0,$MAX['user_title'])."',
                         '".mt_rand(0,$MAX['user_type'])."')";
@@ -1312,7 +1312,7 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_users`
                        (`name`, `password`, `email`, `phone`, `phone2`, `mobile`, `realname`,
                         `firstname`, `comment`, `usertitles_id`, `usercategories_id`)
-                VALUES ('normal$i-$ID_entity', SHA1('normal$i'), 'normal$i-$ID_entity@tutu.com',
+                VALUES ('normal$i-$ID_entity', SHA1('normal$i'), '',
                         'tel $i', 'tel2 $i', 'mobile $i', 'normal$i name', 'normal$i firstname',
                         'comment $i', '".mt_rand(0,$MAX['user_title'])."',
                         '".mt_rand(0,$MAX['user_type'])."')";
@@ -1336,7 +1336,7 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_users`
                        (`name`, `password`, `email`, `phone`, `phone2`, `mobile`, `realname`,
                         `firstname`, `comment`, `usertitles_id`, `usercategories_id`)
-                VALUES ('postonly$i-$ID_entity', SHA1('postonly$i'), 'postonly$i-$ID_entity@tutu.com',
+                VALUES ('postonly$i-$ID_entity', SHA1('postonly$i'), '',
                         'tel $i', 'tel2 $i', 'mobile $i', 'postonly$i name', 'postonly$i firstname',
                         'comment $i', '".mt_rand(0,$MAX['user_title'])."',
                         '".mt_rand(0,$MAX['user_type'])."')";
