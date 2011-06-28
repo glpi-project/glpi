@@ -361,7 +361,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'><th colspan='8'>";
-         echo "<a href='computervirtualmachine.form.php?computers_id=$ID&amp'>".
+         echo "<a href='computervirtualmachine.form.php?computers_id=$ID'>".
                 $LANG['computers'][55]."</a></th></tr>";
       }
 
