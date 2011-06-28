@@ -101,26 +101,7 @@ class SoftwareLicense extends CommonDBTM {
 
       // Add infocoms if exists for the licence
       $ic = new Infocom();
-      if ($ic->getFromDBforDevice($itemtype, $dupid)) {
-         unset ($ic->fields["id"]);
-         $ic->fields["items_id"] = $this->fields['id'];
-
-         if (isset($ic->fields["immo_number"])) {
-            $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                                  'Infocom', $this->input['entities_id']);
-         }
-
-         if (empty($ic->fields['use_date'])) {
-            unset($ic->fields['use_date']);
-         }
-
-         if (empty($ic->fields['buy_date'])) {
-            unset($ic->fields['buy_date']);
-         }
-
-         $ic->fields["itemtype"] = $this->getType();
-         $ic->addToDB();
-      }
+      $ic->cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
    }
 
 
