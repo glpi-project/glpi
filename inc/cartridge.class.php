@@ -81,21 +81,9 @@ class Cartridge extends CommonDBTM {
 
    function post_addItem() {
 
-      // Add infocoms if exists for the cartridgeitem
       $ic = new Infocom();
-
-      if ($ic->getFromDBforDevice('CartridgeItem', $this->fields["cartridgeitems_id"])) {
-         unset($ic->fields["id"]);
-         $ic->fields["items_id"] = $this->fields['id'];
-         $ic->fields["itemtype"] = $this->getType();
-         if (empty($ic->fields['use_date'])) {
-            unset($ic->fields['use_date']);
-         }
-         if (empty($ic->fields['buy_date'])) {
-            unset($ic->fields['buy_date']);
-         }
-         $ic->addToDB();
-      }
+      $ic->cloneItem('CartridgeItem', $this->fields["cartridgeitems_id"], $this->fields['id'],
+                     $this->getType());
    }
 
 

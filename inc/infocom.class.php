@@ -1402,14 +1402,18 @@ class Infocom extends CommonDBChild {
     * @param $itemtype itemtype of the item
     * @param $oldid ID of the item to clone
     * @param $newid ID of the item cloned
+    * @param $newitemtype itemtype of the new item (= $itemtype if empty)
    **/
-   function cloneItem ($itemtype, $oldid, $newid) {
+   function cloneItem ($itemtype, $oldid, $newid, $newitemtype = '') {
       global $DB;
 
 
       if ($this->getFromDBforDevice($itemtype, $oldid)) {
          $input             = $this->fields;
          $input['items_id'] = $newid;
+         if (!empty($newitemtype)) {
+            $input['itemtype'] = $newitemtype;
+         }
          unset ($input["id"]);
          if (isset($input["immo_number"])) {
             $input["immo_number"] = autoName($input["immo_number"], "immo_number", 1, 'Infocom',

@@ -92,21 +92,9 @@ class Consumable extends CommonDBTM {
 
    function post_addItem() {
 
-      // Add infocoms if exists for the licence
       $ic = new Infocom();
-
-      if ($ic->getFromDBforDevice('ConsumableItem', $this->fields["consumableitems_id"])) {
-         unset($ic->fields["id"]);
-         $ic->fields["items_id"] = $this->fields['id'];
-         $ic->fields["itemtype"] = $this->getType();
-         if (empty($ic->fields['use_date'])) {
-            unset($ic->fields['use_date']);
-         }
-         if (empty($ic->fields['buy_date'])) {
-            unset($ic->fields['buy_date']);
-         }
-         $ic->addToDB();
-      }
+      $ic->cloneItem('ConsumableItem', $this->fields["consumableitems_id"], $this->fields['id'],
+                     $this->getType());
    }
 
 
