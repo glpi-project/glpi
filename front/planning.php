@@ -68,7 +68,14 @@ switch ($_GET["usertype"]) {
 }
 
 if (isset($_GET['genical'])) {
-   Planning::generateIcal($_GET["uID"], $_GET["gID"]);
+   if (isset($_GET['token'])) {
+      // Check user token
+      /// TODO : complex : check if the request is valid : rights on uID / gID ?
+      $user = new User;
+      if ($user->getFromDBByToken($_GET['token'])) {
+         Planning::generateIcal($_GET["uID"], $_GET["gID"]);
+      }
+   }
 } else {
    commonHeader($LANG['Menu'][29], $_SERVER['PHP_SELF'], "maintain", "planning");
 
