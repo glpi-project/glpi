@@ -370,10 +370,13 @@ class MailCollector  extends CommonDBTM {
 
                //If entity assigned, or email refused by rule, or no user associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
-                                  ||$tkt['_users_id_requester'] > 0);
+                                  ||(isset($tkt['_users_id_requester']) && $tkt['_users_id_requester'] > 0));
 
+               // Manage blacklisted emails
+               if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
+                  $this->deleteMails($i);
                // entities_id set when new ticket / tickets_id when new followup
-               if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
+               } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
                     && $user_condition)
                    || isset($tkt['_refuse_email_no_response'])
                    || isset($tkt['_refuse_email_with_response'])) {
@@ -495,7 +498,19 @@ class MailCollector  extends CommonDBTM {
 
       $head = $this->getHeaders($i); // Get Header Info Return Array Of Headers
                                      // **Key Are (subject,to,toOth,toNameOth,from,fromName)
+
       $tkt = array();
+      $tkt['_blacklisted'] = false;
+
+      // Detect if it is a mail reply
+      $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
+
+      // Check if email not send by GLPI : if yes -> blacklist
+      if (preg_match($glpi_message_match, $head['message_id'], $match)) {
+         $tkt['_blacklisted'] = true;
+         return $tkt;
+      }
+
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
@@ -516,7 +531,7 @@ class MailCollector  extends CommonDBTM {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from']
                 && $cc != $this->fields['name']
-                && ($tmp=User::getOrImportByEmail($cc, false))>0) {
+                && ($tmp=User::getOrImportByEmail($cc))>0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
             }
@@ -557,8 +572,6 @@ class MailCollector  extends CommonDBTM {
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
-      // Detect if it is a mail reply
-      $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
 
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {

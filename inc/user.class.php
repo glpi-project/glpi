@@ -2379,7 +2379,7 @@ class User extends CommonDBTM {
    }
 
 
-   static function getOrImportByEmail($email='', $main=true) {
+   static function getOrImportByEmail($email='') {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `id`
@@ -2392,7 +2392,7 @@ class User extends CommonDBTM {
          return $DB->result($result,0,"id");
 
       } else {
-         if ($main && $CFG_GLPI["is_users_auto_add"]) {
+         if ($CFG_GLPI["is_users_auto_add"]) {
             //Get all ldap servers with email field configured
             $ldaps = AuthLdap::getServersWithImportByEmailActive();
             //Try to find the user by his email on each ldap server
