@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.3.1
- * Copyright(c) 2006-2010 Sencha Inc.
+ * Ext JS Library 3.4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
  * licensing@sencha.com
  * http://www.sencha.com/license
  */
@@ -11,7 +11,7 @@
 
 .x-panel-header {
     color:#fff;
-	font-weight:bold; 
+    font-weight:bold; 
     font-size: 14px;
     font-family: tahoma,arial,verdana,sans-serif;
     border-color:#18181a;
@@ -43,16 +43,16 @@
 }
 
 .x-panel-tl .x-panel-header {
-    color:fff;
-	font:bold 14px tahoma,arial,verdana,sans-serif;
+    color:#fff;
+    font:bold 14px tahoma,arial,verdana,sans-serif;
 }
 
 .x-panel-tc {
-	background-image: url(../images/access/panel/top-bottom.gif);
+    background-image: url(../images/access/panel/top-bottom.gif);
 }
 
 .x-panel-tl, .x-panel-tr, .x-panel-bl,  .x-panel-br{
-	background-image: url(../images/access/panel/corners-sprite.gif);
+    background-image: url(../images/access/panel/corners-sprite.gif);
     border-bottom-color:#222224;
 }
 
