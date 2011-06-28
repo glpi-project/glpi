@@ -190,6 +190,15 @@ class Ticket_User extends CommonDBRelation {
       parent::post_addItem();
    }
 
+   function prepareInputForAdd($input) {
+      /// TODO delete on 0.83
+      if (!isset($input['use_notification'])) {
+         $input['use_notification'] = 1;
+      }
+      return $input;
+   }
+
+
 }
 
 ?>
