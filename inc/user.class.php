@@ -499,6 +499,12 @@ class User extends CommonDBTM {
          }
       }
 
+      if (isset($input['_reset_personal_token'])) {
+         $input['personal_token'] = self::getUniquePersonalKey();
+         $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
+      }
+
+
       // Manage preferences fields
       if (getLoginUserID() === $input['id']) {
          if (isset($input['use_mode']) && $_SESSION['glpi_use_mode'] !=  $input['use_mode']) {
@@ -1409,6 +1415,14 @@ class User extends CommonDBTM {
                   "/front/user.form.php?getvcard=1&amp;id=$ID'>". $LANG['common'][46]."</a>";
          }
          echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:</td><td>";
+         if (!empty($this->fields["personal_token"])) {
+            echo $this->fields["personal_token"]."<br>".$LANG['users'][18];
+            echo "&nbsp;".convDate($this->fields["personal_token_date"]);
+         }
+         echo "&nbsp;<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][61];
+         echo "</td>";
+         echo "<td colspan='2'>&nbsp</td></tr>";
       }
 
       $this->showFormButtons($options);
@@ -1575,6 +1589,15 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;";
          }
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:</td><td>";
+         if (!empty($this->fields["personal_token"])) {
+            echo $this->fields["personal_token"]."<br>".$LANG['users'][18];
+            echo "&nbsp;".convDate($this->fields["personal_token_date"]);
+         }
+         echo "&nbsp;<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][61];
+         echo "</td>";
+         echo "<td colspan='2'>&nbsp</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
@@ -2691,6 +2714,20 @@ class User extends CommonDBTM {
 
       return array_merge(parent::getUnallowedFieldsForUnicity(),
                          array('auths_id', 'date_sync', 'entities_id', 'last_login', 'profiles_id'));
+   }
+
+   static function getUniquePersonalKey() {
+      global $DB;
+      $ok = false;
+      do {
+         $key = getRanDomString(40);
+         $query = "SELECT COUNT(*) FROM `glpi_users` WHERE `personal_token` = '$key'";
+         $result = $DB->query($query);
+         if ($DB->result($result,0,0) == 0) {
+            return $key;
+         }
+      } while (!$ok);
+      
    }
 
 }

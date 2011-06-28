@@ -117,6 +117,7 @@ $LANG['buttons'][57] = "Exécuter";
 $LANG['buttons'][58] = "Mettre à jour";
 $LANG['buttons'][59] = "Dissocier";
 $LANG['buttons'][60] = "Fermer la fenêtre";
+$LANG['buttons'][61] = "Regénérer";
 
 
 $LANG['calendar'][0]  = "AAAA-MM-JJ";
@@ -339,6 +340,7 @@ $LANG['common'][104] = "Observateur";
 $LANG['common'][105] = "Alerte";
 $LANG['common'][106] = "Au moins un champ a une valeur incorrecte";
 $LANG['common'][107] = "Moyenne";
+$LANG['common'][108] = "Clé personnelle";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -2485,6 +2487,7 @@ $LANG['users'][14] = "Habilitations";
 $LANG['users'][15] = "Import depuis les annuaires";
 $LANG['users'][16] = "Import depuis les autres sources";
 $LANG['users'][17] = "Matricule";
+$LANG['users'][18] = "générée le";
 
 
 $LANG['validation'][0]  = "Validation";
