@@ -468,6 +468,10 @@ function update0801to083($output='HTML') {
    $migration->changeField('glpi_solutiontemplates', 'ticketsolutiontypes_id', 'solutiontypes_id',
                            'INT( 11 ) NOT NULL DEFAULT 0');
 
+   $migration->changeField('glpi_tickets_users', 'use_notification', 'use_notification',
+                           'TINYINT( 1 ) NOT NULL DEFAULT 1');
+
+
    // to have correct name of key
    $migration->dropKey('glpi_tickets', 'ticketsolutiontypes_id');
    $migration->migrationOneTable('glpi_tickets');
