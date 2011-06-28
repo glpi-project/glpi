@@ -110,9 +110,15 @@ class Migration {
    function changeField($table, $oldfield, $newfield, $format) {
 
       if (FieldExists($table,$oldfield)) {
-         $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format";
+         // pour que la procédure soit re-entrante
+         if (FieldExists($table,$newfield)) {
+            $this->change[$table][] = "DROP `$oldfield` ";
+         } else {
+            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format";
+         }
          return true;
       }
+
       return false;
    }
 
