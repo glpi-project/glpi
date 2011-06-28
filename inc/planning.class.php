@@ -238,15 +238,17 @@ class Planning {
       echo "<td>";
       echo "<a target='_blank'
             href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                  "&amp;gID=".$gID."&amp;usertype=".$usertype."\"
-            title=\"".$LANG['planning'][12]."\">".
+                  "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;token=".
+                  User::getPersonalToken(getLoginUserID(true))."\"
+                  title=\"".$LANG['planning'][12]."\">".
             "<span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
       echo "<br>";
 
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
       echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
              "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-             "&amp;usertype=".$usertype."\" title=\"".$LANG['planning'][13]."\">";
+             "&amp;usertype=".$usertype."&amp;token=".
+             User::getPersonalToken(getLoginUserID(true))."\" title=\"".$LANG['planning'][13]."\">";
       echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
       echo "</td>\n";
 
