@@ -40,7 +40,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("user", "w");
+checkRight('update_ticket', 1);
 
 if ($_POST["actortype"] > 0) {
    $rand = mt_rand();
