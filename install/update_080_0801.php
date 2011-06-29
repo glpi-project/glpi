@@ -55,29 +55,29 @@ function update080to0801($output='HTML') {
 
    // Clean duplicates
    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
-               FROM `glpi_groups_tickets`
-               GROUP BY `tickets_id`, `type`, `groups_id`
-               HAVING CPT > 1";
+             FROM `glpi_groups_tickets`
+             GROUP BY `tickets_id`, `type`, `groups_id`
+             HAVING CPT > 1";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
             // Skip first
             $query = "SELECT `id`
-                        FROM `glpi_groups_tickets`
-                        WHERE `tickets_id` = '".$data['tickets_id']."'
-                           AND `type` = '".$data['type']."'
-                           AND `groups_id` = '".$data['groups_id']."'
-                        ORDER BY `id` DESC
-                        LIMIT 1,99999";
+                      FROM `glpi_groups_tickets`
+                      WHERE `tickets_id` = '".$data['tickets_id']."'
+                            AND `type` = '".$data['type']."'
+                            AND `groups_id` = '".$data['groups_id']."'
+                      ORDER BY `id` DESC
+                      LIMIT 1,99999";
             if ($result2=$DB->query($query)) {
                if ($DB->numrows($result2)) {
                   while ($data2=$DB->fetch_array($result2)) {
                      $query = "DELETE
-                                 FROM `glpi_groups_tickets`
-                                 WHERE `id` ='".$data2['id']."'";
+                               FROM `glpi_groups_tickets`
+                               WHERE `id` ='".$data2['id']."'";
                      $DB->query($query)
-                     or die("0.80.1 clean to update glpi_groups_tickets ".
-                              $LANG['update'][90] . $DB->error());
+                     or die("0.80.1 clean to update glpi_groups_tickets ".$LANG['update'][90] .
+                            $DB->error());
                   }
                }
             }
@@ -87,34 +87,34 @@ function update080to0801($output='HTML') {
    $migration->dropKey('glpi_groups_tickets', 'unicity');
    $migration->migrationOneTable('glpi_groups_tickets');
    $migration->addKey("glpi_groups_tickets", array('tickets_id', 'type','groups_id'),
-                        "unicity", "UNIQUE");
+                      "unicity", "UNIQUE");
 
    // Clean duplicates
    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `users_id`, `alternative_email`
-               FROM `glpi_tickets_users`
-               GROUP BY `tickets_id`, `type`, `users_id`, `alternative_email`
-               HAVING CPT > 1";
+             FROM `glpi_tickets_users`
+             GROUP BY `tickets_id`, `type`, `users_id`, `alternative_email`
+             HAVING CPT > 1";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
             // Skip first
             $query = "SELECT `id`
-                        FROM `glpi_tickets_users`
-                        WHERE `tickets_id` = '".$data['tickets_id']."'
-                           AND `type` = '".$data['type']."'
-                           AND `users_id` = '".$data['users_id']."'
-                           AND `alternative_email` = '".$data['alternative_email']."'
-                        ORDER BY `id` DESC
-                        LIMIT 1,99999";
+                      FROM `glpi_tickets_users`
+                      WHERE `tickets_id` = '".$data['tickets_id']."'
+                            AND `type` = '".$data['type']."'
+                            AND `users_id` = '".$data['users_id']."'
+                            AND `alternative_email` = '".$data['alternative_email']."'
+                      ORDER BY `id` DESC
+                      LIMIT 1,99999";
             if ($result2=$DB->query($query)) {
                if ($DB->numrows($result2)) {
                   while ($data2=$DB->fetch_array($result2)) {
                      $query = "DELETE
-                                 FROM `glpi_tickets_users`
-                                 WHERE `id` ='".$data2['id']."'";
+                               FROM `glpi_tickets_users`
+                               WHERE `id` ='".$data2['id']."'";
                      $DB->query($query)
-                     or die("0.80.1 clean to update glpi_tickets_users ".
-                              $LANG['update'][90] . $DB->error());
+                     or die("0.80.1 clean to update glpi_tickets_users ".$LANG['update'][90] .
+                            $DB->error());
                   }
                }
             }
@@ -124,8 +124,8 @@ function update080to0801($output='HTML') {
    $migration->dropKey('glpi_tickets_users', 'tickets_id');
    $migration->migrationOneTable('glpi_tickets_users');
    $migration->addKey("glpi_tickets_users",
-                     array('tickets_id', 'type','users_id','alternative_email'),
-                     "unicity", "UNIQUE");
+                      array('tickets_id', 'type','users_id','alternative_email'),
+                      "unicity", "UNIQUE");
 
    $migration->addField("glpi_ocsservers", "ocs_version", "VARCHAR( 255 ) NULL");
 

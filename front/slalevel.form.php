@@ -61,12 +61,13 @@ if (isset($_POST["update"])) {
          }
       }
       Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+
    } else if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
       $ok = $item->delete($_POST);
       if ($ok) {
          Event::log($_POST["id"], "slas", 4, "config",
-                  $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$item->getField('name'));
+                    $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$item->getField('name'));
       }
       $item->redirectToList();
    }

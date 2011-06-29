@@ -188,7 +188,8 @@ class MailCollector  extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['mailgate'][4]."</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]." (".$LANG['mailing'][111].")&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]." (".$LANG['mailing'][111].")&nbsp;:";
+      echo "</td><td>";
       autocompletionTextField($this, "name");
       echo "</td></tr>";
 
@@ -385,7 +386,7 @@ class MailCollector  extends CommonDBTM {
             $error = 0;
             $refused = 0;
 
-            for($i=1 ; $i<=$tot && $this->fetch_emails<$this->maxfetch_emails ; $i++) {
+            for ($i=1 ; $i<=$tot && $this->fetch_emails<$this->maxfetch_emails ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
 
@@ -395,16 +396,16 @@ class MailCollector  extends CommonDBTM {
                //If entity assigned, or email refused by rule, or no user associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
                                   ||(isset($tkt['_users_id_requester'])
-                                       && $tkt['_users_id_requester'] > 0));
+                                     && $tkt['_users_id_requester'] > 0));
 
                // Manage blacklisted emails
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($i);
                // entities_id set when new ticket / tickets_id when new followup
                } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
-                    && $user_condition)
-                   || isset($tkt['_refuse_email_no_response'])
-                   || isset($tkt['_refuse_email_with_response'])) {
+                           && $user_condition)
+                          || isset($tkt['_refuse_email_no_response'])
+                          || isset($tkt['_refuse_email_with_response'])) {
 
                   if (isset($tkt['_refuse_email_with_response'])) {
                      $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
@@ -555,8 +556,8 @@ class MailCollector  extends CommonDBTM {
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from']
-                  && $cc != $this->fields['name']
-                  && ($tmp=User::getOrImportByEmail($cc))>0) {
+                && $cc != $this->fields['name']
+                && ($tmp=User::getOrImportByEmail($cc)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
             }
@@ -565,8 +566,8 @@ class MailCollector  extends CommonDBTM {
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from']
-                  && $cc != $this->fields['name']
-                  && ($tmp=User::getOrImportByEmail($to))>0) {
+                && $cc != $this->fields['name']
+                && ($tmp=User::getOrImportByEmail($to)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
             }
