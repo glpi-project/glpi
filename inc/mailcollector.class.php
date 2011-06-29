@@ -97,6 +97,7 @@ class MailCollector  extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+      global $LANG;
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -109,11 +110,18 @@ class MailCollector  extends CommonDBTM {
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
       }
+
+      if (!NotificationMail::isUserAddressValid($input['name'])) {
+         addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                 false, ERROR);
+      }
+
       return $input;
    }
 
 
    function prepareInputForAdd($input) {
+      global $LANG;
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -126,6 +134,12 @@ class MailCollector  extends CommonDBTM {
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
       }
+
+      if (!NotificationMail::isUserAddressValid($input['name'])) {
+         addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                 false, ERROR);
+      }
+
       return $input;
    }
 
