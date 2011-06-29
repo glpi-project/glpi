@@ -589,7 +589,7 @@ class OcsServer extends CommonDBTM {
          echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
          echo "</td>";
-      } 
+      }
 
       echo "</tr>\n";
 
@@ -740,11 +740,10 @@ class OcsServer extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $DB;
 
       $link = new Ocslink();
       $link->deleteByCriteria(array('ocsservers_id' => $this->fields['id']));
-      
+
       $admin = new OcsAdminInfosLink();
       $admin->deleteByCriteria(array('ocsservers_id' => $this->fields['id']));
    }
