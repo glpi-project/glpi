@@ -549,10 +549,9 @@ class OcsServer extends CommonDBTM {
       echo "<td class='center'>" . $LANG['rulesengine'][78] . "&nbsp;: </td>\n";
       echo "<td>".$this->fields["ocs_version"]."</td></tr>\n";
 
-
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
-      echo "<td><input type='text' name='ocs_db_host' value=\"" .
-                    $this->fields["ocs_db_host"] ."\"></td>\n";
+      echo "<td><input type='text' name='ocs_db_host' value=\"" .$this->fields["ocs_db_host"] ."\">";
+      echo "</td>\n";
       echo "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
       echo "<td rowspan='$rowspan'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -1205,8 +1204,8 @@ class OcsServer extends CommonDBTM {
          // Update OCS version on ocsservers
          if ($DBocs->numrows($result)) {
             $server = new OcsServer();
-            $server->update(array('id'        => $DBocs->ocsservers_id,
-                                'ocs_version' => $DBocs->result($result,0,0)));
+            $server->update(array('id'          => $DBocs->ocsservers_id,
+                                  'ocs_version' => $DBocs->result($result, 0, 0)));
          }
 
          if ($DBocs->numrows($result) != 1
