@@ -105,7 +105,7 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Ticket', $LANG['buttons'][15] ." = ". $problem->fields["name"]);
+         initNavigateListItems('Ticket', $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
