@@ -80,6 +80,7 @@ class Cartridge extends CommonDBTM {
 
 
    function post_addItem() {
+
       $ic = new Infocom();
       $ic->cloneItem('CartridgeItem', $this->fields["cartridgeitems_id"], $this->fields['id'],
                      $this->getType());
