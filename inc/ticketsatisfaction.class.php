@@ -141,7 +141,7 @@ class TicketSatisfaction extends CommonDBTM {
          echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
          echo "</td></tr>\n";
 
-         if ($this->fields["date_answered"] >0) {
+         if ($this->fields["date_answered"] > 0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
             echo convDateTime($this->fields["date_answered"])."</td></tr>\n";
@@ -156,7 +156,7 @@ class TicketSatisfaction extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
 
-      if ($input['satisfaction']>0) {
+      if ($input['satisfaction'] >= 0) {
          $input["date_answered"] = $_SESSION["glpi_currenttime"];
       }
 
