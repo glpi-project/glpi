@@ -251,7 +251,7 @@ function update0801to083($output='HTML') {
                 SET `change` = 'w'
                 WHERE `update_ticket` = 1";
       $DB->query($query)
-      or die($this->version." set default values for change in glpi_profiles " . $LANG['update'][90] .
+      or die($this->version." set default values for change in glpi_profiles ".$LANG['update'][90].
              $DB->error());
    }
 
@@ -273,7 +273,7 @@ function update0801to083($output='HTML') {
                           `users_id_tech` = '".$data['users_id']."',
                           `state` = '".$data['state']."'";
             $DB->query($query)
-            or die("0.83 migrate planning to glpi_tickettasks ". $LANG['update'][90] . $DB->error());
+            or die("0.83 migrate planning to glpi_tickettasks ". $LANG['update'][90] .$DB->error());
          }
       }
 
@@ -434,7 +434,8 @@ function update0801to083($output='HTML') {
                                 (`id`, `notifications_id`, `type`, `items_id`)
                          VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
                $DB->query($query)
-               or die("0.83 add problem $type notification target " .$LANG['update'][90].$DB->error());
+               or die("0.83 add problem $type notification target ".$LANG['update'][90].
+                      $DB->error());
             }
          }
       }
@@ -628,7 +629,8 @@ function update0801to083($output='HTML') {
                      if ($DB->numrows($result2)==0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."')";
+                                  VALUES ('$type', '$newval', '".$rank++."',
+                                          '".$data['users_id']."')";
                         $DB->query($query);
                      }
                   }

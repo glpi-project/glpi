@@ -159,7 +159,7 @@ function update0782to080($output='HTML') {
                                    (`calendars_id`, `day`, `begin`, `end`)
                             VALUES ($default_calendar_id, $i, '$begin', '$end')";
                   $DB->query($query)
-                  or die("0.80 add default glpi_calendarsegments " . $LANG['update'][90] . $DB->error());
+                  or die("0.80 add default glpi_calendarsegments ".$LANG['update'][90].$DB->error());
                }
             }
          }
@@ -171,7 +171,7 @@ function update0782to080($output='HTML') {
                       SET `cache_duration` = '".exportArrayToDB($calendar->getDaysDurations())."'
                       WHERE `id` = '$default_calendar_id'";
                   $DB->query($query)
-                  or die("0.80 update default calendar cache " . $LANG['update'][90] . $DB->error());
+                  or die("0.80 update default calendar cache " . $LANG['update'][90].$DB->error());
          }
       }
 
@@ -197,25 +197,6 @@ function update0782to080($output='HTML') {
       $DB->query($query) or die("0.80 create glpi_holidays " . $LANG['update'][90] . $DB->error());
 
       $ADDTODISPLAYPREF['Holiday'] = array(11, 12, 13);
-
-//       $perpetualaddday=array(array('date'=>'2000-01-01','name'=>"New Year Day"),
-//                            array('date'=>'2000-03-17','name'=>"St. Patrick\'s Day"),
-//                            array('date'=>'2000-05-01','name'=>"Labour Day"),
-//                            array('date'=>'2000-05-08','name'=>"Victory in Europe Day"),
-//                            array('date'=>'2000-07-04','name'=>"Independence Day"),
-//                            array('date'=>'2000-07-14','name'=>"French National Day"),
-//                            array('date'=>'2000-07-12','name'=>"Orangeman\'s Holiday"),
-//                            array('date'=>'2000-08-15','name'=>"Assumption of Mary"),
-//                            array('date'=>'2000-11-01','name'=>"All Saints\' Day"),
-//                            array('date'=>'2000-11-11','name'=>"Armistice Day"),
-//                            array('date'=>'2000-12-25','name'=>"Christmas Day"),
-//                            array('date'=>'2000-12-26','name'=>"Boxing Day"),
-//                      );
-//       foreach ($perpetualaddday as $val) {
-//          $query="INSERT INTO `glpi_holidays` (`begin_date`,`end_date`,`is_perpetual`,`name`)
-//                            VALUES ('".$val['date']."','".$val['date']."','1','".$val['name']."');";
-//          $DB->query($query) or die("0.80 insert values in glpi_holidays " . $LANG['update'][90] . $DB->error());
-//       }
 
    }
 
@@ -408,14 +389,16 @@ function update0782to080($output='HTML') {
    $migration->addField("glpi_entitydatas", "calendars_id", "INT( 11 ) NOT NULL DEFAULT 0");
 
    $migration->addField("glpi_tickets", "close_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0",
-                        "(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
+                        "(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`)
+                           - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
                         " WHERE `glpi_tickets`.`status` = 'closed'
                                 AND `glpi_tickets`.`date` IS NOT NULL
                                 AND `glpi_tickets`.`closedate` IS NOT NULL
                                 AND `glpi_tickets`.`closedate` > `glpi_tickets`.`date`");
 
    $migration->addField("glpi_tickets", "solve_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0",
-                        "(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
+                        "(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`)
+                           - UNIX_TIMESTAMP(`glpi_tickets`.`date`))",
                         " WHERE (`glpi_tickets`.`status` = 'closed'
                                  OR `glpi_tickets`.`status` = 'solved')
                                AND `glpi_tickets`.`date` IS NOT NULL
@@ -429,9 +412,12 @@ function update0782to080($output='HTML') {
       // Manage stat computation for existing tickets
       // Solved tickets
       $query = "SELECT `glpi_tickets`.`id` AS ID,
-                       MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
-                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
-                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+                       MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`)
+                            - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
+                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
+                            - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
+                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`)
+                            - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
                FROM `glpi_tickets`
                LEFT JOIN `glpi_ticketfollowups`
                      ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
@@ -458,8 +444,10 @@ function update0782to080($output='HTML') {
       }
       // Not solved tickets
       $query = "SELECT `glpi_tickets`.`id` AS ID,
-                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
-                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
+                            - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
+                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`)
+                            - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_ticketfollowups`
                      ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
@@ -500,7 +488,8 @@ function update0782to080($output='HTML') {
 
    $migration->displayMessage($LANG['update'][141] . ' - Software'); // Updating schema
 
-   if ($migration->addField("glpi_softwareversions", "operatingsystems_id", "INT( 11 ) NOT NULL DEFAULT '0'")) {
+   if ($migration->addField("glpi_softwareversions", "operatingsystems_id",
+                            "INT( 11 ) NOT NULL DEFAULT '0'")) {
       $migration->addKey("glpi_softwareversions", "operatingsystems_id");
       $migration->migrationOneTable('glpi_softwareversions');
 
@@ -973,13 +962,6 @@ function update0782to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'use_email_notification');
       $migration->dropField('glpi_tickets', 'user_email');
 
-//       $query = "DELETE
-//                 FROM `glpi_notificationtargets`
-//                 WHERE `type` = '1'
-//                 AND `items_id` = '4'";
-//       $DB->query($query)
-//       or die("0.80 drop old assign notification ".$LANG['update'][90] .$DB->error());
-
 
       // ADD observer when requester is set : 3>21 / 13>20 / 12 >22
       $fromto = array(3  => 21, // USER
@@ -1336,7 +1318,8 @@ function update0782to080($output='HTML') {
 
    $migration->addField("glpi_transfers", "keep_disk", "int( 11 ) NOT NULL DEFAULT 0", "'1'");
 
-   if ($migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0")) {
+   if ($migration->addField("glpi_reminders", "is_helpdesk_visible",
+                            "tinyint( 1 ) NOT NULL DEFAULT 0")) {
       $query = "UPDATE `glpi_profiles`
                 SET `reminder_public` = 'r'
                 WHERE `interface` = 'helpdesk';";
@@ -1393,7 +1376,7 @@ function update0782to080($output='HTML') {
                                                 $data['content_html']))."'
                            WHERE `id` = '".$data['id']."'";
                $DB->query($query)
-               or die("0.80 fix template tag usage for $itemtype ".$LANG['update'][90] .$DB->error());
+               or die("0.80 fix template tag usage for $itemtype ".$LANG['update'][90].$DB->error());
             }
          }
       }
@@ -1402,7 +1385,8 @@ function update0782to080($output='HTML') {
    $migration->addField('glpi_profiles', 'update_own_followups',
                         'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','1',
                         " WHERE `update_followups` = 1");
-   $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
+   $migration->addField('glpi_profiles', 'delete_followups',
+                        'char(1) COLLATE utf8_unicode_ci DEFAULT NULL','`update_followups`');
 
    $migration->addField('glpi_ocsservers', 'deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'");
 
@@ -1457,7 +1441,8 @@ function update0782to080($output='HTML') {
                                    (`rules_id`, `criteria`, `condition`, `pattern`)
                             VALUES ('$rule_id', '$value', '10', '1')";
                   $DB->query($query)
-                  or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .$DB->error());
+                  or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .
+                         $DB->error());
                }
             }
 
@@ -1607,7 +1592,8 @@ function update0782to080($output='HTML') {
                      if ($DB->numrows($result2)==0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."')";
+                                 VALUES ('$type', '$newval', '".$rank++."',
+                                         '".$data['users_id']."')";
                         $DB->query($query);
                      }
                   }

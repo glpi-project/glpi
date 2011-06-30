@@ -146,8 +146,8 @@ function update080to0801($output='HTML') {
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 0)";
          $DB->query($query3)
-         or die("0.80.1 update entities_id and is_recursive=0 in glpi_slalevels ".$LANG['update'][90].
-                $DB->error());
+         or die("0.80.1 update entities_id and is_recursive=0 in glpi_slalevels ".
+                $LANG['update'][90]. $DB->error());
 
          // Recursive ones
          $query3 = "UPDATE `glpi_slalevels`
@@ -157,8 +157,8 @@ function update080to0801($output='HTML') {
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 1)";
          $DB->query($query3)
-         or die("0.80.1 update entities_id and is_recursive=1 in glpi_slalevels ".$LANG['update'][90].
-                $DB->error());
+         or die("0.80.1 update entities_id and is_recursive=1 in glpi_slalevels ".
+                $LANG['update'][90]. $DB->error());
       }
    }
 
