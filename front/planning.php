@@ -71,7 +71,7 @@ if (isset($_GET['genical'])) {
    if (isset($_GET['token'])) {
       // Check user token
       /// TODO : complex : check if the request is valid : rights on uID / gID ?
-      $user = new User;
+      $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
          Planning::generateIcal($_GET["uID"], $_GET["gID"]);
       }

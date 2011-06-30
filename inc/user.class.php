@@ -315,7 +315,6 @@ class User extends CommonDBTM {
          return false;
       }
 
-
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `email` = '$email'";
@@ -332,15 +331,17 @@ class User extends CommonDBTM {
       return false;
    }
 
+
    /**
-   * Retrieve an item from the database using its personal token
-   *
-   * @param $token user token
-   *
-   * @return true if succeed else false
+    * Retrieve an item from the database using its personal token
+    *
+    * @param $token user token
+    *
+    * @return true if succeed else false
    **/
    function getFromDBbyToken($token) {
       global $DB;
+
       if (empty($token)) {
          return false;
       }
@@ -360,6 +361,7 @@ class User extends CommonDBTM {
       }
       return false;
    }
+
 
    function prepareInputForAdd($input) {
       global $DB, $LANG;
@@ -533,7 +535,7 @@ class User extends CommonDBTM {
       }
 
       if (isset($input['_reset_personal_token'])) {
-         $input['personal_token'] = self::getUniquePersonalToken();
+         $input['personal_token']      = self::getUniquePersonalToken();
          $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
       }
 
@@ -2749,49 +2751,56 @@ class User extends CommonDBTM {
                          array('auths_id', 'date_sync', 'entities_id', 'last_login', 'profiles_id'));
    }
 
+
    /**
-   * Get personal token checking that is it unique
+   * Get personal token checking that it is unique
    *
    * @return string personal token
    **/
    static function getUniquePersonalToken() {
       global $DB;
+
       $ok = false;
       do {
-         $key = getRanDomString(40);
-         $query = "SELECT COUNT(*) FROM `glpi_users` WHERE `personal_token` = '$key'";
+         $key    = getRanDomString(40);
+         $query  = "SELECT COUNT(*)
+                    FROM `glpi_users`
+                    WHERE `personal_token` = '$key'";
          $result = $DB->query($query);
+
          if ($DB->result($result,0,0) == 0) {
             return $key;
          }
       } while (!$ok);
-      
+
    }
 
+
    /**
-   * Get personal token of a user. If not exists generate it.
-   *
-   * @param $ID user ID
-   * @return string personal token
+    * Get personal token of a user. If not exists generate it.
+    *
+    * @param $ID user ID
+    *
+    * @return string personal token
    **/
    static function getPersonalToken($ID) {
       global $DB;
 
-      $user = new User;
+      $user = new User();
       if ($user->getFromDB($ID)) {
          if (!empty($user->fields['personal_token'])) {
             return $user->fields['personal_token'];
-         } else {
-            $token = self::getUniquePersonalToken();
-            $user->update(array('id' => $user->getID(),
-                                'personal_token' => $token,
-                                'personal_token_date' => $_SESSION['glpi_currenttime']));
-            return $user->fields['personal_token'];
          }
+         $token = self::getUniquePersonalToken();
+         $user->update(array('id'                  => $user->getID(),
+                             'personal_token'      => $token,
+                             'personal_token_date' => $_SESSION['glpi_currenttime']));
+         return $user->fields['personal_token'];
       }
 
       return false;
    }
+
 }
 
 ?>

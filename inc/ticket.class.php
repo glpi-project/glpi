@@ -1084,7 +1084,7 @@ class Ticket extends CommonITILObject {
       // Manual SLA defined : reset due date
       // No manual SLA and due date defined : reset auto SLA
       if ($manual_slas_id == 0
-         && isset($input["due_date"]) && $input['due_date'] != 'NULL') {
+          && isset($input["due_date"]) && $input['due_date'] != 'NULL') {
          // Valid due date
          if ($input['due_date']>$input['date']) {
             if (isset($input["slas_id"])) {
@@ -2649,10 +2649,10 @@ class Ticket extends CommonITILObject {
             $this->fields["due_date"]='';
          }
          showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
-         echo '</td><td>';
-         echo $LANG['choice'][2]." ".$LANG['sla'][1]." : ";
+         echo "</td><td>";
+         echo $LANG['choice'][2]." ".$LANG['sla'][1]."&nbsp;: ";
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
-                                    'value' =>$this->fields["slas_id"]));
+                                    'value'  => $this->fields["slas_id"]));
          echo "</td></tr></table>";
       }
 
