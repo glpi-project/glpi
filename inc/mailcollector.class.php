@@ -556,7 +556,7 @@ class MailCollector  extends CommonDBTM {
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from']
-                && $cc != $this->fields['name']
+                && strcasecmp($cc, $this->fields['name'])
                 && ($tmp=User::getOrImportByEmail($cc)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
@@ -566,7 +566,7 @@ class MailCollector  extends CommonDBTM {
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from']
-                && $cc != $this->fields['name']
+                && strcasecmp($to, $this->fields['name'])
                 && ($tmp=User::getOrImportByEmail($to)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => true);
