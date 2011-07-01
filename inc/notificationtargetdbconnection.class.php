@@ -56,8 +56,12 @@ class NotificationTargetDBConnection extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG;
 
-      $this->datas['##dbconnection.delay##'] = timestampToString($options['diff'], true).
-                                                                 " (".$options['name'].")";
+      if ($options['diff'] > 1000000000) {
+         $tmp = $LANG['install'][35];
+      } else {
+         $tmp = timestampToString($options['diff'], true);
+      }
+      $this->datas['##dbconnection.delay##'] = $tmp." (".$options['name'].")";
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {

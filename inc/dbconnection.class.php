@@ -346,8 +346,12 @@ class DBConnection extends CommonDBTM {
 
             // Quite strange, but allow simple stat
             $task->addVolume($diff);
-            $task->log($LANG['install'][30]." : '$name', ".
-                       $LANG['setup'][803]." : ".timestampToString($diff, true));
+            if ($diff > 1000000000) { // very large means slave is disconnect
+               $task->log($LANG['install'][30]." : '$name', ".$LANG['install'][35]);
+            } else {
+               $task->log($LANG['install'][30]." : '$name', ".
+                          $LANG['setup'][803]." : ".timestampToString($diff, true));
+            }
 
             if ($diff > ($task->fields['param']*60)) {
                //Raise event if replicate is not synchronized
@@ -373,14 +377,21 @@ class DBConnection extends CommonDBTM {
       $DBSlave = self::getDBSlaveConf();
 
       if (is_array($DBSlave->dbhost)) {
-         foreach ($DBSlave->dbhost as $num => $name) {
-            echo $LANG['install'][30] . "&nbsp;: '$name', " . $LANG['setup'][803] . "&nbsp;: ";
-            echo timestampToString(self::getReplicateDelay($num), 1) . "<br>";
-         }
-
+         $hosts = $DBSlave->dbhost;
       } else {
-         echo $LANG['setup'][803] . "&nbsp;: ";
-         echo timestampToString(self::getReplicateDelay(), 1);
+         $hosts = array($DBslave->dbhost);
+      }
+
+      foreach ($hosts as $num => $name) {
+         $diff = self::getReplicateDelay($num);
+         echo $LANG['install'][30] . "&nbsp;: '$name', ";
+         if ($diff > 1000000000) {
+            echo $LANG['install'][35] . "<br>";
+         } else if ($diff) {
+            echo $LANG['setup'][803] . "&nbsp;: " . timestampToString($diff, 1) . "<br>";
+         } else {
+            echo $LANG['setup'][803] . "&nbsp;: " . $LANG['common'][49] . "<br>";
+         }
       }
    }
 
