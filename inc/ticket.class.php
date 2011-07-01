@@ -242,6 +242,15 @@ class Ticket extends CommonITILObject {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
+
+      // user can delete his ticket if no action on it
+      if ($this->fields["users_id"] === getLoginUserId()
+          && $this->numberOfFollowups() == 0
+          && $this->numberOfTasks() == 0
+          && $this->fields["date"] == $this->fields["date_mod"]) {
+         return true;
+      }
+
       return haveRight('delete_ticket', '1');
    }
 
@@ -1301,6 +1310,7 @@ class Ticket extends CommonITILObject {
       if ($with_private!=1) {
          $RESTRICT = " AND `is_private` = '0'";
       }
+
       // Set number of followups
       $query = "SELECT count(*)
                 FROM `glpi_tickettasks`
@@ -4903,6 +4913,11 @@ class Ticket extends CommonITILObject {
    **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
+   }
+
+
+   function post_deleteFromDB() {
+      NotificationEvent::raiseEvent('delete_ticket', $this);
    }
 
 }

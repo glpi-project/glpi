@@ -4430,6 +4430,7 @@ CREATE TABLE `glpi_tickets` (
   `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
   `takeintoaccount_delay_stat` int(11) NOT NULL DEFAULT '0',
   `actiontime` int(11) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
