@@ -244,7 +244,7 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if ($this->fields["users_id"] === getLoginUserId()
+      if ($this->isUser(parent::REQUESTER,getLoginUserID())
           && $this->numberOfFollowups() == 0
           && $this->numberOfTasks() == 0
           && $this->fields["date"] == $this->fields["date_mod"]) {
@@ -3023,12 +3023,23 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             if (haveRight('delete_ticket',1)) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' class='submit' name='update' value='".
+               if ($this->fields["is_deleted"] == 1) {
+                  echo "<input type='submit' class='submit' name='restore' value='".
+                      $LANG['buttons'][21]."'></td>";
+               } else {
+                  echo "<input type='submit' class='submit' name='update' value='".
                       $LANG['buttons'][7]."'></td>";
+               }
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' class='submit' name='delete' value='".
-                      $LANG['buttons'][22]."' OnClick='return window.confirm(\"".
-                      $LANG['common'][50]."\");'>";
+               if ($this->fields["is_deleted"] == 1) {
+                  echo "<input type='submit' class='submit' name='purge' value='".
+                         $LANG['buttons'][22]."' OnClick='return window.confirm(\"".
+                         $LANG['common'][50]."\");'>";
+               } else {
+                  echo "<input type='submit' class='submit' name='delete' value='".
+                         $LANG['buttons'][6]."'></td>";
+               }
+
             } else {
                echo "<td class='tab_bg_2 center' colspan='4'>";
                echo "<input type='submit' class='submit' name='update' value='".
