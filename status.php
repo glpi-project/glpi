@@ -52,13 +52,25 @@ $ok        = true;
 
 // Check slave server connection
 if (DBConnection::isDBSlaveActive()) {
-   if (DBConnection::establishDBConnection(true,true,false)) {
-      echo "GLPI_DBSLAVE_OK\n";
+   $DBslave = DBConnection::getDBSlaveConf();
+   if (is_array($DBslave->dbhost)) {
+      $hosts = $DBslave->dbhost;
    } else {
-      echo "GLPI_DBSLAVE_PROBLEM\n";
-      $ok_slave = false;
+      $hosts = array($DBslave->dbhost);
    }
 
+   foreach ($hosts as $num => $name) {
+      $diff = DBConnection::getReplicateDelay($num);
+      if (abs($diff)> 1000000000) {
+         echo "GLPI_DBSLAVE_${num}_OFFLINE\n";
+         $ok_slave = false;
+      } else if (abs($diff)> HOUR_TIMESTAMP) {
+         echo "GLPI_DBSLAVE_${num}_PROBLEM\n";
+         $ok_slave = false;
+      } else {
+         echo "GLPI_DBSLAVE_${num}_OK\n";
+      }
+   }
 } else {
    echo "No slave DB\n";
 }
