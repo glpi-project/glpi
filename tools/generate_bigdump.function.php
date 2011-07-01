@@ -358,7 +358,8 @@ function addTracking($type, $ID, $ID_entity) {
                         '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."',
                         '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
                         '$hour_cost', '0', '0', '$solutiontype', '$solution', 'none', 0, 0,
-                        $duedatetoadd, NULL, 0, 0, $closetime, $solvetime, $firstactiontime, '$actiontime')";
+                        $duedatetoadd, NULL, 0, 0, $closetime, $solvetime, $firstactiontime,
+                        '$actiontime', '0')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $tID = $DB->insert_id();
