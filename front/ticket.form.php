@@ -87,10 +87,27 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['delete'])) {
    $track->check($_POST['id'],'d');
-   $track->delete($_POST);
-   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-
+   if ($track->delete($_POST)) {
+      Event::log($_POST["id"], "ticket", 4, "tracking",
+                 $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$track->getField('name'));
+   }
    $track->redirectToList();
+
+} else if (isset($_POST['purge'])) {
+   $track->check($_POST['id'],'d');
+   if ($track->delete($_POST, 1)) {
+      Event::log($_POST["id"], "ticket", 4, "tracking",
+                 $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$track->getField('name'));
+   }
+   $track->redirectToList();
+
+} else if (isset($_POST["restore"])) {
+   $track->check($_POST['id'], 'd');
+   if ($track->restore($_POST)) {
+      Event::log($_POST["id"], "ticket", 4, "tracking",
+                 $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$track->getField('name'));
+   }
+   $computer->redirectToList();
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    checkSeveralRightsOr(array('add_followups'     => '1',
