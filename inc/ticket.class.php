@@ -4281,8 +4281,7 @@ class Ticket extends CommonDBTM {
                $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
                               convDateTime($nextaction->fields['date']).'<br>';
 
-               if ($slalevel->getFromDB(SlaLevel::getNextSlaLevel($this->fields["slas_id"],
-                                                                  $this->fields['slalevels_id']))) {
+               if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
                   $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
                                  $slalevel->getName().'<br>';
                }
