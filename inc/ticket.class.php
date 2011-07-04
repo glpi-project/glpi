@@ -1789,9 +1789,13 @@ class Ticket extends CommonDBTM {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => self::REQUESTER);
 
-         foreach ($this->input["_additional_requesters"] as $uid) {
-            $input2['users_id'] = $uid;
-            $ticket_user->add($input2);
+         foreach ($this->input["_additional_requesters"] as $tmp) {
+            if (isset($tmp['users_id'])) {
+               foreach ($tmp as $key => $val) {
+                  $input2[$key] = $val;
+               }
+               $ticket_user->add($input2);
+            }
          }
       }
 
