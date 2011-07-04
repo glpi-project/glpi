@@ -847,9 +847,13 @@ abstract class CommonITILObject extends CommonDBTM {
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                 => self::REQUESTER);
 
-            foreach ($this->input["_additional_requesters"] as $uid) {
-               $input2['users_id'] = $uid;
-               $useractors->add($input2);
+            foreach ($this->input["_additional_requesters"] as $tmp) {
+               if (isset($tmp['users_id'])) {
+                  foreach ($tmp as $key => $val) {
+                     $input2[$key] = $val;
+                  }
+                  $ticket_user->add($input2);
+               }
             }
          }
       }
