@@ -559,7 +559,7 @@ class MailCollector  extends CommonDBTM {
                 && strcasecmp($cc, $this->fields['name'])
                 && ($tmp=User::getOrImportByEmail($cc)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
-                                                       'use_notification' => true);
+                                                       'use_notification' => 1);
             }
          }
       }
@@ -569,7 +569,7 @@ class MailCollector  extends CommonDBTM {
                 && strcasecmp($to, $this->fields['name'])
                 && ($tmp=User::getOrImportByEmail($to)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
-                                                       'use_notification' => true);
+                                                       'use_notification' => 1);
             }
          }
       }
