@@ -78,6 +78,7 @@ class Document_Item extends CommonDBRelation{
                                '_forcenotif'   => true,
                                '_donotadddocs' => true));
       }
+      parent::post_addItem();
    }
 
 
