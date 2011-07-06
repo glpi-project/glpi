@@ -304,22 +304,29 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show('Group', array('name'   =>'groups_id_tech',
+                                    'value'  => $this->fields['groups_id_tech'],
+                                    'entity' => $this->fields['entities_id']));
+      echo "</td>";
+      echo "<td rowspan='5' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='5'>";
+      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td >" . $LANG['common'][34] . "&nbsp;:</td>";
       echo "<td >";
       User::dropdown(array('value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
-      echo "</td><td colspan='2'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
       Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                     'entity' => $this->fields["entities_id"]));
-      echo "</td>";
-      echo "<td rowspan='3' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='3'>";
-      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -409,6 +416,11 @@ class Software extends CommonDBTM {
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[49]['table']     = 'glpi_groups';
+      $tab[49]['field']     = 'name';
+      $tab[49]['linkfield'] = 'groups_id_tech';
+      $tab[49]['name']      = $LANG['common'][109];
 
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
