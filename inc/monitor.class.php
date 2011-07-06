@@ -284,7 +284,6 @@ class Monitor extends CommonDBTM {
       Dropdown::show('Group', array('name'   =>'groups_id_tech',
                                     'value'  => $this->fields['groups_id_tech'],
                                     'entity' => $this->fields['entities_id']));
-
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
