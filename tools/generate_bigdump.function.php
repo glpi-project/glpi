@@ -1965,7 +1965,7 @@ function generate_entity($ID_entity) {
 
       $query = "INSERT INTO `glpi_printers`
                 VALUES (NULL, '$ID_entity', '$recur', 'printer of loc ".$data['id']."', NOW(),
-                        'contact ".$data['id']."', 'num ".$data['id']."', '$techID',
+                        'contact ".$data['id']."', 'num ".$data['id']."', '$techID', '$gtechID',
                         '".getRandomString(10)."', '".getRandomString(10)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', 'comment $i', '".mt_rand(0,64)."', '".$data['id']."',
@@ -2312,7 +2312,7 @@ function generate_entity($ID_entity) {
 
          $query = "INSERT INTO `glpi_printers`
                    VALUES (NULL, '$ID_entity', '0', 'printer of comp $i-$ID_entity', NOW(),
-                           'contact $i', 'num $i', '$techID', '".getRandomString(10)."',
+                           'contact $i', 'num $i', '$techID', '$gtechID', '".getRandomString(10)."',
                            '".getRandomString(10)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                            '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i',
                            '".mt_rand(0,64)."', '$loc', '$domainID', '$networkID', '$modelID',

@@ -399,19 +399,21 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "contact_num");
-      echo "</td>\n";
+      Dropdown::show('Group', array('name'   =>'groups_id_tech',
+                                    'value'  => $this->fields['groups_id_tech'],
+                                    'entity' => $this->fields['entities_id']));
+      echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
       Dropdown::show('PrinterModel', array('value' => $this->fields["printermodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "contact");
+      autocompletionTextField($this, "contact_num");
       echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
@@ -419,11 +421,9 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      User::dropdown(array('value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+      autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
@@ -433,10 +433,11 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                    'entity' => $this->fields["entities_id"]));
+      User::dropdown(array('value'  => $this->fields["users_id"],
+                           'entity' => $this->fields["entities_id"],
+                           'right'  => 'all'));
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
@@ -456,13 +457,25 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
+      echo "<td>";
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
+      echo "</td>\n";
+      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
+      echo "<td>";
+      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>\n";
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
-      echo "<td>";
-      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
+      echo "<td rowspan='5'>";
+      echo $LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='5'><textarea cols='45' rows='12' name='comment' >".
+            $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -470,11 +483,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "memory_size");
       echo "</td>";
-      echo "<td rowspan='4'>";
-      echo $LANG['common'][25]."&nbsp;:</td>\n";
-      echo "<td rowspan='4'><textarea cols='45' rows='8' name='comment' >".
-            $this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
@@ -488,21 +497,21 @@ class Printer  extends CommonDBTM {
       // serial interface
       echo "<tr><td>".$LANG['printers'][14]."</td><td>";
       Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);
-      echo "</td></tr>";
+      echo "</td>";
       // parallel interface?
-      echo "<tr><td>".$LANG['printers'][15]."</td><td>";
+      echo "<td>".$LANG['printers'][15]."</td><td>";
       Dropdown::showYesNo("have_parallel", $this->fields["have_parallel"]);
       echo "</td></tr>";
       // USB interface?
       echo "<tr><td>".$LANG['printers'][27]."</td><td>";
       Dropdown::showYesNo("have_usb", $this->fields["have_usb"]);
-      echo "</td></tr>";
+      echo "</td>";
       // ethernet interface?
-      echo "<tr><td>".$LANG['printers'][28]."</td><td>";
+      echo "<td>".$LANG['printers'][28]."</td><td>";
       Dropdown::showYesNo("have_ethernet",$this->fields["have_ethernet"]);
       echo "</td></tr>";
       // wifi ?
-      echo "<tr><td>".$LANG['printers'][29]."</td><td>";
+      echo "<tr><td>".$LANG['printers'][29]."</td><td colspan='3'>";
       Dropdown::showYesNo("have_wifi", $this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
 
@@ -652,6 +661,11 @@ class Printer  extends CommonDBTM {
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[49]['table']     = 'glpi_groups';
+      $tab[49]['field']     = 'name';
+      $tab[49]['linkfield'] = 'groups_id_tech';
+      $tab[49]['name']      = $LANG['common'][109];
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
