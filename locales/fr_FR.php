@@ -341,6 +341,7 @@ $LANG['common'][105] = "Alerte";
 $LANG['common'][106] = "Au moins un champ a une valeur incorrecte";
 $LANG['common'][107] = "Moyenne";
 $LANG['common'][108] = "Clé personnelle";
+$LANG['common'][109] = "Groupe technique";
 
 
 $LANG['computers'][0]  = "Volume";
