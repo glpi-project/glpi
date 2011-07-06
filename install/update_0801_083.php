@@ -619,6 +619,10 @@ function update0801to083($output='HTML') {
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_peripherals', 'groups_id_tech');
 
+   $migration->addField('glpi_phones', 'groups_id_tech',
+                        "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $migration->addKey('glpi_phones', 'groups_id_tech');
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 

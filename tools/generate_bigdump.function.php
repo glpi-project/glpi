@@ -2254,7 +2254,7 @@ function generate_entity($ID_entity) {
       // Ajout d'un telephhone avec l'ordi
       $query = "INSERT INTO `glpi_phones`
                 VALUES (NULL, '$ID_entity', 'phone $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', 'comment $i', '".getRandomString(10)."',
+                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
                         '".getRandomString(10)."', '".getRandomString(10)."', '$loc',
                         '".mt_rand(1,$MAX['type_phones'])."', '".mt_rand(1,$MAX['model_phones'])."',
                         '".getRandomString(10)."', '".mt_rand(0,$MAX['phone_power'])."',
