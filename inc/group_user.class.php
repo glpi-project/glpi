@@ -47,6 +47,8 @@ class Group_User extends CommonDBRelation{
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
+   public $checks_and_logs_only_for_itemtype1 = true;
+
 
    static function getUserGroups($users_id) {
       global $DB;
@@ -209,7 +211,8 @@ class Group_User extends CommonDBRelation{
       if (!haveRight("user","r") || !$group->can($ID,'r')) {
          return false;
       }
-      $canedit     = $group->can($ID,"w");
+      // Have right to manage members
+      $canedit     = ($group->can($ID, 'r') && $group->canUpdate());
       $rand        = mt_rand();
       $nb_per_line = 3;
 
@@ -240,8 +243,9 @@ class Group_User extends CommonDBRelation{
          echo "<input type='hidden' name='groups_id' value='$ID'>";
 
          if ($group->fields["is_recursive"]) {
+            // active entity could be a child of object entity
             $res = User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
-                                                                     $group->fields["entities_id"]),
+                                                                     $_SESSION['glpiactive_entity']),
                                              0, $used_ids);
          } else {
             $res = User::getSqlSearchResult (true, "all", $group->fields["entities_id"], 0,
@@ -256,9 +260,10 @@ class Group_User extends CommonDBRelation{
             echo "<tr><td class='tab_bg_2 center'>";
 
             if ($group->fields["is_recursive"]) {
+               // active entity could be a child of object entity
                User::dropdown(array('right'  => "all",
                                     'entity' => getSonsOf("glpi_entities",
-                                                          $group->fields["entities_id"]),
+                                                          $_SESSION['glpiactive_entity']),
                                     'used'   => $used_ids));
             } else {
                User::dropdown(array('right'  => "all",
@@ -284,7 +289,12 @@ class Group_User extends CommonDBRelation{
 
          initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
          $i = 0;
+         $user = new User();
          foreach  ($used as $id => $data) {
+            if (!$user->can($id, 'r')) {
+               // For recursive group, could be in another (sister) entity
+               continue;
+            }
             addToNavigateListItems('User', $data["id"]);
             if ($i%$nb_per_line==0) {
                if ($i!=0) {
@@ -303,7 +313,7 @@ class Group_User extends CommonDBRelation{
             }
 
             echo "<td>";
-            echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
+            echo $user->getLink();
             if ($data["is_dynamic"]) {
                echo "<strong>&nbsp;(D)</strong>";
             }
