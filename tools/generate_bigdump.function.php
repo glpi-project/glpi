@@ -2073,13 +2073,14 @@ function generate_entity($ID_entity) {
       $techID    = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
       $userID    = mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
       $groupID   = mt_rand($FIRST["groups"],$LAST["groups"]);
+      $gtechID   = mt_rand($FIRST["groups"],$LAST["groups"]);
       $domainID  = mt_rand(1,$MAX['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
       $query = "INSERT INTO `glpi_computers`
                 VALUES (NULL, '$ID_entity', 'computers $i-$ID_entity', '".getRandomString(10)."',
-                        '".getRandomString(10)."', 'contact $i', 'num $i', '$techID', '', NOW(),
-                        '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
+                        '".getRandomString(10)."', 'contact $i', 'num $i', '$techID', '$gtechID', '',
+                        NOW(), '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
                         '".mt_rand(1,$MAX['os_sp'])."', 'os sn $i', 'os id $i',
                         '".mt_rand(1,$MAX['auto_update'])."', '".$loc."', '$domainID', '$networkID',
                         '".mt_rand(1,$MAX['model'])."', '".mt_rand(1,$MAX['type_computers'])."','0',
