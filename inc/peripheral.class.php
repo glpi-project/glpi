@@ -303,9 +303,11 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "contact_num");
+      Dropdown::show('Group', array('name'   =>'groups_id_tech',
+                                    'value'  => $this->fields['groups_id_tech'],
+                                    'entity' => $this->fields['entities_id']));
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
@@ -313,21 +315,19 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "contact");
-      echo "</td>\n";
+      autocompletionTextField($this, "contact_num");
+      echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
       autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      User::dropdown(array('value'  => $this->fields["users_id"],
-                           'entity' => $this->fields["entities_id"],
-                           'right'  => 'all'));
+      autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
@@ -337,10 +337,11 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                    'entity' => $this->fields["entities_id"]));
+      User::dropdown(array('value'  => $this->fields["users_id"],
+                           'entity' => $this->fields["entities_id"],
+                           'right'  => 'all'));
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
       echo "<td>";
@@ -353,15 +354,23 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
+      echo "<td>";
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
+      echo "</td>\n";
+      echo "<td rowspan='3'>";
+      echo $LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='3'>
+            <textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>\n";
       echo "<td>";
       autocompletionTextField($this, "brand");
-      echo "</td>\n";
-      echo "<td rowspan='2'>";
-      echo $LANG['common'][25]."&nbsp;:</td>\n";
-      echo "<td rowspan='2'>
-            <textarea cols='45' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "</td>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;
@@ -481,6 +490,11 @@ class Peripheral  extends CommonDBTM {
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[49]['table']     = 'glpi_groups';
+      $tab[49]['field']     = 'name';
+      $tab[49]['linkfield'] = 'groups_id_tech';
+      $tab[49]['name']      = $LANG['common'][109];
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
