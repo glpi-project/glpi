@@ -1865,6 +1865,7 @@ function generate_entity($ID_entity) {
    while ($data=$DB->fetch_array($result)) {
       // insert networking
       $techID                = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+      $gtechID               = mt_rand($FIRST["groups"],$LAST["groups"]);
       $domainID              = mt_rand(1,$MAX['domain']);
       $networkID             = mt_rand(1,$MAX['network']);
       $vlanID                = mt_rand(1,$MAX["vlan"]);
@@ -1876,7 +1877,7 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_networkequipments`
                 VALUES (NULL, '$ID_entity', '0', '$netname', '".mt_rand(32,256)."',
                         '".getRandomString(10)."', '".getRandomString(10)."', 'contact $i',
-                        'num $i', '$techID', NOW(), 'comment $i', '".$data['id']."', '$domainID',
+                        'num $i', '$techID', '$gtechID', NOW(), 'comment $i', '".$data['id']."', '$domainID',
                         '$networkID', '".mt_rand(1,$MAX['type_networking'])."',
                         '".mt_rand(1,$MAX['model_networking'])."', '".mt_rand(1,$MAX['firmware'])."',
                         '".mt_rand(1,$MAX['enterprises'])."', '0', '0', '', '".getNextMAC()."',
