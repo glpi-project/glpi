@@ -582,7 +582,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Group', array('name'   =>'groups_id_tech',
                                     'value'  => $this->fields['groups_id_tech'],
@@ -645,6 +645,7 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";

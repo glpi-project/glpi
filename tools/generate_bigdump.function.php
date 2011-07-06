@@ -2227,7 +2227,7 @@ function generate_entity($ID_entity) {
       // Ajout d'un ecran sur l'ordi
       $query = "INSERT INTO `glpi_monitors`
                 VALUES (NULL, '$ID_entity', 'monitor $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', 'comment $i', '".getRandomString(10)."',
+                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
                         '".getRandomString(10)."', '".mt_rand(14,22)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
