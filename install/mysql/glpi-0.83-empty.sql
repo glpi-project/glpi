@@ -3131,6 +3131,7 @@ CREATE TABLE `glpi_peripherals` (
   `contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `contact_num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -3162,7 +3163,8 @@ CREATE TABLE `glpi_peripherals` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `peripheraltypes_id` (`peripheraltypes_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

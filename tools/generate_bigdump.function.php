@@ -2279,7 +2279,7 @@ function generate_entity($ID_entity) {
       while (mt_rand(0,100)<$percent['peripherals']) {
          $query = "INSERT INTO `glpi_peripherals`
                    VALUES (NULL, '$ID_entity', 'periph of comp $i-$ID_entity', NOW(), 'contact $i',
-                           'num $i', '$techID', 'comment $i', '".getRandomString(10)."',
+                           'num $i', '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
                            '".getRandomString(10)."', '$loc',
                            '".mt_rand(1,$MAX['type_peripherals'])."',
                            '".mt_rand(1,$MAX['model_peripherals'])."', 'brand $i',
@@ -2381,11 +2381,12 @@ function generate_entity($ID_entity) {
 
    // Add global peripherals
    for ($i=0 ; $i<$MAX['global_peripherals'] ; $i++) {
-      $techID = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+      $techID  = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+      $gtechID = mt_rand($FIRST["groups"],$LAST["groups"]);
 
       $query = "INSERT INTO `glpi_peripherals`
                 VALUES (NULL, '$ID_entity', 'periph $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', 'comment $i', '".getRandomString(10)."',
+                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
                         '".getRandomString(10)."', '0', '".mt_rand(1,$MAX['type_peripherals'])."',
                         '".mt_rand(1,$MAX['model_peripherals'])."', 'brand $i',
                         '".mt_rand(1,$MAX['manufacturer'])."', '1', '0', '0', '',
