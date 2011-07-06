@@ -81,15 +81,16 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"])) {
-   if (isset($_POST['item'])) {
+} else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {
+   if (isset($_POST['item'])
+       && ($_POST["field"]=='groups_id' || $_POST["field"]=='groups_id_tech' )) {
       foreach ($_POST['item'] as $type => $ids) {
          if (class_exists($type)) {
             $item = new $type();
             foreach ($ids as $id => $val) {
                if ($val && $item->can($id,'w')) {
-                  $item->update(array('id'        => $id,
-                                      'groups_id' => $_POST["groups_id"]));
+                  $item->update(array('id'            => $id,
+                                      $_POST["field"] => $_POST["groups_id"]));
                }
             }
          }

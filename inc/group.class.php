@@ -81,9 +81,10 @@ class Group extends CommonDBTM {
             $ong[1] = $LANG['Menu'][14];
          }
          $ong[2] = $LANG['common'][96];
+         $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
 
          if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
-            $ong[3] = $LANG['setup'][3];
+            $ong[4] = $LANG['setup'][3];
          }
 
       } else { // New item
@@ -298,26 +299,41 @@ class Group extends CommonDBTM {
 
    /**
     * Show items for the group
+    *
+    * @param $tech boolean, false search groups_id, true, search groups_id_tech
     */
-   function showItems() {
+   function showItems($tech) {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $this->fields['id'];
 
+      if ($tech) {
+         $types = $CFG_GLPI['ticket_types'];
+         $field = 'groups_id_tech';
+      } else {
+         $types = $CFG_GLPI['linkgroup_types'];
+         $field = 'groups_id';
+      }
+
       echo "<div class='spaced'>";
-      echo "<form name='group_form' id='group_form' method='post' action='".$this->getFormURL()."'>";
+      echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
       echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
       echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
 
-      foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+      $nb = 0;
+      foreach ($types as $itemtype) {
          if (!class_exists($itemtype)) {
             continue;
          }
          $item = new $itemtype();
+         $item->getEmpty();
+         if (!$item->isField($field)) {
+            continue;
+         }
          $query = "SELECT *
                    FROM `".$item->getTable()."`
-                   WHERE `groups_id` = '$ID'".
+                   WHERE `$field` = '$ID'".
                          getEntitiesRestrictRequest(" AND ", getTableForItemType($itemtype), '', '',
                                                      $item->maybeRecursive());
          $result = $DB->query($query);
@@ -331,6 +347,7 @@ class Group extends CommonDBTM {
                echo "<tr class='tab_bg_1'><td>";
                if ($canedit) {
                   echo "<input type='checkbox' name='item[$itemtype][".$data["id"]."]' value='1'>";
+                  $nb++;
                }
                $link = ($data["name"] ? $data["name"] : "(".$data["id"].")");
 
@@ -346,12 +363,15 @@ class Group extends CommonDBTM {
       }
       echo "</table>";
 
-      openArrowMassive("group_form", true);
-      echo $LANG['common'][35]."&nbsp;:&nbsp;";
-      Dropdown::show('Group', array('entity' => $this->fields["entities_id"],
-                                    'used'   => array($this->fields["id"])));
-      echo "&nbsp;";
-      closeArrowMassive('changegroup', $LANG['buttons'][20]);
+      if ($nb) {
+         openArrowMassive("group_form_$field", true);
+         echo $LANG['common'][35]."&nbsp;:&nbsp;";
+         echo "<input type='hidden' name='field' value='$field'>";
+         Dropdown::show('Group', array('entity' => $this->fields["entities_id"],
+                                       'used'   => array($this->fields["id"])));
+         echo "&nbsp;";
+         closeArrowMassive('changegroup', $LANG['buttons'][20]);
+      }
 
       echo "</form></div>";
    }
