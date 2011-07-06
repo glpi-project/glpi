@@ -4221,6 +4221,7 @@ CREATE TABLE `glpi_softwares` (
   `comment` text COLLATE utf8_unicode_ci,
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `is_update` tinyint(1) NOT NULL DEFAULT '0',
   `softwares_id` int(11) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
@@ -4248,7 +4249,8 @@ CREATE TABLE `glpi_softwares` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `softwares_id` (`softwares_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
+  KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

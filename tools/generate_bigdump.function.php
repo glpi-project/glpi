@@ -2436,12 +2436,13 @@ function generate_entity($ID_entity) {
 
       $loc       = mt_rand(1,$MAX['locations']);
       $techID    = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+      $gtechID   = mt_rand($FIRST["groups"],$LAST["groups"]);
       $recursive = mt_rand(0,1);
 
       $query = "INSERT INTO `glpi_softwares`
                 VALUES (NULL, '$ID_entity', '$recursive', '$name', 'comment $i', '$loc', '$techID',
-                        '0', '-1', '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '', NOW(),
-                        'notes software $i',
+                        '$gtechID', '0', '-1', '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '',
+                        NOW(), 'notes software $i',
                         '".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."',
                         '".mt_rand($FIRST["groups"],$LAST["groups"])."', '0', '1',
                         '".mt_rand(1,$MAX['softwarecategory'])."')";
