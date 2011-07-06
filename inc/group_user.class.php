@@ -242,15 +242,18 @@ class Group_User extends CommonDBRelation{
                 action='$target'>";
          echo "<input type='hidden' name='groups_id' value='$ID'>";
 
-         if ($group->fields["is_recursive"]) {
+         if ($group->fields['is_recursive']) {
+            $entityrestrict = getSonsOf('glpi_entities', $group->fields['entities_id']);
+
             // active entity could be a child of object entity
-            $res = User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
-                                                                     $_SESSION['glpiactive_entity']),
-                                             0, $used_ids);
+            if ($_SESSION['glpiactive_entity'] != $group->fields['entities_id']
+                && in_array($_SESSION['glpiactive_entity'], $entityrestrict)) {
+               $entityrestrict = getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+            }
          } else {
-            $res = User::getSqlSearchResult (true, "all", $group->fields["entities_id"], 0,
-                                             $used_ids);
+            $entityrestrict = $group->fields['entities_id'];
          }
+         $res = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
          $nb = ($res ? $DB->result($res,0,"CPT") : 0);
 
          if ($nb) {
@@ -259,17 +262,10 @@ class Group_User extends CommonDBRelation{
             echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
 
-            if ($group->fields["is_recursive"]) {
-               // active entity could be a child of object entity
-               User::dropdown(array('right'  => "all",
-                                    'entity' => getSonsOf("glpi_entities",
-                                                          $_SESSION['glpiactive_entity']),
-                                    'used'   => $used_ids));
-            } else {
-               User::dropdown(array('right'  => "all",
-                                    'entity' => $group->fields["entities_id"],
-                                    'used'   => $used_ids));
-            }
+            User::dropdown(array('right'  => "all",
+                                 'entity' => $entityrestrict,
+                                 'used'   => $used_ids));
+
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name'is_dynamic' value='0'>";
             echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\"
