@@ -392,7 +392,8 @@ CREATE TABLE `glpi_computers` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `computertypes_id` (`computertypes_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `is_ocs_import` (`is_ocs_import`)
+  KEY `is_ocs_import` (`is_ocs_import`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2148,7 +2149,8 @@ CREATE TABLE `glpi_monitors` (
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `monitortypes_id` (`monitortypes_id`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
