@@ -238,24 +238,16 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='7'>";
-      echo "<textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['consumables'][2]."&nbsp;: </td>";
-      echo "<td>";
-      autocompletionTextField($this, "ref");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['consumables'][2]."&nbsp;: </td>";
+      echo "<td>";
+      autocompletionTextField($this, "ref");
+      echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
@@ -268,7 +260,20 @@ class CartridgeItem extends CommonDBTM {
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
+      echo "</td>";
+      echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='middle' rowspan='4'>";
+      echo "<textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show('Group', array('name'   =>'groups_id_tech',
+                                    'value'  => $this->fields['groups_id_tech'],
+                                    'entity' => $this->fields['entities_id']));
+      echo "</td>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]."&nbsp;: </td>";
@@ -328,6 +333,11 @@ class CartridgeItem extends CommonDBTM {
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
+
+      $tab[49]['table']     = 'glpi_groups';
+      $tab[49]['field']     = 'name';
+      $tab[49]['linkfield'] = 'groups_id_tech';
+      $tab[49]['name']      = $LANG['common'][109];
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'alarm_threshold';

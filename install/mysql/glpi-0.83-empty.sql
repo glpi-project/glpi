@@ -238,6 +238,7 @@ CREATE TABLE `glpi_cartridgeitems` (
   `cartridgeitemtypes_id` int(11) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `alarm_threshold` int(11) NOT NULL DEFAULT '10',
@@ -250,7 +251,8 @@ CREATE TABLE `glpi_cartridgeitems` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `cartridgeitemtypes_id` (`cartridgeitemtypes_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `alarm_threshold` (`alarm_threshold`)
+  KEY `alarm_threshold` (`alarm_threshold`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -779,6 +781,7 @@ CREATE TABLE `glpi_consumableitems` (
   `consumableitemtypes_id` int(11) NOT NULL DEFAULT '0',
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `alarm_threshold` int(11) NOT NULL DEFAULT '10',
@@ -791,7 +794,8 @@ CREATE TABLE `glpi_consumableitems` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `consumableitemtypes_id` (`consumableitemtypes_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `alarm_threshold` (`alarm_threshold`)
+  KEY `alarm_threshold` (`alarm_threshold`),
+  KEY `groups_id_tech` (`groups_id_tech`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

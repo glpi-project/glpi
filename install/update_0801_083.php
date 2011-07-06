@@ -602,7 +602,7 @@ function update0801to083($output='HTML') {
 
    $migration->addField("glpi_tickets", "is_deleted", "TINYINT(1) NOT NULL DEFAULT 0");
 
-
+   // Group of technician in charge of Helpdesk items
    $migration->addField('glpi_computers', 'groups_id_tech',
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_computers', 'groups_id_tech');
@@ -630,6 +630,14 @@ function update0801to083($output='HTML') {
    $migration->addField('glpi_softwares', 'groups_id_tech',
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_softwares', 'groups_id_tech');
+
+   $migration->addField('glpi_cartridgeitems', 'groups_id_tech',
+                        "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $migration->addKey('glpi_cartridgeitems', 'groups_id_tech');
+
+   $migration->addField('glpi_consumableitems', 'groups_id_tech',
+                        "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
+   $migration->addKey('glpi_consumableitems', 'groups_id_tech');
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

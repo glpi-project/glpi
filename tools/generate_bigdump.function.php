@@ -1763,7 +1763,8 @@ function generate_entity($ID_entity) {
                         '".mt_rand($FIRST["locations"],$LAST['locations'])."',
                         '".mt_rand(0,$MAX['consumable_type'])."',
                         '".mt_rand(1,$MAX['manufacturer'])."',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."', '0',
+                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
+                        '".mt_rand($FIRST["groups"],$LAST["groups"])."', '0',
                         'comment $i', '".mt_rand(0,10)."', 'notes consumableitem $i')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
@@ -1817,7 +1818,8 @@ function generate_entity($ID_entity) {
                 VALUES (NULL, '$ID_entity', 'cartridge type $i', 'ref $i',
                         '".mt_rand(1,$MAX['locations'])."', '".mt_rand(1,$MAX['cartridge_type'])."',
                         '".mt_rand(1,$MAX['manufacturer'])."',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."', '0',
+                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
+                        '".mt_rand($FIRST["groups"],$LAST["groups"])."', '0',
                         'comment $i', '".mt_rand(0,10)."', 'notes cartridgeitem $i')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
