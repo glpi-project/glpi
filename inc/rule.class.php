@@ -973,8 +973,12 @@ class Rule extends CommonDBTM {
                   } else {
                      $res = "";
                   }
-                  $res .= RuleAction::getRegexResultById($action->fields["value"],
-                                                         $this->regex_results[0]);
+                  if (isset($this->regex_results[0])) {
+                     $res .= RuleAction::getRegexResultById($action->fields["value"],
+                                                            $this->regex_results[0]);
+                  } else {
+                     $res .= $action->fields["value"];
+                  }
                   $output[$action->fields["field"]] = $res;
                   break;
 
