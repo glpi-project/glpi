@@ -222,12 +222,9 @@ class RuleImportComputer extends Rule {
       switch ($action['type']) {
          case 'fusion_type' :
             Dropdown::showFromArray('value', self::getRuleActionValues());
-            break;
-
-         default :
-            break;
+            return true;
       }
-      return true;
+      return false;
    }
 
 
