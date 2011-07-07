@@ -1891,7 +1891,7 @@ class Rule extends CommonDBTM {
 
 
    function displayAdditionalRuleAction($action,$params = array()) {
-      return true;
+      return false;
    }
 
 
