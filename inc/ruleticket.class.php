@@ -114,8 +114,12 @@ class RuleTicket extends Rule {
                   if (!isset($output["entities_id"])) {
                      $output["entities_id"]=$params["entities_id"];
                   }
-                  $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
-                                                               $this->regex_results[0]);
+                  if (isset($this->regex_results[0])) {
+                     $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                                  $this->regex_results[0]);
+                  } else {
+                     $regexvalue = $action->fields["value"];
+                  }
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
                         $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",

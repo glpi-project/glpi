@@ -80,8 +80,12 @@ class RuleOcs extends Rule {
                   //Assign entity using the regex's result
                   if ($action->fields["field"] == "_affect_entity_by_tag") {
                      //Get the TAG from the regex's results
-                     $res = RuleAction::getRegexResultById($action->fields["value"],
-                                                           $this->regex_results[0]);
+                     if (isset($this->regex_results[0])) {
+                        $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                              $this->regex_results[0]);
+                     } else {
+                        $res = $action->fields["value"];
+                     }
                      if ($res != null) {
                         //Get the entity associated with the TAG
                         $target_entity = EntityData::getEntityIDByTag($res);
@@ -154,15 +158,15 @@ class RuleOcs extends Rule {
       $actions['entities_id']['name']  = $LANG['entity'][0];
       $actions['entities_id']['type']  = 'dropdown';
       $actions['entities_id']['table'] = 'glpi_entities';
-      
+
       $actions['locations_id']['name']  = $LANG['common'][15];
       $actions['locations_id']['type']  = 'dropdown';
       $actions['locations_id']['table'] = 'glpi_locations';
-      
+
       $actions['_affect_entity_by_tag']['name'] = $LANG['rulesengine'][131];
       $actions['_affect_entity_by_tag']['type'] = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
-      
+
       $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
