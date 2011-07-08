@@ -2065,12 +2065,13 @@ class Search {
                                                   `$table$addtable`.`id`)
                                   SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 
-         case "glpi_users_validation.name" :
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   $addaltemail = "";
-                  if ($itemtype == 'Ticket') { // For tickets_users
+                  if ($itemtype == 'Ticket'
+                        && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
+                        && $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users') { // For tickets_users
                      $ticket_user_table = "glpi_tickets_users_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
                      $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
                                                          ' ',`$ticket_user_table`.`alternative_email`)
