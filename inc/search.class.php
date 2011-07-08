@@ -2069,7 +2069,6 @@ class Search {
                                                   `$table$addtable`.`id`)
                                   SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 
-         case "glpi_users_validation.name" :
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
