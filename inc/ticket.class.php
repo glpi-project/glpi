@@ -1305,8 +1305,11 @@ class Ticket extends CommonITILObject {
             if ($this->input["slalevels_id"]>0) {
                $sla->addLevelToDo($this);
             }
+            // Replay action in case of open date is set before now
          }
+         SlaLevel_Ticket::replayForTicket($this->getID());
       }
+         
 
       parent::post_addItem();
 

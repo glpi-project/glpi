@@ -647,6 +647,15 @@ function update0801to083($output='HTML') {
    $DB->query($query)
    or die("0.83 clean glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
 
+   // Clean unused slalevels
+   $query = "DELETE
+             FROM `glpi_slalevels_tickets`
+             WHERE (`glpi_slalevels_tickets`.`tickets_id`,`glpi_slalevels_tickets`.`slalevels_id`)
+                     NOT IN (SELECT `glpi_tickets`.`id`, `glpi_tickets`.`slalevels_id`
+                           FROM `glpi_tickets`)";
+   $DB->query($query)
+   or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
+
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
