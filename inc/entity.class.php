@@ -116,10 +116,10 @@ class Entity extends CommonTreeDropdown {
          if (haveRight('entity_helpdesk','r')) {
             $ong[8] = $LANG['title'][24];       // Helpdesk
          }
+         $ong[9] = $LANG['Menu'][38];      // Inventory
          if (haveRight("notes","r")) {
-            $ong[9] = $LANG['title'][37];
+            $ong[10] = $LANG['title'][37];
          }
-         $ong[10] = $LANG['Menu'][38];       // Inventory
       }
       return $ong;
    }
@@ -206,13 +206,13 @@ class Entity extends CommonTreeDropdown {
             case 8 :
                EntityData::showHelpdeskOptions($this);
                break;
-
+            
             case 9 :
-               showNotesForm(getItemTypeFormURL('EntityData'), 'EntityData', $_POST["id"]);
-               break;
-
-            case 10 :
                EntityData::showInventoryOptions($this);
+               break;
+               
+            case 10 :
+               showNotesForm(getItemTypeFormURL('EntityData'), 'EntityData', $_POST["id"]);
                break;
 
             default :
