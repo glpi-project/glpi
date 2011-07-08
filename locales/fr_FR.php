@@ -1025,7 +1025,8 @@ $LANG['ldap'][6]  = "Impossible de joindre l'annuaire LDAP";
 $LANG['ldap'][7]  = "Aucun annuaire LDAP défini dans GLPI";
 $LANG['ldap'][8]  = "Attention : la requête dépasse la limite de l'annuaire. Les résultats ne sont que partiels.";
 $LANG['ldap'][9]  = "Test de connexion à l'annuaire LDAP";
-
+$LANG['ldap'][10]  = "Importation réussie";
+$LANG['ldap'][11] = "Forcer la synchronisation";
 $LANG['ldap'][12] = "Synchronisation";
 $LANG['ldap'][13] = "dans l'annuaire LDAP";
 $LANG['ldap'][14] = "dans GLPI";
@@ -1041,6 +1042,7 @@ $LANG['ldap'][23] = "Import en masse de groupes depuis un annuaire LDAP";
 $LANG['ldap'][24] = "Importation de nouveaux groupes";
 $LANG['ldap'][25] = "Pas de groupes à importer";
 $LANG['ldap'][26] = "DN de l'utilisateur";
+$LANG['ldap'][27] = "Entité de destination";
 
 $LANG['ldap'][30] = "Traitement des alias LDAP";
 $LANG['ldap'][31] = "Jamais déréférencés (défaut)";
@@ -1661,6 +1663,7 @@ $LANG['profiles'][50] = "Modifier mes suivis";
 $LANG['profiles'][51] = "Supprimer tous les suivis";
 $LANG['profiles'][52] = "Editer tous les problèmes";
 $LANG['profiles'][53] = "Voir les problèmes auxquels je participe";
+$LANG['profiles'][54] = "Suppression";
 
 $LANG['registry'][1] = "Ruche";
 $LANG['registry'][2] = "Chemin";

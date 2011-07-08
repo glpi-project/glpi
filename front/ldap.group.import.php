@@ -72,7 +72,7 @@ if (isset($_GET['next'])) {
          unset($_SESSION["ldap_import"]);
          displayProgressBar(400,100);
 
-         echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
+         echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
       }
    }

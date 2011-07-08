@@ -92,7 +92,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          unset($_SESSION["ldap_process"]);
          displayProgressBar(400,100);
 
-         echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
+         echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
          unset($_SESSION["authldaps_id"]);
          unset($_SESSION["mode"]);
