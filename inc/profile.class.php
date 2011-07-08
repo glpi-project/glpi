@@ -680,13 +680,13 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][33]."&nbsp;: </td><td>";
+      echo "<td>".$LANG['ocsconfig'][0]."&nbsp;: </td><td>";
       self::dropdownNoneReadWrite("ocsng", $this->fields["ocsng"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][31]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['ocsconfig'][21]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("sync_ocsng", $this->fields["sync_ocsng"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][30]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['ocsconfig'][20]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("view_ocsng", $this->fields["view_ocsng"], 1, 1, 0);
       echo "</td></tr>\n";
 
@@ -1341,7 +1341,7 @@ class Profile extends CommonDBTM {
 
       $tab[39]['table']    = $this->getTable();
       $tab[39]['field']    = 'ocsng';
-      $tab[39]['name']     = $LANG['Menu'][33];
+      $tab[39]['name']     = $LANG['ocsconfig'][0];
       $tab[39]['datatype'] = 'right';
 
       $tab[40]['table']    = $this->getTable();
