@@ -1122,10 +1122,9 @@ class Search {
                         echo self::showItem($output_type,
                                             "<a href='".getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;delete=delete' ".
-                                              "onclick=\"return window.confirm('".
-                                              addslashes($LANG['reservation'][38])."\\n".
-                                              addslashes($LANG['reservation'][39])."')\" title=\"".
-                                              $LANG['reservation'][6]."\">".
+                                              addConfirmationOnAction(array($LANG['reservation'][38],
+                                                                            $LANG['reservation'][39])).
+                                              " title=\"".$LANG['reservation'][6]."\">".
                                               "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                                 alt='' title=''></a>",
                                             $item_num, $row_num, "class='center'");

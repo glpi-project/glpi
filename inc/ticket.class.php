@@ -4704,8 +4704,7 @@ class Ticket extends CommonDBTM {
                       $LANG['buttons'][7]."'></td>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='submit' class='submit' name='delete' value='".
-                      $LANG['buttons'][22]."' OnClick='return window.confirm(\"".
-                      $LANG['common'][50]."\");'>";
+                      $LANG['buttons'][22]."'".addConfirmationOnAction($LANG['common'][50]).">";
             } else {
                echo "<td class='tab_bg_2 center' colspan='4'>";
                echo "<input type='submit' class='submit' name='update' value='".

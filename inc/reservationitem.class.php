@@ -201,7 +201,8 @@ class ReservationItem extends CommonDBTM {
          }
          echo "<span class='small_space'>";
          echo "<input type='submit' name='delete' value=\"".$LANG['reservation'][6]."\"
-               class='submit' OnClick='return window.confirm(\"".$LANG['reservation'][38]. "\")'>";
+               class='submit' ".addConfirmationOnAction(array($LANG['reservation'][38],
+                                                              $LANG['reservation'][39])).">";
          echo "</span></td>";
       } else {
          echo "<td class='center'>";

@@ -3642,6 +3642,23 @@ function showToolTip($content, $options=array()) {
    }
 }
 
+/**
+ * Add confirmation on button or link before action
+ *
+ * @param $string string to display or array of string for using multilines
+ *
+ * @return nothing
+ **/
+function addConfirmationOnAction($string) {
+   if (!is_array($string)) {
+      $string = array($string);
+   }
+   $string = addslashes_deep($string);
+   $out = " onclick=\"return window.confirm('";
+   $out.= implode('\n',$string);
+   $out.= "');\" ";
+   return $out;
+}
 
 /**
  * Init the Editor System to a textarea
