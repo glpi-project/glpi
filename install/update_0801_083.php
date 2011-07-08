@@ -639,6 +639,15 @@ function update0801to083($output='HTML') {
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_consumableitems', 'groups_id_tech');
 
+   // Clean ticket satisfactions
+   $query = "DELETE
+             FROM `glpi_ticketsatisfactions`
+             WHERE `glpi_ticketsatisfactions`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
+                                                                 FROM `glpi_tickets`)";
+   $DB->query($query)
+   or die("0.83 clean glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
+
+
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
