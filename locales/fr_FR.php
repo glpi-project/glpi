@@ -434,7 +434,7 @@ $LANG['consumables'][38] = "Seuil d'alerte";
 
 $LANG['crontask'][0]  = "Actions automatiques";
 // index if crontask id
-$LANG['crontask'][1]  = "Synchronisation des matériels depuis OCSNG";
+
 $LANG['crontask'][2]  = "Envoi des alertes sur les cartouches";
 $LANG['crontask'][3]  = "Envoi des alertes sur les consommables";
 $LANG['crontask'][4]  = "Envoi des alertes sur les expirations de licences";
@@ -1336,7 +1336,7 @@ $LANG['Menu'][29] = "Planning";
 $LANG['Menu'][30] = "Journaux";
 $LANG['Menu'][31] = "Interface simplifiée";
 $LANG['Menu'][32] = "Consommables";
-$LANG['Menu'][33] = "OCSNG";
+
 $LANG['Menu'][34] = "Téléphones";
 $LANG['Menu'][35] = "Profils";
 $LANG['Menu'][36] = "Groupes";
@@ -1399,15 +1399,15 @@ $LANG['networking'][59] = "Passerelle";
 $LANG['networking'][60] = "Masque";
 $LANG['networking'][61] = "Sous-réseau";
 
-
+$LANG['ocsconfig'][0] = "OCSNG";
 $LANG['ocsconfig'][1]  = "Utilisateur de la base de données OCSNG";
 $LANG['ocsconfig'][2]  = "Hôte de la base de données OCSNG";
 $LANG['ocsconfig'][3]  = "Mot de passe de l'utilisateur OCSNG";
 $LANG['ocsconfig'][4]  = "Nom de la base de données OCSNG";
 $LANG['ocsconfig'][5]  = "Options d'importation";
-
+$LANG['ocsconfig'][6] = "Connexion à la base de données OCSNG";
 $LANG['ocsconfig'][7]  = "Base de données OCSNG en UTF8";
-
+$LANG['ocsconfig'][8] = "Ajout impossible. Le serveur OCSNG existe déjà.";
 $LANG['ocsconfig'][9]  = "Exclure les tags suivants (séparateur $, rien pour aucun)";
 $LANG['ocsconfig'][10] = "Import global";
 $LANG['ocsconfig'][11] = "Pas d'import";
@@ -1419,9 +1419,13 @@ $LANG['ocsconfig'][16] = "Statut par défaut";
 $LANG['ocsconfig'][17] = "Limiter l'importation aux tags suivants (séparateur $, rien pour tous)";
 $LANG['ocsconfig'][18] = "Assurez-vous au préalable d'avoir géré correctement les doublons dans OCSNG";
 $LANG['ocsconfig'][19] = "Import unique sur numéro de série";
-
+$LANG['ocsconfig'][20] = "Comportement à la suppression d'un ordinateur dans OCSNG";
+$LANG['ocsconfig'][21] = "Voir les informations OCSNG";
+$LANG['ocsconfig'][22] = "Synchronisation OCSNG manuellement";
+$LANG['ocsconfig'][23] = "Activer le mode OCSNG";
+$LANG['ocsconfig'][24] = "Mode OCSNG";
 $LANG['ocsconfig'][27] = "Informations générales";
-
+$LANG['ocsconfig'][28]  = "Synchronisation des matériels depuis OCSNG";
 $LANG['ocsconfig'][36] = "Modems";
 $LANG['ocsconfig'][37] = "Ports";
 $LANG['ocsconfig'][38] = "Utiliser le dictionnaire logiciel d'OCSNG";
@@ -1639,8 +1643,7 @@ $LANG['profiles'][26] = "Voir les tickets créés par groupe(s) associé(s)";
 $LANG['profiles'][27] = "Voir les matériels du ou des groupe(s) associé(s)";
 $LANG['profiles'][28] = "Récursif";
 $LANG['profiles'][29] = "Dynamique";
-$LANG['profiles'][30] = "Voir les informations OCSNG";
-$LANG['profiles'][31] = "Synchronisation OCSNG manuellement";
+
 $LANG['profiles'][32] = "Voir les tickets attribués (personnel + groupe(s) associé(s)";
 $LANG['profiles'][33] = "Pas d'utilisateur trouvé";
 $LANG['profiles'][34] = "Légende";
@@ -2044,8 +2047,7 @@ $LANG['setup'][129] = "Montrer les ID GLPI";
 $LANG['setup'][130] = "Temps en jours de conservation des journaux";
 
 $LANG['setup'][132] = "Afficher le nom complet dans les listes déroulantes arborescentes";
-$LANG['setup'][133] = "Activer le mode OCSNG";
-$LANG['setup'][134] = "Mode OCSNG";
+
 $LANG['setup'][135] = "Normal";
 $LANG['setup'][136] = "Traduction";
 $LANG['setup'][137] = "Debug";
@@ -2210,14 +2212,14 @@ $LANG['setup'][504] = "Types de téléphones";
 $LANG['setup'][505] = "Types d'alimentation téléphone";
 
 $LANG['setup'][601] = "Valeur de l'attribut";
-$LANG['setup'][602] = "Connexion à la base de données OCSNG";
+
 $LANG['setup'][603] = "Ajouter un utilisateur";
 $LANG['setup'][604] = "Associer à un groupe";
 $LANG['setup'][605] = "Ajouter une habilitation à un utilisateur";
 $LANG['setup'][606] = "Ajout impossible. L'utilisateur existe déjà.";
 $LANG['setup'][607] = "Associer à un profil";
 $LANG['setup'][608] = "Logiciels associables à un ticket par défaut";
-$LANG['setup'][609] = "Ajout impossible. Le serveur OCSNG existe déjà.";
+
 $LANG['setup'][610] = "Titre du ticket obligatoire";
 $LANG['setup'][611] = "Contenu du ticket obligatoire";
 $LANG['setup'][612] = "Catégorie du ticket obligatoire";
@@ -2272,7 +2274,7 @@ $LANG['setup'][815] = "Champ(s) unique(s)";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 $LANG['setup'][819] = "Passage à l'état ";
-$LANG['setup'][820] = "Comportement à la suppression d'un ordinateur dans OCSNG";
+
 $LANG['setup'][821] = "Enregistrement en base refusé";
 $LANG['setup'][822] = "Envoyer une notification";
 $LANG['setup'][823] = "Enregistrement effectué mais doublon sur ";

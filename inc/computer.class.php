@@ -126,7 +126,7 @@ class Computer extends CommonDBTM {
             if ($CFG_GLPI["use_ocs_mode"]
                 && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
 
-               $ong[13] = $LANG['Menu'][33];
+               $ong[13] = $LANG['ocsconfig'][0];
             }
          }
 
@@ -751,7 +751,7 @@ class Computer extends CommonDBTM {
           && haveRight("sync_ocsng","w")
           && count($dataocs)) {
 
-         echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33]."&nbsp;:</td>";
+         echo "<td >".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";
          echo "<td >";
          Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
          echo "</td>";
@@ -1089,7 +1089,7 @@ class Computer extends CommonDBTM {
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab['ocsng'] = $LANG['Menu'][33];
+      $tab['ocsng'] = $LANG['ocsconfig'][0];
 
       $tab[102]['table']         = 'glpi_ocslinks';
       $tab[102]['field']         = 'last_update';
@@ -1114,7 +1114,7 @@ class Computer extends CommonDBTM {
       $tab[101]['table']      = 'glpi_ocslinks';
       $tab[101]['field']      = 'use_auto_update';
       $tab[101]['linkfield']  = '_auto_update_ocs'; // update through compter update process
-      $tab[101]['name']       = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
+      $tab[101]['name']       = $LANG['ocsng'][6]." ".$LANG['ocsconfig'][0];
       $tab[101]['datatype']   = 'bool';
       $tab[101]['joinparams'] = array('jointype' => 'child');
 

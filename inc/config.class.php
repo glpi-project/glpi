@@ -285,7 +285,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['Menu'][38] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][133] . "&nbsp;:</td><td>";
+      echo "<td> " . $LANG['ocsconfig'][23] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
       echo "</td><td> " . $LANG['setup'][271] . "&nbsp;:</td>";
       echo "<td>";

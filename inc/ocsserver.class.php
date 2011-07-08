@@ -445,7 +445,7 @@ class OcsServer extends CommonDBTM {
                             array(0 => $LANG['common'][49]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>".$LANG['setup'][820]."</td>";
+      echo "<tr class='tab_bg_2'><td class='center'>".$LANG['ocsconfig'][20]."</td>";
       echo "<td>";
       $actions[0] = DROPDOWN_EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
@@ -608,7 +608,7 @@ class OcsServer extends CommonDBTM {
 
       $out="<br><div class='center'>\n";
       $out.="<table class='tab_cadre_fixe'>";
-      $out.="<tr><th>" .$LANG['setup'][602] . "</th></tr>\n";
+      $out.="<tr><th>" .$LANG['ocsconfig'][6] . "</th></tr>\n";
       $out.="<tr class='tab_bg_2'><td class='center'>";
       if ($ID != -1) {
          if (!self::checkOCSconnection($ID)) {
@@ -736,7 +736,7 @@ class OcsServer extends CommonDBTM {
                 WHERE `name` = '".$input['name']."';";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         addMessageAfterRedirect($LANG['setup'][609],false,ERROR);
+         addMessageAfterRedirect($LANG['ocsconfig'][8],false,ERROR);
          return false;
       }
 
@@ -5603,7 +5603,7 @@ class OcsServer extends CommonDBTM {
    static function cronInfo($name) {
       global $LANG;
 
-      return array('description' => $LANG['crontask'][1]);
+      return array('description' => $LANG['ocsconfig'][28]);
    }
 
 
