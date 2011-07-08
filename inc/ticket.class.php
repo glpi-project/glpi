@@ -758,7 +758,8 @@ class Ticket extends CommonITILObject {
    /// Compute take into account stat of the current ticket
    function computeTakeIntoAccountDelayStat() {
 
-      if (isset($this->fields['id'])) {
+      if (isset($this->fields['id'])
+            || empty($this->fields['date'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
@@ -777,7 +778,9 @@ class Ticket extends CommonITILObject {
    /// Compute solve delay stat of the current ticket
    function computeSolveDelayStat() {
 
-      if (isset($this->fields['id'])) {
+      if (isset($this->fields['id'])
+            || empty($this->fields['date'])
+            || empty($this->fields['solvedate'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
@@ -798,7 +801,9 @@ class Ticket extends CommonITILObject {
    /// Compute close delay stat of the current ticket
    function computeCloseDelayStat() {
 
-      if (isset($this->fields['id'])) {
+      if (isset($this->fields['id'])
+            || empty($this->fields['date'])
+            || empty($this->fields['closedate'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
