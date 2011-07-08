@@ -78,12 +78,13 @@ class Migration {
     * @param $format of the field (ex: int(11) not null default 0)
     * @param $update if not empty = value of $field (must be protected)
     * @param $condition if needed
+    * @param comment comment to be added during field creation
    **/
-   function addField($table, $field, $format, $update='', $condition='') {
+   function addField($table, $field, $format, $update='', $condition='', $comment = '') {
       global $DB, $LANG;
 
       if (!FieldExists($table,$field)) {
-         $this->change[$table][] = "ADD `$field` $format";
+         $this->change[$table][] = "ADD `$field` $format $comment";
 
          if ($update) {
             $this->migrationOneTable($table);
@@ -98,7 +99,68 @@ class Migration {
       return false;
    }
 
-
+   /**
+    * Add a new GLPI normalized field
+    * 
+    * @param $table
+    * @param $field to add
+    * @param $type : can be bool, string, integer, date, datatime, autoincrement, text, longtext
+    * @param default_value new field's default value, if a specific default value needs to be used
+    * @param $update if not empty = value of $field (must be protected)
+    * @param $condition if needed
+    * @param comment comment to be added during field creation
+    * 
+    */
+   function addNormalizedField($table, $field, $type, $default_value = false, $update = '', $condition = '', $comment = '') {
+      $format = false;
+      switch ($type) {
+         case 'bool':
+            $format = "TINYINT(1) NOT NULL";
+            if ($default_value && in_array($default_value, array('0', '1'))) {
+               $format.= " DEFAULT '$default_value'";
+            } else {
+               $format.= " DEFAULT '0'";
+            }
+            break;
+         case 'string':
+            $format = "VARCHAR(255) COLLATE utf8_unicode_ci";
+            if (!$default_value) {
+               $format.= " DEFAULT NULL";
+            } else {
+               $format.= " DEFAULT '$default_value'";
+            }
+            break;
+         case 'integer':
+            $format = "int(11) NOT NULL";
+            if (!$default_value ) {
+               $format.= " DEFAULT '0'";
+            } else {
+               $format.= " DEFAULT '$default_value'";
+            }
+            break;
+         case 'date':
+            $format = "DATE NOT NULL";
+            break;
+         case 'datetime':
+            $format = "DATETIME NOT NULL";
+            break;
+         case 'text':
+            $format = "TEXT COLLATE utf8_unicode_ci";
+            break;
+         case 'longtext':
+            $format = "LONGTEXT COLLATE utf8_unicode_ci";
+            break;
+         case 'autoincrement':
+            $format = "INT(11) NOT NULL AUTO_INCREMENT";
+            break;
+         default:
+            break;
+      }
+      if ($format) {
+         $this->addField($table, $field, $format, $update, $condition);
+      }
+   }
+   
    /**
     * Modify field for migration
     *
@@ -137,7 +199,18 @@ class Migration {
       }
    }
 
-
+   /**
+    * Drop immediatly a table if it exists
+    * 
+    * @param table
+    */
+   function dropTable($table) {
+      global $DB;
+      if (TableExists($table)) {
+         $DB->query("DROP TABLE `$table`");
+      }
+   }
+   
    /**
     * Add index for migration
     *
