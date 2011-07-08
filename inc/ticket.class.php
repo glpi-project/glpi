@@ -1162,17 +1162,17 @@ class Ticket extends CommonDBTM {
    function computeTakeIntoAccountDelayStat() {
 
       if (isset($this->fields['id'])
-            || empty($this->fields['date'])) {
+            && !empty($this->fields['date'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return $calendar->getActiveTimeBetween($this->fields['date'],
-                                                   $_SESSION["glpi_currenttime"]);
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+                                                   $_SESSION["glpi_currenttime"]));
          }
          // Not calendar defined
-         return strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']);
+         return max(0, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
       }
       return 0;
    }
@@ -1182,20 +1182,20 @@ class Ticket extends CommonDBTM {
    function computeSolveDelayStat() {
 
       if (isset($this->fields['id'])
-            || empty($this->fields['date'])
-            || empty($this->fields['solvedate'])) {
+            && !empty($this->fields['date'])
+            && !empty($this->fields['solvedate'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return $calendar->getActiveTimeBetween($this->fields['date'],
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
                                                    $this->fields['solvedate'])
-                                                         -$this->fields["ticket_waiting_duration"];
+                                                         -$this->fields["ticket_waiting_duration"]);
          }
          // Not calendar defined
-         return strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])
-                                                     -$this->fields["ticket_waiting_duration"];
+         return max(0, strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["ticket_waiting_duration"]);
       }
       return 0;
    }
@@ -1205,18 +1205,18 @@ class Ticket extends CommonDBTM {
    function computeCloseDelayStat() {
 
       if (isset($this->fields['id'])
-            || empty($this->fields['date'])
-            || empty($this->fields['closedate'])) {
+            && !empty($this->fields['date'])
+            && !empty($this->fields['closedate'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['closedate'])-$this->fields["ticket_waiting_duration"];
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['closedate'])-$this->fields["ticket_waiting_duration"]);
          }
          // Not calendar defined
-         return strtotime($this->fields['closedate'])-strtotime($this->fields['date'])
-                                                     -$this->fields["ticket_waiting_duration"];
+         return max(0, strtotime($this->fields['closedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["ticket_waiting_duration"]);
       }
       return 0;
    }
