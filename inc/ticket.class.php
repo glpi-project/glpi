@@ -2619,7 +2619,8 @@ class Ticket extends CommonITILObject {
             echo "<span class='tracking_small'>&nbsp;";
             echo convDateTime($this->fields["due_date"])."</span>";
 
-            echo "</td></tr><tr><td>".$LANG['sla'][1]."&nbsp;:</td><td>";
+            echo "</td></tr><tr><td><span class='tracking_small'>".$LANG['sla'][1]."&nbsp;:</span>";
+            echo "</td><td><span class='tracking_small'>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
             $slalevel   = new SlaLevel();
@@ -2648,7 +2649,7 @@ class Ticket extends CommonITILObject {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
                     $LANG['sla'][7]."'>";
             }
-
+            echo "</span>";
          } else {
             showDateTimeFormItem("due_date",$this->fields["due_date"], 1, false, $canupdate);
          }
