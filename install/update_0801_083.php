@@ -650,6 +650,8 @@ function update0801to083($output='HTML') {
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
+   $migration->addNormalizedField("glpi_contracts", "template_name", 'string');
+   $migration->addNormalizedField("glpi_contracts", "is_template", 'bool');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`

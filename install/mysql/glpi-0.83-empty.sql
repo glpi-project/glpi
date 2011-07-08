@@ -887,6 +887,8 @@ DROP TABLE IF EXISTS `glpi_contracts`;
 CREATE TABLE `glpi_contracts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `num` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1657,6 +1659,7 @@ CREATE TABLE `glpi_entitydatas` (
   `autofill_buy_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
+  `entities_id_software` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
