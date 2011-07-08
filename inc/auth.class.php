@@ -1002,7 +1002,7 @@ class Auth {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                      echo "<input type='hidden' name='id' value='$ID'>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                            $LANG['ocsng'][24] . "'>";
+                            $LANG['ldap'][11] . "'>";
                      echo "</td></tr></table>";
                   }
                   break;
@@ -1023,7 +1023,7 @@ class Auth {
                      if ($DB->numrows($result) > 0) {
                         echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                         echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                               $LANG['ocsng'][24] . "'>";
+                               $LANG['ldap'][11] . "'>";
                         echo "</td></tr></table>";
                      }
                   }

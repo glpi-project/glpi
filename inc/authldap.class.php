@@ -1265,7 +1265,7 @@ class AuthLDAP extends CommonDBTM {
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
             echo "<th>".$LANG['setup'][261]."</th>";
-            echo"<th>".$LANG['ocsng'][36]."</th>";
+            echo"<th>".$LANG['ldap'][27]."</th>";
             if (isMultiEntitiesMode()) {
                echo"<th>".$LANG['entity'][9]."</th>";
             }

@@ -781,7 +781,7 @@ class Profile extends CommonDBTM {
       echo "</td>\n";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['ocsconfig'][50]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][54]."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
