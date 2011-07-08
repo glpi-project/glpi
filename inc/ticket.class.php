@@ -494,6 +494,12 @@ class Ticket extends CommonDBTM {
       $DB->query($query1);
 
       $query1 = "DELETE
+                 FROM `glpi_ticketsatisfactions`
+                 WHERE `tickets_id` = '".$this->fields['id']."'";
+      $DB->query($query1);
+
+
+      $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
                  WHERE `tickets_id_1` = '".$this->fields['id']."'
                      OR `tickets_id_2` = '".$this->fields['id']."'";
