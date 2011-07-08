@@ -179,7 +179,40 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * Get Datas to be added for SLA add
+    *
+    * @param $slas_id SLA id
+    * @param $entities_id entity ID of the ticket
+    * @param $date begin date of the ticket
+    *
+    * @return array of datas to add in ticket
+   **/
+   function getDatasToAddSLA($slas_id,$entities_id, $date) {
 
+      $calendars_id = EntityData::getUsedConfig('calendars_id', $entities_id);
+
+
+      $data = array();
+
+      $sla = new SLA();
+      if ($sla->getFromDB($slas_id)) {
+         $sla->setTicketCalendar($calendars_id);
+         // Get first SLA Level
+         $data["slalevels_id"] = SlaLevel::getFirstSlaLevel($slas_id);
+         // Compute due_date
+         $data['due_date']             = $sla->computeDueDate($date);
+         $data['sla_waiting_duration'] = 0;
+
+      } else {
+         $data["slalevels_id"]         = 0;
+         $data["slas_id"]              = 0;
+         $data['sla_waiting_duration'] = 0;
+      }
+
+      return $data;
+
+   }
 
    /**
     * Delete SLA for the ticket
@@ -196,10 +229,7 @@ class Ticket extends CommonITILObject {
       $input['sla_wainting_duration'] = 0;
       $input['id']                    = $id;
 
-      $query1 = "DELETE
-                 FROM `glpi_slalevels_tickets`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      SlaLevel_Ticket::deleteForTicket($this->getID());
 
       return $this->update($input);
    }
@@ -419,10 +449,7 @@ class Ticket extends CommonITILObject {
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
-      $query1 = "DELETE
-                 FROM `glpi_slalevels_tickets`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      SlaLevel_Ticket::deleteForTicket($this->fields['id']);
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
@@ -608,6 +635,26 @@ class Ticket extends CommonITILObject {
          }
       }
 
+
+       if (isset($this->input["slas_id"])
+            && $this->input["slas_id"] > 0
+            && $this->fields['slas_id'] == 0) {
+
+         $date = $this->fields['date'];
+         /// Use updated date if also done
+         if (isset($this->input["date"])) {
+            $date = $this->input["date"];
+         }
+         // Get datas to initialize SLA and set it
+         $sla_data = $this->getDatasToAddSLA($this->input["slas_id"], $this->fields['entities_id'],
+                                             $date);
+         if (count($sla_data)) {
+            foreach ($sla_data as $key => $val) {
+               $input[$key] = $val;
+            }
+         }
+      }
+
       $input = parent::prepareInputForUpdate($input);
 
       return $input;
@@ -759,7 +806,6 @@ class Ticket extends CommonITILObject {
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
 
-
       // Do not take into account date_mod if no update is done
       if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
          unset($this->updates[$key]);
@@ -838,6 +884,27 @@ class Ticket extends CommonITILObject {
 
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
+      }
+
+
+
+      // Manage SLA Level : add actions
+      if (in_array("slas_id",$this->updates)
+          && $this->fields["slas_id"] > 0) {
+
+         // Add First Level
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+
+         $sla = new SLA();
+         if ($sla->getFromDB($this->fields["slas_id"])) {
+            $sla->setTicketCalendar($calendars_id);
+            // Add first level in working table
+            if ($this->fields["slalevels_id"]>0) {
+               $sla->addLevelToDo($this);
+            }
+         }
+
+         SlaLevel_Ticket::replayForTicket($this->getID());
       }
 
       if (count($this->updates)) {
@@ -1128,22 +1195,12 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
-
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
-
-         $sla = new SLA();
-         if ($sla->getFromDB($input["slas_id"])) {
-            $sla->setTicketCalendar($calendars_id);
-            // Get first SLA Level
-            $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
-            // Compute due_date
-            $input['due_date']             = $sla->computeDueDate($input['date']);
-            $input['sla_waiting_duration'] = 0;
-
-         } else {
-            $input["slalevels_id"]         = 0;
-            $input["slas_id"]              = 0;
-            $input['sla_waiting_duration'] = 0;
+         // Get datas to initialize SLA and set it
+         $sla_data = $this->getDatasToAddSLA($input["slas_id"],$input['entities_id'], $input['date']);
+         if (count($sla_data)) {
+            foreach ($sla_data as $key => $val) {
+               $input[$key] = $val;
+            }
          }
       }
 
@@ -2673,7 +2730,24 @@ class Ticket extends CommonITILObject {
             }
             echo "</span>";
          } else {
+            echo "<table><tr><td>";
             showDateTimeFormItem("due_date",$this->fields["due_date"], 1, false, $canupdate);
+            echo "</td>";
+            if ($this->fields['status'] != 'closed') {
+               echo "<td>".$LANG['choice'][2];
+               echo "</td><td>";
+               echo "<span id='sla_action'>";
+               echo "<a href='#' ".addConfirmationOnAction(array($LANG['sla'][13],$LANG['sla'][14]),
+                                                         "cleanhide('sla_action');cleandisplay('sla_choice');").
+                     "\">".$LANG['sla'][12].'</a>';
+               echo "</span>";
+               echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:";
+               Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
+                                          'value'  => $this->fields["slas_id"]));
+               echo "</span>";
+               echo "</td>";
+            }
+            echo "</tr></table>";
          }
 
       } else { // New Ticket

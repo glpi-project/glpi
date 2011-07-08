@@ -2291,6 +2291,9 @@ $LANG['sla'][8]  = "Prochaine escalade";
 $LANG['sla'][9]  = "Rappels automatiques des SLAs";
 $LANG['sla'][10] = "24 heures sur 24, 7 jours sur 7";
 $LANG['sla'][11] = "Calendrier du ticket";
+$LANG['sla'][12] = "Affecter une SLA";
+$LANG['sla'][13] = "L'affectation d'une SLA à un ticket ouvert, rejouera toutes les actions passées de la SLA.";
+$LANG['sla'][14] = "La date d'échéance sera également recalculée.";
 
 
 $LANG['software'][1]  = "Version d'achat";

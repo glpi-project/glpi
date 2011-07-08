@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
                  $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$track->getField('name'));
    }
-   $computer->redirectToList();
+   $track->redirectToList();
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    checkSeveralRightsOr(array('add_followups'     => '1',

@@ -72,6 +72,22 @@ class SlaLevel_Ticket extends CommonDBTM {
       }
    }
 
+   /**
+    * Delete entries for a ticket
+    *
+    *@param $tickets_id Ticket ID
+    *@return nothing
+    *
+   **/
+   static function deleteForTicket ($tickets_id) {
+      global $DB;
+
+      $query1 = "DELETE
+               FROM `glpi_slalevels_tickets`
+               WHERE `tickets_id` = '$tickets_id'";
+      $DB->query($query1);
+
+   }
 
    /**
     * Give cron informations
@@ -106,48 +122,93 @@ class SlaLevel_Ticket extends CommonDBTM {
                 FROM `glpi_slalevels_tickets`
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()";
 
-      $slalevelticket = new self();
       foreach ($DB->request($query) as $data) {
          $tot++;
-         $ticket = new Ticket();
-         if ($ticket->getFromDB($data['tickets_id'])) {
-            $slalevel = new SlaLevel();
-            $sla      = new SLA();
-            // Check if sla datas are OK
-            if ($ticket->fields['slas_id']>0
-                && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
-
-               if ($ticket->fields['status'] == 'closed') {
-                  // Drop line when status is closed
-                  $slalevelticket->delete(array('id' => $data['id']));
-               } else if ($ticket->fields['status'] != 'solved') {
-                  // If status = solved : keep the line in case of solution not validated
-                  $input = $ticket->fields;
-                  $input['_auto_update'] = true;
-
-                  if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
-                      && $sla->getFromDB($ticket->fields['slas_id'])) {
-                     // Process rules
-                     $input = $slalevel->executeActions($input,array());
-                  }
-                  // Put next level in todo list
-                  $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
-                                                     $ticket->fields['slalevels_id']);
-                  $input['slalevels_id'] = $next;
-                  $ticket->update($input);
-                  $sla->addLevelToDo($ticket);
-               }
-            }
-         } else {
-            // Drop line
-            $slalevelticket->delete(array('id' => $data['id']));
-         }
+         self::doLevelForTicket($data);
       }
 
       $task->setVolume($tot);
       return ($tot > 0);
    }
 
+
+   /**
+    * Do a specific SLAlevel for a ticket
+    *
+    * @param $data array data of a entry of slalevels_tickets
+    *
+    * @return nothing
+    *
+    */
+   static function doLevelForTicket($data) {
+
+      $ticket = new Ticket();
+      $slalevelticket = new self();
+      if ($ticket->getFromDB($data['tickets_id'])) {
+
+         $slalevel = new SlaLevel();
+         $sla      = new SLA();
+         // Check if sla datas are OK
+         if ($ticket->fields['slas_id']>0
+               && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
+
+            if ($ticket->fields['status'] == 'closed') {
+               // Drop line when status is closed
+               $slalevelticket->delete(array('id' => $data['id']));
+            } else if ($ticket->fields['status'] != 'solved') {
+               // If status = solved : keep the line in case of solution not validated
+               $input = $ticket->fields;
+               $input['_auto_update'] = true;
+
+               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
+                     && $sla->getFromDB($ticket->fields['slas_id'])) {
+                  // Process rules
+                  $input = $slalevel->executeActions($input,array());
+               }
+               // Put next level in todo list
+               $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
+                                                   $ticket->fields['slalevels_id']);
+               $input['slalevels_id'] = $next;
+               $ticket->update($input);
+               $sla->addLevelToDo($ticket);
+               // Action done : drop the line
+               $slalevelticket->delete(array('id' => $data['id']));
+            }
+         }
+      } else {
+         // Drop line
+         $slalevelticket->delete(array('id' => $data['id']));
+      }
+
+   }
+
+   /**
+    * Replay all task needed for a specific ticket
+    *
+    * @param $tickets_id Ticket ID
+    *
+    * @return nothing
+    *
+    */
+   static function replayForTicket($tickets_id) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `glpi_slalevels_tickets`
+                WHERE `glpi_slalevels_tickets`.`date` < NOW()
+                     AND `tickets_id` = '$tickets_id'";
+
+      $number = 0;
+      do {
+         if ($result = $DB->query($query)) {
+            $number = $DB->numrows($result);
+            if ($number == 1) {
+               $data = $DB->fetch_assoc($result);
+               self::doLevelForTicket($data);
+            }
+         }
+      } while ($number == 1);
+   }
 
 }
 
