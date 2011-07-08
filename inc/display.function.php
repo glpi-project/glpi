@@ -2295,7 +2295,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<input type='hidden' name='urgency' value='3'>";
    }
    echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
-   echo "<div class='center'><table class='tab_cadre'>";
+   echo "<div class='center'><table class='tab_cadre_fixe'>";
 
    echo "<tr><th colspan='2'>".$LANG['job'][11]."&nbsp;:&nbsp;";
    if (isMultiEntitiesMode()) {
@@ -2348,10 +2348,11 @@ function printHelpDesk ($ID, $from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
-   echo "<td><input type='text' maxlength='250' size='50' name='name' value='$title'></td></tr>";
+   echo "<td><input type='text' maxlength='250' size='80' name='name' value='$title'></td></tr>";
 
    echo "<tr class='tab_bg_1'>";
-   echo "<td colspan='2'><textarea name='content' cols='78' rows='14'>$content</textarea>";
+   echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
+   echo "<td><textarea name='content' cols='80' rows='14'>$content</textarea>";
    echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";
@@ -2360,7 +2361,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
           $LANG['central'][7]."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
           "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
    echo "</td>";
-   echo "<td><input type='file' name='filename' value='' size='25'></td></tr>";
+   echo "<td><input type='file' name='filename' value='' size='60'></td></tr>";
 
    echo "<tr class='tab_bg_1'>";
    echo "<td colspan='2' class='center'>";
