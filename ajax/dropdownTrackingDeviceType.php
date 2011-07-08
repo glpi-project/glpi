@@ -44,8 +44,16 @@ checkLoginUser();
 if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $rand  =mt_rand();
+
+   // Message for post-only
+   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
+      echo "<br>".$LANG['help'][23].'&nbsp;:';
+   }
+
    echo "&nbsp;";
    ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);
+
+//   echo "<br>";
 
    $paramstrackingdt = array('searchText'      => '__VALUE__',
                              'myname'          => $_POST["myname"],
@@ -61,9 +69,6 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
    echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
    echo "</span>\n";
 
-   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
-      echo "<br>".$LANG['help'][23];
-   }
 }
 
 ?>

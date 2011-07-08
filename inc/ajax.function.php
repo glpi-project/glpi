@@ -118,6 +118,11 @@ function ajaxUpdateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters
    if (count($forceloadfor)==0) {
       $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
    }
+   // Need to define min size for text search
+   if ($minsize < 0) {
+      $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+   }
+
    ajaxUpdateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
                         $minsize, $forceloadfor);
 }
