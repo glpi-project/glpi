@@ -90,7 +90,7 @@ if (!isset($_POST["import_ok"])) {
                                  1);
 
 } else {
-   if (count($_POST['tolink']) >0) {
+   if (isset($_POST['tolink']) && count($_POST['tolink']) >0) {
       $_SESSION["ocs_link_count"] = 0;
 
       foreach ($_POST['tolink'] as $ocsid => $computers_id) {
