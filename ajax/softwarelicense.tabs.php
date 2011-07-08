@@ -63,6 +63,7 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Infocom::showForItem($license);
+         Contract::showAssociated($license, $_POST["withtemplate"]);
          Document::showAssociated($license);
          Plugin::displayAction($license, $_REQUEST['glpi_tab']);
          break;
@@ -73,6 +74,7 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
 
       case 4 :
          Infocom::showForItem($license);
+         Contract::showAssociated($license, $_POST["withtemplate"]);
          break;
 
       default :

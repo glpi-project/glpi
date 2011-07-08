@@ -460,7 +460,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
 
    // FINANCIAL
-   if (haveRight("budget","r")) {
+   if (haveRight("budget", "r")) {
       $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
       $menu['financial']['content']['budget']['shortcut']        = 'n';
       $menu['financial']['content']['budget']['page']            = '/front/budget.php';
@@ -476,7 +476,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
    $menu['financial']['title'] = $LANG['Menu'][26];
 
-   if (haveRight("contact_enterprise","r")) {
+   if (haveRight("contact_enterprise", "r")) {
       $menu['financial']['content']['supplier']['title']           = $LANG['Menu'][23];
       $menu['financial']['content']['supplier']['shortcut']        = 'e';
       $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
@@ -489,26 +489,28 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['financial']['content']['contact']['page']            = '/front/contact.php';
       $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
 
-      if (haveRight("contact_enterprise","w")) {
+      if (haveRight("contact_enterprise", "w")) {
          $menu['financial']['content']['contact']['links']['add']  = '/front/contact.form.php';
          $menu['financial']['content']['supplier']['links']['add'] = '/front/supplier.form.php';
       }
    }
 
 
-   if (haveRight("contract","r")) {
+   if (haveRight("contract", "r")) {
       $menu['financial']['content']['contract']['title']           = $LANG['Menu'][25];
       $menu['financial']['content']['contract']['shortcut']        = 'n';
       $menu['financial']['content']['contract']['page']            = '/front/contract.php';
       $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
 
-      if (haveRight("contract","w")) {
-         $menu['financial']['content']['contract']['links']['add'] = '/front/contract.form.php';
+      if (haveRight("contract", "w")) {
+         $menu['financial']['content']['contract']['links']['add'] = '/front/setup.templates.php?itemtype=Contract&amp;add=1';
+         $menu['financial']['content']['contract']['links']['template']
+                            = '/front/setup.templates.php?itemtype=Contract&amp;add=0';
       }
    }
 
 
-   if (haveRight("document","r")) {
+   if (haveRight("document", "r")) {
       $menu['financial']['content']['document']['title']           = $LANG['Menu'][27];
       $menu['financial']['content']['document']['shortcut']        = 'd';
       $menu['financial']['content']['document']['page']            = '/front/document.php';
