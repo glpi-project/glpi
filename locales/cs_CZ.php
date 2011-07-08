@@ -135,7 +135,7 @@ $LANG['calendarD'][4]="Čt";
 $LANG['calendarD'][5]="Pá"; 
 $LANG['calendarD'][6]="So"; 
 
-$LANG['calendarDay'][0]="neděle"; 
+$LANG['calendarDay'][0]="Neděle"; 
 $LANG['calendarDay'][1]="Pondělí"; 
 $LANG['calendarDay'][2]="Úterý"; 
 $LANG['calendarDay'][3]="Středa"; 
