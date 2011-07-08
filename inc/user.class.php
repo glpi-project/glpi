@@ -918,7 +918,7 @@ class User extends CommonDBTM {
          }
 
         //Store user's dn
-        $this->fields['user_dn'] = $userdn;
+        $this->fields['user_dn'] = addslashes($userdn);
         //Store date_sync
         $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
 
