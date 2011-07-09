@@ -1214,7 +1214,7 @@ $LANG['mailgate'][4]  = "Extension mbstring indisponible. Attention aux jeux de 
 $LANG['mailgate'][5]  = "Fichier attaché invalide";
 $LANG['mailgate'][6]  = "Fichier attaché trop volumineux";
 $LANG['mailgate'][7]  = "Taille maximale des fichiers importés par le collecteur";
-
+$LANG['mailgate'][8] = "Pas d'import";
 $LANG['mailgate'][9]  = "Votre courriel n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
 $LANG['mailgate'][10] = "Courriel rejeté";
 $LANG['mailgate'][11] = "Processus d'import des courriels";

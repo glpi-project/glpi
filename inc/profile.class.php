@@ -1346,12 +1346,12 @@ class Profile extends CommonDBTM {
 
       $tab[40]['table']    = $this->getTable();
       $tab[40]['field']    = 'view_ocsng';
-      $tab[40]['name']     = $LANG['profiles'][30];
+      $tab[40]['name']     = $LANG['ocsconfig'][21];
       $tab[40]['datatype'] = 'right';
 
       $tab[41]['table']    = $this->getTable();
       $tab[41]['field']    = 'sync_ocsng';
-      $tab[41]['name']     = $LANG['profiles'][31];
+      $tab[41]['name']     = $LANG['ocsconfig'][22];
       $tab[41]['datatype'] = 'right';
 
       $tab['config'] = $LANG['common'][12];
