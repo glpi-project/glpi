@@ -784,7 +784,7 @@ class Computer extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       $tab = array();
       $tab['common'] = $LANG['common'][32];
@@ -1088,65 +1088,66 @@ class Computer extends CommonDBTM {
       $tab[155]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
+      
+      if ($CFG_GLPI["use_ocs_mode"]) {
+         $tab['ocsng'] = $LANG['ocsconfig'][0];
 
-      $tab['ocsng'] = $LANG['ocsconfig'][0];
+         $tab[102]['table']         = 'glpi_ocslinks';
+         $tab[102]['field']         = 'last_update';
+         $tab[102]['name']          = $LANG['ocsng'][13];
+         $tab[102]['datatype']      = 'datetime';
+         $tab[102]['massiveaction'] = false;
+         $tab[102]['joinparams']    = array('jointype' => 'child');
 
-      $tab[102]['table']         = 'glpi_ocslinks';
-      $tab[102]['field']         = 'last_update';
-      $tab[102]['name']          = $LANG['ocsng'][13];
-      $tab[102]['datatype']      = 'datetime';
-      $tab[102]['massiveaction'] = false;
-      $tab[102]['joinparams']    = array('jointype' => 'child');
+         $tab[103]['table']         = 'glpi_ocslinks';
+         $tab[103]['field']         = 'last_ocs_update';
+         $tab[103]['name']          = $LANG['ocsng'][14];
+         $tab[103]['datatype']      = 'datetime';
+         $tab[103]['massiveaction'] = false;
+         $tab[103]['joinparams']    = array('jointype' => 'child');
 
-      $tab[103]['table']         = 'glpi_ocslinks';
-      $tab[103]['field']         = 'last_ocs_update';
-      $tab[103]['name']          = $LANG['ocsng'][14];
-      $tab[103]['datatype']      = 'datetime';
-      $tab[103]['massiveaction'] = false;
-      $tab[103]['joinparams']    = array('jointype' => 'child');
+         $tab[100]['table']         = $this->getTable();
+         $tab[100]['field']         = 'is_ocs_import';
+         $tab[100]['name']          = $LANG['ocsng'][7];
+         $tab[100]['massiveaction'] = false;
+         $tab[100]['datatype']      = 'bool';
 
-      $tab[100]['table']         = $this->getTable();
-      $tab[100]['field']         = 'is_ocs_import';
-      $tab[100]['name']          = $LANG['ocsng'][7];
-      $tab[100]['massiveaction'] = false;
-      $tab[100]['datatype']      = 'bool';
+         $tab[101]['table']      = 'glpi_ocslinks';
+         $tab[101]['field']      = 'use_auto_update';
+         $tab[101]['linkfield']  = '_auto_update_ocs'; // update through compter update process
+         $tab[101]['name']       = $LANG['ocsng'][6]." ".$LANG['ocsconfig'][0];
+         $tab[101]['datatype']   = 'bool';
+         $tab[101]['joinparams'] = array('jointype' => 'child');
 
-      $tab[101]['table']      = 'glpi_ocslinks';
-      $tab[101]['field']      = 'use_auto_update';
-      $tab[101]['linkfield']  = '_auto_update_ocs'; // update through compter update process
-      $tab[101]['name']       = $LANG['ocsng'][6]." ".$LANG['ocsconfig'][0];
-      $tab[101]['datatype']   = 'bool';
-      $tab[101]['joinparams'] = array('jointype' => 'child');
+         $tab[104]['table']         = 'glpi_ocslinks';
+         $tab[104]['field']         = 'ocs_agent_version';
+         $tab[104]['name']          = $LANG['ocsng'][49];
+         $tab[104]['massiveaction'] = false;
+         $tab[104]['joinparams']    = array('jointype' => 'child');
 
-      $tab[104]['table']         = 'glpi_ocslinks';
-      $tab[104]['field']         = 'ocs_agent_version';
-      $tab[104]['name']          = $LANG['ocsng'][49];
-      $tab[104]['massiveaction'] = false;
-      $tab[104]['joinparams']    = array('jointype' => 'child');
+         $tab[105]['table']         = 'glpi_ocslinks';
+         $tab[105]['field']         = 'tag';
+         $tab[105]['name']          = $LANG['ocsconfig'][39];
+         $tab[105]['datatype']      = 'string';
+         $tab[105]['massiveaction'] = false;
+         $tab[105]['joinparams']    = array('jointype' => 'child');
 
-      $tab[105]['table']         = 'glpi_ocslinks';
-      $tab[105]['field']         = 'tag';
-      $tab[105]['name']          = $LANG['ocsconfig'][39];
-      $tab[105]['datatype']      = 'string';
-      $tab[105]['massiveaction'] = false;
-      $tab[105]['joinparams']    = array('jointype' => 'child');
+         $tab['registry'] = $LANG['title'][43];
 
-      $tab['registry'] = $LANG['title'][43];
+         $tab[110]['table']         = 'glpi_registrykeys';
+         $tab[110]['field']         = 'value';
+         $tab[110]['name']          = $LANG['title'][43]." : ".$LANG['registry'][3];
+         $tab[110]['forcegroupby']  = true;
+         $tab[110]['massiveaction'] = false;
+         $tab[110]['joinparams']    = array('jointype' => 'child');
 
-      $tab[110]['table']         = 'glpi_registrykeys';
-      $tab[110]['field']         = 'value';
-      $tab[110]['name']          = $LANG['title'][43]." : ".$LANG['registry'][3];
-      $tab[110]['forcegroupby']  = true;
-      $tab[110]['massiveaction'] = false;
-      $tab[110]['joinparams']    = array('jointype' => 'child');
-
-      $tab[111]['table']         = 'glpi_registrykeys';
-      $tab[111]['field']         = 'ocs_name';
-      $tab[111]['name']          = $LANG['title'][43]." : ".$LANG['registry'][6];
-      $tab[111]['forcegroupby']  = true;
-      $tab[111]['massiveaction'] = false;
-      $tab[111]['joinparams']    = array('jointype' => 'child');
-
+         $tab[111]['table']         = 'glpi_registrykeys';
+         $tab[111]['field']         = 'ocs_name';
+         $tab[111]['name']          = $LANG['title'][43]." : ".$LANG['registry'][6];
+         $tab[111]['forcegroupby']  = true;
+         $tab[111]['massiveaction'] = false;
+         $tab[111]['joinparams']    = array('jointype' => 'child');
+      }
       $tab['virtualmachine'] = $LANG['computers'][57];
 
       $tab[160]['table']         = 'glpi_computervirtualmachines';
