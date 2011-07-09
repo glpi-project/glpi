@@ -1355,7 +1355,7 @@ class MailCollector  extends CommonDBTM {
    static function showMaxFilesize($name, $value = 0) {
       global $LANG;
 
-      $sizes[0] = $LANG['ocsconfig'][11];
+      $sizes[0] = $LANG['mailgate'][8];
       for ($index=1 ; $index<100 ; $index++) {
          $sizes[$index*1048576] = $index. ' '.$LANG['common'][82];
       }
