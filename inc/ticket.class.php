@@ -578,12 +578,12 @@ class Ticket extends CommonITILObject {
             $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
          }
          if (isset($input['_groups_id_requester'])) {
-            $input['_itil_assign']['_type']    = 'group';
-            $input['_itil_assign']['users_id'] = $input['_groups_id_requester'];
+            $input['_itil_requester']['_type']    = 'group';
+            $input['_itil_requester']['users_id'] = $input['_groups_id_requester'];
          }
          if (isset($input['_groups_id_assign'])) {
-            $input['_itil_requester']['_type']    = 'group';
-            $input['_itil_requester']['users_id'] = $input['_groups_id_assign'];
+            $input['_itil_assign']['_type']    = 'group';
+            $input['_itil_assign']['users_id'] = $input['_groups_id_assign'];
          }
       }
 
