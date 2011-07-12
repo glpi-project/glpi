@@ -809,6 +809,19 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.assigntousers##'] = '';
          }
 
+
+         if ($this->obj->countUsers(Ticket::OBSERVER)) {
+            $users = array();
+            foreach ($this->obj->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
+               $user_tmp = new User();
+               $user_tmp->getFromDB($uid);
+               $users[$uid] = $user_tmp->getName();
+            }
+            $this->datas['##ticket.observerusers##'] = implode(', ',$users);
+         } else {
+            $this->datas['##ticket.observerusers##'] = '';
+         }
+
          if ($this->obj->getField('suppliers_id_assign')) {
             $this->datas['##ticket.assigntosupplier##']
                           = Dropdown::getDropdownName('glpi_suppliers',
