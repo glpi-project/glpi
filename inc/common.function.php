@@ -1162,6 +1162,8 @@ function formatNumber($number, $edit=false, $forcedecimal=-1) {
       return "-";
    }
 
+   $number = doubleval($number);
+
    $decimal = $CFG_GLPI["decimal_number"];
    if ($forcedecimal>=0) {
       $decimal = $forcedecimal;
