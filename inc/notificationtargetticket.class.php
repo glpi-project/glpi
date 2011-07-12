@@ -578,6 +578,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'value'  => true,
                                    'events' => array('validation')));
       }
+      //Tags without lang for validation
+      $tags = array('validation.submission.title' => $LANG['validation'][27],
+                    'validation.answer.title' => $LANG['validation'][32]);
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true,
+                                   'lang'  => false,
+                                   'events' => array('validation')));
+      }
+
+
 
       // Events for ticket satisfaction
       $tags = array('satisfaction.datebegin'           => $LANG['satisfaction'][6],
@@ -616,7 +629,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      //Foreach global tags
      $tags = array('followups'     => $LANG['mailing'][141],
                    'tasks'         => $LANG['mailing'][142],
-                   'validation'    => $LANG['mailing'][143],
+                   'validations'    => $LANG['mailing'][143],
                    'linkedtickets' => $LANG['job'][55],
                    'problems'      => $LANG['Menu'][7],);
 
@@ -649,9 +662,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                 'events'  => array('alertnotclosed')));
 
       //Tags without lang
-      $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title' => $LANG['validation'][32],
-                    'ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
+      $tags = array('ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
                     'ticket.urlsatisfaction'  => $LANG['document'][33].' '.$LANG['satisfaction'][0],
                     'linkedticket.id'         => $LANG['job'][55]." - ".$LANG['common'][2],
                     'linkedticket.link'       => $LANG['job'][55]." - ".$LANG['setup'][620],
