@@ -659,11 +659,11 @@ class Ticket extends CommonDBTM {
          }
          if (isset($input['_groups_id_requester'])) {
             $input['_ticket_requester']['_type']    = 'group';
-            $input['_ticket_requester']['users_id'] = $input['_groups_id_requester'];
+            $input['_ticket_requester']['groups_id'] = $input['_groups_id_requester'];
          }
          if (isset($input['_groups_id_assign'])) {
             $input['_ticket_assign']['_type']    = 'group';
-            $input['_ticket_assign']['users_id'] = $input['_groups_id_assign'];
+            $input['_ticket_assign']['groups_id'] = $input['_groups_id_assign'];
          }
       }
 
