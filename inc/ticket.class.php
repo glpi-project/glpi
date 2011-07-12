@@ -609,7 +609,8 @@ class Ticket extends CommonDBTM {
          }
 
          // for post-only with validate right
-         if (TicketValidation::canValidate($this->fields['id']) || TicketValidation::canCreate()) {
+         $ticketval = new TicketValidation();
+         if (TicketValidation::canValidate($this->fields['id']) || $ticketval->canCreate()) {
             $allowed_fields[] = 'global_validation';
          }
 
