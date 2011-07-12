@@ -1375,6 +1375,18 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('validation')));
       }
 
+      //Tags without lang for validation
+      $tags = array('validation.submission.title' => $LANG['validation'][27],
+                    'validation.answer.title' => $LANG['validation'][32]);
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true,
+                                   'lang'  => false,
+                                   'events' => array('validation')));
+      }
+
       // Events for ticket satisfaction
       $tags = array('satisfaction.datebegin'           => $LANG['satisfaction'][6],
                     'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
@@ -1413,7 +1425,7 @@ class NotificationTargetTicket extends NotificationTarget {
      $tags = array('followups'     => $LANG['mailing'][141],
                    'tasks'         => $LANG['mailing'][142],
                    'log'           => $LANG['mailing'][144],
-                   'validation'    => $LANG['mailing'][143],
+                   'validations'    => $LANG['mailing'][143],
                    'linkedtickets' => $LANG['job'][55],
                    'authors'       => $LANG['job'][18]);
 
@@ -1448,9 +1460,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                 'events'  => array('alertnotclosed')));
 
       //Tags without lang
-      $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title' => $LANG['validation'][32],
-                    'ticket.log.date'         => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
+      $tags = array('ticket.log.date'         => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
                     'ticket.log.user'         => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
                     'ticket.log.field'        => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
                     'ticket.log.content'      => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
