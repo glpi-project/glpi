@@ -199,7 +199,6 @@ function getPlural($string) {
    return $string;
 }
 
-
 /**
  * Return the singular of a string
  *
@@ -210,8 +209,12 @@ function getPlural($string) {
 function getSingular($string) {
 
    $rules = array(//'plural' => 'singular'
-                  'ies$' => 'y', // special case : category
-                  's$'   => ''); // Add at the end if not exists
+                  'ches$'   => 'ch',
+                  'shes$'   => 'sh',
+                  'sses$'   => 'sss', // Case like addresses : add triple ss to be cut at the end
+                  'ses$'   => 'ss', // Case like aliases : add double ss to be cut at the end
+                  'ies$'   => 'y', // special case : category
+                  's$' => ''); // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
       $string = preg_replace("/$plural/", "$singular", $string);
