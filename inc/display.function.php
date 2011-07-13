@@ -434,12 +434,12 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       }
    }
 
-   if (haveRight("change","r")) {
+   if (haveRight("show_all_change","1") || haveRight("show_my_change","1")) {
       $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
-      $menu['maintain']['content']['change']['shortcut']        = 'p';
+      $menu['maintain']['content']['change']['shortcut']        = 'c';
       $menu['maintain']['content']['change']['page']            = '/front/change.php';
       $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
-      if (haveRight("change","w")) {
+      if (haveRight("edit_all_change","1")) {
          $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
       }
    }

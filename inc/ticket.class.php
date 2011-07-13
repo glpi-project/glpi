@@ -665,49 +665,6 @@ class Ticket extends CommonITILObject {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
-      if ($this->fields['status'] == 'new') {
-         if (in_array("suppliers_id_assign",$this->updates)
-              && $this->input["suppliers_id_assign"]>0) {
-
-            if (!in_array('status', $this->updates)) {
-               $this->oldvalues['status'] = $this->fields['status'];
-               $this->updates[]           = 'status';
-            }
-            $this->fields['status'] = 'assign';
-            $this->input['status']  = 'assign';
-         }
-      }
-
-      // Setting a solution or solution type means the ticket is solved
-      if ((in_array("solutiontypes_id",$this->updates)
-            && $this->input["solutiontypes_id"] >0)
-          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
-
-         if (!in_array('status', $this->updates)) {
-            $this->oldvalues['status'] = $this->fields['status'];
-            $this->updates[]           = 'status';
-         }
-
-         $entitydata = new EntityData();
-         if ($entitydata->getFromDB($this->fields['entities_id'])) {
-            $autoclosedelay = $entitydata->getfield('autoclose_delay');
-         } else {
-            $autoclosedelay = -1;
-         }
-         // -1 = config
-         if ($autoclosedelay == -1) {
-            $autoclosedelay = $CFG_GLPI['autoclose_delay'];
-         }
-         // 0 = immediatly
-         if ($autoclosedelay == 0) {
-            $this->fields['status'] = 'closed';
-            $this->input['status']  = 'closed';
-         } else {
-            $this->fields['status'] = 'solved';
-            $this->input['status']  = 'solved';
-         }
-      }
-
       parent::pre_updateInDB();
 
       // Set begin waiting date if needed
@@ -1031,9 +988,8 @@ class Ticket extends CommonITILObject {
          $input['global_validation'] = 'none';
       }
 
-      // Set default dropdown
-      $dropdown_fields = array('entities_id', 'items_id', 'suppliers_id_assign',
-                               'itilcategories_id');
+      // Set additional default dropdown
+      $dropdown_fields = array('items_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1149,15 +1105,7 @@ class Ticket extends CommonITILObject {
          $input['slas_id'] = $manual_slas_id;
       }
 
-//       if (isset($input["use_email_notification"])
-//           && $input["use_email_notification"]
-//           && empty($input["user_email"])) {
-//
-//          if ($user->getFromDB($input["users_id"])) {
-//             $input["user_email"] = $user->fields["email"];
-//          }
-//       }
-
+      // Replay setting auto assign if set in rules engine
       if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
            || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
            || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
@@ -1916,23 +1864,6 @@ class Ticket extends CommonITILObject {
          $tab[44]['field']    = 'cost_material';
          $tab[44]['name']     = $LANG['job'][42];
          $tab[44]['datatype'] = 'decimal';
-
-         $tab['notification'] = $LANG['setup'][704];
-
-         $tab[35]['table']      = 'glpi_tickets_users';
-         $tab[35]['field']      = 'use_notification';
-         $tab[35]['name']       = $LANG['job'][19];
-         $tab[35]['datatype']   = 'bool';
-         $tab[35]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
-
-
-         $tab[34]['table']      = 'glpi_tickets_users';
-         $tab[34]['field']      = 'alternative_email';
-         $tab[34]['name']       = $LANG['joblist'][27];
-         $tab[34]['datatype']   = 'email';
-         $tab[34]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
       }
 
       // Filter search fields for helpdesk

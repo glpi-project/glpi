@@ -492,6 +492,55 @@ abstract class CommonITILObject extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG;
 
+      if ($this->fields['status'] == 'new') {
+         if (in_array("suppliers_id_assign",$this->updates)
+             && $this->input["suppliers_id_assign"]>0) {
+
+            if (!in_array('status', $this->updates)) {
+               $this->oldvalues['status'] = $this->fields['status'];
+               $this->updates[]           = 'status';
+            }
+            $this->fields['status'] = 'assign';
+            $this->input['status']  = 'assign';
+         }
+      }
+
+      // Setting a solution or solution type means the problem is solved
+      if ((in_array("solutiontypes_id",$this->updates) && $this->input["solutiontypes_id"] >0)
+          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
+
+         if (!in_array('status', $this->updates)) {
+            $this->oldvalues['status'] = $this->fields['status'];
+            $this->updates[]           = 'status';
+         }
+
+         // SPecial case for Ticket : use autoclose
+         if ($this->getType() == 'Ticket') {
+            $entitydata = new EntityData();
+            if ($entitydata->getFromDB($this->fields['entities_id'])) {
+               $autoclosedelay = $entitydata->getfield('autoclose_delay');
+            } else {
+               $autoclosedelay = -1;
+            }
+            // -1 = config
+            if ($autoclosedelay == -1) {
+               $autoclosedelay = $CFG_GLPI['autoclose_delay'];
+            }
+            // 0 = immediatly
+            if ($autoclosedelay == 0) {
+               $this->fields['status'] = 'closed';
+               $this->input['status']  = 'closed';
+            } else {
+               $this->fields['status'] = 'solved';
+               $this->input['status']  = 'solved';
+            }
+         } else {
+
+            $this->fields['status'] = 'solved';
+            $this->input['status']  = 'solved';
+         }
+      }
+
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates)) !== false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
@@ -704,6 +753,23 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
          $input["name"] = utf8_substr($input['name'],0,70);
+      }
+
+
+      // Set default dropdown
+      $dropdown_fields = array('entities_id', 'suppliers_id_assign', 'itilcategories_id');
+      foreach ($dropdown_fields as $field ) {
+         if (!isset($input[$field])) {
+            $input[$field] = 0;
+         }
+      }
+
+      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
+           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
+           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
+          && $input["status"]=="new") {
+
+         $input["status"] = "assign";
       }
 
       return $input;
@@ -1435,6 +1501,25 @@ abstract class CommonITILObject extends CommonDBTM {
                                                         => array('jointype'  => 'child',
                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                 '= '.self::ASSIGN)));
+
+      $tab['notification'] = $LANG['setup'][704];
+
+      $tab[35]['table']      = getTableForItemType($this->userlinkclass);
+      $tab[35]['field']      = 'use_notification';
+      $tab[35]['name']       = $LANG['job'][19];
+      $tab[35]['datatype']   = 'bool';
+      $tab[35]['joinparams'] = array('jointype'  => 'child',
+                                     'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
+
+
+      $tab[34]['table']      = getTableForItemType($this->userlinkclass);
+      $tab[34]['field']      = 'alternative_email';
+      $tab[34]['name']       = $LANG['joblist'][27];
+      $tab[34]['datatype']   = 'email';
+      $tab[34]['joinparams'] = array('jointype'  => 'child',
+                                     'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
+
+
 
       return $tab;
    }

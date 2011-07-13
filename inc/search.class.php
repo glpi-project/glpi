@@ -2685,6 +2685,7 @@ class Search {
 
          case "glpi_tickets.status" :
          case "glpi_problems.status" :
+         case "glpi_changes.status" :
             $tocheck = array('new'       => array('new'),
                              'notold'    => array('new', 'plan', 'assign', 'waiting'),
                              'notclosed' => array('new', 'plan', 'assign', 'waiting', 'solved'),
@@ -3918,6 +3919,9 @@ class Search {
             }
             return '';
 
+         case 'glpi_changes.status':
+            return Change::getStatus($data[$NAME.$num]);
+
          case 'glpi_problems.status':
             return Problem::getStatus($data[$NAME.$num]);
 
@@ -3931,14 +3935,17 @@ class Search {
 
          case 'glpi_tickets.priority' :
          case 'glpi_problems.priority' :
+         case 'glpi_changes.priority' :
             return CommonITILObject::getPriorityName($data[$NAME.$num]);
 
          case 'glpi_tickets.urgency' :
          case 'glpi_problems.urgency' :
+         case 'glpi_changes.urgency' :
             return CommonITILObject::getUrgencyName($data[$NAME.$num]);
 
          case 'glpi_tickets.impact':
          case 'glpi_problems.impact':
+         case 'glpi_changes.impact':
             return CommonITILObject::getImpactName($data[$NAME.$num]);
 
          case 'glpi_tickets.items_id' :

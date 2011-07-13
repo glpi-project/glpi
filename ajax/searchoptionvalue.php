@@ -109,6 +109,26 @@ if (isset($_REQUEST['searchtype'])) {
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
+               case "glpi_changes.status" :
+                  Change::dropdownStatus($inputname, $_REQUEST['value'], 1);
+                  $display = true;
+                  break;
+
+               case "glpi_changes.priority" :
+                  Change::dropdownPriority($inputname, $_REQUEST['value'], true, true);
+                  $display = true;
+                  break;
+
+               case "glpi_changes.impact" :
+                  Change::dropdownImpact($inputname, $_REQUEST['value'], true);
+                  $display = true;
+                  break;
+
+               case "glpi_changes.urgency" :
+                  Change::dropdownUrgency($inputname, $_REQUEST['value'], true);
+                  $display = true;
+                  break;
+
                case "glpi_problems.status" :
                   Problem::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;

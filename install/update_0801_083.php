@@ -96,6 +96,7 @@ function update0801to083($output='HTML') {
                   `name` varchar(255) DEFAULT NULL,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   `status` varchar(255) DEFAULT NULL,
                   `content` longtext DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
@@ -121,6 +122,7 @@ function update0801to083($output='HTML') {
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
+                  KEY `is_deleted` (`is_deleted`),
                   KEY `date` (`date`),
                   KEY `closedate` (`closedate`),
                   KEY `status` (`status`(1)),
@@ -245,6 +247,7 @@ function update0801to083($output='HTML') {
                   `name` varchar(255) DEFAULT NULL,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   `status` varchar(255) DEFAULT NULL,
                   `content` longtext DEFAULT NULL,
                   `date_mod` DATETIME DEFAULT NULL,
@@ -272,6 +275,7 @@ function update0801to083($output='HTML') {
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
+                  KEY `is_deleted` (`is_deleted`),
                   KEY `date` (`date`),
                   KEY `closedate` (`closedate`),
                   KEY `status` (`status`(1)),
@@ -368,6 +372,9 @@ function update0801to083($output='HTML') {
 
    $migration->addField("glpi_profiles", "edit_all_change", "CHAR( 1 ) NULL", "1",
                         " WHERE `update_ticket` = 1");
+
+   $migration->addField('glpi_profiles', 'change_status',
+                        "TEXT NULL COMMENT 'json encoded array of from/dest allowed status change'");
 
    // Merge tickettasks and ticket planning
    if (TableExists('glpi_ticketplannings')) {
@@ -715,6 +722,7 @@ function update0801to083($output='HTML') {
 
 
    $migration->addField("glpi_tickets", "is_deleted", "TINYINT(1) NOT NULL DEFAULT 0");
+   $migration->addKey("glpi_tickets", "is_deleted");
 
    // Group of technician in charge of Helpdesk items
    $migration->addField('glpi_computers', 'groups_id_tech',

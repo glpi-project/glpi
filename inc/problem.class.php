@@ -191,23 +191,10 @@ class Problem extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-//       $query = "SELECT `id`
-//                 FROM `glpi_problemtasks`
-//                 WHERE `problems_id` = '".$this->fields['id']."'";
-//       $result = $DB->query($query);
-//
-//       if ($DB->numrows($result)>0) {
-//          while ($data=$DB->fetch_array($result)) {
-//             $querydel = "DELETE
-//                          FROM `glpi_problemplannings`
-//                          WHERE `problemtasks_id` = '".$data['id']."'";
-//             $DB->query($querydel);
-//          }
-//       }
-//       $query1 = "DELETE
-//                  FROM `glpi_problemtasks`
-//                  WHERE `problems_id` = '".$this->fields['id']."'";
-//       $DB->query($query1);
+      $query1 = "DELETE
+                 FROM `glpi_problemtasks`
+                 WHERE `problems_id` = '".$this->fields['id']."'";
+      $DB->query($query1);
 
       parent::cleanDBonPurge();
    }
@@ -227,31 +214,6 @@ class Problem extends CommonITILObject {
 
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
-
-      if ($this->fields['status'] == 'new') {
-         if (in_array("suppliers_id_assign",$this->updates)
-             && $this->input["suppliers_id_assign"]>0) {
-
-            if (!in_array('status', $this->updates)) {
-               $this->oldvalues['status'] = $this->fields['status'];
-               $this->updates[]           = 'status';
-            }
-            $this->fields['status'] = 'assign';
-            $this->input['status']  = 'assign';
-         }
-      }
-
-      // Setting a solution or solution type means the problem is solved
-      if ((in_array("solutiontypes_id",$this->updates) && $this->input["solutiontypes_id"] >0)
-          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
-
-         if (!in_array('status', $this->updates)) {
-            $this->oldvalues['status'] = $this->fields['status'];
-            $this->updates[]           = 'status';
-         }
-         $this->fields['status'] = 'solved';
-         $this->input['status']  = 'solved';
-      }
 
       parent::pre_updateInDB();
 
@@ -305,14 +267,6 @@ class Problem extends CommonITILObject {
       global $CFG_GLPI, $LANG;
 
       $input =  parent::prepareInputForAdd($input);
-
-      // Set default dropdown
-      $dropdown_fields = array('entities_id', 'suppliers_id_assign', 'itilcategories_id');
-      foreach ($dropdown_fields as $field ) {
-         if (!isset($input[$field])) {
-            $input[$field] = 0;
-         }
-      }
 
       if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
            || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
@@ -544,24 +498,6 @@ class Problem extends CommonITILObject {
       $tab[24]['name']          = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
       $tab[24]['datatype']      = 'text';
       $tab[24]['massiveaction'] = false;
-
-
-      $tab['notification'] = $LANG['setup'][704];
-
-      $tab[35]['table']      = 'glpi_problems_users';
-      $tab[35]['field']      = 'use_notification';
-      $tab[35]['name']       = $LANG['job'][19];
-      $tab[35]['datatype']   = 'bool';
-      $tab[35]['joinparams'] = array('jointype'  => 'child',
-                                     'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
-
-
-      $tab[34]['table']      = 'glpi_problems_users';
-      $tab[34]['field']      = 'alternative_email';
-      $tab[34]['name']       = $LANG['joblist'][27];
-      $tab[34]['datatype']   = 'email';
-      $tab[34]['joinparams'] = array('jointype'  => 'child',
-                                     'condition' => 'AND NEWTABLE.`type` = '.parent::REQUESTER);
 
       return $tab;
    }
