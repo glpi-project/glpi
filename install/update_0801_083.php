@@ -681,6 +681,28 @@ function update0801to083($output='HTML') {
 
    $migration->addField("glpi_users", "personal_token_date", "datetime default NULL");
 
+   // Several email per users
+   if (!TableExists('glpi_useremails')) {
+      $query = "CREATE TABLE glpi_useremails (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `is_default` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `email` varchar( 255 ) NULL DEFAULT '',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`users_id`,`email`),
+                  KEY `is_default` (`is_default`),
+                  KEY `is_dynamic` (`is_dynamic`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query)
+      or die("0.83 add table glpi_useremails ". $LANG['update'][90] . $DB->error());
+   }
+   /// TODO manage migration : populate is_default=1 and is_dynamic depending of authldap config / authtype / auths_id
+   $migration->changeField("glpi_authldaps", 'email_field','email1_field',
+                           "varchar( 255 ) NULL DEFAULT NULL");
+   $migration->addNormalizedField("glpi_authldaps", 'email2_field','string');
+   $migration->addNormalizedField("glpi_authldaps", 'email3_field','string');
+   $migration->addNormalizedField("glpi_authldaps", 'email4_field','string');
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
