@@ -85,7 +85,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['group_condition']             = '';
       $this->fields['group_search_type']           = 0;
       $this->fields['group_member_field']          = '';
-      $this->fields['email_field']                 = 'mail';
+      $this->fields['email1_field']                 = 'mail';
       $this->fields['realname_field']              = 'cn';
       $this->fields['firstname_field']             = 'givenname';
       $this->fields['phone_field']                 = 'telephonenumber';
@@ -118,7 +118,7 @@ class AuthLDAP extends CommonDBTM {
                = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
             $this->fields['group_search_type']         = 0;
             $this->fields['group_member_field']        = '';
-            $this->fields['email_field']               = 'mail';
+            $this->fields['email1_field']               = 'mail';
             $this->fields['realname_field']            = 'sn';
             $this->fields['firstname_field']           = 'givenname';
             $this->fields['phone_field']               = 'telephonenumber';
@@ -258,7 +258,7 @@ class AuthLDAP extends CommonDBTM {
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
-            $hidden_fields = array('comment_field', 'condition', 'email_field', 'entity_condition',
+            $hidden_fields = array('comment_field', 'condition', 'email1_field', 'entity_condition',
                                    'entity_field', 'firstname_field', 'group_condition',
                                    'group_field', 'group_member_field', 'group_search_type',
                                    'mobile_field', 'phone_field', 'phone2_field', 'port',
@@ -477,7 +477,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='comment_field' value='".$this->fields["comment_field"]."'>";
       echo "</td>";
       echo "<td>" . $LANG['setup'][14] . "&nbsp;:&nbsp;</td>";
-      echo "<td><input type='text' name='email_field' value='".$this->fields["email_field"]."'>";
+      echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['help'][35] . "&nbsp;:&nbsp;</td>";
@@ -658,7 +658,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[16]['datatype'] = 'text';
 
       $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'email_field';
+      $tab[17]['field']         = 'email1_field';
       $tab[17]['name']          = $LANG['setup'][14];
       $tab[17]['massiveaction'] = false;
       $tab[17]['datatype']      = 'string';
@@ -754,7 +754,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ret    = array();
       $fields = array('login_field'               => 'name',
-                      'email_field'               => 'email',
+                      'email1_field'              => 'email',
                       'realname_field'            => 'realname',
                       'firstname_field'           => 'firstname',
                       'phone_field'               => 'phone',
@@ -1567,7 +1567,7 @@ class AuthLDAP extends CommonDBTM {
          $search_parameters['fields'][self::IDENTIFIER_LOGIN] = $config_ldap->fields['login_field'];
 
          if ($params['method'] == self::IDENTIFIER_EMAIL) {
-            $search_parameters['fields'][self::IDENTIFIER_EMAIL] = $config_ldap->fields['email_field'];
+            $search_parameters['fields'][self::IDENTIFIER_EMAIL] = $config_ldap->fields['email1_field'];
          }
 
          //Get the user's dn & login
@@ -2222,7 +2222,7 @@ class AuthLDAP extends CommonDBTM {
 
                $field_counter = 0;
                $fields = array('login_field'     => $LANG['login'][6],
-                               'email_field'     => $LANG['setup'][14],
+                               'email1_field'     => $LANG['setup'][14],
                                'realname_field'  => $LANG['common'][48],
                                'firstname_field' => $LANG['common'][43],
                                'phone_field'     => $LANG['help'][35],
@@ -2455,7 +2455,7 @@ class AuthLDAP extends CommonDBTM {
       $ldaps = array();
       $query = "SELECT `id`
                 FROM `glpi_authldaps`
-                WHERE `email_field` <> ''";
+                WHERE `email1_field` <> ''";
       foreach ($DB->request($query) as $data) {
          $ldaps[] = $data['id'];
       }
