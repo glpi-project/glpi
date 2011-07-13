@@ -150,7 +150,7 @@ function update0801to083($output='HTML') {
                   `use_notification` tinyint(1) NOT NULL DEFAULT '0',
                   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
+                  UNIQUE KEY `unicity` (`problems_id`,`type`,`users_id`,`alternative_email`),
                   KEY `user` (`users_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -164,7 +164,7 @@ function update0801to083($output='HTML') {
                   `groups_id` int(11) NOT NULL DEFAULT '0',
                   `type` int(11) NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`problems_id`,`type`,`groups_id`),
+                  UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -178,7 +178,7 @@ function update0801to083($output='HTML') {
                   `itemtype` varchar(100) default NULL,
                   `items_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
+                  UNIQUE KEY `unicity` (`problems_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -191,7 +191,7 @@ function update0801to083($output='HTML') {
                   `problems_id` int(11) NOT NULL DEFAULT '0',
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`problems_id`,`tickets_id`),
+                  UNIQUE KEY `unicity` (`problems_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -303,7 +303,7 @@ function update0801to083($output='HTML') {
                   `use_notification` tinyint(1) NOT NULL DEFAULT '0',
                   `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
+                  UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
                   KEY `user` (`users_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -317,7 +317,7 @@ function update0801to083($output='HTML') {
                   `groups_id` int(11) NOT NULL DEFAULT '0',
                   `type` int(11) NOT NULL DEFAULT '1',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`changes_id`,`type`,`groups_id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -331,7 +331,7 @@ function update0801to083($output='HTML') {
                   `itemtype` varchar(100) default NULL,
                   `items_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -344,7 +344,7 @@ function update0801to083($output='HTML') {
                   `changes_id` int(11) NOT NULL DEFAULT '0',
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`changes_id`,`tickets_id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
@@ -357,7 +357,7 @@ function update0801to083($output='HTML') {
                   `changes_id` int(11) NOT NULL DEFAULT '0',
                   `problems_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `unicity` (`changes_id`,`problems_id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
                   KEY `problems_id` (`problems_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)

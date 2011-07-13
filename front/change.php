@@ -29,60 +29,21 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if (!isset($_POST["id"])) {
-   exit();
-}
-if (!isset($_REQUEST['glpi_tab'])) {
-   exit();
-}
+checkSeveralRightsOr(array('show_all_change' => '1',
+                           'show_my_change'  => '1'));
 
-$problem = new Problem();
+commonHeader($LANG['Menu'][8], '', "maintain", "change");
 
-if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
+Search::show('Change');
 
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         Problem_Ticket::showForProblem($problem);
-         Change_Problem::showForProblem($problem);
-         $problem->showAnalysisForm();
-         $task    = new ProblemTask();
-         $task->showSummary($problem);
-         Item_Problem::showForProblem($problem);
-         Document::showAssociated($problem);
-         $problem->showSolutionForm();
-         Log::showForItem($problem);
-         Plugin::displayAction($problem, $_REQUEST['glpi_tab']);
-         break;
+commonFooter();
 
-      case 3 :
-         $problem->showAnalysisForm();
-         break;
-
-      case 4 :
-         if (!isset($_POST['load_kb_sol'])) {
-            $_POST['load_kb_sol'] = 0;
-         }
-         $problem->showSolutionForm($_POST['load_kb_sol']);
-         break;
-
-      case 7 :
-         Item_Problem::showForProblem($problem);
-         break;
-
-      default :
-         if (!CommonGLPI::displayStandardTab($problem, $_REQUEST['glpi_tab'])) {
-         }
-   }
-}
-
-ajaxFooter();
 ?>

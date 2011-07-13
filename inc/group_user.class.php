@@ -47,7 +47,8 @@ class Group_User extends CommonDBRelation{
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
-   public $checks_and_logs_only_for_itemtype1 = true;
+   public $checks_only_for_itemtype1 = true;
+   public $logs_only_for_itemtype1 = false;
 
 
    static function getUserGroups($users_id) {

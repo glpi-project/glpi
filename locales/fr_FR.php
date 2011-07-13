@@ -230,7 +230,6 @@ $LANG['change'][4] = "Plan de déploiement";
 $LANG['change'][5] = "Plan de repli";
 $LANG['change'][6] = "Liste de vérifications";
 $LANG['change'][7] = "Plans";
-$LANG['change'][8] = "Créer un changement à partir de ce ticket";
 
 
 $LANG['choice'][0] = "Non";

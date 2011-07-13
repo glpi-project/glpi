@@ -37,21 +37,21 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class Problem_Ticket extends CommonDBRelation{
+class Change_Problem extends CommonDBRelation{
 
    // From CommonDBRelation
-   public $itemtype_1 = 'Problem';
-   public $items_id_1 = 'problems_id';
+   public $itemtype_1 = 'Change';
+   public $items_id_1 = 'changes_id';
 
-   public $itemtype_2 = 'Ticket';
-   public $items_id_2 = 'tickets_id';
+   public $itemtype_2 = 'Problem';
+   public $items_id_2 = 'problems_id';
 
    var $checks_only_for_itemtype1 = true;
 
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['setup'][620].' '.$LANG['problem'][0].'-'.$LANG['job'][38];
+      return $LANG['setup'][620].' '.$LANG['change'][0].'-'.$LANG['problem'][0];
    }
 
 
@@ -81,36 +81,38 @@ class Problem_Ticket extends CommonDBRelation{
       $canedit = $problem->can($ID,'w');
 
       $rand = mt_rand();
-      echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
+      echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
+      echo "<a href='".getItemTypeFormURL('Change')."?problems_id=$ID'>".$LANG['change'][2]."</a>";
+      echo "</th>";
       if ($problem->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
          $colspan++;
       }
       echo "</tr>";
 
-      $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
-                                `glpi_tickets`.*
-                FROM `glpi_problems_tickets`
-                LEFT JOIN `glpi_tickets`
-                     ON (`glpi_problems_tickets`.`tickets_id` = `glpi_tickets`.`id`)
-                WHERE `glpi_problems_tickets`.`problems_id` = '$ID'
-                ORDER BY `glpi_tickets`.`name`";
+      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
+                                `glpi_changes`.*
+                FROM `glpi_changes_problems`
+                LEFT JOIN `glpi_changes`
+                     ON (`glpi_changes_problems`.`changes_id` = `glpi_changes`.`id`)
+                WHERE `glpi_changes_problems`.`problems_id` = '$ID'
+                ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
 
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Ticket', $LANG['problem'][0] ." = ". $problem->fields["name"]);
+         initNavigateListItems('Change', $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
-            addToNavigateListItems('Ticket', $data["id"]);
+            addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {
@@ -119,7 +121,7 @@ class Problem_Ticket extends CommonDBRelation{
                echo "&nbsp;";
             }
             echo "</td>";
-            echo "<td><a href='".getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
+            echo "<td><a href='".getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($problem->isRecursive()) {
                echo "<td>".Dropdown::getDropdownName('glpi_entities',$data["entities_id"])."</td>";
@@ -131,7 +133,7 @@ class Problem_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Dropdown::show('Ticket', array('used'        => $used,
+         Dropdown::show('Change', array('used'        => $used,
                                         'entity'      => $problem->getEntityID(),
                                         'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
@@ -142,7 +144,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("problemticket_form$rand", true);
+         openArrowMassive("changeproblem_form$rand", true);
          closeArrowMassive('delete', $LANG['buttons'][6]);
       }
       echo "</form>";
@@ -150,46 +152,44 @@ class Problem_Ticket extends CommonDBRelation{
 
 
    /**
-    * Show problems for a ticket
+    * Show problems for a change
     *
-    * @param $ticket Ticket object
+    * @param $change Ticket object
    **/
-   static function showForTicket(Ticket $ticket) {
+   static function showForChange(Change $change) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $ID = $ticket->getField('id');
-      if (!$ticket->can($ID,'r')) {
+      $ID = $change->getField('id');
+      if (!$change->can($ID,'r')) {
          return false;
       }
 
-      $canedit = $ticket->can($ID,'w');
+      $canedit = $change->can($ID,'w');
 
       $rand = mt_rand();
-      echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
+      echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
-      echo "<a href='".getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['change'][2]."</a>";
-      echo "</th></tr>";
+      echo "<tr><th colspan='2'>".$LANG['Menu'][7]."</th></tr>";
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
       echo "</tr>";
 
-      $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
+      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_problems`.*
-                FROM `glpi_problems_tickets`
+                FROM `glpi_changes_problems`
                 LEFT JOIN `glpi_problems`
-                     ON (`glpi_problems_tickets`.`problems_id` = `glpi_problems`.`id`)
-                WHERE `glpi_problems_tickets`.`tickets_id` = '$ID'
+                     ON (`glpi_changes_problems`.`problems_id` = `glpi_problems`.`id`)
+                WHERE `glpi_changes_problems`.`changes_id` = '$ID'
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
 
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Problem', $LANG['job'][38] ." = ". $ticket->fields["name"]);
+         initNavigateListItems('Problem', $LANG['change'][0] ." = ". $change->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
@@ -210,9 +210,9 @@ class Problem_Ticket extends CommonDBRelation{
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
-         echo "<input type='hidden' name='tickets_id' value='$ID'>";
+         echo "<input type='hidden' name='changes_id' value='$ID'>";
          Dropdown::show('Problem', array('used'   => $used,
-                                         'entity' => $ticket->getEntityID()));
+                                         'entity' => $change->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
@@ -221,7 +221,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("problemticket_form$rand", true);
+         openArrowMassive("changeproblem_form$rand", true);
          closeArrowMassive('delete', $LANG['buttons'][6]);
       }
       echo "</form>";
