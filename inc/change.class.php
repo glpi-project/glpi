@@ -208,6 +208,7 @@ class Change extends CommonITILObject {
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
 
+         $this->addStandardTab('ChangeTask', $ong);
 
          $this->addStandardTab('Problem', $ong);
 

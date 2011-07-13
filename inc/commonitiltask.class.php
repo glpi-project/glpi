@@ -517,7 +517,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 //                  if (haveAccessToEntity($job->fields["entities_id"])) {
                      $interv[$data["begin"]."$$$".$i][$item->getForeignKeyField()] = $data["id"];
                      $interv[$data["begin"]."$$$".$i]["id"]                        = $data["id"];
-                     $interv[$data["begin"]."$$$".$i]["state"]                     = $data["state"];
+                     if (isset($data["state"])) {
+                        $interv[$data["begin"]."$$$".$i]["state"]                     = $data["state"];
+                     }
                      $interv[$data["begin"]."$$$".$i][$parentitem->getForeignKeyField()]
                                                 = $item->fields[$parentitem->getForeignKeyField()];
                      $interv[$data["begin"]."$$$".$i]["users_id"]                  = $data["users_id"];
@@ -645,13 +647,19 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</a>";
 
       if ($complete) {
-         echo "<br><strong>".Planning::getState($val["state"])."<br>";
+         echo "<br>";
+         if (isset($val["state"])) {
+            echo "<strong>".Planning::getState($val["state"])."<br>";
+         }
          echo $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
 
       } else {
-         $content = "<strong>".Planning::getState($val["state"])."<br>".
-                    $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]).
+         $content = '';
+         if (isset($val["state"])) {
+            $content .= "<strong>".Planning::getState($val["state"])."<br>";
+         }
+         $content .= $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]).
                     "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"].
                     "</div>";
          showToolTip($content,array('applyto' => "content_tracking_".$val["id"].$rand));
@@ -723,7 +731,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<td>";
 
-      echo Planning::getState($this->fields["state"])."<br>";
+      if (isset($this->fields["state"])) {
+         echo Planning::getState($this->fields["state"])."<br>";
+      }
       if (empty($this->fields["begin"])) {
          echo $LANG['job'][32];
       } else {
@@ -806,10 +816,12 @@ abstract class CommonITILTask  extends CommonDBTM {
       Dropdown::show('TaskCategory', array('value' => $this->fields["taskcategories_id"]));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td><td>";
-      Planning::dropdownState("state", $this->fields["state"]);
-      echo "</td></tr>\n";
+      if (isset($this->fields["state"])) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['state'][0]."&nbsp;:</td><td>";
+         Planning::dropdownState("state", $this->fields["state"]);
+         echo "</td></tr>\n";
+      }
 
       if ($this->maybePrivate()) {
          echo "<tr class='tab_bg_1'>";
@@ -859,7 +871,10 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "<span class='showplan'>";
          }
 
-         echo Planning::getState($this->fields["state"])."<br>".convDateTime($this->fields["begin"]).
+         if (isset($this->fields["state"])) {
+            echo Planning::getState($this->fields["state"])."<br>";
+         }
+         echo convDateTime($this->fields["begin"]).
                "<br>->".convDateTime($this->fields["end"])."<br>".
                getUserName($this->fields["users_id_tech"]);
 

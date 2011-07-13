@@ -366,13 +366,19 @@ class Planning {
                                                      'begin'     => $begin,
                                                      'end'       => $end));
 
+      // ---------------Problem
+      $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => $who_group,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
+
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
                                                         'who_group' => $who_group,
                                                         'begin'     => $begin,
                                                         'end'       => $end));
 
-      $interv = array_merge($interv, $interv2, $datareminders);
+      $interv = array_merge($interv, $interv2, $interv3, $datareminders);
 
       // --------------- Plugins
       $data = doHookFunction("planning_populate", array("begin"     => $begin,
@@ -599,6 +605,9 @@ class Planning {
 
       } else if (isset($val["problems_id"])) {  // show tracking
          ProblemTask::displayPlanningItem($val, $who, $type, $complete);
+
+      } else if (isset($val["changes_id"])) {  // show tracking
+         ChangeTask::displayPlanningItem($val, $who, $type, $complete);
 
       } else {  // show Reminder
          Reminder::displayPlanningItem($val, $who, $type, $complete);

@@ -56,6 +56,7 @@ function update0801to083($output='HTML') {
     $backup_tables = false;
     $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                            'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
+                           'glpi_changetasks',
                            'glpi_groups_problems', 'glpi_items_problems', 'glpi_problems',
                            'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',);
 
@@ -363,6 +364,44 @@ function update0801to083($output='HTML') {
       $DB->query($query)
       or die("0.83 add table glpi_changes_problems ". $LANG['update'][90] . $DB->error());
    }
+
+   if (!TableExists('glpi_changetasks')) {
+      $query = "CREATE TABLE `glpi_changetasks` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changes_id` int(11) NOT NULL DEFAULT '0',
+                  `changetasks_id` int(11) NOT NULL DEFAULT '0',
+                  `is_blocked` tinyint(1) NOT NULL DEFAULT '0',
+                  `taskcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `status` varchar(255) DEFAULT NULL,
+                  `priority` int(11) NOT NULL DEFAULT '1',
+                  `percentdone` int(11) NOT NULL DEFAULT '0',
+                  `date` datetime DEFAULT NULL,
+                  `begin` datetime DEFAULT NULL,
+                  `end` datetime DEFAULT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+                  `content` longtext COLLATE utf8_unicode_ci,
+                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `changes_id` (`changes_id`),
+                  KEY `changetasks_id` (`changetasks_id`),
+                  KEY `is_blocked` (`is_blocked`),
+                  KEY `priority` (`priority`),
+                  KEY `status` (`status`),
+                  KEY `percentdone` (`percentdone`),
+                  KEY `users_id` (`users_id`),
+                  KEY `users_id_tech` (`users_id_tech`),
+                  KEY `date` (`date`),
+                  KEY `begin` (`begin`),
+                  KEY `end` (`end`),
+                  KEY `taskcategories_id` (taskcategories_id)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query)
+      or die("0.83 add table glpi_changetasks ". $LANG['update'][90] . $DB->error());
+   }
+
+   /// TODO add changetasktypes table as dropdown
+   /// TODO review users linked to changetask
 
    $migration->addField("glpi_profiles", "show_my_change", "CHAR( 1 ) NULL", "1",
                         " WHERE `own_ticket` = 1");
