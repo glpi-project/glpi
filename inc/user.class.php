@@ -1360,12 +1360,15 @@ class User extends CommonDBTM {
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "email", array('name' => "email_form"));
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
+
+      UserEmail::showForUser($this);
+/*      autocompletionTextField($this, "email", array('name' => "email_form"));
 
       if (!empty($ID) && !NotificationMail::isUserAddressValid($this->fields["email"])) {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-      }
+      }*/
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
       Dropdown::show('UserCategory', array('value' => $this->fields["usercategories_id"]));
@@ -1504,7 +1507,7 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
 
          if ($extauth
-             && isset ($authtype['email1_field'])
+             && isset ($authtype['realname_field'])
              && !empty ($authtype['realname_field'])) {
 
             echo $this->fields["realname"];
@@ -1545,12 +1548,15 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
 
          if ($extauth && isset ($authtype['email1_field']) && !empty ($authtype['email1_field'])) {
-            echo $this->fields["email"];
+            UserEmail::showForUser($this);
+
+//            echo $this->fields["email"];
          } else {
-            autocompletionTextField($this, "email", array('name' => "email_form"));
+            UserEmail::showForUser($this);
+/*            autocompletionTextField($this, "email", array('name' => "email_form"));
             if (!NotificationMail::isUserAddressValid($this->fields["email"])) {
                echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
-            }
+            }*/
          }
          echo "</td>";
 
@@ -1755,10 +1761,13 @@ class User extends CommonDBTM {
       $tab[9]['name']      = $LANG['common'][43];
       $tab[9]['datatype']  = 'string';
 
-      $tab[5]['table']    = $this->getTable();
+      $tab[5]['table']    = 'glpi_useremails';
       $tab[5]['field']    = 'email';
       $tab[5]['name']     = $LANG['setup'][14];
       $tab[5]['datatype'] = 'email';
+      $tab[5]['joinparams']    = array('jointype'=>'child');
+      $tab[5]['forcegroupby']  = true;
+      $tab[5]['massiveaction'] = false;
 
       $tab += Location::getSearchOptionsToAdd();
 
