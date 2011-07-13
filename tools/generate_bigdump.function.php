@@ -1666,12 +1666,12 @@ function generate_entity($ID_entity) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
       $query = "INSERT INTO `glpi_contracts`
-                VALUES (NULL, '$ID_entity', '0', '', '0', 'contract $i-$ID_entity', 'num $i',
+                VALUES (NULL, '$ID_entity', '0', 'contract $i-$ID_entity', 'num $i',
                         '".mt_rand(100,10000)."', '".mt_rand(1,$MAX_CONTRACT_TYPE)."', '$date',
                         '".mt_rand(1,36)."', '".mt_rand(1,3)."', '".mt_rand(1,36)."',
                         '".mt_rand(1,36)."', 'comment $i', 'compta num $i', '0', '08:00:00',
                         '19:00:00', '09:00:00', '16:00:00', '1', '00:00:00', '00:00:00', '0', '0',
-                        'notes contract $i', '0', '1')";
+                        'notes contract $i', '0', '1','', '0')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $conID = $DB->insert_id();
@@ -1687,12 +1687,12 @@ function generate_entity($ID_entity) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
       $query = "INSERT INTO `glpi_contracts`
-                VALUES (NULL, '$ID_entity', '0', '', '1', 'Recursive contract $i-$ID_entity', 'num $i',
+                VALUES (NULL, '$ID_entity', '1', 'Recursive contract $i-$ID_entity', 'num $i',
                         '".mt_rand(100,10000)."', '".mt_rand(1,$MAX_CONTRACT_TYPE)."', '$date',
                         '".mt_rand(1,36)."', '".mt_rand(1,3)."', '".mt_rand(1,36)."',
                         '".mt_rand(1,36)."', 'comment $i', 'compta num $i', '0', '08:00:00',
                         '19:00:00', '09:00:00', '16:00:00', '1', '00:00:00', '00:00:00', '0', '0',
-                        'notes contract $i', '0', '1')";
+                        'notes contract $i', '0', '1','', '0')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $conID = $DB->insert_id();
