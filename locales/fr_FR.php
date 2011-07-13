@@ -225,6 +225,13 @@ $LANG['central'][19] = "Vos tickets à valider";
 $LANG['change'][0] = "Changement";
 $LANG['change'][1] = "Créer un changement à partir de ce ticket";
 $LANG['change'][2] = "Créer un changement à partir de ce problème";
+$LANG['change'][3] = "Liste de contrôles";
+$LANG['change'][4] = "Plan de déploiement";
+$LANG['change'][5] = "Plan de repli";
+$LANG['change'][6] = "Liste de vérifications";
+$LANG['change'][7] = "Plans";
+$LANG['change'][8] = "Créer un changement à partir de ce ticket";
+
 
 $LANG['choice'][0] = "Non";
 $LANG['choice'][1] = "Oui";
@@ -1667,6 +1674,9 @@ $LANG['profiles'][51] = "Supprimer tous les suivis";
 $LANG['profiles'][52] = "Editer tous les problèmes";
 $LANG['profiles'][53] = "Voir les problèmes auxquels je participe";
 $LANG['profiles'][54] = "Suppression";
+$LANG['profiles'][55] = "Voir tous les changements";
+$LANG['profiles'][56] = "Editer tous les changements";
+$LANG['profiles'][57] = "Voir les changements auxquels je participe";
 
 $LANG['registry'][1] = "Ruche";
 $LANG['registry'][2] = "Chemin";

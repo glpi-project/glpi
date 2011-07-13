@@ -185,7 +185,6 @@ class Profile extends CommonDBTM {
          $input["problem_status"] = exportArrayToDB($cycle);
       }
 
-/* No Change.class
       if (isset($input["_cycles_change"])) {
          $tab   = Change::getAllStatusArray();
          $cycle = array();
@@ -198,7 +197,7 @@ class Profile extends CommonDBTM {
          }
          $input["change_status"] = exportArrayToDB($cycle);
       }
-*/
+
       return $input;
    }
 
@@ -909,11 +908,18 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
+
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][8]."&nbsp;:</td><td>";
-      self::dropdownNoneReadWrite("change", $this->fields["change"], 1, 1, 1);
+      echo "<td>".$LANG['profiles'][56]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
       echo "</td>";
-      echo "<td colspan='4'></td></tr>\n";
+      echo "<td>".$LANG['profiles'][55]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][57]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
+      echo "</td>";
+      echo "</tr>\n";
 
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
@@ -1005,6 +1011,34 @@ class Profile extends CommonDBTM {
          echo "</tr>\n";
       }
 
+      echo "</table>";
+
+      echo "<table class='tab_cadre_fixe'>";
+      $tabstatus = Change::getAllStatusArray();
+
+      echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][618]."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+      echo "<input type='hidden' name='_cycles_change' value='1'</td>";
+      foreach ($tabstatus as $label) {
+         echo "<td class='center'>$label</td>";
+      }
+      echo "</tr>\n";
+
+      foreach ($tabstatus as $from => $label) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
+         foreach ($tabstatus as $dest => $label) {
+            echo "<td class='center'>";
+            if ($dest==$from) {
+               echo Dropdown::getYesNo(1);
+            } else {
+               Dropdown::showYesNo("_cycle_change[$from][$dest]",
+                                   (!isset($this->fields['change_status'][$from][$dest])
+                                    || $this->fields['change_status'][$from][$dest]));
+            }
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
 
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
