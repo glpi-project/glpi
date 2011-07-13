@@ -383,7 +383,7 @@ class Calendar extends CommonDropdown {
       $cache_duration = importArrayFromDB($this->fields['cache_duration']);
 
       // Invalid cache duration : recompute it
-      if (!isset($cache_duration[0]) {
+      if (!isset($cache_duration[0])) {
          $this->updateDurationCache($this->fields['id']);
          $cache_duration = importArrayFromDB($this->fields['cache_duration']);
       }
