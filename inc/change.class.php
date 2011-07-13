@@ -37,20 +37,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Problem class
-class Problem extends CommonITILObject {
+/// Change class
+class Change extends CommonITILObject {
 
    // From CommonDBTM
    public $dohistory = true;
 
    // From CommonITIL
-   public $userlinkclass  = 'Problem_User';
-   public $grouplinkclass = 'Group_Problem';
+   public $userlinkclass  = 'Change_User';
+   public $grouplinkclass = 'Change_Group';
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
-   const STATUS_MATRIX_FIELD  = 'problem_status';
+   const STATUS_MATRIX_FIELD  = 'change_status';
 
 
    /**
@@ -63,30 +63,30 @@ class Problem extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['problem'][0];
+      return $LANG['change'][0];
    }
 
 
    function canAdminActors(){
-      return haveRight('edit_all_problem', '1');
+      return haveRight('edit_all_change', '1');
    }
 
 
    function canAssign(){
-      return haveRight('edit_all_problem', '1');
+      return haveRight('edit_all_change', '1');
    }
 
 
    function canAssignToMe(){
-      return haveRight('edit_all_problem', '1');
+      return haveRight('edit_all_change', '1');
    }
 
 
    function canSolve(){
 
       return (self::isAllowedStatus($this->fields['status'], 'solved')
-              && (haveRight("edit_all_problem","1")
-                  || (haveRight('show_my_problem', 1)
+              && (haveRight("edit_all_change","1")
+                  || (haveRight('show_my_change', 1)
                       && ($this->isUser(parent::ASSIGN, getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
@@ -94,17 +94,17 @@ class Problem extends CommonITILObject {
 
 
    function canCreate() {
-      return haveRight('edit_all_problem', '1');
+      return haveRight('edit_all_change', '1');
    }
 
 
    function canView() {
-      return haveRight('show_all_problem', '1') || haveRight('show_my_problem', '1');
+      return haveRight('edit_all_change', '1') || haveRight('show_my_change', '1');
    }
 
 
    /**
-    * Is the current user have right to show the current problem ?
+    * Is the current user have right to show the current change ?
     *
     * @return boolean
    **/
@@ -113,8 +113,8 @@ class Problem extends CommonITILObject {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (haveRight('show_all_problem', 1)
-              || (haveRight('show_my_problem', 1)
+      return (haveRight('edit_all_change', 1)
+              || (haveRight('show_my_change', 1)
                   && ($this->isUser(parent::REQUESTER, getLoginUserID())
                       || $this->isUser(parent::OBSERVER, getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -127,7 +127,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Is the current user have right to approve solution of the current problem ?
+    * Is the current user have right to approve solution of the current change ?
     *
     * @return boolean
    **/
@@ -141,7 +141,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Is the current user have right to create the current problem ?
+    * Is the current user have right to create the current change ?
     *
     * @return boolean
    **/
@@ -150,7 +150,7 @@ class Problem extends CommonITILObject {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return haveRight('edit_all_problem', 1);
+      return haveRight('edit_all_change', 1);
    }
 
 
@@ -160,28 +160,27 @@ class Problem extends CommonITILObject {
       return true;
    }
 
-
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getID() && haveRight("show_all_problem","1")) {
+      if ($item->getID() && haveRight("show_all_change","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = 0;
             switch ($item->getType()) {
-               case 'Change' :
+               case 'Problem' :
                   $nb = countElementsInTable('glpi_changes_problems',
-                                             "`changes_id` = '".$item->getID()."'");
+                                             "`problems_id` = '".$item->getID()."'");
                   break;
 
                case 'Ticket' :
-                  $nb = countElementsInTable('glpi_problems_tickets',
+                  $nb = countElementsInTable('glpi_changes_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
                   break;
          
             }
-            return self::createTabEntry($LANG['Menu'][7], $nb);
+            return self::createTabEntry($LANG['Menu'][8], $nb);
          }
-         return $LANG['Menu'][7];
+         return $LANG['Menu'][8];
       }
       return '';
    }
@@ -190,12 +189,12 @@ class Problem extends CommonITILObject {
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
 
       switch ($item->getType()) {
-         case "Change" :
-            Change_Problem::showForChange($item);
+         case "Problem" :
+            Change_Problem::showForProblem($item);
             break;
 
          case "Ticket" :
-            Problem_Ticket::showForTicket($item);
+            Change_Ticket::showForTicket($item);
             break;
       }
       return true;
@@ -210,14 +209,16 @@ class Problem extends CommonITILObject {
       if ($this->fields['id'] > 0) {
 
 
-         $this->addStandardTab('Ticket', $ong);
+         $this->addStandardTab('Problem', $ong);
 
-         $this->addStandardTab('Change', $ong);
+         $this->addStandardTab('Ticket', $ong);
 
          // Analysis
          $ong[3] = $LANG['problem'][3];
+         // Plans
+         $ong[5] = $LANG['change'][7];
          // Tasks
-         $this->addStandardTab('ProblemTask', $ong);
+         /// TODO $this->addStandardTab('ChangeTask', $ong);
          // Hardware
          $ong[7] = $LANG['common'][96];
          // Documents
@@ -236,10 +237,12 @@ class Problem extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-      $query1 = "DELETE
-                 FROM `glpi_problemtasks`
-                 WHERE `problems_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+
+      /// TODO uncomment when changetask OK
+//       $query1 = "DELETE
+//                  FROM `glpi_changetasks`
+//                  WHERE `changes_id` = '".$this->fields['id']."'";
+//       $DB->query($query1);
 
       parent::cleanDBonPurge();
    }
@@ -248,7 +251,7 @@ class Problem extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-      // Get problem : need for comparison
+      // Get change : need for comparison
 //       $this->getFromDB($input['id']);
 
       $input = parent::prepareInputForUpdate($input);
@@ -301,7 +304,7 @@ class Problem extends CommonITILObject {
             $mailtype = "closed";
          }
 
-         // Read again problem to be sure that all data are up to date
+         // Read again change to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
       }
@@ -312,14 +315,6 @@ class Problem extends CommonITILObject {
       global $CFG_GLPI, $LANG;
 
       $input =  parent::prepareInputForAdd($input);
-
-      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
-           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
-           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
-          && $input["status"]=="new") {
-
-         $input["status"] = "assign";
-      }
 
       return $input;
    }
@@ -333,22 +328,34 @@ class Problem extends CommonITILObject {
       if (isset($this->input['_tickets_id'])) {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->input['_tickets_id'])) {
-            $pt = new Problem_Ticket();
+            $pt = new Change_Ticket();
             $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
-                           'problems_id' => $this->fields['id']));
+                           'changes_id' => $this->fields['id']));
 
             if (!empty($ticket->fields['itemtype']) && $ticket->fields['items_id']>0) {
-               $it = new Item_Problem();
-               $it->add(array('problems_id' => $this->fields['id'],
+               $it = new Change_Item();
+               $it->add(array('changes_id' => $this->fields['id'],
                               'itemtype'    => $ticket->fields['itemtype'],
                               'items_id'    => $ticket->fields['items_id']));
             }
          }
       }
 
+      if (isset($this->input['_problems_id'])) {
+         $problem = new Problem();
+         if ($problem->getFromDB($this->input['_problems_id'])) {
+            $cp = new Change_Problem();
+            $cp->add(array('problems_id'  => $this->input['_problems_id'],
+                           'changes_id' => $this->fields['id']));
+
+            /// TODO add linked tickets and linked hardware (to problem and tickets)
+            /// create standard function
+         }
+      }
+
       // Processing Email
       if ($CFG_GLPI["use_mailing"]) {
-         // Clean reload of the problem
+         // Clean reload of the change
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
@@ -453,9 +460,9 @@ class Problem extends CommonITILObject {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table'] = 'glpi_itilcategories';
-      $tab[7]['field'] = 'completename';
-      $tab[7]['name']  = $LANG['common'][36];
+      $tab[7]['table']          = 'glpi_itilcategories';
+      $tab[7]['field']          = 'completename';
+      $tab[7]['name']           = $LANG['common'][36];
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -486,16 +493,28 @@ class Problem extends CommonITILObject {
       $tab[60]['datatype']      = 'text';
 
       $tab[61]['table']         = $this->getTable();
-      $tab[61]['field']         = 'causecontent';
-      $tab[61]['name']          = $LANG['problem'][5];
+      $tab[61]['field']         = 'controlistcontent';
+      $tab[61]['name']          = $LANG['change'][3];
       $tab[61]['massiveaction'] = false;
       $tab[61]['datatype']      = 'text';
 
       $tab[62]['table']         = $this->getTable();
-      $tab[62]['field']         = 'symptomcontent';
-      $tab[62]['name']          = $LANG['problem'][5];
+      $tab[62]['field']         = 'rolloutplancontent';
+      $tab[62]['name']          = $LANG['change'][4];
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
+
+      $tab[63]['table']         = $this->getTable();
+      $tab[63]['field']         = 'backoutplancontent';
+      $tab[63]['name']          = $LANG['change'][5];
+      $tab[63]['massiveaction'] = false;
+      $tab[63]['datatype']      = 'text';
+
+      $tab[64]['table']         = $this->getTable();
+      $tab[64]['field']         = 'checklistcontent';
+      $tab[64]['name']          = $LANG['change'][6];
+      $tab[64]['massiveaction'] = false;
+      $tab[64]['datatype']      = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
@@ -503,34 +522,35 @@ class Problem extends CommonITILObject {
       $tab[90]['massiveaction'] = false;
 
 
-      $tab['task'] = $LANG['job'][7];
-
-      $tab[26]['table']         = 'glpi_problemtasks';
-      $tab[26]['field']         = 'content';
-      $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
-      $tab[26]['forcegroupby']  = true;
-      $tab[26]['splititems']    = true;
-      $tab[26]['massiveaction'] = false;
-      $tab[26]['joinparams']    = array('jointype' => 'child');
-
-      $tab[28]['table']         = 'glpi_problemtasks';
-      $tab[28]['field']         = 'count';
-      $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
-      $tab[28]['forcegroupby']  = true;
-      $tab[28]['usehaving']     = true;
-      $tab[28]['datatype']      = 'number';
-      $tab[28]['massiveaction'] = false;
-      $tab[28]['joinparams']    = array('jointype' => 'child');
-
-      $tab[20]['table']         = 'glpi_taskcategories';
-      $tab[20]['field']         = 'name';
-      $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
-      $tab[20]['forcegroupby']  = true;
-      $tab[20]['splititems']    = true;
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_problemtasks',
-                                                   'joinparams' => array('jointype' => 'child')));
+      /// TODO define when task created
+//       $tab['task'] = $LANG['job'][7];
+// 
+//       $tab[26]['table']         = 'glpi_changetasks';
+//       $tab[26]['field']         = 'content';
+//       $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
+//       $tab[26]['forcegroupby']  = true;
+//       $tab[26]['splititems']    = true;
+//       $tab[26]['massiveaction'] = false;
+//       $tab[26]['joinparams']    = array('jointype' => 'child');
+// 
+//       $tab[28]['table']         = 'glpi_changetasks';
+//       $tab[28]['field']         = 'count';
+//       $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
+//       $tab[28]['forcegroupby']  = true;
+//       $tab[28]['usehaving']     = true;
+//       $tab[28]['datatype']      = 'number';
+//       $tab[28]['massiveaction'] = false;
+//       $tab[28]['joinparams']    = array('jointype' => 'child');
+// 
+//       $tab[20]['table']         = 'glpi_taskcategories';
+//       $tab[20]['field']         = 'name';
+//       $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
+//       $tab[20]['forcegroupby']  = true;
+//       $tab[20]['splititems']    = true;
+//       $tab[20]['massiveaction'] = false;
+//       $tab[20]['joinparams']    = array('beforejoin'
+//                                           => array('table'      => 'glpi_changetasks',
+//                                                    'joinparams' => array('jointype' => 'child')));
 
       $tab['solution'] = $LANG['jobresolution'][1];
 
@@ -549,7 +569,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * get the problem status list
+    * get the change status list
     *
     * @param $withmetaforsearch boolean
     *
@@ -557,6 +577,11 @@ class Problem extends CommonITILObject {
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
       global $LANG;
+
+      // new, evaluation, approbation, process (sub status : test, qualification, applied), review, closed, abandoned
+
+      /// TODO to be done : try to keep closed. Is abandonned usable ?
+      /// TODO define standard function to check solved / closed status
 
       // To be overridden by class
       $tab = array('new'      => $LANG['joblist'][9],
@@ -580,17 +605,17 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Get problem status Name
+    * Get change status Name
     *
     * @param $value status ID
    **/
    static function getStatus($value) {
-      return parent::getGenericStatus('Problem', $value);
+      return parent::getGenericStatus('Change', $value);
    }
 
 
    /**
-    * Dropdown of problem status
+    * Dropdown of change status
     *
     * @param $name select name
     * @param $value default value
@@ -599,7 +624,7 @@ class Problem extends CommonITILObject {
     * @return nothing (display)
    **/
    static function dropdownStatus($name, $value='new', $option=0) {
-      return parent::dropdownGenericStatus('Problem', $name, $value, $option);
+      return parent::dropdownGenericStatus('Change', $name, $value, $option);
    }
 
 
@@ -612,12 +637,12 @@ class Problem extends CommonITILObject {
     * @return integer from 1 to 5 (priority)
    **/
    static function computePriority($urgency, $impact) {
-      return parent::computeGenericPriority('Problem', $urgency, $impact);
+      return parent::computeGenericPriority('Change', $urgency, $impact);
    }
 
 
    /**
-    * Dropdown of problem Urgency
+    * Dropdown of change Urgency
     *
     * @param $name select name
     * @param $value default value
@@ -626,12 +651,12 @@ class Problem extends CommonITILObject {
     * @return string id of the select
    **/
    static function dropdownUrgency($name, $value=0, $complete=false) {
-      return parent::dropdownGenericUrgency('Problem', $name, $value, $complete);
+      return parent::dropdownGenericUrgency('Change', $name, $value, $complete);
    }
 
 
    /**
-    * Dropdown of problem Impact
+    * Dropdown of change Impact
     *
     * @param $name select name
     * @param $value default value
@@ -640,7 +665,7 @@ class Problem extends CommonITILObject {
     * @return string id of the select
    **/
    static function dropdownImpact($name, $value=0, $complete=false) {
-      return parent::dropdownGenericImpact('Problem', $name, $value, $complete);
+      return parent::dropdownGenericImpact('Change', $name, $value, $complete);
    }
 
 
@@ -653,7 +678,7 @@ class Problem extends CommonITILObject {
     * @return boolean
    **/
    static function isAllowedStatus($old, $new) {
-      return parent::genericIsAllowedStatus('Problem', $old, $new);
+      return parent::genericIsAllowedStatus('Change', $old, $new);
    }
 
 
@@ -697,6 +722,18 @@ class Problem extends CommonITILObject {
                $options['urgency']             = $ticket->getField('urgency');
                $options['priority']            = $ticket->getField('priority');
                $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
+            }
+         }
+
+         if (isset($options['problems_id'])) {
+            $problem = new Problem();
+            if ($problem->getFromDB($options['problems_id'])) {
+               $options['content']             = $problem->getField('content');
+               $options['name']                = $problem->getField('name');
+               $options['impact']              = $problem->getField('impact');
+               $options['urgency']             = $problem->getField('urgency');
+               $options['priority']            = $problem->getField('priority');
+               $options['itilcategories_id']   = $problem->getField('itilcategories_id');
             }
          }
       }
@@ -908,7 +945,7 @@ class Problem extends CommonITILObject {
 
 
    /**
-    * Form to add an analysis to a problem
+    * Form to add an analysis to a change
    **/
    function showAnalysisForm() {
       global $LANG, $CFG_GLPI;
@@ -932,24 +969,65 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][5]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".$LANG['change'][3]."&nbsp;: </td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='causecontent' name='causecontent' rows='6' cols='80'>";
-         echo $this->getField('causecontent');
+         echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='80'>";
+         echo $this->getField('controlistcontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('causecontent');
+         echo $this->getField('controlistcontent');
+      }
+      echo "</td></tr>";
+
+      $options['candel']  = false;
+      $options['canedit'] = $canedit;
+      $this->showFormButtons($options);
+
+   }
+
+   /**
+    * Form to add an analysis to a change
+   **/
+   function showPlanForm() {
+      global $LANG, $CFG_GLPI;
+
+      $this->check($this->getField('id'), 'r');
+      $canedit = $this->can($this->getField('id'), 'w');
+
+      $options            = array();
+      $options['canedit'] = false;
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['change'][4]."&nbsp;: </td><td colspan='3'>";
+      if ($canedit) {
+         echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='80'>";
+         echo $this->getField('rolloutplancontent');
+         echo "</textarea>";
+      } else {
+         echo $this->getField('rolloutplancontent');
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][6]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".$LANG['change'][5]."&nbsp;: </td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea id='symptomcontent' name='symptomcontent' rows='6' cols='80'>";
-         echo $this->getField('symptomcontent');
+         echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='80'>";
+         echo $this->getField('backoutplancontent');
          echo "</textarea>";
       } else {
-         echo $this->getField('symptomcontent');
+         echo $this->getField('backoutplancontent');
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['change'][6]."&nbsp;: </td><td colspan='3'>";
+      if ($canedit) {
+         echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='80'>";
+         echo $this->getField('checklistcontent');
+         echo "</textarea>";
+      } else {
+         echo $this->getField('checklistcontent');
       }
       echo "</td></tr>";
 

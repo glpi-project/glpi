@@ -45,41 +45,45 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-$problem = new Problem();
+$change = new Change();
 
-if ($_POST["id"]>0 && $problem->getFromDB($_POST["id"])) {
+if ($_POST["id"]>0 && $change->getFromDB($_POST["id"])) {
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         Problem_Ticket::showForProblem($problem);
-         Change_Problem::showForProblem($problem);
-         $problem->showAnalysisForm();
-         $task    = new ProblemTask();
-         $task->showSummary($problem);
-         Item_Problem::showForProblem($problem);
-         Document::showAssociated($problem);
-         $problem->showSolutionForm();
-         Log::showForItem($problem);
-         Plugin::displayAction($problem, $_REQUEST['glpi_tab']);
+         Change_Problem::showForChange($change);
+         Change_Ticket::showForChange($change);
+         $change->showAnalysisForm();
+         $task    = new ChangeTask();
+         $task->showSummary($change);
+         Change_Item::showForChange($change);
+         Document::showAssociated($change);
+         $change->showSolutionForm();
+         Log::showForItem($change);
+         Plugin::displayAction($change, $_REQUEST['glpi_tab']);
          break;
 
       case 3 :
-         $problem->showAnalysisForm();
+         $change->showAnalysisForm();
          break;
 
       case 4 :
          if (!isset($_POST['load_kb_sol'])) {
             $_POST['load_kb_sol'] = 0;
          }
-         $problem->showSolutionForm($_POST['load_kb_sol']);
+         $change->showSolutionForm($_POST['load_kb_sol']);
+         break;
+
+      case 5 :
+         $change->showPlanForm();
          break;
 
       case 7 :
-         Item_Problem::showForProblem($problem);
+         Change_Item::showForChange($change);
          break;
 
       default :
-         if (!CommonGLPI::displayStandardTab($problem, $_REQUEST['glpi_tab'])) {
+         if (!CommonGLPI::displayStandardTab($change, $_REQUEST['glpi_tab'])) {
          }
    }
 }

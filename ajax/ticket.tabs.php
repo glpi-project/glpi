@@ -64,6 +64,8 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showCost($_POST['target']);
          $ticket->showStats();
          Document::showAssociated($ticket);
+         Problem_Ticket::showForTicket($ticket);
+         Change_Ticket::showForTicket($ticket);
          Log::showForItem($ticket);
          Plugin::displayAction($ticket, $_REQUEST['glpi_tab']);
          break;
@@ -96,10 +98,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          } else {
             echo "<p class='center b'>".$LANG['satisfaction'][2]."</p>";
          }
-         break;
-
-      case 11 :
-         Problem_Ticket::showForTicket($ticket);
          break;
 
       default :

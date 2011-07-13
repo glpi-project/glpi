@@ -330,6 +330,14 @@ class Ticket extends CommonITILObject {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = 0;
             switch ($item->getType()) {
+               case 'Change' :
+                  $nb = countElementsInTable('glpi_changes_tickets',
+                                             "`changes_id` = '".$item->getID()."'");
+                  break;
+               case 'Problem' :
+                  $nb = countElementsInTable('glpi_problems_tickets',
+                                             "`problems_id` = '".$item->getID()."'");
+                  break;
                case 'User' :
                   $nb = countElementsInTable('glpi_tickets_users',
                                              "`users_id` = '".$item->getID()."'
@@ -369,7 +377,18 @@ class Ticket extends CommonITILObject {
 
    static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
 
-      self::showListForItem($item);
+      switch ($item->getType()) {
+         case 'Change' :
+            Change_Ticket::showForChange($item);
+            break;
+
+         case 'Problem' :
+            Problem_Ticket::showForProblem($item);
+            break;
+
+         default : 
+            self::showListForItem($item);
+      }
       return true;
    }
 
@@ -393,7 +412,10 @@ class Ticket extends CommonITILObject {
 
          $this->addStandardTab('Document', $ong);
 
-         $ong[11] = $LANG['Menu'][7].' / '.$LANG['Menu'][8];
+         $this->addStandardTab('Problem', $ong);
+
+         $this->addStandardTab('Change', $ong);
+
          $this->addStandardTab('Log', $ong);
 
          if (haveRight('observe_ticket','1')) {

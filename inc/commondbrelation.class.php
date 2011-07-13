@@ -43,7 +43,8 @@ abstract class CommonDBRelation extends CommonDBTM {
 
    var $check_entities = true;
 
-   var $checks_and_logs_only_for_itemtype1 = false;
+   var $checks_only_for_itemtype1 = false;
+   var $logs_only_for_itemtype1 = false;
 
 
    /**
@@ -103,7 +104,6 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $type1 = $input[$this->itemtype_1];
       }
-
       if (!class_exists($type1)) {
          return false;
       }
@@ -125,8 +125,9 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (!class_exists($type2)) {
          return false;
       }
+
       $item2 = new $type2();
-      if (!$this->checks_and_logs_only_for_itemtype1
+      if (!$this->checks_only_for_itemtype1
           && !($item2 instanceof CommonDropdown)) {
          if (!$item2->can($input[$this->items_id_2],'r')) {
             return false;
@@ -145,7 +146,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Check entity compatibility / no check for delete just check write access
       // No check if checking only itemtype1
-      if (!$this->checks_and_logs_only_for_itemtype1
+      if (!$this->checks_only_for_itemtype1
           && $this->check_entities
           && $right!='d') {
 
@@ -182,7 +183,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // can write one item is enough
       if ($item1->can($input[$this->items_id_1],'w')
-          || ($this->checks_and_logs_only_for_itemtype1
+          || ($this->checks_only_for_itemtype1
               || $item2->can($input[$this->items_id_2],'w'))) {
          return true;
       }
@@ -238,7 +239,7 @@ abstract class CommonDBRelation extends CommonDBTM {
                       HISTORY_ADD_RELATION);
       }
 
-      if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
+      if (!$this->logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
          $changes[2] = addslashes($item1->getNameID());
@@ -297,7 +298,7 @@ abstract class CommonDBRelation extends CommonDBTM {
                       HISTORY_DEL_RELATION);
       }
 
-      if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
+      if (!$this->logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = addslashes($item1->getNameID());
          $changes[2] = "";
