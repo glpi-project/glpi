@@ -216,7 +216,7 @@ class Calendar extends CommonDropdown {
          $activetime = $timeend-$timestart;
 
       } else {
-         $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+         $cache_duration = $this->getDurationsCache();
 
          for ($actualtime=$timestart ; $actualtime<=$timeend ; $actualtime+=DAY_TIMESTAMP) {
             $actualdate = date('Y-m-d',$actualtime);
@@ -279,7 +279,7 @@ class Calendar extends CommonDropdown {
       $datestart  = date('Y-m-d',$timestart);
 
       if ($delay >= DAY_TIMESTAMP || $force_work_in_days) { // only based on days
-         $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+         $cache_duration = $this->getDurationsCache();
 
          // Compute Real starting time
          // If day is an holiday must start on the begin of next working day
@@ -321,7 +321,7 @@ class Calendar extends CommonDropdown {
       }
 
       // else  // based on working hours
-      $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+      $cache_duration = $this->getDurationsCache();
 
       // Only if segments exists
       if (countElementsInTable('glpi_calendarsegments',
@@ -367,6 +367,28 @@ class Calendar extends CommonDropdown {
          }
       }
       return false;
+   }
+
+
+   /**
+    * Get days durations including all segments of the current calendar
+    *
+    * @return end date
+   **/
+   function getDurationsCache() {
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+
+      // Invalid cache duration : recompute it
+      if (!isset($cache_duration[0]) {
+         $this->updateDurationCache($this->fields['id']);
+         $cache_duration = importArrayFromDB($this->fields['cache_duration']);
+      }
+      
+      return $cache_duration;
    }
 
 
