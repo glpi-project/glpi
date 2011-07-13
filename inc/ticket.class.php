@@ -596,6 +596,10 @@ class Ticket extends CommonITILObject {
             $input['_itil_assign']['_type']    = 'user';
             $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
          }
+         if (isset($input['_groups_id_assign'])) {
+            $input['_itil_assign']['_type']    = 'group';
+            $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
+         }
          if (isset($input['_users_id_requester'])) {
             $input['_itil_requester']['_type']    = 'user';
             $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
@@ -604,9 +608,13 @@ class Ticket extends CommonITILObject {
             $input['_itil_requester']['_type']    = 'group';
             $input['_itil_requester']['groups_id'] = $input['_groups_id_requester'];
          }
-         if (isset($input['_groups_id_assign'])) {
-            $input['_itil_assign']['_type']    = 'group';
-            $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
+         if (isset($input['_users_id_observer'])) {
+            $input['_itil_observer']['_type']    = 'user';
+            $input['_itil_observer']['users_id'] = $input['_users_id_observer'];
+         }
+         if (isset($input['_groups_id_observer'])) {
+            $input['_itil_observer']['_type']    = 'group';
+            $input['_itil_observer']['groups_id'] = $input['_groups_id_observer'];
          }
       }
 
