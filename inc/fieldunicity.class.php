@@ -376,6 +376,9 @@ class FieldUnicity extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
+      $input['fields'] = implode(',',$input['_fields']);
+      unset($input['_fields']);
+      
       return $input;
    }
 
