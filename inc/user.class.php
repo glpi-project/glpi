@@ -1458,7 +1458,7 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
 
          if ($extauth
-             && isset ($authtype['email_field'])
+             && isset ($authtype['realname_field'])
              && !empty ($authtype['realname_field'])) {
 
             echo $this->fields["realname"];
@@ -1498,7 +1498,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
 
-         if ($extauth && isset ($authtype['email_field']) && !empty ($authtype['email_field'])) {
+         if ($extauth && isset($authtype['email_field']) && !empty($authtype['email_field'])) {
             echo $this->fields["email"];
          } else {
             autocompletionTextField($this, "email", array('name' => "email_form"));
