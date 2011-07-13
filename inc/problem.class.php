@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Tracking class
+/// Problem class
 class Problem extends CommonITILObject {
 
    // From CommonDBTM
