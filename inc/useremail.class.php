@@ -90,18 +90,38 @@ class UserEmail  extends CommonDBChild {
    **/
    static function showForUser(User $user) {
       global $DB;
-
       /// TODO to finish : option for edit / add / delete
 
       $users_id = $user->getID();
 
-      if (!$user->can($users_id,'r')) {
+      if (!$user->can($users_id,'r')
+            && $users_id != getLoginUserID()) {
          return false;
       }
       $canedit = $user->can($users_id,"w");
 
+      $count = 0;
+      $email = new UserEmail;
       foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'") as $data) {
-         echo $data['email'].'<br>';
+         if ($count) {
+            echo '<br>';
+         }
+         $count++;
+         /// TODO Better solution maybe to put it on the front (specific request ?)
+         if ($data['is_default']) {
+            echo "<strong>";
+         }
+         echo $data['email'];
+         if ($data['is_default']) {
+            echo "</strong>";
+         }
+
+         if ($canedit) {
+            echo "  -> canedit this TODO delete if not dynamic";
+         }
+      }
+      if ($canedit) {
+         echo "TODO ADD EMAIL";
       }
    }
 
