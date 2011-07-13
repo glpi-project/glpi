@@ -654,6 +654,11 @@ class Ticket extends CommonDBTM {
             $input['_ticket_assign']['_type']    = 'user';
             $input['_ticket_assign']['users_id'] = $input['_users_id_assign'];
          }
+         if (isset($input['_groups_id_assign'])) {
+            $input['_ticket_assign']['_type']    = 'group';
+            $input['_ticket_assign']['groups_id'] = $input['_groups_id_assign'];
+         }
+
          if (isset($input['_users_id_requester'])) {
             $input['_ticket_requester']['_type']    = 'user';
             $input['_ticket_requester']['users_id'] = $input['_users_id_requester'];
@@ -662,9 +667,13 @@ class Ticket extends CommonDBTM {
             $input['_ticket_requester']['_type']    = 'group';
             $input['_ticket_requester']['groups_id'] = $input['_groups_id_requester'];
          }
-         if (isset($input['_groups_id_assign'])) {
-            $input['_ticket_assign']['_type']    = 'group';
-            $input['_ticket_assign']['groups_id'] = $input['_groups_id_assign'];
+         if (isset($input['_users_id_observer'])) {
+            $input['_ticket_observer']['_type']    = 'user';
+            $input['_ticket_observer']['users_id'] = $input['_users_id_observer'];
+         }
+         if (isset($input['_groups_id_observer'])) {
+            $input['_ticket_observer']['_type']    = 'group';
+            $input['_ticket_observer']['groups_id'] = $input['_groups_id_observer'];
          }
       }
 
