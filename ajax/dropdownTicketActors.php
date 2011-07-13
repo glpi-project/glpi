@@ -90,6 +90,9 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          Dropdown::show('Group', array('name'   => '_ticket_'.$_POST["actortype"].'[groups_id]',
                                        'entity' => $_POST['entity_restrict']));
          break;
+      case "supplier" :
+         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                       'entity' => $_POST['entity_restrict']));
    }
 }
 
