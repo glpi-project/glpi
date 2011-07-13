@@ -892,12 +892,12 @@ class Auth {
    /**
     * Is an alternate auth ?
     *
-    * @param $auths_id auth type
+    * @param $authtype auth type
     *
     * @return boolean
    **/
-   static function isAlternateAuth($auths_id) {
-      return in_array($auths_id, array(self::X509, self::CAS, self::EXTERNAL));
+   static function isAlternateAuth($authtype) {
+      return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
    }
 
 
@@ -908,10 +908,10 @@ class Auth {
     *
     * @return boolean
    **/
-   static function isAlternateAuthWithLdap($auths_id) {
+   static function isAlternateAuthWithLdap($authtype) {
       global $CFG_GLPI;
 
-      return (self::isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
+      return (self::isAlternateAuth($authtype) && $CFG_GLPI["authldaps_id_extra"] > 0);
    }
 
 
