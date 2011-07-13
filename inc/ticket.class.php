@@ -3851,7 +3851,8 @@ class Ticket extends CommonDBTM {
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
                       'user'  => $LANG['common'][34],
                       'group' => $LANG['common'][35]);
-      if ($withsupplier) {
+
+      if ($withsupplier && $type == self::ASSIGN) {
          $types['supplier'] = $LANG['financial'][26];
       }
 
