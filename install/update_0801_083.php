@@ -241,6 +241,8 @@ function update0801to083($output='HTML') {
    $migration->addField('glpi_profiles', 'problem_status',
                         "TEXT NULL COMMENT 'json encoded array of from/dest allowed status change'");
 
+   $migration->displayMessage($LANG['update'][141] . ' - Changes'); // Updating schema
+
    // Problems management
    if (!TableExists('glpi_changes')) {
       $query = "CREATE TABLE `glpi_changes` (
@@ -415,6 +417,8 @@ function update0801to083($output='HTML') {
    $migration->addField('glpi_profiles', 'change_status',
                         "TEXT NULL COMMENT 'json encoded array of from/dest allowed status change'");
 
+   $migration->displayMessage($LANG['update'][141] . ' - TicketPlanning'); // Updating schema
+
    // Merge tickettasks and ticket planning
    if (TableExists('glpi_ticketplannings')) {
       $migration->addField("glpi_tickettasks", "begin", "datetime default NULL");
@@ -440,6 +444,9 @@ function update0801to083($output='HTML') {
       $query = "DROP TABLE `glpi_ticketplannings`";
       $DB->query($query)
       or die("0.83 drop table glpi_ticketplannings ". $LANG['update'][90] . $DB->error());
+
+
+      $migration->displayMessage($LANG['update'][141] . ' - Notification'); // Updating schema
 
       // Migrate templates
       $from = array('task.planning.user##', 'task.planning.begin##', 'task.planning.end##',
@@ -601,13 +608,7 @@ function update0801to083($output='HTML') {
       }
    }
 
-   $migration->displayMessage($LANG['update'][141].' - various');
-
-   /// add missing indexes  for fields
-   $migration->addKey("glpi_authldaps", "is_active");
-   $migration->addKey("glpi_authmails", "is_active");
-   $migration->addKey("glpi_ocsservers", "is_active");
-
+   $migration->displayMessage($LANG['update'][141] . ' - Clean Vlans'); // Updating schema
 
    // Clean `glpi_networkports_vlans` datas (`networkports_id` whithout networkports)
    $query = "DELETE
@@ -617,7 +618,7 @@ function update0801to083($output='HTML') {
    $DB->query($query)
    or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
 
-
+   $migration->displayMessage($LANG['update'][141] . ' - Rename Solution objects'); // Updating schema
 
    // rename glpi_ticketsolutiontypes to glpi_solutiontypes
    $migration->renameTable('glpi_ticketsolutiontypes', 'glpi_solutiontypes');
@@ -641,6 +642,8 @@ function update0801to083($output='HTML') {
    $migration->migrationOneTable('glpi_solutiontemplates');
    $migration->addKey('glpi_solutiontemplates', 'solutiontypes_id');
 
+   $migration->displayMessage($LANG['update'][141] . ' - Rename Category objects'); // Updating schema
+
 
    $migration->renameTable('glpi_ticketcategories','glpi_itilcategories');
    $migration->dropKey('glpi_itilcategories', 'ticketcategories_id');
@@ -654,6 +657,9 @@ function update0801to083($output='HTML') {
                            'INT( 11 ) NOT NULL DEFAULT 0');
    $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'itilcategories_id');
+
+
+   $migration->displayMessage($LANG['update'][141] . ' - Add various fields'); // Updating schema
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
@@ -671,6 +677,12 @@ function update0801to083($output='HTML') {
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
 
 
+   /// add missing indexes  for fields
+   $migration->addKey("glpi_authldaps", "is_active");
+   $migration->addKey("glpi_authmails", "is_active");
+   $migration->addKey("glpi_ocsservers", "is_active");
+
+
    $migration->changeField("glpi_users", 'token','password_forget_token',
                            "char( 40 ) NULL DEFAULT ''");
 
@@ -680,6 +692,15 @@ function update0801to083($output='HTML') {
    $migration->addField("glpi_users", "personal_token", "varchar( 255 ) NULL DEFAULT ''");
 
    $migration->addField("glpi_users", "personal_token_date", "datetime default NULL");
+
+   $migration->addField("glpi_tickets", "is_deleted", "TINYINT(1) NOT NULL DEFAULT 0");
+   $migration->addKey("glpi_tickets", "is_deleted");
+
+   $migration->addNormalizedField("glpi_contracts", "template_name", 'string');
+   $migration->addNormalizedField("glpi_contracts", "is_template", 'bool');
+
+
+   $migration->displayMessage($LANG['update'][141] . ' - Several emails for users'); // Updating schema
 
    // Several email per users
    if (!TableExists('glpi_useremails')) {
@@ -697,7 +718,8 @@ function update0801to083($output='HTML') {
       $DB->query($query)
       or die("0.83 add table glpi_useremails ". $LANG['update'][90] . $DB->error());
    }
-   /// TODO manage migration : populate is_default=1 and is_dynamic depending of authldap config / authtype / auths_id
+   // Manage migration : populate is_default=1 and is_dynamic depending of authldap config / authtype / auths_id
+   if (FieldExists("glpi_users", 'email')) {
       $query = "SELECT *
                 FROM `glpi_users`
                 WHERE `email` <> '' AND `email` IS NOT NULL";
@@ -706,37 +728,52 @@ function update0801to083($output='HTML') {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
                $is_dynamic = 0;
-               /// TODO manage is_dynamic :
-               // case $data['authtype'] == Auth::EMAIL
-               // get email field
-               // case (Auth::isAlternateAuth($data["authtype"]) && $data['auths_id'] >0) || $data['authtype'] == Auth::LDAP
-               //// Check LDAP server config 
+               $ldap_servers = array();
+               // manage is_dynamic :
+               if ($data['authtype'] == constant('Auth::MAIL')) {
+                  $is_dynamic = 1;
+               } else if ((Auth::isAlternateAuth($data["authtype"]) && $data['auths_id'] >0)
+                           || $data['authtype'] == constant('Auth::LDAP')) {
+                  if (!isset($ldap_servers[$data['auths_id']])) {
+                     $ldap_servers[$data['auths_id']] = 0;
+                     $ldap = new AuthLDAP();
+                     if ($ldap->getFromDB($data['auths_id'])) {
+                        $ldap_servers[$data['auths_id']] = !empty($ldap->fields['email_field']);
+                     }
+                  }
+                  $is_dynamic = $ldap_servers[$data['auths_id']];
+               }
                $query2 = "INSERT INTO `glpi_useremails`
                                   (`users_id`, `is_default`, `is_dynamic`, `email`)
-                           VALUES ('".$data['id']."','1',`$is_dynamic`,`".$data['email']."`)";
+                           VALUES ('".$data['id']."','1','$is_dynamic','".$data['email']."')";
                $DB->query($query2)
                   or die("0.83 migrate datas to glpi_useremails ". $LANG['update'][90] . $DB->error());
             }
          }
       }
+      /// Drop email field from glpi_users
+      $migration->dropField("glpi_users", 'email');
+   }
 
-   /// TODO  Drop email field from glpi_users
-
+   // multiple manager in groups
    $migration->changeField("glpi_authldaps", 'email_field','email1_field',
                            "varchar( 255 ) NULL DEFAULT NULL");
    $migration->addNormalizedField("glpi_authldaps", 'email2_field','string');
    $migration->addNormalizedField("glpi_authldaps", 'email3_field','string');
    $migration->addNormalizedField("glpi_authldaps", 'email4_field','string');
 
-   
 
-   // multiple manager in groups
-   $migration->addNormalizedField("glpi_authldaps", 'email4_field','string');
-   /// TODO : migration :
+   $migration->displayMessage($LANG['update'][141] . ' - Multiple managers for groups'); // Updating schema
+
+   /// TODO : migration : multiple group managers
+   $migration->addNormalizedField("glpi_groups_users", "is_manager", 'bool');
+   $migration->addKey("glpi_groups_users", "is_manager");
    // add manager to groups_users setting if not present
    // Update user as manager if presnet in groups_users
    // Drop field glpi_groups
 
+
+   $migration->displayMessage($LANG['update'][141] . ' - Add entities informations on document links'); // Updating schema
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
@@ -777,7 +814,7 @@ function update0801to083($output='HTML') {
                          'item');
    }
 
-   $migration->displayMessage($LANG['update'][142] . ' - rule ticket migration');
+   $migration->displayMessage($LANG['update'][142] . ' - RuleTicket migration');
 
    $changes['RuleTicket'] = array('ticketcategories_id' => 'itilcategories_id');
 
@@ -816,8 +853,7 @@ function update0801to083($output='HTML') {
    }
 
 
-   $migration->addField("glpi_tickets", "is_deleted", "TINYINT(1) NOT NULL DEFAULT 0");
-   $migration->addKey("glpi_tickets", "is_deleted");
+   $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');
 
    // Group of technician in charge of Helpdesk items
    $migration->addField('glpi_computers', 'groups_id_tech',
@@ -856,6 +892,9 @@ function update0801to083($output='HTML') {
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_consumableitems', 'groups_id_tech');
 
+
+   $migration->displayMessage($LANG['update'][142] . ' - various clening DB');
+
    // Clean ticket satisfactions
    $query = "DELETE
              FROM `glpi_ticketsatisfactions`
@@ -876,8 +915,6 @@ function update0801to083($output='HTML') {
 
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
-   $migration->addNormalizedField("glpi_contracts", "template_name", 'string');
-   $migration->addNormalizedField("glpi_contracts", "is_template", 'bool');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
