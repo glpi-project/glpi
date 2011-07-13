@@ -698,11 +698,45 @@ function update0801to083($output='HTML') {
       or die("0.83 add table glpi_useremails ". $LANG['update'][90] . $DB->error());
    }
    /// TODO manage migration : populate is_default=1 and is_dynamic depending of authldap config / authtype / auths_id
+      $query = "SELECT *
+                FROM `glpi_users`
+                WHERE `email` <> '' AND `email` IS NOT NULL";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $is_dynamic = 0;
+               /// TODO manage is_dynamic :
+               // case $data['authtype'] == Auth::EMAIL
+               // get email field
+               // case (Auth::isAlternateAuth($data["authtype"]) && $data['auths_id'] >0) || $data['authtype'] == Auth::LDAP
+               //// Check LDAP server config 
+               $query2 = "INSERT INTO `glpi_useremails`
+                                  (`users_id`, `is_default`, `is_dynamic`, `email`)
+                           VALUES ('".$data['id']."','1',`$is_dynamic`,`".$data['email']."`)";
+               $DB->query($query2)
+                  or die("0.83 migrate datas to glpi_useremails ". $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+
+   /// TODO  Drop email field from glpi_users
+
    $migration->changeField("glpi_authldaps", 'email_field','email1_field',
                            "varchar( 255 ) NULL DEFAULT NULL");
    $migration->addNormalizedField("glpi_authldaps", 'email2_field','string');
    $migration->addNormalizedField("glpi_authldaps", 'email3_field','string');
    $migration->addNormalizedField("glpi_authldaps", 'email4_field','string');
+
+   
+
+   // multiple manager in groups
+   $migration->addNormalizedField("glpi_authldaps", 'email4_field','string');
+   /// TODO : migration :
+   // add manager to groups_users setting if not present
+   // Update user as manager if presnet in groups_users
+   // Drop field glpi_groups
+
 
    if ($migration->addField("glpi_documents_items", "entities_id", "INT( 11 ) NOT NULL DEFAULT 0")) {
       $migration->addField("glpi_documents_items", "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT 0");
