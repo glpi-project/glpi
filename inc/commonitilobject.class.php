@@ -1674,15 +1674,21 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
     * @param $inobject boolean display in ITIL object ?
+    * @param $withsupplier boolean : allow adding a supplier (only one possible in ASSIGN case)
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $inobject=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $withsupplier=false, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
       $types  = array(''      => DROPDOWN_EMPTY_VALUE,
                       'user'  => $LANG['common'][34],
                       'group' => $LANG['common'][35]);
+
+      if ($withsupplier && $type == self::ASSIGN) {
+         $types['supplier'] = $LANG['financial'][26];
+      }
+
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
@@ -1939,7 +1945,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign>=0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id']);
+         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'], true);
       }
 
       // Assign User
@@ -1975,17 +1981,20 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Supplier
-      if ($this->canAssign()) {
-         echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
-         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
-                                          'value'  => $this->fields["suppliers_id_assign"],
-                                          'entity' => $this->fields["entities_id"]));
-         echo '<br>';
-      } else {
-         if ($this->fields["suppliers_id_assign"]) {
+      if ($this->fields["suppliers_id_assign"] > 0 || !$ID) {
+
+         if ($this->canAssign()) {
             echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
-            echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
+            Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                             'value'  => $this->fields["suppliers_id_assign"],
+                                             'entity' => $this->fields["entities_id"]));
             echo '<br>';
+         } else {
+            if ($this->fields["suppliers_id_assign"]) {
+               echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
+               echo '<br>';
+            }
          }
       }
       echo "</td>";
