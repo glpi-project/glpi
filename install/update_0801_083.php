@@ -738,7 +738,9 @@ function update0801to083($output='HTML') {
                      $ldap_servers[$data['auths_id']] = 0;
                      $ldap = new AuthLDAP();
                      if ($ldap->getFromDB($data['auths_id'])) {
-                        $ldap_servers[$data['auths_id']] = !empty($ldap->fields['email_field']);
+			if (!empty($ldap->fields['email_field'])) {
+                           $ldap_servers[$data['auths_id']] = 1;
+			}
                      }
                   }
                   $is_dynamic = $ldap_servers[$data['auths_id']];
