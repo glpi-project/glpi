@@ -239,7 +239,6 @@ class Software extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
-
       // Show Software or blank form
 
       if (!haveRight("software", "r")) {
@@ -632,10 +631,11 @@ class Software extends CommonDBTM {
     * @param manufacturer the software's manufacturer
     * @param entity the entity in which the software must be added
     * @param comment
+    * @param is_recursive must the software be recursive (boolean)
     *
     * @return the software's ID
    **/
-   function addSoftware($name, $manufacturer, $entity, $comment = '') {
+   function addSoftware($name, $manufacturer, $entity, $comment = '', $is_recursive = false) {
       global $DB, $CFG_GLPI;
 
       $manufacturer_id = 0;
@@ -657,6 +657,7 @@ class Software extends CommonDBTM {
          $input["name"]                = $name;
          $input["manufacturers_id"]    = $manufacturer_id;
          $input["entities_id"]         = $entity;
+         $input["is_recursive"]        = $is_recursive;
          // No comment
          $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 
@@ -683,8 +684,9 @@ class Software extends CommonDBTM {
     * @param manufacturer the software's manufacturer
     * @param entity the entity in which the software must be added
     * @param comment comment
+    * @param is_recursive must the software be recursive (boolean)
    */
-   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='') {
+   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='', $is_recursive = false) {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
@@ -693,7 +695,6 @@ class Software extends CommonDBTM {
                        WHERE `name` = '$name'
                              AND `is_template` = '0'
                              AND `entities_id` = '$entity'";
-
       $result_search = $DB->query($query_search);
 
       if ($DB->numrows($result_search) > 0) {
@@ -711,7 +712,7 @@ class Software extends CommonDBTM {
       }
 
       if (!$ID) {
-         $ID = $this->addSoftware($name, $manufacturer, $entity, $comment);
+         $ID = $this->addSoftware($name, $manufacturer, $entity, $comment, $is_recursive);
       }
       return $ID;
    }

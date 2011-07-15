@@ -78,7 +78,7 @@ class Dropdown {
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
       $params['used']        = array();
-      $params['toadd']        = array();
+      $params['toadd']       = array();
       $params['auto_submit'] = 0;
       $params['condition']   = '';
       $params['rand']        = mt_rand();
@@ -88,6 +88,8 @@ class Dropdown {
       $params['emptylabel'] = '';
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
+      //In case of Entity dropdown, display root entity ?
+      $params['display_rootentity']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -106,19 +108,20 @@ class Dropdown {
 
       if ($params['value'] > 0
          || ($itemtype == "Entity" && $params['value'] >= 0)) {
-         $tmpname = self::getDropdownName($table,$params['value'],1);
+         $tmpname = self::getDropdownName($table, $params['value'], 1);
 
-         if ($tmpname["name"]!="&nbsp;") {
+         if ($tmpname["name"] != "&nbsp;") {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
 
             if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
                if ($item instanceof CommonTreeDropdown) {
-                  $pos = strrpos($name,">");
-                  $limit_length=max(utf8_strlen($name)-$pos,$_SESSION["glpidropdown_chars_limit"]);
+                  $pos          = strrpos($name, ">");
+                  $limit_length = max(utf8_strlen($name) - $pos, 
+                                      $_SESSION["glpidropdown_chars_limit"]);
 
                   if (utf8_strlen($name)>$limit_length) {
-                     $name = "&hellip;".utf8_substr($name,-$limit_length);
+                     $name = "&hellip;".utf8_substr($name, -$limit_length);
                   }
 
                } else {
@@ -176,7 +179,8 @@ class Dropdown {
                       'auto_submit'         => $params['auto_submit'],
                       'condition'           => $params['condition'],
                       'emptylabel'          => $params['emptylabel'],
-                      'display_emptychoice' => $params['display_emptychoice']);
+                      'display_emptychoice' => $params['display_emptychoice'],
+                      'display_rootentity'  => $params['display_rootentity']);
 
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";

@@ -348,6 +348,7 @@ $LANG['common'][106] = "Au moins un champ a une valeur incorrecte";
 $LANG['common'][107] = "Moyenne";
 $LANG['common'][108] = "Clé personnelle";
 $LANG['common'][109] = "Groupe technique";
+$LANG['common'][110] = "Pas de changement d'entité";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -2293,7 +2294,6 @@ $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
 $LANG['setup'][828] = "Valeur ignorée pour l'unicité";
 
-
 $LANG['sla'][1]  = "SLA";
 $LANG['sla'][2]  = "Temps maximum de résolution";
 $LANG['sla'][3]  = "Exécution";
@@ -2319,6 +2319,7 @@ $LANG['software'][6]  = "Editeur";
 $LANG['software'][7]  = "Ajouter une version";
 $LANG['software'][8]  = "Ajouter une licence";
 $LANG['software'][9]  = "Ordinateurs affectés";
+$LANG['software'][10] = "Entité de création des logiciels";
 
 $LANG['software'][11] = "Licences";
 
