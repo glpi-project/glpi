@@ -212,7 +212,7 @@ function getSingular($string) {
                   'ches$'   => 'ch',
                   'shes$'   => 'sh',
                   'sses$'   => 'sss', // Case like addresses : add triple ss to be cut at the end
-                  'ses$'   => 'ss', // Case like aliases : add double ss to be cut at the end
+                  '[aeiou]ses$'   => 'ss', // Case like aliases : add double ss to be cut at the end
                   'ies$'   => 'y', // special case : category
                   's$' => ''); // Add at the end if not exists
 
@@ -221,7 +221,6 @@ function getSingular($string) {
    }
    return $string;
 }
-
 
 /**
  * Is a table used for devices
