@@ -1137,7 +1137,7 @@ class Ticket extends CommonITILObject {
          $input['slas_id'] = $manual_slas_id;
       }
 
-      // Replay setting auto assign if set in rules engine
+      // Replay setting auto assign if set in rules engine or by auto_assign_mode
       if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
            || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
            || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
