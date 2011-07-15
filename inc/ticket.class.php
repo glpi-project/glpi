@@ -386,7 +386,7 @@ class Ticket extends CommonITILObject {
             Problem_Ticket::showForProblem($item);
             break;
 
-         default : 
+         default :
             self::showListForItem($item);
       }
       return true;
@@ -1062,13 +1062,14 @@ class Ticket extends CommonITILObject {
             break;
 
          case AUTO_ASSIGN_HARDWARE_CATEGORY :
-            // Auto assign tech from item
-            if ($input["_users_id_assign"]==0 && $item!=NULL) {
-               if ($item->isField('users_id_tech')) {
-                  $input["_users_id_assign"] = $item->getField('users_id_tech');
-                  if ($input["_users_id_assign"]>0) {
-                     $input["status"] = "assign";
-                  }
+            if ($item!=NULL) {
+               // Auto assign tech from item
+               if ($input['_users_id_assign']==0 && $item->isField('users_id_tech')) {
+                  $input['_users_id_assign'] = $item->getField('users_id_tech');
+               }
+               // Auto assign group from item
+               if ($input['_groups_id_assign']==0 && $item->isField('groups_id_tech')) {
+                  $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
             }
             // Auto assign tech/group from Category
@@ -1100,13 +1101,14 @@ class Ticket extends CommonITILObject {
                   $input['_groups_id_assign'] = $cat->getField('groups_id');
                }
             }
-            // Auto assign tech from item
-            if ($input["_users_id_assign"]==0 && $item!=NULL) {
-               if ($item->isField('users_id_tech')) {
-                  $input["_users_id_assign"] = $item->getField('users_id_tech');
-                  if ($input["_users_id_assign"]>0) {
-                     $input["status"] = "assign";
-                  }
+            if ($item!=NULL) {
+               // Auto assign tech from item
+               if ($input['_users_id_assign']==0 && $item->isField('users_id_tech')) {
+                  $input['_users_id_assign'] = $item->getField('users_id_tech');
+               }
+               // Auto assign group from item
+               if ($input['_groups_id_assign']==0 && $item->isField('groups_id_tech')) {
+                  $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
             }
             break;
@@ -1288,7 +1290,7 @@ class Ticket extends CommonITILObject {
          }
          SlaLevel_Ticket::replayForTicket($this->getID());
       }
-         
+
 
       parent::post_addItem();
 
