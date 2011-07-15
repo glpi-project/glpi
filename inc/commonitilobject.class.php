@@ -490,7 +490,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function pre_updateInDB() {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       if ($this->fields['status'] == 'new') {
          if (in_array("suppliers_id_assign",$this->updates)
