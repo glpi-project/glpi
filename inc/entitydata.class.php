@@ -67,7 +67,8 @@ class EntityData extends CommonDBChild {
                                                                   'autofill_delivery_date',
                                                                   'autofill_order_date',
                                                                   'autofill_use_date',
-                                                                  'autofill_warranty_date'),
+                                                                  'autofill_warranty_date',
+                                                                  'entities_id_software'),
                                        // Notification
                                        'notification'    => array('admin_email', 'admin_reply',
                                                                   'admin_email_name',
@@ -454,6 +455,21 @@ class EntityData extends CommonDBChild {
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
 
+      echo "<tr><th colspan='4'>".$LANG['Menu'][4]."</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['software'][10] . "&nbsp;: </td>";
+      echo "<td>";
+      if ($ID > 0) {
+         $toadd[-1] = $LANG['common'][102];
+      }
+      $toadd[-2] = $LANG['common'][110];
+      Dropdown::show('Entity', array('name'  => 'entities_id_software',
+                                     'value' => $entitydata->getField('entities_id_software'),
+                                     'toadd' => $toadd,
+                                     'entity'=> $_SESSION['glpiactiveentities'],
+                                     'display_rootentity' => true, 'comments' => false));
+      echo "</td><td colspan='2'></td></tr>";
+
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
@@ -817,13 +833,13 @@ class EntityData extends CommonDBChild {
    }
 
    /**
-    * Recovery datas of current entity or parent entity
+    * Retrieve data of current entity or parent entity
     *
     * @param $fieldref  string name of the referent field to know if we look at parent entity
     * @param $entities_id
     * @param $fieldval string name of the field that we want value
    **/
-   static function getUsedConfig($fieldref, $entities_id, $fieldval='') {
+   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $is_zero_allowed = false) {
 
       // for calendar
       if (empty($fieldval)) {
@@ -837,7 +853,8 @@ class EntityData extends CommonDBChild {
          // Value is defined : use it
          if (isset($entdata->fields[$fieldref])
             && ($entdata->fields[$fieldref]>0
-                || !is_numeric($entdata->fields[$fieldref]))) {
+               || ($entdata->fields[$fieldref] == 0 && $is_zero_allowed)
+                  || !is_numeric($entdata->fields[$fieldref]))) {
             return $entdata->fields[$fieldval];
          }
       }

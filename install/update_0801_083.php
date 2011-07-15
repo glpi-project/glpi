@@ -918,6 +918,11 @@ function update0801to083($output='HTML') {
    // Keep it at the end
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
+   //Software dictionnary update
+   $migration->addNormalizedField("glpi_rulecachesoftwares", "entities_id", "string");
+   $migration->addNormalizedField("glpi_rulecachesoftwares", "new_entities_id", "string");
+   $migration->addNormalizedField("glpi_entitydatas", "entities_id_software", 'integer', '-2');
+
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
                 FROM `glpi_displaypreferences`

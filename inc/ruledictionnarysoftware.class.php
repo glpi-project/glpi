@@ -68,16 +68,18 @@ class RuleDictionnarySoftware extends RuleCached {
    function showCacheRuleHeader() {
       global $LANG;
 
-      echo "<tr><th colspan='7'>" . $LANG['rulesengine'][100] . "&nbsp;: " . $this->fields["name"];
+      echo "<tr><th colspan='9'>" . $LANG['rulesengine'][100] . "&nbsp;: " . $this->fields["name"];
       echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . $LANG['entity'][0]." ".$LANG['rulesengine'][104]."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['common'][5]." ".$LANG['rulesengine'][108]."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td></tr>\n";
+      echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td>\n";
+      echo "<td class='tab_bg_1 b'>" . $LANG['ocsng'][36] . "</td></tr>\n";
    }
 
 
@@ -85,6 +87,8 @@ class RuleDictionnarySoftware extends RuleCached {
       global $LANG;
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
+      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", 
+                                                               $fields["old_entities_id"]) . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
                                                                : $LANG['rulesengine'][106])."</td>";
@@ -105,6 +109,9 @@ class RuleDictionnarySoftware extends RuleCached {
              ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '')
               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
               : Dropdown::getYesNo(0)) . "</td>";
+      $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
+                                                      :$LANG['rulesengine'][106]); 
+      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", $new_entity) . "</td>";
    }
 
 
@@ -119,6 +126,13 @@ class RuleDictionnarySoftware extends RuleCached {
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = $LANG['common'][5];
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+      $criterias['manufacturer']['type']  = 'dropdown';
+
+      $criterias['entities_id']['field'] = 'completename';
+      $criterias['entities_id']['name']  = $LANG['entity'][0];
+      $criterias['entities_id']['table'] = 'glpi_entities';
+      $criterias['entities_id']['type']  = 'dropdown';
+
       return $criterias;
    }
 
@@ -143,6 +157,11 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['is_helpdesk_visible']['name']  = $LANG['software'][46];
       $actions['is_helpdesk_visible']['table'] = 'glpi_softwares';
       $actions['is_helpdesk_visible']['type']  = 'yesno';
+
+      $actions['new_entities_id']['name']  = $LANG['entity'][0];
+      $actions['new_entities_id']['table'] = 'glpi_entities';
+      $actions['new_entities_id']['type']  = 'dropdown';
+
       return $actions;
    }
 

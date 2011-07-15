@@ -54,12 +54,14 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       //Init cache system values
       $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
-                                                        "manufacturer" => "manufacturer"),
+                                                        "manufacturer" => "manufacturer",
+                                                        "entities_id"  => "old_entities_id"),
                        array("name"                => "new_value",
                              "version"             => "version",
                              "manufacturer"        => "new_manufacturer",
                              "is_helpdesk_visible" => "is_helpdesk_visible",
-                             "_ignore_ocs_import"  => "ignore_ocs_import"));
+                             "_ignore_ocs_import"  => "ignore_ocs_import",
+                             "new_entities_id"     => "new_entities_id"));
    }
 
 
@@ -96,7 +98,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       echo "<tr><th colspan='2' class='b'>" . $LANG['rulesengine'][95] . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" . $LANG['rulesengine'][96] . "</td>";
       echo "<td class='tab_bg_2 center'>";
-      Dropdown::show('Manufacturer', array('name'=>'manufacturer'));
+      Dropdown::show('Manufacturer', array('name' => 'manufacturer'));
       echo "</td></tr>\n";
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
@@ -122,7 +124,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          //Select all the differents software
          $sql = "SELECT DISTINCT `glpi_softwares`.`name`,
                         `glpi_manufacturers`.`name` AS manufacturer,
-                        `glpi_softwares`.`manufacturers_id` AS manufacturers_id
+                        `glpi_softwares`.`manufacturers_id` AS manufacturers_id,
+                        `glpi_softwares`.`entities_id` AS entities_id
                  FROM `glpi_softwares`
                  LEFT JOIN `glpi_manufacturers`
                      ON (`glpi_manufacturers`.`id` = `glpi_softwares`.`manufacturers_id`)";
@@ -161,11 +164,11 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $input    = addslashes_deep($input);
             $res_rule = $this->processAllRules($input, array(), array());
             $res_rule = addslashes_deep($res_rule);
-
             //If the software's name or version has changed
             if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
-                || (isset($res_rule["version"]))
-                && $res_rule["version"] != '') {
+                || (isset($res_rule["version"])) && $res_rule["version"] != ''
+                     || (isset($res_rule['new_entities_id']) 
+                        && $res_rule['new_entities_id'] != $input['entities_id'])) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
@@ -240,7 +243,10 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          if ($DB->numrows($res_soft)) {
             $soft = $DB->fetch_array($res_soft);
             //For each software
-            $this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID, $soft["entities_id"],
+            $this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID, 
+                                                  (isset($res_rule['new_entities_id'])
+                                                      ?$res_rule['new_entities_id']
+                                                      :$soft["entities_id"]),
                                                   (isset($soft["name"]) ? $soft["name"] : ''),
                                                   (isset($soft["manufacturer"])
                                                          ? $soft["manufacturer"] : ''),
@@ -266,7 +272,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    function replayDictionnaryOnOneSoftware(& $new_softs, $res_rule, $ID, $entity, $name,
                                            $manufacturer, & $soft_ids) {
       global $DB;
-
+   
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
       $input                 = addslashes_deep($input);
@@ -275,23 +281,34 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $res_rule = $this->processAllRules($input, array(), array());
          $res_rule = addslashes_deep($res_rule);
       }
-     $soft = new Software();
+      $soft = new Software();
 
-      //Software's name has changed
-      if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
+      //Software's name has changed or entity
+      if (isset ($res_rule["name"]) && $res_rule["name"] != $name 
+            //Entity has changed, and new entity is a parent of the current one
+            || ((!isset ($res_rule["name"]) 
+               && isset($res_rule['new_entities_id'])) 
+                  && in_array($res_rule['new_entities_id'], getSonsOf($entity)))) {
+         
+         if (isset($res_rule["name"])) {
+            $new_name = $res_rule["name"];
+         } else {
+            $new_name = $name;
+         }
+         
          if (isset ($res_rule["manufacturer"])) {
             $manufacturer = Dropdown::getDropdownName("glpi_manufacturers",
                                                       $res_rule["manufacturer"]);
          }
 
          //New software not already present in this entity
-         if (!isset ($new_softs[$entity][$res_rule["name"]])) {
+         if (!isset ($new_softs[$entity][$new_name])) {
             // create new software or restore it from trash
-            $new_software_id = $soft->addOrRestoreFromTrash($res_rule["name"], $manufacturer,
-                                                            $entity);
-            $new_softs[$entity][$res_rule["name"]] = $new_software_id;
+            $new_software_id = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
+                                                            $entity, '', true);
+            $new_softs[$entity][$new_name] = $new_software_id;
          } else {
-            $new_software_id = $new_softs[$entity][$res_rule["name"]];
+            $new_software_id = $new_softs[$entity][$new_name];
          }
          // Move licenses to new software
          $this->moveLicenses($ID, $new_software_id);

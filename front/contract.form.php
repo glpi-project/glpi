@@ -41,8 +41,12 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }
 
-$contract = new Contract();
-$contractitem = new Contract_Item();
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
+
+$contract         = new Contract();
+$contractitem     = new Contract_Item();
 $contractsupplier = new Contract_Supplier();
 
 if (isset($_POST["add"])) {
@@ -136,7 +140,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
-   $contract->showForm($_GET["id"]);
+   $contract->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 

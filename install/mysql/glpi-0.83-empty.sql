@@ -1825,6 +1825,7 @@ CREATE TABLE `glpi_entitydatas` (
   `autofill_buy_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
   `autofill_delivery_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
   `autofill_order_date` varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1',
+  `entities_id_software` int(11) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

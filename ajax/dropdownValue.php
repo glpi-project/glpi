@@ -81,6 +81,10 @@ if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
    $_POST['emptylabel'] = DROPDOWN_EMPTY_VALUE;
 }
 
+if (!isset($_POST['display_rootentity'])) {
+   $_POST['display_rootentity'] = false;
+}
+
 if (isset($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -226,7 +230,7 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
 
                // Entity=0 already add above
-               if ($_POST['value']==0) {
+               if ($_POST['value']==0 && !$_POST['display_rootentity']) {
                   $display_selected = false;
                }
             }

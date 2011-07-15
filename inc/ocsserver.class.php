@@ -4802,16 +4802,23 @@ class OcsServer extends CommonDBTM {
                   $data2["PUBLISHER"] = encodeInUtf8($data2["PUBLISHER"]);
                }
 
-               $version              = $data2["VERSION"];
-               $manufacturer         = Manufacturer::processName($data2["PUBLISHER"]);
-               $use_glpi_dictionnary = false;
-
+               $version       = $data2["VERSION"];
+               $manufacturer  = Manufacturer::processName($data2["PUBLISHER"]);
+               
+               //Software might be created in another entity, depending on the entity's configuration
+               $target_entity = EntityData::getUsedConfig('entities_id_software', $entity, '', true);
+               //Do not change software's entity except if the dictionnary explicity changes it
+               if ($target_entity == -2) {
+                  $target_entity = $entity;
+               } 
+               
                if (!$cfg_ocs["use_soft_dict"]) {
                   //Software dictionnary
                   $rulecollection = new RuleDictionnarySoftwareCollection();
                   $res_rule = $rulecollection->processAllRules(array("name"         => $name,
                                                                      "manufacturer" => $manufacturer,
-                                                                     "old_version"  => $version),
+                                                                     "old_version"  => $version,
+                                                                     "entities_id"  => $entity),
                                                                array(),
                                                                array('version' => $version));
                   $res_rule = addslashes_deep($res_rule);
@@ -4827,13 +4834,20 @@ class OcsServer extends CommonDBTM {
                   } else {
                      $modified_version = $version;
                   }
+                  
+                  //If software dictionnary returns an entity, it overrides the one that may have
+                  //been defined in the entity's configuration
+                  if (isset($res_rule["new_entities_id"])) {
+                     $target_entity = $res_rule["new_entities_id"];
+                  }
+                  
 
                } else {
                   $modified_name    = $name;
                   $modified_version = $version;
                }
 
-               //Ignore this software
+               //If software must be imported
                if (!isset($res_rule["_ignore_ocs_import"]) || !$res_rule["_ignore_ocs_import"]) {
                   // Clean software object
                   $soft->reset();
@@ -4845,7 +4859,8 @@ class OcsServer extends CommonDBTM {
                      //---- The software doesn't exists in this version for this computer -----//
                      //------------------------------------------------------------------------//
                      $isNewSoft = $soft->addOrRestoreFromTrash($modified_name, $manufacturer,
-                                                               $entity);
+                                                               $target_entity, '', 
+                                                               ($entity != $target_entity));
                      //Import version for this software
                      $versionID = self::importVersion($isNewSoft, $modified_version);
                      //Install license for this machine
