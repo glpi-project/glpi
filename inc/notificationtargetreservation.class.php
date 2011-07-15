@@ -50,6 +50,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
       if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, $LANG['common'][10]);
+         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
       }

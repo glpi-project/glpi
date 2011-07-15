@@ -377,6 +377,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP,
                           $LANG['common'][64]." - ".$LANG['setup'][249]);
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, $LANG['common'][10]);
+         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
          $this->addTarget(Notification::ASSIGN_TECH, $LANG['setup'][239]);
          $this->addTarget(Notification::REQUESTER_GROUP, $LANG['setup'][249]);
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
