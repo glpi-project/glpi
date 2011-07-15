@@ -93,6 +93,8 @@ class Notification extends CommonDBTM {
    const OBSERVER                   = 21;
    //Notification to the supervisor of the ticket's observer group
    const SUPERVISOR_OBSERVER_GROUP  = 22;
+   //Notification to the group of technician in charge of the item
+   const ITEM_TECH_GROUP_IN_CHARGE  = 23;
 
 
    // From CommonDBTM

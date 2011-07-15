@@ -691,6 +691,16 @@ class NotificationTarget extends CommonDBChild {
       $this->getUserByField('users_id_tech', true);
    }
 
+   /**
+    * Get Group of technician in charge of the item
+   **/
+   function getItemGroupTechInChargeAddress() {
+      $id = $this->target_object->getField('groups_id_tech');
+      if ($id>0) {
+         $this->getUsersAddressesByGroup($id);
+      }
+   }
+
 
    /**
     * Get user owner of the material
@@ -795,6 +805,11 @@ class NotificationTarget extends CommonDBChild {
                //Technician in charge of the ticket
                case Notification::ITEM_TECH_IN_CHARGE :
                   $this->getItemTechnicianInChargeAddress();
+                  break;
+
+               //Group of technician in charge of the ticket
+               case Notification::ITEM_TECH_GROUP_IN_CHARGE :
+                  $this->getItemGroupTechInChargeAddress();
                   break;
 
                //User who's owner of the material
