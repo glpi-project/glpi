@@ -4175,6 +4175,7 @@ DROP TABLE IF EXISTS `glpi_rulecachesoftwares`;
 CREATE TABLE `glpi_rulecachesoftwares` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `old_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `manufacturer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `rules_id` int(11) NOT NULL DEFAULT '0',
   `new_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -4182,6 +4183,7 @@ CREATE TABLE `glpi_rulecachesoftwares` (
   `new_manufacturer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ignore_ocs_import` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_helpdesk_visible` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `new_entities_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `old_value` (`old_value`),
   KEY `rules_id` (`rules_id`)
