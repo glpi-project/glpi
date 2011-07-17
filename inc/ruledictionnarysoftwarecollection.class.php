@@ -55,7 +55,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       //Init cache system values
       $this->initCache("glpi_rulecachesoftwares", array("name"         => "old_value",
                                                         "manufacturer" => "manufacturer",
-                                                        "entities_id"  => "old_entities_id"),
+                                                        "entities_id"  => "entities_id"),
                        array("name"                => "new_value",
                              "version"             => "version",
                              "manufacturer"        => "new_manufacturer",
