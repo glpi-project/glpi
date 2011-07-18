@@ -132,6 +132,11 @@ class RuleMailCollector extends Rule {
       $criterias['auto-submitted']['table'] = '';
       $criterias['auto-submitted']['type']  = 'text';
 
+      /// Renater spam matching : X-UCE-Status = Yes
+      $criterias['x-uce-status']['name']  = $LANG['mailing'][132].' : X-UCE-Status';
+      $criterias['x-uce-status']['table'] = '';
+      $criterias['x-uce-status']['type']  = 'text';
+
       $criterias['received']['name']  = $LANG['mailing'][132].' : Received';
       $criterias['received']['table'] = '';
       $criterias['received']['type']  = 'text';
