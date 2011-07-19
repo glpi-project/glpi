@@ -1945,7 +1945,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign>=0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'], true);
+         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'], $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User
