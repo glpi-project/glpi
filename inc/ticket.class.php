@@ -4130,7 +4130,7 @@ class Ticket extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign_ticket>=0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign_ticket, $this->fields['entities_id'], true, false, true);
+         self::showActorAddForm(self::ASSIGN, $rand_assign_ticket, $this->fields['entities_id'], true, false, $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User
