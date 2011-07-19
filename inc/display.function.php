@@ -2856,10 +2856,10 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
    $output .= ",timeConfig: {
       altFormats:'H:i:s',increment: $time_step,$empty";
 
-   if (!empty($minTime)) {
+   if (!empty($minTime) && $minTime!='00:00:00') {
       $output .= ",minValue: '".$minTime."'";
    }
-   if (!empty($maxTime)) {
+   if (!empty($maxTime) && $maxTime!='24:00:00') {
       $output .= ",maxValue: '".$maxTime."'";
    }
    $output .= "}";
