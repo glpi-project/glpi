@@ -187,13 +187,13 @@ $LANG['central'][5]="خانه";
 $LANG['central'][6]="خروج"; 
 $LANG['central'][7]="راهنما"; 
 $LANG['central'][8]="ضمیمه"; 
-$LANG['central'][9]="اعلان شما در جریان است"; 
-$LANG['central'][10]="اعلان جدید"; 
+$LANG['central'][9]="درخواست شما در جریان است"; 
+$LANG['central'][10]="درخواست های جدید"; 
 $LANG['central'][12]="نمای شخصی"; 
 $LANG['central'][13]="نمای سراسری"; 
 $LANG['central'][14]="نمای گروهی"; 
-$LANG['central'][18]="اعلان شما بسته شد"; 
-$LANG['central'][19]="اعلان شما اعتبارسنجی شد"; 
+$LANG['central'][18]="درخواست شما بسته شد"; 
+$LANG['central'][19]="درخواست شما اعتبارسنجی شد"; 
 
 $LANG['choice'][0]="خیر"; 
 $LANG['choice'][1]="بله"; 
@@ -306,7 +306,7 @@ $LANG['common'][102]="توارث برای هویت منشاء";
 $LANG['common'][103]="حامیان"; 
 $LANG['common'][104]="مراقب"; 
 $LANG['common'][105]="اعلان خطر"; 
-$LANG['common'][106]="حداقل یک فیلد دارای مقدار نامعتبر است."; 
+$LANG['common'][106]="حداقل یک جزء دارای مقدار نامعتبر است."; 
 $LANG['common'][107]="میانگین"; 
 
 $LANG['computers'][0]="برچسب"; 
@@ -386,15 +386,15 @@ $LANG['crontask'][3]="ارسال هشدار برای کالاهای مصرفی";
 $LANG['crontask'][4]="ارسال هشدار برای مجوزهای منقضی شده"; 
 $LANG['crontask'][5]="ارسال هشدار برای قراردادها"; 
 $LANG['crontask'][6]="ارسال هشدار برای اطلاعات مالی و اداری"; 
-$LANG['crontask'][7]="زدودن ثبت وقایع قدیمی"; 
+$LANG['crontask'][7]="پاک کردن سیاهه های قدیمی"; 
 $LANG['crontask'][8]="بهینه سازی پایگاه داده"; 
 $LANG['crontask'][9]="رایانامه رسیده(رایانامه دریافت شده)"; 
 $LANG['crontask'][10]="بررسی نسخه MYSQL"; 
 $LANG['crontask'][11]="بررسی بروزآوری های جدید"; 
 $LANG['crontask'][12]="زدودن جلسات منقضی شده"; 
 $LANG['crontask'][13]="زدودن نمودارهای ساخته شده"; 
-$LANG['crontask'][14]="اعلان های خودکار بسته شده"; 
-$LANG['crontask'][15]="اعلان حل نشده است"; 
+$LANG['crontask'][14]="درخواست های خودکار بسته شده"; 
+$LANG['crontask'][15]="درخواست حل نشده است"; 
 $LANG['crontask'][16]="اعمال خودکار از SLA"; 
 $LANG['crontask'][17]="فرانگری اعمال خودکار"; 
 $LANG['crontask'][18]="ایجاد نظرسنجی از رضایت"; 
@@ -528,23 +528,23 @@ $LANG['entity'][14]="اطلاعات پیشرفته";
 $LANG['entity'][15]="فهرست LDAP یک هویت"; 
 $LANG['entity'][16]="پالایه جستجو ( اگر نیاز باشد )"; 
 $LANG['entity'][17]="بستن خودکار پیکره بندی"; 
-$LANG['entity'][18]="بستن خودکار پس از حل اعلان"; 
+$LANG['entity'][18]="بستن خودکار پس از رفع درخواست"; 
 $LANG['entity'][19]="پیکربندی نظرسنجی رضایت"; 
 $LANG['entity'][20]="ایجاد نظرسنجی پس از"; 
 $LANG['entity'][21]="ارزش گذاری به راه انداختن نظرسنجی"; 
-$LANG['entity'][22]="برای اعلان بعد از بسته شدن"; 
+$LANG['entity'][22]="برای درخواست بعد از بسته شدن"; 
 $LANG['entity'][23]="مقادیر قوانین عمومی برای تخصیص به هویت ها"; 
 $LANG['entity'][24]="مقادیر مورد استفاده در واسط برای جستجوی کاربران از فهرست LDAP"; 
 $LANG['entity'][25]="پالایه LDAP پیوند داده شده به هویت (اگر نیاز باشد)"; 
 $LANG['entity'][26]="این پارامترها را به عنوان اقدامات صورت گرفته در قوانین عمومی برای تخصیص به هویت ها مورد استفاده قرار می گیرد"; 
 $LANG['entity'][27]="هویت جانشین دامنه نامه رسان"; 
-$LANG['entity'][28]="نوع اعلان پیش فرض"; 
+$LANG['entity'][28]="نوع درخواست های پیش فرض"; 
 
 $LANG['event'][0]="منبع"; 
 $LANG['event'][2]="خدمت"; 
 $LANG['event'][3]="سطح"; 
 $LANG['event'][4]="پیام"; 
-$LANG['event'][18]="زمینه"; 
+$LANG['event'][18]="جزء"; 
 $LANG['event'][19]="به هنگام درآوری"; 
 $LANG['event'][20]="نگذشته"; 
 
@@ -674,8 +674,8 @@ $LANG['help'][29]="ابزار";
 $LANG['help'][30]="عمومی"; 
 $LANG['help'][31]="نرم افزار"; 
 $LANG['help'][35]="تلفن"; 
-$LANG['help'][40]="اعلان شما عنوان ندارد، لطفا دوباره سعی کنید."; 
-$LANG['help'][41]="اعلان شما رده ندارد، لطفا دوباره سعی کنید"; 
+$LANG['help'][40]="درخواست شما عنوان ندارد، لطفا دوباره سعی کنید."; 
+$LANG['help'][41]="درخواست شما رده ندارد، لطفا دوباره سعی کنید"; 
 $LANG['help'][42]="خیلی بالا"; 
 $LANG['help'][43]="بالا"; 
 $LANG['help'][44]="متوسط"; 
@@ -723,7 +723,7 @@ $LANG['install'][32]="کلمه عبور Mysql";
 $LANG['install'][34]="آزمایش ارتباط با پایگاه داده"; 
 $LANG['install'][35]="نمی توان به پایگاه داده متصل شد"; 
 $LANG['install'][36]="خادم پاسخ داد"; 
-$LANG['install'][37]="فیلد یا/ و خادم خالی است"; 
+$LANG['install'][37]="جزءخادم یا/ و کاربر خالی است"; 
 $LANG['install'][38]="پایگاه داده را انتخاب کنید:"; 
 $LANG['install'][39]="ایجاد یک پایگاه داده جدید و یا استفاده از یک پایگاه موجود :"; 
 $LANG['install'][40]="پایگاه داده را برای بروزآوری انتخاب کنید:"; 
@@ -782,17 +782,17 @@ $LANG['install'][106]="بررسی مجوزهای نوشتن برای پروند�
 
 $LANG['job'][1]="واقعه"; 
 $LANG['job'][2]="درخواست"; 
-$LANG['job'][3]="کاردان ها"; 
+$LANG['job'][3]="کاردان های فنی"; 
 $LANG['job'][4]="درخواست کننده"; 
 $LANG['job'][5]="تخصیص دادن به"; 
 $LANG['job'][6]="کاردان فنی"; 
 $LANG['job'][7]="وظیفه"; 
-$LANG['job'][8]="آخرین اعلان ها"; 
+$LANG['job'][8]="آخرین درخواست ها"; 
 $LANG['job'][9]="پیگیری"; 
-$LANG['job'][10]="آخرین اعلان"; 
+$LANG['job'][10]="آخرین درخواست"; 
 $LANG['job'][11]="شرح واقعه یا درخواست"; 
-$LANG['job'][12]="هیچ پیگیری برای این اعلان نیست"; 
-$LANG['job'][13]="اعلان جدید"; 
+$LANG['job'][12]="هیچ پیگیری برای این درخواست نیست"; 
+$LANG['job'][13]="درخواست جدید"; 
 $LANG['job'][14]="بازشده"; 
 $LANG['job'][15]="حل شده"; 
 $LANG['job'][16]="بسته شده"; 
@@ -805,7 +805,7 @@ $LANG['job'][22]="دقیقه(ها)";
 $LANG['job'][23]="جستجوی یک راه حل"; 
 $LANG['job'][24]="استفاده از یک راه حل"; 
 $LANG['job'][25]="ذخیره و افزودن به پایگاه دانش"; 
-$LANG['job'][26]="شما دوباره راهنمایی می شوید زیرا مدتی است که به این اعلان دسترسی ندارید"; 
+$LANG['job'][26]="شما دوباره راهنمایی می شوید زیرا مدتی است که به این درخواست دسترسی ندارید"; 
 $LANG['job'][27]="افزودن خواهان جدید"; 
 $LANG['job'][29]="افزودن پیگیری جدید"; 
 $LANG['job'][30]="افزودن تکلیف جدید"; 
@@ -815,7 +815,7 @@ $LANG['job'][33]="توضیحات خالی";
 $LANG['job'][34]="طرح ریزی این وظیفه"; 
 $LANG['job'][35]="طرح ریزی"; 
 $LANG['job'][37]="خلاصه"; 
-$LANG['job'][38]="اعلان"; 
+$LANG['job'][38]="درخواست"; 
 $LANG['job'][39]="به هنگام سازی پیگیری"; 
 $LANG['job'][40]="هزینه زمان"; 
 $LANG['job'][41]="هزینه ثابت و معین"; 
@@ -823,17 +823,17 @@ $LANG['job'][42]="هزینه مواد";
 $LANG['job'][43]="جمع هزینه"; 
 $LANG['job'][44]="منبع درخواست"; 
 $LANG['job'][45]="منبع پیگیری"; 
-$LANG['job'][46]="اعلان در هویت اضافه شده است"; 
+$LANG['job'][46]="درخواست در هویت اضافه شده است"; 
 $LANG['job'][47]="هزینه ها"; 
 $LANG['job'][48]="نوع راه حل"; 
 $LANG['job'][49]="وظیفه جدید"; 
-$LANG['job'][50]="هیچ وظیفه ای برای این اعلان نیست"; 
+$LANG['job'][50]="هیچ وظیفه ای برای این درخواست نیست"; 
 $LANG['job'][51]="تصویب راه حل"; 
 $LANG['job'][52]="به هنگام سازی وظیفه"; 
 $LANG['job'][53]="حذف یک وظیفه"; 
-$LANG['job'][54]="بدون پاسخ، اعلان به صورت خودکار بسته خواهد شد."; 
-$LANG['job'][55]="اعلان های پیوندی"; 
-$LANG['job'][56]="اعلان پیوند"; 
+$LANG['job'][54]="بدون پاسخ، درخواست به صورت خودکار بسته خواهد شد."; 
+$LANG['job'][55]="درخواست های پیوندی"; 
+$LANG['job'][56]="درخواست پیوند"; 
 
 $LANG['joblist'][0]="وضعیت"; 
 $LANG['joblist'][1]="فقط منحصر به من"; 
@@ -841,23 +841,23 @@ $LANG['joblist'][2]="اولویت";
 $LANG['joblist'][3]="اشخاص +گروه (ها)"; 
 $LANG['joblist'][4]="تخصیص داده شده"; 
 $LANG['joblist'][6]="شرح"; 
-$LANG['joblist'][7]="اعلان جدید برای این عنوان."; 
-$LANG['joblist'][8]="اعلانی یافت نشد"; 
+$LANG['joblist'][7]="درخواست جدید برای این عنوان."; 
+$LANG['joblist'][8]="درخواستی یافت نشد"; 
 $LANG['joblist'][9]="جدید"; 
 $LANG['joblist'][10]="بسته شده(حل شده)"; 
 $LANG['joblist'][11]="بازشده در"; 
 $LANG['joblist'][12]="بسته شده در"; 
-$LANG['joblist'][13]="اعلان پردازش شده"; 
+$LANG['joblist'][13]="درخواست پردازش شده"; 
 $LANG['joblist'][14]="حل شده در"; 
-$LANG['joblist'][16]="اعلانی در جریان نیست."; 
+$LANG['joblist'][16]="درخواستی در جریان نیست."; 
 $LANG['joblist'][17]="بسته شده(حل نشده)"; 
 $LANG['joblist'][18]="پردازش(تخصیص داده شده)"; 
 $LANG['joblist'][19]="پردازش(طرح ریزی شده)"; 
 $LANG['joblist'][21]="پردازش"; 
-$LANG['joblist'][25]="اعلان در عناوین پیوندی"; 
+$LANG['joblist'][25]="درخواست در عناوین پیوندی"; 
 $LANG['joblist'][26]="معوق"; 
 $LANG['joblist'][27]="رایانامه برای پیگیری"; 
-$LANG['joblist'][28]="اعلان ها در عناوین پیوندی"; 
+$LANG['joblist'][28]="درخواست ها در عناوین پیوندی"; 
 $LANG['joblist'][29]="فوریت"; 
 $LANG['joblist'][30]="فشرده"; 
 $LANG['joblist'][32]="حل شده"; 
@@ -873,10 +873,10 @@ $LANG['jobresolution'][4]="راه حل ردشده";
 $LANG['jobresolution'][5]="اگر راه حلی را نپذیرید، باید دلیلش را ذکر کنید"; 
 $LANG['jobresolution'][6]="قالب راه حل"; 
 
-$LANG['knowbase'][1]="پرسش و پاسخ متداول"; 
-$LANG['knowbase'][5]="قراردادن این فقره در پرسش و پاسخ متداول"; 
+$LANG['knowbase'][1]="پرسش و پاسخ"; 
+$LANG['knowbase'][5]="قراردادن این فقره در پرسش و پاسخ"; 
 $LANG['knowbase'][6]="برای این فقره رده را انتخاب کنید:"; 
-$LANG['knowbase'][7]="حذف این فقره از پرسش و پاسخ متداول"; 
+$LANG['knowbase'][7]="حذف این فقره از پرسش و پاسخ"; 
 $LANG['knowbase'][8]="ویرایش این فقره"; 
 $LANG['knowbase'][9]="حذف این فقره"; 
 $LANG['knowbase'][10]="این فقره بخشی از پرسش و پاسخ هست"; 
@@ -976,7 +976,7 @@ $LANG['log'][59]="عمل خودکار";
 $LANG['log'][60]="استفاده از مدیریت واحد برای این فقره"; 
 $LANG['log'][61]="افزودن کاربر به یک نهاد"; 
 $LANG['log'][62]="حذف کاربر از نهاد"; 
-$LANG['log'][64]="تغییر یک زمینه"; 
+$LANG['log'][64]="تغییر یک جزء"; 
 $LANG['log'][65]="نشان راه"; 
 $LANG['log'][66]="امنیت"; 
 $LANG['log'][70]="افزودن درگاه شبکه"; 
@@ -1016,8 +1016,8 @@ $LANG['log'][115]="تعویض نسخه برای نرم افزار نصب شده"
 $LANG['log'][116]="اتحاد بین رایانه و پروانه"; 
 $LANG['log'][117]="تعویض پروانه برای چندین رایانه"; 
 $LANG['log'][118]="تفکیک از یک پروانه و رایانه ها"; 
-$LANG['log'][120]="حذف پیوند بین اعلان ها"; 
-$LANG['log'][122]="حذف یک عامل برای اعلان"; 
+$LANG['log'][120]="حذف پیوند بین درخواست ها"; 
+$LANG['log'][122]="حذف یک عامل برای درخواست"; 
 $LANG['log'][123]="سعی برای افزودن یک فقره که موجود است"; 
 
 $LANG['login'][0]="آخرین ورود"; 
@@ -1033,7 +1033,7 @@ $LANG['login'][9]="هنوز تصدیق نشده است";
 $LANG['login'][10]="تصدیق"; 
 $LANG['login'][11]="کاربر برای اتصال در GLPI تایید نشد"; 
 $LANG['login'][12]="نام کاربری یا رمز عبور نادرست است"; 
-$LANG['login'][13]="رمز عبور خالی است"; 
+$LANG['login'][13]="جزء رمز عبور خالی است"; 
 $LANG['login'][14]="کاربر ناشناس"; 
 $LANG['login'][15]="کاربر پیدا نشد یا چندین کاربر پیدا شد"; 
 $LANG['login'][17]="سایر روش های تصدیق"; 
@@ -1054,7 +1054,7 @@ $LANG['login'][32]="تصدیق بر پایگاه داده GLPI";
 $LANG['login'][33]="تصدیق بر خادم رایانامه"; 
 
 $LANG['mailgate'][0]="دریافت کننده رایانامه"; 
-$LANG['mailgate'][2]="حالا دریافت رایانامه اعلان"; 
+$LANG['mailgate'][2]="حالا دریافت رایانامه درخواست"; 
 $LANG['mailgate'][3]="تعداد رایانامه های در دسترس و بازیابی شده"; 
 $LANG['mailgate'][4]="الحاقی mbstring  پیدا نشد.اخطار با charsets استفاده می شود."; 
 $LANG['mailgate'][5]="پرونده ضمیمه نامعتبر"; 
@@ -1071,14 +1071,14 @@ $LANG['mailgate'][16]="عطف به:";
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
 $LANG['mailing'][4]="پیگیری(ها) قبلا انجام شده است"; 
-$LANG['mailing'][5]="توضیحات اعلان"; 
+$LANG['mailing'][5]="توضیحات درخواست"; 
 $LANG['mailing'][6]="CSS"; 
-$LANG['mailing'][10]="اعلان پیگیری جدید"; 
+$LANG['mailing'][10]="درخواست پیگیری جدید"; 
 $LANG['mailing'][19]="ذخیره جدید"; 
 $LANG['mailing'][23]="تعدیل ذخیره"; 
 $LANG['mailing'][26]="سند اضافه شده:"; 
 $LANG['mailing'][29]="ذخیره حذف شده"; 
-$LANG['mailing'][30]="بروزرسانی اعلان"; 
+$LANG['mailing'][30]="بروزرسانی درخواست"; 
 $LANG['mailing'][31]="این یک رایانامه آزمایشی است."; 
 $LANG['mailing'][32]="آزمایش نامه"; 
 $LANG['mailing'][33]="هشدار قاب نوار"; 
@@ -1105,13 +1105,13 @@ $LANG['mailing'][119]="رخداد";
 $LANG['mailing'][120]="روش هشدار"; 
 $LANG['mailing'][121]="گیرنده ها"; 
 $LANG['mailing'][122]="کار(ها) قبلا انجام شده است"; 
-$LANG['mailing'][123]="اعلان حل شده"; 
+$LANG['mailing'][123]="درخواست حل شده"; 
 $LANG['mailing'][124]="افزودن ترجمه جدید"; 
 $LANG['mailing'][125]="ترجمه پیش فرض"; 
 $LANG['mailing'][126]="قالب ترجمه"; 
-$LANG['mailing'][127]="بستن اعلان"; 
-$LANG['mailing'][128]="فیلد را برای ایجاد از HTML خالی بگذارید"; 
-$LANG['mailing'][129]="حذف اعلان"; 
+$LANG['mailing'][127]="بستن درخواست"; 
+$LANG['mailing'][128]="جزء را برای ایجاد از HTML خالی بگذارید"; 
+$LANG['mailing'][129]="حذف درخواست"; 
 $LANG['mailing'][130]="از"; 
 $LANG['mailing'][131]="گیرنده"; 
 $LANG['mailing'][132]="سرصفحه رایانامه"; 
@@ -1136,7 +1136,7 @@ $LANG['Menu'][1]="شبکه ها";
 $LANG['Menu'][2]="چاپگرها"; 
 $LANG['Menu'][3]="صفحه نمایش ها"; 
 $LANG['Menu'][4]="نرم افزار"; 
-$LANG['Menu'][5]="اعلان ها"; 
+$LANG['Menu'][5]="درخواست ها"; 
 $LANG['Menu'][6]="گزارش ها"; 
 $LANG['Menu'][11]="تنظیم ها"; 
 $LANG['Menu'][12]="تعمیر و نگهداری"; 
@@ -1147,7 +1147,7 @@ $LANG['Menu'][16]="دستگاه ها";
 $LANG['Menu'][17]="ذخیره ها"; 
 $LANG['Menu'][18]="ابزارها"; 
 $LANG['Menu'][19]="پایگاه دانش"; 
-$LANG['Menu'][20]="پرسش های مکرر"; 
+$LANG['Menu'][20]="پرسش و پاسخ"; 
 $LANG['Menu'][21]="کارتریج ها"; 
 $LANG['Menu'][22]="تماس ها"; 
 $LANG['Menu'][23]="تهیه کننده ها"; 
@@ -1245,74 +1245,74 @@ $LANG['ocsconfig'][57]="برابر";
 $LANG['ocsconfig'][58]="پیوند به طور خودکار متصل به رایانه GLPI با یکی در OCSNG. <br> این گزینه در طی پیوند دستی حساب و توسط اسکریپت های هماهنگ سازی گرفته شده است."; 
 $LANG['ocsconfig'][59]="نشانی وب از میز فرمان OCSNG"; 
 
-$LANG['ocsng'][0]="OCS Inventory NG"; 
-$LANG['ocsng'][1]="Synchronize computers already imported"; 
+$LANG['ocsng'][0]="NG فهرست اموال OCS"; 
+$LANG['ocsng'][1]="رایانه های همگام سازی شده قبلا وارد شده اند"; 
 $LANG['ocsng'][2]="ورود رایانه های جدید"; 
 $LANG['ocsng'][3]="حذف پیوندها بین GLPI و OCSNG"; 
-$LANG['ocsng'][4]="Link new OCS computers to existing GLPI computers"; 
+$LANG['ocsng'][4]="پیوند رایانه های OCS به رایانه های موجود GLPI"; 
 $LANG['ocsng'][5]="ورود رایانه های جدید"; 
 $LANG['ocsng'][6]="بروزرسانی خودکار"; 
 $LANG['ocsng'][7]="وارد شده از OCSNG"; 
 $LANG['ocsng'][8]="واردات موفقیت آمیز"; 
-$LANG['ocsng'][9]="No new computer to be imported"; 
+$LANG['ocsng'][9]="هیچ رایانه جدیدی وارد نمی شود"; 
 $LANG['ocsng'][10]="رایانه ها در OCSNG بروزرسانی شدند"; 
-$LANG['ocsng'][11]="Update computers"; 
-$LANG['ocsng'][12]="No new computer to be updated"; 
+$LANG['ocsng'][11]="بروز رسانی رایانه ها"; 
+$LANG['ocsng'][12]="هیچ رایانه جدیدی بروزرسانی نمی شود"; 
 $LANG['ocsng'][13]="تاریخ ورود در GLPI"; 
-$LANG['ocsng'][14]="Last OCSNG inventory date"; 
-$LANG['ocsng'][15]="No field locked"; 
-$LANG['ocsng'][16]="Locked Field(s)"; 
+$LANG['ocsng'][14]="تاریخ آخرین موجودی OCSNG"; 
+$LANG['ocsng'][15]="هیچ جزئی قفل نشده است"; 
+$LANG['ocsng'][16]="جزء(اجزاء) قفل شده"; 
 $LANG['ocsng'][18]="اتصال به پایگاه داده OCSNG موفقیت آمیز بود"; 
-$LANG['ocsng'][19]="Valid OCSNG configuration and version"; 
-$LANG['ocsng'][20]="Invalid OCSNG Version: RC3 is required"; 
+$LANG['ocsng'][19]="پیکره بندی و نسخه OCSNG معتبر"; 
+$LANG['ocsng'][20]="نسخه OCSNG نامعتبر است: RC3 لازم است"; 
 $LANG['ocsng'][21]="اتصال به پایگاه داده OCSNG شکست خورد"; 
 $LANG['ocsng'][22]="احتیاط! اطلاعات وارد شده (نگاه کنید به پیکربندی خود) داده های موجود را بازنویسی می کند"; 
-$LANG['ocsng'][23]="Unable to import, GLPI computer is already related to an element of OCSNG"; 
+$LANG['ocsng'][23]="قادر به واردات نیست، رایانه GLPI قبلا به یک عنصر از OCSNG مرتبط شده است"; 
 $LANG['ocsng'][24]="هماهنگ سازی اجباری"; 
 $LANG['ocsng'][26]="انتخاب یک خادم OCSNG"; 
-$LANG['ocsng'][27]="No OCSNG server defined"; 
-$LANG['ocsng'][29]="OCSNG server"; 
-$LANG['ocsng'][30]="Locked monitor(s)"; 
-$LANG['ocsng'][32]="Locked device(s)"; 
-$LANG['ocsng'][34]="Locked printer(s)"; 
+$LANG['ocsng'][27]="هیچ خادم OCSNG تعریف نشده است"; 
+$LANG['ocsng'][29]="خادم OCSNG"; 
+$LANG['ocsng'][30]="صفحه نمایش(های) قفل شده"; 
+$LANG['ocsng'][32]="ابزار(های) قفل شده"; 
+$LANG['ocsng'][34]="چاپگر(های) قفل شده"; 
 $LANG['ocsng'][36]="نهاد مقصد"; 
 $LANG['ocsng'][37]="پیش نمایش فعال"; 
 $LANG['ocsng'][38]="پیش نمایش غیرفعال"; 
-$LANG['ocsng'][39]="Target location"; 
-$LANG['ocsng'][40]="Match the rule ?"; 
-$LANG['ocsng'][41]="Manual import mode"; 
-$LANG['ocsng'][42]="Invalid OCSNG configuration (TRACE_DELETED must be active)"; 
+$LANG['ocsng'][39]="محل هدف"; 
+$LANG['ocsng'][40]="مطابقت با قانون؟"; 
+$LANG['ocsng'][41]="حالت واردات دستی"; 
+$LANG['ocsng'][42]="پیکره بندی OCSNG نامعتبر(TRACE_DELETED باید فعال باشد)"; 
 $LANG['ocsng'][43]="عدم دسترسی به پایگاه داده OCSNG (نیازمند نوشتن حقوق بر سخت افزار،CHECKSUM لازم است)"; 
 $LANG['ocsng'][44]="عدم دسترسی به پایگاه داده OCSNG (لازم است حقوق را در جدول deleted_equiv حذف کنید)"; 
 $LANG['ocsng'][45]="OCS ID"; 
 $LANG['ocsng'][46]="در OCSNG حذف شد"; 
-$LANG['ocsng'][47]="Linked with an OCSNG computer"; 
-$LANG['ocsng'][48]="The OCSNG ID of the computer changed"; 
+$LANG['ocsng'][47]="پیوند به یک رایانه OCSNG"; 
+$LANG['ocsng'][48]="OCSNG ID رایانه عوض شده است"; 
 $LANG['ocsng'][49]="عامل"; 
-$LANG['ocsng'][50]="Locked IP(s)"; 
-$LANG['ocsng'][52]="Locked software(s)"; 
-$LANG['ocsng'][54]="Software deleted by OCSNG synchronization"; 
-$LANG['ocsng'][55]="Volume(s) locked(s)"; 
-$LANG['ocsng'][56]="Locked component(s)"; 
-$LANG['ocsng'][57]="OCSNG Interface"; 
-$LANG['ocsng'][58]="OCSNG link"; 
+$LANG['ocsng'][50]="IP (های) قفل شده"; 
+$LANG['ocsng'][52]="نرم افزار(های) قفل شده"; 
+$LANG['ocsng'][54]="نرم افزار به واسطه همگام سازی OCSNG حذف شد"; 
+$LANG['ocsng'][55]="مقدار(مقادیر) قفل شده"; 
+$LANG['ocsng'][56]="مولفه (های) قفل شده"; 
+$LANG['ocsng'][57]="واسط OCSNG"; 
+$LANG['ocsng'][58]="پیوند OCSNG"; 
 $LANG['ocsng'][59]="موجود در GLPI"; 
 $LANG['ocsng'][60]="موجود در OCSNG"; 
-$LANG['ocsng'][61]="No item to clean"; 
-$LANG['ocsng'][62]="target entity for the computer"; 
-$LANG['ocsng'][67]="Link possible"; 
+$LANG['ocsng'][61]="هیچ فقره ای برای پاک کردن نیست"; 
+$LANG['ocsng'][62]="نهاد هدف برای رایانه"; 
+$LANG['ocsng'][67]="پیوند ممکن"; 
 $LANG['ocsng'][68]="واردات ردشده"; 
-$LANG['ocsng'][69]="New computer created in GLPI"; 
+$LANG['ocsng'][69]="ایجاد رایانه جدید در GLPI"; 
 $LANG['ocsng'][70]="رایانه های وارد شده"; 
-$LANG['ocsng'][71]="Synchronized computers"; 
+$LANG['ocsng'][71]="رایانه های همگام سازی شده"; 
 $LANG['ocsng'][72]="رایانه ها هیچ قانونی را بررسی نمی کنند"; 
-$LANG['ocsng'][73]="Linked computers"; 
-$LANG['ocsng'][74]="Unmodified computers"; 
+$LANG['ocsng'][73]="رایانه های پیوندی"; 
+$LANG['ocsng'][74]="رایانه های اصلاح نشده"; 
 $LANG['ocsng'][75]="رایانه های تکراری"; 
-$LANG['ocsng'][76]="Statistics of the OCS link"; 
-$LANG['ocsng'][77]="process completed"; 
-$LANG['ocsng'][78]="Link if possible, otherwise imports declined"; 
-$LANG['ocsng'][79]="Link if possible"; 
+$LANG['ocsng'][76]="آمار از پیوند OCS"; 
+$LANG['ocsng'][77]="پردازش کامل شد"; 
+$LANG['ocsng'][78]="پیوند در صورت امکان، در غیر این صورت واردات کاهش یافته است"; 
+$LANG['ocsng'][79]="پیوند در صورت امکان"; 
 $LANG['ocsng'][80]="رایانه ها که واردشدند بواسطه قانون رد شدند"; 
 
 $LANG['pager'][1]="به"; 
@@ -1348,405 +1348,405 @@ $LANG['planning'][16]="Information";
 $LANG['planning'][17]="To do"; 
 $LANG['planning'][18]="Done"; 
 
-$LANG['plugins'][0]="Plugins list"; 
-$LANG['plugins'][1]="Delete or update it otherwise GLPI will not work correctly."; 
-$LANG['plugins'][2]="Installed / not configured"; 
-$LANG['plugins'][3]="Installed / not activated"; 
-$LANG['plugins'][4]="Error / to clean"; 
-$LANG['plugins'][5]="Non-existent function(s)"; 
-$LANG['plugins'][6]="To update"; 
-$LANG['plugins'][7]="No plugin installed"; 
-$LANG['plugins'][8]="See the catalog of plugins"; 
-$LANG['plugins'][9]="Authors"; 
-$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
+$LANG['plugins'][0]="فهرست افزونه"; 
+$LANG['plugins'][1]="آن را حذف یا بروزرسانی کنید در غیر اینصورت GLPI به درستی کار نخواهد کرد."; 
+$LANG['plugins'][2]="نصب شده / پیکره بندی نشده"; 
+$LANG['plugins'][3]="نصب شده/ فعال نیست"; 
+$LANG['plugins'][4]="خطا / برای پاکسازی"; 
+$LANG['plugins'][5]="تابع(توابع) غیر موجود"; 
+$LANG['plugins'][6]="برای بروزرسانی"; 
+$LANG['plugins'][7]="افزونه نصب نشده"; 
+$LANG['plugins'][8]="رده افزوده را ببینید"; 
+$LANG['plugins'][9]="نویسنده ها"; 
+$LANG['plugins'][10]="این افزونه با این نسخه از GLPI سازگار نیست"; 
 
-$LANG['printers'][14]="Serial"; 
-$LANG['printers'][15]="Parallel"; 
-$LANG['printers'][18]="Ports"; 
+$LANG['printers'][14]="نوبتی"; 
+$LANG['printers'][15]="موازی"; 
+$LANG['printers'][18]="درگاه ها"; 
 $LANG['printers'][27]="USB"; 
-$LANG['printers'][28]="Ethernet"; 
+$LANG['printers'][28]="اترنت"; 
 $LANG['printers'][29]="Wifi"; 
-$LANG['printers'][30]="Initial page counter"; 
-$LANG['printers'][31]="Printed pages"; 
-$LANG['printers'][32]="Driver"; 
+$LANG['printers'][30]="شمارنده صفحه اولیه"; 
+$LANG['printers'][31]="صفحات چاپ شده"; 
+$LANG['printers'][32]="گرداننده"; 
 
-$LANG['profiles'][0]="Global right"; 
-$LANG['profiles'][1]="Entity Right"; 
-$LANG['profiles'][2]="Profile's interface"; 
-$LANG['profiles'][4]="Add a followup to tickets of associated group(s)"; 
-$LANG['profiles'][5]="Create a ticket"; 
-$LANG['profiles'][6]="Add a followup to tickets (requester)"; 
-$LANG['profiles'][7]="Show all tickets"; 
-$LANG['profiles'][8]="View all follow-ups and tasks (public and private)"; 
-$LANG['profiles'][9]="Show public followups and tasks"; 
-$LANG['profiles'][10]="Read"; 
-$LANG['profiles'][11]="Write"; 
-$LANG['profiles'][12]="No Access"; 
-$LANG['profiles'][13]="Default Profile"; 
-$LANG['profiles'][14]="Ticket's deletion"; 
-$LANG['profiles'][15]="Add a followup to all tickets"; 
-$LANG['profiles'][16]="To be in charge of a ticket"; 
-$LANG['profiles'][17]="Steal a ticket"; 
-$LANG['profiles'][18]="Update a ticket"; 
-$LANG['profiles'][19]="Assign a ticket"; 
-$LANG['profiles'][20]="View personnal planning"; 
-$LANG['profiles'][21]="View all plannings"; 
-$LANG['profiles'][22]="Profile"; 
-$LANG['profiles'][23]="Administration of reservations"; 
-$LANG['profiles'][24]="Update Password"; 
-$LANG['profiles'][26]="Show tickets created by my groups"; 
-$LANG['profiles'][27]="See hardware of my group(s)"; 
-$LANG['profiles'][28]="Recursive"; 
-$LANG['profiles'][29]="Dynamic"; 
-$LANG['profiles'][30]="View OCSNG information"; 
-$LANG['profiles'][31]="Synchronize OCSNG manually"; 
-$LANG['profiles'][32]="See assigned tickets (personnal + group associated)"; 
-$LANG['profiles'][33]="No user founded"; 
-$LANG['profiles'][34]="Caption"; 
-$LANG['profiles'][35]="Update all followups"; 
-$LANG['profiles'][36]="See schedule of people in my groups"; 
-$LANG['profiles'][37]="Default entity"; 
-$LANG['profiles'][38]="Visibility"; 
-$LANG['profiles'][39]="Assignment"; 
-$LANG['profiles'][40]="Update"; 
-$LANG['profiles'][41]="Creation"; 
-$LANG['profiles'][42]="Association"; 
-$LANG['profiles'][43]="Method for user authentication and synchronization"; 
-$LANG['profiles'][44]="Change the priority"; 
-$LANG['profiles'][45]="Add a task to all tickets"; 
-$LANG['profiles'][46]="Edit all tasks"; 
-$LANG['profiles'][47]="Add users from an external source"; 
-$LANG['profiles'][48]="Create a validation request"; 
-$LANG['profiles'][49]="Validate a ticket"; 
-$LANG['profiles'][50]="Update my followups"; 
-$LANG['profiles'][51]="Delete all followups"; 
+$LANG['profiles'][0]="حق سراسری"; 
+$LANG['profiles'][1]="حق موجودیت"; 
+$LANG['profiles'][2]="واسط مشخصات"; 
+$LANG['profiles'][4]="افزودن پیگیری به درخواست های مرتبط با گروه(ها)"; 
+$LANG['profiles'][5]="ایجاد یک درخواست"; 
+$LANG['profiles'][6]="افزودن پیگیری برای درخواست ها(درخواست کننده)"; 
+$LANG['profiles'][7]="ارایه تمام درخواست ها"; 
+$LANG['profiles'][8]="نمایش تمام پیگیری ها و کارها (عمومی و خصوصی)"; 
+$LANG['profiles'][9]="نمایش پیگیری ها و وظایف عمومی"; 
+$LANG['profiles'][10]="بازخواندن"; 
+$LANG['profiles'][11]="نوشتن"; 
+$LANG['profiles'][12]="دسترسی نیست"; 
+$LANG['profiles'][13]="مشخصات پیش فرض"; 
+$LANG['profiles'][14]="حذف درخواست"; 
+$LANG['profiles'][15]="افزودن پیگیری برای همه درخواست ها"; 
+$LANG['profiles'][16]="عهده دار بودن درخواست"; 
+$LANG['profiles'][17]="سرقت درخواست"; 
+$LANG['profiles'][18]="بروزآوری درخواست"; 
+$LANG['profiles'][19]="تخصیص یک درخواست"; 
+$LANG['profiles'][20]="نمایش برنامه ریزی شخصی"; 
+$LANG['profiles'][21]="نمایش تمام طرح ریزی ها"; 
+$LANG['profiles'][22]="مشخصات"; 
+$LANG['profiles'][23]="مدیریت ذخیره ها"; 
+$LANG['profiles'][24]="بروزآوری کلمه عبور"; 
+$LANG['profiles'][26]="نمایش درخواست های ساخته شده در گروه من"; 
+$LANG['profiles'][27]="سخت افزار گروه(های) مرا ببینید"; 
+$LANG['profiles'][28]="بازگشتی"; 
+$LANG['profiles'][29]="پویا"; 
+$LANG['profiles'][30]="نمایش اطلاعات OCSNG"; 
+$LANG['profiles'][31]="همگام سازی OCSNG به صورت دستی"; 
+$LANG['profiles'][32]="درخواست های  اختصاص داده شده (شخصی + گروه مرتبط ) را مشاهده کنید"; 
+$LANG['profiles'][33]="کاربری یافت نشد"; 
+$LANG['profiles'][34]="عنوان"; 
+$LANG['profiles'][35]="بروزآوری تمام پیگیری ها"; 
+$LANG['profiles'][36]="زمانبندی از اشخاص را در گروه من ببینید"; 
+$LANG['profiles'][37]="نهاد پیش فرض"; 
+$LANG['profiles'][38]="پدیداری"; 
+$LANG['profiles'][39]="واگذاری"; 
+$LANG['profiles'][40]="بروزرسانی"; 
+$LANG['profiles'][41]="ایجاد"; 
+$LANG['profiles'][42]="انجمن"; 
+$LANG['profiles'][43]="روشی برای احراز هویت کاربر و هماهنگ سازی"; 
+$LANG['profiles'][44]="تغییر اولویت"; 
+$LANG['profiles'][45]="افزودن کار به همه درخواست ها"; 
+$LANG['profiles'][46]="ویرایش تمام کارها"; 
+$LANG['profiles'][47]="افزودن کاربران از یک منبع خارجی"; 
+$LANG['profiles'][48]="ایجاد یک درخواست اعتبارسنجی"; 
+$LANG['profiles'][49]="اعتبارسنجی درخواست"; 
+$LANG['profiles'][50]="بروزآوری پیگیری های من"; 
+$LANG['profiles'][51]="حذف تمام پیگیری ها"; 
 
-$LANG['registry'][1]="Hive"; 
-$LANG['registry'][2]="Path"; 
-$LANG['registry'][3]="Key/value"; 
-$LANG['registry'][4]="Registry key(s) found"; 
-$LANG['registry'][5]="No key found in registry"; 
-$LANG['registry'][6]="OCSNG name"; 
+$LANG['registry'][1]="اندوختن"; 
+$LANG['registry'][2]="مسیر"; 
+$LANG['registry'][3]="کلید/مقدار"; 
+$LANG['registry'][4]="کلید(های) ثبت یافت شد"; 
+$LANG['registry'][5]="کلیدی در ثبت یافت نشد"; 
+$LANG['registry'][6]="نام OCSNG"; 
 
-$LANG['reminder'][0]="Personal notes"; 
-$LANG['reminder'][1]="Public notes"; 
-$LANG['reminder'][6]="New note"; 
-$LANG['reminder'][9]="Text"; 
-$LANG['reminder'][12]="Add to schedule"; 
-$LANG['reminder'][15]="Without Title"; 
-$LANG['reminder'][16]="Global notes"; 
+$LANG['reminder'][0]="یادداشت های شخصی"; 
+$LANG['reminder'][1]="یادداشت های عمومی"; 
+$LANG['reminder'][6]="یادداشت جدید"; 
+$LANG['reminder'][9]="متن"; 
+$LANG['reminder'][12]="افزودن زمانبندی"; 
+$LANG['reminder'][15]="بدون عنوان"; 
+$LANG['reminder'][16]="یادداشت های عمومی"; 
 
-$LANG['reports'][0]="Select the report you want to generate"; 
-$LANG['reports'][4]="List of the hardware under contract"; 
-$LANG['reports'][11]="Hardware under contract"; 
-$LANG['reports'][12]="Hardware Type"; 
-$LANG['reports'][13]="Date(s)"; 
-$LANG['reports'][15]="Display report"; 
-$LANG['reports'][19]="Alternate username"; 
-$LANG['reports'][26]="Default report"; 
-$LANG['reports'][27]="By contract"; 
-$LANG['reports'][28]="By year"; 
-$LANG['reports'][33]="Network report"; 
-$LANG['reports'][36]="Connected devices"; 
-$LANG['reports'][37]="Network outlets"; 
-$LANG['reports'][39]="By location"; 
-$LANG['reports'][41]="By hardware"; 
-$LANG['reports'][42]="By network outlet"; 
-$LANG['reports'][46]="hardware ports"; 
-$LANG['reports'][47]="device ports"; 
-$LANG['reports'][49]="Network report by hardware"; 
-$LANG['reports'][51]="Network report by outlet"; 
-$LANG['reports'][52]="switch"; 
-$LANG['reports'][54]="Network report by location"; 
-$LANG['reports'][57]="Material list"; 
-$LANG['reports'][58]="Equipment's report by year"; 
-$LANG['reports'][60]="Opening date"; 
-$LANG['reports'][61]="Closing date"; 
-$LANG['reports'][62]="Hardware financial and administrative informations"; 
-$LANG['reports'][63]="Other financial and administrative informations (licenses, cartridges, consumables)"; 
-$LANG['reports'][64]="Resolution date"; 
+$LANG['reports'][0]="گزارشی که می خواهید بسازید انتخاب کنید"; 
+$LANG['reports'][4]="فهرست سخت افزارهای تحت قرارداد"; 
+$LANG['reports'][11]="سخت افزار تحت قرارداد"; 
+$LANG['reports'][12]="نوع سخت افزار"; 
+$LANG['reports'][13]="تاریخ(ها)"; 
+$LANG['reports'][15]="گزارش صفحه نمایش"; 
+$LANG['reports'][19]="نام کاربری متناوب"; 
+$LANG['reports'][26]="گزارش پیش فرض"; 
+$LANG['reports'][27]="با قرارداد"; 
+$LANG['reports'][28]="به سال"; 
+$LANG['reports'][33]="گزارش شبکه"; 
+$LANG['reports'][36]="ابزارهای متصل شده"; 
+$LANG['reports'][37]="خروجی های شبکه"; 
+$LANG['reports'][39]="با محل"; 
+$LANG['reports'][41]="با سخت افزار"; 
+$LANG['reports'][42]="با خروجی شبکه"; 
+$LANG['reports'][46]="درگاه های سخت افزار"; 
+$LANG['reports'][47]="درگاه های ابزار"; 
+$LANG['reports'][49]="گزارش شبکه توسط سخت افزار"; 
+$LANG['reports'][51]="گزارش شبکه توسط خروجی"; 
+$LANG['reports'][52]="گزینه"; 
+$LANG['reports'][54]="گزارش شبکه توسط محل"; 
+$LANG['reports'][57]="فهرست مواد"; 
+$LANG['reports'][58]="گزارش تجهیزات با سال"; 
+$LANG['reports'][60]="تاریخ بازکردن"; 
+$LANG['reports'][61]="تاریخ بستن"; 
+$LANG['reports'][62]="اطلاعات مالی و مدیریتی سخت افزار"; 
+$LANG['reports'][63]="اطلاعات مالی و مدیریتی دیگر (مجوزها، قاب نوارها، مواد مصرفی)"; 
+$LANG['reports'][64]="تاریخ حل"; 
 
-$LANG['reservation'][1]="Reservable Items"; 
-$LANG['reservation'][2]="Device temporarily unavailable"; 
-$LANG['reservation'][3]="Make unavailable"; 
-$LANG['reservation'][4]="Available"; 
-$LANG['reservation'][5]="Make available"; 
-$LANG['reservation'][6]="Prohibit reservations"; 
-$LANG['reservation'][7]="Authorize reservations"; 
-$LANG['reservation'][8]="Reserve"; 
-$LANG['reservation'][9]="Reserve an item"; 
-$LANG['reservation'][16]="To"; 
-$LANG['reservation'][17]="From"; 
-$LANG['reservation'][18]="The required item is already reserved for this timeframe"; 
-$LANG['reservation'][20]="Back to planning"; 
-$LANG['reservation'][21]="See planning"; 
-$LANG['reservation'][22]="Modify the comment"; 
-$LANG['reservation'][25]="All reservable hardware"; 
-$LANG['reservation'][27]="Rehearsal"; 
-$LANG['reservation'][28]="By week"; 
-$LANG['reservation'][29]="By day"; 
-$LANG['reservation'][30]="times"; 
-$LANG['reservation'][35]="Current and future reservations"; 
-$LANG['reservation'][36]="Past Reservations"; 
-$LANG['reservation'][37]="No Reservations"; 
-$LANG['reservation'][38]="Are you sure you want do return this non-reservable item ?"; 
-$LANG['reservation'][39]="That will remove all the reservations in progress."; 
-$LANG['reservation'][40]="Material reservations expiring today"; 
+$LANG['reservation'][1]="اقلام قابل ذخیره"; 
+$LANG['reservation'][2]="دستگاه موقتا در دسترس نیست"; 
+$LANG['reservation'][3]="از دسترس خارج ساختن"; 
+$LANG['reservation'][4]="در دسترس"; 
+$LANG['reservation'][5]="در دسترس ساختن"; 
+$LANG['reservation'][6]="ذخیره ممنوع"; 
+$LANG['reservation'][7]="اجازه ذخیره"; 
+$LANG['reservation'][8]="ذخیره"; 
+$LANG['reservation'][9]="ذخیره یک قلم"; 
+$LANG['reservation'][16]="به طرف"; 
+$LANG['reservation'][17]="از"; 
+$LANG['reservation'][18]="فقره مورد نیاز قبلا برای این بازه زمانی ذخیره شده است"; 
+$LANG['reservation'][20]="بازگشت به برنامه ریزی"; 
+$LANG['reservation'][21]="برنامه ریزی را ببینید"; 
+$LANG['reservation'][22]="تغییر دادن توضیح"; 
+$LANG['reservation'][25]="تمام سخت افزار قابل ذخیره"; 
+$LANG['reservation'][27]="تمرین"; 
+$LANG['reservation'][28]="توسط هفته"; 
+$LANG['reservation'][29]="توسط روز"; 
+$LANG['reservation'][30]="زمان ها"; 
+$LANG['reservation'][35]="ذخیره های فعلی و آینده"; 
+$LANG['reservation'][36]="ذخیره قبلی"; 
+$LANG['reservation'][37]="بدون ذخیره"; 
+$LANG['reservation'][38]="آیا مطمئن هستید که می خواهید این فقره غیرقابل ذخیره را برگردانید؟"; 
+$LANG['reservation'][39]="این همه ذخیره های در جریان را حذف خواهد کرد.."; 
+$LANG['reservation'][40]="ذخیره مواد امروز منقضی می شود"; 
 
-$LANG['rulesengine'][0]="is"; 
-$LANG['rulesengine'][1]="is not"; 
-$LANG['rulesengine'][2]="contains"; 
-$LANG['rulesengine'][3]="does not contain"; 
-$LANG['rulesengine'][4]="starting with"; 
-$LANG['rulesengine'][5]="finished by"; 
-$LANG['rulesengine'][6]="Criteria"; 
-$LANG['rulesengine'][7]="Actions"; 
-$LANG['rulesengine'][8]="Rules management"; 
-$LANG['rulesengine'][9]="Logical operator"; 
-$LANG['rulesengine'][10]="Position"; 
-$LANG['rulesengine'][11]="Action type"; 
-$LANG['rulesengine'][12]="Fields"; 
-$LANG['rulesengine'][13]="Value"; 
-$LANG['rulesengine'][14]="Condition"; 
-$LANG['rulesengine'][15]="Reason"; 
-$LANG['rulesengine'][16]="Criteria"; 
-$LANG['rulesengine'][17]="Rules"; 
-$LANG['rulesengine'][18]="Rules for assigning a computer to an entity"; 
-$LANG['rulesengine'][19]="Authorizations assignment rules"; 
-$LANG['rulesengine'][20]="Rules applied"; 
-$LANG['rulesengine'][21]="Rules applicable in the sub-entities"; 
-$LANG['rulesengine'][22]="Assign"; 
-$LANG['rulesengine'][23]="Local rules"; 
-$LANG['rulesengine'][24]="Rule type"; 
-$LANG['rulesengine'][25]="Computer's name"; 
-$LANG['rulesengine'][26]="regular expression checks"; 
-$LANG['rulesengine'][27]="regular expression does not match"; 
-$LANG['rulesengine'][28]="Business rules for tickets"; 
-$LANG['rulesengine'][29]="List rules"; 
-$LANG['rulesengine'][30]="Action"; 
-$LANG['rulesengine'][31]="exists"; 
-$LANG['rulesengine'][32]="does not exist"; 
-$LANG['rulesengine'][33]="Dropdown dictionary"; 
-$LANG['rulesengine'][35]="Software dictionary"; 
-$LANG['rulesengine'][36]="Manufacturer dictionary"; 
-$LANG['rulesengine'][37]="Rules for assigning a category to software"; 
-$LANG['rulesengine'][38]="Recalculate"; 
-$LANG['rulesengine'][39]="Printers dictionary"; 
-$LANG['rulesengine'][40]="the category"; 
-$LANG['rulesengine'][41]="Validation"; 
-$LANG['rulesengine'][45]="Assign the value from regular expression"; 
-$LANG['rulesengine'][46]="Assign: equipment by IP address"; 
-$LANG['rulesengine'][47]="Assign: equipment by name + domain"; 
-$LANG['rulesengine'][48]="Assign equipment"; 
-$LANG['rulesengine'][49]="Assign: equipment by MAC address"; 
-$LANG['rulesengine'][50]="Computer model dictionary"; 
-$LANG['rulesengine'][51]="Monitor model dictionary"; 
-$LANG['rulesengine'][52]="Phone model dictionary"; 
-$LANG['rulesengine'][53]="Peripheral model dictionary"; 
-$LANG['rulesengine'][54]="Printer model dictionary"; 
-$LANG['rulesengine'][55]="Networking model dictionary"; 
-$LANG['rulesengine'][56]="Models"; 
-$LANG['rulesengine'][57]="Rules for import and link computers"; 
-$LANG['rulesengine'][60]="Computer type dictionary"; 
-$LANG['rulesengine'][61]="Monitor type dictionary"; 
-$LANG['rulesengine'][62]="Phone type dictionary"; 
-$LANG['rulesengine'][63]="Peripheral type dictionary"; 
-$LANG['rulesengine'][64]="Printer type dictionary"; 
-$LANG['rulesengine'][65]="Networking device type dictionary"; 
-$LANG['rulesengine'][66]="Types"; 
-$LANG['rulesengine'][67]="Operating systems dictionary"; 
-$LANG['rulesengine'][68]="Service Pack dictionary"; 
-$LANG['rulesengine'][69]="OS versions dictionary"; 
-$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver"; 
-$LANG['rulesengine'][76]="Replay the dictionary rules"; 
-$LANG['rulesengine'][77]="Dictionaries"; 
-$LANG['rulesengine'][78]="Version"; 
-$LANG['rulesengine'][79]="Add the result from regular expression"; 
-$LANG['rulesengine'][80]="Global dictionary"; 
-$LANG['rulesengine'][81]="Rule results"; 
-$LANG['rulesengine'][82]="Result details"; 
-$LANG['rulesengine'][83]="It is possible to affect the result of a regular expression using the string #0"; 
-$LANG['rulesengine'][84]="Test rules engine"; 
-$LANG['rulesengine'][85]="Result of the regular expression"; 
-$LANG['rulesengine'][86]="Software category deleted by the dictionary rules"; 
-$LANG['rulesengine'][87]="Software deleted by GLPI dictionary rules"; 
-$LANG['rulesengine'][90]="Work in progress..."; 
-$LANG['rulesengine'][91]="Task completed."; 
-$LANG['rulesengine'][92]="Warning before running rename based on the dictionary rules"; 
-$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; 
-$LANG['rulesengine'][94]="FUSION"; 
-$LANG['rulesengine'][95]="Manufacturer choice"; 
-$LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; 
-$LANG['rulesengine'][97]="No element to be tested"; 
-$LANG['rulesengine'][100]="Cache informations"; 
-$LANG['rulesengine'][102]="Rule name"; 
-$LANG['rulesengine'][103]="Objects in cache"; 
-$LANG['rulesengine'][104]="Original value"; 
-$LANG['rulesengine'][105]="Modified value"; 
-$LANG['rulesengine'][106]="Unchanged"; 
-$LANG['rulesengine'][107]="Inactive"; 
-$LANG['rulesengine'][108]="original"; 
-$LANG['rulesengine'][110]="Rights assignment"; 
-$LANG['rulesengine'][111]="Entities assignment"; 
-$LANG['rulesengine'][112]="Rights and entities assignment"; 
-$LANG['rulesengine'][120]="The engine stops on the first checked rule."; 
-$LANG['rulesengine'][121]="The engine treats all the rules."; 
-$LANG['rulesengine'][122]="The engine passes the result of a rule to the following ones."; 
-$LANG['rulesengine'][129]="Entity from mail domain"; 
-$LANG['rulesengine'][130]="Entity based on LDAP information"; 
-$LANG['rulesengine'][131]="Entity from TAG"; 
-$LANG['rulesengine'][132]="To be unaware of import"; 
-$LANG['rulesengine'][133]="Entity from domain"; 
-$LANG['rulesengine'][134]="Reject email (without email response)"; 
-$LANG['rulesengine'][135]="Reject email (with email response)"; 
-$LANG['rulesengine'][138]="LDAP criterias"; 
-$LANG['rulesengine'][140]="Add a criterium"; 
-$LANG['rulesengine'][142]="List of not imported emails"; 
-$LANG['rulesengine'][144]="Entity based on user's profile"; 
-$LANG['rulesengine'][145]="User with a single profile"; 
-$LANG['rulesengine'][146]="User featuring the profile"; 
-$LANG['rulesengine'][147]="User featuring a single profile"; 
-$LANG['rulesengine'][148]="Mail domain is known"; 
-$LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
-$LANG['rulesengine'][150]="The rules linked with the entity have been disabled."; 
-$LANG['rulesengine'][151]="is already present in GLPI"; 
-$LANG['rulesengine'][152]="Computer to import"; 
-$LANG['rulesengine'][154]="is empty"; 
-$LANG['rulesengine'][155]="Link with computer"; 
+$LANG['rulesengine'][0]="هست"; 
+$LANG['rulesengine'][1]="نیست"; 
+$LANG['rulesengine'][2]="شامل"; 
+$LANG['rulesengine'][3]="شامل نیست"; 
+$LANG['rulesengine'][4]="شروع با"; 
+$LANG['rulesengine'][5]="تمام شده با"; 
+$LANG['rulesengine'][6]="ضوابط"; 
+$LANG['rulesengine'][7]="اقدام ها"; 
+$LANG['rulesengine'][8]="قوانین مدیریت"; 
+$LANG['rulesengine'][9]="عملگرهای منطقی"; 
+$LANG['rulesengine'][10]="موقعیت"; 
+$LANG['rulesengine'][11]="نوع اقدام"; 
+$LANG['rulesengine'][12]="اجزاء"; 
+$LANG['rulesengine'][13]="مقدار"; 
+$LANG['rulesengine'][14]="شرط"; 
+$LANG['rulesengine'][15]="دلیل"; 
+$LANG['rulesengine'][16]="ضوابط"; 
+$LANG['rulesengine'][17]="قواعد"; 
+$LANG['rulesengine'][18]="قوانین برای اختصاص یک موجودیت"; 
+$LANG['rulesengine'][19]="مجوزهای قواعد انتصاب"; 
+$LANG['rulesengine'][20]="قوانین اعمال می شود"; 
+$LANG['rulesengine'][21]="قواعد قابل اجرا در زیرموجودیت ها"; 
+$LANG['rulesengine'][22]="اختصاص دادن"; 
+$LANG['rulesengine'][23]="قوانین محلی"; 
+$LANG['rulesengine'][24]="نوع قانون"; 
+$LANG['rulesengine'][25]="نام رایانه"; 
+$LANG['rulesengine'][26]="بررسی عبارات منظم"; 
+$LANG['rulesengine'][27]="عبارات منظم مطابقت ندارد"; 
+$LANG['rulesengine'][28]="قواعد کسب و کار برای درخواست ها"; 
+$LANG['rulesengine'][29]="فهرست قوانین"; 
+$LANG['rulesengine'][30]="اقدام"; 
+$LANG['rulesengine'][31]="وجود دارد"; 
+$LANG['rulesengine'][32]="وجود ندارد"; 
+$LANG['rulesengine'][33]="فرهنگ کرکره ای"; 
+$LANG['rulesengine'][35]="فرهنگ نرم افزار"; 
+$LANG['rulesengine'][36]="فهرست سازنده"; 
+$LANG['rulesengine'][37]="قوانین برای اختصاص یک رده نرم افزار"; 
+$LANG['rulesengine'][38]="دوباره حساب کردن"; 
+$LANG['rulesengine'][39]="فرهنگ چاپگرها"; 
+$LANG['rulesengine'][40]="رده"; 
+$LANG['rulesengine'][41]="اعتبارسنجی"; 
+$LANG['rulesengine'][45]="اختصاص مقدار از عبارات منظم"; 
+$LANG['rulesengine'][46]="تخصیص: تجهیزات توسط نشانی IP"; 
+$LANG['rulesengine'][47]="تخصیص : تجهیزات توسط نام + دامنه"; 
+$LANG['rulesengine'][48]="اختصاص تجهیزات"; 
+$LANG['rulesengine'][49]="تخصیص: تجهیزات توسط نشانی MAC"; 
+$LANG['rulesengine'][50]="فرهنگ الگو رایانه"; 
+$LANG['rulesengine'][51]="فرهنگ الگوی صفحه نمایش"; 
+$LANG['rulesengine'][52]="فرهنگ الگوی تلفن"; 
+$LANG['rulesengine'][53]="فرهنگ الگوی دستگاه جانبی"; 
+$LANG['rulesengine'][54]="فرهنگ الگوی چاپگر"; 
+$LANG['rulesengine'][55]="فرهنگ الکوی شبکه"; 
+$LANG['rulesengine'][56]="الگوها"; 
+$LANG['rulesengine'][57]="قوانین برای ورود و پیوند رایانه ها"; 
+$LANG['rulesengine'][60]="فرهنگ نوع رایانه"; 
+$LANG['rulesengine'][61]="فرهنگ نوع صفحه نمایش"; 
+$LANG['rulesengine'][62]="فرهنگ نوع تلفن"; 
+$LANG['rulesengine'][63]="فرهنگ نوع دستگاه جانبی"; 
+$LANG['rulesengine'][64]="فرهنگ نوع چاپگر"; 
+$LANG['rulesengine'][65]="فرهنگ نوع ابزار شبکه"; 
+$LANG['rulesengine'][66]="نوع"; 
+$LANG['rulesengine'][67]="فرهنگ سامانه عامل"; 
+$LANG['rulesengine'][68]="فرهنگ بسته خدمات"; 
+$LANG['rulesengine'][69]="فرهنگ نسخه سامانه عامل"; 
+$LANG['rulesengine'][70]="قوانین برای اختصاص درخواست ایجاد شده از طریق دریافت کننده رایانامه"; 
+$LANG['rulesengine'][76]="پخش قوانین فرهنگ"; 
+$LANG['rulesengine'][77]="فرهنگ ها"; 
+$LANG['rulesengine'][78]="نسخه"; 
+$LANG['rulesengine'][79]="افزودن نتیجه از عبارات منظم"; 
+$LANG['rulesengine'][80]="فرهنگ سراسری"; 
+$LANG['rulesengine'][81]="نتایج قانون"; 
+$LANG['rulesengine'][82]="جزئیات نتیجه"; 
+$LANG['rulesengine'][83]="این امکان وجود دارد که  نتیجه یک عبارت منظم با استفاده از رشته #۰ تحت تاثیر قرار گیرد."; 
+$LANG['rulesengine'][84]="آزمایش موتور قوانین"; 
+$LANG['rulesengine'][85]="نتیجه عبارت منظم"; 
+$LANG['rulesengine'][86]="رده نرم افزار توسط قواعد فرهنگ حذف شد"; 
+$LANG['rulesengine'][87]="نرم افزار توسط قواعد فرهنگ GLPI حذف شد"; 
+$LANG['rulesengine'][90]="کار در حال پیشرفت..."; 
+$LANG['rulesengine'][91]="وظیفه تکمیل است."; 
+$LANG['rulesengine'][92]="هشدار قبل از اجرا تغییر نام بر اساس قوانین فرهنگ"; 
+$LANG['rulesengine'][93]="هشدار! این عملیات می تواند نرم افزار ادغام شده را در سطل زباله قرار دهد. <br> مطمئن شویدکه به اطلاع کاربران خود رسانده اید."; 
+$LANG['rulesengine'][94]="ادغام"; 
+$LANG['rulesengine'][95]="انتخاب سازنده"; 
+$LANG['rulesengine'][96]="پخش قوانین فرهنگ برای سازنده(ها) <br> ( ----- = همه)"; 
+$LANG['rulesengine'][97]="هیچ عنصری آزمایش نمی شود"; 
+$LANG['rulesengine'][100]="اطلاعات نهانگاه"; 
+$LANG['rulesengine'][102]="نام قانون"; 
+$LANG['rulesengine'][103]="اشیاء در نهانگاه"; 
+$LANG['rulesengine'][104]="مقدار اصلی"; 
+$LANG['rulesengine'][105]="مقدار اصلاح شده"; 
+$LANG['rulesengine'][106]="عوض نشده"; 
+$LANG['rulesengine'][107]="غیرفعال"; 
+$LANG['rulesengine'][108]="اصلی"; 
+$LANG['rulesengine'][110]="انتساب حقوق"; 
+$LANG['rulesengine'][111]="انتساب موجودیت"; 
+$LANG['rulesengine'][112]="انتساب حقوق و موجودیت ها"; 
+$LANG['rulesengine'][120]="موتور بر روی اولین قانون بررسی شده متوقف می شود."; 
+$LANG['rulesengine'][121]="موتور تمام قوانین را مورد عمل قرار می دهد."; 
+$LANG['rulesengine'][122]="موتور نتیجه از یک قانون به عین همان عبور می دهد."; 
+$LANG['rulesengine'][129]="موجودیت از دامنه رایانامه"; 
+$LANG['rulesengine'][130]="موجودیت مبتنی بر اطلاعات LDAP"; 
+$LANG['rulesengine'][131]="موجودیت از برچسب"; 
+$LANG['rulesengine'][132]="غافل از واردات"; 
+$LANG['rulesengine'][133]="موجودیت از دامنه"; 
+$LANG['rulesengine'][134]="رد رایانامه(بدون پاسخ رایانامه)"; 
+$LANG['rulesengine'][135]="رد رایانامه (با پاسخ رایانامه)"; 
+$LANG['rulesengine'][138]="ضوابط LDAP"; 
+$LANG['rulesengine'][140]="افزودن متغیر"; 
+$LANG['rulesengine'][142]="فهرست رایانامه های وارد نشده"; 
+$LANG['rulesengine'][144]="موجودیت مبتنی بر مشخصات کاربر"; 
+$LANG['rulesengine'][145]="کاربر با مشخصات واحد"; 
+$LANG['rulesengine'][146]="مشخصات ویژگی های کاربر"; 
+$LANG['rulesengine'][147]="مشخصات واحد ویژگی کاربر"; 
+$LANG['rulesengine'][148]="دامنه رایانامه شناخته شده است"; 
+$LANG['rulesengine'][149]="گروه وارد شده از یک فرهنگ LDAP"; 
+$LANG['rulesengine'][150]="قوانین مرتبط با نهاد غیرفعال شده است."; 
+$LANG['rulesengine'][151]="قبلا در GLPI بوده است"; 
+$LANG['rulesengine'][152]="رایانه به واردات"; 
+$LANG['rulesengine'][154]="خالی است"; 
+$LANG['rulesengine'][155]="پیوند به رایانه"; 
 
-$LANG['satisfaction'][0]="Satisfaction"; 
-$LANG['satisfaction'][1]="Satisfaction with the resolution of the ticket"; 
-$LANG['satisfaction'][2]="No generated survey"; 
-$LANG['satisfaction'][3]="Satisfaction survey"; 
-$LANG['satisfaction'][4]="Response date to the satisfaction survey"; 
-$LANG['satisfaction'][6]="Creation date of the satisfaction survey"; 
-$LANG['satisfaction'][7]="Satisfaction"; 
-$LANG['satisfaction'][8]="Comments to the satisfaction survey"; 
-$LANG['satisfaction'][9]="Internal survey"; 
-$LANG['satisfaction'][10]="External survey"; 
-$LANG['satisfaction'][12]="Invitation to fill out the survey"; 
-$LANG['satisfaction'][13]="Opened"; 
-$LANG['satisfaction'][14]="Answers"; 
+$LANG['satisfaction'][0]="رضایت"; 
+$LANG['satisfaction'][1]="رضایت با رفع یک درخواست"; 
+$LANG['satisfaction'][2]="هیچ نظرسنجی ایجاد نشده"; 
+$LANG['satisfaction'][3]="نظرسنجی رضایت"; 
+$LANG['satisfaction'][4]="تاریخ پاسخ به نظرسنجی رضایت"; 
+$LANG['satisfaction'][6]="تاریخ ایجاد  یک نظرسنجی رضایت"; 
+$LANG['satisfaction'][7]="رضایت"; 
+$LANG['satisfaction'][8]="نظر برای نظرسنجی رضایت"; 
+$LANG['satisfaction'][9]="نظرسنجی داخلی"; 
+$LANG['satisfaction'][10]="نظرسنجی خارجی"; 
+$LANG['satisfaction'][12]="دعوت به پر کردن نظر سنجی"; 
+$LANG['satisfaction'][13]="باز شده"; 
+$LANG['satisfaction'][14]="پاسخ ها"; 
 
 $LANG['search'][0]="جستجو"; 
 $LANG['search'][1]="برای همه"; 
-$LANG['search'][2]="contains"; 
+$LANG['search'][2]="شامل"; 
 $LANG['search'][4]="مرتب شده با"; 
 $LANG['search'][8]="تاریخ شروع"; 
 $LANG['search'][9]="تاریخ پایان"; 
-$LANG['search'][11]="Items Seen"; 
-$LANG['search'][12]="Specify a termination date"; 
-$LANG['search'][15]="No item found"; 
-$LANG['search'][16]="A least"; 
-$LANG['search'][17]="Add a search criterium"; 
-$LANG['search'][18]="Delete a search criteria"; 
-$LANG['search'][19]="Add a global search criterium"; 
-$LANG['search'][20]="Delete a global search criteria"; 
+$LANG['search'][11]="موارد دیده شده"; 
+$LANG['search'][12]="تعیین تاریخ پایان"; 
+$LANG['search'][15]="موردی یافت نشد"; 
+$LANG['search'][16]="حداقل"; 
+$LANG['search'][17]="افزودن متغیر جستجو"; 
+$LANG['search'][18]="حذف معیار جستجو"; 
+$LANG['search'][19]="افزودن یک متغیر جستجوی سراسری"; 
+$LANG['search'][20]="حذف معیار جستجوی سراسری"; 
 $LANG['search'][21]="کمتر از"; 
 $LANG['search'][22]="بیش از"; 
 $LANG['search'][23]="قبل از"; 
 $LANG['search'][24]="بعداز"; 
 
-$LANG['setup'][0]="Dropdowns"; 
-$LANG['setup'][2]="Add user..."; 
-$LANG['setup'][3]="LDAP directory link"; 
-$LANG['setup'][4]="Computers Types"; 
+$LANG['setup'][0]="کرکره ای ها"; 
+$LANG['setup'][2]="افزودن کاربر ..."; 
+$LANG['setup'][3]="پیوند فهرست LDAP"; 
+$LANG['setup'][4]="انواع رایانه ها"; 
 $LANG['setup'][5]="Operating Systems"; 
 $LANG['setup'][6]="Personalization"; 
-$LANG['setup'][7]="CSV delimiter"; 
-$LANG['setup'][8]="Enable the financial and administrative informations by default"; 
+$LANG['setup'][7]="جداکننده CSV"; 
+$LANG['setup'][8]="فعال نمودن اطلاعات مالی و مدیریتی پیش فرض"; 
 $LANG['setup'][9]="Network Interfaces"; 
-$LANG['setup'][10]="Display order of surnames firstnames"; 
-$LANG['setup'][14]="Email"; 
-$LANG['setup'][18]="Login"; 
+$LANG['setup'][10]="نمایش به ترتیب نام خانوادگی نام"; 
+$LANG['setup'][14]="رایانامه"; 
+$LANG['setup'][18]="ورود به سامانه"; 
 $LANG['setup'][19]="Password"; 
 $LANG['setup'][20]="Password confirmation"; 
-$LANG['setup'][21]="Error : the two passwords are not identical"; 
+$LANG['setup'][21]="خطا: دو کلمه عبور نمی توانند همسان باشند"; 
 $LANG['setup'][35]="MHz"; 
-$LANG['setup'][39]="Followed private for default"; 
+$LANG['setup'][39]="پیگیری خصوصی برای پیش فرض"; 
 $LANG['setup'][40]="Private tasks by default"; 
 $LANG['setup'][41]="Select Language"; 
 $LANG['setup'][42]="Networking equipment types"; 
 $LANG['setup'][43]="Printer Types"; 
 $LANG['setup'][44]="Monitor Types"; 
-$LANG['setup'][45]="Case Type"; 
-$LANG['setup'][46]="Default value"; 
-$LANG['setup'][47]="Default chart format"; 
-$LANG['setup'][48]="Default values"; 
-$LANG['setup'][50]="Based on the category then the item"; 
-$LANG['setup'][51]="Based on the item then the category"; 
-$LANG['setup'][52]="Automatic assignment of tickets"; 
-$LANG['setup'][63]="Caution: you're about to remove a heading used for one or more items"; 
-$LANG['setup'][64]="If you confirm the deletion the items using this heading used fields will be blanked"; 
+$LANG['setup'][45]="نوع کیس"; 
+$LANG['setup'][46]="مقدار پیش فرض"; 
+$LANG['setup'][47]="قالب نمودار پیش فرض"; 
+$LANG['setup'][48]="مقادیر پیش فرض"; 
+$LANG['setup'][50]="بر اساس رده و سپس فقره"; 
+$LANG['setup'][51]="بر اساس فقره و سپس رده"; 
+$LANG['setup'][52]="تخصیص خودکار درخواست"; 
+$LANG['setup'][63]="توجه : شما درحال حذف یک عنوان استفاده شده برای یک یا چند مورد هستید"; 
+$LANG['setup'][64]="اگر حذف مواردی که این سرعنوان را استفادهمی کنند تایید می کنید اجزاء  استفاده شده باید خالی باشند"; 
 $LANG['setup'][65]="You can also replace all the events of this heading by another:"; 
-$LANG['setup'][67]="External authentications"; 
-$LANG['setup'][69]="Devices types"; 
-$LANG['setup'][70]="General setup"; 
-$LANG['setup'][71]="Firmware"; 
+$LANG['setup'][67]="احراز هویت خارجی"; 
+$LANG['setup'][69]="انواع ابزارها"; 
+$LANG['setup'][70]="برپا کردن عمومی"; 
+$LANG['setup'][71]="نرم افزار دائمی"; 
 $LANG['setup'][73]="Network outlet"; 
 $LANG['setup'][74]="You can't delete that place, because it has sub-places"; 
-$LANG['setup'][75]="As child of"; 
+$LANG['setup'][75]="به عنوان فرزند"; 
 $LANG['setup'][76]="Sons of"; 
-$LANG['setup'][79]="Categories of the tickets"; 
+$LANG['setup'][79]="رده های درخواست ها"; 
 $LANG['setup'][80]="Third party Type"; 
-$LANG['setup'][81]="Document Headings"; 
-$LANG['setup'][82]="Contact Type"; 
-$LANG['setup'][83]="Item Status"; 
-$LANG['setup'][84]="Cartridge Type"; 
-$LANG['setup'][85]="Contract Type"; 
+$LANG['setup'][81]="سرعنوان سند"; 
+$LANG['setup'][82]="نوع تماس"; 
+$LANG['setup'][83]="وضعیت مورد"; 
+$LANG['setup'][84]="نوع قاب نوار"; 
+$LANG['setup'][85]="نوع قرارداد"; 
 $LANG['setup'][86]="Type of memory"; 
-$LANG['setup'][87]="Knowledge base categories"; 
+$LANG['setup'][87]="رده های پایگاه دانش"; 
 $LANG['setup'][88]="Network"; 
-$LANG['setup'][89]="Domain"; 
+$LANG['setup'][89]="دامنه"; 
 $LANG['setup'][90]="VLANs"; 
-$LANG['setup'][91]="Computers Models"; 
-$LANG['setup'][92]="Consumables Type"; 
-$LANG['setup'][93]="Interfaces (Hard Drive...)"; 
+$LANG['setup'][91]="الکوهای رایانه ها"; 
+$LANG['setup'][92]="نوع مواد مصرفی"; 
+$LANG['setup'][93]="واسط ها(دیسک سخت ...)"; 
 $LANG['setup'][94]="Monitors Models"; 
 $LANG['setup'][95]="Networking Models"; 
 $LANG['setup'][96]="Printers Models"; 
 $LANG['setup'][97]="Peripherals Models"; 
 $LANG['setup'][98]="Tasks category"; 
-$LANG['setup'][99]="Building number"; 
+$LANG['setup'][99]="تعداد ساختمان"; 
 $LANG['setup'][100]="Room number"; 
-$LANG['setup'][101]="Maximal number of automatic actions (run by CLI)"; 
-$LANG['setup'][102]="Log Level"; 
-$LANG['setup'][103]="1- Critical (login error only)"; 
-$LANG['setup'][104]="2- Severe (Not used)"; 
-$LANG['setup'][105]="3- Important (successful logins)"; 
-$LANG['setup'][106]="4- Notices (Add, delete, tracking)"; 
-$LANG['setup'][107]="5- Complete (All)"; 
-$LANG['setup'][109]="How long system logs are keep in database (in days, 0 for infinite)"; 
+$LANG['setup'][101]="تعداد حداکثر اقدامات خودکار(اجرا توسط CLI)"; 
+$LANG['setup'][102]="سطح ثبت وقایع"; 
+$LANG['setup'][103]="۱- بحرانی (فقط خطای ورود)"; 
+$LANG['setup'][104]="۲- سخت(استفاده نشده)"; 
+$LANG['setup'][105]="۳- مهم (ورود موفقیت آمیز)"; 
+$LANG['setup'][106]="۴-اخطار(اضافه، حذف، پیگردی)"; 
+$LANG['setup'][107]="۵- کامل(همه)"; 
+$LANG['setup'][109]="چه مدت سیاهه های مربوط به سیستم در پایگاه داده نگهداری شود(در روز، 0 برای نامحدود)"; 
 $LANG['setup'][110]="Show new tickets on the home page"; 
 $LANG['setup'][111]="Maximum number of search results to display on a page"; 
 $LANG['setup'][112]="Maximum number of characters for each items in dropdowns"; 
-$LANG['setup'][113]="Default language"; 
+$LANG['setup'][113]="زبان پیش فرض"; 
 $LANG['setup'][114]="Priority colours"; 
-$LANG['setup'][115]="Default threshold for cartridge and consumable count"; 
-$LANG['setup'][117]="Authorize anonymous view of the FAQs"; 
+$LANG['setup'][115]="آستانه پیش فرض برای قاب نوار و تعداد مواد مصرفی"; 
+$LANG['setup'][117]="اجازه نمایش ناشناس از پرسش و پاسخ ها"; 
 $LANG['setup'][118]="Text on the login page"; 
 $LANG['setup'][120]="Use dynamic display for dropdowns and text fields"; 
-$LANG['setup'][121]="Character to force the full display of dropdowns (wildcard)"; 
+$LANG['setup'][121]="کاراکتر اجباری نمایش کامل کرکره ای(کلمات)"; 
 $LANG['setup'][122]="Maximum number of items to display in the dropdowns when wildcard is not used"; 
-$LANG['setup'][123]="Don't use dynamic display if the number of items is less than"; 
-$LANG['setup'][124]="Automatically add users from an external authentication source"; 
-$LANG['setup'][125]="... From an external source"; 
-$LANG['setup'][126]="Automatically add a user of an external source"; 
-$LANG['setup'][127]="Autocompletion of text fields"; 
-$LANG['setup'][128]="Date Format"; 
+$LANG['setup'][123]="از نمایش پویا استفاده نکنید اگر موارد کمتر هستند از"; 
+$LANG['setup'][124]="افزودن خودکار کاربران از منبع مجاز خارجی"; 
+$LANG['setup'][125]="... از یک منبع خارجی"; 
+$LANG['setup'][126]="افزودن خودکار یک کاربر از منبع خارجی"; 
+$LANG['setup'][127]="تکمیل خودکار  اجزاء متنی"; 
+$LANG['setup'][128]="قالب تاریخ"; 
 $LANG['setup'][129]="Show GLPI ID"; 
 $LANG['setup'][130]="Number of days this action logs are stored"; 
-$LANG['setup'][132]="Display the complete name in the tree dropdowns"; 
-$LANG['setup'][133]="Enable OCSNG mode"; 
+$LANG['setup'][132]="نمایش نام کامل در درختواره کرکره ای"; 
+$LANG['setup'][133]="فعال کردن حالت OCSNG"; 
 $LANG['setup'][134]="OCSNG Mode"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Translation"; 
-$LANG['setup'][137]="Debug"; 
+$LANG['setup'][137]="اشکال زدائی"; 
 $LANG['setup'][138]="Use GLPI in Mode"; 
-$LANG['setup'][139]="Common"; 
+$LANG['setup'][139]="مشترک"; 
 $LANG['setup'][140]="Types"; 
 $LANG['setup'][145]="Os"; 
-$LANG['setup'][147]="Dynamic display"; 
+$LANG['setup'][147]="نمایش پویا"; 
 $LANG['setup'][148]="Step for the hours"; 
 $LANG['setup'][149]="Number of decimals in amounts"; 
 $LANG['setup'][150]="Number Format"; 
@@ -1754,190 +1754,190 @@ $LANG['setup'][154]="Basedn";
 $LANG['setup'][155]="rootdn (for non anonymous binds)"; 
 $LANG['setup'][156]="Pass (for non-anonymous binds)"; 
 $LANG['setup'][157]="The LDAP extension of your PHP parser isn't installed"; 
-$LANG['setup'][158]="Impossible to use LDAP as external source of connection"; 
-$LANG['setup'][159]="Connection filter"; 
-$LANG['setup'][162]="Email server configuration"; 
-$LANG['setup'][164]="Email domain Name <br>(users email will be login@domain)"; 
+$LANG['setup'][158]="استفاده از LDAP به عنوان منبع خارجی از اتصال غیر ممکن است"; 
+$LANG['setup'][159]="صافی اتصال"; 
+$LANG['setup'][162]="پیکره بندی خادم رایانامه"; 
+$LANG['setup'][164]="نام دامنه رایانامه  <br>(کاربران رایانامه باید با  @دامنه  وارد شوند)"; 
 $LANG['setup'][165]="Your PHP parser was compiled without the IMAP functions"; 
-$LANG['setup'][166]="Impossible to use email server as external source of connection"; 
-$LANG['setup'][167]="Binding to the LDAP directory"; 
-$LANG['setup'][168]="Connection options"; 
-$LANG['setup'][169]="Mail folder (optional, often INBOX)"; 
-$LANG['setup'][170]="Connection string"; 
+$LANG['setup'][166]="استفاده از خادم رایانامه به عنوان منبع خارجی از اتصال غیرممکن است"; 
+$LANG['setup'][167]="ابتدای فهرست LDAP"; 
+$LANG['setup'][168]="گزینه های اتصال"; 
+$LANG['setup'][169]="شاخه نامه (گزینشی ، معمولا INBOX)"; 
+$LANG['setup'][170]="رشته اتصال"; 
 $LANG['setup'][171]="Port (optional)"; 
 $LANG['setup'][172]="Port (default=389)"; 
-$LANG['setup'][174]="CAS Host"; 
+$LANG['setup'][174]="میزبان CAS"; 
 $LANG['setup'][175]="Port"; 
 $LANG['setup'][176]="Root directory (optional)"; 
-$LANG['setup'][177]="CAS authentication"; 
+$LANG['setup'][177]="احراز هویت CAS"; 
 $LANG['setup'][178]="The CURL or DOMXML extension for your PHP parser isn't installed"; 
-$LANG['setup'][179]="Impossible to use CAS as external source of connection"; 
+$LANG['setup'][179]="استفاده از CAS به عنوان منبع خارجی از اتصال غیر ممکن است"; 
 $LANG['setup'][180]="Use TLS"; 
-$LANG['setup'][181]="ldap_start_tls does not exist"; 
-$LANG['setup'][182]="Logout fallback URL"; 
-$LANG['setup'][185]="Logs in files (SQL, email, automatic action...)"; 
-$LANG['setup'][186]="LDAP directory time zone"; 
+$LANG['setup'][181]="ldap_start_tls موجود نیست"; 
+$LANG['setup'][182]="نشانی خروج پشتیبان"; 
+$LANG['setup'][185]="فایل های ثبت وقایع (SQL,email, اقدام خودکار ...)"; 
+$LANG['setup'][186]="منطقه زمانی فهرست LDAP"; 
 $LANG['setup'][190]="x509 certificate authentication"; 
-$LANG['setup'][191]="email attribute for x509 authentication"; 
-$LANG['setup'][192]="Enabled"; 
-$LANG['setup'][193]="Field storage of the login in the HTTP request"; 
-$LANG['setup'][194]="Access control and additional informations"; 
-$LANG['setup'][195]="Keep status"; 
-$LANG['setup'][196]="Clear status"; 
-$LANG['setup'][197]="Copy computer status"; 
+$LANG['setup'][191]="ویژگی رایانامه برای احراز هویت x509"; 
+$LANG['setup'][192]="فعال شده"; 
+$LANG['setup'][193]="جزء ذخیره سازی  برای ورود در درخواست HTTP"; 
+$LANG['setup'][194]="کنترل دسترسی و اطلاعات اضافی"; 
+$LANG['setup'][195]="وضعیت نگهداری"; 
+$LANG['setup'][196]="پاک کردن وضعیت"; 
+$LANG['setup'][197]="رونوشت وضعیت رایانه"; 
 $LANG['setup'][198]="Set status"; 
 $LANG['setup'][199]="Remove the domain of logins like login@domain"; 
-$LANG['setup'][200]="Infinite"; 
-$LANG['setup'][201]="Alert and email followups and alerts configuration"; 
-$LANG['setup'][202]="Enable follow-up via email"; 
-$LANG['setup'][203]="Administrator Email"; 
-$LANG['setup'][204]="Email Signature"; 
+$LANG['setup'][200]="نا محدود"; 
+$LANG['setup'][201]="هشدار و رایانامه پیگیری ها و پیکره بندی هشدارها"; 
+$LANG['setup'][202]="فعال کردن پیگیری از طریق رایانامه"; 
+$LANG['setup'][203]="رایانامه مدیر"; 
+$LANG['setup'][204]="امضاء رایانامه"; 
 $LANG['setup'][205]="Test email sent to administrator"; 
-$LANG['setup'][206]="Failed to send test email to administrator"; 
-$LANG['setup'][207]="Administrator reply-to Email (if needed)"; 
-$LANG['setup'][208]="Administrator name"; 
+$LANG['setup'][206]="شکست در ارسال رایانامه آزمایشی به مدیر"; 
+$LANG['setup'][207]="مدیر پاسخ به رایانامه (در صورت نیاز)"; 
+$LANG['setup'][208]="نام مدیر"; 
 $LANG['setup'][209]="Response name (if necessary)"; 
 $LANG['setup'][217]="The PHP mail function is unknown or is not activated on your system"; 
 $LANG['setup'][218]="The use of a SMTP is needed"; 
-$LANG['setup'][219]="Allow anonymous ticket creation (helpdesk.receiver)"; 
-$LANG['setup'][221]="Beginning of fiscal year"; 
-$LANG['setup'][223]="Limit of the schedules for planning"; 
+$LANG['setup'][219]="اجازه ایجاد درخواست ناشناس(میز فرمان.دریافت کننده)"; 
+$LANG['setup'][221]="آغاز سال مالی"; 
+$LANG['setup'][223]="حد زمانبندی برای برنامه ریزی"; 
 $LANG['setup'][227]="URL of the application"; 
-$LANG['setup'][228]="Login Field"; 
+$LANG['setup'][228]="جزء ورود به سامانه"; 
 $LANG['setup'][229]="Send a test email to the administrator"; 
 $LANG['setup'][231]="Way of sending emails"; 
 $LANG['setup'][232]="SMTP Host"; 
 $LANG['setup'][234]="SMTP Login (optional)"; 
 $LANG['setup'][235]="SMTP Password (optional)"; 
-$LANG['setup'][236]="Former technician in charge of the ticket"; 
-$LANG['setup'][237]="Administrator"; 
-$LANG['setup'][239]="Technician in charge of this ticket"; 
+$LANG['setup'][236]="کاردان فنی قبلی عهده دار درخواست"; 
+$LANG['setup'][237]="مدیر"; 
+$LANG['setup'][239]="کاردان فنی عهده دار این درخواست"; 
 $LANG['setup'][240]="Notification options"; 
 $LANG['setup'][241]="No personal criteria. Create personal parameters?"; 
-$LANG['setup'][242]="Alarms options"; 
-$LANG['setup'][243]="Alarms on consumables"; 
-$LANG['setup'][244]="Alarms on cartridges"; 
+$LANG['setup'][242]="گزینه های هشدار"; 
+$LANG['setup'][243]="هشدار بر مواد مصرفی"; 
+$LANG['setup'][244]="هشدار بر قاب نوارها"; 
 $LANG['setup'][245]="Reminders frequency"; 
-$LANG['setup'][246]="Alarms on contracts"; 
-$LANG['setup'][247]="Alarms on financial and administrative informations"; 
-$LANG['setup'][248]="Group in charge of the ticket"; 
+$LANG['setup'][246]="هشدار بر قراردادها"; 
+$LANG['setup'][247]="هشدار بر روی اطلاعات مالی و اداری"; 
+$LANG['setup'][248]="گروه عهده دار درخواست"; 
 $LANG['setup'][249]="Requester group"; 
-$LANG['setup'][250]="Display search results by default"; 
+$LANG['setup'][250]="نمایش نتایج جستجو به صورت پیش فرض"; 
 $LANG['setup'][251]="Watch group"; 
 $LANG['setup'][252]="Select default items to show"; 
-$LANG['setup'][253]="Filter to search in groups"; 
+$LANG['setup'][253]="صافی برای جستجو در گروه"; 
 $LANG['setup'][254]="Search type"; 
-$LANG['setup'][255]="Group attribute containing its users"; 
-$LANG['setup'][256]="In users"; 
-$LANG['setup'][257]="In groups"; 
+$LANG['setup'][255]="ویژگی گروه شامل کاربران آن"; 
+$LANG['setup'][256]="در کاربران"; 
+$LANG['setup'][257]="در گروه ها"; 
 $LANG['setup'][258]="Users & Groups"; 
-$LANG['setup'][259]="Belonging to groups"; 
+$LANG['setup'][259]="متعلق به گروه"; 
 $LANG['setup'][260]="User attribute containing its groups"; 
-$LANG['setup'][261]="Group DN"; 
+$LANG['setup'][261]="گروه DN"; 
 $LANG['setup'][262]="Use DN in the search"; 
 $LANG['setup'][263]="Search filter for users"; 
-$LANG['setup'][264]="Alarms on expired licenses"; 
+$LANG['setup'][264]="هشدار بر مجوزهای منقضی شده"; 
 $LANG['setup'][271]="Restrict monitor management"; 
 $LANG['setup'][272]="Restrict device management"; 
 $LANG['setup'][273]="Restrict phone management"; 
-$LANG['setup'][274]="for manual add"; 
+$LANG['setup'][274]="برای افزودن دستی"; 
 $LANG['setup'][275]="Restrict printer management"; 
-$LANG['setup'][280]="Automatically update of the elements related to the computers"; 
+$LANG['setup'][280]="بروزرسانی خودکار یک عنصر مرتبط به رایانه ها"; 
 $LANG['setup'][281]="When connecting or updating"; 
 $LANG['setup'][282]="When disconnecting"; 
-$LANG['setup'][283]="Copy"; 
-$LANG['setup'][284]="Clear"; 
-$LANG['setup'][285]="Do not copy"; 
-$LANG['setup'][286]="Do not delete"; 
-$LANG['setup'][290]="Automatic transfer of computers"; 
+$LANG['setup'][283]="رونوشت"; 
+$LANG['setup'][284]="پاک کردن"; 
+$LANG['setup'][285]="رونوشت نکنید"; 
+$LANG['setup'][286]="حذف نکنید"; 
+$LANG['setup'][290]="انتقال خودکار از رایانه ها"; 
 $LANG['setup'][291]="Template for the automatic transfer of computers in another entity"; 
 $LANG['setup'][292]="No automatic transfer"; 
-$LANG['setup'][300]="Check if a new version is available"; 
-$LANG['setup'][301]="A new version is available:"; 
+$LANG['setup'][300]="بررسی کنید اگر نسخه جدید موجود است"; 
+$LANG['setup'][301]="نسخه جدید در دسترس است:"; 
 $LANG['setup'][302]="You will find it on the GLPI-PROJECT.org site"; 
 $LANG['setup'][303]="You have the latest available version"; 
-$LANG['setup'][304]="Connection failed. If you use a proxy, please configure it."; 
-$LANG['setup'][305]="Every day"; 
-$LANG['setup'][306]="Check for upgrade"; 
+$LANG['setup'][304]="ارتباط شکست خورد. اگر از پراکسی استفاده می کنید، لطفا آنرا پیکره بندی کنید."; 
+$LANG['setup'][305]="هر روز"; 
+$LANG['setup'][306]="بررسی برای ارتقاء"; 
 $LANG['setup'][307]="Never"; 
-$LANG['setup'][308]="Each week"; 
-$LANG['setup'][309]="Each month"; 
-$LANG['setup'][310]="Impossible to connect to site."; 
-$LANG['setup'][311]="Failed to connect to the proxy server"; 
+$LANG['setup'][308]="هر هفته"; 
+$LANG['setup'][309]="هر ماهه"; 
+$LANG['setup'][310]="اتصال به سایت غیرممکن است."; 
+$LANG['setup'][311]="شکست در ارتباط با خادم پراکسی"; 
 $LANG['setup'][312]="No data available on the web site"; 
-$LANG['setup'][313]="Be careful : there is no default value"; 
-$LANG['setup'][314]="Maximum capacity of displayed characters for URLs"; 
-$LANG['setup'][350]="Link with items for the creation of tickets"; 
-$LANG['setup'][351]="All Items"; 
-$LANG['setup'][352]="Linkable items to a ticket"; 
-$LANG['setup'][360]="Automatic fields (marked by *)"; 
+$LANG['setup'][313]="مراقب باشید : مقدار پیش فرض وجود ندارد"; 
+$LANG['setup'][314]="حداکثر ظرفیت از حروف نمایش داده شده برای نشانی های وب"; 
+$LANG['setup'][350]="پیوند موارد برای ایجاد درخواست ها"; 
+$LANG['setup'][351]="همه موارد"; 
+$LANG['setup'][352]="اقلام قابل پیوند به یک درخواست"; 
+$LANG['setup'][360]="اجزاء خودکار(مشخص شده با *)"; 
 $LANG['setup'][400]="Proxy configuration"; 
 $LANG['setup'][407]="Simplified interface help link"; 
 $LANG['setup'][408]="Standard interface help link"; 
-$LANG['setup'][409]="Default heading when adding a document to a ticket"; 
+$LANG['setup'][409]="عنوان پیش فرض هنگامی که سندی به درخواستی اضافه می شود"; 
 $LANG['setup'][503]="Phones models"; 
 $LANG['setup'][504]="Phones Types"; 
 $LANG['setup'][505]="Power supply type of phones"; 
-$LANG['setup'][601]="Attribute value"; 
-$LANG['setup'][602]="Connection to OCSNG database"; 
-$LANG['setup'][603]="Add a user"; 
-$LANG['setup'][604]="Associate to a group"; 
-$LANG['setup'][605]="Add a empowerment to a user"; 
+$LANG['setup'][601]="مقدار ویژگی"; 
+$LANG['setup'][602]="اتصال به پایگاه داده OCSNG"; 
+$LANG['setup'][603]="افزودن یک کاربر"; 
+$LANG['setup'][604]="پیوستن به گروه"; 
+$LANG['setup'][605]="اضافه کردن توانمندسازی به کاربر"; 
 $LANG['setup'][606]="Unable to add. The user already exists."; 
-$LANG['setup'][607]="Associate to a profile"; 
+$LANG['setup'][607]="پیوستن به مشخصات"; 
 $LANG['setup'][608]="Software associable to a ticket by default"; 
 $LANG['setup'][609]="Unable to add. The OCSNG server already exists."; 
-$LANG['setup'][610]="Compulsory title of the ticket"; 
-$LANG['setup'][611]="Compulsory ticket content"; 
-$LANG['setup'][612]="Compulsory ticket category"; 
-$LANG['setup'][613]="Add a user without accreditation from a LDAP directory"; 
+$LANG['setup'][610]="عنوان اجباری درخواست"; 
+$LANG['setup'][611]="محتوی درخواست اجباری"; 
+$LANG['setup'][612]="رده درخواست اجباری"; 
+$LANG['setup'][613]="افزودن کاربر بدون مجوز رسمی از فهرست LDAP"; 
 $LANG['setup'][614]="Unable to update login. A user already exists."; 
-$LANG['setup'][615]="Life cycle of tickets"; 
-$LANG['setup'][616]="From \ To"; 
-$LANG['setup'][620]="Link"; 
+$LANG['setup'][615]="چرخه زندگی درخواست ها"; 
+$LANG['setup'][616]="از / به"; 
+$LANG['setup'][620]="پیوند"; 
 $LANG['setup'][621]="Search filter for entities"; 
-$LANG['setup'][622]="Attribute representing entity"; 
-$LANG['setup'][623]="Import entities from LDAP directory"; 
+$LANG['setup'][622]="ویژگی نمایندگی نهاد"; 
+$LANG['setup'][623]="واردات موجودیت ها از فهرست LDAP"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 
 $LANG['setup'][652]="SMTP+SSL"; 
 $LANG['setup'][653]="SMTP+TLS"; 
-$LANG['setup'][660]="Mail server"; 
-$LANG['setup'][661]="Impossible to configure the notifications : please configure your email follow-up using the above configuration."; 
-$LANG['setup'][703]="General"; 
+$LANG['setup'][660]="خادم نامه"; 
+$LANG['setup'][661]="پیکربندی اطلاعیه غیرممکن است : لطفا رایانامه پیگیری خود را با استفاده از تنظیمات فوق پیکره بندی کنید"; 
+$LANG['setup'][703]="عمومی"; 
 $LANG['setup'][704]="Notifications"; 
-$LANG['setup'][707]="Alerts on reservations"; 
-$LANG['setup'][708]="Alerts on tickets which are not solved since"; 
+$LANG['setup'][707]="هشدار بر ذخیره ها"; 
+$LANG['setup'][708]="هشدار بر درخواست که هنوز حل نشده است"; 
 $LANG['setup'][720]="System informations"; 
-$LANG['setup'][721]="Information about system installation and configuration"; 
+$LANG['setup'][721]="اطلاعات درباره نصب و پیکره بندی سامانه"; 
 $LANG['setup'][722]="To copy/paste in your support request"; 
 $LANG['setup'][731]="Value of the global configuration"; 
-$LANG['setup'][732]="Domain of electronic mail service"; 
+$LANG['setup'][732]="دامنه خدمات نامه الکترونیکی"; 
 $LANG['setup'][800]="Mysql replicate"; 
-$LANG['setup'][801]="Enable the MySQL replicate"; 
-$LANG['setup'][802]="Database"; 
-$LANG['setup'][803]="Difference between master and slave"; 
+$LANG['setup'][801]="فعال کردن تکرار MySQL"; 
+$LANG['setup'][802]="پایگاه داده"; 
+$LANG['setup'][803]="تفاوت بین اصلی و پیرو"; 
 $LANG['setup'][804]="Use the slave for the search engine"; 
-$LANG['setup'][806]="Max delay between master and slave (minutes)"; 
+$LANG['setup'][806]="تاخیر حداکثر بین اصلی و فرعی(دقیقه)"; 
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; 
 $LANG['setup'][808]="Slave database out of sync!"; 
 $LANG['setup'][809]="MySQL replica: read only"; 
-$LANG['setup'][810]="Desynchronization MySQL replication"; 
-$LANG['setup'][811]="Fields unicity"; 
-$LANG['setup'][813]="Impossible record for"; 
+$LANG['setup'][810]="تکرار ناهمزمانی  MySQL"; 
+$LANG['setup'][811]="اجزاء یکتا"; 
+$LANG['setup'][813]="ضبط غیرممکن است برای"; 
 $LANG['setup'][815]="Unique(s) field(s)"; 
-$LANG['setup'][817]="It's mandatory to select a type and at least one field"; 
-$LANG['setup'][818]="<br/>Other items exist"; 
-$LANG['setup'][819]="Change to state"; 
-$LANG['setup'][820]="Attitude when a computer is deleted in OCSNG"; 
+$LANG['setup'][817]="این که یک نوع یا حداقل یک جزء را انتخاب کنید اجباری است"; 
+$LANG['setup'][818]="<br/>دیگر موارد موجود است"; 
+$LANG['setup'][819]="تغییر حالت"; 
+$LANG['setup'][820]="طرز برخورد زمانی که یک رایانه در OCSNG حذف می شود"; 
 $LANG['setup'][821]="Record into the database denied"; 
 $LANG['setup'][822]="Send a notification"; 
-$LANG['setup'][823]="Item successfully added but duplicate record on"; 
-$LANG['setup'][824]="Doer"; 
-$LANG['setup'][825]="Intended action"; 
-$LANG['setup'][826]="Duplicates"; 
-$LANG['setup'][827]="Alert on duplicate record"; 
-$LANG['setup'][828]="Ignored value for the unicity"; 
+$LANG['setup'][823]="مورد با موفقیت اضافه شده، اما در سابقه تکراری است"; 
+$LANG['setup'][824]="عامل"; 
+$LANG['setup'][825]="اقدام درنظر گرفته شده"; 
+$LANG['setup'][826]="تکراری ها"; 
+$LANG['setup'][827]="هشدار بر ثبت تکراری"; 
+$LANG['setup'][828]="مقدار نادیده گرفته برای یکتایی"; 
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximum time to solve"; 
@@ -1982,9 +1982,9 @@ $LANG['softwarecategories'][4]="Unfold the software belonging to a category";
 $LANG['softwarecategories'][5]="Software categories"; 
 
 $LANG['state'][0]="وضعیت"; 
-$LANG['state'][1]="Summary"; 
-$LANG['state'][6]="Item Type"; 
-$LANG['state'][7]="No items found"; 
+$LANG['state'][1]="خلاصه"; 
+$LANG['state'][6]="نوع فقره"; 
+$LANG['state'][7]="موردی یافت نشد"; 
 
 $LANG['stats'][0]="Select statistics to be displayed"; 
 $LANG['stats'][1]="Global"; 
