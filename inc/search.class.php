@@ -4147,11 +4147,15 @@ class Search {
                return (empty($out) ? "&nbsp;" : $out);
 
             case "email" :
-               $email = trim($data[$NAME.$num]);
-               if (!empty($email)) {
-                  return "<a href='mailto:$email'>$email</a>";
+               $split = explode('$$$$', $data[$NAME.$num]);
+               $out   = '';
+               foreach ($split as $val) {
+                  if (!empty($val)) {
+                     $out .= (empty($out)?'':'<br>');
+                     $out .= "<a href='mailto:$val'>$val</a>";
+                  }
                }
-               return "&nbsp;";
+               return (empty($out) ? "&nbsp;" : $out);
 
             case "weblink" :
                $orig_link = trim($data[$NAME.$num]);
