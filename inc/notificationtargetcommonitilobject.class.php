@@ -71,7 +71,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       foreach ($DB->request($query) as $data) {
          //Add the user email and language in the notified users list
          if ($data['notif']) {
-            $author_email = $data['email'];
+            $author_email = UserEmail::getDefaultForUser($data['id']);
             $author_lang  = $data["language"];
             $author_id    = $data['id'];
 
@@ -178,7 +178,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $user = new User();
             $user->getFromDB($this->options['_old_user']['users_id']);
 
-            $author_email = $user->fields['email'];
+            $author_email = UserEmail::getDefaultForUser($user->fields['id']);
             $author_lang  = $user->fields["language"];
             $author_id    = $user->fields['id'];
 
