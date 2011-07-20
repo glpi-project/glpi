@@ -618,8 +618,7 @@ class MailCollector  extends CommonDBTM {
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && $job->fields['status'] != 'closed'
-             && ($tkt['_users_id_requester'] > 0 || !strcasecmp($job->fields['user_email'],
-                                                                $head['from']))) {
+             && ($tkt['_users_id_requester'] > 0 || Ticket_User::isAlternateEmailForTicket($tkt['tickets_id'],$head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";

@@ -65,6 +65,21 @@ class Ticket_User extends CommonDBRelation {
    }
 
 
+   static function isAlternateEmailForTicket($tickets_id, $email) {
+      global $DB;
+
+      $users = array();
+      $query = "SELECT `glpi_tickets_users`.*
+                FROM `glpi_tickets_users`
+                WHERE `tickets_id` = '$tickets_id'
+                  AND `alternative_email` = '$email'";
+
+      foreach ($DB->request($query) as $data) {
+         return true;
+      }
+      return false;
+   }
+
    function canUpdateItem() {
       return (parent::canUpdateItem() || $this->fields['users_id'] == getLoginUserID());
    }
