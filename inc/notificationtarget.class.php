@@ -120,7 +120,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   function getNameID($with_comment=0) {
+   function getName($with_comment=0) {
 
       if (isset($this->notification_targets_labels[$this->getField("type")]
                                                   [$this->getField("items_id")])) {
