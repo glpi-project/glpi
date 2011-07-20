@@ -343,6 +343,18 @@ class User extends CommonDBTM {
    }
 
    /**
+    * Get all emails of the user
+    *
+    * @return array of emails
+   **/
+   function getAllEmails() {
+      if (!isset($this->fields['id'])) {
+         return '';
+      }
+      return UserEmail::getAllForUser($this->fields['id']);
+   }
+
+   /**
     * Is the email set to the current user
     *
     * @return boolean is an email of the user

@@ -1632,7 +1632,7 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($d['use_notification']) {
                   $uemail = $d['alternative_email'];
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
-                     $uemail = $user->getField('email');
+                     $uemail = $user->getDefaultEmail();
                   }
                   $text .= $LANG['mailing'][118]."&nbsp;:&nbsp;".$uemail;
                   if (!NotificationMail::isUserAddressValid($uemail)) {
@@ -1640,14 +1640,11 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                }
                echo "&nbsp;";
-
+               echo $d['users_id'].getLoginUserID();
                if ($canedit
                    || $d['users_id'] == getLoginUserID()) {
-                  $opt = array();
-                  if ($showuserlink) {
-                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                  'popup' => 'edit_user_notification&amp;id='.$d['id']);
-                  }
+                  $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                 'popup' => 'edit_user_notification&amp;id='.$d['id']);
                   showToolTip($text, $opt);
                }
             }

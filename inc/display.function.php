@@ -2235,11 +2235,12 @@ function printHelpDesk ($ID, $from_helpdesk) {
       }
    }
 
-   $query = "SELECT `email`, `realname`, `firstname`, `name`
+   $query = "SELECT `realname`, `firstname`, `name`
              FROM `glpi_users`
              WHERE `id` = '$ID'";
    $result = $DB->query($query);
-   $email  = $DB->result($result,0,"email");
+
+   $email  = UserEmail::getDefaultForUser($ID);
 
    // Get saved data from a back system
    $use_email_notification = 1;
