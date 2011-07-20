@@ -57,6 +57,13 @@ if (!isset($item->fields[$_POST['field']])) {
    exit();
 }
 
+// Security : blacklist fields
+if (in_array($table.'.'.$_POST['field'],array('glpi_users.name',
+                                              'glpi_users.password'))) {
+   exit();
+}
+
+
 $entity="";
 if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']>=0) {
    $item = new $_POST['itemtype']();
