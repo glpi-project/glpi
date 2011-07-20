@@ -1171,9 +1171,9 @@ class User extends CommonDBTM {
       // some defaults...
       $this->fields['password'] = "";
       if (strpos($name,"@")) {
-         $this->fields['email'] = $name;
+         $this->fields['_add_email'] = $name;
       } else {
-         $this->fields['email'] = $name . "@" . $mail_method["host"];
+         $this->fields['_add_email'] = $name . "@" . $mail_method["host"];
       }
 
       $this->fields['name'] = $name;
@@ -1194,7 +1194,7 @@ class User extends CommonDBTM {
          $this->fields = $rule->processAllRules($groups, $this->fields,
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
-                                                      'email'       => $this->fields["email"]));
+                                                      'email'       => $this->fields['_add_email']));
          $this->fields['_ruleright_process'] = true;
       }
       return true;

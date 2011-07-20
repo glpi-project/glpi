@@ -1130,8 +1130,9 @@ function getUserName($ID, $link=0) {
             $user["comment"] = $LANG['common'][16]."&nbsp;: ".$username."<br>".$LANG['setup'][18].
                                "&nbsp;: ".$data["name"]."<br>";
 
-            if (!empty($data["email"])) {
-               $user["comment"] .= $LANG['setup'][14]."&nbsp;: ".$data["email"]."<br>";
+            $email = UserEmail::getDefaultForUser($ID);
+            if (!empty($email)) {
+               $user["comment"] .= $LANG['setup'][14]."&nbsp;: $email<br>";
             }
 
             if (!empty($data["phone"])) {
