@@ -211,8 +211,10 @@ function getSingular($string) {
    $rules = array(//'plural' => 'singular'
                   'ches$'   => 'ch',
                   'shes$'   => 'sh',
+                  'ss$'     => 'sss', // Case like address : add triple ss to be cut at the end
                   'sses$'   => 'sss', // Case like addresses : add triple ss to be cut at the end
-                  '[aeiou]ses$'   => 'ss', // Case like aliases : add double ss to be cut at the end
+                  'ias$'   => 'iass', // Case like alias : add double ss to be cut at the end
+                  '([aeiou])ses$'   => '\1ss', // Case like aliases : add double ss to be cut at the end
                   'ies$'   => 'y', // special case : category
                   's$' => ''); // Add at the end if not exists
 
