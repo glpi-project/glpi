@@ -53,7 +53,7 @@ $item = new $_POST['itemtype']();
 $item->getEmpty();
 $table = $item->getTable();
 // Security
-if (!isset($item->fields[$_POST['field']])) {
+if (!isset($item->fields[$_POST['field']]) || !$item->canView()) {
    exit();
 }
 
