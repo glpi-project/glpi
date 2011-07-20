@@ -78,7 +78,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       echo "</select>";
    } else {
       echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
-            value='$email'>";
+            value='$default_email'>";
    }
 }
 
