@@ -131,14 +131,14 @@ class Group extends CommonDBTM {
       echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][64]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
-      // Manager must be in the same entity
-      User::dropdown(array('value'  => $this->fields["users_id"],
-                           'right'  => 'all',
-                           'entity' => $this->fields["entities_id"]));
-      echo "</td></tr>";
+//       echo "<tr class='tab_bg_1'>";
+//       echo "<td>".$LANG['common'][64]."&nbsp;:&nbsp;</td>";
+//       echo "<td>";
+//       // Manager must be in the same entity
+//       User::dropdown(array('value'  => $this->fields["users_id"],
+//                            'right'  => 'all',
+//                            'entity' => $this->fields["entities_id"]));
+//       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
 

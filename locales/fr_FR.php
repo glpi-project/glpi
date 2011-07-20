@@ -1123,6 +1123,7 @@ $LANG['log'][46]  = "Échouée";
 
 $LANG['log'][48]  = "ajout utilisateur au groupe";
 $LANG['log'][49]  = "suppression utilisateur au groupe";
+$LANG['log'][50]  = "modification utilisateur au groupe";
 
 $LANG['log'][55]  = "Connexion";
 
@@ -2509,7 +2510,8 @@ $LANG['users'][15] = "Import depuis les annuaires";
 $LANG['users'][16] = "Import depuis les autres sources";
 $LANG['users'][17] = "Matricule";
 $LANG['users'][18] = "générée le";
-
+$LANG['users'][19] = "Ajouter aux superviseurs";
+$LANG['users'][20] = "Supprimer des superviseurs";
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";

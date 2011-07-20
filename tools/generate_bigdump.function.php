@@ -1251,7 +1251,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
-                VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '0', '', '', '',
+                VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
                         NOW())";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
@@ -1303,13 +1303,9 @@ function generate_entity($ID_entity) {
 
       $group = mt_rand($FIRST['groups'], $LAST['groups']);
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0, 0)";
+                VALUES (NULL, '$user_id', '$group', 0, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
-      $query = "UPDATE `glpi_groups`
-                SET `users_id` = '$user_id'
-               WHERE `users_id` = '$group'";
-      $DB->query($query) or die("PB REQUETE ".$query);
    }
 
    $LAST["users_admin"]   = getMaxItem("glpi_users");

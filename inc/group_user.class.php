@@ -220,7 +220,8 @@ class Group_User extends CommonDBRelation{
 
       $query = "SELECT `glpi_users`.*,
                        `glpi_groups_users`.`id` AS linkID,
-                       `glpi_groups_users`.`is_dynamic` AS is_dynamic
+                       `glpi_groups_users`.`is_dynamic` AS is_dynamic,
+                       `glpi_groups_users`.`is_manager` AS is_manager
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
                 WHERE `glpi_groups_users`.`groups_id`='$ID'
@@ -260,13 +261,15 @@ class Group_User extends CommonDBRelation{
          if ($nb) {
             echo "<div class='firstbloc'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
 
             User::dropdown(array('right'  => "all",
                                  'entity' => $entityrestrict,
                                  'used'   => $used_ids));
 
+            echo "</td><td>".$LANG['common'][64]."</td><td>";
+            Dropdown::showYesNo("is_manager", 0);
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name'is_dynamic' value='0'>";
             echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\"
@@ -280,59 +283,68 @@ class Group_User extends CommonDBRelation{
       }
 
       if (count($used)) {
-         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].")";
-         echo "</th></tr>";
-
          initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
-         $i = 0;
-         $user = new User();
-         foreach  ($used as $id => $data) {
-            if (!$user->can($id, 'r')) {
-               // For recursive group, could be in another (sister) entity
-               continue;
-            }
-            addToNavigateListItems('User', $data["id"]);
-            if ($i%$nb_per_line==0) {
-               if ($i!=0) {
-                  echo "</tr>";
+         foreach (array(1,0) as $is_manager) {
+
+            echo "<div id='groupuser_form$rand-$is_manager' class='spaced'><table class='tab_cadre_fixe'>";
+            echo "<tr><th colspan='$headerspan'>".($is_manager?$LANG['common'][64]:$LANG['Menu'][14])." (D=".$LANG['profiles'][29].")";
+            echo "</th></tr>";
+
+            $i = 0;
+            $user = new User();
+            foreach  ($used as $id => $data) {
+               if ($data['is_manager'] != $is_manager || !$user->can($id, 'r')) {
+                  // For recursive group, could be in another (sister) entity
+                  continue;
                }
-               echo "<tr class='tab_bg_1'>";
-            }
-            if ($canedit) {
-               echo "<td width='10'>";
-               $sel = "";
-               if (isset($_GET["select"]) && $_GET["select"]=="all") {
-                  $sel = "checked";
+               addToNavigateListItems('User', $data["id"]);
+               if ($i%$nb_per_line==0) {
+                  if ($i!=0) {
+                     echo "</tr>";
+                  }
+                  echo "<tr class='tab_bg_1'>";
                }
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+               if ($canedit) {
+                  echo "<td width='10'>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+                  echo "</td>";
+               }
+
+               echo "<td>";
+               echo $user->getLink();
+               if ($data["is_dynamic"]) {
+                  echo "<strong>&nbsp;(D)</strong>";
+               }
+
                echo "</td>";
+               $i++;
             }
-
-            echo "<td>";
-            echo $user->getLink();
-            if ($data["is_dynamic"]) {
-               echo "<strong>&nbsp;(D)</strong>";
-            }
-
-            echo "</td>";
-            $i++;
-         }
-         while ($i%$nb_per_line!=0) {
-            echo "<td>&nbsp;</td>";
-            if ($canedit) {
+            while ($i%$nb_per_line!=0) {
                echo "<td>&nbsp;</td>";
+               if ($canedit) {
+                  echo "<td>&nbsp;</td>";
+               }
+               $i++;
             }
-            $i++;
-         }
-         echo "</tr>";
-         echo "</table>";
+            echo "</tr>";
+            echo "</table>";
 
-         if ($canedit) {
-            openArrowMassive("groupuser_form$rand", true);
-            closeArrowMassive('deleteuser', $LANG['buttons'][6]);
+            if ($canedit) {
+               openArrowMassive("groupuser_form$rand-$is_manager", true);
+               $actions = array('deleteuser' => $LANG['buttons'][6]);
+               if ($is_manager) {
+                  $actions['unset_manager'] = $LANG['users'][20];
+               } else {
+                  $actions['set_manager'] = $LANG['users'][19];
+               }
+               closeArrowMassives($actions);
+            }
+            echo "</div>";
          }
-         echo "</div>";
       }
       if ($canedit) {
          echo "</form>";

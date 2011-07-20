@@ -81,6 +81,30 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
+} else if (isset($_POST["unset_manager"])) {
+
+   if (isset($_POST["item"]) && count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         if ($groupuser->can($key,'w')) {
+            $groupuser->update(array('id'=>$key, 'is_manager'=> 0));
+         }
+      }
+   }
+   Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["set_manager"])) {
+
+   if (isset($_POST["item"]) && count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         if ($groupuser->can($key,'w')) {
+            $groupuser->update(array('id'=>$key, 'is_manager'=> 1));
+         }
+      }
+   }
+   Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {
    if (isset($_POST['item'])
        && ($_POST["field"]=='groups_id' || $_POST["field"]=='groups_id_tech' )) {

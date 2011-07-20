@@ -3394,7 +3394,25 @@ function openArrowMassive($formname, $fixed=false, $width='80%') {
 function closeArrowMassive($name='', $label='') {
 
    if (!empty($name)) {
-      echo "<input type='submit' name='$name' value='$label' class='submit'>";
+      echo "<input type='submit' name='$name' value=\"$label\" class='submit'>";
+   }
+   echo "</td></tr>";
+   echo "</table>";
+}
+
+/**
+ * show arrow for massives actions : closing
+ *
+ * @param $actions array of action : $name -> $label
+ **/
+function closeArrowMassives($actions) {
+
+   if (count($actions)) {
+      foreach($actions as $name => $label) {
+         if (!empty($name)) {
+            echo "<input type='submit' name='$name' value=\"$label\" class='submit'>&nbsp;";
+         }
+      }
    }
    echo "</td></tr>";
    echo "</table>";

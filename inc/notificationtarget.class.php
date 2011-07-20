@@ -504,7 +504,8 @@ class NotificationTarget extends CommonDBChild {
                FROM `glpi_groups_users`
                INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
-               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'";
+               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
+                  AND `glpi_groups_users`.`is_manager` = 0";
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
@@ -519,14 +520,15 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       $query = $this->getDistinctUserSql()."
-               FROM `glpi_groups`
-               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`) ".
+               FROM `glpi_groups_users`
+               INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
-               WHERE `glpi_groups`.`id` = '".$groups_id."'";
+               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
+                  AND `glpi_groups_users`.`is_manager` = 1";
 
-         foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data);
-         }
+      foreach ($DB->request($query) as $data) {
+         $this->addToAddressesList($data);
+      }
    }
 
 
