@@ -61,6 +61,7 @@ if (!isset($item->fields[$_POST['field']])) {
 if (in_array($table.'.'.$_POST['field'],array('glpi_users.name',
                                               'glpi_users.password',
                                               'glpi_authldaps.rootdn_passwd',
+                                              'glpi_authldaps.rootdn',
                                               'glpi_configs.proxy_passwd',
                                               'glpi_mailcollectors.login',
                                               'glpi_mailcollectors.passwd',
