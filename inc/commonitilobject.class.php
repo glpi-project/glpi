@@ -1640,7 +1640,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                }
                echo "&nbsp;";
-               echo $d['users_id'].getLoginUserID();
+
                if ($canedit
                    || $d['users_id'] == getLoginUserID()) {
                   $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',

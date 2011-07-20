@@ -794,7 +794,7 @@ class Ticket extends CommonITILObject {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
-      print_r($this->updates);exit();
+
       // Do not take into account date_mod if no update is done
       if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
          unset($this->updates[$key]);
