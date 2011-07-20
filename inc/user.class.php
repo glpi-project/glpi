@@ -1133,7 +1133,7 @@ class User extends CommonDBTM {
       } else {
          if (!empty ($this->fields["password"]) || $this->fields["authtype"] == Auth::DB_GLPI) {
             echo "<td>";
-            autocompletionTextField($this, "name");
+            echo "<input name='name' value='" . $this->fields["name"] . "'>";
          } else {
             echo "<td class='b'>" . $this->fields["name"];
             echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";

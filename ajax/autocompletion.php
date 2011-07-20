@@ -54,13 +54,27 @@ $item = new $_POST['itemtype']();
 $item->getEmpty();
 $table = $item->getTable();
 // Security
-if (!isset($item->fields[$_POST['field']])) {
+if (!isset($item->fields[$_POST['field']]) || !$item->canView()) {
    exit();
 }
 
+
+// Security : blacklist fields
+if (in_array($table.'.'.$_POST['field'],array('glpi_users.name',
+                                              'glpi_users.password',
+                                              'glpi_authldaps.rootdn_passwd',
+                                              'glpi_authldaps.rootdn',
+                                              'glpi_configs.proxy_passwd',
+                                              'glpi_mailcollectors.login',
+                                              'glpi_mailcollectors.passwd',
+                                              'glpi_ocsservers.ocs_db_user',
+                                              'glpi_ocsservers.ocs_db_passwd'))) {
+   exit();
+}
+
+
 $entity="";
 if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']>=0) {
-   $item = new $_POST['itemtype']();
    if ($item->isEntityAssign()) {
       $entity=" AND `entities_id` = '".$_POST['entity_restrict']."' ";
    }
