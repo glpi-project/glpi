@@ -711,8 +711,8 @@ function update0801to083($output='HTML') {
                   `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `email` varchar( 255 ) NULL DEFAULT '',
                   PRIMARY KEY (`id`),
-                  UNIQUE KEY `unicity` (`email`),
-                  KEY `users_id` (`users_id`),
+                  UNIQUE KEY `unicity` (`users_id`,`email`),
+                  KEY `email` (`email`),
                   KEY `is_default` (`is_default`),
                   KEY `is_dynamic` (`is_dynamic`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -749,13 +749,15 @@ function update0801to083($output='HTML') {
                $query2 = "INSERT INTO `glpi_useremails`
                                   (`users_id`, `is_default`, `is_dynamic`, `email`)
                            VALUES ('".$data['id']."','1','$is_dynamic','".$data['email']."')";
-               $DB->query($query2); // Not die on error if case of duplicates emails
+               $DB->query($query2) or die("0.83 move emails to  glpi_useremails ". $LANG['update'][90] . $DB->error());
             }
          }
       }
       /// Drop email field from glpi_users
       $migration->dropField("glpi_users", 'email');
    }
+
+   /// TODO check unicity for users email : unset rule and display warning
 
    // multiple manager in groups
    $migration->changeField("glpi_authldaps", 'email_field','email1_field',
