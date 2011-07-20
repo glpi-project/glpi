@@ -400,10 +400,15 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Add new mail with lang to current email array
     *
-    * @param $data : array of data (mail, lang)
+    * @param $data : array of data (mail, lang[, id for user])
    **/
    function addToAddressesList($data) {
       global $CFG_GLPI;
+
+      // Not email set : get default for user
+      if (!isset($data['email']) && isset($data['id'])) {
+            $data['email'] = UserEmail::getDefaultForUser($data['id']);
+      }
 
       $new_mail = trim(utf8_strtolower($data['email']));
       $new_lang = '';
@@ -468,9 +473,7 @@ class NotificationTarget extends CommonDBChild {
 
       $user = new User();
       if ($this->obj->isField('users_id') && $user->getFromDB($this->obj->getField('users_id'))) {
-
-         $this->addToAddressesList(array('email'    => $user->getField('email'),
-                                         'language' => $user->getField('language'),
+         $this->addToAddressesList(array('language' => $user->getField('language'),
                                          'id'       => $user->getField('id')));
       }
    }
@@ -524,14 +527,12 @@ class NotificationTarget extends CommonDBChild {
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
          }
-         $this->addToAddressesList($data);
    }
 
 
    function getDistinctUserSql() {
 
       return  "SELECT DISTINCT `glpi_users`.id AS id,
-                               `glpi_users`.`email` AS email,
                                `glpi_users`.`language` AS language";
    }
 

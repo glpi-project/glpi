@@ -87,7 +87,7 @@ class UserEmail  extends CommonDBChild {
     * @param $users_id user ID
     * @return default email, empty if no email set
    **/
-   static getDefaultForUser($users_id) {
+   static function getDefaultForUser($users_id) {
       global $DB;
       // Get default one
       foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'

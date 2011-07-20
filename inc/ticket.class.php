@@ -618,12 +618,13 @@ class Ticket extends CommonITILObject {
          }
       }
 
-
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
-         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
-            $ticket_ticket->add($input['_link']);
-            $input['_forcenotif'] = true;
+         if (!empty($input['_link']['tickets_id_2'])
+               && $ticket_ticket->can(-1, 'w', $input['_link'])) {
+            if ($ticket_ticket->add($input['_link'])) {
+               $input['_forcenotif'] = true;
+            }
          }
       }
 
@@ -793,7 +794,7 @@ class Ticket extends CommonITILObject {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
-
+      print_r($this->updates);exit();
       // Do not take into account date_mod if no update is done
       if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
          unset($this->updates[$key]);
@@ -868,13 +869,12 @@ class Ticket extends CommonITILObject {
    function post_updateItem($history=1) {
       global $CFG_GLPI, $LANG;
 
-      $donotif = false;
+      $donotif = count($this->updates);
 
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
       }
-
-
+      
 
       // Manage SLA Level : add actions
       if (in_array("slas_id",$this->updates)
