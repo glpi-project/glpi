@@ -104,6 +104,23 @@ class UserEmail  extends CommonDBChild {
    }
 
    /**
+    * is an email of the user
+    *
+    * @param $users_id user ID
+    * @param $email string email to check user ID
+    * @return boolean is this email set for the user ?
+   **/
+   static function isEmailForUser($users_id, $email) {
+      global $DB;
+
+      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
+                                                AND `email` = '$email'") as $data) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
     * Show emails of a user
     *
     * @param $user User object
@@ -201,7 +218,8 @@ class UserEmail  extends CommonDBChild {
    function prepareInputForAdd($input) {
 
       // Check email validity
-      if (!isset($input['email']) || !isset($input['users_id'])) {
+      if (!isset($input['email']) || !isset($input['users_id'])
+         || empty($input['email']) || empty($input['users_id'])) {
          return false;
       }
 

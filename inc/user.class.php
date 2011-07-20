@@ -315,22 +315,44 @@ class User extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
+      $query = "SELECT `users_id`
+                FROM `glpi_useremails`
                 WHERE `email` = '$email'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         }
+         $data = $DB->fetch_assoc($result);
+         return $this->getFromDB($data['users_id']);
       }
       return false;
    }
 
+
+   /**
+    * Get the default email of the user
+    *
+    * @return default user email
+   **/
+   function getDefaultEmail() {
+      if (!isset($this->fields['id'])) {
+         return '';
+      }
+      return UserEmail::getDefaultForUser($this->fields['id']);
+   }
+
+   /**
+    * Is the email set to the current user
+    *
+    * @return boolean is an email of the user
+   **/
+   function isEmail($email) {
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      return UserEmail::isEmailForUser($this->fields['id'],$email);
+   }
 
    /**
     * Retrieve an item from the database using its personal token
@@ -400,11 +422,6 @@ class User extends CommonDBTM {
 
       if (isset ($input["_extauth"])) {
          $input["password"] = "";
-      }
-      // change email_form to email (not to have a problem with preselected email)
-      if (isset ($input["email_form"])) {
-         $input["email"] = $input["email_form"];
-         unset ($input["email_form"]);
       }
 
       // Force DB default values : not really needed
@@ -482,7 +499,7 @@ class User extends CommonDBTM {
                        || ($input['password_forget_token'] == $this->fields['password_forget_token'] // Permit to change password with token and email
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
-                           && $input['email'] == $this->fields['email']))) {
+                           && $this->isEmail($input['email'])))) {
                   $input["password"]
                         = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
@@ -554,7 +571,7 @@ class User extends CommonDBTM {
             }
          }
       }
-      if (isset($input['_add_email'])) {
+      if (isset($input['_add_email']) && !empty($input['_add_email'])) {
          $email = new UserEmail();
          $email->add(array('users_id' => $input['id'],
                            'email'    => $input['_add_email']));
@@ -1366,11 +1383,6 @@ class User extends CommonDBTM {
       echo "</td><td>";
 
       UserEmail::showForUser($this);
-/*      autocompletionTextField($this, "email", array('name' => "email_form"));
-
-      if (!empty($ID) && !NotificationMail::isUserAddressValid($this->fields["email"])) {
-         echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-      }*/
       echo "</td>";
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
       Dropdown::show('UserCategory', array('value' => $this->fields["usercategories_id"]));
@@ -1550,18 +1562,7 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:";
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
-
-         if ($extauth && isset ($authtype['email1_field']) && !empty ($authtype['email1_field'])) {
-            UserEmail::showForUser($this);
-
-//            echo $this->fields["email"];
-         } else {
-            UserEmail::showForUser($this);
-/*            autocompletionTextField($this, "email", array('name' => "email_form"));
-            if (!NotificationMail::isUserAddressValid($this->fields["email"])) {
-               echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
-            }*/
-         }
+         UserEmail::showForUser($this);
          echo "</td>";
 
          if (!GLPI_DEMO_MODE) {
@@ -1709,14 +1710,6 @@ class User extends CommonDBTM {
 
                         }
                      }
-                  }
-               }
-
-               // extauth imap case
-               if (isset($this->fields["authtype"]) && $this->fields["authtype"] == Auth::MAIL) {
-                  if (($key = array_search("email", $this->updates)) !== false) {
-                     unset ($this->updates[$key]);
-                     unset($this->oldvalues['email']);
                   }
                }
 
@@ -2011,6 +2004,8 @@ class User extends CommonDBTM {
                    FROM `glpi_users` ";
       }
 
+      $query .= " LEFT JOIN `glpi_useremails`
+                     ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)";
       $query .= " LEFT JOIN `glpi_profiles_users`
                      ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
 
@@ -2027,7 +2022,7 @@ class User extends CommonDBTM {
                              OR `glpi_users`.`realname` ".makeTextSearch($search)."
                              OR `glpi_users`.`firstname` ".makeTextSearch($search)."
                              OR `glpi_users`.`phone` ".makeTextSearch($search)."
-                             OR `glpi_users`.`email` ".makeTextSearch($search)."
+                             OR `glpi_useremails`.`email` ".makeTextSearch($search)."
                              OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
                                       makeTextSearch($search).")";
          }
@@ -2260,7 +2255,7 @@ class User extends CommonDBTM {
       $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
       $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
-      $vcard->setEmail($this->fields["email"]);
+      $vcard->setEmail($this->getDefaultEmail());
 
       $vcard->setNote($this->fields["comment"]);
 
@@ -2449,8 +2444,8 @@ class User extends CommonDBTM {
    static function getOrImportByEmail($email='') {
       global $DB, $CFG_GLPI;
 
-      $query = "SELECT `id`
-                FROM `glpi_users`
+      $query = "SELECT `users_id` as id
+                FROM `glpi_useremails`
                 WHERE `email` = '$email'";
       $result = $DB->query($query);
 
@@ -2619,7 +2614,6 @@ class User extends CommonDBTM {
                         -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)) {
 
                $input['id'] = $this->fields['id'];
-
                if ($this->update($input)) {
                  echo $LANG['users'][13];
                  //
