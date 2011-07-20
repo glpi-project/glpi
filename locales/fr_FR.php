@@ -1110,6 +1110,8 @@ $LANG['log'][32]  = "ajout lien avec un élément";
 $LANG['log'][33]  = "suppression lien avec un élément";
 $LANG['log'][34]  = "ajout lien avec fournisseur";
 $LANG['log'][35]  = "suppression lien avec fournisseur";
+$LANG['log'][36]  = "suppression d'un courriel";
+$LANG['log'][37]  = "ajout d'un courriel";
 
 $LANG['log'][40]  = "connexion de l'IP";
 $LANG['log'][41]  = "échec de connexion";
@@ -1580,7 +1582,7 @@ $LANG['planning'][18] = "Fait";
 
 
 $LANG['plugins'][0]  = "Liste des plugins";
-$LANG['plugins'][1] = "Supprimez-le ou mettez-le à jour sinon GLPI ne fonctionnera pas correctement.";
+$LANG['plugins'][1]  = "Supprimez-le ou mettez-le à jour sinon GLPI ne fonctionnera pas correctement.";
 $LANG['plugins'][2]  = "Installé / non configuré";
 $LANG['plugins'][3]  = "Installé / non activé";
 $LANG['plugins'][4]  = "Erreur / à nettoyer";
