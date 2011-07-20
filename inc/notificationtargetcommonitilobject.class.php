@@ -144,18 +144,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $grouplinktable = getTableForItemType($this->obj->grouplinkclass);
       $fkfield        = $this->obj->getForeignKeyField();
 
-      //Look for the user by his id
-      $query =        $this->getDistinctUserSql()."
-               FROM `$grouplinktable`
-               INNER JOIN `glpi_groups` ON (`$grouplinktable`.`groups_id` = `glpi_groups`.`id`)
-               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
-               $this->getProfileJoinSql()."
-               WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
-                     AND `$grouplinktable`.`type` = '$type'";
+      $query = "SELECT `groups_id`
+                FROM `$grouplinktable`
+                WHERE `$grouplinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
+                      AND `$grouplinktable`.`type` = '$type'";
 
       foreach ($DB->request($query) as $data) {
          //Add the group in the notified users list
-         $this->addToAddressesList($data);
+         $this->getSupervisorAddressByGroup($data['groups_id']);
       }
    }
 

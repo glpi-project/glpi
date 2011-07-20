@@ -753,7 +753,7 @@ function update0801to083($output='HTML') {
             }
          }
       }
-      /// Drop email field from glpi_users
+      // Drop email field from glpi_users
       $migration->dropField("glpi_users", 'email');
    }
 
@@ -776,12 +776,49 @@ function update0801to083($output='HTML') {
 
    $migration->displayMessage($LANG['update'][141] . ' - Multiple managers for groups'); // Updating schema
 
-   /// TODO : migration : multiple group managers
+   /// migration : multiple group managers
    $migration->addNormalizedField("glpi_groups_users", "is_manager", 'bool');
    $migration->addKey("glpi_groups_users", "is_manager");
-   // add manager to groups_users setting if not present
-   // Update user as manager if presnet in groups_users
-   // Drop field glpi_groups
+   $migration->migrationOneTable('glpi_groups_users');
+
+   if (FieldExists("glpi_groups", 'users_id')) {
+      $query = "SELECT *
+                FROM `glpi_groups`
+                WHERE `users_id` > 0";
+      $user = new User();
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               if ($user->getFromDB($data['users_id'])) {
+                  $query = "SELECT `id`
+                           FROM `glpi_groups_users`
+                           WHERE `groups_id` = '".$data['id']."'
+                              AND `users_id` = '".$data['users_id']."'";
+                  if ($result2 = $DB->query($query)) {
+                     // add manager to groups_users setting if not present
+                     if ($DB->numrows($result2)==0) {
+                        $query2 = "INSERT INTO`glpi_groups_users`
+                                 (`users_id`,`groups_id`,`is_manager`)
+                                  VALUES ('".$data['users_id']."','".$data['id']."','1');";
+                        $DB->query($query2) or die("0.83 insert manager of groups ". $LANG['update'][90] . $DB->error());;
+                     } else {
+                        // Update user as manager if presnet in groups_users
+                        $query2 = "UPDATE `glpi_groups_users`
+                                  SET `is_manager` = '1'
+                                  WHERE `groups_id` = '".$data['id']."'
+                                     AND `users_id` = '".$data['users_id']."'";
+                        $DB->query($query2) or die("0.83 set manager of groups ". $LANG['update'][90] . $DB->error());;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      
+      // Drop field glpi_groups
+      $migration->dropField("glpi_groups", 'users_id');
+
+   }
 
 
    $migration->displayMessage($LANG['update'][141] . ' - Add entities informations on document links'); // Updating schema
