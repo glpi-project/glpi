@@ -89,7 +89,7 @@ class UserEmail  extends CommonDBChild {
     * @return nothing
    **/
    static function showForUser(User $user) {
-      global $DB;
+      global $DB, $LANG;
       /// TODO to finish : option for edit / add / delete
 
       $users_id = $user->getID();
@@ -98,7 +98,7 @@ class UserEmail  extends CommonDBChild {
             && $users_id != getLoginUserID()) {
          return false;
       }
-      $canedit = $user->can($users_id,"w");
+      $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
 
       $count = 0;
       $email = new UserEmail;
@@ -116,16 +116,50 @@ class UserEmail  extends CommonDBChild {
             echo "</strong>";
          }
 
+         if (!NotificationMail::isUserAddressValid($data['email'])) {
+            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+         }
+
+
          if ($canedit) {
-            echo "  -> canedit this TODO delete if not dynamic";
+            // Can edit if not dynamic
+            if (!$data['is_dynamic']) {
+               echo "TODO EDIT";
+            }
+            echo "TODO SET DEFAULT";
          }
       }
       if ($canedit) {
-         echo "TODO ADD EMAIL";
+         echo "<div style='display:none' id='emailadd$users_id'>";
+         echo "<input type='text' name='_add_email' value='' size='40'>\n";
+         echo "</div>";
+      }
+   }
+
+   static function showAddEmailButton(User $user) {
+      global $LANG,$CFG_GLPI;
+
+      $users_id = $user->getID();
+      if (!$user->can($users_id,'r')
+            && $users_id != getLoginUserID()) {
+         return false;
+      }
+      $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
+
+      if ($canedit) {
+         echo "&nbsp;<a href='#' onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\">";
+         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+         echo '</a>';
       }
    }
 
    function prepareInputForAdd($input) {
+
+      /// Check email validity
+      if (!isset($input['email']) || !isset($input['users_id'])) {
+         return false;
+      }
 
       /// TODO first email is default
       

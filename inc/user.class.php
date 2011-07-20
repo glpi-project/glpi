@@ -501,12 +501,6 @@ class User extends CommonDBTM {
          unset($input["password"]);
       }
 
-      // change email_form to email (not to have a problem with preselected email)
-      if (isset ($input["email_form"])) {
-         $input["email"] = $input["email_form"];
-         unset ($input["email_form"]);
-      }
-
       // Update User in the database
       if (!isset ($input["id"]) && isset ($input["name"])) {
          if ($this->getFromDBbyName($input["name"])) {
@@ -559,6 +553,11 @@ class User extends CommonDBTM {
                $input[$f] = "NULL";
             }
          }
+      }
+      if (isset($input['_add_email'])) {
+         $email = new UserEmail();
+         $email->add(array('users_id' => $input['id'],
+                           'email'    => $input['_add_email']));
       }
       return $input;
    }
@@ -1287,7 +1286,7 @@ class User extends CommonDBTM {
       } else {
          if (!empty ($this->fields["password"]) || $this->fields["authtype"] == Auth::DB_GLPI) {
             echo "<td>";
-            autocompletionTextField($this, "name");
+            echo "<input name='name' value='" . $this->fields["name"] . "'>";
          } else {
             echo "<td class='b'>" . $this->fields["name"];
             echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
@@ -1361,7 +1360,9 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][14] . "&nbsp;:";
+      UserEmail::showAddEmailButton($this);
+      echo "</td><td>";
 
       UserEmail::showForUser($this);
 /*      autocompletionTextField($this, "email", array('name' => "email_form"));
@@ -1545,7 +1546,9 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:";
+         UserEmail::showAddEmailButton($this);
+         echo "</td><td>";
 
          if ($extauth && isset ($authtype['email1_field']) && !empty ($authtype['email1_field'])) {
             UserEmail::showForUser($this);
