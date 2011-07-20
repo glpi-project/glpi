@@ -89,8 +89,7 @@ class UserEmail  extends CommonDBChild {
     * @return nothing
    **/
    static function showForUser(User $user) {
-      global $DB, $LANG;
-      /// TODO to finish : option for edit / add / delete
+      global $DB, $LANG, $CFG_GLPI;
 
       $users_id = $user->getID();
 
@@ -101,32 +100,56 @@ class UserEmail  extends CommonDBChild {
       $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
 
       $count = 0;
-      $email = new UserEmail;
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'") as $data) {
+      /// Display default email
+      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
+                                                AND `is_default` = '1'") as $data) {
+
          if ($count) {
             echo '<br>';
          }
          $count++;
-         /// TODO Better solution maybe to put it on the front (specific request ?)
-         if ($data['is_default']) {
-            echo "<strong>";
-         }
-         echo $data['email'];
-         if ($data['is_default']) {
-            echo "</strong>";
-         }
+         echo "<strong>".$data['email']."</strong>";
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
+         if ($canedit) {
+            // Can edit if not dynamic
+            if (!$data['is_dynamic']) {
+               echo "<a href='".$CFG_GLPI['root_doc'].
+                     "/front/useremail.form.php?delete=delete&amp;id=".$data['id']."'>";
+               echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
+                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'>";
+               echo "</a>";
+            }
+         }
+      }
+ 
+      // Display others email
+      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
+                                                AND `is_default` = '0'") as $data) {
+         if ($count) {
+            echo '<br>';
+         }
+         $count++;
 
+         echo $data['email'];
 
          if ($canedit) {
             // Can edit if not dynamic
             if (!$data['is_dynamic']) {
-               echo "TODO EDIT";
+               echo "<a href='".$CFG_GLPI['root_doc'].
+                     "/front/useremail.form.php?delete=delete&amp;id=".$data['id']."'>";
+               echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
+                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'>";
+               echo "</a>";
             }
-            echo "TODO SET DEFAULT";
+
+            echo "<a href='".$CFG_GLPI['root_doc'].
+                  "/front/useremail.form.php?update=update&amp;id=".$data['id']."&amp;is_default=1'>";
+            echo "<img title=\"".$LANG['title'][26]."\" alt=\"".$LANG['title'][26]."\"
+                     src='".$CFG_GLPI["root_doc"]."/pics/deplier_up.png'>";
+            echo "</a>";
          }
       }
       if ($canedit) {
@@ -156,12 +179,15 @@ class UserEmail  extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      /// Check email validity
+      // Check email validity
       if (!isset($input['email']) || !isset($input['users_id'])) {
          return false;
       }
 
-      /// TODO first email is default
+      // First email is default
+      if (countElementsInTable($this->getTable(),"`users_id`='".$input['users_id']."'") == 0) {
+         $input['is_default'] = 1;
+      }
       
 
       return $input;
@@ -170,22 +196,30 @@ class UserEmail  extends CommonDBChild {
 
 
    function post_updateItem($history=1) {
-      global $LANG,$CFG_GLPI;
+      global $DB;
 
+      // if default is set : unsed others for the users
+      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+         $query = "UPDATE ". $this->getTable()."
+                   SET `is_default` = '0'
+                   WHERE `id` <> '".$this->input['id']."'
+                        AND `users_id` = '".$this->fields['users_id']."'";
+         $DB->query($query);
+      }
 
-      /// TODO if default is set : unsed others for the users
    }
 
+   function post_addItem() {
+      global $DB;
 
-   function post_deleteFromDB() {
-      global $LANG;
-
-
-      /// TODO if default was set : set default to another email
-
-
-
-      parent::post_deleteFromDB();
+      // if default is set : unsed others for the users
+      if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
+         $query = "UPDATE ". $this->getTable()."
+                  SET `is_default` = '0'
+                  WHERE `id` <> '".$this->fields['id']."'
+                        AND `users_id` = '".$this->fields['users_id']."'";
+         $DB->query($query);
+      }
    }
 
 }
