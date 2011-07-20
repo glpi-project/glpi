@@ -92,6 +92,7 @@ class Auth {
 
       $query = "SELECT *
                 FROM `glpi_users`
+                LEFT JOIN `glpi_useremails` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
                 WHERE ";
       $first = true;
       foreach ($options as $key => $value) {

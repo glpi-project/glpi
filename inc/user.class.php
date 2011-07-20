@@ -464,6 +464,7 @@ class User extends CommonDBTM {
    function post_addItem() {
 
       $this->syncLdapGroups();
+      $this->syncDynamicEmails();
       $rulesplayed = $this->applyRightRules();
 
       // Add default profile
@@ -596,6 +597,7 @@ class User extends CommonDBTM {
    function post_updateItem($history=1) {
 
       $this->syncLdapGroups();
+      $this->syncDynamicEmails();
       $this->applyRightRules();
    }
 
@@ -797,6 +799,63 @@ class User extends CommonDBTM {
       }
    }
 
+   /**
+    * Synchronise Dynamics emails of the user
+   **/
+   function syncDynamicEmails() {
+      global $DB;
+
+      // input["_emails"] not set when update from user.form or preference
+      if (isset($this->fields["authtype"])
+          && isset($this->input["_emails"])
+          && ($this->fields["authtype"] == Auth::LDAP
+              || Auth::isAlternateAuthWithLdap($this->fields['authtype'])
+              || $this->fields["authtype"] == Auth::MAIL)) {
+
+         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
+            $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
+
+            if (count($authtype)) {
+               // Clean emails
+               $this->input["_emails"] = array_unique ($this->input["_emails"]);
+
+               // Delete not available groups like to LDAP
+               $query = "SELECT `glpi_useremails`.`id`,
+                                `glpi_useremails`.`users_id`,
+                                `glpi_useremails`.`email`,
+                                `glpi_useremails`.`is_dynamic`
+                         FROM `glpi_useremails`
+                         WHERE `glpi_useremails`.`users_id` = '" . $this->fields["id"] . "'";
+
+               $result = $DB->query($query);
+               $useremail = new UserEmail();
+               if ($DB->numrows($result) > 0) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     if (in_array($data["email"], $this->input["_emails"])) {
+                        // Delete found item in order not to add it again
+                        unset($this->input["_emails"][array_search($data["email"],
+                              $this->input["_emails"])]);
+                     } else if ($data['is_dynamic']) {
+                        // Delete not found email
+                        $useremail->delete(array('id' => $data["id"]));
+                     }
+                  }
+               }
+
+               //If the email need to be added
+               if (count($this->input["_emails"]) > 0) {
+                  foreach ($this->input["_emails"] as $email) {
+                     $useremail->add(array('users_id'   => $this->fields["id"],
+                                           'email'      => $email,
+                                           'is_dynamic' => 1));
+                  }
+                  unset ($this->input["_emails"]);
+               }
+            }
+         }
+      }
+   }
+
 
    /**
     * Get the name of the current user
@@ -989,6 +1048,9 @@ class User extends CommonDBTM {
         //Store date_sync
         $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
 
+        // Empty array to ensure than syncDynamicEmails will be done
+        $this->fields["_emails"] = array();
+
          foreach ($fields as $k => $e) {
             if (empty($v[0][$e][0])) {
                switch ($k) {
@@ -1007,6 +1069,14 @@ class User extends CommonDBTM {
 
             } else {
                switch ($k) {
+                  case "email1":
+                  case "email2":
+                  case "email3":
+                  case "email4":
+                     if (!empty($v[0][$e][0])) {
+                        $this->fields["_emails"][] = addslashes($v[0][$e][0]);
+                     }
+                     break;
                   case "language" :
                      $language = Config::getLanguage($v[0][$e][0]);
                      if ($language != '') {
@@ -1182,11 +1252,15 @@ class User extends CommonDBTM {
 
       // some defaults...
       $this->fields['password'] = "";
+      // Empty array to ensure than syncDynamicEmails will be done
+      $this->fields["_emails"] = array();
+      $email = '';
       if (strpos($name,"@")) {
-         $this->fields['_add_email'] = $name;
+         $email = $name;
       } else {
-         $this->fields['_add_email'] = $name . "@" . $mail_method["host"];
+         $email = $name . "@" . $mail_method["host"];
       }
+      $this->fields["_emails"][] = $email;
 
       $this->fields['name'] = $name;
       //Store date_sync
@@ -1206,7 +1280,7 @@ class User extends CommonDBTM {
          $this->fields = $rule->processAllRules($groups, $this->fields,
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
-                                                      'email'       => $this->fields['_add_email']));
+                                                      'email'       => $email));
          $this->fields['_ruleright_process'] = true;
       }
       return true;
