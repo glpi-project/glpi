@@ -757,7 +757,14 @@ function update0801to083($output='HTML') {
       $migration->dropField("glpi_users", 'email');
    }
 
-   /// TODO check unicity for users email : unset rule and display warning
+   // check unicity for users email : unset rule and display warning
+   foreach ($DB->request("glpi_fieldunicities", "`itemtype` = 'User'
+                                             AND `fields` LIKE '%email%'") as $data) {
+      $query = "UPDATE `glpi_fieldunicities ` SET `is_active` = 0 WHERE `id` = '".$data['id']."';";
+      $DB->query($query);
+      echo "<div class='red'><p>A unicity check use email for users. ";
+      echo "Due to new feature permit several email per users, this rule have been disabled.</p></div>";
+   }
 
    // multiple manager in groups
    $migration->changeField("glpi_authldaps", 'email_field','email1_field',
