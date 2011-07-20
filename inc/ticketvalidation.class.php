@@ -212,7 +212,7 @@ class TicketValidation  extends CommonDBChild {
          if ($mailsend) {
             $user = new User();
             $user->getFromDB($this->fields["users_id_validate"]);
-            if (!empty($user->fields["email"])) {
+            if (!empty($user->getDefaultEmail()) {
                addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
             } else {
                addMessageAfterRedirect($LANG['validation'][23],false,ERROR);

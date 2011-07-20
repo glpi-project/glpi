@@ -2455,7 +2455,10 @@ class AuthLDAP extends CommonDBTM {
       $ldaps = array();
       $query = "SELECT `id`
                 FROM `glpi_authldaps`
-                WHERE `email1_field` <> ''";
+                WHERE `email1_field` <> ''
+                     OR `email2_field` <> ''
+                     OR `email3_field` <> ''
+                     OR `email4_field` <> ''";
       foreach ($DB->request($query) as $data) {
          $ldaps[] = $data['id'];
       }
