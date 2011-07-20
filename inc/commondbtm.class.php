@@ -2282,6 +2282,7 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Get The Name of the Object with the ID if the config is set
+    * Should Not be overloaded (overload getName() instead)
     *
     * @param $with_comment add comments to name
     *
