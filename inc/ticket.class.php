@@ -3822,11 +3822,8 @@ class Ticket extends CommonDBTM {
                }
                echo "&nbsp;";
                if ($canedit || $d['users_id'] == getLoginUserID()) {
-                  $opt = array();
-                  if ($showuserlink) {
-                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                  'popup' => 'edit_user_notification&amp;id='.$d['id']);
-                  }
+                  $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                 'popup' => 'edit_user_notification&amp;id='.$d['id']);
                   showToolTip($text, $opt);
                }
             }
