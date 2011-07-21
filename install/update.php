@@ -721,6 +721,7 @@ function updateDbUpTo031() {
          update080to0801();
 
       case "0.80.1" :
+      case "0.80.2" :
          break;
 
       default :
@@ -752,7 +753,7 @@ function updateDbUpTo031() {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    $query = "UPDATE `glpi_configs`
-             SET `version` = ' 0.80.1',
+             SET `version` = ' 0.80.2',
                  `language` = '".$glpilanguage."',
                  `founded_new_version` = '' ;";
    $DB->query($query) or die("0.80 ".$LANG['update'][90].$DB->error());
