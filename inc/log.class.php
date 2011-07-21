@@ -88,14 +88,8 @@ class Log extends CommonDBTM {
          return false;
       }
       // needed to have  $SEARCHOPTION
-      if ($item->getType() == 'Infocom') {
-         $real_type = $item->fields['itemtype'];
-         $real_id   = $item->fields['items_id'];
+      list($real_type, $real_id) = $item->getLogTypeID();
 
-      } else {
-         $real_type = $item->getType();
-         $real_id   = $item->fields['id'];
-      }
       $searchopt = Search::getOptions($real_type);
 
       if (!is_array($searchopt)) {
