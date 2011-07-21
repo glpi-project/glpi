@@ -230,10 +230,10 @@ class UserEmail  extends CommonDBChild {
       $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
 
       if ($canedit) {
-         echo "&nbsp;<a href='#' onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\">";
+         echo "&nbsp;";
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-         echo '</a>';
+                     onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
    }
 

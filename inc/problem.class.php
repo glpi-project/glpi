@@ -307,6 +307,8 @@ class Problem extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
       }
+
+      /// TODO auto solve tickets ?
    }
 
 
