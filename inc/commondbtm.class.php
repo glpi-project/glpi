@@ -261,6 +261,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get type to register log on
     *
+    * @since version 0.83
+    *
     * @return array of type + ID
     */
    function getLogTypeID() {
