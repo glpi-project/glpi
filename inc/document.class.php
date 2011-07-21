@@ -1264,26 +1264,28 @@ class Document extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
 
-      if ($DB->numrows($result)==0) {
+      if ($number==0) {
          echo $LANG['document'][17];
-      } else if ($DB->numrows($result)==1) {
+      } else if ($number==1) {
          echo $LANG['document'][21];
       } else {
          echo $LANG['document'][20];
       }
 
       echo "</th></tr>";
-      echo "<tr><th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['document'][2]."</th>";
-      echo "<th>".$LANG['document'][33]."</th>";
-      echo "<th>".$LANG['document'][3]."</th>";
-      echo "<th>".$LANG['document'][4]."</th>";
+      if ($number > 0) {
+         echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".$LANG['document'][2]."</th>";
+         echo "<th>".$LANG['document'][33]."</th>";
+         echo "<th>".$LANG['document'][3]."</th>";
+         echo "<th>".$LANG['document'][4]."</th>";
 
-      if ($withtemplate<2) {
-         echo "<th>&nbsp;</th>";
+         if ($withtemplate<2) {
+            echo "<th>&nbsp;</th>";
+         }
+         echo "</tr>";
       }
-      echo "</tr>";
       $used = array();
 
       if ($number) {
@@ -1335,7 +1337,8 @@ class Document extends CommonDBTM {
                   echo "<a href='".$CFG_GLPI["root_doc"];
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
                   echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
-                  echo $LANG['buttons'][6]."</a>";
+                  echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
+                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'></a>";
                } else {
                   echo "&nbsp;";
                }
@@ -1372,7 +1375,7 @@ class Document extends CommonDBTM {
             $nb = $DB->result($result,0,0);
 
             echo "<tr class='tab_bg_1'>";
-            echo "<th class='right'>".$LANG['document'][6]."&nbsp :</th>";
+//            echo "<th class='right'>".$LANG['document'][6]."&nbsp :</th>";
 
             echo "<td class='center' colspan='2'>";
             echo $LANG['document'][3]."&nbsp:";
@@ -1390,8 +1393,8 @@ class Document extends CommonDBTM {
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "</td>";
-            echo "<td colspan='2'>";
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<td colspan='2' class='center'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['document'][6]."\" class='submit'>";
             echo "</td></tr>";
 
             if ($item->getType() == 'Document') {
@@ -1400,18 +1403,15 @@ class Document extends CommonDBTM {
 
             if (haveRight('document','r') && $nb>count($used)) {
                echo "<tr class='tab_bg_1'>";
-               echo "<th class='right'>".$LANG['document'][5]."&nbsp;:</th>";
                echo "<td colspan='5' class='center'>";
                self::dropdown(array('entity' => $entities ,
                                     'used'   => $used));
-               echo "</td><td>";
+               echo "</td><td colspan='2' class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
-                      $LANG['buttons'][8]."\" class='submit'>";
+                      $LANG['document'][5]."\" class='submit'>";
                echo "</td>";
-            } else {
-               echo "<td colspan='4'>&nbsp;</td>";
+               echo "</tr>";
             }
-            echo "</tr>";
          }
       }
       echo "</table></form></div>";
