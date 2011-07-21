@@ -81,6 +81,11 @@ class Infocom extends CommonDBChild {
    }
 
 
+   function getLogTypeID() {
+      return array($this->fields['itemtype'], $this->fields['items_id']);
+   }
+
+
    /**
     * Retrieve an item from the database for a device
     *

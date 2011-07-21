@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketSatisfaction extends CommonDBTM {
 
+   public $dohistory = true;
+   public $history_blacklist = array('date_answered');
+
    static function getTypeName() {
       global $LANG;
 
@@ -50,6 +53,11 @@ class TicketSatisfaction extends CommonDBTM {
    **/
    function getIndexName() {
       return 'tickets_id';
+   }
+
+
+   function getLogTypeID() {
+      return array('Ticket', $this->fields['tickets_id']);
    }
 
 

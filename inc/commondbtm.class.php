@@ -258,6 +258,15 @@ class CommonDBTM extends CommonGLPI {
    function post_getEmpty () {
    }
 
+   /**
+    * Get type to register log on
+    *
+    * @return array of type + ID
+    */
+   function getLogTypeID() {
+      return array($this->getType(), $this->fields['id']);
+   }
+
 
    /**
     * Update the item in the database
