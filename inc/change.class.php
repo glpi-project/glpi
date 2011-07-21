@@ -208,24 +208,27 @@ class Change extends CommonITILObject {
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
 
-         $this->addStandardTab('ChangeTask', $ong);
-
          $this->addStandardTab('Problem', $ong);
 
          $this->addStandardTab('Ticket', $ong);
 
          // Analysis
          $ong[3] = $LANG['problem'][3];
+
          // Plans
          $ong[5] = $LANG['change'][7];
+
          // Tasks
-         /// TODO $this->addStandardTab('ChangeTask', $ong);
-         // Hardware
-         $ong[7] = $LANG['common'][96];
-         // Documents
-         $this->addStandardTab('Document', $ong);
+         $this->addStandardTab('ChangeTask', $ong);
+
          // Solution
          $ong[4] = $LANG['jobresolution'][2];
+
+         // Documents
+         $this->addStandardTab('Document', $ong);
+
+         // Hardware
+         $ong[7] = $LANG['common'][96];
 
          $this->addStandardTab('Note', $ong);
 
