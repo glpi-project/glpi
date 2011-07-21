@@ -203,7 +203,7 @@ class UserEmail  extends CommonDBChild {
 
             echo "<a href='".$CFG_GLPI['root_doc'].
                   "/front/useremail.form.php?update=update&amp;id=".$data['id']."&amp;is_default=1'>";
-            echo "<img title=\"".$LANG['title'][26]."\" alt=\"".$LANG['title'][26]."\"
+            echo "<img title=\"".$LANG['users'][21]."\" alt=\"".$LANG['users'][21]."\"
                      src='".$CFG_GLPI["root_doc"]."/pics/deplier_up.png'>";
             echo "</a>";
          }
