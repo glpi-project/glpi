@@ -849,7 +849,7 @@ class Problem extends CommonITILObject {
       echo "function showName$rand() {\n";
       echo "Ext.get('name$rand').setDisplayed('none');";
       $params = array('maxlength' => 250,
-                      'size'      => 50,
+                      'size'      => 110,
                       'name'      => 'name',
                       'data'      => rawurlencode($this->fields["name"]));
       ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
@@ -869,7 +869,6 @@ class Problem extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -880,7 +879,7 @@ class Problem extends CommonITILObject {
       echo "function showDesc$rand() {\n";
       echo "Ext.get('desc$rand').setDisplayed('none');";
       $params = array('rows'  => 6,
-                      'cols'  => 50,
+                      'cols'  => 110,
                       'name'  => 'content',
                       'data'  => rawurlencode($this->fields["content"]));
       ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
@@ -900,7 +899,6 @@ class Problem extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
       $options['colspan'] = 3;
       $this->showFormButtons($options);
