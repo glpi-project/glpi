@@ -1372,7 +1372,10 @@ class Document extends CommonDBTM {
             $nb = $DB->result($result,0,0);
 
             echo "<tr class='tab_bg_1'>";
+            echo "<th class='right'>".$LANG['document'][6]."&nbsp :</th>";
+
             echo "<td class='center' colspan='2'>";
+            echo $LANG['document'][3]."&nbsp:";
             Dropdown::show('DocumentCategory',array('entity' => $entities));
             echo "</td>";
             echo "<td class='center' colspan='3'>";
@@ -1396,13 +1399,15 @@ class Document extends CommonDBTM {
             }
 
             if (haveRight('document','r') && $nb>count($used)) {
-               echo "<tr class='tab_bg_1'><td colspan='3'>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<th class='right'>".$LANG['document'][5]."&nbsp;:</th>";
+               echo "<td colspan='5' class='center'>";
                self::dropdown(array('entity' => $entities ,
                                     'used'   => $used));
-               echo "</td><td colspan='4'>";
+               echo "</td><td>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
                       $LANG['buttons'][8]."\" class='submit'>";
-               echo "</td><td>&nbsp;</td>";
+               echo "</td>";
             } else {
                echo "<td colspan='4'>&nbsp;</td>";
             }

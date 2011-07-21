@@ -550,7 +550,8 @@ $LANG['document'][1]  = "Somme de contrôle (SHA1)";
 $LANG['document'][2]  = "Fichier";
 $LANG['document'][3]  = "Rubrique";
 $LANG['document'][4]  = "Type MIME";
-
+$LANG['document'][5]  = "Associer un document existant";
+$LANG['document'][6]  = "Ajouter un nouveau fichier";
 $LANG['document'][7]  = "Type de document";
 
 $LANG['document'][9]  = "Extension";
