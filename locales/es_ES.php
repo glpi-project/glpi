@@ -781,7 +781,7 @@ $LANG['install'][105]="La extensión mbstring del interprete PHP no está instal
 $LANG['install'][106]="Prueba de escritura de los ficheros gráficos"; 
 
 $LANG['job'][1]="Incidencia"; 
-$LANG['job'][2]="por"; 
+$LANG['job'][2]="Solicitudes"; 
 $LANG['job'][3]="Técnicos"; 
 $LANG['job'][4]="Solicitante"; 
 $LANG['job'][5]="Asignada a"; 

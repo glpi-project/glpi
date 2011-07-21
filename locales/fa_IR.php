@@ -1526,7 +1526,7 @@ $LANG['rulesengine'][29]="فهرست قوانین";
 $LANG['rulesengine'][30]="اقدام"; 
 $LANG['rulesengine'][31]="وجود دارد"; 
 $LANG['rulesengine'][32]="وجود ندارد"; 
-$LANG['rulesengine'][33]="فرهنگ کرکره ای"; 
+$LANG['rulesengine'][33]="فرهنگ آبشاری"; 
 $LANG['rulesengine'][35]="فرهنگ نرم افزار"; 
 $LANG['rulesengine'][36]="فهرست سازنده"; 
 $LANG['rulesengine'][37]="قوانین برای اختصاص یک رده نرم افزار"; 
@@ -1647,7 +1647,7 @@ $LANG['search'][22]="بیش از";
 $LANG['search'][23]="قبل از"; 
 $LANG['search'][24]="بعداز"; 
 
-$LANG['setup'][0]="کرکره ای ها"; 
+$LANG['setup'][0]="آبشاری ها"; 
 $LANG['setup'][2]="افزودن کاربر ..."; 
 $LANG['setup'][3]="پیوند فهرست LDAP"; 
 $LANG['setup'][4]="انواع رایانه ها"; 
@@ -1655,7 +1655,7 @@ $LANG['setup'][5]="Operating Systems";
 $LANG['setup'][6]="Personalization"; 
 $LANG['setup'][7]="جداکننده CSV"; 
 $LANG['setup'][8]="فعال نمودن اطلاعات مالی و مدیریتی پیش فرض"; 
-$LANG['setup'][9]="Network Interfaces"; 
+$LANG['setup'][9]="واسط شبکه"; 
 $LANG['setup'][10]="نمایش به ترتیب نام خانوادگی نام"; 
 $LANG['setup'][14]="رایانامه"; 
 $LANG['setup'][18]="ورود به سامانه"; 
@@ -1666,9 +1666,9 @@ $LANG['setup'][35]="MHz";
 $LANG['setup'][39]="پیگیری خصوصی برای پیش فرض"; 
 $LANG['setup'][40]="Private tasks by default"; 
 $LANG['setup'][41]="Select Language"; 
-$LANG['setup'][42]="Networking equipment types"; 
+$LANG['setup'][42]="انواع تجهیزات شبکه"; 
 $LANG['setup'][43]="Printer Types"; 
-$LANG['setup'][44]="Monitor Types"; 
+$LANG['setup'][44]="نوع صفحه نمایش"; 
 $LANG['setup'][45]="نوع کیس"; 
 $LANG['setup'][46]="مقدار پیش فرض"; 
 $LANG['setup'][47]="قالب نمودار پیش فرض"; 
@@ -1683,7 +1683,7 @@ $LANG['setup'][67]="احراز هویت خارجی";
 $LANG['setup'][69]="انواع ابزارها"; 
 $LANG['setup'][70]="برپا کردن عمومی"; 
 $LANG['setup'][71]="نرم افزار دائمی"; 
-$LANG['setup'][73]="Network outlet"; 
+$LANG['setup'][73]="خروجی شبکه"; 
 $LANG['setup'][74]="You can't delete that place, because it has sub-places"; 
 $LANG['setup'][75]="به عنوان فرزند"; 
 $LANG['setup'][76]="Sons of"; 
@@ -1696,14 +1696,14 @@ $LANG['setup'][84]="نوع قاب نوار";
 $LANG['setup'][85]="نوع قرارداد"; 
 $LANG['setup'][86]="Type of memory"; 
 $LANG['setup'][87]="رده های پایگاه دانش"; 
-$LANG['setup'][88]="Network"; 
+$LANG['setup'][88]="شبکه"; 
 $LANG['setup'][89]="دامنه"; 
 $LANG['setup'][90]="VLANs"; 
 $LANG['setup'][91]="الکوهای رایانه ها"; 
 $LANG['setup'][92]="نوع مواد مصرفی"; 
 $LANG['setup'][93]="واسط ها(دیسک سخت ...)"; 
-$LANG['setup'][94]="Monitors Models"; 
-$LANG['setup'][95]="Networking Models"; 
+$LANG['setup'][94]="مدل صفحه نمایش"; 
+$LANG['setup'][95]="الگوی شبکه"; 
 $LANG['setup'][96]="Printers Models"; 
 $LANG['setup'][97]="Peripherals Models"; 
 $LANG['setup'][98]="Tasks category"; 
@@ -1718,16 +1718,16 @@ $LANG['setup'][106]="۴-اخطار(اضافه، حذف، پیگردی)";
 $LANG['setup'][107]="۵- کامل(همه)"; 
 $LANG['setup'][109]="چه مدت سیاهه های مربوط به سیستم در پایگاه داده نگهداری شود(در روز، 0 برای نامحدود)"; 
 $LANG['setup'][110]="Show new tickets on the home page"; 
-$LANG['setup'][111]="Maximum number of search results to display on a page"; 
-$LANG['setup'][112]="Maximum number of characters for each items in dropdowns"; 
+$LANG['setup'][111]="حداکثر تعداد نتایج جستجو برای نمایش در هر صفحه"; 
+$LANG['setup'][112]="حداکثر تعداد حروف برای هر عنوان در آبشاری ها"; 
 $LANG['setup'][113]="زبان پیش فرض"; 
 $LANG['setup'][114]="Priority colours"; 
 $LANG['setup'][115]="آستانه پیش فرض برای قاب نوار و تعداد مواد مصرفی"; 
 $LANG['setup'][117]="اجازه نمایش ناشناس از پرسش و پاسخ ها"; 
 $LANG['setup'][118]="Text on the login page"; 
 $LANG['setup'][120]="Use dynamic display for dropdowns and text fields"; 
-$LANG['setup'][121]="کاراکتر اجباری نمایش کامل کرکره ای(کلمات)"; 
-$LANG['setup'][122]="Maximum number of items to display in the dropdowns when wildcard is not used"; 
+$LANG['setup'][121]="کاراکتر اجباری نمایش کامل آبشاری ها(کلمات)"; 
+$LANG['setup'][122]="حداکثر تعداد عناوین برای نمایش در آبشاری ها هنگامی که از کلمات استفاده نمی شود"; 
 $LANG['setup'][123]="از نمایش پویا استفاده نکنید اگر موارد کمتر هستند از"; 
 $LANG['setup'][124]="افزودن خودکار کاربران از منبع مجاز خارجی"; 
 $LANG['setup'][125]="... از یک منبع خارجی"; 
@@ -1735,11 +1735,11 @@ $LANG['setup'][126]="افزودن خودکار یک کاربر از منبع خ�
 $LANG['setup'][127]="تکمیل خودکار  اجزاء متنی"; 
 $LANG['setup'][128]="قالب تاریخ"; 
 $LANG['setup'][129]="Show GLPI ID"; 
-$LANG['setup'][130]="Number of days this action logs are stored"; 
-$LANG['setup'][132]="نمایش نام کامل در درختواره کرکره ای"; 
+$LANG['setup'][130]="تعداد روزهایی که ثبت عمل ذخیره می شود"; 
+$LANG['setup'][132]="نمایش نام کامل در درختواره آبشاری"; 
 $LANG['setup'][133]="فعال کردن حالت OCSNG"; 
 $LANG['setup'][134]="OCSNG Mode"; 
-$LANG['setup'][135]="Normal"; 
+$LANG['setup'][135]="عادی"; 
 $LANG['setup'][136]="Translation"; 
 $LANG['setup'][137]="اشکال زدائی"; 
 $LANG['setup'][138]="Use GLPI in Mode"; 
@@ -1749,7 +1749,7 @@ $LANG['setup'][145]="Os";
 $LANG['setup'][147]="نمایش پویا"; 
 $LANG['setup'][148]="Step for the hours"; 
 $LANG['setup'][149]="Number of decimals in amounts"; 
-$LANG['setup'][150]="Number Format"; 
+$LANG['setup'][150]="قالب عدد"; 
 $LANG['setup'][154]="Basedn"; 
 $LANG['setup'][155]="rootdn (for non anonymous binds)"; 
 $LANG['setup'][156]="Pass (for non-anonymous binds)"; 
@@ -1812,8 +1812,8 @@ $LANG['setup'][235]="SMTP Password (optional)";
 $LANG['setup'][236]="کاردان فنی قبلی عهده دار درخواست"; 
 $LANG['setup'][237]="مدیر"; 
 $LANG['setup'][239]="کاردان فنی عهده دار این درخواست"; 
-$LANG['setup'][240]="Notification options"; 
-$LANG['setup'][241]="No personal criteria. Create personal parameters?"; 
+$LANG['setup'][240]="گزینه های هشدار"; 
+$LANG['setup'][241]="بدون معیار شخصی. ویژگی های شخصی ایجاد شود؟"; 
 $LANG['setup'][242]="گزینه های هشدار"; 
 $LANG['setup'][243]="هشدار بر مواد مصرفی"; 
 $LANG['setup'][244]="هشدار بر قاب نوارها"; 
@@ -1851,7 +1851,7 @@ $LANG['setup'][285]="رونوشت نکنید";
 $LANG['setup'][286]="حذف نکنید"; 
 $LANG['setup'][290]="انتقال خودکار از رایانه ها"; 
 $LANG['setup'][291]="Template for the automatic transfer of computers in another entity"; 
-$LANG['setup'][292]="No automatic transfer"; 
+$LANG['setup'][292]="بدون انتقال خودکار"; 
 $LANG['setup'][300]="بررسی کنید اگر نسخه جدید موجود است"; 
 $LANG['setup'][301]="نسخه جدید در دسترس است:"; 
 $LANG['setup'][302]="You will find it on the GLPI-PROJECT.org site"; 
@@ -1859,12 +1859,12 @@ $LANG['setup'][303]="You have the latest available version";
 $LANG['setup'][304]="ارتباط شکست خورد. اگر از پراکسی استفاده می کنید، لطفا آنرا پیکره بندی کنید."; 
 $LANG['setup'][305]="هر روز"; 
 $LANG['setup'][306]="بررسی برای ارتقاء"; 
-$LANG['setup'][307]="Never"; 
+$LANG['setup'][307]="هیچگاه"; 
 $LANG['setup'][308]="هر هفته"; 
 $LANG['setup'][309]="هر ماهه"; 
 $LANG['setup'][310]="اتصال به سایت غیرممکن است."; 
 $LANG['setup'][311]="شکست در ارتباط با خادم پراکسی"; 
-$LANG['setup'][312]="No data available on the web site"; 
+$LANG['setup'][312]="داده ای بر روی وب سایت در دسترس نمی باشد"; 
 $LANG['setup'][313]="مراقب باشید : مقدار پیش فرض وجود ندارد"; 
 $LANG['setup'][314]="حداکثر ظرفیت از حروف نمایش داده شده برای نشانی های وب"; 
 $LANG['setup'][350]="پیوند موارد برای ایجاد درخواست ها"; 
@@ -1905,7 +1905,7 @@ $LANG['setup'][653]="SMTP+TLS";
 $LANG['setup'][660]="خادم نامه"; 
 $LANG['setup'][661]="پیکربندی اطلاعیه غیرممکن است : لطفا رایانامه پیگیری خود را با استفاده از تنظیمات فوق پیکره بندی کنید"; 
 $LANG['setup'][703]="عمومی"; 
-$LANG['setup'][704]="Notifications"; 
+$LANG['setup'][704]="اخطارها"; 
 $LANG['setup'][707]="هشدار بر ذخیره ها"; 
 $LANG['setup'][708]="هشدار بر درخواست که هنوز حل نشده است"; 
 $LANG['setup'][720]="System informations"; 
@@ -1913,7 +1913,7 @@ $LANG['setup'][721]="اطلاعات درباره نصب و پیکره بندی �
 $LANG['setup'][722]="To copy/paste in your support request"; 
 $LANG['setup'][731]="Value of the global configuration"; 
 $LANG['setup'][732]="دامنه خدمات نامه الکترونیکی"; 
-$LANG['setup'][800]="Mysql replicate"; 
+$LANG['setup'][800]="تکرارکردن Mysql"; 
 $LANG['setup'][801]="فعال کردن تکرار MySQL"; 
 $LANG['setup'][802]="پایگاه داده"; 
 $LANG['setup'][803]="تفاوت بین اصلی و پیرو"; 
@@ -1921,7 +1921,7 @@ $LANG['setup'][804]="Use the slave for the search engine";
 $LANG['setup'][806]="تاخیر حداکثر بین اصلی و فرعی(دقیقه)"; 
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; 
 $LANG['setup'][808]="Slave database out of sync!"; 
-$LANG['setup'][809]="MySQL replica: read only"; 
+$LANG['setup'][809]="نسخه المثنی MySQL: فقط خواندنی"; 
 $LANG['setup'][810]="تکرار ناهمزمانی  MySQL"; 
 $LANG['setup'][811]="اجزاء یکتا"; 
 $LANG['setup'][813]="ضبط غیرممکن است برای"; 
