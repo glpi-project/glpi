@@ -47,6 +47,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
     || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {
    $user = new User();
    $default_email = "";
+   $emails = array();
    if ($user->getFromDB($_REQUEST["value"])) {
       $default_email = $user->getDefaultEmail();
       $emails = $user->getAllEmails();
