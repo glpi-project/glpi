@@ -172,7 +172,7 @@ class Problem_Ticket extends CommonDBRelation{
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
-      echo "<a href='".getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['change'][2]."</a>";
+      echo "<a href='".getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['problem'][7]."</a>";
       echo "</th></tr>";
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
       echo "</tr>";
