@@ -2512,6 +2512,7 @@ $LANG['users'][17] = "Matricule";
 $LANG['users'][18] = "générée le";
 $LANG['users'][19] = "Ajouter aux superviseurs";
 $LANG['users'][20] = "Supprimer des superviseurs";
+$LANG['users'][21] = "Définir comme courriel par défaut";
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";
