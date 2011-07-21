@@ -2956,14 +2956,14 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
-      echo "<td width='50%'>";
+      echo "<td width='90%' colspan=3>";
       if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showName$rand() {\n";
          echo "Ext.get('name$rand').setDisplayed('none');";
          $params = array('maxlength' => 250,
-                         'size'      => 60,
+                         'size'      => 115,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
          ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
@@ -2993,33 +2993,18 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</td>";
-
-
-      // Permit to add doc when creating a ticket
-      if (!$ID) {
-         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
-               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
-         echo "</th>";
-         echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
-      } else {
-         echo "<th colspan='2'>";
-         echo $LANG['document'][20].'&nbsp;: '.Document_Item::countForItem($this);
-         echo "</th>";
-      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
-      echo "<td width='50%'>";
+      echo "<td width='90%' colspan=3>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showDesc$rand() {\n";
          echo "Ext.get('desc$rand').setDisplayed('none');";
          $params = array('rows'  => 6,
-                         'cols'  => 60,
+                         'cols'  => 115,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
          ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
@@ -3044,23 +3029,26 @@ class Ticket extends CommonITILObject {
          echo nl2br($this->fields["content"]);
       }
       echo "</td>";
+      echo "</tr>";
+      
 
+      echo "<tr class='tab_bg_1'>";
       if ($view_linked_tickets) {
          echo "<th width='10%'>";
          echo $LANG['job'][55];
 
+         $rand_linked_ticket = mt_rand();
+
          if ($canupdate) {
-            $rand_linked_ticket = mt_rand();
-            echo "&nbsp;&nbsp;<a class='tracking'
-                  onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
-            echo $LANG['buttons'][8];
-            echo "</a>\n";
+
+            echo "&nbsp;";
+            echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
+                       title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                       class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
+
          echo '</th>';
-
-         echo "<td>";
-         Ticket_Ticket::displayLinkedTicketsTo($ID);
-
+         echo "<td width='50%'>";
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             Ticket_Ticket::dropdownLinks('_link[link]');
@@ -3070,11 +3058,25 @@ class Ticket extends CommonITILObject {
             echo "&nbsp;";
             echo "</div>";
          }
-         echo "</td>";
 
+         Ticket_Ticket::displayLinkedTicketsTo($ID);
+         echo "</td>";
+      }
+
+      // Permit to add doc when creating a ticket
+      if (!$ID) {
+         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
+               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
+               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+         echo "</th>";
+         echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+      } else {
+         echo "<th colspan='2'>";
+         echo $LANG['document'][20].'&nbsp;: '.Document_Item::countForItem($this);
+         echo "</th>";
       }
       echo "</tr>";
-
 
       if (!$ID
           || $canupdate
