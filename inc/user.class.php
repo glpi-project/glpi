@@ -462,6 +462,7 @@ class User extends CommonDBTM {
 
 
    function post_addItem() {
+      global $LANG;
 
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
@@ -492,6 +493,14 @@ class User extends CommonDBTM {
             $right->add($affectation);
          }
       }
+
+      if (isset($this->input['_add_email']) && !empty($this->input['_add_email'])) {
+         $email = new UserEmail();
+         $email->add(array('users_id' => $this->fields["id"],
+                           'email'    => $this->input['_add_email']));
+         Event::log($this->fields["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][37]);
+      }
+
    }
 
 
