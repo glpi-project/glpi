@@ -87,7 +87,7 @@ class Problem_Ticket extends CommonDBRelation{
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='2'>".$LANG['title'][28]."</th>";
       if ($problem->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
          $colspan++;
