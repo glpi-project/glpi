@@ -191,6 +191,10 @@ class UserEmail  extends CommonDBChild {
 
          echo $data['email'];
 
+         if (!NotificationMail::isUserAddressValid($data['email'])) {
+            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+         }
+
          if ($canedit) {
             // Can edit if not dynamic
             if (!$data['is_dynamic']) {
