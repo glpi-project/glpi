@@ -1821,10 +1821,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($ID && $this->canAdminActors()) {
          $rand_requester = mt_rand();
-         echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\">\n";
-         echo $LANG['buttons'][8];
-         echo "</a>\n";
+         echo "&nbsp;&nbsp;";
+         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                  onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
       }
       echo "</th>";
@@ -1835,15 +1835,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($ID && $this->canAdminActors()) {
          $rand_observer = mt_rand();
-         echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\">\n";
-         echo $LANG['buttons'][8];
-         echo "</a>\n";
+
+         echo "&nbsp;&nbsp;";
+         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                  onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+
          $candeleteobserver = true;
 
       } else if ($ID > 0
                  && !$this->isUser(self::OBSERVER, getLoginUserID())
                  && !$this->isUser(self::REQUESTER, getLoginUserID())) {
+         echo "&nbsp;&nbsp;";
          echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
               "/front/ticket.form.php?addme_observer=addme_observer".
               "&amp;tickets_id=".$this->fields['id']."' title=\"".$LANG['tracking'][5]."\">".
@@ -1856,10 +1859,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $candeleteassign    = false;
       if ($ID && ($this->canAssign() || $this->canAssignToMe())) {
          $rand_assign = mt_rand();
-         echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\">\n";
-         echo $LANG['buttons'][8];
-         echo "</a>\n";
+
+         echo "&nbsp;&nbsp;";
+         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                  onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
 
       if ($ID && $this->canAssign()) {
