@@ -375,12 +375,12 @@ function update0782to080($output='HTML') {
                            `content_text`,
                            `content_html`)
                    VALUES ($notid, '', '##user.action##',
-                          '##lang.user.realname## ##lang.user.firstname##
+                          '##user.realname## ##user.firstname##
 
 ##lang.passwordforget.information##
 
 ##lang.passwordforget.link## ##user.passwordforgeturl##',
-                          '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
+                          '&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.passwordforget.information##&lt;/p&gt;
 &lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;')";
       $DB->query($query)
