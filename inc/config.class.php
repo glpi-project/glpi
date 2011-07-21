@@ -816,6 +816,20 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
+      // Only for user
+      if (isset($data["personal_token"])) {
+         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['common'][108] ."</th></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:</td><td>";
+         if (!empty($data["personal_token"])) {
+            echo $data["personal_token"]."<br>".$LANG['users'][18];
+            echo "&nbsp;".convDate($data["personal_token_date"]);
+         }
+         echo "&nbsp;<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][61];
+         echo "</td>";
+         echo "<td colspan='2'>&nbsp</td></tr>";
+      }
+
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
