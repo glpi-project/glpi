@@ -227,6 +227,8 @@ class Problem extends CommonITILObject {
 
          $this->addStandardTab('Note', $ong);
 
+         /// TODO add stats
+
          $this->addStandardTab('Log', $ong);
       }
       return $ong;
