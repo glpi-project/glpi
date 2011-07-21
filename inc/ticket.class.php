@@ -2693,7 +2693,7 @@ class Ticket extends CommonITILObject {
             showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
-                    $LANG['sla'][7]."'>";
+                    $LANG['buttons'][6]."'>";
             }
             echo "</span>";
          } else {
