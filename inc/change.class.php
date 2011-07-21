@@ -230,6 +230,8 @@ class Change extends CommonITILObject {
          // Hardware
          $ong[7] = $LANG['common'][96];
 
+         /// TODO add stats
+
          $this->addStandardTab('Note', $ong);
 
          $this->addStandardTab('Log', $ong);
