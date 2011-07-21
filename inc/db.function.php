@@ -190,11 +190,15 @@ function getPlural($string) {
                   'ch$'          =>'ches',
                   'sh$'          =>'shes',
                   'x$'           =>'xes',
+                  'ed$'         => 'ed',  // case table without plural (ex. imported)
                   '([^s])$'      => '\1s',   // Add at the end if not exists
-                  'eds$'         => 'ed');   // case table without plural (ex. imported)
+                  );  
 
    foreach ($rules as $singular => $plural) {
-      $string = preg_replace("/$singular/", "$plural", $string);
+      $string = preg_replace("/$singular/", "$plural", $string, -1, $count);
+      if ($count > 0) {
+         break;
+      }
    }
    return $string;
 }
@@ -209,17 +213,20 @@ function getPlural($string) {
 function getSingular($string) {
 
    $rules = array(//'plural' => 'singular'
-                  'ches$'   => 'ch',
-                  'shes$'   => 'sh',
-                  'ss$'     => 'sss', // Case like address : add triple ss to be cut at the end
-                  'sses$'   => 'sss', // Case like addresses : add triple ss to be cut at the end
-                  'ias$'   => 'iass', // Case like alias : add double ss to be cut at the end
-                  '([aeiou])ses$'   => '\1ss', // Case like aliases : add double ss to be cut at the end
-                  'ies$'   => 'y', // special case : category
-                  's$' => ''); // Add at the end if not exists
+                  'ches$'          => 'ch',
+                  'shes$'          => 'sh',
+                  'sses$'          => 'ss', // Case like addresses
+                  '([aeiou])ses$'  => '\1s', // Case like aliases
+                  'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
+                  'ias$'           => 'ias', // Special case (aliases) when getSingular is called on already singular form
+                  'ies$'           => 'y', // special case : category
+                  's$'             => ''); // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
-      $string = preg_replace("/$plural/", "$singular", $string);
+      $string = preg_replace("/$plural/", "$singular", $string, -1, $count);
+      if ($count > 0) {
+         break;
+      }
    }
    return $string;
 }
