@@ -78,6 +78,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
+   function getCompleteNameFromParents($parentCompleteName, $thisName) {
+     return addslashes($parentCompleteName) . " > "  . $thisName;
+   }
+
    function prepareInputForAdd($input) {
 
       $parent = clone $this;
@@ -87,8 +91,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
 
          $input['level']        = $parent->fields['level']+1;
-         $input['completename'] = addslashes($parent->fields['completename']) . " > " .
-                                  $input['name'];
+         // Sometimes (internet address), the complete name may be different ...
+         $input['completename'] = $this->getCompleteNameFromParents($parent->fields['completename'],
+                                                                     $input['name']);
       } else {
          $input[$this->getForeignKeyField()] = 0;
          $input['level']        = 1;
