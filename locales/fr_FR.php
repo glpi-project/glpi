@@ -2304,14 +2304,14 @@ $LANG['sla'][3]  = "Exécution";
 $LANG['sla'][4]  = "Ajouter un niveau d'escalade";
 $LANG['sla'][5]  = "Date d'échéance";
 $LANG['sla'][6]  = "Niveau d'escalade";
-$LANG['sla'][7]  = "Sortir de la SLA";
+$LANG['sla'][7]  = "Supprimer la SLA";
 $LANG['sla'][8]  = "Prochaine escalade";
 $LANG['sla'][9]  = "Rappels automatiques des SLAs";
 $LANG['sla'][10] = "24 heures sur 24, 7 jours sur 7";
 $LANG['sla'][11] = "Calendrier du ticket";
 $LANG['sla'][12] = "Affecter une SLA";
-$LANG['sla'][13] = "L'affectation d'une SLA à un ticket ouvert, rejouera toutes les actions passées de la SLA.";
-$LANG['sla'][14] = "La date d'échéance sera également recalculée.";
+$LANG['sla'][13] = "L'affectation d'une SLA à un ticket a posteriori entraîne le recalcul de la date d'échéance.";
+$LANG['sla'][14] = "Les escalades définies dans la SLA seront également déclenchées conformément à cette nouvelle date.";
 
 
 $LANG['software'][1]  = "Version d'achat";
