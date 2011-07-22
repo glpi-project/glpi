@@ -767,9 +767,6 @@ class Document extends CommonDBTM {
                $column = "id";
             }
 
-            if ($itemtype == 'KnowbaseItem') {
-               $column = "question";
-            }
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT `$itemtable`.*,
                              `glpi_documents_items`.`id` AS IDD, ";
@@ -815,10 +812,6 @@ class Document extends CommonDBTM {
 
                      if ($itemtype == 'Ticket') {
                         $data["name"] = $LANG['job'][38]." ".$data["id"];
-                     }
-
-                     if ($itemtype == 'KnowbaseItem') {
-                        $data["name"] = $data["question"];
                      }
 
                      if ($itemtype == 'SoftwareLicense') {

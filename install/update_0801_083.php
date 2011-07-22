@@ -661,6 +661,9 @@ function update0801to083($output='HTML') {
 
    $migration->displayMessage($LANG['update'][141] . ' - Add various fields'); // Updating schema
 
+   $migration->changeField("glpi_knowbaseitems", 'question','name',
+                           "TEXT COLLATE utf8_unicode_ci");
+
    $migration->addField("glpi_configs", "ajax_min_textsearch_load",
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `use_ajax`");
 
@@ -941,7 +944,7 @@ function update0801to083($output='HTML') {
    $migration->addKey('glpi_consumableitems', 'groups_id_tech');
 
 
-   $migration->displayMessage($LANG['update'][142] . ' - various clening DB');
+   $migration->displayMessage($LANG['update'][142] . ' - various cleaning DB');
 
    // Clean ticket satisfactions
    $query = "DELETE
