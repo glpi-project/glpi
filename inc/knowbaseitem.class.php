@@ -85,22 +85,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * Get The Name of the Object
-    *
-    * @param $with_comment add comments to name (not used for this type)
-    *
-    * @return String: name of the object in the current language
-   **/
-   function getName($with_comment=0) {
-
-      if (isset($this->fields["question"]) && !empty($this->fields["question"])) {
-         return $this->fields["question"];
-      }
-      return NOT_AVAILABLE;
-   }
-
-
-   /**
     * Actions done at the end of the getEmpty function
     *
     *@return nothing
@@ -121,8 +105,8 @@ class KnowbaseItem extends CommonDBTM {
       // set users_id
 
       // set title for question if empty
-      if (empty($input["question"])) {
-         $input["question"] = $LANG['common'][30];
+      if (empty($input["name"])) {
+         $input["name"] = $LANG['common'][30];
       }
 
       if (haveRight("faq", "w") && !haveRight("knowbase", "w")) {
@@ -139,8 +123,8 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG;
 
       // set title for question if empty
-      if (empty($input["question"])) {
-         $input["question"] = $LANG['common'][30];
+      if (empty($input["name"])) {
+         $input["name"] = $LANG['common'][30];
       }
       return $input;
    }
@@ -177,7 +161,7 @@ class KnowbaseItem extends CommonDBTM {
          if (empty($ID) && isset($options['itemtype']) && isset($options['items_id'])) {
             $item = new $options['itemtype']();
             if ($item->getFromDB($options['items_id'])) {
-               $this->fields['question'] = $item->getField('name');
+               $this->fields['name'] = $item->getField('name');
                $this->fields['answer']   = $item->getField('solution');
             }
          }
@@ -200,7 +184,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<fieldset>";
          echo "<legend>".$LANG['knowbase'][14]."</legend>";
          echo "<div class='center'>";
-         echo "<textarea cols='80' rows='2' name='question'>".$this->fields["question"]."</textarea>";
+         echo "<textarea cols='80' rows='2' name='name'>".$this->fields["name"]."</textarea>";
          echo "</div></fieldset>";
 
          echo "<fieldset>";
@@ -413,7 +397,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][14]."</h2>";
-      echo $this->fields["question"];
+      echo $this->fields["name"];
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][15]."</h2>\n";
@@ -568,10 +552,10 @@ class KnowbaseItem extends CommonDBTM {
       if (strlen($params["contains"])>0) {
          $search  = unclean_cross_side_scripting_deep($params["contains"]);
 
-         $score   = " ,MATCH(glpi_knowbaseitems.question, glpi_knowbaseitems.answer)
+         $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
                      AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
 
-         $where_1 = $where." MATCH(glpi_knowbaseitems.question, glpi_knowbaseitems.answer)
+         $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
                     AGAINST('$search' IN BOOLEAN MODE) ";
 
          $order   = "ORDER BY `SCORE` DESC";
@@ -594,7 +578,7 @@ class KnowbaseItem extends CommonDBTM {
                              /* 8 */   "/\)/",
                              /* 9 */   "/\-/");
             $contains = preg_replace($search1,"", $params["contains"]);
-            $where .= " (`glpi_knowbaseitems`.`question` ".makeTextSearch($contains)."
+            $where .= " (`glpi_knowbaseitems`.`name` ".makeTextSearch($contains)."
                          OR `glpi_knowbaseitems`.`answer` ".makeTextSearch($contains).")";
          } else {
             $where = $where_1;
@@ -603,7 +587,7 @@ class KnowbaseItem extends CommonDBTM {
       } else { // no search -> browse by category
          $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id`
                         = '".$params["knowbaseitemcategories_id"]."')";
-         $order  = " ORDER BY `glpi_knowbaseitems`.`question` ASC";
+         $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
       }
 
       if (!$params["start"]) {
@@ -708,13 +692,13 @@ class KnowbaseItem extends CommonDBTM {
                   echo Search::showItem($output_type,
                                         "<div class='kb'><a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " $href>".resume_text($data["question"], 80)."</a></div>
+                                          " $href>".resume_text($data["name"], 80)."</a></div>
                                           <div class='kb_resume'>".
                                           resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),
                                                       600)."</div>",
                                         $item_num, $row_num);
                } else {
-                  echo Search::showItem($output_type, $data["question"], $item_num, $row_num);
+                  echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
                   echo Search::showItem($output_type,
                      html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
                                                                                      ENT_QUOTES,
@@ -814,7 +798,7 @@ class KnowbaseItem extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
-                  $target."?id=".$data["id"]."\">".resume_text($data["question"],80)."</a></td></tr>";
+                  $target."?id=".$data["id"]."\">".resume_text($data["name"],80)."</a></td></tr>";
          }
          echo "</table>";
       }
@@ -862,7 +846,7 @@ class KnowbaseItem extends CommonDBTM {
       $tab[5]['massiveaction'] = false;
 
       $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'question';
+      $tab[6]['field']     = 'name';
       $tab[6]['name']      = $LANG['knowbase'][14];
       $tab[6]['datatype']  = 'text';
 
