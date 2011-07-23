@@ -134,7 +134,10 @@ if (isset($_POST['toadd'])) {
    } else {
       $toadd = unserialize(stripslashes($_POST['toadd']));
    }
+} else {
+   $toadd = array();
 }
+
 $where .= ") ";
 
 if (isset($_POST['condition']) && $_POST['condition'] != '') {
