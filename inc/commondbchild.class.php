@@ -248,6 +248,7 @@ abstract class CommonDBChild extends CommonDBTM {
       $result = $DB->query($query.$where);
       while ($data = $DB->fetch_assoc($result)) {
          $data['_no_history'] = true; // Parent is deleted
+         $data['_no_notif']   = true; // Parent is deleted
          $this->delete($data);
       }
    }
