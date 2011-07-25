@@ -359,8 +359,7 @@ class Peripheral  extends CommonDBTM {
       Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                     'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
-      echo "<td rowspan='3'>";
-      echo $LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='3'>".$LANG['common'][25]."&nbsp;:</td>\n";
       echo "<td rowspan='3'>
             <textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -369,8 +368,7 @@ class Peripheral  extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>\n";
       echo "<td>";
       autocompletionTextField($this, "brand");
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;

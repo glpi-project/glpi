@@ -336,11 +336,13 @@ class User extends CommonDBTM {
     * @return default user email
    **/
    function getDefaultEmail() {
+
       if (!isset($this->fields['id'])) {
          return '';
       }
       return UserEmail::getDefaultForUser($this->fields['id']);
    }
+
 
    /**
     * Get all emails of the user
@@ -348,11 +350,13 @@ class User extends CommonDBTM {
     * @return array of emails
    **/
    function getAllEmails() {
+
       if (!isset($this->fields['id'])) {
          return '';
       }
       return UserEmail::getAllForUser($this->fields['id']);
    }
+
 
    /**
     * Is the email set to the current user
@@ -360,11 +364,13 @@ class User extends CommonDBTM {
     * @return boolean is an email of the user
    **/
    function isEmail($email) {
+
       if (!isset($this->fields['id'])) {
          return false;
       }
       return UserEmail::isEmailForUser($this->fields['id'],$email);
    }
+
 
    /**
     * Retrieve an item from the database using its personal token

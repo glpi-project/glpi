@@ -644,8 +644,7 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td >";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";
@@ -659,7 +658,6 @@ class Computer extends CommonDBTM {
       Dropdown::show('OperatingSystemServicePack',
                      array('value' => $this->fields["operatingsystemservicepacks_id"]));
       echo "</td></tr>\n";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
@@ -1088,7 +1086,7 @@ class Computer extends CommonDBTM {
       $tab[155]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
-      
+
       if ($CFG_GLPI["use_ocs_mode"]) {
          $tab['ocsng'] = $LANG['ocsconfig'][0];
 

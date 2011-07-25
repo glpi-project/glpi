@@ -392,8 +392,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['networking'][14]."&nbsp;:</td>";

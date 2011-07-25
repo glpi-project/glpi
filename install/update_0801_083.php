@@ -817,7 +817,7 @@ function update0801to083($output='HTML') {
             }
          }
       }
-      
+
       // Drop field glpi_groups
       $migration->dropField("glpi_groups", 'users_id');
 
@@ -906,7 +906,7 @@ function update0801to083($output='HTML') {
 
    $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');
 
-   // Group of technician in charge of Helpdesk items
+   // Group of technicians in charge of Helpdesk items
    $migration->addField('glpi_computers', 'groups_id_tech',
                         "INT NOT NULL DEFAULT '0' AFTER `users_id_tech`");
    $migration->addKey('glpi_computers', 'groups_id_tech');
