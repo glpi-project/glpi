@@ -523,7 +523,7 @@ class NotificationTarget extends CommonDBChild {
                FROM `glpi_groups_users`
                INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
-               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
+               WHERE `glpi_groups_users`.`groups_id` = '".$groups_id."'
                   AND `glpi_groups_users`.`is_manager` = 1";
 
       foreach ($DB->request($query) as $data) {
