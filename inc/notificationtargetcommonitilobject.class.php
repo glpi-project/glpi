@@ -599,28 +599,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.authors##"] = '';
       if ($this->obj->countUsers(CommonITILObject::REQUESTER)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $tmp) {
-            $uid = $tmp['users_id'];
+         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $tmpusr) {
+            $uid = $tmpusr['users_id'];
             $user_tmp = new User();
-            $user_tmp->getFromDB($uid);
-            $users[$uid] = $user_tmp->getName();
+            if ($uid && $user_tmp->getFromDB($uid)) {
+               $users[] = $user_tmp->getName();
 
-            $tmp = array();
-            $tmp['##author.id##']   = $uid;
-            $tmp['##author.name##'] = $user_tmp->getName();
+               $tmp = array();
+               $tmp['##author.id##']   = $uid;
+               $tmp['##author.name##'] = $user_tmp->getName();
 
-            if ($user_tmp->getField('locations_id')) {
-               $tmp['##author.location##']
-                                 = Dropdown::getDropdownName('glpi_locations',
-                                                             $user_tmp->getField('locations_id'));
+               if ($user_tmp->getField('locations_id')) {
+                  $tmp['##author.location##']
+                                    = Dropdown::getDropdownName('glpi_locations',
+                                                                $user_tmp->getField('locations_id'));
+               } else {
+                  $tmp['##author.location##'] = '';
+               }
+
+               $tmp['##author.phone##']  = $user_tmp->getField('phone');
+               $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
+               $datas['authors'][] = $tmp;
             } else {
-               $tmp['##author.location##'] = '';
+               // Anonymous users only in xxx.authors, not in authors
+               $users[] = $tmpusr['alternative_email'];
             }
-
-            $tmp['##author.phone##']  = $user_tmp->getField('phone');
-            $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
-
-            $datas['authors'][] = $tmp;
          }
          $datas["##$objettype.authors##"] = implode(', ',$users);
       }
@@ -638,9 +641,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          foreach ($this->obj->getUsers(CommonITILObject::ASSIGN) as $tmp) {
             $uid = $tmp['users_id'];
             $user_tmp = new User();
-            $user_tmp->getFromDB($uid);
-
-            $users[$uid] = $user_tmp->getName();
+            if ($user_tmp->getFromDB($uid)) {
+               $users[$uid] = $user_tmp->getName();
+            }
          }
          $datas["##$objettype.assigntousers##"] = implode(', ',$users);
       }
@@ -678,8 +681,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          foreach ($this->obj->getUsers(CommonITILObject::OBSERVER) as $tmp) {
             $uid = $tmp['users_id'];
             $user_tmp = new User();
-            $user_tmp->getFromDB($uid);
-            $users[$uid] = $user_tmp->getName();
+            if ($uid && $user_tmp->getFromDB($uid)) {
+               $users[] = $user_tmp->getName();
+            } else {
+               $users[] = $tmp['alternative_email'];
+            }
          }
          $datas["##$objettype.observerusers##"] = implode(', ',$users);
       }
