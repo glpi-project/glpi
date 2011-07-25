@@ -2058,7 +2058,7 @@ function commonFooter($keepDB=false) {
    if (!empty($CFG_GLPI["founded_new_version"])) {
       echo "<td class='copyright'>".$LANG['setup'][301].
             "<a href='http://www.glpi-project.org' target='_blank' title=\"".$LANG['setup'][302]."\"> ".
-               $CFG_GLPI["founded_new_version"]."</a></td>";
+               preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a></td>";
    }
    echo "<td class='right'>";
    echo "<a href='http://glpi-project.org/'>";
