@@ -2048,10 +2048,10 @@ function commonFooter($keepDB=false) {
 
    echo "<div id='footer' >";
    echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
-   echo $TIMER_DEBUG->getTime()."s - ";
+   echo $TIMER_DEBUG->getTime()." s - ";
 
    if (function_exists("memory_get_usage")) {
-      echo memory_get_usage();
+      echo getSize(memory_get_usage());
    }
    echo "</span></td>";
 
