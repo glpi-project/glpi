@@ -48,10 +48,12 @@ class Document_Item extends CommonDBRelation{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    function prepareInputForAdd($input) {
 
-      if (empty($input['itemtype']) || empty($input['items_id']) || $input['items_id']==0
-         || empty($input['documents_id']) || $input['documents_id']==0) {
+      if (empty($input['itemtype'])
+          || empty($input['items_id']) || $input['items_id']==0
+          || empty($input['documents_id']) || $input['documents_id']==0) {
          return false;
       }
 
@@ -68,6 +70,7 @@ class Document_Item extends CommonDBRelation{
       }
       return $input;
    }
+
 
    function post_addItem() {
 

@@ -262,8 +262,8 @@ class CartridgeItem extends CommonDBTM {
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td class='middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
+      echo "<td class='middle' rowspan='4'>
+             <textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -272,8 +272,7 @@ class CartridgeItem extends CommonDBTM {
       Dropdown::show('Group', array('name'   =>'groups_id_tech',
                                     'value'  => $this->fields['groups_id_tech'],
                                     'entity' => $this->fields['entities_id']));
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]."&nbsp;: </td>";

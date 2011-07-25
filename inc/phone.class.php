@@ -348,8 +348,7 @@ class Phone extends CommonDBTM {
       Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                     'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td rowspan='7'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='7'>
             <textarea cols='45' rows='14' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -358,8 +357,7 @@ class Phone extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this,"brand");
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";

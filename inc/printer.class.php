@@ -472,8 +472,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
-      echo "<td rowspan='5'>";
-      echo $LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='5'>".$LANG['common'][25]."&nbsp;:</td>\n";
       echo "<td rowspan='5'><textarea cols='45' rows='12' name='comment' >".
             $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -482,8 +481,7 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
       echo "<td>";
       autocompletionTextField($this, "memory_size");
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
