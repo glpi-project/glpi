@@ -947,9 +947,9 @@ function update0782to080($output='HTML') {
                if ($data['users_id_assign']>0) {
                   $query = "INSERT INTO `glpi_tickets_users`
                                    (`tickets_id`, `users_id`,
-                                    `type`)
+                                    `type`, `use_notification`)
                             VALUES ('".$data['id']."', '".$data['users_id_assign']."',
-                                    '".Ticket::ASSIGN."')";
+                                    '".Ticket::ASSIGN."', '1')";
                   $DB->query($query)
                   or die("0.80 migrate data to glpi_tickets_users table ".$LANG['update'][90] .
                          $DB->error());
