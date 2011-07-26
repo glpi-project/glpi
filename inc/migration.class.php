@@ -103,11 +103,10 @@ class Migration {
       $format = '';
       switch ($type) {
          case 'bool' :
-            $format = "TINYINT(1) NOT NULL";
             if (is_null($default_value)) {
-               $format .= " DEFAULT '0'";
+               $format = " TINYINT(1) DEFAULT NULL";
             } else if (in_array($default_value, array('0', '1'))) {
-               $format .= " DEFAULT '$default_value'";
+               $format = " TINYINT(1) NOT NULL DEFAULT '$default_value'";
             } else {
                trigger_error("default_value must be 0 or 1", E_USER_ERROR);
             }
@@ -132,11 +131,10 @@ class Migration {
             break;
 
          case 'integer' :
-            $format = "INT(11) NOT NULL";
             if (is_null($default_value)) {
-               $format .= " DEFAULT '0'";
+               $format = " INT(11) DEFAULT NULL";
             } else if (is_numeric($default_value)) {
-               $format .= " DEFAULT '$default_value'";
+               $format = " INT(11) NOT NULL DEFAULT '$default_value'";
             } else {
                trigger_error("default_value must be numeric", E_USER_ERROR);
             }
