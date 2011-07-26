@@ -158,11 +158,11 @@ switch ($current_version) {
       update0801to083();
       // nobreak;
 
-   case "0.83" :
+   case GLPI_VERSION :
       break;
 
    default :
-      die("Unsupported version\n");
+      die("Unsupported version ($current_version)\n");
 }
 
 if (version_compare($current_version, GLPI_VERSION)) {
