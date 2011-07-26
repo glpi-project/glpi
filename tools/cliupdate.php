@@ -165,11 +165,11 @@ switch ($current_version) {
       die("Unsupported version\n");
 }
 
-if ($current_version != GLPI_VERSION) {
+if (version_compare($current_version, GLPI_VERSION)) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    $query = "UPDATE `glpi_configs`
-             SET `version` = ' 0.83',
+             SET `version` = '".GLPI_VERSION."',
                  `language` = '".$glpilanguage."',
                  `founded_new_version` = ''";
    $DB->query($query) or die($LANG['update'][90].$DB->error());
