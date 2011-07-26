@@ -76,12 +76,12 @@ class Migration {
     * @param $table
     * @param $field to add
     * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
-    * @param default_value new field's default value, if a specific default value needs to be used
     * @param $update if not empty = value of $field (must be protected)
     * @param $condition if needed
+    * @param default_value new field's default value, if a specific default value needs to be used
     * @param comment comment to be added during field creation
    **/
-   function addField($table, $field, $type, $default_value=NULL, $update='', $condition='',
+   function addField($table, $field, $type, $update='', $condition='', $default_value=NULL,
                      $comment='') {
       global $DB, $LANG;
 
@@ -159,7 +159,9 @@ class Migration {
             $format = "INT(11) NOT NULL AUTO_INCREMENT";
             break;
 
-         default:
+         default :
+            // for compatibility with old 0.80 migrations
+            $format = $type;
             break;
       }
 
