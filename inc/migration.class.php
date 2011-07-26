@@ -201,11 +201,11 @@ class Migration {
       $format = $this->fieldFormat($type, $params['value']);
 
       if ($params['comment']) {
-         $comment = " COMMENT '".addslashes($comment)."'";
+         $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
       }
 
       if ($params['after']) {
-         $after = " AFTER `$after`";
+         $params['after'] = " AFTER `".$params['after']."`";
       }
 
       if ($format) {
@@ -216,8 +216,8 @@ class Migration {
             if ($params['update']) {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
-                         SET `$field` = $update
-                         $condition";
+                         SET `$field` = ".$params['update']." ".
+                         $params['condition']."";
                $DB->query($query)
                or die($this->version." set $field in $table " . $LANG['update'][90] . $DB->error());
             }
@@ -253,7 +253,7 @@ class Migration {
       $format = $this->fieldFormat($type, $params['value']);
 
       if ($params['comment']) {
-         $comment = " COMMENT '".addslashes($comment)."'";
+         $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
       }
 
 
