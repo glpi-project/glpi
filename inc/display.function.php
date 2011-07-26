@@ -436,7 +436,11 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
 
    // FINANCIAL
+   $menu['financial']['title'] = $LANG['Menu'][26];
+
    if (haveRight("budget","r")) {
+      $menu['financial']['default'] = '/front/budget.php';
+
       $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
       $menu['financial']['content']['budget']['shortcut']        = 'n';
       $menu['financial']['content']['budget']['page']            = '/front/budget.php';
@@ -450,15 +454,12 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       }
    }
 
-   $menu['financial']['title'] = $LANG['Menu'][26];
-
    if (haveRight("contact_enterprise","r")) {
       $menu['financial']['content']['supplier']['title']           = $LANG['Menu'][23];
       $menu['financial']['content']['supplier']['shortcut']        = 'e';
       $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
       $menu['financial']['content']['supplier']['links']['search'] = '/front/supplier.php';
 
-      $menu['financial']['default'] = '/front/contact.php';
 
       $menu['financial']['content']['contact']['title']           = $LANG['Menu'][22];
       $menu['financial']['content']['contact']['shortcut']        = 't';
