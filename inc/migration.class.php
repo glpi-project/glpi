@@ -71,19 +71,12 @@ class Migration {
 
 
    /**
-    * Add a new GLPI normalized field
+    * Define field's format
     *
-    * @param $table
-    * @param $field to add
     * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
-    * @param $update if not empty = value of $field (must be protected)
-    * @param $condition if needed
-    * @param default_value new field's default value, if a specific default value needs to be used
-    * @param comment comment to be added during field creation
+    * @param $default_value new field's default value, if a specific default value needs to be used
    **/
-   function addField($table, $field, $type, $update='', $condition='', $default_value=NULL,
-                     $comment='') {
-      global $DB, $LANG;
+   private function fieldFormat($type, $default_value=NULL) {
 
       $format = '';
       switch ($type) {
@@ -95,6 +88,15 @@ class Migration {
                $format .= " DEFAULT '$default_value'";
             } else {
                trigger_error("default_value must be 0 or 1", E_USER_ERROR);
+            }
+            break;
+
+         case 'char' :
+            $format = "CHAR(1)";
+            if (is_null($default_value)) {
+                $format .= " DEFAULT NULL";
+            } else {
+               $format .= " DEFAULT '$default_value'";
             }
             break;
 
@@ -164,16 +166,53 @@ class Migration {
             $format = $type;
             break;
       }
+      return $format;
+   }
 
-      if ($comment) {
+
+   /**
+    * Add a new GLPI normalized field
+    *
+    * @param $table
+    * @param $field to add
+    * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
+    * @param $options array
+    *    - update if not empty = value of $field (must be protected)
+    *    - condition if needed
+    *    - value default_value new field's default value, if a specific default value needs to be used
+    *    - comment comment to be added during field creation
+    *    - after where adding the new field
+   **/
+   function addField($table, $field, $type, $options=array()) {
+      global $DB, $LANG;
+
+      $params['update']    = '';
+      $params['condition'] = '';
+      $params['value']     = NULL;
+      $params['comment']   = '';
+      $params['after']     = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $format = $this->fieldFormat($type, $params['value']);
+
+      if ($params['comment']) {
          $comment = " COMMENT '".addslashes($comment)."'";
+      }
+
+      if ($params['after']) {
+         $after = " AFTER `$after`";
       }
 
       if ($format) {
          if (!FieldExists($table,$field)) {
-            $this->change[$table][] = "ADD `$field` $format $comment";
+            $this->change[$table][] = "ADD `$field` $format $params['comment'] $params['after']";
 
-            if ($update) {
+            if ($params['update']) {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
                          SET `$field` = $update
@@ -194,9 +233,28 @@ class Migration {
     * @param $table
     * @param $oldfield : old name of the field
     * @param $newfield : new name of the field
-    * @param $format : new format of the field (ex: int(11) not null default 0)
+    * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
+    * @param $options array
+    *    - default_value new field's default value, if a specific default value needs to be used
+    *    - comment comment to be added during field creation
    **/
-   function changeField($table, $oldfield, $newfield, $format) {
+   function changeField($table, $oldfield, $newfield, $type, $options=array()) {
+
+      $params['value']     = NULL;
+      $params['comment']   = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $format = $this->fieldFormat($type, $params['value']);
+
+      if ($params['comment']) {
+         $comment = " COMMENT '".addslashes($comment)."'";
+      }
+
 
       if (FieldExists($table,$oldfield)) {
          // in order the function to be replayed
@@ -205,7 +263,9 @@ class Migration {
             $this->change[$table][] = "DROP `$newfield` ";
          }
 
-         $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format";
+         if ($format) {
+            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format $params['comment']";
+         }
          return true;
       }
 
@@ -226,17 +286,20 @@ class Migration {
       }
    }
 
+
    /**
     * Drop immediatly a table if it exists
     *
     * @param table
-    */
+   **/
    function dropTable($table) {
       global $DB;
+
       if (TableExists($table)) {
          $DB->query("DROP TABLE `$table`");
       }
    }
+
 
    /**
     * Add index for migration
