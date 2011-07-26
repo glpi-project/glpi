@@ -74,23 +74,25 @@ class Migration {
     * Display a title
     *
     * @param $title string
-    */
+   **/
    function displayTitle($title) {
 
       echo "<h3>".htmlentities($title, ENT_COMPAT, "UTF-8")."</h3>";
    }
+
 
    /**
     * Display a Warning
     *
     * @param $msg string
     * @param $red boolean
-    */
+   **/
    function displayWarning($msg, $red=false) {
 
       echo ($red ? "<div class='red'><p>" : "<p><b>") .
-           htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</b></p>");
+            htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</b></p>");
    }
+
 
    /**
     * Define field's format
@@ -98,15 +100,16 @@ class Migration {
     * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
     * @param $default_value new field's default value, if a specific default value needs to be used
    **/
-   private function fieldFormat($type, $default_value=NULL) {
+   private function fieldFormat($type, $default_value) {
 
       $format = '';
       switch ($type) {
          case 'bool' :
+            $format = "TINYINT(1) NOT NULL";
             if (is_null($default_value)) {
-               $format = " TINYINT(1) DEFAULT NULL";
+               $format .= " DEFAULT '0'";
             } else if (in_array($default_value, array('0', '1'))) {
-               $format = " TINYINT(1) NOT NULL DEFAULT '$default_value'";
+               $format .= " DEFAULT '$default_value'";
             } else {
                trigger_error("default_value must be 0 or 1", E_USER_ERROR);
             }
@@ -131,10 +134,11 @@ class Migration {
             break;
 
          case 'integer' :
+            $format = "INT(11) NOT NULL";
             if (is_null($default_value)) {
-               $format = " INT(11) DEFAULT NULL";
+               $format .= " DEFAULT '0'";
             } else if (is_numeric($default_value)) {
-               $format = " INT(11) NOT NULL DEFAULT '$default_value'";
+               $format .= " DEFAULT '$default_value'";
             } else {
                trigger_error("default_value must be numeric", E_USER_ERROR);
             }
