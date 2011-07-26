@@ -584,25 +584,27 @@ function updateDbUpTo031() {
       echo "<p class='center'>Version > 0.31  </p>";
    }
 
+   // Save if problem with session during update
+   $glpilanguage = $_SESSION["glpilanguage"];
 
    // < 0.78
    if (TableExists("glpi_config")) {
       // Get current version
-      $query = "SELECT `version`
+      // Use language from session, even if sometime not reliable
+      $query = "SELECT `version`, '$glpilanguage'
                 FROM `glpi_config`";
 
    } else { // >= 0.78
-      // Get current version
-      $query = "SELECT `version`
+      // Get current version and language
+      $query = "SELECT `version`, `language`
                 FROM `glpi_configs`";
    }
 
    $result = $DB->query($query) or die("get current version".$DB->error());
 
    $current_version = trim($DB->result($result,0,0));
+   $glpilanguage    = trim($DB->result($result,0,1));
 
-   // Save if problem with session during update
-   $glpilanguage = $_SESSION["glpilanguage"];
 
    // To prevent problem of execution time
 	ini_set("max_execution_time", "0");
