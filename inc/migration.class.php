@@ -71,6 +71,28 @@ class Migration {
 
 
    /**
+    * Display a title
+    *
+    * @param $title string
+    */
+   function displayTitle($title) {
+
+      echo "<h3>".htmlentities($title, ENT_COMPAT, "UTF-8")."</h3>";
+   }
+
+   /**
+    * Display a Warning
+    *
+    * @param $msg string
+    * @param $red boolean
+    */
+   function displayWarning($msg, $red=false) {
+
+      echo ($red ? "<div class='red'><p>" : "<p><b>") .
+           htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</b></p>");
+   }
+
+   /**
     * Define field's format
     *
     * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
