@@ -37,21 +37,15 @@
 /**
  * Update from 0.78.2 to 0.80
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
 **/
-function update0782to080($output='HTML') {
+function update0782to080() {
    global $DB, $LANG, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
-   }
+   $migration->displayTitle($LANG['install'][4]." -> 0.80");
 
    $backup_tables = false;
    $newtables     = array('glpi_calendars',
@@ -84,16 +78,14 @@ function update0782to080($output='HTML') {
             $DB->query($query)
             or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
          }
-         if ($output) {
-            echo "<p><b>$new_table table already exists. ";
-            echo "A backup have been done to backup_$new_table.</b></p>";
-         }
+         $migration->displayWarning("$new_table table already exists. ".
+                                    "A backup have been done to backup_$new_table.");
          $backup_tables = true;
          $query         = $migration->renameTable("$new_table", "backup_$new_table");
       }
    }
-   if ($backup_tables && $output) {
-      echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
+   if ($backup_tables) {
+      $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
    }
 
 

@@ -37,21 +37,15 @@
 /**
  * Update from 0.802 to 0.80.1
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
 **/
-function update080to0801($output='HTML') {
+function update080to0801() {
    global $DB, $LANG, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.80.1</h3>";
-   }
+   $migration->displayTitle($LANG['install'][4]." -> 0.80.1");
 
    // Clean duplicates
    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
