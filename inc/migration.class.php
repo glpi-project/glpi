@@ -210,7 +210,8 @@ class Migration {
 
       if ($format) {
          if (!FieldExists($table,$field)) {
-            $this->change[$table][] = "ADD `$field` $format $params['comment'] $params['after']";
+            $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
+                                           $params['after']."";
 
             if ($params['update']) {
                $this->migrationOneTable($table);
@@ -264,7 +265,7 @@ class Migration {
          }
 
          if ($format) {
-            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format $params['comment']";
+            $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format ".$params['comment']."";
          }
          return true;
       }
