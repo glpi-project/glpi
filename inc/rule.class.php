@@ -1724,11 +1724,13 @@ class Rule extends CommonDBTM {
 
       $rules = array();
 
+      /// TODO : not working for SLALevels : no sub_type
+
       //Get all the rules whose sub_type is $sub_type and entity is $ID
       $query = "SELECT `".$this->getTable()."`.`id`
                 FROM `".getTableForItemType($this->ruleactionclass)."`,
                      `".$this->getTable()."`
-                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field." = `glpi_rules`.`id`
+                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field." = `".$this->getTable()."`.`id`
                       AND `".$this->getTable()."`.`sub_type` = '".get_class($this)."'";
 
       foreach ($crit as $field => $value) {
