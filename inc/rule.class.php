@@ -1311,7 +1311,8 @@ class Rule extends CommonDBTM {
                                                                          $item->getEntityID()).')';
                      }
                   }
-                  return Dropdown::getDropdownName($crit["table"], $pattern).$addentity;
+                  $tmp = Dropdown::getDropdownName($crit["table"], $pattern).$addentity;
+                  return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
                case "dropdown_users" :
                   return getUserName($pattern);
@@ -1449,7 +1450,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Return a value associated with a pattern associated to a criteria
+    * Return a "display" value associated with a pattern associated to a criteria
     *
     * @param $ID the given action
     * @param $value the value
@@ -1462,7 +1463,8 @@ class Rule extends CommonDBTM {
 
          switch ($action['type']) {
             case "dropdown" :
-               return Dropdown::getDropdownName($action["table"], $value);
+               $tmp = Dropdown::getDropdownName($action["table"], $value);
+               return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
             case "dropdown_status" :
                return Ticket::getStatus($value);
