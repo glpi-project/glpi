@@ -61,6 +61,12 @@ class Manufacturer extends CommonDropdown {
       return $old_name;
    }
 
+
+   function cleanDBonPurge() {
+
+      // Rules use manufacturer intread of manufacturers_id
+      Rule::cleanForItemAction($this, 'manufacturer');
+   }
 }
 
 ?>

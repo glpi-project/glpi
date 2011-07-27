@@ -151,6 +151,11 @@ class RequestType extends CommonDropdown {
       return 0;
    }
 
+
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemCriteria($this);
+   }
 }
 
 ?>

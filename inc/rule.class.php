@@ -1312,7 +1312,8 @@ class Rule extends CommonDBTM {
                                                                          $item->getEntityID()).')';
                      }
                   }
-                  return Dropdown::getDropdownName($crit["table"], $pattern).$addentity;
+                  $tmp = Dropdown::getDropdownName($crit["table"], $pattern).$addentity;
+                  return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
                case "dropdown_users" :
                   return getUserName($pattern);
@@ -1451,7 +1452,7 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Return a value associated with a pattern associated to a criteria
+    * Return a "display" value associated with a pattern associated to a criteria
     *
     * @param $ID the given action
     * @param $value the value
@@ -1464,7 +1465,8 @@ class Rule extends CommonDBTM {
 
          switch ($action['type']) {
             case "dropdown" :
-               return Dropdown::getDropdownName($action["table"], $value);
+               $tmp = Dropdown::getDropdownName($action["table"], $value);
+               return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
             case "dropdown_status" :
                return Ticket::getStatus($value);
@@ -1897,33 +1899,81 @@ class Rule extends CommonDBTM {
    }
 
 
+
    /**
-    * Clean Rule with Action is assign to an item
+    * Clean Rule with Action or Criteria linked to an item
     *
     * @param $item Object
+    * @param $field string name (default is FK to item)
+    * @param $ruleitem object (instance of Rules of SlaLevel)
+    * @param $table string (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
+    * @param $valfield string (value or pattern)
+    * @param $fieldfield string (criteria of field)
     */
-   static function cleanForItemAction($item) {
+   private static function cleanForItemActionOrCriteria($item, $field,
+                                                        $ruleitem, $table, $valfield, $fieldfield) {
       global $DB, $LANG;
 
-      $query = "SELECT `rules_id`
-                FROM `glpi_ruleactions`
-                WHERE `value` = '".$item->getField('id')."'
-                      AND `field` = '".getForeignKeyFieldForTable($item->getTable())."'";
+      $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $rule = new self();
-            $input['is_active'] = 0;
+      if (empty($field)) {
+         $field = getForeignKeyFieldForTable($item->getTable());
+      }
 
-            while ($data = $DB->fetch_array($result)) {
-               $input['id'] = $data['rules_id'];
-               $rule->update($input);
+      if (isset($item->input['_replace_by']) && $item->input['_replace_by']>0) {
+         $query = "UPDATE `$table`
+                   SET `$valfield` = '".$item->input['_replace_by']."'
+                   WHERE `$valfield` = '".$item->getField('id')."'
+                         AND `$fieldfield` LIKE '$field'";
+         $DB->query($query);
+
+      } else {
+         $query = "SELECT `$fieldid`
+                   FROM `$table`
+                   WHERE `$valfield` = '".$item->getField('id')."'
+                         AND `$fieldfield` LIKE '$field'";
+
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $input['is_active'] = 0;
+
+               while ($data = $DB->fetch_array($result)) {
+                  $input['id'] = $data[$fieldid];
+                  $ruleitem->update($input);
+               }
+               addMessageAfterRedirect($LANG['rulesengine'][150], true);
             }
-            addMessageAfterRedirect($LANG['rulesengine'][150]);
          }
       }
    }
 
+   /**
+    * Clean Rule with Action is assign to an item
+    *
+    * @param $item Object
+    * @param $field string name (default is FK to item)
+    */
+   static function cleanForItemAction($item, $field='') {
+
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new self(), 'glpi_ruleactions', 'value', 'field');
+
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new SlaLevel(), 'glpi_slalevelactions', 'value', 'field');
+   }
+
+
+   /**
+    * Clean Rule with Criteria on an item
+    *
+    * @param $item Object
+    * @param $field string name (default is FK to item)
+    */
+   static function cleanForItemCriteria($item, $field='') {
+
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new self(), 'glpi_rulecriterias', 'pattern', 'criteria');
+   }
 }
 
 ?>

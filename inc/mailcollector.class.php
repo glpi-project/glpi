@@ -1362,6 +1362,13 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showFromArray($name, $sizes, array('value' => $value));
    }
 
+
+   function cleanDBonPurge() {
+
+      // mailcollector for RuleMailCollector, _mailgate for RuleTicket
+      Rule::cleanForItemCriteria($this, 'mailcollector');
+      Rule::cleanForItemCriteria($this, '_mailgate');
+   }
 }
 
 ?>
