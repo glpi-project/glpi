@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="User featuring the profile";
 $LANG['rulesengine'][147]="User featuring a single profile"; 
 $LANG['rulesengine'][148]="Mail domain is known"; 
 $LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
-$LANG['rulesengine'][150]="The rules linked with the entity have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="už je přítomen v GLPI"; 
 $LANG['rulesengine'][152]="Počítač k importu"; 
 $LANG['rulesengine'][154]="je prázdné"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Opustit SLA smlouvu";
 $LANG['sla'][8]="Další eskalace"; 
 $LANG['sla'][9]="Automatické připomínání SLA smluv"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Kalendář požadavku"; 
 
 $LANG['software'][1]="Zakoupená verze"; 
 $LANG['software'][2]="Použitá verze"; 

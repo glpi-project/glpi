@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="用户文件特性";
 $LANG['rulesengine'][147]="用户具有一个配置文件"; 
 $LANG['rulesengine'][148]="已知邮件域"; 
 $LANG['rulesengine'][149]="从LDAP目录导入组"; 
-$LANG['rulesengine'][150]="该规则所连接的实体已失效"; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="已在GLPI中存在"; 
 $LANG['rulesengine'][152]="计算机导入"; 
 $LANG['rulesengine'][154]="为空"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="委托SLA";
 $LANG['sla'][8]="下一个升级"; 
 $LANG['sla'][9]="自动SLA提示"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="票单日历"; 
 
 $LANG['software'][1]="购买版本"; 
 $LANG['software'][2]="在使用版本上"; 

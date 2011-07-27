@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Bruger med profilen";
 $LANG['rulesengine'][147]="User featuring a single profile"; 
 $LANG['rulesengine'][148]="E-maildomæne er kendt"; 
 $LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
-$LANG['rulesengine'][150]="The rules linked with the entity have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="findes allerede i GLPI"; 
 $LANG['rulesengine'][152]="Computer der skal importeres"; 
 $LANG['rulesengine'][154]="er tom"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Leave the SLA";
 $LANG['sla'][8]="Næste eskalering"; 
 $LANG['sla'][9]="Automatisk SLA påmindelse"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Købt version"; 
 $LANG['software'][2]="Brug version"; 

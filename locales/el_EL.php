@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Χρήστης χαρακτηρισμένος με α
 $LANG['rulesengine'][147]="Χρήστης χαρακτηρισμένος με μοναδικό προφίλ"; 
 $LANG['rulesengine'][148]="Άγνωστο domain ηλεκτρονικής αλληλογραφίας"; 
 $LANG['rulesengine'][149]="Εισηγμένη ομάδα από κατάλογο LDAP"; 
-$LANG['rulesengine'][150]="Οι συνδεδεμένοι με την οντότητα κανόνες έχουν απενεργοποιηθεί."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="υπάρχει ήδη στο GLPI"; 
 $LANG['rulesengine'][152]="Υπολογιστής προς εισαγωγή"; 
 $LANG['rulesengine'][154]="είναι άδειο"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Ακυρώστε το SLA";
 $LANG['sla'][8]="Επόμενη κλιμάκωση"; 
 $LANG['sla'][9]="Αυτόματες υπενθυμίσεις SLA"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Έκδοση αγοράς"; 
 $LANG['software'][2]="Έκδοση σε χρήση"; 

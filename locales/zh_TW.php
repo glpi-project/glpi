@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="使用者特色配置文件";
 $LANG['rulesengine'][147]="使用者具有一個配置文件"; 
 $LANG['rulesengine'][148]="郵件的domain已知"; 
 $LANG['rulesengine'][149]="從 LDAP目錄導入群組"; 
-$LANG['rulesengine'][150]="與規則聯結的實體已被停用。"; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="已存在於 GLPI"; 
 $LANG['rulesengine'][152]="導入的電腦"; 
 $LANG['rulesengine'][154]="是空的"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="查看SLA";
 $LANG['sla'][8]="下一個申告"; 
 $LANG['sla'][9]="服務水平協議自動提醒"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="問題單的日程表"; 
 
 $LANG['software'][1]="採購版本"; 
 $LANG['software'][2]="使用版本"; 

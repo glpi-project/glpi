@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Con el perfil del usuario";
 $LANG['rulesengine'][147]="Usuario con un único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico conocido"; 
 $LANG['rulesengine'][149]="Grupo importado de un directorio LDAP"; 
-$LANG['rulesengine'][150]="Las reglas que afectan a la entidad están desactivadas"; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="ya está presente en GLPI"; 
 $LANG['rulesengine'][152]="Ordenador a importar"; 
 $LANG['rulesengine'][154]="está vacío"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Salir de SLA";
 $LANG['sla'][8]="Próximo nivel"; 
 $LANG['sla'][9]="Avisos automáticos de SLA"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Calendario de las incidencias"; 
 
 $LANG['software'][1]="Versión comprada"; 
 $LANG['software'][2]="Versión en uso"; 

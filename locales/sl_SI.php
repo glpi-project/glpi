@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Uporabnik z značilnostjo profila";
 $LANG['rulesengine'][147]="Uporabnik z značilnostjo enega profila"; 
 $LANG['rulesengine'][148]="Poštna domena je poznana"; 
 $LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
-$LANG['rulesengine'][150]="Pravila, ki vplivajo na entito so bila onemogočena."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="is already present in GLPI"; 
 $LANG['rulesengine'][152]="Računalnik za uvoz"; 
 $LANG['rulesengine'][154]="is empty"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Leave the SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatic reminders of SLAs"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="Nakup verzije"; 
 $LANG['software'][2]="Uporabi verzijo"; 

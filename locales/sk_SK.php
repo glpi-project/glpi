@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Užívateľ využíva profil";
 $LANG['rulesengine'][147]="Užívateľ podporuje jednoduchý profil"; 
 $LANG['rulesengine'][148]="Poštová doména je známa"; 
 $LANG['rulesengine'][149]="Naimportovaná skupina z LDAP adresára"; 
-$LANG['rulesengine'][150]="Pravidlá prelinkované na subjekt boli vypnuté."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="is already present in GLPI"; 
 $LANG['rulesengine'][152]="Počítač na import"; 
 $LANG['rulesengine'][154]="je prázdny"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Opustiť SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatické pripomienky SLAs"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Kalendár požiadaviek"; 
 
 $LANG['software'][1]="Zakúpená verzia"; 
 $LANG['software'][2]="Použiť verziu"; 

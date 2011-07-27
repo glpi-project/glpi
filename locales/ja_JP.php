@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="プロファイルで規定されたユーザー";
 $LANG['rulesengine'][147]="単一プロファイルで規定されたユーザー"; 
 $LANG['rulesengine'][148]="メールドメインが公開されている"; 
 $LANG['rulesengine'][149]="Imported group from an LDAP directory"; 
-$LANG['rulesengine'][150]="エンティティに影響するルールは無効化されています。"; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
 $LANG['rulesengine'][151]="is already present in GLPI"; 
 $LANG['rulesengine'][152]="Computer to import"; 
 $LANG['rulesengine'][154]="is empty"; 
@@ -1949,7 +1949,6 @@ $LANG['sla'][7]="Leave the SLA";
 $LANG['sla'][8]="Next escalation"; 
 $LANG['sla'][9]="Automatic reminders of SLAs"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Ticket's calendar"; 
 
 $LANG['software'][1]="購入版"; 
 $LANG['software'][2]="使用バージョン"; 
