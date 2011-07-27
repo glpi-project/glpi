@@ -238,7 +238,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
-      
+
          echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'></td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
@@ -2505,6 +2505,12 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
       }
       echo "</table>";
+   }
+
+
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
    }
 }
 
