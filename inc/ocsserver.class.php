@@ -746,6 +746,10 @@ class OcsServer extends CommonDBTM {
 
       $admin = new OcsAdminInfosLink();
       $admin->deleteByCriteria(array('ocsservers_id' => $this->fields['id']));
+
+      // ocsservers_id for RuleImportComputer, OCS_SERVER for RuleOcs
+      Rule::cleanForItemCriteria($this);
+      Rule::cleanForItemCriteria($this, 'OCS_SERVER');
    }
 
 

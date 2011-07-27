@@ -142,6 +142,11 @@ class TicketCategory extends CommonTreeDropdown {
       return $ret;
    }
 
+
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemCriteria($this);
+   }
 }
 
 ?>

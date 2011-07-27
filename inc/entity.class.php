@@ -206,11 +206,11 @@ class Entity extends CommonTreeDropdown {
             case 8 :
                EntityData::showHelpdeskOptions($this);
                break;
-            
+
             case 9 :
                EntityData::showInventoryOptions($this);
                break;
-               
+
             case 10 :
                showNotesForm(getItemTypeFormURL('EntityData'), 'EntityData', $_POST["id"]);
                break;
@@ -303,6 +303,7 @@ class Entity extends CommonTreeDropdown {
       $result = $DB->query($query);
 
       Rule::cleanForItemAction($this);
+      Rule::cleanForItemCriteria($this);
    }
 
 
