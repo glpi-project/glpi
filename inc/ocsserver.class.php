@@ -299,35 +299,35 @@ class OcsServer extends CommonDBTM {
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][20] . " </td>\n";
       echo "<td><select name='import_otherserial'>\n";
-      echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
+      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "otherserial");
       echo $listColumnOCS;
       echo "</select>&nbsp;&nbsp;</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][15] . " </td>\n";
       echo "<td><select name='import_location'>\n";
-      echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
+      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "locations_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][35] . " </td>\n";
       echo "<td><select name='import_group'>\n";
-      echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
+      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "groups_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][21] . " </td>\n";
       echo "<td><select name='import_contact_num'>\n";
-      echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
+      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "contact_num");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][88] . " </td>\n";
       echo "<td><select name='import_network'>\n";
-      echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
+      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "networks_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
@@ -391,11 +391,11 @@ class OcsServer extends CommonDBTM {
                               array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
-      $import_array = array("0" => $LANG['ocsconfig'][11],
+      $import_array = array("0" => $LANG['mailgate'][8],
                             "1" => $LANG['ocsconfig'][10],
                             "2" => $LANG['ocsconfig'][12]);
 
-      $import_array2 = array("0" => $LANG['ocsconfig'][11],
+      $import_array2 = array("0" => $LANG['mailgate'][8],
                              "1" => $LANG['ocsconfig'][10],
                              "2" => $LANG['ocsconfig'][12],
                              "3" => $LANG['ocsconfig'][19]);
@@ -417,7 +417,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td>\n<td>";
-      $import_array = array("0" => $LANG['ocsconfig'][11],
+      $import_array = array("0" => $LANG['mailgate'][8],
                             "1" => $LANG['ocsconfig'][12]);
       Dropdown::showFromArray("import_software", $import_array, array('value' => $software));
       echo "</td></tr>\n";
