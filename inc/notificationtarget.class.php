@@ -698,9 +698,12 @@ class NotificationTarget extends CommonDBChild {
     * Get Group of technician in charge of the item
    **/
    function getItemGroupTechInChargeAddress() {
-      $id = $this->target_object->getField('groups_id_tech');
-      if ($id>0) {
-         $this->getUsersAddressesByGroup($id);
+
+      if ($this->target_object) {
+         $id = $this->target_object->getField('groups_id_tech');
+         if ($id>0) {
+            $this->getUsersAddressesByGroup($id);
+         }
       }
    }
 
