@@ -274,6 +274,13 @@ class Location extends CommonTreeDropdown {
       }
       echo "</div>\n";
    }
+
+
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemAction($this);
+      Rule::cleanForItemCriteria($this, 'users_locations');
+   }
 }
 
 ?>

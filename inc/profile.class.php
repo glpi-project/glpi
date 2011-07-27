@@ -139,6 +139,11 @@ class Profile extends CommonDBTM {
                 FROM `glpi_profiles_users`
                 WHERE `profiles_id` = '".$this->fields['id']."'";
       $DB->query($query);
+
+      Rule::cleanForItemAction($this);
+      // PROFILES and UNIQUE_PROFILE in RuleMailcollector
+      Rule::cleanForItemCriteria($this, 'PROFILES');
+      Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
    }
 
 

@@ -271,6 +271,9 @@ class User extends CommonDBTM {
       $tu = new Ticket_User();
       $tu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
+      // Ticket rules use various _users_id_*
+      Rule::cleanForItemAction($this, '_users_id%');
+      Rule::cleanForItemCriteria($this, '_users_id%');
    }
 
 

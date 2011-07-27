@@ -45,6 +45,12 @@ class SoftwareCategory extends CommonDropdown {
 
       return $LANG['softwarecategories'][5];
    }
+
+
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemAction($this);
+   }
 }
 
 ?>

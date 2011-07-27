@@ -300,6 +300,7 @@ class Entity extends CommonTreeDropdown {
       $result = $DB->query($query);
 
       Rule::cleanForItemAction($this);
+      Rule::cleanForItemCriteria($this);
    }
 
 
