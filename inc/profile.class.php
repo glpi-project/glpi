@@ -138,6 +138,8 @@ class Profile extends CommonDBTM {
                 FROM `glpi_profiles_users`
                 WHERE `profiles_id` = '".$this->fields['id']."'";
       $DB->query($query);
+
+      Rule::cleanForItemAction($this);
    }
 
 

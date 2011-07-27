@@ -82,6 +82,9 @@ class Supplier extends CommonDBTM {
 
       $cs = new Contact_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      // Ticket rules use suppliers_id_assign
+      Rule::cleanForItemAction($this, 'suppliers_id%');
    }
 
 

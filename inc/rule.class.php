@@ -1899,25 +1899,39 @@ class Rule extends CommonDBTM {
     * Clean Rule with Action is assign to an item
     *
     * @param $item Object
+    * @param $field string name (default is FK to item)
     */
-   static function cleanForItemAction($item) {
+   static function cleanForItemAction($item, $field='') {
       global $DB, $LANG;
 
-      $query = "SELECT `rules_id`
-                FROM `glpi_ruleactions`
-                WHERE `value` = '".$item->getField('id')."'
-                      AND `field` = '".getForeignKeyFieldForTable($item->getTable())."'";
+      if (empty($field)) {
+         $field = getForeignKeyFieldForTable($item->getTable());
+      }
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            $rule = new self();
-            $input['is_active'] = 0;
+      if (isset($item->input['_replace_by']) && $item->input['_replace_by']>0) {
+         $query = "UPDATE `glpi_ruleactions`
+                   SET `value` = '".$item->input['_replace_by']."'
+                   WHERE `value` = '".$item->getField('id')."'
+                         AND `field` LIKE '$field'";
+         $DB->query($query);
 
-            while ($data = $DB->fetch_array($result)) {
-               $input['id'] = $data['rules_id'];
-               $rule->update($input);
+      } else {
+         $query = "SELECT `rules_id`
+                   FROM `glpi_ruleactions`
+                   WHERE `value` = '".$item->getField('id')."'
+                         AND `field` LIKE '$field'";
+
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $rule = new self();
+               $input['is_active'] = 0;
+
+               while ($data = $DB->fetch_array($result)) {
+                  $input['id'] = $data['rules_id'];
+                  $rule->update($input);
+               }
+               addMessageAfterRedirect($LANG['rulesengine'][150]);
             }
-            addMessageAfterRedirect($LANG['rulesengine'][150]);
          }
       }
    }
