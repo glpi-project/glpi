@@ -999,12 +999,12 @@ class Rule extends CommonDBTM {
 
       // Delete a rule and all associated criterias and actions
       $sql = "DELETE
-              FROM `glpi_ruleactions`
+              FROM `".getTableForItemType($this->ruleactionclass)."`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
 
       $sql = "DELETE
-              FROM `glpi_rulecriterias`
+              FROM `".getTableForItemType($this->rulecriteriaclass)."`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
    }
@@ -1723,15 +1723,17 @@ class Rule extends CommonDBTM {
 
       $rules = array();
 
+      /// TODO : not working for SLALevels : no sub_type
+
       //Get all the rules whose sub_type is $sub_type and entity is $ID
-      $query = "SELECT `glpi_rules`.`id`
-                FROM `glpi_ruleactions`,
-                     `glpi_rules`
-                WHERE `glpi_ruleactions`.".$this->rules_id_field." = `glpi_rules`.`id`
-                      AND `glpi_rules`.`sub_type` = '".get_class($this)."'";
+      $query = "SELECT `".$this->getTable()."`.`id`
+                FROM `".getTableForItemType($this->ruleactionclass)."`,
+                     `".$this->getTable()."`
+                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field." = `".$this->getTable()."`.`id`
+                      AND `".$this->getTable()."`.`sub_type` = '".get_class($this)."'";
 
       foreach ($crit as $field => $value) {
-         $query .= " AND `glpi_ruleactions`.`$field` = '$value'";
+         $query .= " AND `".getTableForItemType($this->ruleactionclass)."`.`$field` = '$value'";
       }
 
       foreach ($DB->request($query) as $rule) {
