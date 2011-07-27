@@ -324,6 +324,10 @@ class AuthMail extends CommonDBTM {
       return $auth;
    }
 
+   function cleanDBonPurge() {
+
+      Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
+   }
 }
 
 ?>
