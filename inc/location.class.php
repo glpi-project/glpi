@@ -279,6 +279,7 @@ class Location extends CommonTreeDropdown {
    function cleanDBonPurge() {
 
       Rule::cleanForItemAction($this);
+      Rule::cleanForItemCriteria($this, 'users_locations');
    }
 }
 

@@ -1897,6 +1897,52 @@ class Rule extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Clean Rule with Action or Criteria linked to an item
+    *
+    * @param $item Object
+    * @param $field string name (default is FK to item)
+    * @param $ruleitem object (instance of Rules of SlaLevel)
+    * @param $table string (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
+    * @param $valfield string (value or pattern)
+    * @param $fieldfield string (criteria of field)
+    */
+   private static function cleanForItemActionOrCriteria($item, $field,
+                                                        $ruleitem, $table, $valfield, $fieldfield) {
+      global $DB, $LANG;
+
+      $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
+
+      if (empty($field)) {
+         $field = getForeignKeyFieldForTable($item->getTable());
+      }
+
+      if (isset($item->input['_replace_by']) && $item->input['_replace_by']>0) {
+         $query = "UPDATE `$table`
+                   SET `$valfield` = '".$item->input['_replace_by']."'
+                   WHERE `$valfield` = '".$item->getField('id')."'
+                         AND `$fieldfield` LIKE '$field'";
+         $DB->query($query);
+
+      } else {
+         $query = "SELECT `$fieldid`
+                   FROM `$table`
+                   WHERE `$valfield` = '".$item->getField('id')."'
+                         AND `$fieldfield` LIKE '$field'";
+
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               $input['is_active'] = 0;
+
+               while ($data = $DB->fetch_array($result)) {
+                  $input['id'] = $data[$fieldid];
+                  $ruleitem->update($input);
+               }
+               addMessageAfterRedirect($LANG['rulesengine'][150], true);
+            }
+         }
+      }
+   }
 
    /**
     * Clean Rule with Action is assign to an item
@@ -1905,40 +1951,25 @@ class Rule extends CommonDBTM {
     * @param $field string name (default is FK to item)
     */
    static function cleanForItemAction($item, $field='') {
-      global $DB, $LANG;
 
-      if (empty($field)) {
-         $field = getForeignKeyFieldForTable($item->getTable());
-      }
-
-      if (isset($item->input['_replace_by']) && $item->input['_replace_by']>0) {
-         $query = "UPDATE `glpi_ruleactions`
-                   SET `value` = '".$item->input['_replace_by']."'
-                   WHERE `value` = '".$item->getField('id')."'
-                         AND `field` LIKE '$field'";
-         $DB->query($query);
-
-      } else {
-         $query = "SELECT `rules_id`
-                   FROM `glpi_ruleactions`
-                   WHERE `value` = '".$item->getField('id')."'
-                         AND `field` LIKE '$field'";
-
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)>0) {
-               $rule = new self();
-               $input['is_active'] = 0;
-
-               while ($data = $DB->fetch_array($result)) {
-                  $input['id'] = $data['rules_id'];
-                  $rule->update($input);
-               }
-               addMessageAfterRedirect($LANG['rulesengine'][150]);
-            }
-         }
-      }
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new self(), 'glpi_ruleactions', 'value', 'field');
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new SlaLevel(), 'glpi_slalevelactions', 'value', 'field');
    }
 
+
+   /**
+    * Clean Rule with Criteria on an item
+    *
+    * @param $item Object
+    * @param $field string name (default is FK to item)
+    */
+   static function cleanForItemCriteria($item, $field='') {
+
+      self::cleanForItemActionOrCriteria($item, $field,
+                                         new self(), 'glpi_rulecriterias', 'pattern', 'criteria');
+   }
 }
 
 ?>
