@@ -762,7 +762,7 @@ function update0801to083() {
    }
 
    // multiple manager in groups
-   $migration->changeField("glpi_authldaps", 'email_field', 'email1_field', "varchar");
+   $migration->changeField("glpi_authldaps", 'email_field', 'email1_field', 'string');
    $migration->addField("glpi_authldaps", 'email2_field','string');
    $migration->addField("glpi_authldaps", 'email3_field','string');
    $migration->addField("glpi_authldaps", 'email4_field','string');
