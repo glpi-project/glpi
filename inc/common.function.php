@@ -197,7 +197,8 @@ function isMultiEntitiesMode() {
 **/
 function isViewAllEntities() {
    // Command line can see all entities
-   return (isCommandLine() || (countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"]));
+   return (isCommandLine()
+           || (countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"]));
 }
 
 

@@ -191,9 +191,7 @@ class Ticket extends CommonITILObject {
    function getDatasToAddSLA($slas_id,$entities_id, $date) {
 
       $calendars_id = EntityData::getUsedConfig('calendars_id', $entities_id);
-
-
-      $data = array();
+      $data         = array();
 
       $sla = new SLA();
       if ($sla->getFromDB($slas_id)) {
@@ -213,6 +211,7 @@ class Ticket extends CommonITILObject {
       return $data;
 
    }
+
 
    /**
     * Delete SLA for the ticket
@@ -362,7 +361,7 @@ class Ticket extends CommonITILObject {
                   // Linked items
                   if ($subquery = $item->getSelectLinkedItem()) {
                      $nb += countElementsInTable('glpi_tickets',
-                                                "(`itemtype`,`items_id`) IN (" . $subquery . ")");
+                                                 "(`itemtype`,`items_id`) IN (" . $subquery . ")");
                   }
                   break;
             }
@@ -471,7 +470,7 @@ class Ticket extends CommonITILObject {
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
-      SlaLevel_Ticket::deleteForTicket($this->fields['id']);
+      SlaLevel_Ticket::deleteForTicket($this->getID());
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
@@ -669,8 +668,8 @@ class Ticket extends CommonITILObject {
 
 
        if (isset($this->input["slas_id"])
-            && $this->input["slas_id"] > 0
-            && $this->fields['slas_id'] == 0) {
+           && $this->input["slas_id"] > 0
+           && $this->fields['slas_id'] == 0) {
 
          $date = $this->fields['date'];
          /// Use updated date if also done
@@ -805,8 +804,7 @@ class Ticket extends CommonITILObject {
    /// Compute take into account stat of the current ticket
    function computeTakeIntoAccountDelayStat() {
 
-      if (isset($this->fields['id'])
-            && !empty($this->fields['date'])) {
+      if (isset($this->fields['id']) && !empty($this->fields['date'])) {
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
@@ -826,16 +824,17 @@ class Ticket extends CommonITILObject {
    function computeSolveDelayStat() {
 
       if (isset($this->fields['id'])
-            && !empty($this->fields['date'])
-            && !empty($this->fields['solvedate'])) {
+          && !empty($this->fields['date'])
+          && !empty($this->fields['solvedate'])) {
+
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
             return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
-                                                   $this->fields['solvedate'])
-                                                         -$this->fields["ticket_waiting_duration"]);
+                                                          $this->fields['solvedate'])
+                                                            -$this->fields["ticket_waiting_duration"]);
          }
          // Not calendar defined
          return max(0, strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])
@@ -849,14 +848,17 @@ class Ticket extends CommonITILObject {
    function computeCloseDelayStat() {
 
       if (isset($this->fields['id'])
-            && !empty($this->fields['date'])
-            && !empty($this->fields['closedate'])) {
+          && !empty($this->fields['date'])
+          && !empty($this->fields['closedate'])) {
+
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['closedate'])-$this->fields["ticket_waiting_duration"]);
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+                                                          $this->fields['closedate'])
+                                                             -$this->fields["ticket_waiting_duration"]);
          }
          // Not calendar defined
          return max(0, strtotime($this->fields['closedate'])-strtotime($this->fields['date'])
@@ -874,7 +876,7 @@ class Ticket extends CommonITILObject {
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
       }
-      
+
 
       // Manage SLA Level : add actions
       if (in_array("slas_id",$this->updates)
@@ -1177,7 +1179,8 @@ class Ticket extends CommonITILObject {
 
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
          // Get datas to initialize SLA and set it
-         $sla_data = $this->getDatasToAddSLA($input["slas_id"],$input['entities_id'], $input['date']);
+         $sla_data = $this->getDatasToAddSLA($input["slas_id"], $input['entities_id'],
+                                             $input['date']);
          if (count($sla_data)) {
             foreach ($sla_data as $key => $val) {
                $input[$key] = $val;
@@ -1291,10 +1294,7 @@ class Ticket extends CommonITILObject {
          SlaLevel_Ticket::replayForTicket($this->getID());
       }
 
-
       parent::post_addItem();
-
-
 
       //Action for send_validation rule
       if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
@@ -2699,11 +2699,9 @@ class Ticket extends CommonITILObject {
             showDateTimeFormItem("due_date",$this->fields["due_date"], 1, false, $canupdate);
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
-               echo "<td>".$LANG['choice'][2];
-               echo "</td><td>";
-               echo "<span id='sla_action'>";
-               echo "<a href='#' ".addConfirmationOnAction(array($LANG['sla'][13],$LANG['sla'][14]),
-                                                         "cleanhide('sla_action');cleandisplay('sla_choice');").
+               echo "<td><span id='sla_action'>";
+               echo "<a href='#' ".addConfirmationOnAction(array($LANG['sla'][13], $LANG['sla'][14]),
+                                                          "cleanhide('sla_action');cleandisplay('sla_choice');").
                      "\">".$LANG['sla'][12].'</a>';
                echo "</span>";
                echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:";
@@ -3028,7 +3026,7 @@ class Ticket extends CommonITILObject {
       }
       echo "</td>";
       echo "</tr>";
-      
+
 
       echo "<tr class='tab_bg_1'>";
       if ($view_linked_tickets) {
