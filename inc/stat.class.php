@@ -771,7 +771,7 @@ class Stat {
                       FROM `glpi_tickets`
                       $LEFTJOIN
                       $WHERE
-                      GROUP BY `glpi_tickets`.`id`
+                      GROUP BY date_unix 
                       ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
