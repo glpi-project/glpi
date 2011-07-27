@@ -299,7 +299,8 @@ class Entity extends CommonTreeDropdown {
                 WHERE `entities_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
-      Rule::cleanForItemAction($this);
+      // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
+      Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
    }
 
