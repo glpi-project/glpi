@@ -1421,7 +1421,7 @@ $LANG['ocsconfig'][7]  = "Base de données OCSNG en UTF8";
 $LANG['ocsconfig'][8]  = "Ajout impossible. Le serveur OCSNG existe déjà.";
 $LANG['ocsconfig'][9]  = "Exclure les tags suivants (séparateur $, rien pour aucun)";
 $LANG['ocsconfig'][10] = "Import global";
-$LANG['ocsconfig'][11] = "Pas d'import";
+
 $LANG['ocsconfig'][12] = "Import unique";
 $LANG['ocsconfig'][13] = "Import unique : tout est importé tel quel";
 $LANG['ocsconfig'][14] = "Import global : tout est importé mais le matériel est géré de manière globale (sans doublons)";
