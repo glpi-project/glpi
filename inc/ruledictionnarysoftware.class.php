@@ -79,7 +79,7 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td>\n";
-      echo "<td class='tab_bg_1 b'>" . $LANG['ocsng'][36] . "</td></tr>\n";
+      echo "<td class='tab_bg_1 b'>" . $LANG['ldap'][27] . "</td></tr>\n";
    }
 
 
@@ -87,7 +87,7 @@ class RuleDictionnarySoftware extends RuleCached {
       global $LANG;
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
-      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", 
+      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
                                                                $fields["old_entities_id"]) . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
@@ -110,7 +110,7 @@ class RuleDictionnarySoftware extends RuleCached {
               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
               : Dropdown::getYesNo(0)) . "</td>";
       $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
-                                                      :$LANG['rulesengine'][106]); 
+                                                      :$LANG['rulesengine'][106]);
       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", $new_entity) . "</td>";
    }
 

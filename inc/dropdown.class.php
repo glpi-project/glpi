@@ -117,7 +117,7 @@ class Dropdown {
             if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
                if ($item instanceof CommonTreeDropdown) {
                   $pos          = strrpos($name, ">");
-                  $limit_length = max(utf8_strlen($name) - $pos, 
+                  $limit_length = max(utf8_strlen($name) - $pos,
                                       $_SESSION["glpidropdown_chars_limit"]);
 
                   if (utf8_strlen($name)>$limit_length) {
@@ -1332,7 +1332,7 @@ class Dropdown {
                      if ($CFG_GLPI['use_ocs_mode']) {
 
                         if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")) {
-                           echo "<option value='force_ocsng_update'>".$LANG['ocsng'][24]."</option>";
+                           echo "<option value='force_ocsng_update'>".$LANG['ldap'][11]."</option>";
                         }
 
                         echo "<option value='unlock_ocsng_field'>".$LANG['buttons'][38]." ".

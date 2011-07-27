@@ -387,7 +387,7 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior", array(''       => $LANG['buttons'][49],
                                                              "trash"  => $LANG['ocsconfig'][49],
-                                                             "delete" => $LANG['ocsconfig'][50]),
+                                                             "delete" => $LANG['profiles'][54]),
                               array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
@@ -2773,7 +2773,7 @@ class OcsServer extends CommonDBTM {
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
-               echo "<th>" . $LANG['ocsng'][36] . "</th>\n";
+               echo "<th>" . $LANG['ldap'][27] . "</th>\n";
                echo "<th>" . $LANG['ocsng'][39] . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";
@@ -3078,7 +3078,7 @@ class OcsServer extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value=\"" .
-                   $LANG['ocsng'][24] . "\">";
+                   $LANG['ldap'][11] . "\">";
             echo "</form>\n";
             echo "</td><tr>";
          }
@@ -4804,14 +4804,14 @@ class OcsServer extends CommonDBTM {
 
                $version       = $data2["VERSION"];
                $manufacturer  = Manufacturer::processName($data2["PUBLISHER"]);
-               
+
                //Software might be created in another entity, depending on the entity's configuration
                $target_entity = EntityData::getUsedConfig('entities_id_software', $entity, '', true);
                //Do not change software's entity except if the dictionnary explicity changes it
                if ($target_entity == -2) {
                   $target_entity = $entity;
-               } 
-               
+               }
+
                if (!$cfg_ocs["use_soft_dict"]) {
                   //Software dictionnary
                   $rulecollection = new RuleDictionnarySoftwareCollection();
@@ -4834,13 +4834,13 @@ class OcsServer extends CommonDBTM {
                   } else {
                      $modified_version = $version;
                   }
-                  
+
                   //If software dictionnary returns an entity, it overrides the one that may have
                   //been defined in the entity's configuration
                   if (isset($res_rule["new_entities_id"])) {
                      $target_entity = $res_rule["new_entities_id"];
                   }
-                  
+
 
                } else {
                   $modified_name    = $name;
@@ -4859,7 +4859,7 @@ class OcsServer extends CommonDBTM {
                      //---- The software doesn't exists in this version for this computer -----//
                      //------------------------------------------------------------------------//
                      $isNewSoft = $soft->addOrRestoreFromTrash($modified_name, $manufacturer,
-                                                               $target_entity, '', 
+                                                               $target_entity, '',
                                                                ($entity != $target_entity));
                      //Import version for this software
                      $versionID = self::importVersion($isNewSoft, $modified_version);
