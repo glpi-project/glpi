@@ -140,6 +140,9 @@ class Profile extends CommonDBTM {
       $DB->query($query);
 
       Rule::cleanForItemAction($this);
+      // PROFILES and UNIQUE_PROFILE in RuleMailcollector
+      Rule::cleanForItemCriteria($this, 'PROFILES');
+      Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
    }
 
 
