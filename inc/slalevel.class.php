@@ -62,13 +62,8 @@ class SlaLevel extends RuleTicket {
    function cleanDBonPurge() {
       global $DB;
 
-      // Override in order not to use glpi_rules table.
 
-      // Delete a rule and all associated criterias and actions
-      $sql = "DELETE
-              FROM `glpi_slalevelactions`
-              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);
+      parent::cleanDBOnPurge();
 
       $sql = "DELETE
               FROM `glpi_slalevels_tickets`
