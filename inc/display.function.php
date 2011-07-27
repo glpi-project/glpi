@@ -504,9 +504,10 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
 
       if (haveRight("contract", "w")) {
-         $menu['financial']['content']['contract']['links']['add'] = '/front/setup.templates.php?itemtype=Contract&amp;add=1';
+         $menu['financial']['content']['contract']['links']['add']
+                           = '/front/setup.templates.php?itemtype=Contract&amp;add=1';
          $menu['financial']['content']['contract']['links']['template']
-                            = '/front/setup.templates.php?itemtype=Contract&amp;add=0';
+                           = '/front/setup.templates.php?itemtype=Contract&amp;add=0';
       }
    }
 
@@ -1554,7 +1555,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
 /**
  * Display a div containing a message set in session in the previous page
- **/
+**/
 function displayMessageAfterRedirect() {
 
    // Affichage du message apres redirection
@@ -1582,7 +1583,7 @@ function displayMessageAfterRedirect() {
  * @param $check_once Check if the message is not already added
  * @param $message_type message type (INFO, ERROR)
  * @param $reset clear previous added message
- **/
+**/
 function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO, $reset=false) {
 
    // Do not display of cron jobs messages in user interface
@@ -1623,7 +1624,7 @@ function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO, $r
  *
  * @param $title title of the page
  * @param $url not used anymore.
- **/
+**/
 function helpHeader($title, $url='') {
    global $CFG_GLPI, $LANG, $HEADER_LOADED, $PLUGIN_HOOKS;
 
@@ -1647,7 +1648,7 @@ function helpHeader($title, $url='') {
    // Les préférences + lien déconnexion
    echo "<div id='c_preference' >";
    echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php' title=\"".
-               $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
+                                   $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
 
    // check user id : header used for display messages when session logout
    if (getLoginUserID()) {
@@ -1833,7 +1834,7 @@ function helpHeader($title, $url='') {
  *
  * @param $title title of the page
  * @param $links links to display
- **/
+**/
 function simpleHeader($title, $links=array()) {
    global $CFG_GLPI, $LANG, $HEADER_LOADED;
 
@@ -1900,7 +1901,7 @@ function simpleHeader($title, $links=array()) {
  *
  * @param $title title of the page
  * @param $url not used anymore.
- **/
+**/
 function nullHeader($title, $url='') {
    global $CFG_GLPI, $HEADER_LOADED, $LANG;
 
@@ -1938,7 +1939,7 @@ function nullHeader($title, $url='') {
  *
  * @param $title title of the page
  * @param $url not used anymore.
- **/
+**/
 function popHeader($title, $url='') {
    global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED;
 
@@ -1956,7 +1957,7 @@ function popHeader($title, $url='') {
 
 /**
  * Print footer for a popup window
- **/
+**/
 function popFooter() {
    global $FOOTER_LOADED;
 
@@ -1974,7 +1975,7 @@ function popFooter() {
  * Display Debug Informations
  *
  * @param $with_session with session information
- **/
+**/
 function displayDebugInfos($with_session=true) {
    global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
@@ -2035,7 +2036,7 @@ function displayDebugInfos($with_session=true) {
  * Print footer for every page
  *
  * @param $keepDB booleen, closeDBConnections if false
- **/
+**/
 function commonFooter($keepDB=false) {
    global $LANG, $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
@@ -2090,7 +2091,7 @@ function commonFooter($keepDB=false) {
 
 /**
  * Display Ajax Footer for debug
- **/
+**/
 function ajaxFooter() {
 
    if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
@@ -2107,7 +2108,7 @@ function ajaxFooter() {
 
 /**
  * Print footer for help page
- **/
+**/
 function helpFooter() {
    global $LANG, $CFG_GLPI, $FOOTER_LOADED;
 
@@ -2145,7 +2146,7 @@ function helpFooter() {
 
 /**
  * Print footer for null page
- **/
+**/
 function nullFooter() {
    global $CFG_GLPI, $FOOTER_LOADED;
 
@@ -2177,7 +2178,7 @@ function nullFooter() {
  * @param $minimal set to true do not display app menu
  *
  * @return nothing as function kill script
- **/
+**/
 function displayErrorAndDie ($message, $minimal=false) {
    global $LANG, $CFG_GLPI, $HEADER_LOADED;
 
@@ -2207,7 +2208,7 @@ function displayErrorAndDie ($message, $minimal=false) {
  * @param $from_helpdesk int : is display from the helpdesk.php ?
  *
  * @return nothing (print the helpdesk)
- **/
+**/
 function printHelpDesk ($ID, $from_helpdesk) {
    global $DB, $CFG_GLPI, $LANG;
 
@@ -2381,7 +2382,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
  * ajax Pager will be displayed if empty
  *
  * @return nothing (print a combo)
- **/
+**/
 function printPagerForm ($action="") {
    global $LANG, $CFG_GLPI;
 
@@ -2440,7 +2441,7 @@ function printPagerForm ($action="") {
  *
  * @return nothing (print a pager)
  *
- **/
+**/
 function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
                     $item_type_output_param=0) {
 
@@ -2572,7 +2573,7 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
  * @param $numrows total items
  *
  * @return nothing (print a pager)
- **/
+**/
 function printAjaxPager($title, $start, $numrows) {
    global $CFG_GLPI, $LANG;
 
@@ -2653,7 +2654,7 @@ function printAjaxPager($title, $start, $numrows) {
  * @param $with_future display with future date selection ?
  *
  * @return rand value of dropdown
- **/
+**/
 function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_future=false) {
    global $LANG, $CFG_GLPI;
 
@@ -2789,7 +2790,7 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
  * @param $maxTime maximum allowed time
  *
  * @return rand value used
- **/
+**/
 function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true, $can_edit=true,
                               $minDate='', $maxDate='', $minTime='', $maxTime='') {
    global $CFG_GLPI;
@@ -2941,7 +2942,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
  * @param $displayYear should we set/diplay the year?
  *
  * @return rand value used
- **/
+**/
 function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true, $minDate='',
                           $maxDate='', $displayYear=true) {
    global $CFG_GLPI;
@@ -3005,7 +3006,7 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
  * @param $itemtype item type
  *
  * @return nothing
- **/
+**/
 function getActiveTab($itemtype) {
 
    if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
@@ -3020,7 +3021,7 @@ function getActiveTab($itemtype) {
  *
  * @param $itemtype :item type
  * @param $tab : ID of the tab
- **/
+**/
 function setActiveTab($itemtype, $tab) {
    $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
 }
@@ -3036,7 +3037,7 @@ function setActiveTab($itemtype, $tab) {
  * @param $size width of tabs panel
  *
  * @return nothing
- **/
+**/
 function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
                         $type, $size=950) {
    global $CFG_GLPI;
@@ -3132,7 +3133,7 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
 /**
  * Set page not to use the cache
- **/
+**/
 function header_nocache() {
 
    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
@@ -3142,7 +3143,7 @@ function header_nocache() {
 
 /**
  * Flush the current displayed items (do not works really fine)
- **/
+**/
 function glpi_flush() {
 
    flush();
@@ -3163,7 +3164,7 @@ function glpi_flush() {
  *            - forcepadding : boolean force str_pad to force refresh (default true)
  *
  * @return nothing
- **/
+**/
 function displayProgressBar($width, $percent, $options=array()) {
    global $CFG_GLPI, $LANG;
 
@@ -3214,7 +3215,7 @@ function displayProgressBar($width, $percent, $options=array()) {
  * @param $pad Pad used
  *
  * @return nothing
- **/
+**/
 function printCleanArray($tab, $pad=0) {
 
    if (count($tab)) {
@@ -3240,7 +3241,7 @@ function printCleanArray($tab, $pad=0) {
 
 /**
  * Display a Link to the last page using http_referer if available else use history.back
- **/
+**/
 function displayBackLink() {
    global $LANG;
 
@@ -3258,7 +3259,7 @@ function displayBackLink() {
  * @param $target target of the form
  *
  * @return nothing
- **/
+**/
 function showProfileSelecter($target) {
    global $CFG_GLPI, $LANG;
 
@@ -3305,7 +3306,7 @@ function showProfileSelecter($target) {
  * @param $msg initial message (under the bar)
  *
  * @return nothing
- **/
+**/
 function createProgressBar ($msg="&nbsp;") {
 
    echo "<div class='doaction_cadre'>".
@@ -3330,7 +3331,7 @@ function createProgressBar ($msg="&nbsp;") {
  * @param $msg message inside the bar (defaut is %)
  *
  * @return nothing
- **/
+**/
 function changeProgressBarPosition ($crt, $tot, $msg="") {
 
    if (!$tot) {
@@ -3353,7 +3354,7 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
  * @param $msg message under the bar
  *
  * @return nothing
- **/
+**/
 function changeProgressBarMessage($msg="&nbsp;") {
    echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";
 }
@@ -3365,7 +3366,7 @@ function changeProgressBarMessage($msg="&nbsp;") {
  * @param $formname string
  * @param $fixed boolean - used tab_cadre_fixe in both tables
  * @param $width only for dictionnary
- **/
+**/
 function openArrowMassive($formname, $fixed=false, $width='80%') {
    global $CFG_GLPI, $LANG;
 
@@ -3391,7 +3392,7 @@ function openArrowMassive($formname, $fixed=false, $width='80%') {
  *
  * @param $name string name of submit button, none if empty
  * @param $label string label of submit button
- **/
+**/
 function closeArrowMassive($name='', $label='') {
 
    if (!empty($name)) {
@@ -3405,7 +3406,7 @@ function closeArrowMassive($name='', $label='') {
  * show arrow for massives actions : closing
  *
  * @param $actions array of action : $name -> $label
- **/
+**/
 function closeArrowMassives($actions) {
 
    if (count($actions)) {
@@ -3436,7 +3437,7 @@ function closeArrowMassives($actions) {
  *    - option : string / options to add to text field
  *
  * @return nothing (print out an HTML div)
- **/
+**/
 function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
    global $CFG_GLPI;
 
@@ -3539,7 +3540,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
  *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
  *
  * @return nothing (print out an HTML div)
- **/
+**/
 function showToolTip($content, $options=array()) {
    global $CFG_GLPI;
 
@@ -3636,6 +3637,7 @@ function showToolTip($content, $options=array()) {
    }
 }
 
+
 /**
  * Add confirmation on button or link before action
  *
@@ -3643,8 +3645,9 @@ function showToolTip($content, $options=array()) {
  * @param $additionalactions string additional actions to do on success confirmation
  *
  * @return nothing
- **/
+**/
 function addConfirmationOnAction($string, $additionalactions='') {
+
    if (!is_array($string)) {
       $string = array($string);
    }
@@ -3665,13 +3668,14 @@ function addConfirmationOnAction($string, $additionalactions='') {
    return $out;
 }
 
+
 /**
  * Init the Editor System to a textarea
  *
  * @param $name name of the html textarea where to used
  *
  * @return nothing
- **/
+**/
 function initEditorSystem($name) {
    global $CFG_GLPI;
 

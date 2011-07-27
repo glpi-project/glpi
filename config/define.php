@@ -228,15 +228,16 @@ $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact
 $CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer');
 
-$CFG_GLPI["document_types"]= array('Budget', 'CartridgeItem', 'Change', 'Computer',
-                                   'ConsumableItem', 'Contact', 'Contract', 'Document', 'Entity',
-                                   'KnowbaseItem', 'Monitor', 'NetworkEquipment',
-                                   'Peripheral', 'Phone', 'Printer', 'Problem', 'Software',
-                                   'SoftwareLicense', 'Supplier', 'Ticket','User');
+$CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
+                                                  'ConsumableItem', 'Contact', 'Contract',
+                                                  'Document', 'Entity', 'KnowbaseItem', 'Monitor',
+                                                  'NetworkEquipment', 'Peripheral', 'Phone',
+                                                  'Printer', 'Problem', 'Software',
+                                                  'SoftwareLicense', 'Supplier', 'Ticket','User');
 
 $CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software', 
-                                                   'SoftwareLicense');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["infocom_types"]                = array('Cartridge', 'CartridgeItem', 'Computer',
                                                   'Consumable', 'ConsumableItem', 'Monitor',

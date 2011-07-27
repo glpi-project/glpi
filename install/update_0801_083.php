@@ -943,16 +943,16 @@ function update0801to083() {
    $query = "DELETE
              FROM `glpi_ticketsatisfactions`
              WHERE `glpi_ticketsatisfactions`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
-                                                                 FROM `glpi_tickets`)";
+                                                                   FROM `glpi_tickets`)";
    $DB->query($query)
    or die("0.83 clean glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
 
    // Clean unused slalevels
    $query = "DELETE
              FROM `glpi_slalevels_tickets`
-             WHERE (`glpi_slalevels_tickets`.`tickets_id`,`glpi_slalevels_tickets`.`slalevels_id`)
-                     NOT IN (SELECT `glpi_tickets`.`id`, `glpi_tickets`.`slalevels_id`
-                           FROM `glpi_tickets`)";
+             WHERE (`glpi_slalevels_tickets`.`tickets_id`, `glpi_slalevels_tickets`.`slalevels_id`)
+                  NOT IN (SELECT `glpi_tickets`.`id`, `glpi_tickets`.`slalevels_id`
+                          FROM `glpi_tickets`)";
    $DB->query($query)
    or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
 

@@ -53,8 +53,6 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
    echo "&nbsp;";
    ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);
 
-//   echo "<br>";
-
    $paramstrackingdt = array('searchText'      => '__VALUE__',
                              'myname'          => $_POST["myname"],
                              'table'           => $table,

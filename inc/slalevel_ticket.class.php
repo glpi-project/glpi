@@ -44,9 +44,9 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Retrieve an item from the database
     *
-    *@param $ID ID of the item to get
-    *@return true if succeed else false
+    * @param $ID ID of the item to get
     *
+    * @return true if succeed else false
    **/
    function getFromDBForTicket ($ID) {
       global $DB;
@@ -64,38 +64,36 @@ class SlaLevel_Ticket extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;
-         } else {
-            return false;
          }
-      } else {
-         return false;
       }
+      return false;
    }
+
 
    /**
     * Delete entries for a ticket
     *
-    *@param $tickets_id Ticket ID
-    *@return nothing
+    * @param $tickets_id Ticket ID
     *
+    * @return nothing
    **/
    static function deleteForTicket ($tickets_id) {
       global $DB;
 
       $query1 = "DELETE
-               FROM `glpi_slalevels_tickets`
-               WHERE `tickets_id` = '$tickets_id'";
+                 FROM `glpi_slalevels_tickets`
+                 WHERE `tickets_id` = '$tickets_id'";
       $DB->query($query1);
-
    }
+
 
    /**
     * Give cron informations
+    *
     * @param $name : task's name
     *
     * @return arrray of informations
-    *
-    */
+   **/
    static function cronInfo($name) {
       global $LANG;
 
@@ -106,13 +104,14 @@ class SlaLevel_Ticket extends CommonDBTM {
       return array();
    }
 
+
    /**
     * Cron for ticket's automatic close
+    *
     * @param $task : crontask object
     *
     * @return integer (0 : nothing done - 1 : done)
-    *
-    */
+   **/
    static function cronSlaTicket($task) {
       global $DB;
 
@@ -138,36 +137,37 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $data array data of a entry of slalevels_tickets
     *
     * @return nothing
-    *
-    */
+   **/
    static function doLevelForTicket($data) {
 
-      $ticket = new Ticket();
+      $ticket         = new Ticket();
       $slalevelticket = new self();
-      if ($ticket->getFromDB($data['tickets_id'])) {
 
+      if ($ticket->getFromDB($data['tickets_id'])) {
          $slalevel = new SlaLevel();
          $sla      = new SLA();
          // Check if sla datas are OK
-         if ($ticket->fields['slas_id']>0
-               && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
+         if ($ticket->fields['slas_id'] > 0
+             && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
 
             if ($ticket->fields['status'] == 'closed') {
                // Drop line when status is closed
                $slalevelticket->delete(array('id' => $data['id']));
+
             } else if ($ticket->fields['status'] != 'solved') {
                // If status = solved : keep the line in case of solution not validated
                $input = $ticket->fields;
                $input['_auto_update'] = true;
 
                if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
-                     && $sla->getFromDB($ticket->fields['slas_id'])) {
+                   && $sla->getFromDB($ticket->fields['slas_id'])) {
                   // Process rules
                   $input = $slalevel->executeActions($input,array());
                }
+
                // Put next level in todo list
                $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
-                                                   $ticket->fields['slalevels_id']);
+                                                  $ticket->fields['slalevels_id']);
                $input['slalevels_id'] = $next;
                $ticket->update($input);
                $sla->addLevelToDo($ticket);
@@ -175,12 +175,13 @@ class SlaLevel_Ticket extends CommonDBTM {
                $slalevelticket->delete(array('id' => $data['id']));
             }
          }
+
       } else {
          // Drop line
          $slalevelticket->delete(array('id' => $data['id']));
       }
-
    }
+
 
    /**
     * Replay all task needed for a specific ticket
@@ -188,15 +189,14 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $tickets_id Ticket ID
     *
     * @return nothing
-    *
-    */
+   **/
    static function replayForTicket($tickets_id) {
       global $DB;
 
       $query = "SELECT *
                 FROM `glpi_slalevels_tickets`
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()
-                     AND `tickets_id` = '$tickets_id'";
+                      AND `tickets_id` = '$tickets_id'";
 
       $number = 0;
       do {
