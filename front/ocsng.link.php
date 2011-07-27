@@ -72,7 +72,7 @@ if (isset($_SESSION["ocs_link"])) {
       displayProgressBar(400,100);
 
       unset($_SESSION["ocs_link"]);
-      echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
+      echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
    }
 }

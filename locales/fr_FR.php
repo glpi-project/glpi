@@ -1033,7 +1033,7 @@ $LANG['ldap'][6]  = "Impossible de joindre l'annuaire LDAP";
 $LANG['ldap'][7]  = "Aucun annuaire LDAP défini dans GLPI";
 $LANG['ldap'][8]  = "Attention : la requête dépasse la limite de l'annuaire. Les résultats ne sont que partiels.";
 $LANG['ldap'][9]  = "Test de connexion à l'annuaire LDAP";
-$LANG['ldap'][10]  = "Importation réussie";
+$LANG['ldap'][10] = "Importation réussie";
 $LANG['ldap'][11] = "Forcer la synchronisation";
 $LANG['ldap'][12] = "Synchronisation";
 $LANG['ldap'][13] = "dans l'annuaire LDAP";
@@ -1448,7 +1448,6 @@ $LANG['ocsconfig'][43] = "Informations administratives OCSNG";
 
 $LANG['ocsconfig'][48] = "Comportement lors de la déconnexion";
 $LANG['ocsconfig'][49] = "Corbeille";
-$LANG['ocsconfig'][50] = "Suppression";
 
 $LANG['ocsconfig'][52] = "Liaison automatique des ordinateurs";
 $LANG['ocsconfig'][53] = "Activer la liaison automatique";
@@ -1468,7 +1467,7 @@ $LANG['ocsng'][4]  = "Lier de nouveaux ordinateurs à des ordinateurs existants"
 $LANG['ocsng'][5]  = "Importer nouveaux ordinateurs";
 $LANG['ocsng'][6]  = "Mise à jour automatique";
 $LANG['ocsng'][7]  = "Importé depuis OCSNG";
-$LANG['ocsng'][8]  = "Importation réussie";
+
 $LANG['ocsng'][9]  = "Pas de nouvel ordinateur à importer";
 $LANG['ocsng'][10] = "Ordinateurs mis à jour dans OCSNG";
 $LANG['ocsng'][11] = "Mise à jour des ordinateurs";
@@ -1484,7 +1483,6 @@ $LANG['ocsng'][20] = "Version d'OCSNG non valide : nécessite RC3";
 $LANG['ocsng'][21] = "Échec de connexion à la base de données OCSNG";
 $LANG['ocsng'][22] = "Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $LANG['ocsng'][23] = "Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCSNG";
-$LANG['ocsng'][24] = "Forcer la synchronisation";
 
 $LANG['ocsng'][26] = "Choix d'un serveur OCSNG";
 $LANG['ocsng'][27] = "Aucun serveur OCSNG n'est défini";
@@ -1496,7 +1494,6 @@ $LANG['ocsng'][32] = "Périphérique(s) verrouillé(s)";
 
 $LANG['ocsng'][34] = "Imprimante(s) verrouillée(s)";
 
-$LANG['ocsng'][36] = "Entité de destination";
 $LANG['ocsng'][37] = "Activer la prévisualisation";
 $LANG['ocsng'][38] = "Désactiver la prévisualisation";
 $LANG['ocsng'][39] = "Lieu de destination";
