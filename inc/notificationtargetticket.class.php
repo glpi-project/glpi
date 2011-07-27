@@ -580,7 +580,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
       //Tags without lang for validation
       $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title' => $LANG['validation'][32]);
+                    'validation.answer.title'     => $LANG['validation'][32]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -629,7 +629,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      //Foreach global tags
      $tags = array('followups'     => $LANG['mailing'][141],
                    'tasks'         => $LANG['mailing'][142],
-                   'validations'    => $LANG['mailing'][143],
+                   'validations'   => $LANG['mailing'][143],
                    'linkedtickets' => $LANG['job'][55],
                    'problems'      => $LANG['Menu'][7],);
 
