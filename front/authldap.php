@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config","r");
 
-commonHeader($LANG['login'][2],$_SERVER['PHP_SELF'],"config","extauth","ldap");
+commonHeader($LANG['login'][2], $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
 
 Search::show('AuthLDAP');
 
