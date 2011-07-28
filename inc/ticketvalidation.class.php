@@ -267,10 +267,12 @@ class TicketValidation  extends CommonDBChild {
          Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
                       HISTORY_LOG_SIMPLE_MESSAGE);
 
+
+
          // Set global validation to accepted to define one
          if ($job->fields['global_validation'] == 'waiting'
-             || (countElementsInTable('glpi_ticketvalidations',
-                                      "`tickets_id` = '".$this->fields["tickets_id"]."'") == 1)) {
+             || self::getNumberValidationForTicket($this->fields["tickets_id"]) == 1
+             || self::isAllValidationsHaveSameStatusForTicket($this->fields["tickets_id"])) {
 
             $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = $this->fields["status"];
