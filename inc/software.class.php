@@ -635,7 +635,7 @@ class Software extends CommonDBTM {
     *
     * @return the software's ID
    **/
-   function addSoftware($name, $manufacturer, $entity, $comment = '', $is_recursive = false) {
+   function addSoftware($name, $manufacturer, $entity, $comment='', $is_recursive=false) {
       global $DB, $CFG_GLPI;
 
       $manufacturer_id = 0;
@@ -686,7 +686,7 @@ class Software extends CommonDBTM {
     * @param comment comment
     * @param is_recursive must the software be recursive (boolean)
    */
-   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='', $is_recursive = false) {
+   function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='', $is_recursive=false) {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
