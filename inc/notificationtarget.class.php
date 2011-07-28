@@ -405,9 +405,9 @@ class NotificationTarget extends CommonDBChild {
    function addToAddressesList($data) {
       global $CFG_GLPI;
 
-      // Not email set : get default for user
+      // No email set : get default for user
       if (!isset($data['email']) && isset($data['id'])) {
-            $data['email'] = UserEmail::getDefaultForUser($data['id']);
+         $data['email'] = UserEmail::getDefaultForUser($data['id']);
       }
 
       $new_mail = trim(utf8_strtolower($data['email']));
@@ -694,8 +694,9 @@ class NotificationTarget extends CommonDBChild {
       $this->getUserByField('users_id_tech', true);
    }
 
+
    /**
-    * Get Group of technician in charge of the item
+    * Get Group of technicians in charge of the item
    **/
    function getItemGroupTechInChargeAddress() {
 

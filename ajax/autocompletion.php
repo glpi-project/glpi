@@ -58,28 +58,24 @@ if (!isset($item->fields[$_POST['field']]) || !$item->canView()) {
 }
 
 // Security : blacklist fields
-if (in_array($table.'.'.$_POST['field'],array('glpi_users.name',
-                                              'glpi_users.password',
-                                              'glpi_authldaps.rootdn_passwd',
-                                              'glpi_authldaps.rootdn',
-                                              'glpi_configs.proxy_passwd',
-                                              'glpi_mailcollectors.login',
-                                              'glpi_mailcollectors.passwd',
-                                              'glpi_ocsservers.ocs_db_user',
-                                              'glpi_ocsservers.ocs_db_passwd'))) {
+if (in_array($table.'.'.$_POST['field'],
+             array('glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
+                   'glpi_configs.proxy_passwd', 'glpi_mailcollectors.login',
+                   'glpi_mailcollectors.passwd', 'glpi_ocsservers.ocs_db_passwd',
+                   'glpi_ocsservers.ocs_db_user', 'glpi_users.name', 'glpi_users.password'))) {
    exit();
 }
-            
 
-$entity="";
+
+$entity = "";
 if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']>=0) {
    if ($item->isEntityAssign()) {
-      $entity=" AND `entities_id` = '".$_POST['entity_restrict']."' ";
+      $entity = " AND `entities_id` = '".$_POST['entity_restrict']."' ";
    }
 }
 
 if (isset($_POST['user_restrict']) && $_POST['user_restrict']>0) {
-   $entity=" AND `users_id` = '".$_POST['user_restrict']."' ";
+   $entity = " AND `users_id` = '".$_POST['user_restrict']."' ";
 }
 
 $query = "SELECT COUNT(`".$_POST['field']."`)
@@ -101,10 +97,10 @@ $query = "SELECT DISTINCT `".$_POST['field']."` AS VAL
 if ($result=$DB->query($query)) {
    echo '{"totalCount":'.$totnum.',"items":[';
    if ($DB->numrows($result)>0) {
-      $first=true;
+      $first = true;
       while ($data=$DB->fetch_array($result)) {
          if ($first) {
-            $first=false;
+            $first = false;
          } else {
             echo ',';
          }
