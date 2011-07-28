@@ -905,7 +905,7 @@ class Auth {
    /**
     * Is an alternate auth wich used LDAP extra server?
     *
-    * @param $auths_id auth type
+    * @param $authtype auth type
     *
     * @return boolean
    **/
