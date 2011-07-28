@@ -135,6 +135,8 @@ function getItemTypeSearchURL($itemtype, $full=true) {
 function getItemTypeTabsURL($itemtype, $full=true) {
    global $CFG_GLPI;
 
+   /// TODO only use common.tabs.php when all items migrate to new tabs system or clean tabs file on migration
+   
    $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
    if ($plug=isPluginItemType($itemtype)) {
