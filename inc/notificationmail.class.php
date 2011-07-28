@@ -214,6 +214,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       $mmail = new self();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
+      // For exchange
+      $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
 
       $mmail->SetFrom($options['from'], $options['fromname']);
 
