@@ -138,6 +138,37 @@ class User extends CommonDBTM {
    }
 
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("user","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            switch ($item->getType()) {
+               case "Group" :
+                  return self::createTabEntry($LANG['Menu'][14], countElementsInTable("glpi_groups_users",
+                                                                "`groups_id` = '".$item->getID()."'" ));
+                  break;
+            }
+
+         }
+         return $LANG['Menu'][14];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
+      switch ($item->getType()) {
+         case "Group" :
+            Group_User::showForGroup($item);
+            return true;
+            break;
+      }
+      return false;
+   }
+
+
    function defineTabs($options=array()) {
       global $LANG;
 

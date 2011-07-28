@@ -72,7 +72,6 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
 
       default :
          if (!CommonGLPI::displayStandardTab($group,$_REQUEST['glpi_tab'])) {
-            Group_User::showForGroup($_POST['target'], $group);
          }
    }
 }
