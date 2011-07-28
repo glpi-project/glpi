@@ -938,17 +938,27 @@ abstract class CommonITILObject extends CommonDBTM {
    function addFiles($id) {
       global $LANG, $CFG_GLPI;
 
-      if (!isset($_FILES)) {
+
+      if (!isset($_FILES) || !isset($_FILES['filename'])) {
          return array();
       }
       $docadded = array();
       $doc      = new Document();
       $docitem  = new Document_Item();
 
-      // add Document if exists
-      if (isset($_FILES['multiple']) ) {
-         unset($_FILES['multiple']);
-         $TMPFILE = $_FILES;
+//      printCleanArray($_FILES);exit();
+      // if multiple files are uploaded
+      $TMPFILE = array();
+      if (is_array($_FILES['filename']['name'])) {
+         foreach ($_FILES['filename']['name'] as $key => $filename) {
+            if (!empty($filename)) {
+               $TMPFILE[$key]['filename']['name']     = $filename;
+               $TMPFILE[$key]['filename']['type']     = $_FILES['filename']['type'][$key];
+               $TMPFILE[$key]['filename']['tmp_name'] = $_FILES['filename']['tmp_name'][$key];
+               $TMPFILE[$key]['filename']['error']    = $_FILES['filename']['error'][$key];
+               $TMPFILE[$key]['filename']['size']     = $_FILES['filename']['size'][$key];
+            }
+         }
       } else {
          $TMPFILE = array( $_FILES );
       }

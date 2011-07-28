@@ -116,7 +116,8 @@ class Document extends CommonDBTM {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getID() && haveRight("document","r")) {
+      if ($item->getID()
+            && (haveRight("document","r") || $item->getType()=='Ticket') ) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
          }

@@ -2363,8 +2363,16 @@ function printHelpDesk ($ID, $from_helpdesk) {
    echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
           $LANG['central'][7]."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
           "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+
+   echo "&nbsp;";
+   echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+            onClick=\"var row = Ext.get('uploadfiles');row.createChild('<input type=\'file\' name=\'filename[]\' size=\'60\'>');\"
+            class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+
    echo "</td>";
-   echo "<td><input type='file' name='filename' value='' size='60'></td></tr>";
+   echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
+
+   echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";
    echo "<td colspan='2' class='center'>";
