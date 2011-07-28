@@ -2365,9 +2365,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
           "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 
    echo "&nbsp;";
-   echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-            onClick=\"var row = Ext.get('uploadfiles');row.createChild('<input type=\'file\' name=\'filename[]\' size=\'60\'>');\"
-            class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+   Ticket::showDocumentAddButton(60);
 
    echo "</td>";
    echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
