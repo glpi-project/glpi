@@ -180,7 +180,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
    static function somethingHasChanged($res_rule, $input) {
 
-      if ((isset ($res_rule["name"]) && $res_rule["name"] != $input["name"])
+      if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
           || (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"] != '')
           || (isset($res_rule['is_global']) && $res_rule['is_global'] != '')) {
          return true;
@@ -261,7 +261,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       $input["manufacturer"] = $p['manufacturer'];
       $input                 = addslashes_deep($input);
 
-      if (empty ($res_rule)) {
+      if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
          $res_rule = addslashes_deep($res_rule);
       }
@@ -269,18 +269,18 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       $printer = new Printer();
 
       //Printer's name has changed
-      if (isset ($res_rule["name"])
+      if (isset($res_rule["name"])
           && $res_rule["name"] != $p['name']) {
 
          $manufacturer = "";
 
-         if (isset ($res_rule["manufacturer"])) {
+         if (isset($res_rule["manufacturer"])) {
             $manufacturer = Dropdown::getDropdownName("glpi_manufacturers",
                                                       $res_rule["manufacturer"]);
          }
 
          //New printer not already present in this entity
-         if (!isset ($new_printers[$p['entity']][$res_rule["name"]])) {
+         if (!isset($new_printers[$p['entity']][$res_rule["name"]])) {
             // create new printer or restore it from trash
             $new_printer_id = $printer->addOrRestoreFromTrash($res_rule["name"], $manufacturer,
                                                               $p['entity']);

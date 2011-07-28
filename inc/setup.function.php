@@ -249,7 +249,7 @@ function showMailServerConfig($value) {
    echo "</td></tr>\n";
    echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][171] . "&nbsp;:</td>";
    echo "<td><input size='10' type='text' name='server_port' value='$port'></td></tr>\n";
-   if (empty ($value)) {
+   if (empty($value)) {
       $value = "&nbsp;";
    }
    echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][170] . "&nbsp;:</td>";
@@ -259,29 +259,29 @@ function showMailServerConfig($value) {
 function constructMailServerConfig($input) {
 
    $out = "";
-   if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+   if (isset($input['mail_server']) && !empty($input['mail_server'])) {
       $out .= "{" . $input['mail_server'];
    } else {
       return $out;
    }
-   if (isset ($input['server_port']) && !empty ($input['server_port'])) {
+   if (isset($input['server_port']) && !empty($input['server_port'])) {
       $out .= ":" . $input['server_port'];
    }
-   if (isset ($input['server_type'])) {
+   if (isset($input['server_type'])) {
       $out .= $input['server_type'];
    }
-   if (isset ($input['server_ssl'])) {
+   if (isset($input['server_ssl'])) {
       $out .= $input['server_ssl'];
    }
-   if (isset ($input['server_cert'])
+   if (isset($input['server_cert'])
        && (!empty($input['server_ssl']) || !empty($input['server_tls']))) {
       $out .= $input['server_cert'];
    }
-   if (isset ($input['server_tls'])) {
+   if (isset($input['server_tls'])) {
       $out .= $input['server_tls'];
    }
    $out .= "}";
-   if (isset ($input['server_mailbox'])) {
+   if (isset($input['server_mailbox'])) {
       $out .= $input['server_mailbox'];
    }
 

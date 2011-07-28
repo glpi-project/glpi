@@ -45,7 +45,7 @@ checkLoginUser();
 
 if (isset($_REQUEST["table"]) && isset($_REQUEST["value"])) {
    // Security
-   if (! TableExists($_REQUEST['table']) ) {
+   if (!TableExists($_REQUEST['table']) ) {
       exit();
    }
 

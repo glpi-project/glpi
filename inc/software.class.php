@@ -94,7 +94,7 @@ class Software extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
-         if (empty ($withtemplate)) {
+         if (empty($withtemplate)) {
             $ong[2] = $LANG['software'][19];
          }
          if (haveRight("contract","r") || haveRight("infocom","r")) {
@@ -126,7 +126,7 @@ class Software extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset ($input['is_update']) && ! $input['is_update']) {
+      if (isset($input['is_update']) && !$input['is_update']) {
          $input['softwares_id'] = 0;
       }
       return $input;
@@ -135,7 +135,7 @@ class Software extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      if (isset ($input['is_update']) && !$input['is_update']) {
+      if (isset($input['is_update']) && !$input['is_update']) {
          $input['softwares_id'] = 0;
       }
 
@@ -665,7 +665,7 @@ class Software extends CommonDBTM {
          $softcatrule = new RuleSoftwareCategoryCollection();
          $result      = $softcatrule->processAllRules(null, null, $input);
 
-         if (!empty ($result) && isset ($result["softwarecategories_id"])) {
+         if (!empty($result) && isset($result["softwarecategories_id"])) {
             $input["softwarecategories_id"] = $result["softwarecategories_id"];
          } else {
             $input["softwarecategories_id"] = 0;

@@ -110,7 +110,7 @@ class MailCollector  extends CommonDBTM {
          $input['passwd'] = '';
       }
 
-      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
       }
 
@@ -134,7 +134,7 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
       }
 
@@ -665,7 +665,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['name'] = $this->textCleaner($head['subject']);
-      if (! isset($tkt['tickets_id'])) {
+      if (!isset($tkt['tickets_id'])) {
          // Which entity ?
          //$tkt['entities_id']=$this->fields['entities_id'];
          //$tkt['Subject']= $head['subject'];   // not use for the moment
@@ -692,7 +692,7 @@ class MailCollector  extends CommonDBTM {
          $output         = $rulecollection->processAllRules(array(), array(), $rule_options);
 
          // New ticket : compute all
-         if (! isset($tkt['tickets_id'])) {
+         if (!isset($tkt['tickets_id'])) {
             foreach ($output as $key => $value) {
                $tkt[$key] = $value;
             }

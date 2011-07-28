@@ -50,7 +50,7 @@ $itemtypeisplugin = isPluginItemType($_POST['itemtype']);
 $item             = new $_POST['itemtype']();
 
 if ($item->isEntityAssign()) {
-   if (isset ($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
+   if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
       $entity = $_POST["entity_restrict"];
    } else {
       $entity = '';

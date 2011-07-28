@@ -107,12 +107,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       // Update Item
       $updates[0] = 'netpoints_id';
 
-      if (empty ($source) && !empty ($destination)) {
+      if (empty($source) && !empty($destination)) {
          $ps->fields['netpoints_id'] = $destination;
          $ps->updateInDB($updates);
          addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
 
-      } else if (!empty ($source) && empty ($destination)) {
+      } else if (!empty($source) && empty($destination)) {
          $pd->fields['netpoints_id'] = $source;
          $pd->updateInDB($updates);
          addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);

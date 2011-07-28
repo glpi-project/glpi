@@ -50,7 +50,7 @@ checkCentralAccess();
 /// TODO DELETE THIS FILE
 
 // Security
-if ( ! FieldExists("glpi_tickets",$_POST['field']) ) {
+if ( !FieldExists("glpi_tickets",$_POST['field']) ) {
    exit();
 }
 

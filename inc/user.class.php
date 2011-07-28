@@ -175,7 +175,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->fields["is_active"] = 1;
-      if (isset ($CFG_GLPI["language"])) {
+      if (isset($CFG_GLPI["language"])) {
          $this->fields['language'] = $CFG_GLPI["language"];
       } else {
          $this->fields['language'] = "en_GB";
@@ -424,8 +424,8 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if (isset ($input["password2"])) {
-         if (empty ($input["password"])) {
+      if (isset($input["password2"])) {
+         if (empty($input["password"])) {
             unset ($input["password"]);
 
          } else {
@@ -441,7 +441,7 @@ class User extends CommonDBTM {
          }
       }
 
-      if (isset ($input["_extauth"])) {
+      if (isset($input["_extauth"])) {
          $input["password"] = "";
       }
 
@@ -550,13 +550,13 @@ class User extends CommonDBTM {
       }
 
       // Update User in the database
-      if (!isset ($input["id"]) && isset ($input["name"])) {
+      if (!isset($input["id"]) && isset($input["name"])) {
          if ($this->getFromDBbyName($input["name"])) {
             $input["id"] = $this->fields["id"];
          }
       }
 
-      if (isset ($input["entities_id"])
+      if (isset($input["entities_id"])
           && getLoginUserID() === $input['id']) {
 
          $_SESSION["glpidefault_entity"] = $input["entities_id"];
@@ -771,7 +771,7 @@ class User extends CommonDBTM {
           && ($this->fields["authtype"] == Auth::LDAP
               || Auth::isAlternateAuthWithLdap($this->fields['authtype']))) {
 
-         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
+         if (isset($this->fields["id"]) && $this->fields["id"]>0) {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)) {
@@ -830,7 +830,7 @@ class User extends CommonDBTM {
               || Auth::isAlternateAuthWithLdap($this->fields['authtype'])
               || $this->fields["authtype"] == Auth::MAIL)) {
 
-         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
+         if (isset($this->fields["id"]) && $this->fields["id"]>0) {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)) {
@@ -1041,7 +1041,7 @@ class User extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...
-      if (empty ($ldap_method["host"])) {
+      if (empty($ldap_method["host"])) {
          return false;
       }
 
@@ -1242,7 +1242,7 @@ class User extends CommonDBTM {
       //Browse all the groups
       for ($i = 0 ; $i < count($info) ; $i++) {
          //Get the cn of the group and add it to the list of groups
-         if (isset ($info[$i]["dn"]) && $info[$i]["dn"] != '') {
+         if (isset($info[$i]["dn"]) && $info[$i]["dn"] != '') {
             $listgroups[$i] = $info[$i]["dn"];
          }
       }
@@ -1264,7 +1264,7 @@ class User extends CommonDBTM {
       global $DB;
 
       // we prevent some delay..
-      if (empty ($mail_method["host"])) {
+      if (empty($mail_method["host"])) {
          return false;
       }
 
@@ -1312,7 +1312,7 @@ class User extends CommonDBTM {
    function blankPassword() {
       global $DB;
 
-      if (!empty ($this->fields["name"])) {
+      if (!empty($this->fields["name"])) {
          $query = "UPDATE `".$this->getTable()."`
                    SET `password` = ''
                    WHERE `name` = '" . $this->fields["name"] . "'";
@@ -1393,7 +1393,7 @@ class User extends CommonDBTM {
 
       $extauth = !($this->fields["authtype"] == Auth::DB_GLPI
                    || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
-                       && !empty ($this->fields["password"])));
+                       && !empty($this->fields["password"])));
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -1406,7 +1406,7 @@ class User extends CommonDBTM {
          // si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 
       } else {
-         if (!empty ($this->fields["password"]) || $this->fields["authtype"] == Auth::DB_GLPI) {
+         if (!empty($this->fields["password"]) || $this->fields["authtype"] == Auth::DB_GLPI) {
             echo "<td>";
             echo "<input name='name' value='" . $this->fields["name"] . "'>";
          } else {
@@ -1533,7 +1533,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       //don't display is creation of a new user'
-      if (!empty ($ID)) {
+      if (!empty($ID)) {
          if ($caneditpassword) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  $LANG['profiles'][13] . "&nbsp;: </td><td>";
@@ -1598,9 +1598,9 @@ class User extends CommonDBTM {
       if ($this->getFromDB($ID)) {
          $authtype = $this->getAuthMethodsByID();
 
-         $extauth = ! ($this->fields["authtype"] == Auth::DB_GLPI
-                       || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
-                           && !empty ($this->fields["password"])));
+         $extauth = !($this->fields["authtype"] == Auth::DB_GLPI
+                      || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
+                          && !empty($this->fields["password"])));
 
          // No autocopletion :
          $save_autocompletion = $CFG_GLPI["use_ajax_autocompletion"];
@@ -1617,8 +1617,8 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
 
          if ($extauth
-             && isset ($authtype['realname_field'])
-             && !empty ($authtype['realname_field'])) {
+             && isset($authtype['realname_field'])
+             && !empty($authtype['realname_field'])) {
 
             echo $this->fields["realname"];
          } else {
@@ -1637,8 +1637,8 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
          if ($extauth
-             && isset ($authtype['firstname_field'])
-             && !empty ($authtype['firstname_field'])) {
+             && isset($authtype['firstname_field'])
+             && !empty($authtype['firstname_field'])) {
 
             echo $this->fields["firstname"];
          } else {
@@ -1672,7 +1672,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
 
-         if ($extauth && isset ($authtype['mobile_field']) && !empty ($authtype['mobile_field'])) {
+         if ($extauth && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
          } else {
             autocompletionTextField($this, "mobile");
@@ -1695,7 +1695,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
 
-         if ($extauth && isset ($authtype['phone_field']) && !empty ($authtype['phone_field'])) {
+         if ($extauth && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
             echo $this->fields["phone"];
          } else {
             autocompletionTextField($this, "phone");
@@ -1714,7 +1714,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td>";
 
-         if ($extauth && isset ($authtype['phone2_field']) && !empty ($authtype['phone2_field'])) {
+         if ($extauth && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
          } else {
             autocompletionTextField($this, "phone2");

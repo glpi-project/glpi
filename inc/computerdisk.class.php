@@ -213,7 +213,7 @@ class ComputerDisk extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
          return false;
       }
       $canedit = $comp->can($ID, "w");

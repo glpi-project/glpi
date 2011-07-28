@@ -87,7 +87,7 @@ class NotificationTemplate extends CommonDBTM {
 
      $spotted = false;
 
-      if (empty ($ID)) {
+      if (empty($ID)) {
          if ($this->getEmpty()) {
             $spotted = true;
          }
@@ -307,7 +307,7 @@ class NotificationTemplate extends CommonDBTM {
                         $foreachvalues = array_reverse($foreachvalues);
                      }
 
-                     if (isset ($out[2][$id]) && $out[2][$id]) {
+                     if (isset($out[2][$id]) && $out[2][$id]) {
                         $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
                      } else {
                         $foreachvalues = array_slice($foreachvalues,0,1);

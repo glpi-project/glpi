@@ -42,11 +42,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("config", "w");
 $config = new Config();
 
-if (!empty ($_POST["update_auth"])) {
+if (!empty($_POST["update_auth"])) {
    $config->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
-if (!empty ($_POST["update"])) {
+if (!empty($_POST["update"])) {
    $config->update($_POST);
    if (isset($_POST["use_ocs_mode"])
        && $_POST["use_ocs_mode"]

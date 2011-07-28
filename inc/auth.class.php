@@ -112,7 +112,7 @@ class Auth {
       } else {
          $pwd = $DB->result($result, 0, "password");
 
-         if (empty ($pwd)) {
+         if (empty($pwd)) {
             //If the user has an LDAP DN, then store it in the Auth object
             $user_dn = $DB->result($result, 0, "user_dn");
             if ($user_dn) {
@@ -139,7 +139,7 @@ class Auth {
    function connection_imap($host, $login, $pass) {
 
       // we prevent some delay...
-      if (empty ($host)) {
+      if (empty($host)) {
          return false;
       }
 
@@ -170,7 +170,7 @@ class Auth {
       global $LANG;
 
       // we prevent some delay...
-      if (empty ($ldap_method['host'])) {
+      if (empty($ldap_method['host'])) {
          return false;
       }
 
@@ -237,7 +237,7 @@ class Auth {
       global $DB, $LANG;
 
       // sanity check... we prevent empty passwords...
-      if (empty ($password)) {
+      if (empty($password)) {
          $this->addToError($LANG['login'][13]);
          return false;
       }

@@ -753,7 +753,7 @@ class Config extends CommonDBTM {
          echo "<td colspan='2'></td>";
       }
       echo "<td>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . "&nbsp;:</td><td>";
-      if (haveRight("config","w") || ! GLPI_DEMO_MODE) {
+      if (haveRight("config","w") || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
          echo "&nbsp;";

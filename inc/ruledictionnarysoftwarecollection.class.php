@@ -134,7 +134,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
                         AND `glpi_softwares`.`is_template` = '0' ";
 
-         if (isset ($params['manufacturer']) && $params['manufacturer'] > 0) {
+         if (isset($params['manufacturer']) && $params['manufacturer'] > 0) {
             $sql .= " AND `manufacturers_id` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
@@ -156,7 +156,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             }
 
             //If manufacturer is set, then first run the manufacturer's dictionnary
-            if (isset ($input["manufacturer"])) {
+            if (isset($input["manufacturer"])) {
                $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
             }
 
@@ -167,7 +167,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             //If the software's name or version has changed
             if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
                 || (isset($res_rule["version"])) && $res_rule["version"] != ''
-                     || (isset($res_rule['new_entities_id']) 
+                     || (isset($res_rule['new_entities_id'])
                         && $res_rule['new_entities_id'] != $input['entities_id'])) {
 
                $IDs = array();
@@ -243,7 +243,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          if ($DB->numrows($res_soft)) {
             $soft = $DB->fetch_array($res_soft);
             //For each software
-            $this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID, 
+            $this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID,
                                                   (isset($res_rule['new_entities_id'])
                                                       ?$res_rule['new_entities_id']
                                                       :$soft["entities_id"]),
@@ -272,37 +272,37 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    function replayDictionnaryOnOneSoftware(& $new_softs, $res_rule, $ID, $entity, $name,
                                            $manufacturer, & $soft_ids) {
       global $DB;
-   
+
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
       $input                 = addslashes_deep($input);
 
-      if (empty ($res_rule)) {
+      if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
          $res_rule = addslashes_deep($res_rule);
       }
       $soft = new Software();
 
       //Software's name has changed or entity
-      if (isset ($res_rule["name"]) && $res_rule["name"] != $name 
+      if (isset ($res_rule["name"]) && $res_rule["name"] != $name
             //Entity has changed, and new entity is a parent of the current one
-            || ((!isset ($res_rule["name"]) 
-               && isset($res_rule['new_entities_id'])) 
+            || ((!isset ($res_rule["name"])
+               && isset($res_rule['new_entities_id']))
                   && in_array($res_rule['new_entities_id'], getSonsOf($entity)))) {
-         
+
          if (isset($res_rule["name"])) {
             $new_name = $res_rule["name"];
          } else {
             $new_name = $name;
          }
-         
-         if (isset ($res_rule["manufacturer"])) {
+
+         if (isset($res_rule["manufacturer"])) {
             $manufacturer = Dropdown::getDropdownName("glpi_manufacturers",
                                                       $res_rule["manufacturer"]);
          }
 
          //New software not already present in this entity
-         if (!isset ($new_softs[$entity][$new_name])) {
+         if (!isset($new_softs[$entity][$new_name])) {
             // create new software or restore it from trash
             $new_software_id = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
                                                             $entity, '', true);
@@ -337,7 +337,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
-         if (isset ($res_rule["version"]) && $res_rule["version"] != '') {
+         if (isset($res_rule["version"]) && $res_rule["version"] != '') {
             $new_version_name = $res_rule["version"];
          } else {
             $new_version_name = $version["name"];

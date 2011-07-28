@@ -89,7 +89,7 @@ class RuleDictionnaryPrinter extends RuleCached {
              ($fields["is_global"] != '' ? Dropdown::getGlobalSwitch($fields["is_global"])
                                          : $LANG['rulesengine'][106]) . "</td>";
       echo "<td class='tab_bg_2'>" .
-            ((isset ($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
+            ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
              ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
              : $LANG['rulesengine'][106]) . "</td>";
       echo "<td class='tab_bg_2'>";

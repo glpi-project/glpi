@@ -42,7 +42,7 @@ checkRight("config", "w");
 $config = new Config();
 
 //Update CAS configuration
-if (isset ($_POST["update"])) {
+if (isset($_POST["update"])) {
    $config->update($_POST);
    glpi_header($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }

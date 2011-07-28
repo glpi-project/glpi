@@ -801,7 +801,7 @@ class CronTask extends CommonDBTM{
 
       foreach (array('allowmode', 'comment', 'hourmax', 'hourmin', 'logs_lifetime', 'mode',
                      'param', 'state') as $key) {
-         if (isset ($options[$key])) {
+         if (isset($options[$key])) {
             $input[$key] = $options[$key];
          }
       }

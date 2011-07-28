@@ -38,8 +38,8 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Change profile system
-if (isset ($_POST['newprofile'])) {
-   if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
+if (isset($_POST['newprofile'])) {
+   if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       changeProfile($_POST['newprofile']);
 
       if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {

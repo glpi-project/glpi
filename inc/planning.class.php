@@ -728,7 +728,7 @@ class Planning {
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
       $v = new vcalendar();
 
-      if (! empty ( $CFG_GLPI["version"])) {
+      if (!empty( $CFG_GLPI["version"])) {
          $v->setConfig( 'unique_id', "GLPI-Planning-".trim($CFG_GLPI["version"]) );
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );

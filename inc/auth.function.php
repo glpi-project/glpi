@@ -86,7 +86,7 @@ function haveRight($module, $right) {
                     "1" => array("1"),
                     "0" => array("0", "1")); // ne doit pas arriver non plus
 
-   if (isset ($_SESSION["glpiactiveprofile"][$module])
+   if (isset($_SESSION["glpiactiveprofile"][$module])
        && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
       return true;
    }
@@ -115,7 +115,7 @@ function displayNotFoundError() {
    global $LANG, $CFG_GLPI, $HEADER_LOADED;
 
    if (!$HEADER_LOADED) {
-      if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+      if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
          nullHeader($LANG['login'][5]);
 
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
@@ -201,7 +201,7 @@ function checkSeveralRightsOr($modules) {
 function checkCentralAccess() {
    global $CFG_GLPI;
 
-   if (!isset ($_SESSION["glpiactiveprofile"])
+   if (!isset($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
       // Gestion timeout session
       if (!getLoginUserID()) {
@@ -221,7 +221,7 @@ function checkCentralAccess() {
 function checkHelpdeskAccess() {
    global $CFG_GLPI;
 
-   if (!isset ($_SESSION["glpiactiveprofile"])
+   if (!isset($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
       // Gestion timeout session
       if (!getLoginUserID()) {
@@ -241,7 +241,7 @@ function checkHelpdeskAccess() {
 function checkLoginUser() {
    global $CFG_GLPI;
 
-   if (!isset ($_SESSION["glpiname"])) {
+   if (!isset($_SESSION["glpiname"])) {
       // Gestion timeout session
       if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
@@ -301,11 +301,11 @@ function loadLanguage($forcelang='') {
       $trytoload = $CFG_GLPI["language"];
    }
 
-   if (isset ($CFG_GLPI["languages"][$trytoload][1])) {
+   if (isset($CFG_GLPI["languages"][$trytoload][1])) {
       $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
    }
 
-   if (empty ($file) || !is_file(GLPI_ROOT . $file)) {
+   if (empty($file) || !is_file(GLPI_ROOT . $file)) {
       $trytoload = 'en_GB';
       $file = "/locales/en_GB.php";
    }
@@ -396,7 +396,7 @@ function initEntityProfiles($userID) {
 **/
 function changeProfile($ID) {
 
-   if (isset ($_SESSION['glpiprofiles'][$ID])
+   if (isset($_SESSION['glpiprofiles'][$ID])
        && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
 
       $profile = new Profile();
@@ -476,7 +476,7 @@ function changeActiveEntities($ID="all", $is_recursive=false) {
          foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
             if ($val['id']== $ID || in_array($val['id'], $ancestors)) {
                // Not recursive or recursive and root entity is recursive
-               if (! $is_recursive || $val['is_recursive']) {
+               if (!$is_recursive || $val['is_recursive']) {
                   $ok = true;
                }
             }
@@ -581,7 +581,7 @@ function haveRecursiveAccessToEntity($ID) {
       }
    }
    // Right is from a recursive profile
-   if (isset ($_SESSION['glpiactiveentities'])) {
+   if (isset($_SESSION['glpiactiveentities'])) {
       return in_array($ID, $_SESSION['glpiactiveentities']);
    }
    return false;
@@ -603,7 +603,7 @@ function haveAccessToEntity($ID, $is_recursive=0) {
       return false;
    }
 
-   if (!isset ($_SESSION['glpiactiveentities'])) {
+   if (!isset($_SESSION['glpiactiveentities'])) {
       return false;
    }
 
@@ -695,7 +695,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
       return $query." 1 ) ";
    }
 
-   if (!empty ($table)) {
+   if (!empty($table)) {
       $query .= "`$table`.";
    }
    if (empty($field)) {

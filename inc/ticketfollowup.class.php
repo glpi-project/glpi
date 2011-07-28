@@ -207,7 +207,7 @@ class TicketFollowup  extends CommonDBTM {
          $this->fields['is_private'] = 1;
       }
 
-      if (isset ($_SESSION["glpiname"])) {
+      if (isset($_SESSION["glpiname"])) {
          $this->fields['requesttypes_id'] = RequestType::getDefault('helpdesk');
       }
    }

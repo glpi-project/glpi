@@ -529,7 +529,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
+      if ((empty($withtemplate) || $withtemplate != 2) && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
@@ -825,7 +825,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td>";
-         if ((empty ($withtemplate) || $withtemplate != 2)
+         if ((empty($withtemplate) || $withtemplate != 2)
              && $ID>0) {
 
             echo "<input type='checkbox' name='softversion_$ID'>";
@@ -840,7 +840,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<td>" . $data["state"] . "</td>";
 
       echo "<td>" . $data["version"];
-      if ((empty ($withtemplate) || $withtemplate != 2)
+      if ((empty($withtemplate) || $withtemplate != 2)
           && $canedit && $ID>0) {
 
          echo " - <a href='".$CFG_GLPI["root_doc"] ."/front/computer_softwareversion.form.php".
