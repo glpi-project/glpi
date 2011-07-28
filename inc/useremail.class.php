@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * UserEmail class
- */
+**/
 class UserEmail  extends CommonDBChild {
 
    // From CommonDBTM
@@ -58,17 +58,21 @@ class UserEmail  extends CommonDBChild {
       return true;
    }
 
+
    function canCreateItem() {
       return (haveRight('user','w') || $this->fields['users_id'] == getLoginUserID());
    }
+
 
    function canView() {
       return true;
    }
 
+
    function canViewItem() {
       return (haveRight('user','r') || $this->fields['users_id'] == getLoginUserID());
    }
+
 
    function canUpdate() {
       // All users can update own emails
@@ -81,33 +85,38 @@ class UserEmail  extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Get default email for user. If no default email get first one
     *
     * @param $users_id user ID
+    *
     * @return default email, empty if no email set
    **/
    static function getDefaultForUser($users_id) {
       global $DB;
+
       // Get default one
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
-                                                AND `is_default` = '1'") as $data) {
+      foreach ($DB->request("glpi_useremails",
+                            "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
          return $data['email'];
       }
 
       // Get first if not default set
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
-                                                AND `is_default` = '0'") as $data) {
+      foreach ($DB->request("glpi_useremails",
+                            "`users_id` = '$users_id' AND `is_default` = '0'") as $data) {
          return $data['email'];
       }
       return '';
    }
 
+
    /**
-    * Get default email for user. If no default email get first one
+    * Get all emails for user.
     *
     * @param $users_id user ID
-    * @return default email, empty if no email set
+    *
+    * @return array of emails
    **/
    static function getAllForUser($users_id) {
       global $DB;
@@ -121,27 +130,31 @@ class UserEmail  extends CommonDBChild {
 
       return $emails;
    }
+
    /**
     * is an email of the user
     *
     * @param $users_id user ID
     * @param $email string email to check user ID
+    *
     * @return boolean is this email set for the user ?
    **/
    static function isEmailForUser($users_id, $email) {
       global $DB;
 
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
-                                                AND `email` = '$email'") as $data) {
+      foreach ($DB->request("glpi_useremails",
+                            "`users_id` = '$users_id' AND `email` = '$email'") as $data) {
          return true;
       }
       return false;
    }
 
+
    /**
     * Show emails of a user
     *
     * @param $user User object
+    *
     * @return nothing
    **/
    static function showForUser(User $user) {
@@ -149,17 +162,15 @@ class UserEmail  extends CommonDBChild {
 
       $users_id = $user->getID();
 
-      if (!$user->can($users_id,'r')
-            && $users_id != getLoginUserID()) {
+      if (!$user->can($users_id,'r') && $users_id != getLoginUserID()) {
          return false;
       }
       $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
 
       $count = 0;
       /// Display default email
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
-                                                AND `is_default` = '1'") as $data) {
-
+      foreach ($DB->request("glpi_useremails",
+                            "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
          if ($count) {
             echo '<br>';
          }
@@ -169,6 +180,7 @@ class UserEmail  extends CommonDBChild {
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
+
          if ($canedit) {
             // Can edit if not dynamic
             if (!$data['is_dynamic']) {
@@ -180,15 +192,14 @@ class UserEmail  extends CommonDBChild {
             }
          }
       }
- 
+
       // Display others email
-      foreach ($DB->request("glpi_useremails", "`users_id` = '$users_id'
-                                                AND `is_default` = '0'") as $data) {
+      foreach ($DB->request("glpi_useremails",
+                            "`users_id` = '$users_id' AND `is_default` = '0'") as $data) {
          if ($count) {
             echo '<br>';
          }
          $count++;
-
          echo $data['email'];
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
@@ -219,12 +230,12 @@ class UserEmail  extends CommonDBChild {
       }
    }
 
+
    static function showAddEmailButton(User $user) {
       global $LANG,$CFG_GLPI;
 
       $users_id = $user->getID();
-      if (!$user->can($users_id,'r')
-            && $users_id != getLoginUserID()) {
+      if (!$user->can($users_id,'r') && $users_id != getLoginUserID()) {
          return false;
       }
       $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
@@ -232,28 +243,27 @@ class UserEmail  extends CommonDBChild {
       if ($canedit) {
          echo "&nbsp;";
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                     onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\"
+                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
    }
+
 
    function prepareInputForAdd($input) {
 
       // Check email validity
-      if (!isset($input['email']) || !isset($input['users_id'])
-         || empty($input['email']) || empty($input['users_id'])) {
+      if (!isset($input['email']) || empty($input['email'])
+          || !isset($input['users_id'])|| empty($input['users_id'])) {
          return false;
       }
 
       // First email is default
-      if (countElementsInTable($this->getTable(),"`users_id`='".$input['users_id']."'") == 0) {
+      if (countElementsInTable($this->getTable(), "`users_id` = '".$input['users_id']."'") == 0) {
          $input['is_default'] = 1;
       }
-      
 
       return $input;
    }
-
 
 
    function post_updateItem($history=1) {
@@ -264,11 +274,11 @@ class UserEmail  extends CommonDBChild {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'
-                        AND `users_id` = '".$this->fields['users_id']."'";
+                         AND `users_id` = '".$this->fields['users_id']."'";
          $DB->query($query);
       }
-
    }
+
 
    function post_addItem() {
       global $DB;
@@ -276,9 +286,9 @@ class UserEmail  extends CommonDBChild {
       // if default is set : unsed others for the users
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
          $query = "UPDATE ". $this->getTable()."
-                  SET `is_default` = '0'
-                  WHERE `id` <> '".$this->fields['id']."'
-                        AND `users_id` = '".$this->fields['users_id']."'";
+                   SET `is_default` = '0'
+                   WHERE `id` <> '".$this->fields['id']."'
+                         AND `users_id` = '".$this->fields['users_id']."'";
          $DB->query($query);
       }
    }
