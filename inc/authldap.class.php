@@ -121,10 +121,10 @@ class AuthLDAP extends CommonDBTM {
                = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
             $this->fields['group_search_type']         = 0;
             $this->fields['group_member_field']        = '';
-            $this->fields['email1_field']               = 'mail';
-            $this->fields['email2_field']               = '';
-            $this->fields['email3_field']               = '';
-            $this->fields['email4_field']               = '';
+            $this->fields['email1_field']              = 'mail';
+            $this->fields['email2_field']              = '';
+            $this->fields['email3_field']              = '';
+            $this->fields['email4_field']              = '';
             $this->fields['realname_field']            = 'sn';
             $this->fields['firstname_field']           = 'givenname';
             $this->fields['phone_field']               = 'telephonenumber';

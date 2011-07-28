@@ -794,8 +794,8 @@ function update0801to083() {
                      // add manager to groups_users setting if not present
                      if ($DB->numrows($result2)==0) {
                         $query2 = "INSERT INTO`glpi_groups_users`
-                                         (`users_id`,`groups_id`,`is_manager`)
-                                  VALUES ('".$data['users_id']."','".$data['id']."','1')";
+                                          (`users_id`, `groups_id`, `is_manager`)
+                                   VALUES ('".$data['users_id']."' ,'".$data['id']."', '1')";
                         $DB->query($query2)
                         or die("0.83 insert manager of groups ". $LANG['update'][90] . $DB->error());
                      } else {

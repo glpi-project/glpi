@@ -148,11 +148,11 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       echo "</td></tr>";
 
-      $user  = new User();
+      $user          = new User();
       $default_email = "";
       if ($user->getFromDB($this->fields["users_id"])) {
          $default_email = $user->getDefaultEmail();
-         $emails = $user->getAllEmails();
+         $emails        = $user->getAllEmails();
       }
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][34]."&nbsp;:</td>";
@@ -165,9 +165,11 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][118]."&nbsp;:</td>";
       echo "<td>";
-      if (count($emails) ==  1 && !empty($default_email)
-         && NotificationMail::isUserAddressValid($default_email)) {
+      if (count($emails) ==  1
+          && !empty($default_email)
+          && NotificationMail::isUserAddressValid($default_email)) {
          echo $default_email;
+
       } else if (count($emails) >  1) {
          // Several emails : select in the list
          echo "<select name='alternative_email' value=''>";
