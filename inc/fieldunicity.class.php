@@ -93,33 +93,39 @@ class FieldUnicity extends CommonDropdown {
       global $LANG;
 
       $ong = array();
-      $this->addStandardTab('Log',$ong);
-      $ong[2]  = $LANG['setup'][826];
+      if ($this->getID()>0) {
+         $ong[2]  = $LANG['setup'][826];
+      }
       return $ong;
    }
 
 
    /**
-    * Display more tabs
+    * Display content of Tab
     *
-    * @param $tab
+    * @param $ID of the item
+    * @param $tab number of the tab
+    *
+    * @return true if handled (for class stack)
    **/
-   function displayMoreTabs($tab) {
+   function showTabContent($ID, $tab) {
 
-      switch ($tab) {
-         case 2:
-            self::showDoubles($this);
-            break;
+      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
+         switch ($tab) {
+            case 2:
+               self::showDoubles($this);
+               return true;
 
-         case 12 :
-            Log::showForItem($this);
-            break;
+            case 12 :
+               Log::showForItem($this);
+               return true;
 
-         case -1 :
-            self::showDoubles($this);
-            Log::showForItem($this);
-            break;
+            case -1 :
+               self::showDoubles($this);
+               Log::showForItem($this);
+         }
       }
+      return false;
    }
 
 
