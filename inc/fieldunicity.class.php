@@ -85,14 +85,15 @@ class FieldUnicity extends CommonDropdown {
 
 
    /**
-    * Add more tabs to display
+    * Define tabs to display
     *
     * @param $options array
    **/
-   function defineMoreTabs($options=array()) {
+   function defineTabs($options=array()) {
       global $LANG;
 
-      $ong = array();
+      $ong = parent::defineTabs($options);
+
       if ($this->getID()>0) {
          $ong[2]  = $LANG['setup'][826];
       }

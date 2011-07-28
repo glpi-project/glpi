@@ -65,10 +65,6 @@ abstract class CommonDropdown extends CommonDBTM {
       $ong = array();
       $ong[1] = $this->getTypeName();
 
-      foreach ($this->defineMoreTabs($options) as $key => $value) {
-         $ong[$key] = $value;
-      }
-
       if ($this->getID()>0) {
          if ($this->dohistory) {
             $this->addStandardTab('Log',$ong);
@@ -76,14 +72,6 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       return $ong;
-   }
-
-
-   /**
-    * Add more tabs to display
-   **/
-   function defineMoreTabs($options=array()) {
-      return array();
    }
 
 
