@@ -302,8 +302,8 @@ class TicketValidation  extends CommonDBChild {
 
          // Set global validation to accepted to define one
          if ($job->fields['global_validation'] == 'waiting'
-             || (countElementsInTable('glpi_ticketvalidations',
-                                      "`tickets_id` = '".$this->fields["tickets_id"]."'") == 1)) {
+             || TicketValidation::getNumberValidationForTicket($this->fields["tickets_id"]) == 1
+             || TicketValidation::isAllValidationsHaveSameStatusForTicket($this->fields["tickets_id"])) {
 
             $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = $this->fields["status"];
@@ -426,6 +426,24 @@ class TicketValidation  extends CommonDBChild {
             $style = "#cf9b9b";
       }
       return $style;
+   }
+
+
+
+   /**
+    * All validation request for a ticket have the same status ?
+    *
+    * @param $tickets_id ticket ID
+    */
+   static function isAllValidationsHaveSameStatusForTicket($tickets_id) {
+      global $DB;
+
+      $query = "SELECT DISTINCT `status`
+                FROM `glpi_ticketvalidations`
+                WHERE `tickets_id` = '$tickets_id'";
+      $result = $DB->query($query);
+
+      return ($DB->numrows($result)==1);
    }
 
 
