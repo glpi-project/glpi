@@ -294,6 +294,15 @@ class Contract extends CommonDBTM {
       $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
                                                 'joinparams' => array('jointype' => 'itemtype_item')));
 
+      $tab[139]['table']         = 'glpi_contracts_items';
+      $tab[139]['field']         = 'count';
+      $tab[139]['name']          = $LANG['tracking'][29]." ".$LANG['financial'][1];
+      $tab[139]['forcegroupby']  = true;
+      $tab[139]['usehaving']  = true;
+      $tab[139]['datatype']      = 'number';
+      $tab[139]['massiveaction'] = false;
+      $tab[139]['joinparams']    = array('jointype' => 'itemtype_item');
+
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';
       $tab[29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
@@ -1251,6 +1260,12 @@ class Contract extends CommonDBTM {
       $p['used']           = array();
       $p['nochecklimit']   = false;
 
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
       if (!($p['entity']<0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
             echo "entity_sons options is not available with array of entity";
@@ -1266,7 +1281,7 @@ class Contract extends CommonDBTM {
                                                true);
       }
       if (count($p['used'])) {
-         $idrest = " AND `glpi_contracts`.`id` NOT IN(".implode("','",$p['used']).") ";
+         $idrest = " AND `glpi_contracts`.`id` NOT IN('".implode("','",$p['used'])."') ";
       }
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
