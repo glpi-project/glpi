@@ -4418,8 +4418,8 @@ class Search {
                                             54, 55, 56, 57, 58, 59, 120, 122, 123, 124, 125));
       }
 
-      if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-         $todel = array_merge($todel, array('financial', 29, 30, 130, 131, 132, 133, 134, 135, 136,
+      if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
+         $todel = array_merge($todel, array('contract', 29, 30, 130, 131, 132, 133, 134, 135, 136,
                                             137, 138));
       }
 
