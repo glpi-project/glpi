@@ -64,9 +64,17 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $ong = array();
       $ong[1] = $this->getTypeName();
+
       foreach ($this->defineMoreTabs($options) as $key => $value) {
          $ong[$key] = $value;
       }
+
+      if ($this->getID()>0) {
+         if ($this->dohistory) {
+            $this->addStandardTab('Log',$ong);
+         }
+      }
+
       return $ong;
    }
 
@@ -117,19 +125,15 @@ abstract class CommonDropdown extends CommonDBTM {
          switch ($tab) {
             case -1 :
                Plugin::displayAction($this, $tab);
-               $this->displayMoreTabs($tab);
                return false;
 
             default :
-               $this->displayMoreTabs($tab);
-               return Plugin::displayAction($this, $tab);
+               if (!CommonGLPI::displayStandardTab($this, $_REQUEST['glpi_tab'])) {
+                  return Plugin::displayAction($this, $tab);
+               }
          }
       }
       return false;
-   }
-
-
-   function displayMoreTabs($tab) {
    }
 
 
