@@ -40,6 +40,10 @@ if (!defined('GLPI_ROOT')) {
 /// ITILCategory class
 class ITILCategory extends CommonTreeDropdown {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
+
    function canCreate() {
       return haveRight('entity_dropdown', 'w');
    }

@@ -40,6 +40,10 @@ if (!defined('GLPI_ROOT')) {
 /// Location class
 class Location extends CommonTreeDropdown {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
+
    function canCreate() {
       return haveRight('entity_dropdown', 'w');
    }
