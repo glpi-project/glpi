@@ -284,12 +284,13 @@ class Group_User extends CommonDBRelation{
       if (count($used)) {
          initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
          foreach (array(1,0) as $is_manager) {
-
-            echo "<div id='groupuser_form$rand-$is_manager' class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='$headerspan'>".($is_manager?$LANG['common'][64]:$LANG['Menu'][14])." (D=".$LANG['profiles'][29].")";
+            echo "<div id='groupuser_form$rand-$is_manager' class='spaced'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th colspan='$headerspan'>".($is_manager?$LANG['common'][64]:$LANG['Menu'][14]).
+                                                " (D=".$LANG['profiles'][29].")";
             echo "</th></tr>";
 
-            $i = 0;
+            $i    = 0;
             $user = new User();
             foreach  ($used as $id => $data) {
                if ($data['is_manager'] != $is_manager || !$user->can($id, 'r')) {
