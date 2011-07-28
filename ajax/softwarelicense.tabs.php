@@ -72,11 +72,6 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          Computer_SoftwareLicense::showForLicense($license);
          break;
 
-      case 4 :
-         Infocom::showForItem($license);
-         Contract::showAssociated($license, $_POST["withtemplate"]);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($license, $_REQUEST['glpi_tab'])) {
             Computer_SoftwareLicense::showForLicenseByEntity($license);

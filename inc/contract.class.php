@@ -78,6 +78,23 @@ class Contract extends CommonDBTM {
       $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("contract","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][25], Contract_Item::countForItem($item));
+         }
+         return $LANG['Menu'][25];
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+
+      self::showAssociated($item, $withtemplate);
+      return true;
+   }
 
    function defineTabs($options=array()) {
       global $LANG;

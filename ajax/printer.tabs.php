@@ -64,11 +64,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             NetworkPort::showForItem($printer, $_POST["withtemplate"]);
             break;
 
-         case 4 :
-            Infocom::showForItem($printer, $_POST["withtemplate"]);
-            Contract::showAssociated($printer, $_POST["withtemplate"]);
-            break;
-
          default :
             CommonGLPI::displayStandardTab($printer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
@@ -91,11 +86,6 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
          case 3 :
             Computer_Item::showForItem($printer);
             NetworkPort::showForItem($printer);
-            break;
-
-         case 4 :
-            Infocom::showForItem($printer);
-            Contract::showAssociated($printer);
             break;
 
          default :

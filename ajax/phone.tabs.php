@@ -67,10 +67,6 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
-         case 4 :
-            Infocom::showForItem($phone, $_POST["withtemplate"]);
-            Contract::showAssociated($phone, $_POST["withtemplate"]);
-            break;
 
          default :
             if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
@@ -91,10 +87,6 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
-         case 4 :
-            Infocom::showForItem($phone);
-            Contract::showAssociated($phone);
-            break;
 
          default :
             if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'])) {

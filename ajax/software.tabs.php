@@ -62,10 +62,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
-         case 4 :
-            Infocom::showForItem($soft, $_POST["withtemplate"]);
-            Contract::showAssociated($soft, $_POST["withtemplate"]);
-            break;
 
          default :
             CommonGLPI::displayStandardTab($soft, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
@@ -87,11 +83,6 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
 
          case 2 :
             Computer_SoftwareVersion::showForSoftware($soft);
-            break;
-
-         case 4 :
-            Infocom::showForItem($soft);
-            Contract::showAssociated($soft);
             break;
 
          case 21 :

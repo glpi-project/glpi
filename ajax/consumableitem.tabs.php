@@ -63,10 +63,6 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          Plugin::displayAction($consumable, $_REQUEST['glpi_tab']);
          break;
 
-      case 4 :
-         Infocom::showForItem($consumable);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($consumable, $_REQUEST['glpi_tab'])) {
             Consumable::showAddForm($consumable);

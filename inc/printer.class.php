@@ -86,8 +86,12 @@ class Printer  extends CommonDBTM {
             $ong[3] = $LANG['title'][27];
          }
 
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
+         if (haveRight("infocom","r")) {
+            $this->addStandardTab('Infocom', $ong);
+         }
+
+         if (haveRight("contract","r")) {
+            $this->addStandardTab('Contract', $ong);
          }
 
          $this->addStandardTab('Document', $ong);

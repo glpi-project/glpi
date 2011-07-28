@@ -64,10 +64,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
-         case 4 :
-            Infocom::showForItem($monitor, $_POST["withtemplate"]);
-            Contract::showAssociated($monitor, $_POST["withtemplate"]);
-            break;
 
          default :
             CommonGLPI::displayStandardTab($monitor, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
@@ -83,11 +79,6 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Ticket::showListForItem($monitor);
             Link::showForItem($monitor);
             Plugin::displayAction($monitor, $_REQUEST['glpi_tab']);
-            break;
-
-         case 4 :
-            Infocom::showForItem($monitor);
-            Contract::showAssociated($monitor);
             break;
 
          default :

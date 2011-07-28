@@ -65,10 +65,6 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
-      case 4 :
-         Infocom::showForItem($cartridge);
-         break;
-
       default :
          if (!CommonGLPI::displayStandardTab($cartridge, $_REQUEST['glpi_tab'])) {
             $cartridge->showCompatiblePrinters();

@@ -112,9 +112,9 @@ class SoftwareLicense extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['Menu'][0];
 
-         if (haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
-         }
+         $this->addStandardTab('Infocom', $ong);
+
+         $this->addStandardTab('Contract', $ong);
 
          $this->addStandardTab('Document', $ong);
 
