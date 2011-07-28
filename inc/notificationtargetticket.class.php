@@ -156,7 +156,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'update_task'     => $LANG['job'][52],
                       'delete_task'     => $LANG['job'][53],
                       'closed'          => $LANG['mailing'][127],
-                      'delete'          => $LANG['mailing'][129],
+                      'deleted'         => $LANG['mailing'][129],
                       'alertnotclosed'  => $LANG['crontask'][15],
                       'recall'          => $LANG['sla'][9],
                       'satisfaction'    => $LANG['satisfaction'][3]);
@@ -202,9 +202,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas = parent::getDatasForObject($item, $simple);
 
       // Specific datas
-      $datas["##ticket.costfixed"] = $this->obj->getField('cost_fixed');
+      $datas["##ticket.costfixed"]    = $this->obj->getField('cost_fixed');
       $datas["##ticket.costmaterial"] = $this->obj->getField('cost_material');
-      $datas["##ticket.costtime"] = $this->obj->getField('cost_time');
+      $datas["##ticket.costtime"]     = $this->obj->getField('cost_time');
 
       $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
                                                                "/index.php?redirect=ticket_".
@@ -225,7 +225,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          // Set global config value
          if ($autoclose_value == -1) {
-            $autoclose_value=$CFG_GLPI['autoclose_delay'];
+            $autoclose_value = $CFG_GLPI['autoclose_delay'];
          }
       }
 
@@ -242,6 +242,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.sla##']
                      = Dropdown::getDropdownName('glpi_slas', $this->obj->getField('slas_id'));
       }
+
+      // is ticket deleted
+      $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($this->obj->getField('is_deleted'));
+
 
       //Tags associated with the object linked to the ticket
       $datas['##ticket.itemtype##']           = '';
@@ -531,6 +535,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.costtime'              => $LANG['job'][40],
                     'ticket.costfixed'             => $LANG['job'][41],
                     'ticket.costmaterial'          => $LANG['job'][42],
+                    'ticket.isdeleted'             => $LANG['common'][28],
                     'task.author'                  => $LANG['common'][37],
                     'task.isprivate'               => $LANG['common'][77],
                     'task.date'                    => $LANG['reports'][60],
