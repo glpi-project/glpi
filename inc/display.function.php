@@ -3388,6 +3388,7 @@ function openArrowMassive($formname, $fixed=false, $width='80%') {
 
 
 /**
+ * DO NOT USE THIS FUNCTION use closeArrowMassives
  * show arrow for massives actions : closing
  *
  * @param $name string name of submit button, none if empty
@@ -3395,11 +3396,8 @@ function openArrowMassive($formname, $fixed=false, $width='80%') {
 **/
 function closeArrowMassive($name='', $label='') {
 
-   if (!empty($name)) {
-      echo "<input type='submit' name='$name' value=\"$label\" class='submit'>";
-   }
-   echo "</td></tr>";
-   echo "</table>";
+   closeArrowMassives(array($name => $label));
+
 }
 
 /**
