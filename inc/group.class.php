@@ -82,9 +82,8 @@ class Group extends CommonDBTM {
       $ong = array();
 
       if ($this->fields['id'] > 0) {
-         if (haveRight("user","r")) {
-            $ong[1] = $LANG['Menu'][14];
-         }
+         $this->addStandardTab('User', $ong);
+
          $ong[2] = $LANG['common'][96];
          $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
 

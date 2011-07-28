@@ -202,11 +202,10 @@ class Group_User extends CommonDBRelation{
    /**
     * Show users of a group
     *
-    * @param $target string : where to go on action
     * @param $group the group
    **/
-   static function showForGroup($target, Group $group) {
-      global $DB, $LANG;
+   static function showForGroup(Group $group) {
+      global $DB, $LANG, $CFG_GLPI;
 
       $ID = $group->fields['id'];
       if (!haveRight("user","r") || !$group->can($ID,'r')) {
@@ -241,7 +240,7 @@ class Group_User extends CommonDBRelation{
       if ($canedit) {
          $headerspan = $nb_per_line*2;
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
-                action='$target'>";
+                action='".$CFG_GLPI['root_doc']."/front/group.form.php'>";
          echo "<input type='hidden' name='groups_id' value='$ID'>";
 
          if ($group->fields['is_recursive']) {
