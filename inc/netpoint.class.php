@@ -40,6 +40,10 @@ if (!defined('GLPI_ROOT')) {
 /// Netpoint class
 class Netpoint extends CommonDropdown {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
+
    function getAdditionalFields() {
       global $LANG;
 

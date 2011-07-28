@@ -40,6 +40,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class SolutionTemplate
 class SolutionTemplate extends CommonDropdown {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
+
    static function getTypeName() {
       global $LANG;
 
