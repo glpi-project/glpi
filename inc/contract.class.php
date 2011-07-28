@@ -300,6 +300,7 @@ class Contract extends CommonDBTM {
       $tab[139]['field']         = 'count';
       $tab[139]['name']          = $LANG['tracking'][29]." ".$LANG['financial'][1];
       $tab[139]['forcegroupby']  = true;
+      $tab[139]['usehaving']  = true;
       $tab[139]['datatype']      = 'number';
       $tab[139]['massiveaction'] = false;
       $tab[139]['joinparams']    = array('jointype' => 'itemtype_item');
