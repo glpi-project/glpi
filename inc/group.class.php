@@ -112,7 +112,7 @@ class Group extends CommonDBTM {
                   return true;
                   break;
                case 3 : 
-                  $item->showLDAPForm();
+                  $item->showLDAPForm($item->getID());
                   return true;
                   break;
 
@@ -297,7 +297,7 @@ class Group extends CommonDBTM {
    }
 
 
-   function showLDAPForm ($target,$ID) {
+   function showLDAPForm ($ID) {
       global $LANG;
 
       if (!haveRight("group", "r")) {
@@ -311,7 +311,7 @@ class Group extends CommonDBTM {
          $this->check(-1, 'w');
       }
 
-      echo "<form name='groupldap_form' id='groupldap_form' method='post' action='$target'>";
+      echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".$this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
