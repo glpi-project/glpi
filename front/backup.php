@@ -388,7 +388,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    return true;
 }
 
-
 // #################" DUMP sql#################################
 
 if (isset($_GET["dump"]) && $_GET["dump"] != "") {
@@ -451,6 +450,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
 
       if ($percent >= 0) {
          displayProgressBar(400,$percent);
+         echo '<br>';
       }
 
       if ($offsettable >= 0) {
