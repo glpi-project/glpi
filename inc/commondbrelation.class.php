@@ -44,7 +44,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    var $check_entities = true;
 
    var $checks_only_for_itemtype1 = false;
-   var $logs_only_for_itemtype1 = false;
+   var $logs_only_for_itemtype1   = false;
 
 
    /**

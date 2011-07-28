@@ -87,8 +87,8 @@ class Item_Change extends CommonDBRelation{
    * Print the HTML array for Items linked to a change
    *
    * @param $change change object
-   * @return Nothing (display)
    *
+   * @return Nothing (display)
    **/
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI, $LANG;

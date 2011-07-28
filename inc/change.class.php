@@ -160,6 +160,7 @@ class Change extends CommonITILObject {
       return true;
    }
 
+
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
@@ -176,7 +177,6 @@ class Change extends CommonITILObject {
                   $nb = countElementsInTable('glpi_changes_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
                   break;
-         
             }
             return self::createTabEntry($LANG['Menu'][8], $nb);
          }
@@ -338,14 +338,14 @@ class Change extends CommonITILObject {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->input['_tickets_id'])) {
             $pt = new Change_Ticket();
-            $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
+            $pt->add(array('tickets_id' => $this->input['_tickets_id'],
                            'changes_id' => $this->fields['id']));
 
             if (!empty($ticket->fields['itemtype']) && $ticket->fields['items_id']>0) {
                $it = new Change_Item();
                $it->add(array('changes_id' => $this->fields['id'],
-                              'itemtype'    => $ticket->fields['itemtype'],
-                              'items_id'    => $ticket->fields['items_id']));
+                              'itemtype'   => $ticket->fields['itemtype'],
+                              'items_id'   => $ticket->fields['items_id']));
             }
          }
       }
@@ -354,8 +354,8 @@ class Change extends CommonITILObject {
          $problem = new Problem();
          if ($problem->getFromDB($this->input['_problems_id'])) {
             $cp = new Change_Problem();
-            $cp->add(array('problems_id'  => $this->input['_problems_id'],
-                           'changes_id' => $this->fields['id']));
+            $cp->add(array('problems_id' => $this->input['_problems_id'],
+                           'changes_id'  => $this->fields['id']));
 
             /// TODO add linked tickets and linked hardware (to problem and tickets)
             /// create standard function
@@ -388,7 +388,7 @@ class Change extends CommonITILObject {
                       'sort'       => 19,
                       'order'      => 'DESC');
 
-     return $search;
+      return $search;
    }
 
 
@@ -533,7 +533,7 @@ class Change extends CommonITILObject {
 
       /// TODO define when task created
 //       $tab['task'] = $LANG['job'][7];
-// 
+//
 //       $tab[26]['table']         = 'glpi_changetasks';
 //       $tab[26]['field']         = 'content';
 //       $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
@@ -541,7 +541,7 @@ class Change extends CommonITILObject {
 //       $tab[26]['splititems']    = true;
 //       $tab[26]['massiveaction'] = false;
 //       $tab[26]['joinparams']    = array('jointype' => 'child');
-// 
+//
 //       $tab[28]['table']         = 'glpi_changetasks';
 //       $tab[28]['field']         = 'count';
 //       $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
@@ -550,7 +550,7 @@ class Change extends CommonITILObject {
 //       $tab[28]['datatype']      = 'number';
 //       $tab[28]['massiveaction'] = false;
 //       $tab[28]['joinparams']    = array('jointype' => 'child');
-// 
+//
 //       $tab[20]['table']         = 'glpi_taskcategories';
 //       $tab[20]['field']         = 'name';
 //       $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
