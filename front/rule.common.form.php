@@ -115,7 +115,7 @@ if (isset($_POST["delete_criteria"])) {
    $rule->redirectToList();
 }
 
-commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin",
+commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin",
              $rulecollection->menu_type, $rulecollection->menu_option);
 
 $rule->showForm($_GET["id"]);
