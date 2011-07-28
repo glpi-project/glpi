@@ -252,7 +252,7 @@ class RuleTicket extends Rule {
       $criterias['_users_id_observer']['table']     = 'glpi_users';
       $criterias['_users_id_observer']['field']     = 'name';
       $criterias['_users_id_observer']['name']      = $LANG['common'][104]." - ".$LANG['job'][6];
-      $criterias['_users_id_observer']['linkfield'] = '_users_id_assign';
+      $criterias['_users_id_observer']['linkfield'] = '_users_id_observer';
       $criterias['_users_id_observer']['type']      = 'dropdown_users';
 
       $criterias['_groups_id_observer']['table']     = 'glpi_groups';
