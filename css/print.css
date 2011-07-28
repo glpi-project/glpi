@@ -161,6 +161,15 @@ hr {
    cursor:pointer;
 }
 
+/* ################--------------- Tabs ---------------#################### */
+/* TODO improve display */
+.alltab {
+   font-size:14px; 
+   text-align:center; 
+   background-color:#CC9900;
+   padding: 5px;
+   font-weight: bold;
+}
 
 
 /* ################--------------- Page ---------------#################### */

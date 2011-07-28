@@ -156,7 +156,7 @@ class Group extends CommonDBTM {
    *
    * @return Nothing (display)
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       if (!haveRight("group", "r")) {
@@ -169,7 +169,7 @@ class Group extends CommonDBTM {
          // Create item
          $this->check(-1, 'w');
       }
-
+      
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -178,8 +178,8 @@ class Group extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
-      echo "<td class='center middle' rowspan='3'>";
+      echo "<td rowspan='2' class='middle right'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td class='center middle' rowspan='2'>";
       echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
