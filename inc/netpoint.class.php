@@ -210,6 +210,29 @@ class Netpoint extends CommonDropdown {
       return -1;
    }
 
+
+   function post_addItem() {
+
+      $parent = $this->fields['locations_id'];
+      if ($parent) {
+         $changes[0] = '0';
+         $changes[1] = '';
+         $changes[2] = addslashes($this->getNameID());
+         Log::history($parent, 'Location', $changes, $this->getType(), HISTORY_ADD_SUBITEM);
+      }
+   }
+
+
+   function post_deleteFromDB() {
+
+      $parent = $this->fields['locations_id'];
+      if ($parent) {
+         $changes[0] = '0';
+         $changes[1] = addslashes($this->getNameID());
+         $changes[2] = '';
+         Log::history($parent, 'Location', $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+      }
+   }
 }
 
 ?>
