@@ -1644,7 +1644,7 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($canedit
                    || $d['users_id'] == getLoginUserID()) {
                   $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                 'popup' => 'edit_user_notification&amp;id='.$d['id']);
+                               'popup' => 'edit_user_notification&amp;id='.$d['id']);
                   showToolTip($text, $opt);
                }
             }

@@ -371,7 +371,7 @@ class User extends CommonDBTM {
       if (!isset($this->fields['id'])) {
          return false;
       }
-      return UserEmail::isEmailForUser($this->fields['id'],$email);
+      return UserEmail::isEmailForUser($this->fields['id'], $email);
    }
 
 
