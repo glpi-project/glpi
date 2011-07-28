@@ -3063,11 +3063,18 @@ class Ticket extends CommonITILObject {
       // Permit to add doc when creating a ticket
       if (!$ID) {
          echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
+         echo "&nbsp;";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+         echo "&nbsp;";
+         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                  onClick=\"var row = Ext.get('uploadfiles');row.createChild('<input type=\'file\' name=\'filename[]\' size=\'25\'>');\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+
          echo "</th>";
-         echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+         echo "<td><div id='uploadfiles'><input type='file' name='filename[]' size='25'>";
+         echo "</div></td>";
       } else {
          echo "<th colspan='2'>";
          echo $LANG['document'][20].'&nbsp;: '.Document_Item::countForItem($this);
