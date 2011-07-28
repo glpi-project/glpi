@@ -3116,11 +3116,8 @@ class Ticket extends CommonITILObject {
             }
 
          } else {
-            echo "<td class='tab_bg_2 center' colspan='2'>";
+            echo "<td class='tab_bg_2 center' colspan='4'>";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-            echo "</td><td class='tab_bg_2 center' colspan='2'>";
-            echo "<input type='button' value=\"".$LANG['buttons'][16]."\" class='submit'
-                   onclick=\"window.location='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'\">";
          }
          echo "</td></tr>";
       }
