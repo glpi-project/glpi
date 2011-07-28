@@ -1845,10 +1845,10 @@ class User extends CommonDBTM {
       $tab[9]['name']      = $LANG['common'][43];
       $tab[9]['datatype']  = 'string';
 
-      $tab[5]['table']    = 'glpi_useremails';
-      $tab[5]['field']    = 'email';
-      $tab[5]['name']     = $LANG['setup'][14];
-      $tab[5]['datatype'] = 'email';
+      $tab[5]['table']         = 'glpi_useremails';
+      $tab[5]['field']         = 'email';
+      $tab[5]['name']          = $LANG['setup'][14];
+      $tab[5]['datatype']      = 'email';
       $tab[5]['joinparams']    = array('jointype'=>'child');
       $tab[5]['forcegroupby']  = true;
       $tab[5]['massiveaction'] = false;
