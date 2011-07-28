@@ -170,6 +170,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       $mmail = new NotificationMail;
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
+      // For exchange
+      $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->Subject = "[GLPI] ".$LANG['mailing'][32];
