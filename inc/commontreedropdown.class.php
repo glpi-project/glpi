@@ -155,7 +155,28 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function post_addItem() {
+
       CleanFields($this->getTable(), 'sons_cache');
+
+      $parent = $this->fields[$this->getForeignKeyField()];
+      if ($parent && $this->dohistory) {
+         $changes[0] = '0';
+         $changes[1] = '';
+         $changes[2] = addslashes($this->getNameID());
+         Log::history($parent, $this->getType(), $changes, $this->getType(), HISTORY_ADD_SUBITEM);
+      }
+   }
+
+
+   function post_deleteFromDB() {
+
+      $parent = $this->fields[$this->getForeignKeyField()];
+      if ($parent && $this->dohistory) {
+         $changes[0] = '0';
+         $changes[1] = addslashes($this->getNameID());
+         $changes[2] = '';
+         Log::history($parent, $this->getType(), $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+      }
    }
 
 
