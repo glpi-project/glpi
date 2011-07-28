@@ -48,6 +48,7 @@ class Change_Ticket extends CommonDBRelation{
 
    var $checks_only_for_itemtype1 = true;
 
+
    static function getTypeName() {
       global $LANG;
 
@@ -79,8 +80,7 @@ class Change_Ticket extends CommonDBRelation{
       }
 
       $canedit = $change->can($ID,'w');
-
-      $rand = mt_rand();
+      $rand    = mt_rand();
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
@@ -104,7 +104,6 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
 
       $used = array();
-
       if ($DB->numrows($result) >0) {
          initNavigateListItems('Ticket', $LANG['change'][0] ." = ". $change->fields["name"]);
 
@@ -163,8 +162,7 @@ class Change_Ticket extends CommonDBRelation{
       }
 
       $canedit = $ticket->can($ID,'w');
-
-      $rand = mt_rand();
+      $rand    = mt_rand();
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
@@ -174,6 +172,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
       echo "<a href='".getItemTypeFormURL('Change')."?tickets_id=$ID'>".$LANG['change'][1]."</a>";
       echo "</th></tr>";
+
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
       echo "</tr>";
 
@@ -187,7 +186,6 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
 
       $used = array();
-
       if ($DB->numrows($result) >0) {
          initNavigateListItems('Change', $LANG['job'][38] ." = ". $ticket->fields["name"]);
 
@@ -212,7 +210,7 @@ class Change_Ticket extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
          Dropdown::show('Change', array('used'   => $used,
-                                         'entity' => $ticket->getEntityID()));
+                                        'entity' => $ticket->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";

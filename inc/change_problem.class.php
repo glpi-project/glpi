@@ -59,7 +59,7 @@ class Change_Problem extends CommonDBRelation{
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       return parent::getSearchOptions();
    }
@@ -79,8 +79,7 @@ class Change_Problem extends CommonDBRelation{
       }
 
       $canedit = $problem->can($ID,'w');
-
-      $rand = mt_rand();
+      $rand    = mt_rand();
       echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
@@ -106,7 +105,6 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
 
       $used = array();
-
       if ($DB->numrows($result) >0) {
          initNavigateListItems('Change', $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
@@ -124,7 +122,7 @@ class Change_Problem extends CommonDBRelation{
             echo "<td><a href='".getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($problem->isRecursive()) {
-               echo "<td>".Dropdown::getDropdownName('glpi_entities',$data["entities_id"])."</td>";
+               echo "<td>".Dropdown::getDropdownName('glpi_entities', $data["entities_id"])."</td>";
             }
             echo "</tr>";
          }
@@ -165,8 +163,7 @@ class Change_Problem extends CommonDBRelation{
       }
 
       $canedit = $change->can($ID,'w');
-
-      $rand = mt_rand();
+      $rand    = mt_rand();
       echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
              action='";
       echo getItemTypeFormURL(__CLASS__)."'>";
@@ -187,7 +184,6 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
 
       $used = array();
-
       if ($DB->numrows($result) >0) {
          initNavigateListItems('Problem', $LANG['change'][0] ." = ". $change->fields["name"]);
 

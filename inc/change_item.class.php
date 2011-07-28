@@ -84,11 +84,11 @@ class Change_Item extends CommonDBRelation{
 
 
    /**
-   * Print the HTML array for Items linked to a change
-   *
-   * @param $change change object
-   * @return Nothing (display)
-   *
+    * Print the HTML array for Items linked to a change
+    *
+    * @param $change change object
+    *
+    * @return Nothing (display)
    **/
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI, $LANG;
@@ -194,20 +194,20 @@ class Change_Item extends CommonDBRelation{
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
                echo "<td class='center".
-                        (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+                      (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";
                echo "<td class='center'>".
-                        (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+                      (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
                echo "<td class='center'>".
-                        (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                      (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                echo "</tr>";
             }
             $totalnb += $nb;
          }
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".($totalnb>0? $LANG['common'][33].
-             "&nbsp;=&nbsp;$totalnb</td>" : "&nbsp;</td>");
+      echo "<td class='center' colspan='2'>".
+             ($totalnb>0? $LANG['common'][33]."&nbsp;=&nbsp;$totalnb</td>" : "&nbsp;</td>");
       echo "<td colspan='4'>&nbsp;</td></tr> ";
 
       if ($canedit) {
