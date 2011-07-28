@@ -305,6 +305,11 @@ class RuleTicket extends Rule {
       $actions['itilcategories_id']['type']  = 'dropdown';
       $actions['itilcategories_id']['table'] = 'glpi_itilcategories';
 
+      $actions['type']['name']      = $LANG['common'][17];
+      $actions['type']['table']     = 'glpi_tickets';
+      $actions['type']['type']      = 'dropdown_tickettype';
+
+
       $actions['_users_id_requester']['name'] = $LANG['job'][4]." - ".$LANG['common'][34];
       $actions['_users_id_requester']['type'] = 'dropdown_users';
 

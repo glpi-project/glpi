@@ -244,6 +244,11 @@ class RuleAction extends CommonDBChild {
                      $display = true;
                      break;
 
+                  case "dropdown_tickettype" :
+                     Ticket::dropdownType('value');
+                     $display = true;
+                     break;
+
                   case "dropdown_assign" :
                      User::dropdown(array('name'  => 'value',
                                           'right' => 'own_ticket'));

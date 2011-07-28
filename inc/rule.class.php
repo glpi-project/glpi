@@ -1492,6 +1492,9 @@ class Rule extends CommonDBTM {
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);
 
+            case "dropdown_tickettype" :
+               return Ticket::getTicketTypeName($value);
+
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
 
