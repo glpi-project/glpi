@@ -105,9 +105,15 @@ class CommonGLPI {
          default :
             if (!is_integer($itemtype) && class_exists($itemtype)) {
                $obj = new $itemtype();
-               $title = $obj->getTabNameForItem($this);
-               if (!empty($title)) {
-                  $ong[$itemtype] = $title;
+               $titles = $obj->getTabNameForItem($this);
+               if (!is_array($titles)) {
+                  $titles = array(1 => $titles);
+               }
+
+               foreach ($titles as $key => $val) {
+                  if (!empty($val)) {
+                     $ong[$itemtype.'####'.$key] = $val;
+                  }
                }
             }
             break;
@@ -131,11 +137,12 @@ class CommonGLPI {
     * show Tab content
     *
     * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $tabnum integer tab number
     * @param $withtemplate boolean is a template object ?
     *
     * @return true
    **/
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
       return false;
    }
 
@@ -152,19 +159,37 @@ class CommonGLPI {
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0) {
 
 
-      if (Plugin::displayAction($item, $tab, $withtemplate)) {
-         return true;
-      }
 
       switch ($tab) {
+         // All tab 
+         case -1 :
+            // get tabs and loop over 
+            $ong = $item->defineTabs(array('withtemplate'=>$withtemplate));
+            if (count($ong)) {
+               foreach ($ong as $key => $val) {
+                  echo "<div class='alltab'>$val</div>";
+                  self::displayStandardTab($item,$key,$withtemplate);
+               }
+            }
+            // Display plugin datas
+            Plugin::displayAction($item,$tab);
+
+            return true;
+            break;
          case 'Note' :
             $item->showNotesForm();
             return true;
 
          default :
-            if (!is_integer($tab) && class_exists($tab)) {
-               $obj = new $tab();
-               return $obj->displayTabContentForItem($item, $withtemplate);
+            if (Plugin::displayAction($item, $tab, $withtemplate)) {
+               return true;
+            }
+
+            list($itemtype,$tabnum) = explode('####',$tab);
+
+            if (!is_integer($itemtype) && class_exists($itemtype)) {
+               $obj = new $itemtype();
+               return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
             break;
       }

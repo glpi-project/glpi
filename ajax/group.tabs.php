@@ -36,46 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset($_POST["id"])) {
-   exit();
-}
-
-checkRight("group", "r");
-
-$group = new Group();
-
-if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
-
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
-         Group_User::showForGroup($_POST['target'], $group);
-         $group->showItems(false);
-         $group->showItems(true);
-         $group->showLDAPForm($_POST['target'], $_POST["id"]);
-         Plugin::displayAction($group, $_REQUEST['glpi_tab']);
-         break;
-
-      case 2 :
-         $group->showItems(false);
-         break;
-
-      case 3 :
-         $group->showItems(true);
-         break;
-
-      case 4 :
-         $group->showLDAPForm($_POST['target'], $_POST["id"]);
-         break;
-
-      default :
-         if (!CommonGLPI::displayStandardTab($group,$_REQUEST['glpi_tab'])) {
-         }
-   }
-}
-
-ajaxFooter();
+$item = new Group();
+include (GLPI_ROOT . "/ajax/common.tabs.php");
 
 ?>

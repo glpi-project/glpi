@@ -193,7 +193,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
 
       $fup = new TicketFollowup();
       $fup->showSummary($item);

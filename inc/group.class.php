@@ -76,6 +76,52 @@ class Group extends CommonDBTM {
    }
 
 
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("group","r")) {
+         switch ($item->getType()) {
+            case 'Group' :
+               $ong = array();
+
+               $ong[1] = $LANG['common'][96];
+               $ong[2] = $LANG['common'][96].' ('.$LANG['common'][109].')';
+      
+               if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
+                  $ong[3] = $LANG['setup'][3];
+               }
+               return $ong;
+               break;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+      global $LANG;
+      switch ($item->getType()) {
+         case 'Group' :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showItems(false);
+                  return true;
+                  break;
+               case 2 :
+                  $item->showItems(true);
+                  return true;
+                  break;
+               case 3 : 
+                  $item->showLDAPForm();
+                  return true;
+                  break;
+
+            }
+            break;
+      }
+      return false;
+   }
+
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -84,12 +130,14 @@ class Group extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $this->addStandardTab('User', $ong);
 
-         $ong[2] = $LANG['common'][96];
-         $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
+         $this->addStandardTab('Group', $ong);
 
-         if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
-            $ong[4] = $LANG['setup'][3];
-         }
+//          $ong[2] = $LANG['common'][96];
+//          $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
+// 
+//          if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
+//             $ong[4] = $LANG['setup'][3];
+//          }
 
       } else { // New item
          $ong[1] = $LANG['title'][26];
