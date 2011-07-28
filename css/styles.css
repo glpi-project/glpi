@@ -177,6 +177,16 @@ hr {
  }
 
 
+/* ################--------------- Tabs ---------------#################### */
+/* TODO improve display */
+.alltab {
+   font-size:14px; 
+   text-align:center; 
+   background-color:#CC9900;
+   padding: 5px;
+   font-weight: bold;
+}
+
 
 /* ################--------------- Page ---------------#################### */
 
@@ -1672,3 +1682,4 @@ div#show_all_menu {
    font-family: monospace;
    white-space: pre;
 }
+

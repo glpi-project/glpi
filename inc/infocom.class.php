@@ -100,7 +100,7 @@ class Infocom extends CommonDBChild {
       return '';
    }
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
       self::showForItem($item,$withtemplate);
       return true;
    }

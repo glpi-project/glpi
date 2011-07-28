@@ -186,7 +186,7 @@ class Change extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case "Problem" :
