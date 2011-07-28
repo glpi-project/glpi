@@ -152,7 +152,7 @@ if (isset($_GET["action"])) {
    exit();
 }
 
-commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecollection->menu_type,
+commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
              $rulecollection->menu_option);
 
    if ($rulecollection->showInheritedTab()) {
