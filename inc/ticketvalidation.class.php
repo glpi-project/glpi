@@ -302,8 +302,8 @@ class TicketValidation  extends CommonDBChild {
 
          // Set global validation to accepted to define one
          if ($job->fields['global_validation'] == 'waiting'
-             || TicketValidation::getNumberValidationForTicket($this->fields["tickets_id"]) == 1
-             || TicketValidation::isAllValidationsHaveSameStatusForTicket($this->fields["tickets_id"])) {
+             || self::getNumberValidationForTicket($this->fields["tickets_id"]) == 1
+             || self::isAllValidationsHaveSameStatusForTicket($this->fields["tickets_id"])) {
 
             $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = $this->fields["status"];
