@@ -41,13 +41,14 @@ if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$group = new Group();
+$group     = new Group();
 $groupuser = new Group_User();
 
 if (isset($_POST["add"])) {
    $group->check(-1,'w',$_POST);
    if ($newID=$group->add($_POST)) {
-      Event::log($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+      Event::log($newID, "groups", 4, "setup",
+                 $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -66,7 +67,8 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["adduser"])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
-      Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+      Event::log($_POST["groups_id"], "groups", 4, "setup",
+                 $_SESSION["glpiname"]." ".$LANG['log'][48]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -74,7 +76,7 @@ if (isset($_POST["add"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
-            $groupuser->delete(array('id'=>$key));
+            $groupuser->delete(array('id' => $key));
          }
       }
    }
@@ -82,11 +84,11 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["unset_manager"])) {
-
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
-            $groupuser->update(array('id'=>$key, 'is_manager'=> 0));
+            $groupuser->update(array('id'         => $key,
+                                     'is_manager' => 0));
          }
       }
    }
@@ -94,11 +96,11 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["set_manager"])) {
-
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
-            $groupuser->update(array('id'=>$key, 'is_manager'=> 1));
+            $groupuser->update(array('id'         => $key,
+                                     'is_manager' => 1));
          }
       }
    }

@@ -45,12 +45,12 @@ checkLoginUser();
 
 if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
     || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {
-   $user = new User();
+   $user          = new User();
    $default_email = "";
-   $emails = array();
+   $emails        = array();
    if ($user->getFromDB($_REQUEST["value"])) {
       $default_email = $user->getDefaultEmail();
-      $emails = $user->getAllEmails();
+      $emails        = $user->getAllEmails();
    }
 
    echo $LANG['job'][19].'&nbsp;:&nbsp;';
@@ -64,10 +64,12 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
 
    echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
    // Only one email
-   if (count($emails) ==  1 && !empty($default_email)
-      && NotificationMail::isUserAddressValid($default_email)) {
+   if (count($emails) ==  1
+       && !empty($default_email)
+       && NotificationMail::isUserAddressValid($default_email)) {
       echo $default_email;
-   } else if (count($emails) >  1) {
+
+   } else if (count($emails) > 1) {
       // Several emails : select in the list
       echo "<select name='".$_REQUEST['field']."[alternative_email]' value=''>";
       echo "<option value='' selected>$default_email</option>";

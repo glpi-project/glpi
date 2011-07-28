@@ -131,6 +131,7 @@ class UserEmail  extends CommonDBChild {
       return $emails;
    }
 
+
    /**
     * is an email of the user
     *
