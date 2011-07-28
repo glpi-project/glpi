@@ -145,7 +145,13 @@ function getItemTypeTabsURL($itemtype, $full=true) {
       $item = strtolower($itemtype);
    }
 
-   return "$dir/ajax/$item.tabs.php";
+   $filename = "/ajax/$item.tabs.php";
+   // Use default one is tabs not exists
+   if (!file_exists(GLPI_ROOT.$filename)) {
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $filename = "/ajax/common.tabs.php";
+   }
+   return $dir.$filename;
 }
 
 

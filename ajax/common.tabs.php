@@ -33,6 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -40,6 +43,10 @@ if (!isset($_REQUEST["id"])) {
    exit();
 }
 if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
+if (!isset($_REQUEST['itemtype'])) {
    exit();
 }
 
@@ -58,6 +65,7 @@ if (!isset($_REQUEST["withtemplate"])) {
    $_REQUEST["withtemplate"] = "";
 }
 
+$item = new $_REQUEST['itemtype']();
 
 if ($item->can($_REQUEST["id"],'r')) {
    CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
