@@ -451,6 +451,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
 
       if ($percent >= 0) {
          displayProgressBar(400,$percent);
+         echo '<br>';
       }
 
       if ($offsettable >= 0) {
