@@ -4414,18 +4414,22 @@ class Search {
       $options = &self::getOptions($itemtype, $withplugins);
       $todel   = array();
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-         $todel = array_merge($todel, array('financial', 25, 26, 27, 28, 37, 38, 50, 51, 52, 53,
-                                            54, 55, 56, 57, 58, 59, 120, 122, 123, 124, 125));
+         $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
+
+         $todel = array_merge($todel, array_keys($itemstodel));
       }
 
       if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
-         $todel = array_merge($todel, array('contract', 29, 30, 130, 131, 132, 133, 134, 135, 136,
-                                            137, 138));
+         $itemstodel = Contract::getSearchOptionsToAdd();
+
+         $todel = array_merge($todel, array_keys($itemstodel));
       }
 
       if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
-            $todel = array_merge($todel, array('network', 20, 21, 22, 83, 84, 85));
+            $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
+   
+            $todel = array_merge($todel, array_keys($itemstodel));
          }
          if (!$CFG_GLPI['use_ocs_mode']) {
             if (($action=='r' && !haveRight('view_ocsng',$action))
