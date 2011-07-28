@@ -80,7 +80,7 @@ class SoftwareLicense extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       // Unset to set to default using mysql default value
-      if (empty ($input['expire'])) {
+      if (empty($input['expire'])) {
          unset ($input['expire']);
       }
 
@@ -94,7 +94,7 @@ class SoftwareLicense extends CommonDBTM {
       $itemtype = 'Software';
       $dupid    = $this->fields["softwares_id"];
 
-      if (isset ($this->input["_duplicate_license"])) {
+      if (isset($this->input["_duplicate_license"])) {
          $itemtype = 'SoftwareLicense';
          $dupid    = $this->input["_duplicate_license"];
       }

@@ -85,10 +85,10 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['group_condition']             = '';
       $this->fields['group_search_type']           = 0;
       $this->fields['group_member_field']          = '';
-      $this->fields['email1_field']                 = 'mail';
-      $this->fields['email2_field']                 = '';
-      $this->fields['email3_field']                 = '';
-      $this->fields['email4_field']                 = '';
+      $this->fields['email1_field']                = 'mail';
+      $this->fields['email2_field']                = '';
+      $this->fields['email3_field']                = '';
+      $this->fields['email4_field']                = '';
       $this->fields['realname_field']              = 'cn';
       $this->fields['firstname_field']             = 'givenname';
       $this->fields['phone_field']                 = 'telephonenumber';
@@ -186,7 +186,7 @@ class AuthLDAP extends CommonDBTM {
          return false;
       }
       $spotted = false;
-      if (empty ($ID)) {
+      if (empty($ID)) {
          if ($this->getEmpty()) {
             $spotted = true;
          }
@@ -372,7 +372,7 @@ class AuthLDAP extends CommonDBTM {
 
          while ($ldap_replicate = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+            if (isset($_GET["select"]) && $_GET["select"] == "all") {
                $sel = "checked";
             }
             $sel ="";
@@ -1205,7 +1205,7 @@ class AuthLDAP extends CommonDBTM {
          } else {
             //Ldap synchronisation : look if the user exists in the directory
             //and compares the modifications dates (ldap and glpi db)
-            if (!empty ($ldap_users[$user['name']])) {
+            if (!empty($ldap_users[$user['name']])) {
                //If entry was modified or if script should synchronize all the users
                if (($values['action'] == self::ACTION_ALL)
                    || ($ldap_users[$user['name']] - strtotime($user['date_sync']) > 0)) {
@@ -1444,7 +1444,7 @@ class AuthLDAP extends CommonDBTM {
 
       $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", array("cn"));
       $v  = ldap_get_entries_clean($ldap_connection, $sr);
-      if (!is_array($v) || count($v) == 0 || empty ($v[0]["cn"][0])) {
+      if (!is_array($v) || count($v) == 0 || empty($v[0]["cn"][0])) {
          return false;
       }
       return $v[0]["cn"][0];
@@ -2000,7 +2000,7 @@ class AuthLDAP extends CommonDBTM {
       // Tenter une recherche pour essayer de retrouver le DN
       $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
 
-      if (!empty ($values['condition'])) {
+      if (!empty($values['condition'])) {
          $filter = "(& $filter ".$values['condition'].")";
       }
 
@@ -2263,10 +2263,10 @@ class AuthLDAP extends CommonDBTM {
 
                $field_counter = 0;
                $fields = array('login_field'     => $LANG['login'][6],
-                               'email1_field'     => $LANG['setup'][14],
-                               'email2_field'     => $LANG['setup'][14].' 2',
-                               'email3_field'     => $LANG['setup'][14].' 3',
-                               'email4_field'     => $LANG['setup'][14].' 4',
+                               'email1_field'    => $LANG['setup'][14],
+                               'email2_field'    => $LANG['setup'][14].' 2',
+                               'email3_field'    => $LANG['setup'][14].' 3',
+                               'email4_field'    => $LANG['setup'][14].' 4',
                                'realname_field'  => $LANG['common'][48],
                                'firstname_field' => $LANG['common'][43],
                                'phone_field'     => $LANG['help'][35],

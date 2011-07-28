@@ -1127,7 +1127,7 @@ class Ticket extends CommonITILObject {
 
       // Set unset variables with are needed
       $user = new User();
-      if (isset ($input["_users_id_requester"])
+      if (isset($input["_users_id_requester"])
           && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
       }

@@ -1028,7 +1028,7 @@ class Rule extends CommonDBTM {
          echo "<td width='10'>";
          $sel = "";
 
-         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+         if (isset($_GET["select"]) && $_GET["select"] == "all") {
             $sel = "checked";
          }
 
@@ -1118,7 +1118,7 @@ class Rule extends CommonDBTM {
          echo "<td width='10'>";
          $sel = "";
 
-         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+         if (isset($_GET["select"]) && $_GET["select"] == "all") {
             $sel = "checked";
          }
 
@@ -1225,7 +1225,7 @@ class Rule extends CommonDBTM {
          echo "<td width='10'>";
          $sel = "";
 
-         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
+         if (isset($_GET["select"]) && $_GET["select"] == "all") {
             $sel = "checked";
          }
 
@@ -1790,7 +1790,7 @@ class Rule extends CommonDBTM {
 
       echo "<div class='spaced'>";
 
-      if (empty ($rules)) {
+      if (empty($rules)) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>" . $LANG['search'][15] . "</th>";
          echo "</tr>\n";

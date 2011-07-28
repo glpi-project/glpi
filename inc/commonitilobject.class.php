@@ -719,7 +719,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // No Auto set Import for external source
       if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
-      } else if (isset ($input["_users_id_requester"]) && $input["_users_id_requester"]) {
+      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]) {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
@@ -1670,17 +1670,18 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $type string : actor type
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
-    * @param $inobject boolean display in ITIL object ?
     * @param $withsupplier boolean : allow adding a supplier (only one possible in ASSIGN case)
+    * @param $inobject boolean display in ITIL object ?
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $withsupplier=false, $inobject=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $withsupplier=false,
+                                    $inobject=true) {
       global $LANG, $CFG_GLPI;
 
-      $types  = array(''      => DROPDOWN_EMPTY_VALUE,
-                      'user'  => $LANG['common'][34],
-                      'group' => $LANG['common'][35]);
+      $types = array(''      => DROPDOWN_EMPTY_VALUE,
+                     'user'  => $LANG['common'][34],
+                     'group' => $LANG['common'][35]);
 
       if ($withsupplier && $type == self::ASSIGN) {
          $types['supplier'] = $LANG['financial'][26];
@@ -1946,7 +1947,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign>=0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'], $this->fields["suppliers_id_assign"]==0);
+         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
+                                $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User

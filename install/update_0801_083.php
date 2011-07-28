@@ -712,7 +712,8 @@ function update0801to083() {
       $DB->query($query)
       or die("0.83 add table glpi_useremails ". $LANG['update'][90] . $DB->error());
    }
-   // Manage migration : populate is_default=1 and is_dynamic depending of authldap config / authtype / auths_id
+   // Manage migration : populate is_default=1
+   // and is_dynamic depending of authldap config / authtype / auths_id
    if (FieldExists("glpi_users", 'email')) {
       $query = "SELECT *
                 FROM `glpi_users`
@@ -740,9 +741,10 @@ function update0801to083() {
                   $is_dynamic = $ldap_servers[$data['auths_id']];
                }
                $query2 = "INSERT INTO `glpi_useremails`
-                                  (`users_id`, `is_default`, `is_dynamic`, `email`)
-                           VALUES ('".$data['id']."','1','$is_dynamic','".$data['email']."')";
-               $DB->query($query2) or die("0.83 move emails to  glpi_useremails ". $LANG['update'][90] . $DB->error());
+                                 (`users_id`, `is_default`, `is_dynamic`, `email`)
+                          VALUES ('".$data['id']."','1','$is_dynamic','".$data['email']."')";
+               $DB->query($query2)
+               or die("0.83 move emails to  glpi_useremails ". $LANG['update'][90] . $DB->error());
             }
          }
       }

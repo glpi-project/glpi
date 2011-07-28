@@ -169,7 +169,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
 }
 // call cron
-if (! GLPI_DEMO_MODE) {
+if (!GLPI_DEMO_MODE) {
    callCronForce();
 }
 

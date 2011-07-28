@@ -100,7 +100,7 @@ if (isset($_REQUEST['getvcard'])) {
    Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    $user->redirectToList();
 
-} else if (isset ($_POST["force_ldap_resynch"])) {
+} else if (isset($_POST["force_ldap_resynch"])) {
    checkRight('user_authtype', 'w');
    $user->check($_POST['id'], 'w');
 

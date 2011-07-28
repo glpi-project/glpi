@@ -369,7 +369,7 @@ function update0681to07() {
       $result = $DB->query($query);
       $config = $DB->fetch_array($result);
 
-      if (!empty ($config["ldap_host"])) {
+      if (!empty($config["ldap_host"])) {
          //Transfer ldap informations into the new table
          $query = "INSERT INTO `glpi_auth_ldap`
                    VALUES (NULL, '".$config["ldap_host"]."', '".$config["ldap_host"]."',
@@ -436,7 +436,7 @@ function update0681to07() {
       $result = $DB->query($query);
       $config = $DB->fetch_array($result);
 
-      if (!empty ($config["imap_host"])) {
+      if (!empty($config["imap_host"])) {
          //Transfer ldap informations into the new table
          $query = "INSERT INTO `glpi_auth_mail`
                    VALUES (NULL, '".$config["imap_host"]."', '".$config["imap_auth_server"]."',
@@ -579,69 +579,69 @@ function update0681to07() {
                $data     = addslashes_deep($data);
                $comments = "";
 
-               if (!empty ($data['address'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['address'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $LANG['financial'][44] . ":\n";
                   $comments .= $data['address'];
                }
 
-               if (!empty ($data['postcode']) || !empty ($data['town'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['postcode']) || !empty($data['town'])) {
+                  if (!empty($comments)) {
                      $comments .= $LANG['financial'][44] . ":\n";
                   }
                   $comments .= $data['postcode'] . " " . $data['town'];
                }
 
-               if (!empty ($data['state']) || !empty ($data['country'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['state']) || !empty($data['country'])) {
+                  if (!empty($comments)) {
                      $comments .= $LANG['financial'][44] . ":\n";
                   }
                   $comments .= $data['country'] . " " . $data['state'];
                }
 
-               if (!empty ($data['website'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['website'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $LANG['financial'][45] . ": ";
                   $comments .= $data['website'];
                }
 
-               if (!empty ($data['phonenumber'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['phonenumber'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $LANG['help'][35] . ": ";
                   $comments .= $data['phonenumber'];
                }
 
-               if (!empty ($data['fax'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['fax'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $LANG['financial'][30] . ": ";
                   $comments .= $data['fax'];
                }
 
-               if (!empty ($data['email'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['email'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $LANG['setup'][14] . ": ";
                   $comments .= $data['email'];
                }
 
-               if (!empty ($data['comments'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['comments'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $data['comments'];
                }
 
-               if (!empty ($data['notes'])) {
-                  if (!empty ($comments)) {
+               if (!empty($data['notes'])) {
+                  if (!empty($comments)) {
                      $comments .= "\n";
                   }
                   $comments .= $data['notes'];
@@ -800,7 +800,7 @@ function update0681to07() {
                             "glpi_peripherals", "glpi_software", "glpi_phones", "glpi_ocs_config");
 
    foreach ($template_tables as $table) {
-      if (!isset ($enum01[$table])) {
+      if (!isset($enum01[$table])) {
          $enum01[$table] = array ();
       }
       $enum01[$table][] = "is_template";
@@ -877,7 +877,7 @@ function update0681to07() {
                            "glpi_phones", "glpi_consumables_type" );
 
    foreach ($deleted_tables as $table) {
-      if (!isset ($enum01[$table])) {
+      if (!isset($enum01[$table])) {
          $enum01[$table] = array ();
       }
       $enumYN["N"][$table][] = "deleted";

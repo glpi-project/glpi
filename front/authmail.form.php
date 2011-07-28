@@ -45,23 +45,23 @@ if (!isset($_GET["id"])) {
 $config_mail = new AuthMail();
 
 //IMAP/POP Server add/update/delete
-if (isset ($_POST["update"])) {
+if (isset($_POST["update"])) {
    $config_mail->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset ($_POST["add"])) {
+} else if (isset($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       $newID = $config_mail->add($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset ($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    $config_mail->delete($_POST);
    $_SESSION['glpi_authconfig'] = 2;
    $config_mail->redirectToList();
 
-} else if (isset ($_POST["test"])) {
+} else if (isset($_POST["test"])) {
    if (AuthMail::testAuth($_POST["imap_string"], $_POST["imap_login"], $_POST["imap_password"])) {
       addMessageAfterRedirect($LANG['login'][22]);
    } else {

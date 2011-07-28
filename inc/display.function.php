@@ -2183,7 +2183,7 @@ function displayErrorAndDie ($message, $minimal=false) {
    global $LANG, $CFG_GLPI, $HEADER_LOADED;
 
    if (!$HEADER_LOADED) {
-      if ($minimal || !isset ($_SESSION["glpiactiveprofile"]["interface"])) {
+      if ($minimal || !isset($_SESSION["glpiactiveprofile"]["interface"])) {
          nullHeader($LANG['login'][5], '');
 
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {

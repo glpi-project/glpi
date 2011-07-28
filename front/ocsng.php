@@ -41,13 +41,13 @@ checkSeveralRightsOr(array('ocsng'        => 'r',
                            'clean_ocsng'  => 'r'));
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils","ocsng");
-if (isset ($_SESSION["ocs_import"])) {
+if (isset($_SESSION["ocs_import"])) {
    unset ($_SESSION["ocs_import"]);
 }
-if (isset ($_SESSION["ocs_link"])) {
+if (isset($_SESSION["ocs_link"])) {
    unset ($_SESSION["ocs_link"]);
 }
-if (isset ($_SESSION["ocs_update"])) {
+if (isset($_SESSION["ocs_update"])) {
    unset ($_SESSION["ocs_update"]);
 }
 

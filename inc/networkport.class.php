@@ -550,7 +550,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       // Ajout des infos deja remplies
-      if (isset ($_POST) && !empty ($_POST)) {
+      if (isset($_POST) && !empty($_POST)) {
          foreach ($netport->fields as $key => $val) {
             if ($key!='id' && isset($_POST[$key])) {
                $netport->fields[$key] = $_POST[$key];
@@ -820,7 +820,7 @@ class NetworkPort extends CommonDBChild {
       foreach ($types as $itemtype) {
          $result = $this->getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
 
-         if (!empty ($result)) {
+         if (!empty($result)) {
             return $result;
          }
       }

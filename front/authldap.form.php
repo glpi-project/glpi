@@ -46,11 +46,11 @@ if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
 //LDAP Server add/update/delete
-if (isset ($_POST["update"])) {
+if (isset($_POST["update"])) {
    $config_ldap->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset ($_POST["add"])) {
+} else if (isset($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
@@ -64,12 +64,12 @@ if (isset ($_POST["update"])) {
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset ($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    $config_ldap->delete($_POST);
    $_SESSION['glpi_authconfig'] = 1;
    $config_ldap->redirectToList();
 
-} else if (isset ($_POST["test_ldap"])) {
+} else if (isset($_POST["test_ldap"])) {
    $ldap = new AuthLDAP();
    $ldap->getFromDB($_POST["id"]);
 
@@ -82,7 +82,7 @@ if (isset ($_POST["update"])) {
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset ($_POST["test_ldap_replicate"])) {
+} else if (isset($_POST["test_ldap_replicate"])) {
    foreach ($_POST["test_ldap_replicate"] as $replicate_id => $value) {
       $replicate = new AuthLdapReplicate();
       $replicate->getFromDB($replicate_id);

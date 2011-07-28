@@ -145,7 +145,7 @@ abstract class CommonDropdown extends CommonDBTM {
                                  $this->getSearchUrl());
    }
 
-   
+
    function displayHeader () {
       commonHeader($this->getTypeName(), '', $this->first_level_menu, $this->second_level_menu,
                    get_class($this));
@@ -249,7 +249,7 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'password':
                echo "<input type='password' name='password' value='' size='20' autocomplete='off'>";
                break;
-               
+
             default:
                $this->displaySpecificTypeField($ID, $field);
                break;
@@ -346,7 +346,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $ID = $this->fields['id'];
 
       $RELATION = getDbRelations();
-      if (isset ($RELATION[$this->getTable()])) {
+      if (isset($RELATION[$this->getTable()])) {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0]!='_') {
                if (!is_array($field)) {

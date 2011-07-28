@@ -86,7 +86,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          return false;
       }
 
-      if (empty ($ID)) {
+      if (empty($ID)) {
           if ($this->getEmpty()) {
              $notificationtemplates_id = $options['notificationtemplates_id'];
           }

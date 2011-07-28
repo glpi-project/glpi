@@ -61,7 +61,7 @@ class AuthMail extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["connect_string"] = constructMailServerConfig($input);
       }
       return $input;
@@ -70,7 +70,7 @@ class AuthMail extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
+      if (isset($input['mail_server']) && !empty($input['mail_server'])) {
          $input["connect_string"] = constructMailServerConfig($input);
       }
       return $input;
@@ -153,7 +153,7 @@ class AuthMail extends CommonDBTM {
          return false;
       }
       $spotted = false;
-      if (empty ($ID)) {
+      if (empty($ID)) {
          if ($this->getEmpty()) {
             $spotted = true;
          }
@@ -277,7 +277,7 @@ class AuthMail extends CommonDBTM {
    **/
    static function mailAuth($auth, $login, $password, $mail_method) {
 
-      if (isset($mail_method["connect_string"]) && !empty ($mail_method["connect_string"])) {
+      if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
          $auth->auth_succeded = $auth->connection_imap($mail_method["connect_string"],
                                                        decodeFromUtf8($login),
                                                        decodeFromUtf8($password));
