@@ -97,9 +97,10 @@ class Software extends CommonDBTM {
          if (empty($withtemplate)) {
             $ong[2] = $LANG['software'][19];
          }
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
-         }
+
+         $this->addStandardTab('Infocom', $ong);
+
+         $this->addStandardTab('Contract', $ong);
 
          $this->addStandardTab('Document', $ong);
 

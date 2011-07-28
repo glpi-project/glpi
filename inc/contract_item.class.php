@@ -106,6 +106,15 @@ class Contract_Item extends CommonDBRelation{
       return $tab;
    }
 
+   static function countForItem(CommonDBTM $item) {
+
+      $restrict = "`glpi_contracts_items`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_contracts_items`.`itemtype` = '".$item->getType()."'";
+
+      return countElementsInTable(array('glpi_contracts_items'), $restrict);
+   }
+
+
 }
 
 ?>

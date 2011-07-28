@@ -119,9 +119,8 @@ class CartridgeItem extends CommonDBTM {
 
       $ong[1] = $LANG['Menu'][21];
       if ($this->fields['id'] > 0) {
-         if (haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
-         }
+
+         $this->addStandardTab('Infocom', $ong);
 
          $this->addStandardTab('Document',$ong);
 

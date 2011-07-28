@@ -67,11 +67,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             NetworkPort::showForItem($computer, $_POST["withtemplate"]);
             break;
 
-         case 4 :
-            Infocom::showForItem($computer, $_POST["withtemplate"]);
-            Contract::showAssociated($computer, $_POST["withtemplate"]);
-            break;
-
          default :
             if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
             }
@@ -99,11 +94,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
          case 3 :
             Computer_Item::showForComputer($_POST['target'], $computer);
             NetworkPort::showForItem($computer);
-            break;
-
-         case 4 :
-            Infocom::showForItem($computer);
-            Contract::showAssociated($computer);
             break;
 
          case 13 :

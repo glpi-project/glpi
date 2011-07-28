@@ -100,9 +100,9 @@ class Computer extends CommonDBTM {
             $ong[3] = $LANG['title'][27];
          }
 
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
-         }
+         $this->addStandardTab('Infocom', $ong);
+
+         $this->addStandardTab('Contract', $ong);
 
          $this->addStandardTab('Document',$ong);
 

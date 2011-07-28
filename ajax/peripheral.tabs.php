@@ -63,10 +63,6 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
-         case 4 :
-            Infocom::showForItem($periph, $_POST["withtemplate"]);
-            Contract::showAssociated($periph, $_POST["withtemplate"]);
-            break;
 
          default :
             if (!CommonGLPI::displayStandardTab($periph, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
@@ -85,11 +81,6 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Ticket::showListForItem($periph);
             Link::showForItem($periph);
             Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
-            break;
-
-         case 4 :
-            Infocom::showForItem($periph);
-            Contract::showAssociated($periph);
             break;
 
          default :

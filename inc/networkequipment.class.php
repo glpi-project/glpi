@@ -79,9 +79,10 @@ class NetworkEquipment extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['title'][27];
-         if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4] = $LANG['Menu'][26];
-         }
+
+         $this->addStandardTab('Infocom', $ong);
+
+         $this->addStandardTab('Contract', $ong);
 
          $this->addStandardTab('Document', $ong);
 

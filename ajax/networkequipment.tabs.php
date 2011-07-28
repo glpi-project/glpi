@@ -63,10 +63,6 @@ if (!empty($_POST["withtemplate"])) {
 
    if ($_POST["id"]>0) {
       switch($_REQUEST['glpi_tab']) {
-         case 4 :
-            Infocom::showForItem($netdevice, $_POST["withtemplate"]);
-            Contract::showAssociated($netdevice, $_POST["withtemplate"]);
-            break;
 
          default :
             if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
@@ -85,11 +81,6 @@ if (!empty($_POST["withtemplate"])) {
          Ticket::showListForItem($netdevice);
          Link::showForItem($netdevice);
          Plugin::displayAction($netdevice, $_REQUEST['glpi_tab']);
-         break;
-
-      case 4 :
-         Infocom::showForItem($netdevice);
-         Contract::showAssociated($netdevice);
          break;
 
 
