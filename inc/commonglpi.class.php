@@ -185,7 +185,13 @@ class CommonGLPI {
                return true;
             }
 
-            list($itemtype,$tabnum) = explode('####',$tab);
+            $data = explode('####',$tab);
+            $itemtype = $data[0];
+            // Default set
+            $tabnum = 1;
+            if (isset($data[1])) {
+               $tabnum = $data[1];
+            }
 
             if (!is_integer($itemtype) && class_exists($itemtype)) {
                $obj = new $itemtype();
