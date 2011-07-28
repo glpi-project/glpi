@@ -463,11 +463,13 @@ class EntityData extends CommonDBChild {
          $toadd[-1] = $LANG['common'][102];
       }
       $toadd[-2] = $LANG['common'][110];
-      Dropdown::show('Entity', array('name'  => 'entities_id_software',
-                                     'value' => $entitydata->getField('entities_id_software'),
-                                     'toadd' => $toadd,
-                                     'entity'=> $_SESSION['glpiactiveentities'],
-                                     'display_rootentity' => true, 'comments' => false));
+      Dropdown::show('Entity',
+                     array('name'               => 'entities_id_software',
+                           'value'              => $entitydata->getField('entities_id_software'),
+                           'toadd'              => $toadd,
+                           'entity'             => $_SESSION['glpiactiveentities'],
+                           'display_rootentity' => true,
+                           'comments'           => false));
       echo "</td><td colspan='2'></td></tr>";
 
       if ($canedit) {
@@ -838,8 +840,9 @@ class EntityData extends CommonDBChild {
     * @param $fieldref  string name of the referent field to know if we look at parent entity
     * @param $entities_id
     * @param $fieldval string name of the field that we want value
+    * @param $is_zero_allowed
    **/
-   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $is_zero_allowed = false) {
+   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $is_zero_allowed=false) {
 
       // for calendar
       if (empty($fieldval)) {
@@ -853,8 +856,8 @@ class EntityData extends CommonDBChild {
          // Value is defined : use it
          if (isset($entdata->fields[$fieldref])
             && ($entdata->fields[$fieldref]>0
-               || ($entdata->fields[$fieldref] == 0 && $is_zero_allowed)
-                  || !is_numeric($entdata->fields[$fieldref]))) {
+                || ($entdata->fields[$fieldref] == 0 && $is_zero_allowed)
+                || !is_numeric($entdata->fields[$fieldref]))) {
             return $entdata->fields[$fieldval];
          }
       }
@@ -864,7 +867,8 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
+            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval,
+                                       $is_zero_allowed);
          }
       }
 

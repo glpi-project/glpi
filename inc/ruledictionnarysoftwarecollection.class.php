@@ -164,11 +164,13 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $input    = addslashes_deep($input);
             $res_rule = $this->processAllRules($input, array(), array());
             $res_rule = addslashes_deep($res_rule);
+
+            //TODO Walid : verify my correction for parentheses
             //If the software's name or version has changed
             if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
-                || (isset($res_rule["version"])) && $res_rule["version"] != ''
-                     || (isset($res_rule['new_entities_id'])
-                        && $res_rule['new_entities_id'] != $input['entities_id'])) {
+                || (isset($res_rule["version"]) && $res_rule["version"] != '')
+                || (isset($res_rule['new_entities_id'])
+                    && $res_rule['new_entities_id'] != $input['entities_id'])) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
@@ -283,11 +285,12 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       }
       $soft = new Software();
 
+      //TODO walid : check parentheses + params for getSonsOf + comment (parent or child ?)
       //Software's name has changed or entity
-      if (isset ($res_rule["name"]) && $res_rule["name"] != $name
+      if (isset($res_rule["name"]) && $res_rule["name"] != $name
             //Entity has changed, and new entity is a parent of the current one
-            || ((!isset ($res_rule["name"])
-               && isset($res_rule['new_entities_id']))
+            || ((!isset($res_rule["name"])
+                 && isset($res_rule['new_entities_id']))
                   && in_array($res_rule['new_entities_id'], getSonsOf($entity)))) {
 
          if (isset($res_rule["name"])) {
