@@ -242,11 +242,11 @@ class Netpoint extends CommonDropdown {
          switch ($item->getType()) {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($this->getTypeName(),
+                  return self::createTabEntry($LANG['reports'][37],
                                               countElementsInTable($this->getTable(),
                                                                    "locations_id = '".$item->getID()."'"));
                }
-               return $this->getTypeName();
+               return $LANG['reports'][37];
          }
       }
       return '';
