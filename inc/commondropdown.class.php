@@ -63,7 +63,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $ong[1] = $this->getTypeName();
+      $ong['empty'] = $this->getTypeName();
 
       if ($this->getID()>0) {
          if ($this->dohistory) {

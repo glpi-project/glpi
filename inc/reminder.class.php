@@ -44,7 +44,7 @@ class Reminder extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['title'][37];
+      return $LANG['title'][36];
    }
 
 
@@ -82,6 +82,7 @@ class Reminder extends CommonDBTM {
       global $LANG;
 
       $ong    = array();
+      $ong[''] = $this->getTypeName();
       $this->addStandardTab('Document',$ong);
 
       return $ong;

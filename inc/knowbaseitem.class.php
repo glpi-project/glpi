@@ -78,6 +78,7 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG;
 
       $ong    = array();
+      $ong[1] = $this->getTypeName();
       $this->addStandardTab('Document',$ong);
 
       return $ong;
