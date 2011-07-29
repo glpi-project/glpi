@@ -50,7 +50,7 @@ class Document extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['Menu'][27];
+      return $LANG['document'][18];
    }
 
 
