@@ -3697,7 +3697,6 @@ class Ticket extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-
             $restrict                 = "(`glpi_tickets_users`.`users_id` = '".$item->getID()."' ".
                                        " AND `glpi_tickets_users`.`type` = ".parent::REQUESTER.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
@@ -3707,6 +3706,7 @@ class Ticket extends CommonITILObject {
             $options['contains'][0]   = $item->getID();
             $options['link'][0]       = 'AND';
             break;
+
          case 'Sla' :
             $restrict                 = "(`slas_id` = '".$item->getID()."')";
             $order                    = '`glpi_tickets`.`due_date` DESC';
@@ -3741,7 +3741,6 @@ class Ticket extends CommonITILObject {
             $options['link2'][0]       = 'AND';
             break;
       }
-
 
 
       $query = "SELECT ".self::getCommonSelect()."
@@ -3783,6 +3782,12 @@ class Ticket extends CommonITILObject {
               "&amp;itemtype=".$item->getType()."\"><strong>".$LANG['joblist'][7]."</strong></a>";
          echo "</td></tr>";
       }
+      if ($item->getID() && $item->getType()=='User') {
+         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
+                $item->getID()."\"><strong>".$LANG['joblist'][7]."</strong></a>";
+         echo "</td></tr>";
+      }
 
       // Ticket list
       if ($number > 0) {
@@ -3793,6 +3798,7 @@ class Ticket extends CommonITILObject {
             self::showShort($data["id"], 0);
          }
       }
+
       echo "</table></div>";
 
       // Tickets for linked items
@@ -3827,6 +3833,7 @@ class Ticket extends CommonITILObject {
          echo "</table></div>";
 
       } // Subquery for linked item
+
    }
 
 
