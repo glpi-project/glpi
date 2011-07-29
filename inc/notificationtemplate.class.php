@@ -261,12 +261,14 @@ class NotificationTemplate extends CommonDBTM {
                          </style>
                         </head>
                         <body>".self::process($template_datas['content_html'], $data_html).
-                     "<br><br>".$signature_html."</body></html>";
+                     "<br><br>".$signature_html.
+                     "<br>".$LANG['mailing'][3]." ".GLPI_VERSION."</body></html>";
             }
 
             $lang['content_text']
                   = html_clean(self::process($template_datas['content_text'],
-                                             $data)."\n\n".$this->signature);
+                                             $data)."\n\n".$this->signature.
+                                             "\n".$LANG['mailing'][3]." ".GLPI_VERSION);
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
       }

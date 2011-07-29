@@ -1242,7 +1242,8 @@ $LANG['mailgate'][16] = "Re:";
 
 $LANG['mailing'][0]   = "----------------------------------------------------------";
 $LANG['mailing'][1]   = "======================================================================";
-
+$LANG['mailing'][2]   = "Préfixe pour les notifications";
+$LANG['mailing'][3]   = "Généré automatiquement par GLPI";
 $LANG['mailing'][4]   = "Suivi(s) déjà effectué(s)";
 $LANG['mailing'][5]   = "Description du ticket";
 $LANG['mailing'][6]   = "CSS";

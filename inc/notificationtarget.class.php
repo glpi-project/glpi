@@ -109,7 +109,12 @@ class NotificationTarget extends CommonDBChild {
 
 
    function getSubjectPrefix($event='') {
-      return "[GLPI] ";
+      $perso_tag = trim(EntityData::getUsedConfig('notification_subject_tag',$this->getEntity()));
+      if (empty($perso_tag)) {
+         $perso_tag = "GLPI";
+      } 
+      return "[$perso_tag] ";
+
    }
 
 
