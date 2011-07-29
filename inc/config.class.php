@@ -741,14 +741,27 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][1]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("show_count_on_tabs", $data["show_count_on_tabs"]);
-      echo "</td>";
       echo "<td>".$LANG['setup'][7]."&nbsp;:</td><td>";
       $values = array(';' =>';',
                       ',' =>',');
       Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
-      echo "</td></tr>";
+      echo "</td>";
+
+      if (!$userpref || $CFG_GLPI['show_count_on_tabs'] != -1) {
+         echo "<td>".$LANG['setup'][1]."&nbsp;:</td><td>";
+
+         $values = array(0 => $LANG['choice'][0],
+                         1 => $LANG['choice'][1]);
+
+         if (!$userpref) {
+            $values[-1] = $LANG['setup'][307];
+         }
+         Dropdown::showFromArray('show_count_on_tabs', $values, array('value' => $data["show_count_on_tabs"]));
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
