@@ -2130,6 +2130,7 @@ $LANG['setup'][209] = "Nom de réponse (si nécessaire)";
 $LANG['setup'][217] = "La fonction mail PHP n'existe pas ou est désactivée sur votre système";
 $LANG['setup'][218] = "L'utilisation d'un serveur SMTP est indispensable";
 $LANG['setup'][219] = "Autoriser les ouvertures de tickets anonymes (helpdesk.html, collecteur)";
+$LANG['setup'][220] = "Autoriser les suivis anonymes (collecteur)";
 
 $LANG['setup'][221] = "Date de début de l'exercice fiscal";
 

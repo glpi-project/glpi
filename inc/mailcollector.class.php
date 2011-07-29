@@ -519,6 +519,7 @@ class MailCollector  extends CommonDBTM {
     * @return ticket fields array
     */
    function buildTicket($i,$options=array()) {
+      global $CFG_GLPI;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
 
@@ -627,7 +628,8 @@ class MailCollector  extends CommonDBTM {
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && $job->fields['status'] != 'closed'
-             && ($tkt['_users_id_requester'] > 0
+             && ( $CFG_GLPI['use_anonymous_followups']
+                  || $tkt['_users_id_requester'] > 0
                   || $job->isAlternateEmailForITILObject($tkt['tickets_id'],$head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
