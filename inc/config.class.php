@@ -576,8 +576,14 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['tracking'][37] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td><td>" . $LANG['setup'][219] . "&nbsp;:</td><td>";
+      echo "</td><td>&nbsp;</td><td>&nbsp;";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['setup'][219] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
+      echo "</td><td>" . $LANG['setup'][220] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
 
       echo "</table><br>";

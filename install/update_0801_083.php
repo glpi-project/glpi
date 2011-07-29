@@ -657,6 +657,9 @@ function update0801to083() {
    $migration->addField("glpi_configs", "ajax_min_textsearch_load", "integer",
                         array('after' => 'use_ajax'));
 
+   $migration->addField("glpi_configs", "use_anonymous_followups", "bool",
+                        array('after' => 'use_anonymous_helpdesk'));
+
    $migration->addField("glpi_configs", "show_count_on_tabs", "bool", array('value' => '1'));
 
    $migration->addField("glpi_users", "show_count_on_tabs", "tinyint(1) NULL DEFAULT NULL");
