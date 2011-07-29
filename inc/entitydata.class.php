@@ -743,8 +743,8 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][18]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 99, 1,
-                            array(-1  => $LANG['setup'][731],
-                                   -10  => $LANG['setup'][307]));
+                            array(-1   => $LANG['setup'][731],
+                                  -10  => $LANG['setup'][307]));
 /*
       Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
                                   array('max'            => 99,
@@ -764,7 +764,7 @@ class EntityData extends CommonDBChild {
                            2 => $LANG['satisfaction'][10]);
 
       // No inherit from parent for root entity
-      if ($entdata->fields['entities_id'] == 0) {
+      if ($ID == 0) {
          unset($typeinquest[0]);
          if ($entdata->fields['inquest_config'] == 0) {
             $entdata->fields['inquest_config'] = 1;
@@ -775,7 +775,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>\n";
 
       // Do not display for root entity in inherit case
-      if ($entdata->fields['inquest_config'] == 0 && $entdata->fields['entities_id'] !=0) {
+      if ($entdata->fields['inquest_config'] == 0 && $ID !=0) {
          $inquestconfig = self::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
