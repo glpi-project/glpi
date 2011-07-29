@@ -665,6 +665,9 @@ function update0801to083() {
    $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
                         array('after' => 'admin_reply_name'));
 
+   $migration->addField("glpi_reminders", 'begin_view_date', "datetime");
+   $migration->addField("glpi_reminders", 'end_view_date', "datetime");
+
    $migration->changeField("glpi_knowbaseitems", 'question', 'name', "text");
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load", "integer",

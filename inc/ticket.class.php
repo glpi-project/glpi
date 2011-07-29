@@ -2697,7 +2697,7 @@ class Ticket extends CommonITILObject {
             echo "</span>";
          } else {
             echo "<table><tr><td>";
-            showDateTimeFormItem("due_date",$this->fields["due_date"], 1, false, $canupdate);
+            showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
                echo "<td><span id='sla_action'>";

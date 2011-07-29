@@ -297,6 +297,17 @@ class Reminder extends CommonDBTM {
       Planning::dropdownState("state", $this->fields["state"]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'><td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      echo '<table><tr><td>';
+      echo $LANG['pager'][2].'&nbsp;:&nbsp;</td><td>';
+      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"]);
+      echo '</td><td>'.$LANG['pager'][1].'&nbsp;:&nbsp;</td><td>';
+      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"]);
+      echo "</td></tr></table>";
+      echo "</td></tr>\n";
+
+
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td class='center'>";
 
@@ -561,6 +572,9 @@ class Reminder extends CommonDBTM {
           $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1 ";
       }
 
+      $restrict_visibility = " AND (`begin_view_date` IS NULL OR `begin_view_date` < '$today')
+                              AND (`end_view_date` IS NULL OR `end_view_date` > '$today') ";
+
       if ($entity < 0) {
          $query = "SELECT *
                    FROM `glpi_reminders`
@@ -568,6 +582,7 @@ class Reminder extends CommonDBTM {
                          AND `is_private` = '1'
                          AND (`end` >= '$today'
                               OR `is_planned` = '0')
+                         $restrict_visibility
                    ORDER BY `name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
@@ -577,7 +592,7 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         $is_helpdesk_visible ".
+                         $is_helpdesk_visible $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -597,7 +612,7 @@ class Reminder extends CommonDBTM {
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
                          AND `is_recursive` = '1'
-                         $is_helpdesk_visible".
+                         $is_helpdesk_visible $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -607,7 +622,7 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         $is_helpdesk_visible".
+                         $is_helpdesk_visible $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -673,6 +688,7 @@ class Reminder extends CommonDBTM {
       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
           $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
       }
+      // Here do not restrict on visibility. Can view all reminders
 
       if (!$is_private && $is_recursive) { // show public reminder
          $query = "SELECT *
