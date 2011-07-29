@@ -352,6 +352,7 @@ $LANG['common'][109] = "Groupe technique";
 $LANG['common'][110] = "Pas de changement d'entité";
 $LANG['common'][111] = "Matériel utilisé";
 $LANG['common'][112] = "Matériel géré";
+$LANG['common'][113] = "Visibilité";
 
 
 $LANG['computers'][0]  = "Volume";
