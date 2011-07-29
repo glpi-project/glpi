@@ -746,7 +746,7 @@ class EntityData extends CommonDBChild {
                            2 => $LANG['satisfaction'][10]);
 
       // No inherit from parent for root entity
-      if ($entdata->fields['entities_id'] == 0) {
+      if ($ID == 0) {
          unset($typeinquest[0]);
          if ($entdata->fields['inquest_config'] == 0) {
             $entdata->fields['inquest_config'] = 1;
@@ -757,7 +757,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>\n";
 
       // Do not display for root entity in inherit case
-      if ($entdata->fields['inquest_config'] == 0 && $entdata->fields['entities_id'] !=0) {
+      if ($entdata->fields['inquest_config'] == 0 && $ID !=0) {
          $inquestconfig = self::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
