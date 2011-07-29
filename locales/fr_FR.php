@@ -1630,7 +1630,7 @@ $LANG['problem'][12] = "Suppression d'un problème";
 $LANG['profiles'][0]  = "Droit global";
 $LANG['profiles'][1]  = "Droit local";
 $LANG['profiles'][2]  = "Interface associée au profil";
-
+$LANG['profiles'][3]  = "Aller à la création de tickets au login";
 $LANG['profiles'][4]  = "Ajouter un suivi aux tickets des groupes associés";
 $LANG['profiles'][5]  = "Créer un ticket";
 $LANG['profiles'][6]  = "Ajouter un suivi aux tickets (demandeur)";

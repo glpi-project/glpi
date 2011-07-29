@@ -43,7 +43,8 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('add_followups', 'create_ticket', 'create_validation',
+   static public $helpdesk_rights = array('add_followups', 'create_ticket',
+                                          'create_ticket_on_login', 'create_validation',
                                           'update_own_followups', 'faq', 'helpdesk_hardware',
                                           'helpdesk_item_type', 'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
@@ -430,6 +431,10 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
       Dropdown::showYesNo("password_update", $this->fields["password_update"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][3]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("create_ticket_on_login", $this->fields["create_ticket_on_login"]);
       echo "</td></tr>\n";
 
       if ($ID>0) {
