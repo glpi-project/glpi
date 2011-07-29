@@ -118,6 +118,10 @@ class Central extends CommonGLPI {
       Ticket::showCentralList(0, "toapprove", false);
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'>";
+      Ticket::showCentralList(0, "rejected", false);
+      echo "</td></tr>";
+
+      echo "<tr><td class='top' width='450px'>";
       Ticket::showCentralList(0, "requestbyself", false);
       echo "</td></tr>";
       if ($showticket) {
