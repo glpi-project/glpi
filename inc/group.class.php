@@ -84,8 +84,8 @@ class Group extends CommonDBTM {
             case 'Group' :
                $ong = array();
 
-               $ong[1] = $LANG['common'][96];
-               $ong[2] = $LANG['common'][96].' ('.$LANG['common'][109].')';
+               $ong[1] = $LANG['common'][111];
+               $ong[2] = $LANG['common'][112];
       
                if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
                   $ong[3] = $LANG['setup'][3];
