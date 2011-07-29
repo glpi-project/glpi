@@ -461,7 +461,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
                        $LANG['backup'][24]."</a>";
             echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
-                     "$fichier\";</script></div>";
+                     "$fichier\";</script></div><br>";
             glpi_flush();
             exit;
          }
@@ -515,6 +515,7 @@ if (isset($_GET["file"])
 
    if ($percent >= 0) {
       displayProgressBar(400,$percent);
+      echo '<br>';
    }
 
    if ($offset != -1) {
@@ -541,7 +542,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
    $filename = $_GET["delfile"];
    if (is_file($path."/".$_GET["delfile"])) {
       unlink($path."/".$_GET["delfile"]);
-      echo "<div class ='center'>".$filename." ".$LANG['common'][28]."</div>";
+      echo "<div class ='center'>".$filename." ".$LANG['common'][28]."</div><br>";
    }
 }
 

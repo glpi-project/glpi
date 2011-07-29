@@ -71,14 +71,16 @@ if (isset($_POST["add_several"])) {
 } else if (isset($_POST["give"])) {
    $constype->check($_POST["tID"],'w');
 
-   if ($_POST["users_id"] >0) {
+   if ($_POST["items_id"] > 0 && !empty($_POST['itemtype'])) {
       if (isset($_POST["out"])) {
          foreach ($_POST["out"] as $key => $val) {
-            $con->out($key,$_POST["users_id"]);
+            $con->out($key,$_POST['itemtype'],$_POST["items_id"]);
          }
       }
+      $item = new $_POST['itemtype']();
+      $item->getFromDB($_POST["items_id"]);
       Event::log($_POST["tID"], "consumables", 5, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$_POST["users_id"]);
+               $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$item->getNameID());
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
