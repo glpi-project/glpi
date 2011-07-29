@@ -53,34 +53,55 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-   **/
-   function showTabContent ($ID, $tab) {
+   function defineTabs($options=array()) {
 
-      if (!$this->isNewID($ID) && !parent::showTabContent ($ID, $tab)) {
-         switch ($tab) {
-            case 1 :
-               $this->showChildren($ID);
-               return true;
+      $ong = array();
 
-            case -1 :
-               $this->showChildren($ID);
-               return false;
+      if ($this->getID()>0) {
+         $this->addStandardTab($this->getType(), $ong);
+
+         if ($this->dohistory) {
+            $this->addStandardTab('Log',$ong);
+         }
+      } else {
+         $ong[1] = $this->getTypeName();
+      }
+
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID()) {
+         switch ($item->getType()==$this->getType()) {
+            case 'Location' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(),
+                                             "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
+                  return self::createTabEntry($this->getTypeName(), $nb);
+               }
+               return $this->getTypeName();
          }
       }
-      return false;
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item instanceof CommonTreeDropdown) {
+         $item->showChildren();
+      }
+      return true;
    }
 
 
    function getCompleteNameFromParents($parentCompleteName, $thisName) {
      return addslashes($parentCompleteName) . " > "  . $thisName;
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -203,13 +224,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * Print the HTML array children of a TreeDropdown
     *
-    *@param $ID of the dropdown
-    *
-    *@return Nothing (display)
+    * @return Nothing (display)
     **/
-    function showChildren($ID) {
+    function showChildren() {
       global $DB, $CFG_GLPI, $LANG;
 
+      $ID = $this->getID();
       $this->check($ID, 'r');
       $fields        = $this->getAdditionalFields();
       $nb            = count($fields);
