@@ -59,10 +59,10 @@ include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
 
 // Standard includes
-include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+/*include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 include_once (GLPI_ROOT . "/inc/commonglpi.class.php");
 include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
-include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
+include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");*/
 include_once (GLPI_ROOT . "/config/config.php");
 
 
