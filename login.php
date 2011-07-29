@@ -77,21 +77,15 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
 
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
-         if (empty($REDIRECT)) {
+      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
             glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
-         } else {
-            glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
-         }
-      } else {
-         glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
-      }
+      } 
+      glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
    } else {
-      if (empty($REDIRECT)) {
+      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
          glpi_header($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
-      } else {
-         glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
-      }
+      } 
+      glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
    }
 
 } else {
