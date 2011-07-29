@@ -538,7 +538,8 @@ class User extends CommonDBTM {
          $email = new UserEmail();
          $email->add(array('users_id' => $this->fields["id"],
                            'email'    => $this->input['_add_email']));
-         Event::log($this->fields["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][37]);
+         Event::log($this->fields["id"], "users", 4, "setup",
+                    $_SESSION["glpiname"]." ".$LANG['log'][37]);
       }
 
    }
