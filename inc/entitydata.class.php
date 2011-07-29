@@ -80,7 +80,8 @@ class EntityData extends CommonDBChild {
                                                                   'use_licenses_alert',
                                                                   'use_contracts_alert',
                                                                   'use_reservations_alert',
-                                                                  'use_infocoms_alert'),
+                                                                  'use_infocoms_alert',
+                                                                  'notification_subject_tag'),
                                        // Helpdesk
                                        'entity_helpdesk' => array('calendars_id', 'tickettype',
                                                                   'auto_assign_mode',
@@ -538,6 +539,14 @@ class EntityData extends CommonDBChild {
       echo "</td>";
       echo "<td>" . $LANG['setup'][209] . "</td><td>";
       autocompletionTextField($entitynotification, "admin_reply_name");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['mailing'][2]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      autocompletionTextField($entitynotification, "notification_subject_tag");
+      echo "</td>";
+      echo "<td >&nbsp;</td><td>&nbsp;";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

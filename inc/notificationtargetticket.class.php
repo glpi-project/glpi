@@ -79,13 +79,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
-         return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
+         $perso_tag = trim(EntityData::getUsedConfig('notification_subject_tag',$this->getEntity()));
+
+         if (empty($perso_tag)) {
+            $perso_tag = 'GLPI';
+         } else {
+         }
+         return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
       }
       return parent::getSubjectPrefix();
    }
-
-
-
 
    function addAdditionnalInfosForTarget() {
       global $DB;
