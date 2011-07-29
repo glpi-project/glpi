@@ -1777,7 +1777,7 @@ function generate_entity($ID_entity) {
          $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
          $query = "INSERT INTO `glpi_consumables`
-                   VALUES(NULL, '$ID_entity', '$consID', '$date', NULL, 0)";
+                   VALUES(NULL, '$ID_entity', '$consID', '$date', NULL, NULL,0)";
          $DB->query($query) or die("PB REQUETE ".$query);
          $ID = $DB->insert_id();
 
@@ -1792,7 +1792,7 @@ function generate_entity($ID_entity) {
          $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
          $query = "INSERT INTO `glpi_consumables`
-                   VALUES(NULL, '$ID_entity', '$consID', '$date', NOW(),
+                   VALUES(NULL, '$ID_entity', '$consID', '$date', NOW(),'User',
                           '".mt_rand($FIRST['users_sadmin'],$LAST['users_postonly'])."')";
          $DB->query($query) or die("PB REQUETE ".$query);
          $ID = $DB->insert_id();

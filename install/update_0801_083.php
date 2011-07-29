@@ -696,6 +696,22 @@ function update0801to083() {
    $migration->addField("glpi_contracts", "is_template", 'bool');
 
 
+   $migration->displayMessage($LANG['update'][141] . ' - Give consumable to groups'); // Updating schema
+
+   if ($migration->addField("glpi_consumables", "itemtype", "VARCHAR(100) DEFAULT NULL",
+                        array('after' => 'date_out'))) {
+      $migration->migrationOneTable('glpi_consumables');
+      // Update default itemtype
+      $query = "UPDATE `glpi_consumables` SET `itemtype` = 'User';";
+      $DB->query($query)
+      or die("0.83 update default itemtype for glpi_consumables ". $LANG['update'][90] . $DB->error());
+
+      $migration->dropKey("glpi_consumables", 'users_id');
+      $migration->changeField("glpi_consumables", 'users_id', 'items_id', 'integer');
+      $migration->addKey("glpi_consumables", array('itemtype','items_id'),'item');
+   }
+
+
    $migration->displayMessage($LANG['update'][141] . ' - Several emails for users'); // Updating schema
 
    // Several email per users
