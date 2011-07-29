@@ -356,6 +356,32 @@ class CalendarSegment extends CommonDBChild {
       echo "</form>";
    }
 
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID()) {
+         switch ($item->getType()) {
+            case 'Calendar' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['calendar'][10],
+                                              countElementsInTable($this->getTable(),
+                                                                   "calendars_id = '".$item->getID()."'"));
+               }
+               return $LANG['calendar'][10];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Calendar') {
+         self::showForCalendar($item);
+      }
+      return true;
+   }
 }
 
 ?>

@@ -67,11 +67,11 @@ class Calendar extends CommonDropdown {
       $ong = array();
 
       if ($this->fields['id'] > 0) {
-         $ong[1] = $LANG['calendar'][10];
-         $ong[2] = $LANG['calendar'][11];
+         $this->addStandardTab('CalendarSegment', $ong);
+         $this->addStandardTab('Calendar_Holiday', $ong);
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;
@@ -104,36 +104,6 @@ class Calendar extends CommonDropdown {
 
       $this->updateDurationCache($newID);
 
-   }
-
-
-   /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-   **/
-   function showTabContent ($ID, $tab) {
-
-      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
-         switch ($tab) {
-            case 1 :
-               CalendarSegment::showForCalendar($this);
-               return true;
-
-            case 2 :
-               Calendar_Holiday::showForCalendar($this);
-               return true;
-
-            case -1 :
-               CalendarSegment::showForCalendar($this);
-               Calendar_Holiday::showForCalendar($this);
-               return false;
-         }
-      }
-      return false;
    }
 
 
@@ -387,7 +357,7 @@ class Calendar extends CommonDropdown {
          $this->updateDurationCache($this->fields['id']);
          $cache_duration = importArrayFromDB($this->fields['cache_duration']);
       }
-      
+
       return $cache_duration;
    }
 
