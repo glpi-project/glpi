@@ -78,6 +78,15 @@ class Reminder extends CommonDBTM {
    }
 
 
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong    = array();
+      $this->addStandardTab('Document',$ong);
+
+      return $ong;
+   }
+
    function prepareInputForAdd($input) {
       global $LANG;
 
@@ -218,20 +227,14 @@ class Reminder extends CommonDBTM {
 
       $canedit = $this->can($ID,'w');
 
-      if ($canedit) {
-         echo "<form method='post' name='remind' action='".$this->getFormURL()."'>";
-      }
+//       if ($canedit) {
+//          echo "<form method='post' name='remind' action='".$this->getFormURL()."'>";
+//       }
 
-      echo "<div class='center'><table class='tab_cadre' width='450'>";
-      echo "<tr><th>&nbsp;</th><th>";
+      $this->showTabs($options);
 
-      if (!$ID) {
-         echo $LANG['reminder'][6];
-      } else {
-         echo $LANG['common'][2]." $ID";
-      }
-
-      echo "</th></tr>\n";
+//      echo "<div class='center'><table class='tab_cadre' width='450'>";
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
@@ -243,15 +246,14 @@ class Reminder extends CommonDBTM {
       } else {
          echo $this->fields['name'];
       }
-      echo "</td></tr>\n";
+      echo "</td>\n";
 
-      if (!$canedit) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
-         echo getUserName($this->fields["users_id"]);
-         echo "</td></tr>\n";
-      }
+      echo "<td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      echo getUserName($this->fields["users_id"]);
+      echo "</td>\n";
 
+      echo "</tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
       echo "<td>";
 
@@ -279,33 +281,38 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      echo "</td></tr>\n";
+      echo "</td>\n";
 
       if (haveRight("reminder_public","w") && !$this->fields["is_private"]) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
+         echo "<td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          if ($canedit) {
             Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
          } else {
             echo Dropdpown::getYesNo($this->fields['is_helpdesk_visible']);
          }
-         echo "</td></tr>\n";
+         echo "</td>\n";
+      } else {
+         echo "<td colspan='2'>&nbsp;</td>";
       }
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
-      Planning::dropdownState("state", $this->fields["state"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo '<table><tr><td>';
       echo $LANG['pager'][2].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"]);
+      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"],1,true,$canedit);
       echo '</td><td>'.$LANG['pager'][1].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"]);
+      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"],1,true,$canedit);
       echo "</td></tr></table>";
-      echo "</td></tr>\n";
+      echo "</td>";
+
+      echo "<td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      Planning::dropdownState("state", $this->fields["state"]);
+      echo "</td>\n";
+
+      echo "</tr>\n";
 
 
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
@@ -356,40 +363,19 @@ class Reminder extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['reminder'][9]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['reminder'][9]."&nbsp;:&nbsp;</td><td colspan='3'>";
 
       if ($canedit) {
-         echo "<textarea cols='80' rows='15' name='text'>".$this->fields["text"]."</textarea>";
+         echo "<textarea cols='115' rows='15' name='text'>".$this->fields["text"]."</textarea>";
       } else {
          echo nl2br($this->fields["text"]);
       }
 
       echo "</td></tr>\n";
 
-      if (!$ID) { // add
-         echo "<tr><td class='tab_bg_2 top' colspan='2'>";
-         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
-         echo "<div class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</div>";
-         echo "</td></tr>\n";
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
 
-      } else if ($canedit) {
-         echo "<tr><td class='tab_bg_2 top' colspan='2'>";
-         echo "<input type='hidden' name='id' value='$ID'>\n";
-         echo "<div class='center'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-         echo "<input type='hidden' name='id' value='$ID'><span class='medium_space'>";
-         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][22]."\"
-                class='submit' ".addConfirmationOnAction($LANG['common'][50]).">
-               </span>";
-         echo "</div>";
-         echo "</td></tr>\n";
-      }
-      echo "</table></div>\n";
-      if ($canedit) {
-         echo "</form>";
-      }
       return true;
    }
 

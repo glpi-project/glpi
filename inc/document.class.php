@@ -67,7 +67,6 @@ class Document extends CommonDBTM {
 
 
    function canCreateItem() {
-      //
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
           && $this->fields['tickets_id']>0) {
@@ -77,6 +76,8 @@ class Document extends CommonDBTM {
             return $ticket->canAddFollowups();
          }
       }
+
+
       if (haveRight('document', 'w')) {
          return parent::canCreateItem();
       }
@@ -508,14 +509,35 @@ class Document extends CommonDBTM {
             return true;
          }
 
+         // Reminder Case
+         $add_public_reminder_restrict = '';
+         if (haveRight("reminder_public","r")) {
+            $add_public_reminder_restrict = "OR (`is_private` = '0'
+                                                AND ".getEntitiesRestrictRequest("AND",
+                                                                                 "glpi_reminders").")";
+         }
+         $query = "SELECT *
+                     FROM `glpi_documents_items`
+                     LEFT JOIN `glpi_reminders`
+                        ON (`glpi_knowbaseitems`.`id` = `glpi_reminders`.`items_id`
+                           AND `glpi_documents_items`.`itemtype` = 'Reminder')
+                     WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                        AND ((`glpi_reminders`.`users_id` = '".getLoginUserID()."'
+                              AND `is_private` = '1') $add_public_reminder_restrict )";
+
+         $result = $DB->query($query);
+         if ($DB->numrows($result)>0) {
+            return true;
+         }
+
          // Knowbase Case
          if (haveRight("knowbase","r")) {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
-                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-                      WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
-                            AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'".
+                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
+                              AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
+                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'".
                             getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
 
             $result = $DB->query($query);
@@ -528,9 +550,9 @@ class Document extends CommonDBTM {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
-                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
-                      WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
-                            AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                           ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
+                              AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
+                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                             AND `glpi_knowbaseitems`.`is_faq` = '1'".
                             getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
 
@@ -1349,8 +1371,11 @@ class Document extends CommonDBTM {
          $entity   = $_SESSION["glpiactive_entity"];
 
          if ($item->isEntityAssign()) {
-            $entity = $item->getEntityID();
-
+            /// Case of personal items : entity = -1 : create on active entity (Reminder case))
+            if ($item->getEntityID() >=0 ) {
+               $entity = $item->getEntityID();
+            }
+               
             if ($item->isRecursive()) {
                $entities = getSonsOf('glpi_entities',$entity);
             } else {
@@ -1375,7 +1400,7 @@ class Document extends CommonDBTM {
             echo $LANG['document'][3]."&nbsp:";
             Dropdown::show('DocumentCategory',array('entity' => $entities));
             echo "</td>";
-            echo "<td class='center' colspan='3'>";
+            echo "<td class='center' colspan='3'>".$entity;
             echo "<input type='hidden' name='entities_id' value='$entity'>";
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
