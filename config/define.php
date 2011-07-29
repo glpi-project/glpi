@@ -232,7 +232,7 @@ $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Ch
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Problem', 'Software',
+                                                  'Printer', 'Problem', 'Reminder', 'Software',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User');
 
 $CFG_GLPI["consumables_types"]               = array('Group', 'User');
