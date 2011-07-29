@@ -39,14 +39,16 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketSatisfaction extends CommonDBTM {
 
-   public $dohistory = true;
+   public $dohistory         = true;
    public $history_blacklist = array('date_answered');
+
 
    static function getTypeName() {
       global $LANG;
 
       return $LANG['satisfaction'][0];
    }
+
 
    /**
     * for use showFormHeader
@@ -70,7 +72,7 @@ class TicketSatisfaction extends CommonDBTM {
     * Is the current user have right to update the current satisfaction
     *
     * @return boolean
-    */
+   **/
    function canUpdateItem() {
 
       $ticket = new Ticket();

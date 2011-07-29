@@ -368,9 +368,9 @@ class Planning {
 
       // ---------------Problem
       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-                                                     'who_group' => $who_group,
-                                                     'begin'     => $begin,
-                                                     'end'       => $end));
+                                                    'who_group' => $who_group,
+                                                    'begin'     => $begin,
+                                                    'end'       => $end));
 
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
