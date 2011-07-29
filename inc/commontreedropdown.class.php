@@ -64,7 +64,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $this->addStandardTab('Log',$ong);
          }
       } else {
-         $ong[1] = $this->getTypeName();
+         $ong[''] = $this->getTypeName();
       }
 
       return $ong;

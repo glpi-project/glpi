@@ -3082,14 +3082,16 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
                echo "{
                   title: \"".$val['title']."\",
-                  id: '$key',
-                  autoLoad: {url: '".$val['url']."',
-                     scripts: true,
-                     nocache: true";
-                     if (isset($val['params'])) {
-                        echo ", params: '".$val['params']."'";
-                     }
-                     echo "},";
+                  id: '$key',";
+               if (!empty($key) && $key != 'empty') {
+                  echo "autoLoad: {url: '".$val['url']."',
+                        scripts: true,
+                        nocache: true";
+                        if (isset($val['params'])) {
+                           echo ", params: '".$val['params']."'";
+                        }
+                  echo "},";
+               }
 
                echo "  listeners:{ // Force glpi_tab storage
                        beforeshow : function(panel) {

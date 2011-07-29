@@ -1400,7 +1400,7 @@ class Document extends CommonDBTM {
             echo $LANG['document'][3]."&nbsp:";
             Dropdown::show('DocumentCategory',array('entity' => $entities));
             echo "</td>";
-            echo "<td class='center' colspan='3'>".$entity;
+            echo "<td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";

@@ -2423,6 +2423,7 @@ $LANG['title'][30] = "Composants";
 $LANG['title'][33] = "Liens externes";
 $LANG['title'][34] = "Liens";
 
+$LANG['title'][36] = "Note";
 $LANG['title'][37] = "Notes";
 $LANG['title'][38] = "Historique";
 

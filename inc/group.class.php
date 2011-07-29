@@ -140,7 +140,7 @@ class Group extends CommonDBTM {
 //          }
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong[''] = $LANG['title'][26];
       }
       return $ong;
    }
