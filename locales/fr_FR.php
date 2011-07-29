@@ -1938,7 +1938,7 @@ $LANG['satisfaction'][14] = "Réponses";
 $LANG['search'][0]  = "Recherche";
 $LANG['search'][1]  = "pour tous";
 $LANG['search'][2]  = "contient";
-
+$LANG['search'][3]  = "sous";
 $LANG['search'][4]  = "trié par";
 
 $LANG['search'][8]  = "Date début";

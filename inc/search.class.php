@@ -1203,6 +1203,11 @@ class Search {
                               $title .= ' = %'.$p['contains'][$key].'%';
                               break;
 
+                           case "under" :
+                              $title .= ' '.$LANG['search'][3].' '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
+                                                                    $p['contains'][$key]);
+                              break;
+
                            default :
                               $title .= ' = '.$p['contains'][$key];
                               break;
@@ -1250,6 +1255,11 @@ class Search {
 
                            case "contains" :
                               $title .= ' = %'.$p['contains2'][$key].'%';
+                              break;
+
+                           case "under" :
+                              $title .= ' '.$LANG['search'][3].' '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
+                                                                            $p['contains2'][$key]);
                               break;
 
                            default :
@@ -2514,7 +2524,6 @@ class Search {
                break;
          }
       }
-
       switch ($searchtype) {
          case "contains" :
             $SEARCH = makeTextSearch($val, $nott);
@@ -2535,6 +2544,15 @@ class Search {
                $SEARCH = " <> '$val'";
             }
             break;
+
+         case "under" :
+            if ($nott) {
+               $SEARCH = " NOT IN ('".implode("','",getSonsOf($inittable, $val))."')";
+            } else {
+               $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
+            }
+            break;
+
       }
 
       // Plugin can override core definition for its type
@@ -2917,7 +2935,7 @@ class Search {
       }
 
       // Default case
-      if (in_array($searchtype, array('equals', 'notequals'))) {
+      if (in_array($searchtype, array('equals', 'notequals','under'))) {
 
          if ($table != getTableForItemType($itemtype) || $itemtype == 'States') {
             $out = " $link (`$table`.`id`".$SEARCH;
@@ -4721,6 +4739,18 @@ class Search {
                   case "contains" :
                      $actions['contains'] = $LANG['search'][2];
                      break;
+
+                  case "under" :
+                     $actions['under'] = $LANG['search'][3];
+                     break;
+
+                  case "lessthan" :
+                     $actions['lessthan'] = $LANG['search'][23];
+                     break;
+
+                  case "morethan" :
+                     $actions['morethan'] = $LANG['search'][24];
+                     break;
                }
             }
             return $actions;
@@ -4766,15 +4796,23 @@ class Search {
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'    => $LANG['rulesengine'][0],
-                            'notequals' => $LANG['rulesengine'][1],
-                            'searchopt' => $searchopt[$field_num]);
+                           'notequals' => $LANG['rulesengine'][1],
+                           'searchopt' => $searchopt[$field_num]);
 
             case 'name' :
             case 'completename' :
-               return array('contains'  => $LANG['search'][2],
-                            'equals'    => $LANG['rulesengine'][0],
-                            'notequals' => $LANG['rulesengine'][1],
-                            'searchopt' => $searchopt[$field_num]);
+               $actions = array('contains'  => $LANG['search'][2],
+                           'equals'    => $LANG['rulesengine'][0],
+                           'notequals' => $LANG['rulesengine'][1],
+                           'searchopt' => $searchopt[$field_num]);
+
+               // Specific case of TreeDropdown : add under
+               $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
+               $itemlinked = new $itemtype_linked();
+               if ($itemlinked instanceof CommonTreeDropdown) {
+                  $actions['under'] = $LANG['search'][3];
+               }
+               return $actions;
          }
      }
       return $actions;
