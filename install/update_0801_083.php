@@ -652,6 +652,19 @@ function update0801to083() {
 
    $migration->displayMessage($LANG['update'][141] . ' - Add various fields'); // Updating schema
 
+   $migration->changeField("glpi_authldaps", 'group_condition', 'group_condition', "text");
+
+   $migration->dropKey("glpi_groups", 'ldap_value');
+   $migration->changeField("glpi_groups", 'ldap_value', 'ldap_value', "text");
+   $migration->addKey("glpi_groups", 'ldap_value');
+
+   $migration->dropKey("glpi_groups", 'ldap_group_dn');
+   $migration->changeField("glpi_groups", 'ldap_group_dn', 'ldap_group_dn', "text");
+   $migration->addKey("glpi_groups", 'ldap_group_dn');
+
+   $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
+                        array('after' => 'admin_reply_name'));
+
    $migration->changeField("glpi_knowbaseitems", 'question', 'name', "text");
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load", "integer",
