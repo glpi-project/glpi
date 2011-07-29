@@ -135,6 +135,11 @@ class User extends CommonDBTM {
             }
          }
       }
+      /// Specific case for show_count_on_tabs : global config can forbid
+      if ($CFG_GLPI['show_count_on_tabs'] == -1) {
+         $this->fields['show_count_on_tabs'] = 0;
+      }
+
    }
 
 
