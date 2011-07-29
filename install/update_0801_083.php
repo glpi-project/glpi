@@ -691,6 +691,51 @@ function update0801to083() {
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
 
 
+   /// Add document types
+   $types = array('csv' => array('name' => 'Comma-Separated Values',
+                                 'icon' => 'csv-dist.png'),
+                  'svg' => array('name' => 'Scalable Vector Graphics',
+                                 'icon' => 'svg-dist.png'),);
+
+   foreach ($types as $ext => $data) {
+
+      $query = "SELECT *
+                FROM `glpi_documenttypes`
+                WHERE `ext` = '$ext'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result) == 0) {
+            $query = "INSERT INTO `glpi_documenttypes`
+                             (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
+                      VALUES ('".$data['name']."', '$ext', '".$data['icon']."', '1', NOW())";
+            $DB->query($query)
+            or die("0.83 add document type $ext ".$LANG['update'][90] .$DB->error());
+         }
+      }
+   }
+   /// Update icons
+   $types = array('c'   => 'c-dist.png',
+                  'h'   => 'h-dist.png',
+                  'swf' => 'swf-dist.png',
+                  'pas' => 'pas-dist.png',
+                  'wmv' => 'wmv-dist.png',
+                  'zip' => 'zip-dist.png',);
+
+   foreach ($types as $ext => $icon) {
+      $query = "SELECT `id`
+                FROM `glpi_documenttypes`
+                WHERE `ext` = '$ext'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result) == 1) {
+            $query = "UPDATE `glpi_documenttypes`
+                         SET `icon` = '$icon', `date_mod` = NOW()
+                         WHERE `id` = '".$DB->result($result,0,0)."';";
+            $DB->query($query)
+            or die("0.83 update icon for doc type $ext ".$LANG['update'][90] .$DB->error());
+         }
+      }
+   }
+
+
    /// add missing indexes  for fields
    $migration->addKey("glpi_authldaps", "is_active");
    $migration->addKey("glpi_authmails", "is_active");
