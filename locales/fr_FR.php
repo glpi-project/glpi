@@ -221,6 +221,7 @@ $LANG['central'][14] = "Vue groupe";
 
 $LANG['central'][18] = "Vos tickets à clore";
 $LANG['central'][19] = "Vos tickets à valider";
+$LANG['central'][20] = "Vos tickets rejetés";
 
 $LANG['change'][0] = "Changement";
 $LANG['change'][1] = "Créer un changement à partir de ce ticket";

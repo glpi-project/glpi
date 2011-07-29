@@ -3220,6 +3220,13 @@ class Ticket extends CommonITILObject {
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
+         case "rejected" : // on affiche les tickets rejetés
+            $query .= "WHERE ($search_assign)
+                             AND `global_validation` = 'rejected' ".
+                              getEntitiesRestrictRequest("AND", "glpi_tickets");
+            break;
+
+
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
                // à quelqu'un d'autre (exclut les self-tickets)
 
@@ -3263,23 +3270,6 @@ class Ticket extends CommonITILObject {
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
-                  break;
-
-               case "toapprove" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 71; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = ($num==0?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'solved';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                   case "process" :
@@ -3367,6 +3357,39 @@ class Ticket extends CommonITILObject {
 
                   break;
 
+               case "rejected" :
+                  $options['field'][0]      = 52; // validation status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'rejected';
+                  $options['link'][0]        = 'AND';
+
+                  $options['field'][1]      = 5; // assign user
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = getLoginUserID();
+                  $options['link'][1]        = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                        append_params($options,'&amp;')."\">".$LANG['central'][20]."</a>";
+
+                  break;
+
+               case "toapprove" :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 71; // groups_id
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'solved';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                  break;
+
                case "toapprove" :
                   $options['field'][0]      = 12; // status
                   $options['searchtype'][0] = 'equals';
@@ -3435,6 +3458,10 @@ class Ticket extends CommonITILObject {
 
             case 'tovalidate' :
                echo $LANG['central'][19];
+               break;
+
+            case 'rejected' :
+               echo $LANG['central'][20];
                break;
 
             case 'toapprove' :
