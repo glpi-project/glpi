@@ -136,7 +136,7 @@ class Location extends CommonTreeDropdown {
       $ong = parent::defineTabs($options);
 
       if ($this->fields['id'] > 0) {
-         $ong[2] = $LANG['networking'][51];
+         $this->addStandardTab('Netpoint', $ong);
       }
 
       return $ong;
@@ -144,40 +144,14 @@ class Location extends CommonTreeDropdown {
 
 
    /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-   **/
-   function showTabContent ($ID, $tab) {
-
-      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
-         switch ($tab) {
-            case 2 :
-               $this->showNetpoints($ID);
-               return true;
-
-            case -1 :
-               $this->showNetpoints($ID);
-               return false;
-         }
-      }
-      return false;
-   }
-
-
-   /**
     * Print the HTML array of the Netpoint associated to a Location
     *
-    *@param $ID of the Location
-    *
-    *@return Nothing (display)
+    * @return Nothing (display)
    **/
-   function showNetpoints($ID) {
+   function showNetpoints() {
       global $DB, $CFG_GLPI, $LANG;
 
+      $ID = $this->getID();
       $netpoint = new Netpoint();
       $this->check($ID, 'r');
       $canedit = $this->can($ID, 'w');

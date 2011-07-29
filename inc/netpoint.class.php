@@ -233,6 +233,34 @@ class Netpoint extends CommonDropdown {
          Log::history($parent, 'Location', $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
       }
    }
+
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if ($item->getID()) {
+         switch ($item->getType()) {
+            case 'Location' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($this->getTypeName(),
+                                              countElementsInTable($this->getTable(),
+                                                                   "locations_id = '".$item->getID()."'"));
+               }
+               return $this->getTypeName();
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Location') {
+         $item->showNetPoints();
+      }
+      return true;
+   }
+
 }
 
 ?>
