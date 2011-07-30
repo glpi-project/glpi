@@ -656,13 +656,13 @@ function update0801to083() {
 
    $migration->dropKey("glpi_groups", 'ldap_value');
    $migration->changeField("glpi_groups", 'ldap_value', 'ldap_value', "text");
-   // TODO fix : Error: BLOB/TEXT column 'ldap_value' used in key specification without a key length
-   //$migration->addKey("glpi_groups", 'ldap_value');
 
    $migration->dropKey("glpi_groups", 'ldap_group_dn');
    $migration->changeField("glpi_groups", 'ldap_group_dn', 'ldap_group_dn', "text");
-   // TODO fix : Error: BLOB/TEXT column 'ldap_value' used in key specification without a key length
-   // $migration->addKey("glpi_groups", 'ldap_group_dn');
+
+   $migration->migrationOneTable('glpi_groups');
+   $migration->addKey("glpi_groups", 'ldap_value', '', 'INDEX', 200);
+   $migration->addKey("glpi_groups", 'ldap_group_dn', '', 'INDEX', 200);
 
    $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
                         array('after' => 'admin_reply_name'));
@@ -1050,8 +1050,7 @@ function update0801to083() {
                         array('value' => '-2'));
 
    // New index for count on tab
-   // TODO fix Error: Specified key was too long; max key length is 1000 bytes
-   //$migration->addKey('glpi_ruleactions', array('field', 'value'));
+   $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

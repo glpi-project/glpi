@@ -333,8 +333,9 @@ class Migration {
     * @param $fields : string or array
     * @param $indexname : if empty =$fields
     * @param $type : index or unique
+    * @param $len : integer for field length
    **/
-   function addKey($table, $fields, $indexname='', $type='INDEX') {
+   function addKey($table, $fields, $indexname='', $type='INDEX', $len=0) {
 
       // si pas de nom d'index, on prend celui du ou des champs
       if (!$indexname) {
@@ -347,10 +348,18 @@ class Migration {
 
       if (!isIndex($table,$indexname)) {
          if (is_array($fields)) {
-            $fields = implode($fields, "`, `");
+            if ($len) {
+               $fields = "`".implode($fields, "`($len), `")."`($len)";
+            } else {
+               $fields = "`".implode($fields, "`, `")."`";
+            }
+         } else if ($len) {
+            $fields = "`$fields`($len)";
+         } else {
+            $fields = "`$fields`";
          }
 
-         $this->change[$table][] = "ADD $type `$indexname` (`$fields`)";
+         $this->change[$table][] = "ADD $type `$indexname` ($fields)";
       }
    }
 

@@ -1985,14 +1985,12 @@ class Rule extends CommonDBTM {
       if (!$item->isNewID($item->getID())) {
          switch ($item->getType()) {
             case 'Entity' :
-               /* can't count because of missing index on field,value
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['rulesengine'][17],
                                               countElementsInTable('glpi_ruleactions',
                                                                    "`field` = 'entities_id'
                                                                     AND `value` = '".$item->getID()."'"));
                }
-               */
                return $LANG['rulesengine'][17];
          }
       }
