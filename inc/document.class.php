@@ -235,8 +235,9 @@ class Document extends CommonDBTM {
       global $LANG;
 
       if (isset($this->input["items_id"])
-          && $this->input["items_id"] > 0
           && isset($this->input["itemtype"])
+          && ($this->input["items_id"] > 0
+              || ($this->input["items_id"]==0 && $this->input["itemtype"]=='Entity'))
           && !empty($this->input["itemtype"])) {
 
          $docitem = new Document_Item();
