@@ -1977,6 +1977,49 @@ class Rule extends CommonDBTM {
       self::cleanForItemActionOrCriteria($item, $field,
                                          new self(), 'glpi_rulecriterias', 'pattern', 'criteria');
    }
-}
 
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if (!$item->isNewID($item->getID())) {
+         switch ($item->getType()) {
+            case 'Entity' :
+               /* can't count because of missing index on field,value
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['rulesengine'][17],
+                                              countElementsInTable('glpi_ruleactions',
+                                                                   "`field` = 'entities_id'
+                                                                    AND `value` = '".$item->getID()."'"));
+               }
+               */
+               return $LANG['rulesengine'][17];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Entity') {
+         $collection = new RuleRightCollection();
+         if ($collection->canList()) {
+            $ldaprule = new RuleRight();
+            $ldaprule->showAndAddRuleForm($item);
+         }
+         $collection = new RuleOcsCollection();
+         if ($collection->canList()) {
+            $ocsrule = new RuleOcs();
+            $ocsrule->showAndAddRuleForm($item);
+         }
+         $collection = new RuleMailCollectorCollection();
+         if ($collection->canList()) {
+            $mailcollector = new RuleMailCollector();
+            $mailcollector->showAndAddRuleForm($item);
+         }
+      }
+      return true;
+   }
+}
 ?>
