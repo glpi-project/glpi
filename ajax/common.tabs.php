@@ -52,9 +52,6 @@ if (!isset($_REQUEST['itemtype'])) {
 
 checkRight("phone", "r");
 
-if (empty($_REQUEST["id"])) {
-   $_REQUEST["id"] = "";
-}
 if (!isset($_REQUEST["sort"])) {
    $_REQUEST["sort"] = "";
 }
