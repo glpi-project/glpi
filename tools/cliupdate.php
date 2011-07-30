@@ -74,6 +74,7 @@ loadLanguage($_SESSION["glpilanguage"]);
 // Only show errors
 $CFG_GLPI["debug_sql"]     = $CFG_GLPI["debug_vars"] = 0;
 $CFG_GLPI["use_errorlog"]  = 1;
+$CFG_GLPI["use_log_in_files"]  = 1;
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 set_error_handler("userErrorHandlerDebug");

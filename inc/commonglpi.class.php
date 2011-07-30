@@ -97,7 +97,7 @@ class CommonGLPI {
 
       switch ($itemtype) {
          case 'Note' :
-            if ($this->getID() && haveRight("notes","r")) {
+            if (haveRight("notes","r")) {
                $ong['Note'] = $LANG['title'][37];
             }
             break;
@@ -161,9 +161,9 @@ class CommonGLPI {
 
 
       switch ($tab) {
-         // All tab 
+         // All tab
          case -1 :
-            // get tabs and loop over 
+            // get tabs and loop over
             $ong = $item->defineTabs(array('withtemplate'=>$withtemplate));
             if (count($ong)) {
                foreach ($ong as $key => $val) {

@@ -1009,6 +1009,66 @@ class EntityData extends CommonDBChild {
       return $url;
    }
 
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if (!$item->isNewID($item->getID())) {
+         switch ($item->getType()) {
+            case 'Entity' :
+               $ong = array();
+               $ong[1] = $LANG['financial'][44];      // Address
+               $ong[2] = $LANG['entity'][14];         // Advanced
+               if (haveRight('notification','r')) {
+                  $ong[3] = $LANG['setup'][704];      // Notification
+               }
+               if (haveRight('entity_helpdesk','r')) {
+                  $ong[4] = $LANG['title'][24];       // Helpdesk
+               }
+               $ong[5] = $LANG['Menu'][38];           // Inventory
+
+               return $ong;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Entity') {
+         switch ($tabnum) {
+            case -1 :
+               self::showStandardOptions($item);
+               self::showAdvancedOptions($item);
+               self::showNotificationOptions($item);
+               self::showHelpdeskOptions($item);
+               self::showInventoryOptions($item);
+               break;
+
+            case 1 :
+               self::showStandardOptions($item);
+               break;
+
+            case 2 :
+               self::showAdvancedOptions($item);
+               break;
+
+            case 3 :
+               self::showNotificationOptions($item);
+               break;
+
+            case 4 :
+               self::showHelpdeskOptions($item);
+               break;
+
+            case 5 :
+               self::showInventoryOptions($item);
+               break;
+         }
+      }
+      return true;
+   }
 }
 
 ?>

@@ -656,11 +656,13 @@ function update0801to083() {
 
    $migration->dropKey("glpi_groups", 'ldap_value');
    $migration->changeField("glpi_groups", 'ldap_value', 'ldap_value', "text");
-   $migration->addKey("glpi_groups", 'ldap_value');
+   // TODO fix : Error: BLOB/TEXT column 'ldap_value' used in key specification without a key length
+   //$migration->addKey("glpi_groups", 'ldap_value');
 
    $migration->dropKey("glpi_groups", 'ldap_group_dn');
    $migration->changeField("glpi_groups", 'ldap_group_dn', 'ldap_group_dn', "text");
-   $migration->addKey("glpi_groups", 'ldap_group_dn');
+   // TODO fix : Error: BLOB/TEXT column 'ldap_value' used in key specification without a key length
+   // $migration->addKey("glpi_groups", 'ldap_group_dn');
 
    $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
                         array('after' => 'admin_reply_name'));
@@ -1041,14 +1043,18 @@ function update0801to083() {
    or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
 
 
-   // Keep it at the end
-   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
-
    //Software dictionnary update
    $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
    $migration->addField("glpi_rulecachesoftwares", "new_entities_id", "string");
    $migration->addField("glpi_entitydatas", "entities_id_software", 'integer',
                         array('value' => '-2'));
+
+   // New index for count on tab
+   // TODO fix Error: Specified key was too long; max key length is 1000 bytes
+   //$migration->addKey('glpi_ruleactions', array('field', 'value'));
+
+   // ************ Keep it at the end **************
+   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`

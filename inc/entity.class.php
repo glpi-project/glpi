@@ -99,127 +99,18 @@ class Entity extends CommonTreeDropdown {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];          // Main
-
-      if (!$this->isNewID($this->fields['id'])) {
-         $ong[2] = $LANG['financial'][44];   // Address
-         $ong[3] = $LANG['Menu'][14];        // Users
-         $ong[4] = $LANG['rulesengine'][17]; // Rules
-         $ong[5] = $LANG['entity'][14];      // Advanced
-
-         if (haveRight("document","r")) {
-            $ong[6] = $LANG['Menu'][27];       // Docs
-         }
-         if (haveRight('notification','r')) {
-            $ong[7] = $LANG['setup'][704];      // Notification
-         }
-         if (haveRight('entity_helpdesk','r')) {
-            $ong[8] = $LANG['title'][24];       // Helpdesk
-         }
-
-         $ong[9] = $LANG['Menu'][38];       // Inventory
-
+      $ong = array();
+      if ($this->isNewID($this->fields['id'])) {
+         $ong['empty'] = $LANG['title'][26];
+      } else {
+         $this->addStandardTab($this->getType(), $ong);
+         $this->addStandardTab('Profile_User',$ong);
+         $this->addStandardTab('EntityData', $ong);
+         $this->addStandardTab('Rule', $ong);
+         $this->addStandardTab('Document',$ong);
          $this->addStandardTab('Note',$ong);
-
       }
       return $ong;
-   }
-
-
-   /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-    */
-   function showTabContent ($ID, $tab) {
-      global $CFG_GLPI;
-
-      if (!$this->isNewID($ID)) {
-         switch ($tab) {
-            case -1 :   // All
-               $this->showChildren($ID);
-               EntityData::showStandardOptions($this);
-               Profile_User::showForEntity($this);
-
-               $collection = new RuleRightCollection();
-               if ($collection->canList()) {
-                  $ldaprule = new RuleRight();
-                  $ldaprule->showAndAddRuleForm($this);
-               }
-               $collection = new RuleOcsCollection();
-               if ($collection->canList()) {
-                  $ocsrule = new RuleOcs();
-                  $ocsrule->showAndAddRuleForm($this);
-               }
-               $collection = new RuleMailCollectorCollection();
-               if ($collection->canList()) {
-                  $mailcollector = new RuleMailCollector();
-                  $mailcollector->showAndAddRuleForm($this);
-               }
-               Document::showAssociated($this);
-               EntityData::showNotificationOptions($this);
-               EntityData::showHelpdeskOptions($this);
-               EntityData::showInventoryOptions($this);
-               Plugin::displayAction($this, $tab);
-               break;
-
-            case 2 :
-               EntityData::showStandardOptions($this);
-               break;
-
-            case 3 :
-               Profile_User::showForEntity($this);
-               break;
-
-            case 4 :
-               $collection = new RuleRightCollection();
-               if ($collection->canList()) {
-                  $ldaprule = new RuleRight();
-                  $ldaprule->showAndAddRuleForm($this);
-               }
-               $collection = new RuleOcsCollection();
-               if ($collection->canList()) {
-                  $ocsrule = new RuleOcs();
-                  $ocsrule->showAndAddRuleForm($this);
-               }
-               $collection = new RuleMailCollectorCollection();
-               if ($collection->canList()) {
-                  $mailcollector = new RuleMailCollector();
-                  $mailcollector->showAndAddRuleForm($this);
-               }
-               break;
-
-            case 5 :
-               EntityData::showAdvancedOptions($this);
-               break;
-
-            case 6 :
-               Document::showAssociated($this);
-               break;
-
-            case 7 :
-               EntityData::showNotificationOptions($this);
-               break;
-
-            case 8 :
-               EntityData::showHelpdeskOptions($this);
-               break;
-
-            case 9 :
-               EntityData::showInventoryOptions($this);
-               break;
-
-            default :
-               if (!CommonGLPI::displayStandardTab($this, $tab)) {
-                  $this->showChildren($ID);
-               }
-               return false;
-         }
-      }
-      return false;
    }
 
 

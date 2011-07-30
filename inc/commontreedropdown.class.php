@@ -74,15 +74,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getID()) {
-         switch ($item->getType()==$this->getType()) {
-            case 'Location' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
-                  return self::createTabEntry($this->getTypeName(), $nb);
-               }
-               return $this->getTypeName();
+      if (!$item->isNewID($item->getID())) {
+         if ($item->getType()==$this->getType()) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               $nb = countElementsInTable($this->getTable(),
+                                          "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
+               return self::createTabEntry($this->getTypeName(), $nb);
+           }
+           return $this->getTypeName();
          }
       }
       return '';

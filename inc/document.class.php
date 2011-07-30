@@ -117,7 +117,7 @@ class Document extends CommonDBTM {
    function getTabNameForItem(CommonDBTM $item) {
       global $LANG;
 
-      if ($item->getID()
+      if (!$item->isNewID($item->getID())
             && (haveRight("document","r") || $item->getType()=='Ticket') ) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
@@ -1375,7 +1375,7 @@ class Document extends CommonDBTM {
             if ($item->getEntityID() >=0 ) {
                $entity = $item->getEntityID();
             }
-               
+
             if ($item->isRecursive()) {
                $entities = getSonsOf('glpi_entities',$entity);
             } else {

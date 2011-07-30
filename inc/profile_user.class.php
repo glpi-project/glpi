@@ -718,5 +718,32 @@ class Profile_User extends CommonDBTM {
                    HISTORY_DELETE_SUBITEM);
    }
 
+
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
+
+      if (!$item->isNewID($item->getID())) {
+         switch ($item->getType()) {
+            case 'Entity' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  // Keep this ? (only approx. as count deleted users)
+                  return self::createTabEntry($LANG['Menu'][14],
+                                              countElementsInTable($this->getTable(),
+                                                                   "entities_id = '".$item->getID()."'"));
+               }
+               return $LANG['Menu'][14];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Entity') {
+         self::showForEntity($item);
+      }
+      return true;
+   }
 }
 ?>
