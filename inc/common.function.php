@@ -137,25 +137,24 @@ function getItemTypeTabsURL($itemtype, $full=true) {
 
    /// TODO only use common.tabs.php when all items migrate to new tabs system or clean tabs file on migration
 
-   $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+   $predir = ($full ? $CFG_GLPI['root_doc'] : '');
+   $dir = '';
 
    if ($plug=isPluginItemType($itemtype)) {
-      $dir .= "/plugins/".strtolower($plug['plugin']);
+      $dir = "/plugins/".strtolower($plug['plugin']);
       $item = strtolower($plug['class']);
 
    } else { // Standard case
       $item = strtolower($itemtype);
    }
 
-   $filename = "/ajax/$item.tabs.php";
+   $filename = $dir."/ajax/$item.tabs.php";
    // Use default one is tabs not exists
    if (!file_exists(GLPI_ROOT.$filename)) {
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
       $filename = "/ajax/common.tabs.php";
    }
-   return $dir.$filename;
+   return $predir.$filename;
 }
-
 
 /**
  * get the Entity of an Item
