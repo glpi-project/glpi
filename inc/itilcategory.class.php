@@ -148,9 +148,9 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-
       Rule::cleanForItemCriteria($this);
    }
+
 }
 
 ?>

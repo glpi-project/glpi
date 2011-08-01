@@ -2564,9 +2564,9 @@ class AuthLDAP extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-
       Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
    }
+
 }
 
 ?>
