@@ -2953,7 +2953,7 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
-      echo "<td width='90%' colspan=3>";
+      echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
@@ -2994,7 +2994,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
-      echo "<td width='90%' colspan=3>";
+      echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";

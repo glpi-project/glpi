@@ -278,13 +278,13 @@ class Stat {
             echo Search::showHeaderItem($output_type, "", $header_num);
 
             echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num, '', 0, '',
-                                        "colspan=4");
+                                        "colspan='4'");
             echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '', 0,
-                                        '', "colspan=3");
+                                        '', "colspan='3'");
             echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num, '', 0, '',
-                                        "colspan=3");
+                                        "colspan='3'");
             echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num, '', 0, '',
-                                        "colspan=2");
+                                        "colspan='2'");
          }
 
          echo Search::showNewLine($output_type);
@@ -771,7 +771,7 @@ class Stat {
                       FROM `glpi_tickets`
                       $LEFTJOIN
                       $WHERE
-                      GROUP BY date_unix 
+                      GROUP BY date_unix
                       ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
