@@ -100,32 +100,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-   **/
-   function showTabContent ($ID, $tab) {
-
-      if (!$this->isNewID($ID)) {
-         switch ($tab) {
-            case -1 :
-               Plugin::displayAction($this, $tab);
-               return false;
-
-            default :
-               if (!CommonGLPI::displayStandardTab($this, $_REQUEST['glpi_tab'])) {
-                  return Plugin::displayAction($this, $tab);
-               }
-         }
-      }
-      return false;
-   }
-
-
-   /**
     * Display title above search engine
     *
     * @return nothing (HTML display if needed)
