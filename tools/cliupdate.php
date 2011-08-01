@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]."  [ --force ] [ --optimize ]\n");
+   die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ]\n");
 }
 
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
@@ -66,10 +66,7 @@ startGlpiSession();
 // Init debug variable
 $_SESSION['glpi_use_mode'] = DEBUG_MODE;
 
-if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {
-   $_SESSION["glpilanguage"] = "en_GB";
-}
-loadLanguage($_SESSION["glpilanguage"]);
+loadLanguage("en_GB");
 
 // Only show errors
 $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
@@ -141,6 +138,10 @@ $migration->displayWarning("Default GLPI Language: $glpilanguage");
 // To prevent problem of execution time
 ini_set("max_execution_time", "0");
 
+if (version_compare($current_version, GLPI_VERSION, 'ne')
+    && !in_array('--upgrade', $_SERVER['argv'])) {
+   die("Upgrade required\n");
+}
 
 switch ($current_version) {
    case "0.78.2":
@@ -168,12 +169,11 @@ switch ($current_version) {
       die("Unsupported version ($current_version)\n");
 }
 
-if (version_compare($current_version, GLPI_VERSION)) {
+if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    $query = "UPDATE `glpi_configs`
              SET `version` = '".GLPI_VERSION."',
-                 `language` = '".$glpilanguage."',
                  `founded_new_version` = ''";
    $DB->query($query) or die($LANG['update'][90].$DB->error());
 
