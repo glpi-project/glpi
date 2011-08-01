@@ -112,7 +112,7 @@ class NotificationTarget extends CommonDBChild {
       $perso_tag = trim(EntityData::getUsedConfig('notification_subject_tag',$this->getEntity()));
       if (empty($perso_tag)) {
          $perso_tag = "GLPI";
-      } 
+      }
       return "[$perso_tag] ";
 
    }
@@ -521,14 +521,14 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get targets for all the users of a group
    **/
-   function getSupervisorAddressByGroup($groups_id) {
+   function getSupervisorAddressByGroup($group_id) {
       global $DB;
 
       $query = $this->getDistinctUserSql()."
                FROM `glpi_groups_users`
                INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
-               WHERE `glpi_groups_users`.`groups_id` = '".$groups_id."'
+               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
                      AND `glpi_groups_users`.`is_manager` = 1";
 
       foreach ($DB->request($query) as $data) {
