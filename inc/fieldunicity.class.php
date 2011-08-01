@@ -92,41 +92,35 @@ class FieldUnicity extends CommonDropdown {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong = parent::defineTabs($options);
+      $ong = array();
+      $ong['empty'] = $this->getTypeName();
 
       if ($this->getID()>0) {
-         $ong[2]  = $LANG['setup'][826];
+         $this->addStandardTab($this->getType(), $ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }
 
 
-   /**
-    * Display content of Tab
-    *
-    * @param $ID of the item
-    * @param $tab number of the tab
-    *
-    * @return true if handled (for class stack)
-   **/
-   function showTabContent($ID, $tab) {
+   function getTabNameForItem(CommonDBTM $item) {
+      global $LANG;
 
-      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
-         switch ($tab) {
-            case 2:
-               self::showDoubles($this);
-               return true;
-
-            case 12 :
-               Log::showForItem($this);
-               return true;
-
-            case -1 :
-               self::showDoubles($this);
-               Log::showForItem($this);
+      if ($item->getID()) {
+         if ($item->getType()==$this->getType()) {
+            return $LANG['setup'][826];
          }
       }
-      return false;
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()==__CLASS__) {
+         self::showDoubles($item);
+      }
+      return true;
    }
 
 
