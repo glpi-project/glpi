@@ -501,35 +501,19 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get targets for all the users of a group
+    *
+    * @param $manager : 0 user, 1 supervisor
+    * @param $group_id id of the group
    **/
-   function getUsersAddressesByGroup($group_id) {
+   function getAddressesByGroup($manager, $group_id) {
       global $DB;
 
       $query = $this->getDistinctUserSql()."
                FROM `glpi_groups_users`
                INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
-               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
-                     AND `glpi_groups_users`.`is_manager` = 0";
-
-      foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
-      }
-   }
-
-
-   /**
-    * Get targets for all the users of a group
-   **/
-   function getSupervisorAddressByGroup($group_id) {
-      global $DB;
-
-      $query = $this->getDistinctUserSql()."
-               FROM `glpi_groups_users`
-               INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
-               $this->getProfileJoinSql()."
-               WHERE `glpi_groups_users`.`groups_id` = '".$group_id."'
-                     AND `glpi_groups_users`.`is_manager` = 1";
+               WHERE `glpi_groups_users`.`groups_id` = '$group_id'
+                     AND `glpi_groups_users`.`is_manager` = '$manager'";
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
@@ -708,7 +692,7 @@ class NotificationTarget extends CommonDBChild {
       if ($this->target_object) {
          $id = $this->target_object->getField('groups_id_tech');
          if ($id>0) {
-            $this->getUsersAddressesByGroup($id);
+            $this->getAddressesByGroup(0, $id);
          }
       }
    }
@@ -842,12 +826,12 @@ class NotificationTarget extends CommonDBChild {
 
          //Send to all the users of a group
          case Notification::GROUP_TYPE :
-            $this->getUsersAddressesByGroup($data['items_id']);
+            $this->getAddressesByGroup(0, $data['items_id']);
             break;
 
          //Send to all the users of a group
          case Notification::SUPERVISOR_GROUP_TYPE :
-            $this->getSupervisorAddressByGroup($data['items_id']);
+            $this->getAddressByGroup(1, $data['items_id']);
             break;
 
          //Send to all the users of a profile
