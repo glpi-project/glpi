@@ -137,7 +137,7 @@ class RequestType extends CommonDropdown {
     * @param $source string
     *
     * @return requesttypes_id
-    */
+   **/
    static function getDefault($source) {
       global $DB;
 
@@ -153,7 +153,6 @@ class RequestType extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-
       Rule::cleanForItemCriteria($this);
    }
 }

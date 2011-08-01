@@ -193,7 +193,6 @@ class State extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-
       Rule::cleanForItemCriteria($this);
    }
 }

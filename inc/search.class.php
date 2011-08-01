@@ -4457,21 +4457,18 @@ class Search {
 
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
-
-         $todel = array_merge($todel, array_keys($itemstodel));
+         $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
       if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
          $itemstodel = Contract::getSearchOptionsToAdd();
-
-         $todel = array_merge($todel, array_keys($itemstodel));
+         $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
       if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
-
-            $todel = array_merge($todel, array_keys($itemstodel));
+            $todel      = array_merge($todel, array_keys($itemstodel));
          }
          if (!$CFG_GLPI['use_ocs_mode']) {
             if (($action=='r' && !haveRight('view_ocsng',$action))
