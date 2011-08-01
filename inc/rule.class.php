@@ -1351,6 +1351,7 @@ class Rule extends CommonDBTM {
 
    /**
     * Used to get specific criteria patterns
+    *
     * @param $ID the given criteria
     * @param $condition condition used
     * @param $pattern the pattern
@@ -1912,9 +1913,9 @@ class Rule extends CommonDBTM {
     * @param $table string (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
     * @param $valfield string (value or pattern)
     * @param $fieldfield string (criteria of field)
-    */
-   private static function cleanForItemActionOrCriteria($item, $field,
-                                                        $ruleitem, $table, $valfield, $fieldfield) {
+   **/
+   private static function cleanForItemActionOrCriteria($item, $field, $ruleitem, $table,
+                                                        $valfield, $fieldfield) {
       global $DB, $LANG;
 
       $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
@@ -1950,12 +1951,13 @@ class Rule extends CommonDBTM {
       }
    }
 
+
    /**
     * Clean Rule with Action is assign to an item
     *
     * @param $item Object
     * @param $field string name (default is FK to item)
-    */
+   **/
    static function cleanForItemAction($item, $field='') {
 
       self::cleanForItemActionOrCriteria($item, $field,
@@ -1971,7 +1973,7 @@ class Rule extends CommonDBTM {
     *
     * @param $item Object
     * @param $field string name (default is FK to item)
-    */
+   **/
    static function cleanForItemCriteria($item, $field='') {
 
       self::cleanForItemActionOrCriteria($item, $field,

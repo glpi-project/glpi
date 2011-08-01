@@ -45,13 +45,14 @@ class Supplier extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
-**/
+
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+    *
+    * @return $LANG
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 

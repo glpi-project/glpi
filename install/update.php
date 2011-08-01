@@ -607,7 +607,7 @@ function updateDbUpTo031() {
 
 
    // To prevent problem of execution time
-	ini_set("max_execution_time", "0");
+   ini_set("max_execution_time", "0");
 
    $migration = new Migration($current_version);
 

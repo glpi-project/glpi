@@ -48,7 +48,6 @@ class SoftwareCategory extends CommonDropdown {
 
 
    function cleanDBonPurge() {
-
       Rule::cleanForItemAction($this);
    }
 }

@@ -121,6 +121,7 @@ class Profile extends CommonDBTM {
       }
    }
 
+
    function post_addItem() {
       global $DB;
 
