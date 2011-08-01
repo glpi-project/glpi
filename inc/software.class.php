@@ -65,7 +65,7 @@ class Software extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("software","r")) {
@@ -81,7 +81,7 @@ class Software extends CommonDBTM {
 
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       Computer_SoftwareVersion::showForComputer($item, $withtemplate);
       return true;

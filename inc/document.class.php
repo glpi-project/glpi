@@ -114,7 +114,7 @@ class Document extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if (!$item->isNewID($item->getID())
@@ -128,7 +128,7 @@ class Document extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showAssociated($item, $withtemplate);
       return true;

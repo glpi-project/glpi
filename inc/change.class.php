@@ -161,7 +161,7 @@ class Change extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("show_all_change","1")) {
@@ -186,7 +186,7 @@ class Change extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case "Problem" :

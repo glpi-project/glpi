@@ -85,7 +85,7 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
@@ -100,7 +100,7 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForComputer($item, $withtemplate);
       return true;

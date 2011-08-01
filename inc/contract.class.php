@@ -78,7 +78,7 @@ class Contract extends CommonDBTM {
       $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("contract","r")) {
@@ -90,7 +90,7 @@ class Contract extends CommonDBTM {
       return '';
    }
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showAssociated($item, $withtemplate);
       return true;

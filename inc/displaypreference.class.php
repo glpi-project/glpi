@@ -559,6 +559,25 @@ class DisplayPreference extends CommonDBTM {
       }
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case 'Preference' :
+            return $LANG['central'][12];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Preference') {
+         self::showForUser(getLoginUserID());
+      }
+      return true;
+   }
 }
 
 ?>

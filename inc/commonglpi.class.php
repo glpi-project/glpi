@@ -128,7 +128,7 @@ class CommonGLPI {
     *
     *  @return string tab name
    **/
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       return '';
    }
 
@@ -142,7 +142,7 @@ class CommonGLPI {
     *
     * @return true
    **/
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       return false;
    }
 

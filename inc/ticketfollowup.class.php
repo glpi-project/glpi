@@ -172,7 +172,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getType() == 'Ticket') {
@@ -193,7 +193,7 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $fup = new TicketFollowup();
       $fup->showSummary($item);

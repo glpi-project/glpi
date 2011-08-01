@@ -143,29 +143,39 @@ class User extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
-      if ($item->getID() && haveRight("user","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            switch ($item->getType()) {
-               case "Group" :
+      switch ($item->getType()) {
+         case 'Group' :
+            if ($item->getID() && haveRight("user","r")) {
+               if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['Menu'][14],
                                               countElementsInTable("glpi_groups_users",
                                                                    "`groups_id` = '".$item->getID()."'" ));
+               }
+               return $LANG['Menu'][14];
             }
-         }
-         return $LANG['Menu'][14];
+            break;
+
+         case 'Preference' :
+            return $LANG['title'][26];
       }
       return '';
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+      global $CFG_GLPI;
 
       switch ($item->getType()) {
-         case "Group" :
+         case 'Group' :
             Group_User::showForGroup($item);
+            return true;
+
+         case 'Preference' :
+            $user = new self();
+            $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", getLoginUserID());
             return true;
       }
       return false;

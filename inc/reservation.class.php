@@ -52,7 +52,7 @@ class Reservation extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("reservation_central","r")) {
@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild {
    }
 
 
-      static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+      static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
 
       if ($item->getType() == 'User') {
          self::showForUser($_POST["id"]);

@@ -161,7 +161,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("show_all_problem","1")) {
@@ -177,7 +177,7 @@ class Problem extends CommonITILObject {
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
                   break;
-         
+
             }
             return self::createTabEntry($LANG['Menu'][7], $nb);
          }
@@ -187,7 +187,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case "Change" :

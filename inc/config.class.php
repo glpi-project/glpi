@@ -1093,6 +1093,31 @@ class Config extends CommonDBTM {
       $unicity = new FieldUnicity();
       $unicity->showForm($CFG_GLPI["id"], -1);
    }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case 'Preference' :
+            return $LANG['setup'][6];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
+
+      if ($item->getType()=='Preference') {
+         $config = new self();
+         $user = new User();
+         if ($user->getFromDB(getLoginUserID())) {
+            $user->computePreferences();
+            $config->showFormUserPrefs($user->fields);
+         }
+      }
+      return true;
+   }
 }
 
 ?>

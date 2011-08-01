@@ -168,7 +168,7 @@ class Calendar_Holiday extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID()) {
@@ -186,7 +186,7 @@ class Calendar_Holiday extends CommonDBRelation {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
 
       if ($item->getType()=='Calendar') {
          self::showForCalendar($item);
