@@ -4198,7 +4198,7 @@ class OcsServer extends CommonDBTM {
          }
          echo "</select></td></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td class='center' colspan=2>";
+         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ocs_showservers' value=\"".
                 $LANG['buttons'][2]."\"></td></tr>";
          echo "</table></div></form>\n";
@@ -4212,7 +4212,7 @@ class OcsServer extends CommonDBTM {
          echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td class='center' colspan=2>".$LANG['ocsng'][27]."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>".$LANG['ocsng'][27]."</td></tr>";
          echo "</table></div></form>\n";
       }
    }

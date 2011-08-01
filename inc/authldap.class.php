@@ -330,7 +330,7 @@ class AuthLDAP extends CommonDBTM {
                               array('value' => $this->fields["deref_option"]));
       echo"</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</td></tr>";
       echo "</table></form></div>";
@@ -360,7 +360,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr><th colspan='4'>".$LANG['ldap'][18] . "</th></tr>";
 
          if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+            echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
             echo $_SESSION["LDAP_TEST_MESSAGE"];
             echo"</td></tr>";
             unset($_SESSION["LDAP_TEST_MESSAGE"]);
@@ -431,7 +431,7 @@ class AuthLDAP extends CommonDBTM {
       Dropdown::showYesNo("use_dn", $this->fields["use_dn"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</td></tr>";
       echo "</table></form></div>";
@@ -448,13 +448,13 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
 
          if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+            echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
             echo $_SESSION["LDAP_TEST_MESSAGE"];
             echo"</td></tr>";
             unset($_SESSION["LDAP_TEST_MESSAGE"]);
          }
 
-         echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+         echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
          echo "<input type='submit' name='test_ldap' class='submit' value=\"".
                 $LANG['buttons'][2]."\">";
          echo "</td></tr>";
@@ -529,7 +529,7 @@ class AuthLDAP extends CommonDBTM {
 
 
 
-      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</td></tr>";
       echo "</table></div></form>";
@@ -555,7 +555,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='text' name='entity_condition' value='".$this->fields["entity_condition"]."'
              size='100'></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</td></tr>";
       echo "</table></div></form>";

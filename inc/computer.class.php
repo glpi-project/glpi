@@ -754,7 +754,7 @@ class Computer extends CommonDBTM {
          Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
          echo "</td>";
       } else {
-         echo "<td colspan=2></td>";
+         echo "<td colspan='2'></td>";
       }
       echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
       echo "<td >";
