@@ -1834,8 +1834,8 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                  onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                    onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
+                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
       }
       echo "</th>";
@@ -1849,8 +1849,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                  onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                    onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\"
+                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
 
          $candeleteobserver = true;
 
@@ -1873,8 +1873,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                  onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                    onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\"
+                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
 
       if ($ID && $this->canAssign()) {

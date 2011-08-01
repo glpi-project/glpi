@@ -4470,7 +4470,7 @@ class Search {
       if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
-   
+
             $todel = array_merge($todel, array_keys($itemstodel));
          }
          if (!$CFG_GLPI['use_ocs_mode']) {

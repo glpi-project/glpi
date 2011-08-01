@@ -72,8 +72,8 @@ if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {
 loadLanguage($_SESSION["glpilanguage"]);
 
 // Only show errors
-$CFG_GLPI["debug_sql"]     = $CFG_GLPI["debug_vars"] = 0;
-$CFG_GLPI["use_log_in_files"]  = 1;
+$CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
+$CFG_GLPI["use_log_in_files"] = 1;
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 set_error_handler("userErrorHandlerDebug");
@@ -86,15 +86,16 @@ if (!$DB->connected) {
 /* ----------------------------------------------------------------- */
 /**
  * Extends class Migration to redefine display mode
- */
+**/
 class CliMigration extends Migration {
 
    function __construct($ver) {
       global $LANG;
 
-      $this->deb = time();
+      $this->deb     = time();
       $this->version = $ver;
    }
+
 
    function displayMessage ($msg) {
 
@@ -102,10 +103,11 @@ class CliMigration extends Migration {
       echo str_pad($msg, 100)."\r";
    }
 
-   function displayTitle($title) {
 
+   function displayTitle($title) {
       echo "\n".str_pad(" $title ", 100, '=', STR_PAD_BOTH)."\n";
    }
+
 
    function displayWarning($msg, $red=false) {
 
@@ -115,6 +117,7 @@ class CliMigration extends Migration {
       echo str_pad($msg, 100)."\n";
    }
 }
+
 /*---------------------------------------------------------------------*/
 
 if (!TableExists("glpi_configs")) {
@@ -124,7 +127,7 @@ if (!TableExists("glpi_configs")) {
 $query = "SELECT `version`, `language`
           FROM `glpi_configs`";
 
-$result = $DB->query($query) or die("get current version".$DB->error());
+$result          = $DB->query($query) or die("get current version ".$DB->error());
 $current_version = trim($DB->result($result,0,0));
 $glpilanguage    = trim($DB->result($result,0,1));
 
@@ -188,7 +191,6 @@ if (version_compare($current_version, GLPI_VERSION)) {
    $migration->displayWarning("Forced migration Done.");
 
 } else {
-
    $migration->displayWarning("No migration needed.");
 }
 

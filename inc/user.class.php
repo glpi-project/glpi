@@ -150,11 +150,10 @@ class User extends CommonDBTM {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case "Group" :
-                  return self::createTabEntry($LANG['Menu'][14], countElementsInTable("glpi_groups_users",
-                                                                "`groups_id` = '".$item->getID()."'" ));
-                  break;
+                  return self::createTabEntry($LANG['Menu'][14],
+                                              countElementsInTable("glpi_groups_users",
+                                                                   "`groups_id` = '".$item->getID()."'" ));
             }
-
          }
          return $LANG['Menu'][14];
       }
@@ -168,7 +167,6 @@ class User extends CommonDBTM {
          case "Group" :
             Group_User::showForGroup($item);
             return true;
-            break;
       }
       return false;
    }
