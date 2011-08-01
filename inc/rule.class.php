@@ -1981,7 +1981,7 @@ class Rule extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if (!$item->isNewID($item->getID())) {
@@ -2000,7 +2000,7 @@ class Rule extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
 
       if ($item->getType()=='Entity') {
          $collection = new RuleRightCollection();

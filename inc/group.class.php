@@ -76,7 +76,7 @@ class Group extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("group","r")) {
@@ -86,7 +86,7 @@ class Group extends CommonDBTM {
 
                $ong[1] = $LANG['common'][111];
                $ong[2] = $LANG['common'][112];
-      
+
                if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
                   $ong[3] = $LANG['setup'][3];
                }
@@ -98,7 +98,7 @@ class Group extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       global $LANG;
       switch ($item->getType()) {
          case 'Group' :
@@ -111,7 +111,7 @@ class Group extends CommonDBTM {
                   $item->showItems(true);
                   return true;
                   break;
-               case 3 : 
+               case 3 :
                   $item->showLDAPForm($item->getID());
                   return true;
                   break;
@@ -134,7 +134,7 @@ class Group extends CommonDBTM {
 
 //          $ong[2] = $LANG['common'][96];
 //          $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
-// 
+//
 //          if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
 //             $ong[4] = $LANG['setup'][3];
 //          }
@@ -169,7 +169,7 @@ class Group extends CommonDBTM {
          // Create item
          $this->check(-1, 'w');
       }
-      
+
       $this->showTabs($options);
       $this->showFormHeader($options);
 

@@ -64,9 +64,10 @@ if (!isset($_REQUEST["withtemplate"])) {
 
 $item = new $_REQUEST['itemtype']();
 
-if ($item->can($_REQUEST["id"],'r')) {
-   CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
+if (($item instanceof CommonDBTM) && !$item->can($_REQUEST["id"],'r')) {
+   exit();
 }
+CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
 
 ajaxFooter();
 

@@ -103,7 +103,7 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID()) {
@@ -115,7 +115,7 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
 
       if ($item->getType()==__CLASS__) {
          self::showDoubles($item);

@@ -63,7 +63,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getType() == 'Computer' && haveRight("computer","r")) {
@@ -78,7 +78,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       self::showForVirtualMachine($item);
       self::showForComputer($item);

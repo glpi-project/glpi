@@ -322,7 +322,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if (haveRight("show_all_ticket","1")) {
@@ -374,7 +374,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       switch ($item->getType()) {
          case 'Change' :

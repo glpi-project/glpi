@@ -91,7 +91,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getType() == $this->getItilObjectItemType() && $item->canView()) {
@@ -112,7 +112,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       $itemtype = $item->getType().'Task';
       $task     = new $itemtype();

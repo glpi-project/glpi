@@ -85,14 +85,14 @@ class Infocom extends CommonDBChild {
       return array($this->fields['itemtype'], $this->fields['items_id']);
    }
 
-   function getTabNameForItem(CommonDBTM $item) {
+   function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("infocom","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][26], 
+            return self::createTabEntry($LANG['Menu'][26],
                      countElementsInTable('glpi_infocoms',
-                                          "`itemtype` = '".$item->getType()."' 
+                                          "`itemtype` = '".$item->getType()."'
                                           AND `items_id` = '".$item->getID()."'"));
          }
          return $LANG['Menu'][26];
@@ -100,7 +100,7 @@ class Infocom extends CommonDBChild {
       return '';
    }
 
-   static function displayTabContentForItem(CommonDBTM $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       self::showForItem($item,$withtemplate);
       return true;
    }
