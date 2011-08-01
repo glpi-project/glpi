@@ -68,7 +68,8 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($computer, $_REQUEST['glpi_tab'],
+                                                $_POST["withtemplate"])) {
             }
       }
 

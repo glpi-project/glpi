@@ -136,13 +136,13 @@ class CommonGLPI {
    /**
     * show Tab content
     *
-    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $item CommonGLPI object for which the tab need to be displayed
     * @param $tabnum integer tab number
     * @param $withtemplate boolean is a template object ?
     *
     * @return true
    **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       return false;
    }
 
@@ -150,7 +150,7 @@ class CommonGLPI {
    /**
     * display standard tab contents
     *
-    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @param $item CommonGLPI object for which the tab need to be displayed
     * @param $tab string tab name
     * @param $withtemplate boolean is a template object ?
     *
@@ -158,24 +158,21 @@ class CommonGLPI {
    **/
    static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0) {
 
-
-
       switch ($tab) {
          // All tab
          case -1 :
             // get tabs and loop over
-            $ong = $item->defineTabs(array('withtemplate'=>$withtemplate));
+            $ong = $item->defineTabs(array('withtemplate' => $withtemplate));
             if (count($ong)) {
                foreach ($ong as $key => $val) {
                   echo "<div class='alltab'>$val</div>";
-                  self::displayStandardTab($item,$key,$withtemplate);
+                  self::displayStandardTab($item, $key, $withtemplate);
                }
             }
             // Display plugin datas
-            Plugin::displayAction($item,$tab);
-
+            Plugin::displayAction($item, $tab);
             return true;
-            break;
+
          case 'Note' :
             $item->showNotesForm();
             return true;
@@ -185,10 +182,10 @@ class CommonGLPI {
                return true;
             }
 
-            $data = explode('####',$tab);
+            $data     = explode('####',$tab);
             $itemtype = $data[0];
             // Default set
-            $tabnum = 1;
+            $tabnum   = 1;
             if (isset($data[1])) {
                $tabnum = $data[1];
             }

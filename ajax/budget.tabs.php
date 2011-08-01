@@ -66,7 +66,8 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          break;
 
       default :
-         if (!CommonGLPI::displayStandardTab($budget, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+         if (!CommonGLPI::displayStandardTab($budget, $_REQUEST['glpi_tab'],
+                                             $_POST["withtemplate"])) {
             $budget->showValuesByEntity();
          }
          break;

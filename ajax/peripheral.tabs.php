@@ -65,7 +65,8 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
 
          default :
-            if (!CommonGLPI::displayStandardTab($periph, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($periph, $_REQUEST['glpi_tab'],
+                                                $_POST["withtemplate"])) {
                NetworkPort::showForItem($periph, $_POST["withtemplate"]);
             }
       }
