@@ -112,7 +112,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       $itemtype = $item->getType().'Task';
       $task     = new $itemtype();

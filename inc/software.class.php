@@ -80,8 +80,7 @@ class Software extends CommonDBTM {
    }
 
 
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       Computer_SoftwareVersion::showForComputer($item, $withtemplate);
       return true;

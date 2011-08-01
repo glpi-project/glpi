@@ -69,7 +69,8 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
 
          default :
-            if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($phone, $_REQUEST['glpi_tab'],
+                                                        $_POST["withtemplate"])) {
                NetworkPort::showForItem($phone, $_POST["withtemplate"]);
             }
       }

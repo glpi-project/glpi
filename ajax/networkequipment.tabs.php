@@ -65,7 +65,8 @@ if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
 
          default :
-            if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!CommonGLPI::displayStandardTab($netdevice, $_REQUEST['glpi_tab'],
+                                                $_POST["withtemplate"])) {
                NetworkPort::showForItem($netdevice, $_POST["withtemplate"]);
             }
       }

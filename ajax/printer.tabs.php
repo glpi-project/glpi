@@ -65,7 +65,8 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          default :
-            CommonGLPI::displayStandardTab($printer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            CommonGLPI::displayStandardTab($printer, $_REQUEST['glpi_tab'],
+                                           $_POST["withtemplate"]);
       }
 
    } else {

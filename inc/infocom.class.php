@@ -85,25 +85,29 @@ class Infocom extends CommonDBChild {
       return array($this->fields['itemtype'], $this->fields['items_id']);
    }
 
+
    function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("infocom","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][26],
-                     countElementsInTable('glpi_infocoms',
-                                          "`itemtype` = '".$item->getType()."'
-                                          AND `items_id` = '".$item->getID()."'"));
+                                        countElementsInTable('glpi_infocoms',
+                                                             "`itemtype` = '".$item->getType()."'
+                                                               AND `items_id` = '".$item->getID()."'"));
          }
          return $LANG['Menu'][26];
       }
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      self::showForItem($item,$withtemplate);
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      self::showForItem($item, $withtemplate);
       return true;
    }
+
 
    /**
     * Retrieve an item from the database for a device

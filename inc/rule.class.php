@@ -2000,7 +2000,7 @@ class Rule extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='Entity') {
          $collection = new RuleRightCollection();
@@ -2008,11 +2008,13 @@ class Rule extends CommonDBTM {
             $ldaprule = new RuleRight();
             $ldaprule->showAndAddRuleForm($item);
          }
+
          $collection = new RuleOcsCollection();
          if ($collection->canList()) {
             $ocsrule = new RuleOcs();
             $ocsrule->showAndAddRuleForm($item);
          }
+
          $collection = new RuleMailCollectorCollection();
          if ($collection->canList()) {
             $mailcollector = new RuleMailCollector();
@@ -2021,5 +2023,6 @@ class Rule extends CommonDBTM {
       }
       return true;
    }
+
 }
 ?>

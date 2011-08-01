@@ -98,29 +98,30 @@ class Group extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $LANG;
+
       switch ($item->getType()) {
          case 'Group' :
             switch ($tabnum) {
                case 1 :
                   $item->showItems(false);
                   return true;
-                  break;
+
                case 2 :
                   $item->showItems(true);
                   return true;
-                  break;
+
                case 3 :
                   $item->showLDAPForm($item->getID());
                   return true;
-                  break;
 
             }
             break;
       }
       return false;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;

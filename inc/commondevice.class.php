@@ -65,7 +65,7 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       Computer_Device::showForComputer($item, $withtemplate);
       return true;
@@ -79,6 +79,7 @@ abstract class CommonDevice extends CommonDropdown {
                          'label' => $LANG['common'][5],
                          'type'  => 'dropdownValue'));
    }
+
 
    function getSearchOptions() {
       global $LANG;
