@@ -65,8 +65,9 @@ startGlpiSession();
 
 // Init debug variable
 $_SESSION['glpi_use_mode'] = DEBUG_MODE;
+$_SESSION['glpilanguage']  = "en_GB";
 
-loadLanguage("en_GB");
+loadLanguage();
 
 // Only show errors
 $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
