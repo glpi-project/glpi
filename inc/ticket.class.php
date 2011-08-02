@@ -3223,7 +3223,7 @@ class Ticket extends CommonITILObject {
          case "rejected" : // on affiche les tickets rejetés
             $query .= "WHERE ($search_assign)
                              AND `global_validation` = 'rejected' ".
-                              getEntitiesRestrictRequest("AND", "glpi_tickets");
+                             getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
 
@@ -3369,7 +3369,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]        = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][20]."</a>";
+                        append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
 
                   break;
 
@@ -3461,7 +3461,7 @@ class Ticket extends CommonITILObject {
                break;
 
             case 'rejected' :
-               echo $LANG['central'][20];
+               echo $LANG['central'][17];
                break;
 
             case 'toapprove' :
