@@ -1049,6 +1049,19 @@ function update0801to083() {
    $migration->addField("glpi_entitydatas", "entities_id_software", 'integer',
                         array('value' => '-2'));
 
+   // Groups perm
+   $migration->addfield('glpi_groups', 'is_requester', 'bool', array('value' => '1'));
+   $migration->addfield('glpi_groups', 'is_assign',    'bool', array('value' => '1'));
+   $migration->addfield('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
+   $migration->addfield('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
+   $migration->addfield('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
+
+   $migration->addKey('glpi_groups', 'is_requester');
+   $migration->addKey('glpi_groups', 'is_assign');
+   $migration->addKey('glpi_groups', 'is_notify');
+   $migration->addKey('glpi_groups', 'is_itemgroup');
+   $migration->addKey('glpi_groups', 'is_usergroup');
+
    // New index for count on tab
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
 
