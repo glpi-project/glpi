@@ -3032,8 +3032,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
-         echo "&nbsp;";
+         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
@@ -3043,9 +3042,10 @@ class Ticket extends CommonITILObject {
          echo "</th>";
          echo "<td><div id='uploadfiles'><input type='file' name='filename[]' size='25'>";
          echo "</div></td>";
+
       } else {
          echo "<th colspan='2'>";
-         echo $LANG['document'][20].'&nbsp;: '.Document_Item::countForItem($this);
+         echo $LANG['document'][20].'&nbsp;:&nbsp;'.Document_Item::countForItem($this);
          echo "</th>";
       }
 
@@ -3056,7 +3056,6 @@ class Ticket extends CommonITILObject {
          $rand_linked_ticket = mt_rand();
 
          if ($canupdate) {
-
             echo "&nbsp;";
             echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
                        title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
@@ -3110,7 +3109,7 @@ class Ticket extends CommonITILObject {
                }
 
             } else {
-               echo "<td class='tab_bg_2 center' colspan='4'>";
+               echo "<td class='tab_bg_2 center' colspan='3'>";
                echo "<input type='submit' class='submit' name='update' value='".
                       $LANG['buttons'][7]."'>";
             }
@@ -3134,12 +3133,13 @@ class Ticket extends CommonITILObject {
       return true;
    }
 
+
    static function showDocumentAddButton($size=25) {
       global $LANG, $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-               onClick=\"if (nbfiles<maxfiles){
+      echo "<span id='addfilebutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
+             $LANG['buttons'][8]."\" onClick=\"if (nbfiles<maxfiles){
                            var row = Ext.get('uploadfiles');
                            row.createChild('<input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
@@ -3147,7 +3147,7 @@ class Ticket extends CommonITILObject {
                               Ext.get('addfilebutton').hide();
                            }
                         }\"
-               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
    }
 
 
