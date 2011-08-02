@@ -165,8 +165,10 @@ class CommonGLPI {
             $ong = $item->defineTabs(array('withtemplate' => $withtemplate));
             if (count($ong)) {
                foreach ($ong as $key => $val) {
-                  echo "<div class='alltab'>$val</div>";
-                  self::displayStandardTab($item, $key, $withtemplate);
+                  if ($key != 'empty') {
+                     echo "<div class='alltab'>$val</div>";
+                     self::displayStandardTab($item, $key, $withtemplate);
+                  }
                }
             }
             // Display plugin datas
@@ -190,7 +192,7 @@ class CommonGLPI {
                $tabnum = $data[1];
             }
 
-            if (!is_integer($itemtype) && class_exists($itemtype)) {
+            if (!is_integer($itemtype) && $itemtype!='empty' && class_exists($itemtype)) {
                $obj = new $itemtype();
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
