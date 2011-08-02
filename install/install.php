@@ -340,7 +340,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
    function fill_db() {
       global $LANG, $CFG_GLPI;
 
-      include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+      //include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
