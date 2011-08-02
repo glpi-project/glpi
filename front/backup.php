@@ -147,7 +147,7 @@ function init_time() {
 }
 
 
-/*
+/**
  * Get current time
 **/
 function current_time() {
@@ -456,12 +456,14 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
 
       if ($offsettable >= 0) {
          if (backupMySql($DB,$fichier,$duree,$rowlimit)) {
-            echo "<div class='center'><a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
-                       "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
-                       $LANG['backup'][24]."</a>";
-            echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
+            echo "<div class='center spaced'>".
+                 "<a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
+                    "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
+                    $LANG['backup'][24]."</a>";
+            echo "<script language='javascript' type='text/javascript'>".
+                  "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
-                     "$fichier\";</script></div><br>";
+                     "$fichier\";</script></div>";
             glpi_flush();
             exit;
          }
@@ -520,10 +522,13 @@ if (isset($_GET["file"])
 
    if ($offset != -1) {
       if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
-         echo "<div class='center'><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
+         echo "<div class='center'>".
+              "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
                     "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][24]."</a>";
-         echo "<script language='javascript' type='text/javascript'>window.location=\"backup.php?file=".
-                $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script></div>";
+         echo "<script language='javascript' type='text/javascript'>".
+               "window.location=\"backup.php?file=".
+                $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
+                "</script></div>";
          glpi_flush();
          exit;
       }
@@ -542,15 +547,15 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
    $filename = $_GET["delfile"];
    if (is_file($path."/".$_GET["delfile"])) {
       unlink($path."/".$_GET["delfile"]);
-      echo "<div class ='center'>".$filename." ".$LANG['common'][28]."</div><br>";
+      echo "<div class ='center spaced'>".$filename." ".$LANG['common'][28]."</div>";
    }
 }
 
 if (haveRight("check_update","r")) {
-   echo "<div class='center'><table class='tab_glpi'>";
+   echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
    echo "<a href='backup.php?action=check_version' class='icon_consol b'>".$LANG['setup'][300]."</a>";
-   echo "</td></tr></table></div><br>";
+   echo "</td></tr></table></div>";
 }
 
 // Title backup
@@ -566,7 +571,7 @@ echo "<td><a class='icon_consol b'
                                            'backup.php?xmlnow=xmlnow')\">".$LANG['backup'][1].
       "</a>&nbsp;</td>";
 
-echo "</tr></table>";
+echo "</tr></table></div>";
 
 ?>
 
