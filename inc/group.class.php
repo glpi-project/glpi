@@ -59,6 +59,15 @@ class Group extends CommonDBTM {
    }
 
 
+   function post_getEmpty () {
+      $this->fields['is_requester'] = 1;
+      $this->fields['is_assign']    = 1;
+      $this->fields['is_notify']    = 1;
+      $this->fields['is_itemgroup'] = 1;
+      $this->fields['is_usergroup'] = 1;
+   }
+
+
    function cleanDBonPurge() {
       global $DB;
 
@@ -84,10 +93,15 @@ class Group extends CommonDBTM {
             case 'Group' :
                $ong = array();
 
-               $ong[1] = $LANG['common'][111];
-               $ong[2] = $LANG['common'][112];
-
-               if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
+               if ($item->getField('is_itemgroup')) {
+                  $ong[1] = $LANG['common'][111];
+               }
+               if ($item->getField('is_assign')) {
+                  $ong[2] = $LANG['common'][112];
+               }
+               if ($item->getField('is_usergroup')
+                   && haveRight('config', 'r')
+                   && AuthLdap::useAuthLdap()) {
                   $ong[3] = $LANG['setup'][3];
                }
                return $ong;
@@ -126,14 +140,13 @@ class Group extends CommonDBTM {
       global $LANG;
 
       $ong = array();
+      $ong['empty'] = $this->getTypeName();
 
       if ($this->fields['id'] > 0) {
-         $this->addStandardTab('User', $ong);
-
+         if ($this->fields['is_usergroup']) {
+            $this->addStandardTab('User', $ong);
+         }
          $this->addStandardTab('Group', $ong);
-
-      } else { // New item
-         $ong['empty'] = $LANG['title'][26];
       }
       return $ong;
    }
@@ -171,21 +184,40 @@ class Group extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='2' class='middle right'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
-      echo "<td class='center middle' rowspan='2'>";
-      echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='5' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td class='middle' rowspan='5'>";
+      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-//       echo "<tr class='tab_bg_1'>";
-//       echo "<td>".$LANG['common'][64]."&nbsp;:&nbsp;</td>";
-//       echo "<td>";
-//       // Manager must be in the same entity
-//       User::dropdown(array('value'  => $this->fields["users_id"],
-//                            'right'  => 'all',
-//                            'entity' => $this->fields["entities_id"]));
-//       echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][4]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      dropdown::showYesNo('is_requester', $this->fields['is_requester']);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][5]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      dropdown::showYesNo('is_assign', $this->fields['is_assign']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][704]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      dropdown::showYesNo('is_notify', $this->fields['is_notify']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][96]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['Menu'][14]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
+      echo "</td>";
 
       if (!$ID) {
          $template = "newtemplate";
@@ -198,7 +230,6 @@ class Group extends CommonDBTM {
          echo "<td>";
          echo  convDateTime($this->fields["date_mod"]);
       }
-
       echo "</td></tr>";
 
       $this->showFormButtons($options);
