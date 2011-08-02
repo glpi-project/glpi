@@ -129,10 +129,10 @@ class Consumable extends CommonDBTM {
 
       if (!empty($itemtype) && $items_id > 0) {
          $query = "UPDATE `".$this->getTable()."`
-                  SET `date_out` = '".date("Y-m-d")."',
-                     `itemtype` = '$itemtype',
-                     `items_id` = '$items_id'
-                  WHERE `id` = '$ID'";
+                   SET `date_out` = '".date("Y-m-d")."',
+                       `itemtype` = '$itemtype',
+                       `items_id` = '$items_id'
+                   WHERE `id` = '$ID'";
 
          if ($result = $DB->query($query)) {
             return true;
@@ -405,7 +405,7 @@ class Consumable extends CommonDBTM {
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
          echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
          if ($show_old) {
-            echo "<th>".$LANG['consumables'][33]."</th>";
+            echo "<th>".$LANG['consumables'][31]."</th>";
          }
          echo "<th width='200px'>".$LANG['financial'][3]."</th>";
 
@@ -432,7 +432,7 @@ class Consumable extends CommonDBTM {
          $where = " AND `date_out` IS NULL
                   ORDER BY `date_in`, `id`";
       } else { //OLD
-         $where = " AND `date_out` IS NOT NULL 
+         $where = " AND `date_out` IS NOT NULL
                   ORDER BY `date_out` DESC,
                            `date_in`,
                            `id`";
@@ -556,7 +556,7 @@ class Consumable extends CommonDBTM {
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
          // Type
-         echo "<th>".$LANG['consumables'][33]."</th>";
+         echo "<th>".$LANG['consumables'][31]."</th>";
 
          foreach ($types as $key => $type) {
             echo "<th>$type</th>";

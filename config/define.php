@@ -235,7 +235,7 @@ $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Ch
                                                   'Printer', 'Problem', 'Reminder', 'Software',
                                                   'SoftwareLicense', 'Supplier', 'Ticket','User');
 
-$CFG_GLPI["consumables_types"]               = array('Group', 'User');
+$CFG_GLPI["consumables_types"]            = array('Group', 'User');
 
 $CFG_GLPI["contract_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',

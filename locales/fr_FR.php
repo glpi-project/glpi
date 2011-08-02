@@ -436,8 +436,8 @@ $LANG['consumables'][23] = "État";
 
 $LANG['consumables'][26] = "Date utilisation";
 
+$LANG['consumables'][31] = "Donner à";
 $LANG['consumables'][32] = "Donner";
-$LANG['consumables'][33] = "Donner à";
 
 $LANG['consumables'][35] = "Consommables utilisés";
 $LANG['consumables'][36] = "Lieu de stockage";
