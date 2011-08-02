@@ -42,6 +42,7 @@ header_nocache();
 if (!isset($_REQUEST["id"])) {
    exit();
 }
+
 if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
@@ -50,14 +51,14 @@ if (!isset($_REQUEST['itemtype'])) {
    exit();
 }
 
-checkRight("phone", "r");
-
 if (!isset($_REQUEST["sort"])) {
    $_REQUEST["sort"] = "";
 }
+
 if (!isset($_REQUEST["order"])) {
    $_REQUEST["order"] = "";
 }
+
 if (!isset($_REQUEST["withtemplate"])) {
    $_REQUEST["withtemplate"] = "";
 }
