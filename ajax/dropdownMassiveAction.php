@@ -213,7 +213,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_group" :
-         Dropdown::show('Group');
+         Dropdown::show('Group', array('condition' => '`is_usergroup`'));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";
          break;

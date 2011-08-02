@@ -122,8 +122,9 @@ class Group_User extends CommonDBRelation{
          }
 
          if (countElementsInTableForEntity("glpi_groups", $strict_entities) > count($used)) {
-            Dropdown::show('Group', array('entity' => $strict_entities,
-                                          'used'   => $used));
+            Dropdown::show('Group', array('entity'    => $strict_entities,
+                                          'used'      => $used,
+                                          'condition' => '`is_usergroup`'));
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\"
                    class='submit'>";
