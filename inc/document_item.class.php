@@ -52,8 +52,10 @@ class Document_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       if (empty($input['itemtype'])
-          || ((empty($input['items_id']) || $input['items_id']==0) && $input['itemtype']!='Entity')
-          || empty($input['documents_id']) || $input['documents_id']==0) {
+          || ((empty($input['items_id']) || $input['items_id']==0)
+              && $input['itemtype']!='Entity')
+          || empty($input['documents_id'])
+          || $input['documents_id']==0) {
          return false;
       }
 
