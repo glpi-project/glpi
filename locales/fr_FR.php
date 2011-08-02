@@ -748,9 +748,15 @@ $LANG['financial'][112]  = "Remplissage lors du passage au statut";
 $LANG['financial'][113]  = "Pas de remplissage automatique";
 $LANG['financial'][114]  = "Date de dernier inventaire physique";
 
+
 $LANG['gmt'][0] = "GMT";
 $LANG['gmt'][1] = "heure(s)";
 $LANG['gmt'][2] = "h";
+
+
+$LANG['group'][0] = "Visible dans un ticket";
+$LANG['group'][1] = "Peut être notifié";
+$LANG['group'][2] = "Peut contenir";
 
 
 // For priority

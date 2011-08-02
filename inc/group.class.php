@@ -60,6 +60,7 @@ class Group extends CommonDBTM {
 
 
    function post_getEmpty () {
+
       $this->fields['is_requester'] = 1;
       $this->fields['is_assign']    = 1;
       $this->fields['is_notify']    = 1;
@@ -92,7 +93,6 @@ class Group extends CommonDBTM {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();
-
                if ($item->getField('is_itemgroup')) {
                   $ong[1] = $LANG['common'][111];
                }
@@ -177,11 +177,12 @@ class Group extends CommonDBTM {
       }
 
       $this->showTabs($options);
+      $options['colspan']=4;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
+      echo "<td colspan='2'>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
       autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='5' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
@@ -190,44 +191,46 @@ class Group extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td class='b' colspan='4'>".$LANG['group'][0]."</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
       echo "<td>".$LANG['job'][4]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       dropdown::showYesNo('is_requester', $this->fields['is_requester']);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][5]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
+      echo "</td>";
+      echo "<td>".$LANG['job'][5]."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][704]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2' class='b'>".$LANG['group'][1]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       dropdown::showYesNo('is_notify', $this->fields['is_notify']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td class='b' colspan='4'>".$LANG['group'][2]."</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
       echo "<td>".$LANG['common'][96]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
+      echo "</td>";
+      echo "<td>".$LANG['Menu'][14]."&nbsp;:&nbsp;&nbsp;";
+      dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['Menu'][14]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
-      dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
-      echo "</td>";
-
+      echo "<td colspan='4' class='center'>";
       if (!$ID) {
          $template = "newtemplate";
-         echo "<td>".$LANG['computers'][14]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
+         echo $LANG['computers'][14]."&nbsp;:&nbsp;";
          echo convDateTime($_SESSION["glpi_currenttime"]);
 
       } else {
-         echo "<td>".$LANG['common'][26]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
+         echo $LANG['common'][26]."&nbsp;:&nbsp;";
          echo  convDateTime($this->fields["date_mod"]);
       }
       echo "</td></tr>";
@@ -329,17 +332,17 @@ class Group extends CommonDBTM {
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'is_notify';
-      $tab[13]['name']          = $LANG['setup'][704];
+      $tab[13]['name']          = $LANG['group'][1];
       $tab[13]['datatype']      = 'bool';
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = $LANG['common'][96];
+      $tab[14]['name']          = $LANG['rulesengine'][2]." ".$LANG['common'][96];
       $tab[14]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = $LANG['Menu'][14];
+      $tab[15]['name']          = $LANG['rulesengine'][2]." ".$LANG['Menu'][14];
       $tab[15]['datatype']      = 'bool';
 
       return $tab;
