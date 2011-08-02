@@ -61,7 +61,6 @@ if ($_POST['id']>0 && $kb->can($_POST['id'],'r')) {
          Plugin::displayAction($kb, $_REQUEST['glpi_tab']);
          break;
 
-      
       default :
          if (!CommonGLPI::displayStandardTab($kb, $_REQUEST['glpi_tab'])) {
             $kb->showMenu();
