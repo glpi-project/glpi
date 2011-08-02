@@ -374,7 +374,7 @@ function addTracking($type, $ID, $ID_entity) {
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_tickets`
-                VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
+                VALUES(NULL, '$tID', '".mt_rand($FIRST["techgroups"], $LAST['techgroups'])."',
                        '".CommonITILObject::ASSIGN."')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
@@ -1252,11 +1252,22 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
                 VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW())";
+                        NOW(), 1, 0, 1, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
    $LAST["groups"] = $DB->insert_id();
+
+   $FIRST["techgroups"] = $LAST["groups"]+1;
+
+   for ($i=0 ; $i<$MAX['groups'] ; $i++) {
+      $query = "INSERT INTO `glpi_groups`
+                VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
+                        NOW(), 0, 1, 1, 1, 1)";
+      $DB->query($query) or die("PB REQUETE ".$query);
+   }
+
+   $LAST["techgroups"] = $DB->insert_id();
 
 
    // glpi_users
@@ -1280,6 +1291,10 @@ function generate_entity($ID_entity) {
 
       $query = "INSERT INTO `glpi_groups_users`
                 VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0)";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $query = "INSERT INTO `glpi_groups_users`
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1306,6 +1321,10 @@ function generate_entity($ID_entity) {
                 VALUES (NULL, '$user_id', '$group', 0, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
+      $group = mt_rand($FIRST['techgroups'], $LAST['techgroups']);
+      $query = "INSERT INTO `glpi_groups_users`
+                VALUES (NULL, '$user_id', '$group', 0, 1)";
+      $DB->query($query) or die("PB REQUETE ".$query);
    }
 
    $LAST["users_admin"]   = getMaxItem("glpi_users");
@@ -1329,6 +1348,10 @@ function generate_entity($ID_entity) {
 
       $query = "INSERT INTO `glpi_groups_users`
                 VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0)";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $query = "INSERT INTO `glpi_groups_users`
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1481,7 +1504,7 @@ function generate_entity($ID_entity) {
              VALUES (NULL, '$ID_entity', '1', '0', 'category for entity $ID_entity', '',
                      'comment category for entity $ID_entity', '1', '0',
                      '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                     '".mt_rand($FIRST['groups'],$LAST['groups'])."', '', '', 1)";
+                     '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1)";
    $DB->query($query) or die("PB REQUETE ".$query);
 
    $newID = $DB->insert_id();
@@ -1490,7 +1513,7 @@ function generate_entity($ID_entity) {
                 VALUES (NULL, '$ID_entity', '1', '$newID', 'categorie $i', '',
                         'comment categorie $i', '1', '0',
                         '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST['groups'],$LAST['groups'])."', '', '', 1)";
+                        '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
       $newID=$DB->insert_id();
    }
@@ -1864,7 +1887,7 @@ function generate_entity($ID_entity) {
    while ($data=$DB->fetch_array($result)) {
       // insert networking
       $techID                = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
-      $gtechID               = mt_rand($FIRST["groups"],$LAST["groups"]);
+      $gtechID               = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
       $domainID              = mt_rand(1,$MAX['domain']);
       $networkID             = mt_rand(1,$MAX['network']);
       $vlanID                = mt_rand(1,$MAX["vlan"]);
@@ -2073,7 +2096,7 @@ function generate_entity($ID_entity) {
       $techID    = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
       $userID    = mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
       $groupID   = mt_rand($FIRST["groups"],$LAST["groups"]);
-      $gtechID   = mt_rand($FIRST["groups"],$LAST["groups"]);
+      $gtechID   = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
       $domainID  = mt_rand(1,$MAX['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
@@ -2381,7 +2404,7 @@ function generate_entity($ID_entity) {
    // Add global peripherals
    for ($i=0 ; $i<$MAX['global_peripherals'] ; $i++) {
       $techID  = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
-      $gtechID = mt_rand($FIRST["groups"],$LAST["groups"]);
+      $gtechID = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
 
       $query = "INSERT INTO `glpi_peripherals`
                 VALUES (NULL, '$ID_entity', 'periph $i-$ID_entity', NOW(), 'contact $i', 'num $i',
@@ -2435,7 +2458,7 @@ function generate_entity($ID_entity) {
 
       $loc       = mt_rand(1,$MAX['locations']);
       $techID    = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
-      $gtechID   = mt_rand($FIRST["groups"],$LAST["groups"]);
+      $gtechID   = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
       $recursive = mt_rand(0,1);
 
       $query = "INSERT INTO `glpi_softwares`
