@@ -47,6 +47,7 @@ class Document extends CommonDBTM {
 
    protected $forward_entity_to = array('Document_Item');
 
+
    static function getTypeName() {
       global $LANG;
 
@@ -77,12 +78,12 @@ class Document extends CommonDBTM {
          }
       }
 
-
       if (haveRight('document', 'w')) {
          return parent::canCreateItem();
       }
       return false;
    }
+
 
    function canView() {
       return haveRight('document', 'r');
@@ -118,7 +119,8 @@ class Document extends CommonDBTM {
       global $LANG;
 
       if (!$item->isNewID($item->getID())
-            && (haveRight("document","r") || $item->getType()=='Ticket') ) {
+          && (haveRight("document","r") || $item->getType()=='Ticket')) {
+
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
          }

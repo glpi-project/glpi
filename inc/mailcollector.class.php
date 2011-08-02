@@ -518,13 +518,12 @@ class MailCollector  extends CommonDBTM {
     *
     * @return ticket fields array
     */
-   function buildTicket($i,$options=array()) {
+   function buildTicket($i, $options=array()) {
       global $CFG_GLPI;
 
       $play_rules = (isset($options['play_rules']) && $options['play_rules']);
-
-      $head = $this->getHeaders($i); // Get Header Info Return Array Of Headers
-                                     // **Key Are (subject,to,toOth,toNameOth,from,fromName)
+      $head       = $this->getHeaders($i); // Get Header Info Return Array Of Headers
+                                           // **Key Are (subject,to,toOth,toNameOth,from,fromName)
       $tkt = array();
       $tkt['_blacklisted'] = false;
 
@@ -564,6 +563,7 @@ class MailCollector  extends CommonDBTM {
             }
          }
       }
+
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from']
@@ -628,9 +628,9 @@ class MailCollector  extends CommonDBTM {
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && $job->fields['status'] != 'closed'
-             && ( $CFG_GLPI['use_anonymous_followups']
-                  || $tkt['_users_id_requester'] > 0
-                  || $job->isAlternateEmailForITILObject($tkt['tickets_id'],$head['from']))) {
+             && ($CFG_GLPI['use_anonymous_followups']
+                 || $tkt['_users_id_requester'] > 0
+                 || $job->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
@@ -646,7 +646,6 @@ class MailCollector  extends CommonDBTM {
                         unset($to_keep[$ID-1]);
                      }
                   }
-
                } else {
                   $to_keep[$ID] = $ID;
                }

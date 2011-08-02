@@ -39,12 +39,13 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  *  Config class
- */
+**/
 class Config extends CommonDBTM {
 
    // From CommonDBTM
    public $auto_message_on_action = false;
    public $showdebug              = true;
+
 
    static function getTypeName() {
       global $LANG;
@@ -230,7 +231,8 @@ class Config extends CommonDBTM {
       echo "</td>";
       if ($CFG_GLPI["use_ajax"]) {
          echo "<td>".$LANG['setup'][119]."&nbsp;:</td><td>";
-         Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"], 0, 10, 1);
+         Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
+                               0, 10, 1);
       } else {
          echo "<td colspan='2'>&nbsp;";
       }
@@ -517,7 +519,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
-      echo "<div class='center' id='tabsbody'>";
+      echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
@@ -576,8 +578,8 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['tracking'][37] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td><td>&nbsp;</td><td>&nbsp;";
-      echo "</td></tr>";
+      echo "</td><td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][219] . "&nbsp;:</td><td>";
@@ -586,7 +588,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
 
-      echo "</table><br>";
+      echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>" . $LANG['help'][1];
