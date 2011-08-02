@@ -88,6 +88,7 @@ class Reminder extends CommonDBTM {
       return $ong;
    }
 
+
    function prepareInputForAdd($input) {
       global $LANG;
 
@@ -248,19 +249,15 @@ class Reminder extends CommonDBTM {
          echo $this->fields['name'];
       }
       echo "</td>\n";
-
       echo "<td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo getUserName($this->fields["users_id"]);
-      echo "</td>\n";
+      echo "</td></tr>\n";
 
-      echo "</tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-
       if ($canedit && haveRight("reminder_public","w")) {
          if (!$ID) {
-
             if (isset($_GET["is_private"])) {
                $this->fields["is_private"] = $_GET["is_private"];
             }
@@ -269,7 +266,6 @@ class Reminder extends CommonDBTM {
                $this->fields["is_recursive"] = $_GET["is_recursive"];
             }
          }
-
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"], $this->fields["entities_id"],
                                            $this->fields["is_recursive"]);
 
@@ -296,25 +292,23 @@ class Reminder extends CommonDBTM {
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo '<table><tr><td>';
       echo $LANG['pager'][2].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"],1,true,$canedit);
+      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true, $canedit);
       echo '</td><td>'.$LANG['pager'][1].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"],1,true,$canedit);
-      echo "</td></tr></table>";
+      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true, $canedit);
+      echo '</td></tr></table>';
       echo "</td>";
-
       echo "<td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       Planning::dropdownState("state", $this->fields["state"]);
       echo "</td>\n";
-
       echo "</tr>\n";
-
 
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td class='center'>";
@@ -559,8 +553,10 @@ class Reminder extends CommonDBTM {
           $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1 ";
       }
 
-      $restrict_visibility = " AND (`begin_view_date` IS NULL OR `begin_view_date` < '$today')
-                              AND (`end_view_date` IS NULL OR `end_view_date` > '$today') ";
+      $restrict_visibility = " AND (`begin_view_date` IS NULL
+                                    OR `begin_view_date` < '$today')
+                              AND (`end_view_date` IS NULL
+                                   OR `end_view_date` > '$today') ";
 
       if ($entity < 0) {
          $query = "SELECT *
@@ -579,7 +575,8 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         $is_helpdesk_visible $restrict_visibility".
+                         $is_helpdesk_visible
+                         $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
@@ -599,7 +596,8 @@ class Reminder extends CommonDBTM {
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
                          AND `is_recursive` = '1'
-                         $is_helpdesk_visible $restrict_visibility".
+                         $is_helpdesk_visible
+                         $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
 
