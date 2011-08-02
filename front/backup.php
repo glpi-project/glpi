@@ -571,7 +571,7 @@ echo "<td><a class='icon_consol b'
                                            'backup.php?xmlnow=xmlnow')\">".$LANG['backup'][1].
       "</a>&nbsp;</td>";
 
-echo "</tr></table></div>";
+echo "</tr></table>";
 
 ?>
 
