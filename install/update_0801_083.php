@@ -729,8 +729,8 @@ function update0801to083() {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result) == 1) {
             $query = "UPDATE `glpi_documenttypes`
-                         SET `icon` = '$icon', `date_mod` = NOW()
-                         WHERE `id` = '".$DB->result($result,0,0)."';";
+                      SET `icon` = '$icon', `date_mod` = NOW()
+                      WHERE `id` = '".$DB->result($result,0,0)."'";
             $DB->query($query)
             or die("0.83 update icon for doc type $ext ".$LANG['update'][90] .$DB->error());
          }

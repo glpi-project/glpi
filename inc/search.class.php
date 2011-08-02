@@ -1204,8 +1204,9 @@ class Search {
                               break;
 
                            case "under" :
-                              $title .= ' '.$LANG['search'][3].' '.Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
-                                                                    $p['contains'][$key]);
+                              $title .= ' '.$LANG['search'][3].' '.
+                                        Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
+                                                                  $p['contains'][$key]);
                               break;
 
                            default :
@@ -1258,8 +1259,9 @@ class Search {
                               break;
 
                            case "under" :
-                              $title .= ' '.$LANG['search'][3].' '.Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
-                                                                            $p['contains2'][$key]);
+                              $title .= ' '.$LANG['search'][3].' '.
+                                        Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
+                                                                  $p['contains2'][$key]);
                               break;
 
                            default :
@@ -4793,25 +4795,25 @@ class Search {
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'    => $LANG['rulesengine'][0],
-                           'notequals' => $LANG['rulesengine'][1],
-                           'searchopt' => $searchopt[$field_num]);
+                            'notequals' => $LANG['rulesengine'][1],
+                            'searchopt' => $searchopt[$field_num]);
 
             case 'name' :
             case 'completename' :
                $actions = array('contains'  => $LANG['search'][2],
-                           'equals'    => $LANG['rulesengine'][0],
-                           'notequals' => $LANG['rulesengine'][1],
-                           'searchopt' => $searchopt[$field_num]);
+                                'equals'    => $LANG['rulesengine'][0],
+                                'notequals' => $LANG['rulesengine'][1],
+                                'searchopt' => $searchopt[$field_num]);
 
                // Specific case of TreeDropdown : add under
                $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
-               $itemlinked = new $itemtype_linked();
+               $itemlinked      = new $itemtype_linked();
                if ($itemlinked instanceof CommonTreeDropdown) {
                   $actions['under'] = $LANG['search'][3];
                }
                return $actions;
          }
-     }
+      }
       return $actions;
    }
 
