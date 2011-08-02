@@ -317,6 +317,31 @@ class Group extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'is_requester';
+      $tab[11]['name']          = $LANG['job'][4];
+      $tab[11]['datatype']      = 'bool';
+
+      $tab[12]['table']         = $this->getTable();
+      $tab[12]['field']         = 'is_assign';
+      $tab[12]['name']          = $LANG['job'][5];
+      $tab[12]['datatype']      = 'bool';
+
+      $tab[13]['table']         = $this->getTable();
+      $tab[13]['field']         = 'is_notify';
+      $tab[13]['name']          = $LANG['setup'][704];
+      $tab[13]['datatype']      = 'bool';
+
+      $tab[14]['table']         = $this->getTable();
+      $tab[14]['field']         = 'is_itemgroup';
+      $tab[14]['name']          = $LANG['common'][96];
+      $tab[14]['datatype']      = 'bool';
+
+      $tab[15]['table']         = $this->getTable();
+      $tab[15]['field']         = 'is_usergroup';
+      $tab[15]['name']          = $LANG['Menu'][14];
+      $tab[15]['datatype']      = 'bool';
+
       return $tab;
    }
 
