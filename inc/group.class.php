@@ -91,7 +91,6 @@ class Group extends CommonDBTM {
                   $ong[3] = $LANG['setup'][3];
                }
                return $ong;
-               break;
          }
       }
       return '';
@@ -132,13 +131,6 @@ class Group extends CommonDBTM {
          $this->addStandardTab('User', $ong);
 
          $this->addStandardTab('Group', $ong);
-
-//          $ong[2] = $LANG['common'][96];
-//          $ong[3] = $LANG['common'][96].' ('.$LANG['common'][109].')';
-//
-//          if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
-//             $ong[4] = $LANG['setup'][3];
-//          }
 
       } else { // New item
          $ong['empty'] = $LANG['title'][26];
@@ -312,7 +304,8 @@ class Group extends CommonDBTM {
          $this->check(-1, 'w');
       }
 
-      echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".$this->getFormURL()."'>";
+      echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
+             $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if (haveRight("config","r") && AuthLdap::useAuthLdap()) {

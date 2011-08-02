@@ -938,7 +938,6 @@ abstract class CommonITILObject extends CommonDBTM {
    function addFiles($id) {
       global $LANG, $CFG_GLPI;
 
-
       if (!isset($_FILES) || !isset($_FILES['filename'])) {
          return array();
       }
@@ -946,7 +945,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $doc      = new Document();
       $docitem  = new Document_Item();
 
-//      printCleanArray($_FILES);exit();
       // if multiple files are uploaded
       $TMPFILE = array();
       if (is_array($_FILES['filename']['name'])) {
@@ -965,8 +963,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       foreach ($TMPFILE as $_FILES) {
          if (isset($_FILES['filename'])
-             && count($_FILES['filename'])>0
-             && $_FILES['filename']["size"]>0) {
+             && count($_FILES['filename']) > 0
+             && $_FILES['filename']["size"] > 0) {
 
             // Check for duplicate
             if ($doc->getFromDBbyContent($this->fields["entities_id"],

@@ -3366,7 +3366,7 @@ class Ticket extends CommonITILObject {
                   $options['field'][1]      = 5; // assign user
                   $options['searchtype'][1] = 'equals';
                   $options['contains'][1]   = getLoginUserID();
-                  $options['link'][1]        = 'AND';
+                  $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
