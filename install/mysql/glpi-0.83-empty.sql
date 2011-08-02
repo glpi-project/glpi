@@ -1938,11 +1938,23 @@ CREATE TABLE `glpi_groups` (
   `ldap_value` text COLLATE utf8_unicode_ci,
   `ldap_group_dn` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
+  `is_requester` tinyint(1) NOT NULL default '1',
+  `is_assign` tinyint(1) NOT NULL default '1',
+  `is_notify` tinyint(1) NOT NULL default '1',
+  `is_itemgroup` tinyint(1) NOT NULL default '1',
+  `is_usergroup` tinyint(1) NOT NULL default '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
   KEY `entities_id` (`entities_id`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `ldap_value` (`ldap_value`(200)),
+  KEY `ldap_group_dn` (`ldap_group_dn`(200)),
+  KEY `is_requester` (`is_requester`),
+  KEY `is_assign` (`is_assign`),
+  KEY `is_notify` (`is_notify`),
+  KEY `is_itemgroup` (`is_itemgroup`),
+  KEY `is_usergroup` (`is_usergroup`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3916,7 +3928,8 @@ CREATE TABLE `glpi_ruleactions` (
   `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `rules_id` (`rules_id`)
+  KEY `rules_id` (`rules_id`),
+  KEY `field_value` (`field`(50),`value`(50))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_ruleactions` VALUES ('1','1','assign','entities_id','0');
