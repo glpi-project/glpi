@@ -546,8 +546,8 @@ class EntityData extends CommonDBChild {
       echo "<td>";
       autocompletionTextField($entitynotification, "notification_subject_tag");
       echo "</td>";
-      echo "<td >&nbsp;</td><td>&nbsp;";
-      echo "</td></tr>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . $LANG['setup'][204] . "</td>";
