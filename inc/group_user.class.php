@@ -334,7 +334,7 @@ class Group_User extends CommonDBRelation{
             echo "</tr>";
             echo "</table>";
 
-            if ($canedit) {
+            if ($canedit && $i) {
                openArrowMassive("groupuser_form$rand-$is_manager", true);
                $actions = array('deleteuser' => $LANG['buttons'][6]);
                if ($is_manager) {
