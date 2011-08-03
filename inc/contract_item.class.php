@@ -106,6 +106,7 @@ class Contract_Item extends CommonDBRelation{
       return $tab;
    }
 
+
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_contracts_items`.`items_id` = '".$item->getField('id')."'
@@ -114,6 +115,25 @@ class Contract_Item extends CommonDBRelation{
       return countElementsInTable(array('glpi_contracts_items'), $restrict);
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("contract","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][25], self::countForItem($item));
+         }
+         return $LANG['Menu'][25];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      Contract::showAssociated($item, $withtemplate);
+      return true;
+   }
 
 }
 

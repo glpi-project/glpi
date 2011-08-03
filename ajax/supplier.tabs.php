@@ -69,10 +69,6 @@ if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
          Plugin::displayAction($supplier, $_REQUEST['glpi_tab']);
          break;
 
-      case 4 :
-         $supplier->showContracts();
-         break;
-
       case 15 :
          $supplier->showInfocoms();
          break;

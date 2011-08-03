@@ -46,5 +46,38 @@ class Contract_Supplier extends CommonDBRelation {
 
    public $itemtype_2 = 'Supplier';
    public $items_id_2 = 'suppliers_id';
+
+
+   static function countForSupplier(Supplier $item) {
+
+      $restrict = "`glpi_contracts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
+                    AND `glpi_contracts_suppliers`.`contracts_id` = `glpi_contracts`.`id` ".
+                    getEntitiesRestrictRequest(" AND ", "glpi_contracts", '',
+                                               $_SESSION['glpiactiveentities']);
+
+      return countElementsInTable(array('glpi_contracts_suppliers', 'glpi_contracts'), $restrict);
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("contract","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][25],
+                                              self::countForSupplier($item));
+         }
+         return $LANG['Menu'][25];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      $item->showContracts();
+      return true;
+   }
+
 }
 ?>
