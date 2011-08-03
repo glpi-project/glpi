@@ -89,8 +89,10 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          break;
 
       case "group" :
-         Dropdown::show('Group', array('name'   => '_itil_'.$_POST["actortype"].'[groups_id]',
-                                       'entity' => $_POST['entity_restrict']));
+         $cond = ($_POST["actortype"]=='assign' ? $cond = '`is_assign`' : $cond = '`is_requester`');
+         Dropdown::show('Group', array('name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
+                                       'entity'    => $_POST['entity_restrict'],
+                                       'condition' => $cond));
          break;
 
       case "supplier" :
