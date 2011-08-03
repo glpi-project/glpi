@@ -959,5 +959,92 @@ class NotificationTarget extends CommonDBChild {
       }
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if (haveRight('notification', 'r') && $item->getID()) {
+         switch ($item->getType()) {
+            case 'Group' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(),
+                                             "`items_id` = '".$item->getID()."'
+                                              AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
+                                                   OR `type`='".Notification::GROUP_TYPE."')");
+                  return self::createTabEntry($LANG['setup'][704], $nb);
+               }
+               return $LANG['setup'][704];
+         }
+      }
+      return '';
+   }
+
+
+   /**
+    * Display notification registered for a group
+    *
+    * @since version 0.83
+    *
+    * @param $group Group
+    *
+    * @return nothing
+   **/
+   static function showForGroup(Group $group) {
+      global $LANG, $DB;
+
+      if (!haveRight("notification", "r")) {
+         return false;
+      }
+
+      $crit = array('type'     => array(Notification::SUPERVISOR_GROUP_TYPE,
+                                        Notification::GROUP_TYPE),
+                    'items_id' => $group->getID());
+      $req = $DB->request('glpi_notificationtargets', $crit);
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='6'>" . $LANG['setup'][704] . "</th></tr>";
+
+      if ($req->numrows()) {
+         echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['common'][60]."</th>";
+         echo "<th>".$LANG['common'][17]."</th>";
+         echo "<th>".$LANG['mailing'][120]."</th>";
+         echo "<th>".$LANG['mailing'][119]."</th>";
+         echo "<th>".$LANG['mailing'][113]."</th></tr>";
+
+         $notif = new Notification();
+         initNavigateListItems('Notification', $group->getTypeName()." = ".$group->getNameID());
+         foreach ($req as $data) {
+            addToNavigateListItems('Notification', $data['notifications_id']);
+
+            if ($notif->getFromDB($data['notifications_id'])) {
+               echo "<tr class='tab_bg_2'><td>".$notif->getLink();
+               echo "</td><td>".dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
+               if (class_exists($itemtype=$notif->getField('itemtype'))) {
+                  $tmp = new $itemtype();
+                  echo $tmp->getTypeName();
+               }
+               echo "</td><td>".Notification::getMode($notif->getField('mode'));
+               echo "</td><td>".NotificationEvent::getEventName($itemtype, $notif->getField('event'));
+               echo "</td><td>".Dropdown::getDropdownName('glpi_notificationtemplates',
+                                                          $notif->getField('notificationtemplates_id'));
+               echo "</td></tr>";
+            }
+         }
+      } else {
+      echo "<tr class='tab_bg_2'><td class='b center'>".$LANG['search'][15]."</td></tr>";
+      }
+      echo "</table>";
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Group') {
+         self::showForGroup($item);
+      }
+      return true;
+   }
+
 }
 ?>

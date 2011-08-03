@@ -146,6 +146,9 @@ class Group extends CommonDBTM {
          if ($this->fields['is_usergroup']) {
             $this->addStandardTab('User', $ong);
          }
+         if ($this->fields['is_notify']) {
+            $this->addStandardTab('NotificationTarget', $ong);
+         }
          $this->addStandardTab('Group', $ong);
       }
       return $ong;
