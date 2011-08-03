@@ -508,12 +508,16 @@ class NotificationTarget extends CommonDBChild {
    function getAddressesByGroup($manager, $group_id) {
       global $DB;
 
+      // members/managers of the group allowed on object entity
+      // filter group with 'is_assign' (attribute can be unset after notification)
       $query = $this->getDistinctUserSql()."
                FROM `glpi_groups_users`
                INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`) ".
                $this->getProfileJoinSql()."
+               INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                WHERE `glpi_groups_users`.`groups_id` = '$group_id'
-                     AND `glpi_groups_users`.`is_manager` = '$manager'";
+                     AND `glpi_groups_users`.`is_manager` = '$manager'
+                     AND `glpi_groups`.`is_notify`";
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
@@ -577,6 +581,7 @@ class NotificationTarget extends CommonDBChild {
    function addGroupsToTargets($entity) {
       global $LANG, $DB;
 
+      // Filter groups which can be notified and have members (as notification are sent to members)
       $query = "SELECT `id`, `name`
                 FROM `glpi_groups`".
                 getEntitiesRestrictRequest(" WHERE", 'glpi_groups', 'entities_id', $entity, true)."
