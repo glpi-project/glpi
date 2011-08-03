@@ -3100,7 +3100,9 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
                         /*tabpanel.body.update('');*/
                         /* update active tab*/
                         Ext.Ajax.request({
-                           url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=$key',
+                           url : '".$CFG_GLPI['root_doc'].
+                                  "/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=".
+                                  urlencode($key)."',
                            success: function(objServerResponse) {
                            //alert(objServerResponse.responseText);
                         }
