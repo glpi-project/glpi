@@ -269,9 +269,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             }
 
             if (!$plugdisplay && !$already_display) {
+               $cond = (isset($search['condition']) ? $search['condition'] : '');
                Dropdown::show(getItemTypeForTable($search["table"]),
-                              array('name'   => $search["linkfield"],
-                                    'entity' => $_SESSION['glpiactiveentities']));
+                              array('name'      => $search["linkfield"],
+                                    'entity'    => $_SESSION['glpiactiveentities'],
+                                    'condition' => $cond));
             }
       }
    }

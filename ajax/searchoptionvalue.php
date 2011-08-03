@@ -267,10 +267,12 @@ if (isset($_REQUEST['searchtype'])) {
                switch ($searchopt['field']) {
                   case "name" :
                   case "completename" :
+                     $cond = (isset($searchopt['condition']) ? $searchopt['condition'] : '');
                      Dropdown::show(getItemTypeForTable($searchopt['table']),
-                                    array('value'    => $_REQUEST['value'],
-                                          'name'     => $inputname,
-                                          'comments' => 0));
+                                    array('value'     => $_REQUEST['value'],
+                                          'name'      => $inputname,
+                                          'comments'  => 0,
+                                          'condition' => $cond));
                      $display = true;
                      break;
                }
