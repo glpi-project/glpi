@@ -84,15 +84,11 @@ class Contract extends CommonDBTM {
 
       $ong = array();
       if ($this->fields['id'] > 0) {
-         $ong[1] = $LANG['Menu'][23];
-         $ong[2] = $LANG['common'][96];
-
+         $this->addStandardTab('Contract_Supplier', $ong);
+         $this->addStandardTab('Contract_Item', $ong);
          $this->addStandardTab('Document', $ong);
-
          $this->addStandardTab('Link', $ong);
-
          $this->addStandardTab('Note', $ong);
-
          $this->addStandardTab('Log', $ong);
 
       } else { // New item

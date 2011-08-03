@@ -107,7 +107,7 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   static function countForItem(CommonDBTM $item) {
+   static function countForSupplier(Supplier $item) {
 
       $restrict = "`glpi_contracts_items`.`items_id` = '".$item->getField('id')."'
                    AND `glpi_contracts_items`.`itemtype` = '".$item->getType()."'";
@@ -116,14 +116,35 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   static function countForContract(Contract $item) {
+
+      $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
+                   AND `glpi_computers`.`id` = `glpi_contracts_items`.`items_id`
+                   AND `glpi_contracts_items`.`itemtype` = 'Computer' ".
+                   getEntitiesRestrictRequest(" AND ", "glpi_computers", '',
+                                               $_SESSION['glpiactiveentities']);;
+
+      return countElementsInTable(array('glpi_contracts_items', 'glpi_computers'), $restrict);
+   }
+
+
    function getTabNameForItem(CommonGLPI $item) {
       global $LANG;
 
       if ($item->getID() && haveRight("contract","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][25], self::countForItem($item));
+         switch ($item->getType()) {
+            case 'Supplier' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
+               }
+               return $LANG['Menu'][25];
+
+            case 'Contract' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['common'][96], self::countForContract($item));
+               }
+               return $LANG['common'][96];
          }
-         return $LANG['Menu'][25];
       }
       return '';
    }
@@ -131,7 +152,14 @@ class Contract_Item extends CommonDBRelation{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      Contract::showAssociated($item, $withtemplate);
+      switch ($item->getType()) {
+         case 'Supplier' :
+            Contract::showAssociated($item, $withtemplate);
+            break;
+
+         case 'Contract' :
+            $item->showItems();
+      }
       return true;
    }
 
