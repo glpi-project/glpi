@@ -1989,7 +1989,7 @@ $LANG['setup'][104] = "2- Sévère (Non utilisée)";
 $LANG['setup'][105] = "3- Important (connexions réussies)";
 $LANG['setup'][106] = "4- Notices (Ajout, suppression, tracking)";
 $LANG['setup'][107] = "5- Complet (Tout)";
-
+$LANG['setup'][108] = "Nombre de caractères maximum pour le résumé des zones de texte";
 $LANG['setup'][109] = "Temps en jours de conservation des journaux systèmes (0 pour infini)";
 $LANG['setup'][110] = "Montrer les nouveaux tickets sur la page d'accueil";
 $LANG['setup'][111] = "Nombre maximum de résultats de la recherche à afficher par page";

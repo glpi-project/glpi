@@ -199,7 +199,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][108] . "&nbsp;:</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
       echo "</td><td>" . $LANG['setup'][314] . "&nbsp;:</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
