@@ -55,6 +55,30 @@ class NotificationEvent extends CommonDBTM {
 
 
    /**
+    * retrieve the label for an event
+    *
+    * @since version 0.83
+    *
+    * @param itemtype string name of the type
+    * @param $event   string name of the event
+    *
+    * @return string
+   **/
+   static function getEventName($itemtype, $event) {
+
+      $events = array();
+      $target = NotificationTarget::getInstanceByType($itemtype);
+      if ($target) {
+         $events = $target->getAllEvents();
+         if (isset($events[$event])) {
+            return $events[$event];
+         }
+      }
+      return NOT_AVAILABLE;
+   }
+
+
+   /**
     * Raise a notification event event
     *
     * @param $event the event raised for the itemtype
