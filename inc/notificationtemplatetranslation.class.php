@@ -47,7 +47,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function getNameID($with_comment=0) {
+   function getName($with_comment=0) {
       global $CFG_GLPI,$LANG;
 
       if ($this->getField('language') != '') {
@@ -56,9 +56,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $toadd = $LANG['mailing'][126];
       }
 
-      if ($_SESSION['glpiis_ids_visible']) {
-         $toadd .= " (".$this->getField('id').")";
-      }
       return $toadd;
    }
 

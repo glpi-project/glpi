@@ -60,7 +60,7 @@ class RuleAction extends CommonDBChild {
    }
 
 
-   function getNameID($with_comment=0) {
+   function getName($with_comment=0) {
 
       $rule = new $this->itemtype ();
       return html_clean($rule->getMinimalActionText($this->fields));

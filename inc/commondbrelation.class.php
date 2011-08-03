@@ -232,7 +232,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       if ($item1->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
-         $changes[2] = addslashes($item2->getNameID());
+         $changes[2] = addslashes($item2->getNameID(false, true));
          Log::history($item1->fields["id"], get_class($item1), $changes, get_class($item2),
                       HISTORY_ADD_RELATION);
       }
@@ -240,7 +240,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = "";
-         $changes[2] = addslashes($item1->getNameID());
+         $changes[2] = addslashes($item1->getNameID(false, true));
          Log::history($item2->fields["id"], get_class($item2), $changes, get_class($item1),
                       HISTORY_ADD_RELATION);
       }
@@ -290,7 +290,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       if ($item1->dohistory) {
          $changes[0] = '0';
-         $changes[1] = addslashes($item2->getNameID());
+         $changes[1] = addslashes($item2->getNameID(false, true));
          $changes[2] = "";
          Log::history($item1->fields["id"], get_class($item1), $changes, get_class($item2),
                       HISTORY_DEL_RELATION);
@@ -298,7 +298,7 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       if (!$this->checks_and_logs_only_for_itemtype1 && $item2->dohistory) {
          $changes[0] = '0';
-         $changes[1] = addslashes($item1->getNameID());
+         $changes[1] = addslashes($item1->getNameID(false, true));
          $changes[2] = "";
          Log::history($item2->fields["id"], get_class($item2), $changes, get_class($item1),
                       HISTORY_DEL_RELATION);
