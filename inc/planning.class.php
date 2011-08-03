@@ -191,9 +191,10 @@ class Planning {
          echo "\n<hr>";
          echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
                 ($usertype=="group"?"checked":"").">";
-         $rand_group = Dropdown::show('Group', array('value'  => $gID,
-                                                     'name'   => 'gID',
-                                                     'entity' => $_SESSION["glpiactive_entity"]));
+         $rand_group = Dropdown::show('Group', array('value'     => $gID,
+                                                     'name'      => 'gID',
+                                                     'entity'    => $_SESSION["glpiactive_entity"],
+                                                     'condition' => '`is_usergroup`'));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
                 ($usertype=="user_group"?"checked":"").">";

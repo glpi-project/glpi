@@ -268,9 +268,10 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'   =>'groups_id_tech',
-                                    'value'  => $this->fields['groups_id_tech'],
-                                    'entity' => $this->fields['entities_id']));
+      Dropdown::show('Group', array('name'      => 'groups_id_tech',
+                                    'value'     => $this->fields['groups_id_tech'],
+                                    'entity'    => $this->fields['entities_id'],
+                                    'condition' => '`is_assign`'));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -336,6 +337,7 @@ class CartridgeItem extends CommonDBTM {
       $tab[49]['field']     = 'name';
       $tab[49]['linkfield'] = 'groups_id_tech';
       $tab[49]['name']      = $LANG['common'][109];
+      $tab[49]['condition'] = '`is_assign`';
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'alarm_threshold';

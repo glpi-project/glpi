@@ -584,9 +584,10 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'   =>'groups_id_tech',
-                                    'value'  => $this->fields['groups_id_tech'],
-                                    'entity' => $this->fields['entities_id']));
+      Dropdown::show('Group', array('name'      => 'groups_id_tech',
+                                    'value'     => $this->fields['groups_id_tech'],
+                                    'entity'    => $this->fields['entities_id'],
+                                    'condition' => '`is_assign`'));
 
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
@@ -631,8 +632,9 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                    'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
+                                    'entity'    => $this->fields["entities_id"],
+                                    'condition' => '`is_itemgroup`'));
 
       echo "</td>";
       echo "<td rowspan='9'>".$LANG['common'][25]."&nbsp;:</td>";
@@ -876,9 +878,10 @@ class Computer extends CommonDBTM {
       $tab[70]['field'] = 'name';
       $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table'] = 'glpi_groups';
-      $tab[71]['field'] = 'name';
-      $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['condition'] = '`is_itemgroup`';
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -907,6 +910,7 @@ class Computer extends CommonDBTM {
       $tab[49]['field']     = 'name';
       $tab[49]['linkfield'] = 'groups_id_tech';
       $tab[49]['name']      = $LANG['common'][109];
+      $tab[49]['condition'] = '`is_assign`';
 
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';

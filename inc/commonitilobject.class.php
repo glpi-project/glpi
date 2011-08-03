@@ -1918,9 +1918,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // Requester Group
       if (!$ID) {
          echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
-         Dropdown::show('Group', array('name'   => '_groups_id_requester',
-                                       'value'  => $options["_groups_id_requester"],
-                                       'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Group', array('name'      => '_groups_id_requester',
+                                       'value'     => $options["_groups_id_requester"],
+                                       'entity'    => $this->fields["entities_id"],
+                                       'condition' => '`is_requester`'));
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
@@ -1945,9 +1946,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // Observer Group
       if (!$ID) {
          echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
-         Dropdown::show('Group', array('name'   => '_groups_id_observer',
-                                       'value'  => $options["_groups_id_observer"],
-                                       'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Group', array('name'      => '_groups_id_observer',
+                                       'value'     => $options["_groups_id_observer"],
+                                       'entity'    => $this->fields["entities_id"],
+                                       'condition' => '`is_requester`'));
       } else {
          $this->showGroupsAssociated(self::OBSERVER, $candeleteobserver);
       }
@@ -1981,9 +1983,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($this->canAssign()) {
             echo self::getActorIcon('group', self::ASSIGN)."&nbsp;";
-            Dropdown::show('Group', array('name'   => '_groups_id_assign',
-                                          'value'  => $options["_groups_id_assign"],
-                                          'entity' => $this->fields["entities_id"]));
+            Dropdown::show('Group', array('name'      => '_groups_id_assign',
+                                          'value'     => $options["_groups_id_assign"],
+                                          'entity'    => $this->fields["entities_id"],
+                                          'condition' => '`is_assign`'));
             echo '<hr>';
          }
 

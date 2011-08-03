@@ -305,9 +305,10 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'   =>'groups_id_tech',
-                                    'value'  => $this->fields['groups_id_tech'],
-                                    'entity' => $this->fields['entities_id']));
+      Dropdown::show('Group', array('name'      => 'groups_id_tech',
+                                    'value'     => $this->fields['groups_id_tech'],
+                                    'entity'    => $this->fields['entities_id'],
+                                    'condition' => '`is_assign`'));
       echo "</td>";
       echo "<td rowspan='5' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
       echo "<td class='center middle' rowspan='5'>";
@@ -324,8 +325,9 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
-      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                    'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
+                                    'entity'    => $this->fields["entities_id"],
+                                    'condition' => '`is_itemgroup`'));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -420,14 +422,16 @@ class Software extends CommonDBTM {
       $tab[49]['field']     = 'name';
       $tab[49]['linkfield'] = 'groups_id_tech';
       $tab[49]['name']      = $LANG['common'][109];
+      $tab[49]['condition'] = '`is_assign`';
 
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
       $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table'] = 'glpi_groups';
-      $tab[71]['field'] = 'name';
-      $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['condition'] = '`is_itemgroup`';
 
       $tab[61]['table']    = $this->getTable();
       $tab[61]['field']    = 'is_helpdesk_visible';
