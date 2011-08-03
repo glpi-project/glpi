@@ -557,7 +557,9 @@ class NotificationTarget extends CommonDBChild {
    function addTarget ($target='', $label='', $type=Notification::USER_TYPE) {
 
       $key = $type.'_'.$target;
-      $this->notification_targets[$key]                  = $key;
+      // Value used for sort
+      $this->notification_targets[$key]                  = $type.'_'.$label;
+      // Displayed value
       $this->notification_targets_labels[$type][$target] = $label;
    }
 
@@ -578,6 +580,7 @@ class NotificationTarget extends CommonDBChild {
       $query = "SELECT `id`, `name`
                 FROM `glpi_groups`".
                 getEntitiesRestrictRequest(" WHERE", 'glpi_groups', 'entities_id', $entity, true)."
+                AND `is_usergroup` AND `is_notify`
                 ORDER BY `name`";
 
       foreach ($DB->request($query) as $data) {
