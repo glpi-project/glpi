@@ -97,9 +97,8 @@ class Supplier extends CommonDBTM {
          if (haveRight("contact_enterprise","r")) {
             $ong[1] = $LANG['Menu'][22];
          }
-         if (haveRight("contract","r")) {
-            $ong[4] = $LANG['Menu'][25];
-         }
+         $this->addStandardTab('Contract_Supplier', $ong);
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[15] = $LANG['common'][96];
          }
@@ -115,7 +114,7 @@ class Supplier extends CommonDBTM {
          $this->addStandardTab('Log', $ong);
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;

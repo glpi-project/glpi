@@ -91,7 +91,7 @@ class Printer  extends CommonDBTM {
          }
 
          if (haveRight("contract","r")) {
-            $this->addStandardTab('Contract', $ong);
+            $this->addStandardTab('Contract_Item', $ong);
          }
 
          $this->addStandardTab('Document', $ong);

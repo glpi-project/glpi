@@ -72,7 +72,7 @@ class Phone extends CommonDBTM {
 
          $this->addStandardTab('Infocom', $ong);
 
-         $this->addStandardTab('Contract', $ong);
+         $this->addStandardTab('Contract_Item', $ong);
 
          $this->addStandardTab('Document', $ong);
 
