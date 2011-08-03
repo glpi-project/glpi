@@ -75,7 +75,8 @@ foreach ($searchopt as $key => $val) {
          if ($key == $_POST["field"]) {
             $newgroup .= "selected";
          }
-         $newgroup .= ">". utf8_substr($val["name"], 0, 20) ."</option>\n";
+         $newgroup .= ">". utf8_substr($val["name"], 0,
+                                       $_SESSION['glpidropdown_chars_limit']) ."</option>\n";
          $items_in_group++;
       }
    }
