@@ -84,7 +84,7 @@ class Contact extends CommonDBTM{
          $this->addStandardTab('Log', $ong);
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;

@@ -63,5 +63,36 @@ class Contact_Supplier extends CommonDBRelation{
       return parent::getSearchOptions();
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("contact_enterprise","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][22], self::countForSupplier($item));
+         }
+         return $LANG['Menu'][22];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      $item->showContacts();
+      return true;
+   }
+
+
+   static function countForSupplier(Supplier $item) {
+
+      $restrict = "`glpi_contacts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
+                    AND `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` ".
+                    getEntitiesRestrictRequest(" AND ", "glpi_contacts", '',
+                                               $_SESSION['glpiactiveentities'], true);
+
+      return countElementsInTable(array('glpi_contacts_suppliers', 'glpi_contacts'), $restrict);
+   }
+
 }
 ?>

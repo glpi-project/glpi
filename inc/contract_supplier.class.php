@@ -64,8 +64,7 @@ class Contract_Supplier extends CommonDBRelation {
 
       if ($item->getID() && haveRight("contract","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][25],
-                                              self::countForSupplier($item));
+            return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
          }
          return $LANG['Menu'][25];
       }

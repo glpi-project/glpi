@@ -90,13 +90,22 @@ class Infocom extends CommonDBChild {
       global $LANG;
 
       if ($item->getID() && haveRight("infocom","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][26],
-                                        countElementsInTable('glpi_infocoms',
-                                                             "`itemtype` = '".$item->getType()."'
-                                                               AND `items_id` = '".$item->getID()."'"));
+         switch ($item->getType()) {
+            case 'Supplier' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['common'][96], self::countForSupplier($item));
+               }
+               return $LANG['common'][96];
+
+            default :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][26],
+                                              countElementsInTable('glpi_infocoms',
+                                                                   "`itemtype` = '".$item->getType()."'
+                                                                     AND `items_id` = '".$item->getID()."'"));
+               }
+               return $LANG['Menu'][26];
          }
-         return $LANG['Menu'][26];
       }
       return '';
    }
@@ -104,8 +113,26 @@ class Infocom extends CommonDBChild {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showForItem($item, $withtemplate);
+      switch ($item->getType()) {
+         case 'Supplier' :
+            $item->showInfocoms();
+            break;
+
+         default :
+            self::showForItem($item, $withtemplate);
+      }
       return true;
+   }
+
+
+   static function countForSupplier(Supplier $item) {
+
+      $restrict = "`glpi_infocoms`.`suppliers_id` = '".$item->getField('id') ."'
+                    AND `itemtype` NOT IN ('ConsumableItem', 'CartridgeItem', 'Software') ".
+                    getEntitiesRestrictRequest(" AND ", "glpi_infocoms", '',
+                                               $_SESSION['glpiactiveentities']);
+
+      return countElementsInTable(array('glpi_infocoms'), $restrict);
    }
 
 
