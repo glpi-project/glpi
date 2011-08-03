@@ -1002,7 +1002,6 @@ class NotificationTarget extends CommonDBChild {
       $req = $DB->request('glpi_notificationtargets', $crit);
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='6'>" . $LANG['setup'][704] . "</th></tr>";
 
       if ($req->numrows()) {
          echo "<tr><th>".$LANG['common'][16]."</th>";
