@@ -68,10 +68,19 @@ class Contact_Supplier extends CommonDBRelation{
       global $LANG;
 
       if ($item->getID() && haveRight("contact_enterprise","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][22], self::countForSupplier($item));
+         switch ($item->getType()) {
+            case 'Supplier' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][22], self::countForSupplier($item));
+               }
+               return $LANG['Menu'][22];
+
+            case 'Contact' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][23], self::countForContact($item));
+               }
+               return $LANG['Menu'][23];
          }
-         return $LANG['Menu'][22];
       }
       return '';
    }
@@ -79,7 +88,15 @@ class Contact_Supplier extends CommonDBRelation{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      $item->showContacts();
+      switch ($item->getType()) {
+         case 'Supplier' :
+            $item->showContacts();
+            break;
+
+         case 'Contact' :
+            $item->showSuppliers();
+            break;
+      }
       return true;
    }
 
@@ -92,6 +109,17 @@ class Contact_Supplier extends CommonDBRelation{
                                                $_SESSION['glpiactiveentities'], true);
 
       return countElementsInTable(array('glpi_contacts_suppliers', 'glpi_contacts'), $restrict);
+   }
+
+
+   static function countForContact(Contact $item) {
+
+      $restrict = "`glpi_contacts_suppliers`.`contacts_id` = '".$item->getField('id') ."'
+                    AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id` ".
+                    getEntitiesRestrictRequest(" AND ", "glpi_suppliers", '',
+                                               $_SESSION['glpiactiveentities'], true);
+
+      return countElementsInTable(array('glpi_contacts_suppliers', 'glpi_suppliers'), $restrict);
    }
 
 }
