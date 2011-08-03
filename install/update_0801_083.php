@@ -472,7 +472,7 @@ function update0801to083() {
 
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
-             WHERE `name` = 'Problem'";
+             WHERE `name` = 'Problems'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
@@ -1060,6 +1060,7 @@ function update0801to083() {
 
    // New index for count on tab
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
+   $migration->addKey('glpi_notificationtargets', array('type', 'items_id'));
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
