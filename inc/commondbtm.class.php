@@ -2297,10 +2297,11 @@ class CommonDBTM extends CommonGLPI {
     * Should Not be overloaded (overload getName() instead)
     *
     * @param $with_comment add comments to name
+    * @param $forceid boolean override config and display item's ID
     *
     * @return String: name of the object in the current language
    **/
-   function getNameID($with_comment=0) {
+   function getNameID($with_comment=0, $forceid=false) {
       global $CFG_GLPI;
 
       $toadd = "";
@@ -2308,7 +2309,7 @@ class CommonDBTM extends CommonGLPI {
          $toadd = "&nbsp;".$this->getComments();
       }
 
-      if ($_SESSION['glpiis_ids_visible']) {
+      if ($forceid || $_SESSION['glpiis_ids_visible']) {
          return $this->getName()." (".$this->getField('id').")".$toadd;
       }
       return $this->getName().$toadd;
