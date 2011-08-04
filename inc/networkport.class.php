@@ -1020,6 +1020,40 @@ class NetworkPort extends CommonDBChild {
       return $tab;
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+         switch ($item->getType()) {
+            case 'Phone' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
+               }
+               return $LANG['networking'][6];
+         }
+      }
+      return '';
+   }
+
+
+   static function countForitem(CommonDBTM $item) {
+
+      return countElementsInTable('glpi_networkports',
+                                  "`itemtype` = '".$item->getType()."'
+                                   AND `items_id` ='".$item->getField('id')."'");
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Phone' :
+            self::showForItem($item);
+            return true;
+      }
+   }
+
 }
 
 ?>

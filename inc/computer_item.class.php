@@ -673,6 +673,32 @@ class Computer_Item extends CommonDBRelation{
 
       return $rand;
    }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+         switch ($item->getType()) {
+            case 'Phone' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['title'][27], self::countForItem($item));
+               }
+               return $LANG['title'][27];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Phone' :
+            self::showForItem($item);
+            return true;
+      }
+   }
 }
 
 ?>
