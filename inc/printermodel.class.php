@@ -58,6 +58,37 @@ class PrinterModel extends CommonDropdown {
       $result = $DB->query($query);
    }
 
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("printer","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['setup'][96], self::countForCartridge($item));
+         }
+         return $LANG['setup'][96];
+      }
+      return '';
+   }
+
+
+   static function countForCartridge(CartridgeItem $item) {
+
+      $restrict = "`glpi_cartridgeitems_printermodels`.`cartridgeitems_id`
+                           = '".$item->getField('id') ."'
+                   AND `glpi_cartridgeitems_printermodels`.`printermodels_id`
+                           = `glpi_printermodels`.`id`";
+
+      return countElementsInTable(array('glpi_printermodels', 'glpi_cartridgeitems_printermodels'),
+                                  $restrict);
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      $item->showCompatiblePrinters();
+      return true;
+   }
 }
 
 ?>
