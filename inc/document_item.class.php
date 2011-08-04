@@ -117,5 +117,37 @@ class Document_Item extends CommonDBRelation{
       return $nb ;
    }
 
+
+   static function countForDocument(Document $item) {
+
+      $restrict = "`glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
+                   AND `glpi_documents_items`.`itemtype` != '".$item->getType()."'";
+
+      return countElementsInTable(array('glpi_documents_items'), $restrict);
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['document'][19], self::countForDocument($item));
+         }
+         return $LANG['document'][19];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Document' :
+            $item->showItems();
+            return true;
+      }
+   }
+
 }
 ?>
