@@ -42,7 +42,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Entity extends CommonTreeDropdown {
 
-   var $must_be_replace = true;
+   public $must_be_replace = true;
+   public $dohistory       = true;
 
    function getFromDB($ID) {
       global $LANG;
@@ -109,6 +110,7 @@ class Entity extends CommonTreeDropdown {
          $this->addStandardTab('Rule', $ong);
          $this->addStandardTab('Document',$ong);
          $this->addStandardTab('Note',$ong);
+         $this->addStandardTab('Log',$ong);
       }
       return $ong;
    }
@@ -174,7 +176,7 @@ class Entity extends CommonTreeDropdown {
 
    function post_addItem() {
 
-      CleanFields($this->getTable(), 'sons_cache');
+      parent::post_addItem();
 
       // Add right to current user - Hack to avoid login/logout
       $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];

@@ -44,11 +44,11 @@ class EntityData extends CommonDBChild {
 
 
    // From CommonDBChild
-   public $itemtype = 'Entity';
-   public $items_id = 'entities_id';
+   public $itemtype               = 'Entity';
+   public $items_id               = 'entities_id';
 
    // From CommonDBTM
-   public $table = 'glpi_entitydatas';
+   public $dohistory              = true;
    // link in message dont work (no showForm)
    public $auto_message_on_action = false;
 
@@ -93,6 +93,11 @@ class EntityData extends CommonDBChild {
 
    function getIndexName() {
       return 'entities_id';
+   }
+
+
+   function getLogTypeID() {
+      return array('Entity', $this->fields['entities_id']);
    }
 
 
@@ -1038,14 +1043,6 @@ class EntityData extends CommonDBChild {
 
       if ($item->getType()=='Entity') {
          switch ($tabnum) {
-            case -1 :
-               self::showStandardOptions($item);
-               self::showAdvancedOptions($item);
-               self::showNotificationOptions($item);
-               self::showHelpdeskOptions($item);
-               self::showInventoryOptions($item);
-               break;
-
             case 1 :
                self::showStandardOptions($item);
                break;
