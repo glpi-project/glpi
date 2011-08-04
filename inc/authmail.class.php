@@ -81,8 +81,7 @@ class AuthMail extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['title'][26];
-
+      $this->addStandardTab('authMail',$ong);
       $this->addStandardTab('Log',$ong);
 
       return $ong;
@@ -207,8 +206,10 @@ class AuthMail extends CommonDBTM {
    }
 
 
-   function showFormTestMail ($ID) {
+   function showFormTestMail() {
       global $LANG;
+
+      $ID = $this->getField('id');
 
       if ($this->getFromDB($ID)) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
@@ -327,6 +328,30 @@ class AuthMail extends CommonDBTM {
 
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if (!$item->isNewID($item->getID() && $item->can($item->getField('id'),'r'))) {
+         $ong = array();
+         $ong[1] = $LANG['title'][26];    // test connexion
+
+         return $ong;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($tabnum) {
+         case 1 :
+            $item->showFormTestMail();
+            break;
+      }
+      return true;
    }
 
 }
