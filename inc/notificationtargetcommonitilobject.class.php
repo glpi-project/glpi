@@ -520,7 +520,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          if (isset($options['entities_id']) && isset($options['items'])) {
             $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
                                                                               $options['entities_id']);
-            $item       = new $this->obj->getType();
+            $item       = new $objettype();
             $objettypes = getPlural($objettype);
             $items      = array();
             foreach ($options['items'] as $object) {
