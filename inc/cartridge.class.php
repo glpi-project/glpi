@@ -783,6 +783,38 @@ class Cartridge extends CommonDBTM {
          return $datas['cartridges_alert_repeat'];
       }
    }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("cartridge","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][21], self::countForPrinter($item));
+         }
+         return $LANG['Menu'][21];
+      }
+      return '';
+   }
+
+
+   static function countForPrinter(Printer $item) {
+
+      $restrict = "`glpi_cartridges`.`printers_id` = '".$item->getField('id') ."'";
+
+      return countElementsInTable(array('glpi_cartridges'), $restrict);
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Printer' :
+            self::showInstalled($item);
+            self::showInstalled($item, 1);
+            return true;
+      }
+   }
 }
 
 ?>

@@ -78,38 +78,27 @@ class Printer  extends CommonDBTM {
 
       $ong = array();
       if ($this->fields['id'] > 0) {
-         if (haveRight("cartridge","r")) {
-            $ong[1] = $LANG['Menu'][21];
-         }
-
-         if (haveRight("networking","r") || haveRight("computer","r")) {
-            $ong[3] = $LANG['title'][27];
-         }
+         $this->addStandardTab('Cartridge', $ong);
+         $this->addStandardTab('Computer_Item', $ong);
+         $this->addStandardTab('NetworkPort', $ong);
 
          if (haveRight("infocom","r")) {
             $this->addStandardTab('Infocom', $ong);
          }
 
-         if (haveRight("contract","r")) {
-            $this->addStandardTab('Contract_Item', $ong);
-         }
-
+         $this->addStandardTab('Contract_Item', $ong);
          $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $this->addStandardTab('Ticket', $ong);
-
             $this->addStandardTab('Link', $ong);
-
             $this->addStandardTab('Note', $ong);
-
             $this->addStandardTab('Reservation', $ong);
-
             $this->addStandardTab('Log', $ong);
          }
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;
