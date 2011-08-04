@@ -117,16 +117,15 @@ class CartridgeItem extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['Menu'][21];
+      $ong = array();
       if ($this->fields['id'] > 0) {
-
+         $this->addStandardTab('CartridgeItem', $ong);
+         $this->addStandardTab('PrinterModel', $ong);
          $this->addStandardTab('Infocom', $ong);
-
          $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $this->addStandardTab('Link',$ong);
-
             $this->addStandardTab('Note',$ong);
          }
       }
@@ -597,5 +596,35 @@ class CartridgeItem extends CommonDBTM {
       $options['cartridges']  = array($item);
       NotificationEvent::debugEvent(new Cartridge(), $options);
    }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if ($item->getID() && haveRight("cartridge","r")) {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['Menu'][21], self::countForItem($item));
+         }
+         return $LANG['Menu'][21];
+      }
+      return '';
+   }
+
+
+   static function countForItem(CommonDBTM $item) {
+
+      $restrict = "`glpi_cartridges`.`cartridgeitems_id` = '".$item->getField('id') ."'";
+
+      return countElementsInTable(array('glpi_cartridges'), $restrict);
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      Cartridge::showForCartridgeItem($item);
+      Cartridge::showForCartridgeItem($item, 1);
+      return true;
+   }
+
 }
 ?>
