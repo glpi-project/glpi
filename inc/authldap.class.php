@@ -293,10 +293,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormAdvancedConfig($ID, $target) {
+   function showFormAdvancedConfig() {
       global $LANG;
 
-      echo "<form method='post' action='$target'>";
+      $ID = $this->getField('id');
+
+      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_2'><th colspan='4'>";
@@ -337,8 +339,11 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormReplicatesConfig($ID, $target) {
+   function showFormReplicatesConfig() {
       global $LANG, $DB;
+
+      $ID     = $this->getField('id');
+      $target = $this->getFormURL();
 
       AuthLdapReplicate::addNewReplicateForm($target, $ID);
 
@@ -395,10 +400,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormGroupsConfig($ID, $target) {
+   function showFormGroupsConfig() {
       global $LANG;
 
-      echo "<form method='post' action='$target'>";
+      $ID = $this->getField('id');
+
+      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -438,11 +445,13 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormTestLDAP ($ID, $target) {
+   function showFormTestLDAP () {
       global $LANG;
 
+      $ID = $this->getField('id');
+
       if ($ID>0) {
-         echo "<form method='post' action='$target'>";
+         echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
@@ -463,10 +472,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormUserConfig($ID,$target) {
+   function showFormUserConfig() {
       global $LANG;
 
-      echo "<form method='post' action='$target'>";
+      $ID = $this->getField('id');
+
+      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -536,10 +547,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function showFormEntityConfig($ID, $target) {
+   function showFormEntityConfig() {
       global $LANG;
 
-      echo "<form method='post' action='$target'>";
+      $ID = $this->getField('id');
+
+      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -566,14 +579,9 @@ class AuthLDAP extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['title'][26];
 
       if ($this->fields['id'] > 0) {
-         $ong[2]  = $LANG['Menu'][14];
-         $ong[3]  = $LANG['Menu'][36];
-         $ong[4]  = $LANG['entity'][0];
-         $ong[5]  = $LANG['entity'][14];
-         $ong[6]  = $LANG['ldap'][22];
+         $this->addStandardTab('AuthLDAP',$ong);
          $this->addStandardTab('Log',$ong);
       }
       return $ong;
@@ -2566,6 +2574,56 @@ class AuthLDAP extends CommonDBTM {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
    }
+
+
+   function getTabNameForItem(CommonGLPI $item) {
+      global $LANG;
+
+      if (!$item->isNewID($item->getID() && $item->can($item->getField('id'),'r'))) {
+         $ong = array();
+         $ong[1] = $LANG['title'][26];    // test connexion
+         $ong[2]  = $LANG['Menu'][14];    // params for user
+         $ong[3]  = $LANG['Menu'][36];    // params for group
+         $ong[4]  = $LANG['entity'][0];   // params for entity config
+         $ong[5]  = $LANG['entity'][14];  // params for entity advanced config
+         $ong[6]  = $LANG['ldap'][22];    // replicat
+
+         return $ong;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($tabnum) {
+         case 1 :
+            $item->showFormTestLDAP();
+            break;
+
+         case 2 :
+            $item->showFormUserConfig();
+            break;
+
+         case 3 :
+            $item->showFormGroupsConfig();
+            break;
+
+         case 4 :
+            $item->showFormEntityConfig();
+            break;
+
+         case 5 :
+            $item->showFormAdvancedConfig();
+            break;
+
+         case 6 :
+            $item->showFormReplicatesConfig();
+            break;
+      }
+      return true;
+   }
+
 
 }
 
