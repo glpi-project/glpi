@@ -38,11 +38,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("device","w");
 
-commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
+commonHeader(Toolbox::ucfirst($LANG['log'][18]),$_SERVER['PHP_SELF'],"config","device");
 echo "<div align='center'>";
 
 $optgroup = Dropdown::getDeviceItemTypes();
-Dropdown::showItemTypeMenu($LANG['title'][30], $optgroup);
+Dropdown::showItemTypeMenu(Toolbox::ucfirst($LANG['log'][18]), $optgroup);
 Dropdown::showItemTypeList($optgroup);
 
 echo "</div>";

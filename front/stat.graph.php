@@ -442,7 +442,7 @@ foreach ($available as $key => $name) {
 }
 
 Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
-                                'unit'      => $LANG['job'][21],
+                                'unit'      => Toolbox::ucfirst($LANG['gmt'][1]),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
 

@@ -718,7 +718,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $minute = $units['minute'];
       echo "<td>";
       if ($hour) {
-         echo "$hour " . $LANG['job'][21] . "<br>";
+         echo "$hour " . Toolbox::ucfirst($LANG['gmt'][1]) . "<br>";
       }
       if ($minute || !$hour) {
          echo "$minute " . $LANG['job'][22] . "</td>";
@@ -843,7 +843,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $hour   = $units['hour']+24*$units['day'];
       $minute = $units['minute'];
       Dropdown::showInteger('hour', $hour, 0, 100, 1, array($hour));
-      echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."&nbsp;&nbsp;";
       Dropdown::showInteger('minute', $minute, 0, 59);
       echo "&nbsp;".$LANG['job'][22];
       echo "</td></tr>\n";

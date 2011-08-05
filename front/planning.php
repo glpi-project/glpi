@@ -77,7 +77,7 @@ if (isset($_GET['genical'])) {
       }
    }
 } else {
-   commonHeader($LANG['Menu'][29], $_SERVER['PHP_SELF'], "maintain", "planning");
+   commonHeader(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
 
    checkSeveralRightsOr(array('show_all_planning' => '1',
                               'show_planning'     => '1'));

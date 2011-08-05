@@ -86,6 +86,7 @@ class Computer extends CommonDBTM {
 
          // All devices : use one to define tab
          $this->addStandardTab('DeviceProcessor',$ong);
+
          $this->addStandardTab('ComputerDisk',$ong);
          $this->addStandardTab('Software',$ong);
 
@@ -103,7 +104,6 @@ class Computer extends CommonDBTM {
          $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-
             $this->addStandardTab('ComputerVirtualMachine',$ong);
 
             if ($CFG_GLPI["use_ocs_mode"]) {
@@ -913,7 +913,7 @@ class Computer extends CommonDBTM {
       $tab[80]['name']  = $LANG['entity'][0];
 
 
-      $tab['periph'] = $LANG['title'][30];
+      $tab['periph'] = Toolbox::ucfirst($LANG['log'][18]);
 
       $tab[7]['table']         = 'glpi_deviceprocessors';
       $tab[7]['field']         = 'designation';

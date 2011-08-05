@@ -202,7 +202,7 @@ class Computer_Device extends CommonDBTM {
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
       echo "<table class='tab_cadre_fixe' >";
-      echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
+      echo "<tr><th colspan='63'>".Toolbox::ucfirst($LANG['log'][18])."</th></tr>";
       $nb = 0;
 
       $specificity_units = array('DeviceProcessor'   => $LANG['setup'][35],

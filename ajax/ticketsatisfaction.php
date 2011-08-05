@@ -63,7 +63,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       echo "<tr class='tab_bg_1'><td width='50%'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1);
-      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='1'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='1'>";

@@ -237,7 +237,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if ($autoclose_value > 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
                $datas['##lang.ticket.autoclosewarning##']
-                           = $LANG['job'][54]." ".$autoclose_value." ".$LANG['stats'][31];
+                           = $LANG['job'][54]." ".$autoclose_value." ".Toolbox::ucfirst($LANG['calendar'][12]);
       }
 
       $datas['##ticket.sla##'] = '';
@@ -652,7 +652,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Tags with just lang
       $tags = array('ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.problems'         => $LANG['Menu'][7],
-                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31]);
+                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".Toolbox::ucfirst($LANG['calendar'][12]));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

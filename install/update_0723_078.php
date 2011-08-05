@@ -2685,10 +2685,10 @@ function update0723to078($output='HTML') {
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
-      displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['title'][30]); // Updating schema
+      displayMigrationMessage("078", $LANG['update'][141].' - '.Toolbox::ucfirst($LANG['log'][18])); // Updating schema
 
       foreach ($devtypetoname as $key => $itemtype) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['title'][30].' - '.$itemtype); // Updating schema
+         displayMigrationMessage("078", $LANG['update'][141].' - '.Toolbox::ucfirst($LANG['log'][18]).' - '.$itemtype); // Updating schema
          $linktype="Computer_$itemtype";
          $linktable = getTableForItemType($linktype);
          $itemtable = getTableForItemType($itemtype);

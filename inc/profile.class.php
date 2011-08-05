@@ -1194,7 +1194,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['title'][30]."&nbsp;:</td><td>";
+      echo "<td>".Toolbox::ucfirst($LANG['log'][18])."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("device", $this->fields["device"], 1, 0, 1);
       echo "</td>";
       echo "<td>".$LANG['setup'][0]."&nbsp;:</td><td>";
@@ -1413,7 +1413,7 @@ class Profile extends CommonDBTM {
 
       $tab[44]['table']    = $this->getTable();
       $tab[44]['field']    = 'device';
-      $tab[44]['name']     = $LANG['title'][30];
+      $tab[44]['name']     = Toolbox::ucfirst($LANG['log'][18]);
       $tab[44]['datatype'] = 'right';
 
       $tab[106]['table']    = $this->getTable();

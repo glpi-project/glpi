@@ -186,10 +186,10 @@ class SLA extends CommonDBTM {
       echo "<td>";
       $possible_values = array();
       for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP] = $i." ".$LANG['job'][21];
+         $possible_values[$i*HOUR_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['gmt'][1]);
       }
       for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP] = $i." ".$LANG['stats'][31];
+         $possible_values[$i*DAY_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][12]);
       }
       Dropdown::showFromArray('resolution_time', $possible_values,
                               array('value' => $this->fields["resolution_time"]));

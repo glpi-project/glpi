@@ -2552,7 +2552,7 @@ class AuthLDAP extends CommonDBTM {
 
          $values = array();
          for ($i=1 ; $i < 16 ; $i++) {
-            $values[$i] = $i.' '.$LANG['stats'][31];
+            $values[$i] = $i.' '.Toolbox::ucfirst($LANG['calendar'][12]);
          }
          for ($i=3 ; $i < 9 ; $i++) {
             $values[$i*7] = $i.' '.$LANG['ldap'][56];
