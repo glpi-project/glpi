@@ -48,7 +48,7 @@ class Toolbox {
    static function ucfirst($str) {
 
       // for foreign language
-      $str[0] = mb_strtoupper($str[0]);
+      $str[0] = mb_strtoupper($str[0], 'UTF-8');
       return $str;
     }
 
