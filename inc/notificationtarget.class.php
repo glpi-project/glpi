@@ -581,11 +581,12 @@ class NotificationTarget extends CommonDBChild {
    function addGroupsToTargets($entity) {
       global $LANG, $DB;
 
-      // Filter groups which can be notified and have members (as notification are sent to members)
+      // Filter groups which can be notified and have members (as notifications are sent to members)
       $query = "SELECT `id`, `name`
                 FROM `glpi_groups`".
                 getEntitiesRestrictRequest(" WHERE", 'glpi_groups', 'entities_id', $entity, true)."
-                AND `is_usergroup` AND `is_notify`
+                      AND `is_usergroup`
+                      AND `is_notify`
                 ORDER BY `name`";
 
       foreach ($DB->request($query) as $data) {
