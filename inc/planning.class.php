@@ -229,7 +229,7 @@ class Planning {
       echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG['planning'][6].
            "</option>";
       echo "<option value='month' ".($type=="month"?" selected ":"").">".
-             ucfirst($LANG['financial'][57])."</option>";
+             Toolbox::ucfirst($LANG['financial'][57])."</option>";
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";

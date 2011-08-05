@@ -100,19 +100,19 @@ function getItemTypeForTable($table) {
 
       if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
          $table  = preg_replace('/^plugin_[a-z0-9]+_/','',$table);
-         $prefix = "Plugin".ucfirst($matches[1]);
+         $prefix = "Plugin".Toolbox::ucfirst($matches[1]);
       }
 
       if (strstr($table,'_')) {
          $split = explode('_', $table);
 
          foreach ($split as $key => $part) {
-            $split[$key] = ucfirst(getSingular($part));
+            $split[$key] = Toolbox::ucfirst(getSingular($part));
          }
          $table = implode('_',$split);
 
       } else {
-         $table = ucfirst(getSingular($table));
+         $table = Toolbox::ucfirst(getSingular($table));
       }
 
       $itemtype=$prefix.$table;
@@ -192,7 +192,7 @@ function getPlural($string) {
                   'x$'           =>'xes',
                   'ed$'         => 'ed',  // case table without plural (ex. imported)
                   '([^s])$'      => '\1s',   // Add at the end if not exists
-                  );  
+                  );
 
    foreach ($rules as $singular => $plural) {
       $string = preg_replace("/$singular/", "$plural", $string, -1, $count);
