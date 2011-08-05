@@ -107,12 +107,11 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   static function countForSupplier(Supplier $item) {
+   static function countForItem(CommonDBTM $item) {
 
-      $restrict = "`glpi_contracts_items`.`items_id` = '".$item->getField('id')."'
-                   AND `glpi_contracts_items`.`itemtype` = '".$item->getType()."'";
-
-      return countElementsInTable(array('glpi_contracts_items'), $restrict);
+      return countElementsInTable('glpi_contracts_items',
+                                  "`itemtype` = '".$item->getType()."'
+                                   AND `items_id` ='".$item->getField('id')."'");
    }
 
 
@@ -129,21 +128,23 @@ class Contract_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       if ($item->getID() && haveRight("contract","r")) {
          switch ($item->getType()) {
-            case 'Supplier' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
-               }
-               return $LANG['Menu'][25];
-
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['common'][96], self::countForContract($item));
                }
                return $LANG['common'][96];
+
+            default :
+               if ($_SESSION['glpishow_count_on_tabs']
+                   && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
+                  return self::createTabEntry($LANG['Menu'][25], self::countForItem($item));
+               }
+               return $LANG['Menu'][25];
+
          }
       }
       return '';
@@ -151,14 +152,16 @@ class Contract_Item extends CommonDBRelation{
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
 
       switch ($item->getType()) {
-         case 'Supplier' :
-            Contract::showAssociated($item, $withtemplate);
-            break;
-
          case 'Contract' :
             $item->showItems();
+
+         default :
+            if (in_array($item->getType(), $CFG_GLPI["contract_types"])) {
+               Contract::showAssociated($item, $withtemplate);
+            }
       }
       return true;
    }
