@@ -1022,18 +1022,14 @@ class NetworkPort extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       if ($item->getID() && $item->can($item->getField('id'),'r')) {
-         switch ($item->getType()) {
-            case 'Phone' :
-            case 'Printer' :
-            case 'Peripheral' :
-            case 'NetworkEquipment' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
-               }
-               return $LANG['networking'][6];
+         if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
+            }
+            return $LANG['networking'][6];
          }
       }
       return '';
@@ -1049,14 +1045,11 @@ class NetworkPort extends CommonDBChild {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
 
-      switch ($item->getType()) {
-         case 'Phone' :
-         case 'Printer' :
-         case 'Peripheral' :
-         case 'NetworkEquipment' :
-            self::showForItem($item);
-            return true;
+      if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
+         self::showForItem($item);
+         return true;
       }
    }
 
