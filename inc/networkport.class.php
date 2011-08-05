@@ -1029,6 +1029,7 @@ class NetworkPort extends CommonDBChild {
             case 'Phone' :
             case 'Printer' :
             case 'Peripheral' :
+            case 'NetworkEquipment' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
                }
@@ -1053,6 +1054,7 @@ class NetworkPort extends CommonDBChild {
          case 'Phone' :
          case 'Printer' :
          case 'Peripheral' :
+         case 'NetworkEquipment' :
             self::showForItem($item);
             return true;
       }
