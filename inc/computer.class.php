@@ -86,9 +86,7 @@ class Computer extends CommonDBTM {
 
          // All devices : use one to define tab
          $this->addStandardTab('DeviceProcessor',$ong);
-
          $this->addStandardTab('ComputerDisk',$ong);
-
          $this->addStandardTab('Software',$ong);
 
          if (haveRight("networking","r")
@@ -97,13 +95,11 @@ class Computer extends CommonDBTM {
              || haveRight("peripheral","r")
              || haveRight("phone","r")) {
 
-            $ong[3] = $LANG['title'][27];
+            $this->addStandardTab('NetworkPort', $ong);
          }
 
          $this->addStandardTab('Infocom', $ong);
-
          $this->addStandardTab('Contract_Item', $ong);
-
          $this->addStandardTab('Document',$ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
