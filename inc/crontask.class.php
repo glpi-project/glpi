@@ -795,6 +795,11 @@ class CronTask extends CommonDBTM{
       if (!isPluginItemType($itemtype)) {
          return false;
       }
+      $temp = new self();
+      // Avoid duplicate entry
+      if ($temp->getFromDBbyName($itemtype, $name)) {
+         return false;
+      }
       $input = array('itemtype'  => $itemtype,
                      'name'      => $name,
                      'frequency' => $frequency);
@@ -805,7 +810,6 @@ class CronTask extends CommonDBTM{
             $input[$key] = $options[$key];
          }
       }
-      $temp = new CronTask();
       return $temp->add($input);
    }
 
