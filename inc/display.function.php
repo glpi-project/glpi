@@ -1267,8 +1267,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
             $link = $CFG_GLPI["root_doc"].$data['default'];
          }
 
-         if (utf8_strlen($data['title'])>14) {
-            $data['title'] = utf8_substr($data['title'], 0, 14)."...";
+         if (Toolbox::strlen($data['title'])>14) {
+            $data['title'] = Toolbox::substr($data['title'], 0, 14)."...";
          }
          echo "<a href='$link' class='itemP'>".$data['title']."</a>";
          echo "<ul class='ssmenu'>";
@@ -2521,10 +2521,10 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
       $split = explode("&amp;",$parameters);
 
       for ($i=0 ; $i<count($split) ; $i++) {
-         $pos    = utf8_strpos($split[$i],'=');
-         $length = utf8_strlen($split[$i]);
-         echo "<input type='hidden' name='".utf8_substr($split[$i],0,$pos)."' value='".
-                urldecode(utf8_substr($split[$i], $pos+1))."'>";
+         $pos    = Toolbox::strpos($split[$i], '=');
+         $length = Toolbox::strlen($split[$i]);
+         echo "<input type='hidden' name='".Toolbox::substr($split[$i],0,$pos)."' value='".
+                urldecode(Toolbox::substr($split[$i], $pos+1))."'>";
       }
 
       echo "<select name='display_type'>";
@@ -3212,7 +3212,7 @@ function displayProgressBar($width, $percent, $options=array()) {
    if (!$param['forcepadding']) {
       echo $output;
    } else {
-      echo utf8_str_pad($output, 4096);
+      echo Toolbox::str_pad($output, 4096);
       glpi_flush();
    }
 }

@@ -301,7 +301,7 @@ function update0713to072() {
 
         							// Transfert History for this version
         							$findstr = " (v. ".$vers['version'].")"; // Log event format in 0.71
-        							$findlen = utf8_strlen($findstr);
+        							$findlen = Toolbox::strlen($findstr);
 
         							$DB->query("UPDATE glpi_history "
         								." SET   FK_glpi_device=".$vers_ID.",       device_type=". SOFTWAREVERSION_TYPE

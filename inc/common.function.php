@@ -379,24 +379,6 @@ function decodeFromUtf8($string, $to_charset="ISO-8859-1") {
 
 
 /**
- * substr function for utf8 string
- *
- * @param $str string: string
- * @param $start integer: start of the result substring
- * @param $length integer: The maximum length of the returned string if > 0
- *
- * @return substring
-**/
-function utf8_substr($str, $start, $length=-1) {
-
-   if ($length==-1) {
-      $length = utf8_strlen($str)-$start;
-   }
-   return mb_substr($str, $start, $length, "UTF-8");
-}
-
-
-/**
  * strtolower function for utf8 string
  *
  * @param $str string: string
@@ -417,32 +399,6 @@ function utf8_strtolower($str) {
 **/
 function utf8_strtoupper($str) {
    return mb_strtoupper($str, "UTF-8");
-}
-
-
-/**
- * substr function for utf8 string
- *
- * @param $str string: string
- * @param $tofound string: string to found
- * @param $offset integer: The search offset. If it is not specified, 0 is used.
- *
- * @return substring
-**/
-function utf8_strpos($str, $tofound, $offset=0) {
-   return mb_strpos($str, $tofound, $offset, "UTF-8");
-}
-
-
-/**
- * strlen function for utf8 string
- *
- * @param $str string: string
- *
- * @return length of the string
-**/
-function utf8_strlen($str) {
-   return mb_strlen($str, "UTF-8");
 }
 
 
@@ -961,7 +917,7 @@ function nl2br_deep($value) {
 function resume_text($string, $length=255) {
 
    if (strlen($string)>$length) {
-      $string = utf8_substr($string, 0, $length)."&nbsp;(...)";
+      $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
    }
 
    return $string;
@@ -1003,7 +959,7 @@ function htmlentities_deep($value) {
 function resume_name($string, $length=255) {
 
    if (strlen($string)>$length) {
-      $string = utf8_substr($string, 0, $length)."...";
+      $string = Toolbox::substr($string, 0, $length)."...";
    }
 
    return $string;
@@ -1020,27 +976,12 @@ function resume_name($string, $length=255) {
 **/
 function mailRow($string, $value) {
 
-   $row = utf8_str_pad( $string . ': ', 25, ' ', STR_PAD_RIGHT).$value."\n";
+   $row = Toolbox::str_pad( $string . ': ', 25, ' ', STR_PAD_RIGHT).$value."\n";
    return $row;
 }
 
 
-/**
- *  Replace str_pad()
- *  who bug with utf8
- *
- * @param $input string: input string
- * @param $pad_length integer: padding length
- * @param $pad_string string: padding string
- * @param $pad_type: integer: padding type
- *
- * @return string
-**/
-function utf8_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
 
-    $diff = strlen($input) - utf8_strlen($input);
-    return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
-}
 
 
 /**
@@ -1490,7 +1431,7 @@ function makeTextSearch($val, $not=false) {
       }
 
       if ($begin || $end) {
-         // no utf8_substr, to be consistent with strlen result
+         // no Toolbox::substr, to be consistent with strlen result
          $val = substr($val, $begin, $length-$end-$begin);
       }
 

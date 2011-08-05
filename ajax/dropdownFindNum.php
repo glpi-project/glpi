@@ -132,7 +132,7 @@ if ($DB->numrows($result)) {
          $output .= " (".$data['id'].")";
       }
       echo "<option value='".$data['id']."' title=\"".cleanInputText($output)."\">".
-            utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
+            Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
 

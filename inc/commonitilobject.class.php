@@ -752,7 +752,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (empty($input["name"])) {
          $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
-         $input["name"] = utf8_substr($input['name'],0,70);
+         $input["name"] = Toolbox::substr($input['name'],0,70);
       }
 
 

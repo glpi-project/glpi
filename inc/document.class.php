@@ -431,8 +431,8 @@ class Document extends CommonDBTM {
          $fileout = $this->fields['filename'];
       }
 
-      if (utf8_strlen($fileout)>$len) {
-         $fileout = utf8_substr($fileout,0,$len)."&hellip;";
+      if (Toolbox::strlen($fileout)>$len) {
+         $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
       }
 
       $out = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".

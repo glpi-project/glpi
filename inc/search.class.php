@@ -1498,7 +1498,7 @@ class Search {
                $group       = '';
                $nb_in_group = 0;
 
-               $group .= "<optgroup label=\"".utf8_substr($val,0,$str_limit)."\">";
+               $group .= "<optgroup label=\"".Toolbox::substr($val,0,$str_limit)."\">";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
                   $nb_in_group ++;
@@ -1507,7 +1507,7 @@ class Search {
                      $group .= "selected";
                      $selected = $key;
                   }
-                  $group .= ">". utf8_substr($val["name"], 0, $str_limit) ."</option>\n";
+                  $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
                }
             }
          }
@@ -1593,7 +1593,7 @@ class Search {
                   $linkitem = new $key();
                   $metanames[$key] = $linkitem->getTypeName();
                }
-               echo "<option value='$key'>".utf8_substr($metanames[$key], 0, 20)."</option>\n";
+               echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
             }
             echo "</select>&nbsp;";
 
@@ -1654,7 +1654,7 @@ class Search {
             if ($key == $p['sort']) {
                echo " selected";
             }
-            echo ">".utf8_substr($val["name"],0,20)."</option>\n";
+            echo ">".Toolbox::substr($val["name"],0,20)."</option>\n";
          }
       }
       if (!$first_group) {
@@ -4184,8 +4184,8 @@ class Search {
                   // strip begin of link
                   $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
                   $link = preg_replace('/\/$/', '', $link);
-                  if (utf8_strlen($link)>$CFG_GLPI["url_maxlength"]) {
-                     $link = utf8_substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+                  if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
+                     $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
                   }
                   return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
@@ -4847,7 +4847,7 @@ class Search {
          case SYLK_OUTPUT : //sylk
             global $SYLK_HEADER,$SYLK_SIZE;
             $SYLK_HEADER[$num] = sylk_clean($value);
-            $SYLK_SIZE[$num]   = utf8_strlen($SYLK_HEADER[$num]);
+            $SYLK_SIZE[$num]   = Toolbox::strlen($SYLK_HEADER[$num]);
             break;
 
          case CSV_OUTPUT : //CSV
@@ -4904,7 +4904,7 @@ class Search {
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value = weblink_extract($value);
             $SYLK_ARRAY[$row][$num] = sylk_clean($value);
-            $SYLK_SIZE[$num] = max($SYLK_SIZE[$num], utf8_strlen($SYLK_ARRAY[$row][$num]));
+            $SYLK_SIZE[$num] = max($SYLK_SIZE[$num], Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case CSV_OUTPUT : //csv

@@ -64,7 +64,8 @@ class Bookmark extends CommonDBTM {
       if (!$index) {
          $index = strpos($taburl["path"], "front");
       }
-      $input['path'] = utf8_substr($taburl["path"], $index, utf8_strlen($taburl["path"]) - $index);
+      $input['path'] = Toolbox::substr($taburl["path"], $index,
+                                       Toolbox::strlen($taburl["path"]) - $index);
 
       $query_tab = array();
 

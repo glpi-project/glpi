@@ -118,7 +118,7 @@ if (isset($_POST['value'])) {
 if (count($users)) {
    foreach ($users as $ID => $output) {
       echo "<option value='$ID' title=\"".cleanInputText($output." - ".$logins[$ID])."\">".
-             utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
+             Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
 echo "</select>";

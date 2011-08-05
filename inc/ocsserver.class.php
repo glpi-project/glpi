@@ -2263,7 +2263,7 @@ class OcsServer extends CommonDBTM {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
 
             $already_linked[$data["ocsid"]]["entities_id"]  = $data["entities_id"];
-            if (utf8_strlen($data["ocs_deviceid"])>20) { // Strip datetime tag
+            if (Toolbox::strlen($data["ocs_deviceid"])>20) { // Strip datetime tag
                $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,
                                                                         -20);
             } else {
