@@ -2253,7 +2253,7 @@ class User extends CommonDBTM {
 
       $default_display  = "<select id='dropdown_".$p['name'].$p['rand']."' name='".$p['name']."'>";
       $default_display .= "<option value='".$p['value']."'>";
-      $default_display .= utf8_substr($user["name"], 0, $_SESSION["glpidropdown_chars_limit"]);
+      $default_display .= Toolbox::substr($user["name"], 0, $_SESSION["glpidropdown_chars_limit"]);
       $default_display .= "</option></select>";
 
       $view_users = (haveRight("user","r"));
