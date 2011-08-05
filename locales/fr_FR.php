@@ -102,8 +102,7 @@ $LANG['buttons'][42] = "Désactiver";
 $LANG['buttons'][43] = "Naviguer";
 $LANG['buttons'][44] = "Page courante en CSV";
 $LANG['buttons'][45] = "Toutes les pages en CSV";
-$LANG['buttons'][46] = "Avant";
-$LANG['buttons'][47] = "Après";
+
 $LANG['buttons'][48] = "Transférer";
 $LANG['buttons'][49] = "Conserver";
 $LANG['buttons'][50] = "Tester";
@@ -929,7 +928,7 @@ $LANG['job'][17] = "En retard";
 $LANG['job'][18] = "Demandeurs";
 $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
-$LANG['job'][21] = "Heure(s)";
+
 $LANG['job'][22] = "Minute(s)";
 $LANG['job'][23] = "Rechercher une solution";
 $LANG['job'][24] = "Utiliser comme solution";
@@ -1356,7 +1355,7 @@ $LANG['Menu'][25] = "Contrats";
 $LANG['Menu'][26] = "Gestion";
 $LANG['Menu'][27] = "Documents";
 $LANG['Menu'][28] = "Statuts";
-$LANG['Menu'][29] = "Planning";
+
 $LANG['Menu'][30] = "Journaux";
 $LANG['Menu'][31] = "Interface simplifiée";
 $LANG['Menu'][32] = "Consommables";
@@ -1410,7 +1409,7 @@ $LANG['networking'][25]="sur";
 $LANG['networking'][44]="Le port";
 
 $LANG['networking'][46] = "Ajouter plusieurs ports...";
-$LANG['networking'][47] = "De";
+
 $LANG['networking'][48] = "A";
 
 $LANG['networking'][51] = "Prise réseau";
@@ -1705,8 +1704,6 @@ $LANG['reminder'][1]  = "Notes publiques";
 
 $LANG['reminder'][6]  = "Nouvelle note";
 
-$LANG['reminder'][9]  = "Texte";
-
 $LANG['reminder'][12] = "Ajouter au planning";
 
 $LANG['reminder'][15] = "Sans titre";
@@ -1793,7 +1790,7 @@ $LANG['reservation'][40] = "Matériels dont la réservation expire aujourd'hui";
 
 $LANG['rulesengine'][0]   = "est";
 $LANG['rulesengine'][1]   = "n'est pas";
-$LANG['rulesengine'][2]   = "contient";
+
 $LANG['rulesengine'][3]   = "ne contient pas";
 $LANG['rulesengine'][4]   = "commence par";
 $LANG['rulesengine'][5]   = "finit par";
@@ -2396,8 +2393,6 @@ $LANG['stats'][23] = "Pas de statistiques disponibles";
 
 $LANG['stats'][26] = "Durée réelle de traitement du ticket";
 
-$LANG['stats'][31] = "Jour(s)";
-
 $LANG['stats'][33] = "Min(s)";
 $LANG['stats'][34] = "Sec(s)";
 $LANG['stats'][35] = "Ticket(s)";
@@ -2424,8 +2419,6 @@ $LANG['title'][24] = "Assistance";
 $LANG['title'][26] = "Principal";
 $LANG['title'][27] = "Connexions";
 $LANG['title'][28] = "Tickets";
-
-$LANG['title'][30] = "Composants";
 
 $LANG['title'][33] = "Liens externes";
 $LANG['title'][34] = "Liens";
