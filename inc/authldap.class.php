@@ -2558,7 +2558,7 @@ class AuthLDAP extends CommonDBTM {
             $values[$i*7] = $i.' '.$LANG['ldap'][56];
          }
          for ($i=3 ; $i < 13 ; $i++) {
-            $values[$i*28] = $i.' '.ucfirst($LANG['financial'][57]);
+            $values[$i*28] = $i.' '.Toolbox::ucfirst($LANG['financial'][57]);
          }
 
          Dropdown::showFromArray('days', $values, array('value' => $default));
