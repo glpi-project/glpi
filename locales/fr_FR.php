@@ -133,7 +133,7 @@ $LANG['calendar'][10] = "Plages horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
 $LANG['calendar'][12] = "jour(s)";
 $LANG['calendar'][13] = "semaine(s)";
-$LANG['calendar'][14] = "mois(s)";
+
 $LANG['calendar'][15] = "année(s)";
 $LANG['calendar'][16] = "Maintenant";
 $LANG['calendar'][17] = "Spécifier une date";
@@ -1586,7 +1586,7 @@ $LANG['planning'][10] = "Ical";
 $LANG['planning'][11] = "Webcal";
 $LANG['planning'][12] = "Télécharger planning format Ical";
 $LANG['planning'][13] = "Synchronisation Webcal://";
-$LANG['planning'][14] = "Mois";
+
 $LANG['planning'][15] = "Votre planning";
 $LANG['planning'][16] = "Information";
 $LANG['planning'][17] = "A faire";
