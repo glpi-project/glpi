@@ -79,29 +79,23 @@ class Monitor extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
          if (haveRight("computer","r")) {
-            $ong[1] = $LANG['title'][27];
+            $this->addStandardTab('Computer_Item', $ong);
          }
 
          $this->addStandardTab('Infocom', $ong);
-
          $this->addStandardTab('Contract_Item', $ong);
-
          $this->addStandardTab('Document', $ong);
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $this->addStandardTab('Ticket', $ong);
-
             $this->addStandardTab('Link', $ong);
-
             $this->addStandardTab('Note', $ong);
-
             $this->addStandardTab('Reservation', $ong);
-
             $this->addStandardTab('Log', $ong);
          }
 
       } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $ong['empty'] = $this->getTypeName();
       }
       return $ong;
    }
