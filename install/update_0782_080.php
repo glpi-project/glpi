@@ -341,7 +341,9 @@ function update0782to080($output='HTML') {
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
       $DB->query($query)
       or die("0.80 create glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
+   }
 
+   if (!countElementsInTable('glpi_crontasks', "`itemtype`='SlaLevel_Ticket' AND `name`='slaticket'")) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -349,7 +351,6 @@ function update0782to080($output='HTML') {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->query($query)
       or die("0.80 populate glpi_crontasks for slaticket " . $LANG['update'][90] . $DB->error());
-
    }
 
    $migration->displayMessage($LANG['update'][141] . ' - PasswordForget'); // Updating schema
@@ -722,8 +723,9 @@ function update0782to080($output='HTML') {
 
 
    // config inquest by entity
-   if ($migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL")) {
+   $migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL");
 
+   if (!countElementsInTable('glpi_crontasks', "`itemtype`='Ticket' AND `name`='createinquest'")) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
@@ -1268,20 +1270,14 @@ function update0782to080($output='HTML') {
    }
 
    // Add watcher crontask
-   $query = "SELECT *
-             FROM `glpi_crontasks`
-             WHERE `itemtype` = 'CronTask'
-                   AND `name` = 'watcher'";
-   if ($result = $DB->query($query)) {
-      if ($DB->numrows($result)==0) {
-         $query = "INSERT INTO `glpi_crontasks`
-                          (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
-                           `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                   VALUES ('Crontask', 'watcher', 86400, NULL, 1, 1, 3,
-                            0, 24, 30, NULL, NULL, NULL);";
-         $DB->query($query)
-         or die("0.80 populate glpi_crontasks for watcher " . $LANG['update'][90] . $DB->error());
-      }
+   if (!countElementsInTable('glpi_crontasks', "`itemtype`='Crontask' AND `name`='watcher'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('Crontask', 'watcher', 86400, NULL, 1, 1, 3,
+                         0, 24, 30, NULL, NULL, NULL);";
+      $DB->query($query)
+      or die("0.80 populate glpi_crontasks for watcher " . $LANG['update'][90] . $DB->error());
    }
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
