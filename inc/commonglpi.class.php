@@ -322,9 +322,9 @@ class CommonGLPI {
          echo "<li><a href=\"".$glpilisturl."\">";
 
          if ($glpilisttitle) {
-            if (utf8_strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = utf8_substr($glpilisttitle, 0,
-                                            $_SESSION['glpidropdown_chars_limit'])
+            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
+               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
+                                                $_SESSION['glpidropdown_chars_limit'])
                                 . "&hellip;";
             }
             echo $glpilisttitle;

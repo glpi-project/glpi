@@ -52,5 +52,68 @@ class Toolbox {
       return $str;
     }
 
+
+   /**
+    * substr function for utf8 string
+    *
+    * @param $str string: string
+    * @param $tofound string: string to found
+    * @param $offset integer: The search offset. If it is not specified, 0 is used.
+    *
+    * @return substring
+   **/
+   static function strpos($str, $tofound, $offset=0) {
+      return mb_strpos($str, $tofound, $offset, "UTF-8");
+   }
+
+
+
+   /**
+    *  Replace str_pad()
+    *  who bug with utf8
+    *
+    * @param $input string: input string
+    * @param $pad_length integer: padding length
+    * @param $pad_string string: padding string
+    * @param $pad_type: integer: padding type
+    *
+    * @return string
+   **/
+   static function str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
+
+       $diff = strlen($input) - self::strlen($input);
+       return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
+   }
+
+
+   /**
+    * strlen function for utf8 string
+    *
+    * @param $str string: string
+    *
+    * @return length of the string
+   **/
+   static function strlen($str) {
+      return mb_strlen($str, "UTF-8");
+   }
+
+
+   /**
+    * substr function for utf8 string
+    *
+    * @param $str string: string
+    * @param $start integer: start of the result substring
+    * @param $length integer: The maximum length of the returned string if > 0
+    *
+    * @return substring
+   **/
+   static function substr($str, $start, $length=-1) {
+
+      if ($length==-1) {
+         $length = self::strlen($str)-$start;
+      }
+      return mb_substr($str, $start, $length, "UTF-8");
+   }
+
 }
 ?>

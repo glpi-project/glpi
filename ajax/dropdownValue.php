@@ -217,7 +217,7 @@ if ($item instanceof CommonTreeDropdown) {
          foreach ($toadd as $key => $val) {
             echo "<option class='tree' ".($_POST['value']==$key?'selected':'').
                  " value='$key' title=\"".cleanInputText($val)."\">".
-                  utf8_substr($val, 0, $_POST["limit"])."</option>";
+                  Toolbox::substr($val, 0, $_POST["limit"])."</option>";
          }
       }
 
@@ -248,13 +248,13 @@ if ($item instanceof CommonTreeDropdown) {
       if ($display_selected) {
          $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
-         if (strlen($outputval)!=0 && $outputval!="&nbsp;") {
+         if (Toolbox::strlen($outputval)!=0 && $outputval!="&nbsp;") {
 
-            if (utf8_strlen($outputval)>$_POST["limit"]) {
+            if (Toolbox::strlen($outputval)>$_POST["limit"]) {
                // Completename for tree dropdown : keep right
-               $outputval = "&hellip;".utf8_substr($outputval, -$_POST["limit"]);
+               $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
             }
-            if ($_SESSION["glpiis_ids_visible"] || strlen($outputval)==0) {
+            if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($outputval)==0) {
                $outputval .= " (".$_POST['value'].")";
             }
             echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
@@ -324,8 +324,8 @@ if ($item instanceof CommonTreeDropdown) {
                               $addcomment = " - ".$item->fields["comment"];
                            }
                            $output2 = $item->getName();
-                           if (utf8_strlen($output2)>$_POST["limit"]) {
-                              $output2 = utf8_substr($output2, 0 ,$_POST["limit"])."&hellip;";
+                           if (Toolbox::strlen($output2)>$_POST["limit"]) {
+                              $output2 = Toolbox::substr($output2, 0 ,$_POST["limit"])."&hellip;";
                            }
 
                            $class2 = " class='tree' ";
@@ -360,16 +360,16 @@ if ($item instanceof CommonTreeDropdown) {
                $last_level_displayed[$level] = $data['id'];
             }
 
-            if (utf8_strlen($output)>$_POST["limit"]) {
+            if (Toolbox::strlen($output)>$_POST["limit"]) {
 
                if ($_SESSION['glpiuse_flat_dropdowntree']) {
-                  $output = "&hellip;".utf8_substr($output, -$_POST["limit"]);
+                  $output = "&hellip;".Toolbox::substr($output, -$_POST["limit"]);
                } else {
-                  $output = utf8_substr($output, 0, $_POST["limit"])."&hellip;";
+                  $output = Toolbox::substr($output, 0, $_POST["limit"])."&hellip;";
                }
             }
 
-            if ($_SESSION["glpiis_ids_visible"] || strlen($output)==0) {
+            if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($output)==0) {
                $output .= " ($ID)";
             }
             $addcomment = "";
@@ -479,7 +479,7 @@ if ($item instanceof CommonTreeDropdown) {
          foreach ($toadd as $key => $val) {
             echo "<option title=\"".cleanInputText($val)."\" value='$key' ".
                   ($_POST['value']==$key?'selected':'').">".
-                  utf8_substr($val, 0, $_POST["limit"])."</option>";
+                  Toolbox::substr($val, 0, $_POST["limit"])."</option>";
          }
       }
 
@@ -524,7 +524,7 @@ if ($item instanceof CommonTreeDropdown) {
             }
 
             echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
-                  utf8_substr($output, 0, $_POST["limit"])."</option>";
+                  Toolbox::substr($output, 0, $_POST["limit"])."</option>";
          }
 
          if ($multi) {

@@ -86,7 +86,7 @@ if ($DB->numrows($result)) {
       $ID   = $data['id'];
       $name = $data['name'];
       echo "<option value='$ID' title=\"".cleanInputText($name)."\">".
-            utf8_substr($name, 0, $_POST["limit"])."</option>";
+            Toolbox::substr($name, 0, $_POST["limit"])."</option>";
    }
 }
 echo "</select>";

@@ -1317,8 +1317,9 @@ class Contract extends CommonDBTM {
             }
 
             echo "<option  value='".$data["id"]."'>";
-            echo utf8_substr($data["name"]." - #".$data["num"]." - ".
-                             convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_chars_limit"]);
+            echo Toolbox::substr($data["name"]." - #".$data["num"]." - ".
+                                 convDateTime($data["begin_date"]), 0,
+                                              $_SESSION["glpidropdown_chars_limit"]);
             echo "</option>";
          }
       }

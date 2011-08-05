@@ -1073,8 +1073,8 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
          }
       }
 
-      if ($cut>0 && utf8_strlen($temp)>$cut) {
-         $temp = utf8_substr($temp, 0, $cut)." ...";
+      if ($cut>0 && Toolbox::strlen($temp)>$cut) {
+         $temp = Toolbox::substr($temp, 0, $cut)." ...";
       }
 
    } else {
@@ -1262,14 +1262,14 @@ function isIndex($table, $field) {
 function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) {
    global $DB, $CFG_GLPI;
 
-   $len = utf8_strlen($objectName);
+   $len = Toolbox::strlen($objectName);
 
    if ($isTemplate
        && $len > 8
-       && utf8_substr($objectName,0,4) === '&lt;'
-       && utf8_substr($objectName,$len - 4,4) === '&gt;') {
+       && Toolbox::substr($objectName,0,4) === '&lt;'
+       && Toolbox::substr($objectName,$len - 4,4) === '&gt;') {
 
-      $autoNum = utf8_substr($objectName, 4, $len - 8);
+      $autoNum = Toolbox::substr($objectName, 4, $len - 8);
       $mask    = '';
 
       if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
@@ -1290,7 +1290,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                                 $autoNum);
          $mask = $mask[0];
          $pos  = strpos($autoNum, $mask) + 1;
-         $len  = utf8_strlen($mask);
+         $len  = Toolbox::strlen($mask);
          $like = str_replace('#', '_', $autoNum);
 
          if ($global == 1) {
@@ -1346,7 +1346,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
          $objectName = str_replace(array($mask,
                                          '\\_',
                                          '\\%'),
-                                   array(utf8_str_pad($newNo, $len, '0', STR_PAD_LEFT),
+                                   array(Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
                                          '_',
                                          '%'),
                                    $autoNum);

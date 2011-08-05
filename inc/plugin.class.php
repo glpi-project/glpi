@@ -826,7 +826,7 @@ class Plugin extends CommonDBTM {
       $pluglist = $plug->find("","name, directory");
       foreach ($pluglist as $plugin) {
          $msg  = substr(str_pad($plugin['directory'],30),0,16)." ".$LANG['common'][16].":".
-                 utf8_substr(str_pad($plugin['name'],40),0,30)." ".$LANG['rulesengine'][78].
+                 Toolbox::substr(str_pad($plugin['name'],40),0,30)." ".$LANG['rulesengine'][78].
                  "&nbsp;:".str_pad($plugin['version'],10)." ".$LANG['joblist'][0]."&nbsp;:";
 
          switch ($plugin['state']) {

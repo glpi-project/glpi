@@ -132,7 +132,7 @@ class Netpoint extends CommonDropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name = $tmpname["name"];
             $comment = $tmpname["comment"];
-            $limit_length = max(utf8_strlen($name),$_SESSION["glpidropdown_chars_limit"]);
+            $limit_length = max(Toolbox::strlen($name),$_SESSION["glpidropdown_chars_limit"]);
          }
       }
       $use_ajax = false;

@@ -2155,7 +2155,7 @@ class Ticket extends CommonITILObject {
                      }
                      $my_devices .= "<option title=\"$output\" value='".$itemtype."_".$data["id"].
                                     "' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">".
-                                    utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]).
+                                    Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]).
                                     "</option>";
 
                      $already_add[$itemtype][] = $data["id"];
@@ -2233,8 +2233,8 @@ class Ticket extends CommonITILObject {
                               $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                              $data["id"]."' ".
                                              ($my_item==$itemtype."_".$data["id"]?"selected":"").">".
-                                             utf8_substr($output,0,
-                                                         $_SESSION["glpidropdown_chars_limit"]).
+                                             Toolbox::substr($output,0,
+                                                             $_SESSION["glpidropdown_chars_limit"]).
                                              "</option>";
 
                               $already_add[$itemtype][] = $data["id"];
@@ -2296,8 +2296,8 @@ class Ticket extends CommonITILObject {
                            $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                           $data["id"]."' ".
                                           ($my_item==$itemtype."_".$data["id"]?"selected":"").">".
-                                          utf8_substr($output,0,
-                                                      $_SESSION["glpidropdown_chars_limit"]).
+                                          Toolbox::substr($output,0,
+                                                          $_SESSION["glpidropdown_chars_limit"]).
                                           "</option>";
 
                            $already_add[$itemtype][] = $data["id"];
@@ -2342,7 +2342,8 @@ class Ticket extends CommonITILObject {
 
                         $tmp_device .= "<option title=\"$output\" value='Software_".$data["id"]."' ".
                                        ($my_item == 'Software'."_".$data["id"]?"selected":"").">".
-                                       utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]).
+                                       Toolbox::substr($output, 0,
+                                                       $_SESSION["glpidropdown_chars_limit"]).
                                        "</option>";
 
                         $already_add['Software'][] = $data["id"];

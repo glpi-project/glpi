@@ -2380,7 +2380,7 @@ class AuthLDAP extends CommonDBTM {
                   }
                }
                if ($begin || $end) {
-                  // no utf8_substr, to be consistent with strlen result
+                  // no Toolbox::substr, to be consistent with strlen result
                   $value = substr($value, $begin, $length-$end-$begin);
                }
                $counter++;

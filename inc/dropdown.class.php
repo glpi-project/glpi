@@ -114,18 +114,18 @@ class Dropdown {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
 
-            if (utf8_strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
+            if (Toolbox::strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
                if ($item instanceof CommonTreeDropdown) {
                   $pos          = strrpos($name, ">");
-                  $limit_length = max(utf8_strlen($name) - $pos,
+                  $limit_length = max(Toolbox::strlen($name) - $pos,
                                       $_SESSION["glpidropdown_chars_limit"]);
 
-                  if (utf8_strlen($name)>$limit_length) {
-                     $name = "&hellip;".utf8_substr($name, -$limit_length);
+                  if (Toolbox::strlen($name)>$limit_length) {
+                     $name = "&hellip;".Toolbox::substr($name, -$limit_length);
                   }
 
                } else {
-                  $limit_length = utf8_strlen($name);
+                  $limit_length = Toolbox::strlen($name);
                }
 
             } else {

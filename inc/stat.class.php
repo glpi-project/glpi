@@ -1028,7 +1028,8 @@ class Stat {
          foreach ($entrees as $key => $val) {
             if ($type=="month") {
                $splitter = explode("-",$key);
-               echo "<td class='center'>".utf8_substr($LANG['calendarM'][$splitter[1]-1],0,3)."</td>";
+               echo "<td class='center'>".Toolbox::substr($LANG['calendarM'][$splitter[1]-1],0,3).
+                    "</td>";
             } else if ($type=="year") {
                echo "<td class='center'>".substr($key,2,2)."</td>";
             }

@@ -476,7 +476,7 @@ class Contact extends CommonDBTM{
       $filename = $vcard->getFileName();      // "xxx xxx.vcf"
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      @Header("Content-Length: ".utf8_strlen($output));
+      @Header("Content-Length: ".Toolbox::strlen($output));
       @Header("Connection: close");
       @Header("content-type: text/x-vcard; charset=UTF-8");
 
