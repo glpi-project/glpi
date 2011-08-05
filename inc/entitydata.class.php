@@ -601,14 +601,14 @@ class EntityData extends CommonDBChild {
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
                                         'inherit_global' => 1));
-      echo "&nbsp;".$LANG['job'][21]."</td></tr>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
                                   array('max'            => 99,
                                         'inherit_global' => 1));
-      echo "&nbsp;".$LANG['stats'][31]."</td>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
       echo "<td colspan='2'></td></tr>";
 
       if ($canedit) {
@@ -765,7 +765,7 @@ class EntityData extends CommonDBChild {
                                         'inherit_global' => 1,
                                         'never_value'    => -10,));
 */
-      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td></tr>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
 
@@ -800,7 +800,7 @@ class EntityData extends CommonDBChild {
             echo $typeinquest[$inquestconfig];
             echo " - " .self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                             'inquest_delay');
-            echo "&nbsp;".$LANG['stats'][31]." - ";
+            echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])." - ";
             echo $inquestrate."%";
             if ($inquestconfig == 2) {
                echo " - ".self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],

@@ -452,7 +452,8 @@ class CronTask extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][130]."&nbsp;:&nbsp;</td><td>";
       Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
-                            array(0 => $LANG['setup'][200]), array('suffix' => $LANG['stats'][31]));
+                            array(0 => $LANG['setup'][200]),
+                            array('suffix' => Toolbox::ucfirst($LANG['calendar'][12])));
       echo "</td><td>".$LANG['crontask'][40]."&nbsp;:&nbsp;</td><td>";
 
       if (empty($this->fields['lastrun'])) {
@@ -1333,13 +1334,13 @@ class CronTask extends CommonDBTM{
 
       // Heures
       for ($i=1 ; $i<24 ; $i++) {
-         $tab[$i*HOUR_TIMESTAMP] = $i . ' ' .$LANG['job'][21];
+         $tab[$i*HOUR_TIMESTAMP] = $i . ' ' .Toolbox::ucfirst($LANG['gmt'][1]);
       }
 
       // Jours
       $tab[DAY_TIMESTAMP] = $LANG['setup'][305];
       for ($i=2 ; $i<7 ; $i++) {
-         $tab[$i*DAY_TIMESTAMP] = $i . ' ' .$LANG['stats'][31];
+         $tab[$i*DAY_TIMESTAMP] = $i . ' ' .Toolbox::ucfirst($LANG['calendar'][12]);
       }
 
       $tab[WEEK_TIMESTAMP]  = $LANG['setup'][308];

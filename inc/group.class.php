@@ -340,12 +340,12 @@ class Group extends CommonDBTM {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = $LANG['rulesengine'][2]." ".$LANG['common'][96];
+      $tab[14]['name']          = $LANG['search'][2]." ".$LANG['common'][96];
       $tab[14]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = $LANG['rulesengine'][2]." ".$LANG['Menu'][14];
+      $tab[15]['name']          = $LANG['search'][2]." ".$LANG['Menu'][14];
       $tab[15]['datatype']      = 'bool';
 
       return $tab;

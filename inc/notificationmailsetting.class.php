@@ -238,13 +238,13 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<td >" . $LANG['setup'][707] . "&nbsp;:</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert', $CFG_GLPI["use_reservations_alert"],
                                   array('max' => 99));
-      echo "&nbsp;".$LANG['job'][21]."</td>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][708] . "&nbsp;:</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $CFG_GLPI["notclosed_delay"],
                                   array('max' => 99));
-      echo "&nbsp;".$LANG['stats'][31]."</td>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'>";

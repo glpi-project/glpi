@@ -358,7 +358,8 @@ class Reminder extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['reminder'][9]."&nbsp;:&nbsp;</td><td colspan='3'>";
+      echo "<tr class='tab_bg_2'><td>".Toolbox::ucfirst($LANG['mailing'][117])."&nbsp;:&nbsp;</td>".
+           "<td colspan='3'>";
 
       if ($canedit) {
          echo "<textarea cols='115' rows='15' name='text'>".$this->fields["text"]."</textarea>";
@@ -647,7 +648,8 @@ class Reminder extends CommonDBTM {
                echo "<span class='reminder_right'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".$LANG['Menu'][29].
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
+                     Toolbox::ucfirst($LANG['log'][16]).
                      "\" title=\"".convDateTime($data["begin"])."=>".convDateTime($data["end"])."\">";
                echo "</a></span>";
             }
@@ -771,8 +773,9 @@ class Reminder extends CommonDBTM {
                         "&amp;type=day'>";
                }
 
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".$LANG['Menu'][29].
-                     "\" title=\"".$LANG['Menu'][29]."\">";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
+                     Toolbox::ucfirst($LANG['log'][16]).
+                     "\" title=\"".Toolbox::ucfirst($LANG['log'][16])."\">";
 
                if ($planningRight) {
                   echo "</a>";

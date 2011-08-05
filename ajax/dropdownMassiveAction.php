@@ -88,8 +88,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "move_rule" :
          echo "<select name='move_type'>";
-         echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
-         echo "<option value='before'>".$LANG['buttons'][46]."</option>";
+         echo "<option value='after' selected>".Toolbox::ucfirst($LANG['search'][24])."</option>";
+         echo "<option value='before'>".Toolbox::ucfirst($LANG['search'][23])."</option>";
          echo "</select>&nbsp;";
 
          if (isset($_POST['entity_restrict'])) {

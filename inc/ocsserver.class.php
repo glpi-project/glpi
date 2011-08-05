@@ -194,7 +194,7 @@ class OcsServer extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr><th><input type='hidden' name='id' value='$ID'>&nbsp;".$LANG['ocsconfig'][27] ." ".
                      $LANG['Menu'][0]. "&nbsp;</th>\n";
-      echo "<th>&nbsp;" . $LANG['title'][30] . "&nbsp;</th>\n";
+      echo "<th>&nbsp;" . Toolbox::ucfirst($LANG['log'][18]) . "&nbsp;</th>\n";
       echo "<th>&nbsp;" . $LANG['ocsconfig'][43] . "&nbsp;</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>\n";

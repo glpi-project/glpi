@@ -267,21 +267,21 @@ class SlaLevel extends RuleTicket {
          $possible_values=array();
          for ($i=1 ; $i<24 ; $i++) {
             if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
-               $possible_values[$i*HOUR_TIMESTAMP]='+ '.$i." ".$LANG['job'][21];
+               $possible_values[$i*HOUR_TIMESTAMP]='+ '.$i." ".Toolbox::ucfirst($LANG['gmt'][1]);
             }
             if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
                if ($p['max_time'] >= $i*HOUR_TIMESTAMP) {
-                  $possible_values[-$i*HOUR_TIMESTAMP]='- '.$i." ".$LANG['job'][21];
+                  $possible_values[-$i*HOUR_TIMESTAMP]='- '.$i." ".Toolbox::ucfirst($LANG['gmt'][1]);
                }
             }
          }
          for ($i=1 ; $i<30 ; $i++) {
             if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
-               $possible_values[$i*DAY_TIMESTAMP]='+ '.$i." ".$LANG['stats'][31];
+               $possible_values[$i*DAY_TIMESTAMP]='+ '.$i." ".Toolbox::ucfirst($LANG['calendar'][12]);
             }
             if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
                if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
-                  $possible_values[-$i*DAY_TIMESTAMP]='- '.$i." ".$LANG['stats'][31];
+                  $possible_values[-$i*DAY_TIMESTAMP]='- '.$i." ".Toolbox::ucfirst($LANG['calendar'][12]);
                }
             }
          }

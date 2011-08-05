@@ -445,7 +445,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
-      $menu['maintain']['content']['planning']['title']           = $LANG['Menu'][29];
+      $menu['maintain']['content']['planning']['title']           = Toolbox::ucfirst($LANG['log'][16]);
       $menu['maintain']['content']['planning']['shortcut']        = 'l';
       $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
       $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
@@ -1044,7 +1044,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
 
    if (haveRight("device","w")) {
-      $menu['config']['content']['device']['title'] = $LANG['title'][30];
+      $menu['config']['content']['device']['title'] = Toolbox::ucfirst($LANG['log'][18]);
       $menu['config']['content']['device']['page']  = '/front/device.php';
 
       if ($item=="device") {

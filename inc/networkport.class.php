@@ -601,7 +601,7 @@ class NetworkPort extends CommonDBChild {
          echo "<td>";
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
-         echo $LANG['networking'][47] . "&nbsp;:&nbsp;";
+         echo Toolbox::ucfirst($LANG['pager'][2]) . "&nbsp;:&nbsp;";
          Dropdown::showInteger('from_logical_number', 0, 0, 100);
          echo "&nbsp;".$LANG['networking'][48] . "&nbsp;:&nbsp;";
          Dropdown::showInteger('to_logical_number', 0, 0, 100);

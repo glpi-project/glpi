@@ -2936,7 +2936,7 @@ class Ticket extends CommonITILObject {
          echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
          echo "<td colspan='3'>";
          Dropdown::showInteger('hour',$options['hour'],0,100);
-         echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
+         echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."&nbsp;&nbsp;";
          Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
          echo "</td>";

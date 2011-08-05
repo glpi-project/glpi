@@ -569,7 +569,8 @@ class Dropdown {
       }
 
       if (is_null($optgroup)) {
-         $optgroup = array($LANG['title'][30] => array('DeviceMotherboard' => $LANG['devices'][5],
+         $optgroup = array(Toolbox::ucfirst($LANG['log'][18])
+                                              => array('DeviceMotherboard' => $LANG['devices'][5],
                                                        'DeviceProcessor'   => $LANG['devices'][4],
                                                        'DeviceNetworkCard' => $LANG['devices'][3],
                                                        'DeviceMemory'      => $LANG['devices'][6],

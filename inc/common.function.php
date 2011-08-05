@@ -1810,10 +1810,10 @@ function getExpir($begin, $duration, $notice="0") {
    $diff_days = floor($diff/60/60/24);
 
    if ($diff_days>0) {
-      return $diff_days." ".$LANG['stats'][31];
+      return $diff_days." ".Toolbox::ucfirst($LANG['calendar'][12]);
    }
 
-   return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
+   return "<span class='red'>".$diff_days." ".Toolbox::ucfirst($LANG['calendar'][12])."</span>";
 }
 
 
@@ -2024,11 +2024,11 @@ function timestampToString($time, $display_sec=true) {
    $out   = $sign;
 
    if ($units['day']>0) {
-      $out .= " ".$units['day']."&nbsp;".$LANG['stats'][31];
+      $out .= " ".$units['day']."&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
    }
 
    if ($units['hour']>0) {
-      $out .= " ".$units['hour']."&nbsp;".$LANG['job'][21];
+      $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
    }
 
    if ($units['minute']>0) {
