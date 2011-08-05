@@ -683,6 +683,7 @@ class Computer_Item extends CommonDBRelation{
             case 'Phone' :
             case 'Printer' :
             case 'Peripheral' :
+            case 'Monitor' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['title'][27], self::countForItem($item));
                }
@@ -699,6 +700,7 @@ class Computer_Item extends CommonDBRelation{
          case 'Phone' :
          case 'Printer' :
          case 'Peripheral' :
+         case 'Monitor' :
             self::showForItem($item);
             return true;
       }
