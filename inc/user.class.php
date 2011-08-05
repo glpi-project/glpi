@@ -2607,7 +2607,8 @@ class User extends CommonDBTM {
                $input['tokendate'] = $_SESSION["glpi_currenttime"];
                $input['id']        = $this->fields['id'];
                $this->update($input);
-               NotificationEvent::raiseEvent('passwordforget',$this);
+               // Notication on root entity (glpi_users.entities_id is only a pref)
+               NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id'=>0));
                echo $LANG['users'][10];
             } else {
                echo $LANG['mailing'][110];

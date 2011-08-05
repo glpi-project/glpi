@@ -50,15 +50,16 @@ class NotificationTargetUser extends NotificationTarget {
 
    function getSpecificTargets($data,$options) {
 
-   //Look for all targets whose type is Notification::ITEM_USER
-   switch ($data['type']) {
-      case Notification::USER_TYPE :
-
-         switch ($data['items_id']) {
-            case Notification::USER :
-               $this->getUserByField('id');
-               break;
-
+      //Look for all targets whose type is Notification::ITEM_USER
+      switch ($data['type']) {
+         case Notification::USER_TYPE :
+            switch ($data['items_id']) {
+               case Notification::USER :
+                  // Send to user without any check on profile / entity
+                  $data = array('name'     => $this->obj->getName(),
+                                'email'    => $this->obj->getField('email'),
+                                'language' => $this->obj->getField('language'));
+                  $this->addToAddressesList($data);
          }
       }
    }
