@@ -48,7 +48,7 @@ class NotificationTemplate extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['mailing'][113];
+      return $LANG['mailing'][112];
    }
 
 
