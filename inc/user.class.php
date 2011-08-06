@@ -309,6 +309,13 @@ class User extends CommonDBTM {
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
+      // Set no user to consumables
+      $query = "UPDATE `glpi_consumables`
+                SET `items_id` = '0'
+                WHERE `items_id` = '".$this->fields['id']."' AND `itemtype` = 'User'";
+      $DB->query($query);
+
+
       $gu = new Group_User();
       $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
