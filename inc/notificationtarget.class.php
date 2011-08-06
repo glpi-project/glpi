@@ -1031,12 +1031,12 @@ class NotificationTarget extends CommonDBChild {
 
       if ($req->numrows()) {
          echo "<tr><th>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".Entity::getTypeName()."</th>";
          echo "<th>".$LANG['common'][60]."</th>";
          echo "<th>".$LANG['common'][17]."</th>";
          echo "<th>".$LANG['mailing'][120]."</th>";
-         echo "<th>".$LANG['mailing'][119]."</th>";
-         echo "<th>".$LANG['mailing'][112]."</th></tr>";
+         echo "<th>".NotificationEvent::getTypeName()."</th>";
+         echo "<th>".NotificationTemplate::getTypeName()."</th></tr>";
 
          $notif = new Notification();
          initNavigateListItems('Notification', $group->getTypeName()." = ".$group->getNameID());

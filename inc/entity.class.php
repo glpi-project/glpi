@@ -66,7 +66,7 @@ class Entity extends CommonTreeDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['Menu'][37];
+      return $LANG['entity'][0];
    }
 
 

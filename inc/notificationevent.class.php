@@ -42,6 +42,13 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationEvent extends CommonDBTM {
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['mailing'][119];
+   }
+
+
    static function dropdownEvents($itemtype,$value='') {
 
       $events = array();
