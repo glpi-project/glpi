@@ -968,11 +968,7 @@ class NotificationTarget extends CommonDBChild {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(),
-                                             "`items_id` = '".$item->getID()."'
-                                              AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
-                                                   OR `type`='".Notification::GROUP_TYPE."')");
-                  return self::createTabEntry($LANG['setup'][704], $nb);
+                  return self::createTabEntry($LANG['setup'][704], self::countForGroup($item));
                }
                return $LANG['setup'][704];
          }
@@ -980,6 +976,30 @@ class NotificationTarget extends CommonDBChild {
       return '';
    }
 
+
+   /**
+    * Count Notification for a group
+    *
+    * @since verson 0.83
+    *
+    * @param $group Group
+    *
+    * @return integer
+   **/
+   static function countForGroup(Group $group) {
+      global $DB;
+
+      $sql = "SELECT COUNT(*) as cpt
+              FROM `glpi_notificationtargets`
+              INNER JOIN `glpi_notifications`
+                    ON (`glpi_notifications`.`id`=`glpi_notificationtargets`.`notifications_id`)
+              WHERE `items_id` = '".$group->getID()."'
+                 AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
+                      OR `type`='".Notification::GROUP_TYPE."')".
+                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', $group->getEntityID());
+      $data = $DB->request($sql)->next();
+      return $data['cpt'];
+   }
 
    /**
     * Display notification registered for a group
@@ -997,10 +1017,15 @@ class NotificationTarget extends CommonDBChild {
          return false;
       }
 
-      $crit = array('type'     => array(Notification::SUPERVISOR_GROUP_TYPE,
-                                        Notification::GROUP_TYPE),
-                    'items_id' => $group->getID());
-      $req = $DB->request('glpi_notificationtargets', $crit);
+      $sql = "SELECT `glpi_notifications`.`id`
+              FROM `glpi_notificationtargets`
+              INNER JOIN `glpi_notifications`
+                    ON (`glpi_notifications`.`id`=`glpi_notificationtargets`.`notifications_id`)
+              WHERE `items_id` = '".$group->getID()."'
+                 AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
+                      OR `type`='".Notification::GROUP_TYPE."')".
+                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', $group->getEntityID());
+      $req = $DB->request($sql);
 
       echo "<table class='tab_cadre_fixe'>";
 
@@ -1015,9 +1040,9 @@ class NotificationTarget extends CommonDBChild {
          $notif = new Notification();
          initNavigateListItems('Notification', $group->getTypeName()." = ".$group->getNameID());
          foreach ($req as $data) {
-            addToNavigateListItems('Notification', $data['notifications_id']);
+            addToNavigateListItems('Notification', $data['id']);
 
-            if ($notif->getFromDB($data['notifications_id'])) {
+            if ($notif->getFromDB($data['id'])) {
                echo "<tr class='tab_bg_2'><td>".$notif->getLink();
                echo "</td><td>".dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
                if (class_exists($itemtype=$notif->getField('itemtype'))) {
