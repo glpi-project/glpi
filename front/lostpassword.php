@@ -37,14 +37,17 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if (!$CFG_GLPI['use_mailing']
+    || !countElementsInTable('glpi_notifications',
+                             "`itemtype`='User' AND `event`='passwordforget' AND `is_active`=1")) {
+   exit();
+}
+
 $user = new User();
 
 // Manage lost password
 simpleHeader($LANG['users'][3]);
 
-if (!$CFG_GLPI['use_mailing']) {
-   exit();
-}
 if (isset($_REQUEST['token'])) {
 
    if (isset($_REQUEST['email'])) {
