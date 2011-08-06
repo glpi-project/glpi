@@ -477,7 +477,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_bookmarks_users'     => 'users_id',
                                  'glpi_documents'           => 'users_id',
                                  'glpi_ticketfollowups'     => 'users_id',
-                                 'glpi_groups'              => 'users_id',
                                  'glpi_knowbaseitems'       => 'users_id',
                                  'glpi_monitors'            => array('users_id_tech', 'users_id'),
                                  'glpi_networkequipments'   => array('users_id_tech', 'users_id'),
