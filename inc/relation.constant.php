@@ -210,16 +210,18 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_computerdisks' => 'filesystems_id'),
 
                   "glpi_groups"
-                        => array('glpi_computers'         => 'groups_id',
-                                 'glpi_groups_problems'    => 'groups_id',
+                        => array('glpi_computers'         => array('groups_id_tech', 'groups_id'),
+                                 'glpi_groups_problems'   => 'groups_id',
                                  'glpi_groups_tickets'    => 'groups_id',
                                  'glpi_groups_users'      => 'groups_id',
-                                 'glpi_monitors'          => 'groups_id',
-                                 'glpi_networkequipments' => 'groups_id',
-                                 'glpi_peripherals'       => 'groups_id',
-                                 'glpi_phones'            => 'groups_id',
-                                 'glpi_printers'          => 'groups_id',
-                                 'glpi_softwares'         => 'groups_id'),
+                                 'glpi_monitors'          => array('groups_id_tech', 'groups_id'),
+                                 'glpi_networkequipments' => array('groups_id_tech', 'groups_id'),
+                                 'glpi_peripherals'       => array('groups_id_tech', 'groups_id'),
+                                 'glpi_phones'            => array('groups_id_tech', 'groups_id'),
+                                 'glpi_printers'          => array('groups_id_tech', 'groups_id'),
+                                 'glpi_softwares'         => array('groups_id_tech', 'groups_id'),
+                                 'glpi_cartridgeitems'    => 'groups_id_tech',
+                                 'glpi_consumableitems'   => 'groups_id_tech'),
 
                   "glpi_holidays"
                         => array('glpi_calendars_holidays' => 'holidays_id',),
