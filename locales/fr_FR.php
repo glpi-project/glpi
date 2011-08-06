@@ -1289,7 +1289,7 @@ $LANG['mailing'][104] = "Durée de l'intervention";
 
 $LANG['mailing'][110] = "Adresse invalide";
 $LANG['mailing'][111] = "Adresse de courriel";
-
+$LANG['mailing'][112] = "Modèle de notifications";
 $LANG['mailing'][113] = "Modèles de notifications";
 $LANG['mailing'][114] = "Corps";
 $LANG['mailing'][115] = "Corps du courriel";

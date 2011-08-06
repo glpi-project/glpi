@@ -1036,7 +1036,7 @@ class NotificationTarget extends CommonDBChild {
          echo "<th>".$LANG['common'][17]."</th>";
          echo "<th>".$LANG['mailing'][120]."</th>";
          echo "<th>".$LANG['mailing'][119]."</th>";
-         echo "<th>".$LANG['mailing'][113]."</th></tr>";
+         echo "<th>".$LANG['mailing'][112]."</th></tr>";
 
          $notif = new Notification();
          initNavigateListItems('Notification', $group->getTypeName()." = ".$group->getNameID());
