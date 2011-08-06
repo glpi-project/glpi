@@ -156,7 +156,7 @@ class Notification extends CommonDBTM {
       } else {
          $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
                                          array_diff($CFG_GLPI["notificationtemplates_types"],
-                                                    array('Crontask', 'DBConnection')));
+                                                    array('Crontask', 'DBConnection', 'User')));
 
       }
 
