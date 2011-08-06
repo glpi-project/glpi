@@ -83,6 +83,13 @@ class Group extends CommonDBTM {
       Rule::cleanForItemCriteria($this, '_groups_id%');
       // GROUPS for RuleMailcollector
       Rule::cleanForItemCriteria($this, 'GROUPS');
+
+      // Set no group to consumables
+      $query = "UPDATE `glpi_consumables`
+                SET `items_id` = '0'
+                WHERE `items_id` = '".$this->fields['id']."' AND `itemtype` = 'Group'";
+      $DB->query($query);
+
    }
 
 
