@@ -996,7 +996,7 @@ class NotificationTarget extends CommonDBChild {
               WHERE `items_id` = '".$group->getID()."'
                  AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
                       OR `type`='".Notification::GROUP_TYPE."')".
-                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', $group->getEntityID());
+                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
       $data = $DB->request($sql)->next();
       return $data['cpt'];
    }
@@ -1024,13 +1024,14 @@ class NotificationTarget extends CommonDBChild {
               WHERE `items_id` = '".$group->getID()."'
                  AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
                       OR `type`='".Notification::GROUP_TYPE."')".
-                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', $group->getEntityID());
+                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
       $req = $DB->request($sql);
 
       echo "<table class='tab_cadre_fixe'>";
 
       if ($req->numrows()) {
          echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
          echo "<th>".$LANG['common'][60]."</th>";
          echo "<th>".$LANG['common'][17]."</th>";
          echo "<th>".$LANG['mailing'][120]."</th>";
@@ -1044,6 +1045,7 @@ class NotificationTarget extends CommonDBChild {
 
             if ($notif->getFromDB($data['id'])) {
                echo "<tr class='tab_bg_2'><td>".$notif->getLink();
+               echo "</td><td>".dropdown::getDropdownName('glpi_entities', $notif->getEntityID());
                echo "</td><td>".dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
                if (class_exists($itemtype=$notif->getField('itemtype'))) {
                   $tmp = new $itemtype();
