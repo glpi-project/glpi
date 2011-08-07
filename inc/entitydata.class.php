@@ -443,9 +443,10 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
       echo "<td>";
-      $options = array(0                        => $LANG['financial'][113],
-                       Infocom::COPY_BUY_DATE   => $LANG['setup'][283].': '.$LANG['financial'][14],
-                       Infocom::COPY_ORDER_DATE => $LANG['setup'][283].': '.$LANG['financial'][28]);
+      $options = array(0                           => $LANG['financial'][113],
+                       Infocom::COPY_BUY_DATE      => $LANG['setup'][283].': '.$LANG['financial'][14],
+                       Infocom::COPY_ORDER_DATE    => $LANG['setup'][283].': '.$LANG['financial'][28],
+                       Infocom::COPY_DELIVERY_DATE => $LANG['setup'][283].' '.$LANG['financial'][27]);
       if ($ID > 0) {
          $options[-1] = $LANG['common'][102];
       }
