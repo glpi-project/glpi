@@ -788,13 +788,29 @@ class Cartridge extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("cartridge","r") && $item->getType()=='Printer') {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][21], self::countForPrinter($item));
-         }
-         return $LANG['Menu'][21];
+      if (!$withtemplate && haveRight("cartridge","r"))
+         switch ($item->getType()) {
+            case 'Printer' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][21], self::countForPrinter($item));
+               }
+               return $LANG['Menu'][21];
+
+            case 'CartridgeItem' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][21], self::countForCartridgeItem($item));
+               }
+               return $LANG['Menu'][21];
       }
       return '';
+   }
+
+
+   static function countForCartridgeItem(CartridgeItem $item) {
+
+      $restrict = "`glpi_cartridges`.`cartridgeitems_id` = '".$item->getField('id') ."'";
+
+      return countElementsInTable(array('glpi_cartridges'), $restrict);
    }
 
 
@@ -812,6 +828,11 @@ class Cartridge extends CommonDBTM {
          case 'Printer' :
             self::showInstalled($item);
             self::showInstalled($item, 1);
+            return true;
+
+         case 'CartridgeItem' :
+            self::showForCartridgeItem($item);
+            self::showForCartridgeItem($item, 1);
             return true;
       }
    }

@@ -121,7 +121,7 @@ class CartridgeItem extends CommonDBTM {
       if ($this->isNewItem()) {
          $ong['empty'] = $this->getTypeName();
       } else {
-         $this->addStandardTab('CartridgeItem', $ong, $options);
+         $this->addStandardTab('Cartridge', $ong, $options);
          $this->addStandardTab('PrinterModel', $ong, $options);
          $this->addStandardTab('Infocom', $ong, $options);
          $this->addStandardTab('Document',$ong, $options);
@@ -595,35 +595,5 @@ class CartridgeItem extends CommonDBTM {
       $options['cartridges']  = array($item);
       NotificationEvent::debugEvent(new Cartridge(), $options);
    }
-
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
-      if (!$withtemplate && haveRight("cartridge","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][21], self::countForItem($item));
-         }
-         return $LANG['Menu'][21];
-      }
-      return '';
-   }
-
-
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_cartridges`.`cartridgeitems_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_cartridges'), $restrict);
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      Cartridge::showForCartridgeItem($item);
-      Cartridge::showForCartridgeItem($item, 1);
-      return true;
-   }
-
 }
 ?>
