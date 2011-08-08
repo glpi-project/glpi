@@ -1818,7 +1818,7 @@ class Rule extends CommonDBTM {
          initNavigateListItems(get_class($this), $item->getTypeName()."=".$item->getName());
 
          foreach ($rules as $rule) {
-            addToNavigateListItems(get_class($this), $rule->fields["id"]);
+            Toolbox::addToNavigateListItems(get_class($this), $rule->fields["id"]);
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

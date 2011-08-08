@@ -127,7 +127,7 @@ class SlaLevel extends RuleTicket {
 
             while ($data = $DB->fetch_array($result)) {
 
-               addToNavigateListItems('SlaLevel',$data["id"]);
+               Toolbox::addToNavigateListItems('SlaLevel',$data["id"]);
 
                echo "<tr class='tab_bg_2'>";
                echo "<td width='10'>";

@@ -146,7 +146,7 @@ class Group_User extends CommonDBRelation{
          initNavigateListItems('Group', $user->getTypeName()." = ".$user->getName());
          $i = 0;
          foreach ($groups as $data) {
-            addToNavigateListItems('Group', $data["id"]);
+            Toolbox::addToNavigateListItems('Group', $data["id"]);
             if ($i%$nb_per_line == 0) {
                if ($i != 0) {
                   echo "</tr>";
@@ -298,7 +298,7 @@ class Group_User extends CommonDBRelation{
                   // For recursive group, could be in another (sister) entity
                   continue;
                }
-               addToNavigateListItems('User', $data["id"]);
+               Toolbox::addToNavigateListItems('User', $data["id"]);
                if ($i%$nb_per_line==0) {
                   if ($i!=0) {
                      echo "</tr>";

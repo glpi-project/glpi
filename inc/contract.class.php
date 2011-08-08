@@ -1026,7 +1026,7 @@ class Contract extends CommonDBTM {
       $contracts = array();
       while ($i < $number) {
          $cID = $DB->result($result, $i, "contracts_id");
-         addToNavigateListItems('Contract',$cID);
+         Toolbox::addToNavigateListItems('Contract',$cID);
          $contracts[] = $cID;
          $assocID = $DB->result($result, $i, "id");
          $con = new Contract();

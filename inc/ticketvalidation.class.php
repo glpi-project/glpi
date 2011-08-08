@@ -598,7 +598,7 @@ class TicketValidation  extends CommonDBChild {
 
          while ($row = $DB->fetch_assoc($result)) {
             $canedit = $this->can($row["id"],'w');
-            addToNavigateListItems('TicketValidation',$row["id"]);
+            Toolbox::addToNavigateListItems('TicketValidation',$row["id"]);
             $bgcolor = $this->getStatusColor($row['status']);
             $status = $this->getStatus($row['status']);
 

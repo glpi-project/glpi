@@ -598,7 +598,7 @@ class SoftwareLicense extends CommonDBTM {
 
             $tot_assoc = 0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
-               addToNavigateListItems('SoftwareLicense', $data['id']);
+               Toolbox::addToNavigateListItems('SoftwareLicense', $data['id']);
                echo "<tr class='tab_bg_2'>";
 
                if ($license->can($data['id'], "w")) {

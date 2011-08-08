@@ -234,7 +234,7 @@ class Computer_Device extends CommonDBTM {
 
          $prev = '';
          foreach ($DB->request($query) as $data) {
-            addToNavigateListItems($itemtype, $data[$fk]);
+            Toolbox::addToNavigateListItems($itemtype, $data[$fk]);
 
             if ($device->getFromDB($data[$fk])) {
                echo "<tr class='tab_bg_2'>";

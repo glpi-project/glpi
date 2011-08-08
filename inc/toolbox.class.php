@@ -432,5 +432,14 @@ class Toolbox {
       return $value;
    }
 
+
+   /** Add an item to the navigate through search results list
+    *
+    * @param $itemtype device type
+    * @param $ID ID of the item
+   **/
+   static function addToNavigateListItems($itemtype, $ID) {
+      $_SESSION['glpilistitems'][$itemtype][] = $ID;
+   }
 }
 ?>
