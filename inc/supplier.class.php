@@ -391,7 +391,7 @@ class Supplier extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             $ID                = $data["ID_ent"];
             $used[$data["id"]] = $data["id"];
-            addToNavigateListItems('Contact',$data["id"]);
+            Toolbox::addToNavigateListItems('Contact',$data["id"]);
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";

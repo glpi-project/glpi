@@ -602,9 +602,6 @@ function checkWriteAccessToDirs($fordebug=false) {
 
 
 
-
-
-
 /**
  *
 **/
@@ -983,30 +980,7 @@ function glpi_header($dest) {
 }
 
 
-/**
- * Call from a popup Windows, refresh the dropdown in main window
-**/
-function refreshDropdownPopupInMainWindow() {
 
-   if (isset($_SESSION["glpipopup"]["rand"])) {
-      echo "<script type='text/javascript' >\n";
-      echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
-      echo "</script>";
-   }
-}
-
-
-/**
- * Call from a popup Windows, refresh the dropdown in main window
-**/
-function refreshPopupMainWindow() {
-
-   if (isset($_SESSION["glpipopup"]["rand"])) {
-      echo "<script type='text/javascript' >\n";
-      echo "window.opener.location.reload(true)";
-      echo "</script>";
-   }
-}
 
 
 /**
@@ -1899,14 +1873,7 @@ function initNavigateListItems($itemtype, $title="") {
 }
 
 
-/** Add an item to the navigate through search results list
- *
- * @param $itemtype device type
- * @param $ID ID of the item
-**/
-function addToNavigateListItems($itemtype, $ID) {
-   $_SESSION['glpilistitems'][$itemtype][] = $ID;
-}
+
 
 
 /**

@@ -411,7 +411,7 @@ class RuleCollection extends CommonDBTM {
 
       for ($i=$p['start'],$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities);
-         addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
+         Toolbox::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
       echo "</table>\n";
 

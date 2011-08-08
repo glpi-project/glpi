@@ -352,7 +352,7 @@ class NetworkPort extends CommonDBChild {
 
             while ($devid = $DB->fetch_row($result)) {
                $netport->getFromDB(current($devid));
-               addToNavigateListItems('NetworkPort', $netport->fields["id"]);
+               Toolbox::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                echo "<tr class='tab_bg_1'>\n";
                if ($withtemplate != 2 && $canedit) {

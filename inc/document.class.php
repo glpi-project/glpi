@@ -1324,7 +1324,7 @@ class Document extends CommonDBTM {
             }
 
             if ($item->getType() != 'Document') {
-               addToNavigateListItems('Document', $docID);
+               Toolbox::addToNavigateListItems('Document', $docID);
             }
             $used[$docID] = $docID;
             $assocID      = $data["assocID"];

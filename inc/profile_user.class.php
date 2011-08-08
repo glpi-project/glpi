@@ -287,7 +287,7 @@ class Profile_User extends CommonDBTM {
                $i = 0;
 
                while ($data2=$DB->fetch_array($result2)) {
-                  addToNavigateListItems('User',$data2["id"]);
+                  Toolbox::addToNavigateListItems('User',$data2["id"]);
 
                   if ($i%$nb_per_line==0) {
                      if ($i!=0) {

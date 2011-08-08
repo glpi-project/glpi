@@ -980,7 +980,7 @@ class Search {
                echo self::showNewLine($output_type, ($i%2), $p['is_deleted']);
 
                // Add item in item list
-               addToNavigateListItems($itemtype, $data["id"]);
+               Toolbox::addToNavigateListItems($itemtype, $data["id"]);
 
                if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
                   $tmpcheck = "";

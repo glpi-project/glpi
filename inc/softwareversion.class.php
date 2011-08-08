@@ -289,7 +289,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
-               addToNavigateListItems('SoftwareVersion',$data['id']);
+               Toolbox::addToNavigateListItems('SoftwareVersion',$data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
                echo "<tr class='tab_bg_2'>";
