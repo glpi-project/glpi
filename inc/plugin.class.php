@@ -202,7 +202,7 @@ class Plugin extends CommonDBTM {
                $function = "plugin_version_$filename";
                if (function_exists($function)) {
                   $file_plugins[$filename] = $function();
-                  $file_plugins[$filename] = addslashes_deep($file_plugins[$filename]);
+                  $file_plugins[$filename] = Toolbox::addslashes_deep($file_plugins[$filename]);
                }
             }
          }
