@@ -91,7 +91,7 @@ class Config extends CommonDBTM {
          if (empty($input["smtp_passwd"])) {
             unset($input["smtp_passwd"]);
          } else {
-            $input["smtp_passwd"] = encrypt(stripslashes($input["smtp_passwd"]), GLPIKEY);
+            $input["smtp_passwd"] = Toolbox::encrypt(stripslashes($input["smtp_passwd"]), GLPIKEY);
          }
       }
 
@@ -103,7 +103,7 @@ class Config extends CommonDBTM {
          if (empty($input["proxy_passwd"])) {
             unset($input["proxy_passwd"]);
          } else {
-            $input["proxy_passwd"] = encrypt(stripslashes($input["proxy_passwd"]), GLPIKEY);
+            $input["proxy_passwd"] = Toolbox::encrypt(stripslashes($input["proxy_passwd"]), GLPIKEY);
          }
       }
 

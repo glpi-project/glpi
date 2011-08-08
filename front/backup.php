@@ -184,7 +184,7 @@ function get_content($DB, $table,$from,$limit) {
 
       while ($row = $DB->fetch_row($result)) {
          if ($gmqr) {
-            $row = addslashes_deep($row);
+            $row = Toolbox::addslashes_deep($row);
          }
          $insert = "INSERT INTO `$table` VALUES (";
 

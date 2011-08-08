@@ -630,7 +630,7 @@ function update0713to072() {
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_assoc($result)){
-					$data = addslashes_deep($data);
+					$data = Toolbox::addslashes_deep($data);
 					// Update datas
 					if ($newID=update_importDropdown("glpi_dropdown_interface", $data['OLDNAME'])){
 						$query2="UPDATE glpi_device_gfxcard SET FK_interface='$newID' WHERE interface='".$data['OLDNAME']."'";

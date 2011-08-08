@@ -183,6 +183,28 @@ class Toolbox {
 
 
    /**
+    * Encrypt a string
+    *
+    * @param $string string to encrypt
+    * @param $key string key used to encrypt
+    *
+    * @return encrypted string
+   **/
+   static function encrypt($string, $key) {
+
+     $result = '';
+     for($i=0 ; $i<strlen($string) ; $i++) {
+       $char    = substr($string, $i, 1);
+       $keychar = substr($key, ($i % strlen($key))-1, 1);
+       $char    = chr(ord($char)+ord($keychar));
+       $result .= $char;
+     }
+
+     return base64_encode($result);
+   }
+
+
+   /**
     * Log in 'php-errors' all args
    **/
    static function logDebug() {
@@ -316,5 +338,99 @@ class Toolbox {
          echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
       }
    }
+
+
+   /**
+    * Send a file (not a document) to the navigator
+    * See Document->send();
+    *
+    * @param $file string: storage filename
+    * @param $filename string: file title
+    *
+    * @return nothing
+   **/
+   static function sendFile($file, $filename) {
+
+      // Test securite : document in DOC_DIR
+      $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
+
+      if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
+         Event::log($file, "sendFile", 1, "security",
+                    $_SESSION["glpiname"]." try to get a non standard file.");
+         die("Security attack !!!");
+      }
+
+      if (!file_exists($file)) {
+         die("Error file $file does not exist");
+      }
+
+      $splitter = explode("/", $file);
+      $mime     = "application/octetstream";
+
+      if (preg_match('/\.(...)$/', $file, $regs)) {
+         switch ($regs[1]) {
+            case "sql" :
+               $mime = "text/x-sql";
+               break;
+
+            case "xml" :
+               $mime = "text/xml";
+               break;
+
+            case "csv" :
+               $mime = "text/csv";
+               break;
+
+            case "svg" :
+               $mime = "image/svg+xml";
+               break;
+
+            case "png" :
+               $mime = "image/png";
+               break;
+         }
+      }
+
+      // Now send the file with header() magic
+      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header('Pragma: private'); /// IE BUG + SSL
+      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+      header("Content-disposition: filename=\"$filename\"");
+      header("Content-type: ".$mime);
+
+      readfile($file) or die ("Error opening file $file");
+   }
+
+
+   /**
+    *  Add slash for variable & array
+    *
+    * @param $value array or string: value to add slashes (array or string)
+    *
+    * @return addslashes value
+   **/
+   static function addslashes_deep($value) {
+
+      $value = is_array($value) ? array_map(array(__CLASS, 'addslashes_deep'), $value)
+                                : (is_null($value) ? NULL : mysql_real_escape_string($value));
+
+      return $value;
+   }
+
+
+   /**
+    * Strip slash  for variable & array
+    *
+    * @param $value array or string: item to stripslashes (array or string)
+    * @return stripslashes item
+   **/
+   static function stripslashes_deep($value) {
+
+      $value = is_array($value) ? array_map(array(__CLASS, 'stripslashes_deep'), $value)
+                                : (is_null($value) ? NULL : stripslashes($value));
+
+      return $value;
+   }
+
 }
 ?>

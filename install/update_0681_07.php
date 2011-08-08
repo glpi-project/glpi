@@ -576,7 +576,7 @@ function update0681to07() {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               $data     = addslashes_deep($data);
+               $data     = Toolbox::addslashes_deep($data);
                $comments = "";
 
                if (!empty($data['address'])) {

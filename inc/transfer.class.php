@@ -1131,7 +1131,7 @@ class Transfer extends CommonDBTM {
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
                   $data = $DB->fetch_assoc($result);
-                  $data = addslashes_deep($data);
+                  $data = Toolbox::addslashes_deep($data);
 
                   $input['entities_id']  = $this->to;
                   $input['completename'] = $data['completename'];
@@ -1177,7 +1177,7 @@ class Transfer extends CommonDBTM {
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
                   $data  = $DB->fetch_array($result);
-                  $data  = addslashes_deep($data);
+                  $data  = Toolbox::addslashes_deep($data);
                   $locID = $this->transferDropdownLocation($data['locations_id']);
 
                   // Search if the locations_id already exists in the destination entity
@@ -2420,7 +2420,7 @@ class Transfer extends CommonDBTM {
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) != 0) {
                      while ($data = $DB->fetch_array($result)) {
-                        $data = addslashes_deep($data);
+                        $data = Toolbox::addslashes_deep($data);
                         $query = "INSERT
                                   INTO `glpi_logs`
                                   (`items_id`, `itemtype`, `itemtype_link`, `linked_action`,
@@ -2461,7 +2461,7 @@ class Transfer extends CommonDBTM {
                $cartitem = new CartridgeItem();
 
                while ($data = $DB->fetch_array($result)) {
-                  $data = addslashes_deep($data);
+                  $data = Toolbox::addslashes_deep($data);
                   $cartitem->addCompatibleType($newID, $data["printermodels_id"]);
                }
 
@@ -2908,7 +2908,7 @@ class Transfer extends CommonDBTM {
                      }
                   } else { // Copy -> copy netports
                      while ($data = $DB->fetch_array($result)) {
-                        $data = addslashes_deep($data);
+                        $data = Toolbox::addslashes_deep($data);
                         unset($data['id']);
                         $data['items_id']     = $newID;
                         $data['netpoints_id'] = $this->transferDropdownNetpoint($data['netpoints_id']);

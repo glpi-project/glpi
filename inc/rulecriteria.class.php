@@ -194,7 +194,7 @@ class RuleCriteria extends CommonDBChild {
 
       // Input are slashed protected, not output.
       if (is_array($field)) {
-         $field = stripslashes_deep($field);
+         $field = Toolbox::stripslashes_deep($field);
       } else {
          // Trim for remove keyboard errors
          $field = stripslashes(trim($field));
