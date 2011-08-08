@@ -141,8 +141,8 @@ function get_update_content($DB, $table, $from, $limit, $conv_utf8) {
                } else if ($val != "") {
                   if ($conv_utf8) {
                      // Gestion users AD qui sont deja en UTF8
-                     if ($table!="glpi_users" || !seems_utf8($val)) {
-                        $val = encodeInUtf8($val);
+                     if ($table!="glpi_users" || !Toolbox::seems_utf8($val)) {
+                        $val = Toolbox::encodeInUtf8($val);
                      }
                   }
                   $insert .= "'".addslashes($val)."',";

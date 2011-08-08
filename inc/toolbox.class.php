@@ -139,5 +139,182 @@ class Toolbox {
       return mb_strtoupper($str, "UTF-8");
    }
 
+
+   /**
+    * Is a string seems to be UTF-8 one ?
+    *
+    * @param $str string: string to analyze
+    *
+    * @return  boolean
+   **/
+   static function seems_utf8($str) {
+      return mb_check_encoding($str, "UTF-8");
+   }
+
+
+   /**
+    * Encode string to UTF-8
+    *
+    * @param $string string: string to convert
+    * @param $from_charset string: original charset (if 'auto' try to autodetect)
+    *
+    * @return utf8 string
+   **/
+   static function encodeInUtf8($string, $from_charset="ISO-8859-1") {
+
+      if (strcmp($from_charset,"auto")==0) {
+         $from_charset = mb_detect_encoding($string);
+      }
+      return mb_convert_encoding($string, "UTF-8", $from_charset);
+   }
+
+
+   /**
+    * Decode string from UTF-8 to specified charset
+    *
+    * @param $string string: string to convert
+    * @param $to_charset string: destination charset (default is ISO-8859-1)
+    *
+    * @return converted string
+   **/
+   static function decodeFromUtf8($string, $to_charset="ISO-8859-1") {
+      return mb_convert_encoding($string, $to_charset, "UTF-8");
+   }
+
+
+   /**
+    * Log in 'php-errors' all args
+   **/
+   static function logDebug() {
+      static $tps = 0;
+
+      $msg = "";
+      foreach (func_get_args() as $arg) {
+         if (is_array($arg) || is_object($arg)) {
+            $msg .= ' ' . print_r($arg, true);
+         } else if (is_null($arg)) {
+            $msg .= ' NULL';
+         } else if (is_bool($arg)) {
+            $msg .= ' '.($arg ? 'true' : 'false');
+         } else {
+            $msg .= ' ' . $arg;
+         }
+      }
+
+      if ($tps && function_exists('memory_get_usage')) {
+         $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
+                 number_format(memory_get_usage()/1024/1024,2).'Mio)';
+      }
+
+      $tps = microtime(true);
+      self ::logInFile('php-errors', $msg."\n",true);
+   }
+
+
+   /**
+    * Log a message in log file
+    *
+    * @param $name string: name of the log file
+    * @param $text string: text to log
+    * @param $force boolean: force log in file not seeing use_log_in_files config
+   **/
+   static function logInFile($name, $text, $force=false) {
+      global $CFG_GLPI;
+
+      $user = '';
+      if (function_exists('getLoginUserID')) {
+         $user = " [".getLoginUserID().'@'.php_uname('n')."]";
+      }
+
+      if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
+         error_log(convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
+                   3, GLPI_LOG_DIR."/".$name.".log");
+      }
+   }
+
+
+   /**
+    * Specific error handler in Normal mode
+    *
+    * @param $errno integer: level of the error raised.
+    * @param $errmsg string: error message.
+    * @param $filename string: filename that the error was raised in.
+    * @param $linenum integer: line number the error was raised at.
+    * @param $vars array: that points to the active symbol table at the point the error occurred.
+   **/
+   static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
+
+      // Date et heure de l'erreur
+      $errortype = array(E_ERROR           => 'Error',
+                         E_WARNING         => 'Warning',
+                         E_PARSE           => 'Parsing Error',
+                         E_NOTICE          => 'Notice',
+                         E_CORE_ERROR      => 'Core Error',
+                         E_CORE_WARNING    => 'Core Warning',
+                         E_COMPILE_ERROR   => 'Compile Error',
+                         E_COMPILE_WARNING => 'Compile Warning',
+                         E_USER_ERROR      => 'User Error',
+                         E_USER_WARNING    => 'User Warning',
+                         E_USER_NOTICE     => 'User Notice',
+                         E_STRICT          => 'Runtime Notice',
+                         // Need php 5.2.0
+                         4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
+                         // Need php 5.3.0
+                         8192 /* E_DEPRECATED */       => 'Deprecated function',
+                         16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+      // Les niveaux qui seront enregistrés
+      $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+
+      $err = $errortype[$errno] . "($errno): $errmsg\n";
+      if (in_array($errno, $user_errors)) {
+         $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
+      }
+
+      if (function_exists("debug_backtrace")) {
+         $err   .= "Backtrace :\n";
+         $traces = debug_backtrace();
+         foreach ($traces as $trace) {
+            if (isset($trace["file"]) && isset($trace["line"])) {
+               $err .= $trace["file"] . ":" . $trace["line"] . "\t\t"
+                       . (isset($trace["class"]) ? $trace["class"] : "")
+                       . (isset($trace["type"]) ? $trace["type"] : "")
+                       . (isset($trace["function"]) ? $trace["function"]."()" : ""). "\n";
+            }
+         }
+
+      } else {
+         $err .= "Script: $filename, Line: $linenum\n" ;
+      }
+
+      // sauvegarde de l'erreur, et mail si c'est critique
+      self::logInFile("php-errors", $err."\n");
+
+      return $errortype[$errno];
+   }
+
+
+   /**
+    * Specific error handler in Debug mode
+    *
+    * @param $errno integer: level of the error raised.
+    * @param $errmsg string: error message.
+    * @param $filename string: filename that the error was raised in.
+    * @param $linenum integer: line number the error was raised at.
+    * @param $vars array: that points to the active symbol table at the point the error occurred.
+   **/
+   static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars) {
+
+      // For file record
+      $type = self::userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars);
+
+      // Display
+      if (!isCommandLine()) {
+         echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP '.
+                $type.': </strong>';
+         echo $errmsg.' in '.$filename.' at line '.$linenum.'</div>';
+      } else {
+         echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
+      }
+   }
 }
 ?>
