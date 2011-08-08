@@ -690,25 +690,35 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+      // can exists for Template
+      if ($item->can($item->getField('id'),'r')) {
          switch ($item->getType()) {
             case 'Phone' :
             case 'Printer' :
             case 'Peripheral' :
             case 'Monitor' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['title'][27], self::countForItem($item));
+               if (haveRight('computer', 'r')) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     return self::createTabEntry($LANG['title'][27], self::countForItem($item));
+                  }
+                  return $LANG['title'][27];
                }
-               return $LANG['title'][27];
+               break;
 
             case 'Computer' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['title'][27], self::countForComputer($item));
+               if (haveRight('phone', 'r')
+                   || haveRight('printer', 'r')
+                   || haveRight('peripheral', 'r')
+                   || haveRight('monitor', 'r')) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     return self::createTabEntry($LANG['title'][27], self::countForComputer($item));
+                  }
+                  return $LANG['title'][27];
                }
-               return $LANG['title'][27];
+               break;
          }
       }
       return '';

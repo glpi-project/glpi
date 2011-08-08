@@ -86,10 +86,11 @@ class Infocom extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("infocom","r")) {
+      // Can exists on template
+      if (haveRight("infocom","r")) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {

@@ -235,10 +235,10 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID()) {
+      if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {

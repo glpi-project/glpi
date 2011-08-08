@@ -106,11 +106,10 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID()
-          && (haveRight('create_validation','1') || haveRight('validate_ticket','1'))) {
+      if (haveRight('create_validation','1') || haveRight('validate_ticket','1')) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";

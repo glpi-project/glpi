@@ -143,12 +143,12 @@ class User extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       switch ($item->getType()) {
          case 'Group' :
-            if ($item->getID() && haveRight("user","r")) {
+            if (haveRight("user","r")) {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['Menu'][14],
                                               countElementsInTable("glpi_groups_users",

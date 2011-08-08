@@ -70,22 +70,28 @@ class Contract_Supplier extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("contract","r")) {
+      if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Supplier' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
+               if (haveRight("contract","r")) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
+                  }
+                  return $LANG['Menu'][25];
                }
-               return $LANG['Menu'][25];
+               break;
 
             case 'Contract' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][23], self::countForContract($item));
+               if (haveRight("contact_enterprise","r")) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     return self::createTabEntry($LANG['Menu'][23], self::countForContract($item));
+                  }
+                  return $LANG['Menu'][23];
                }
-               return $LANG['Menu'][23];
+               break;
          }
       }
       return '';

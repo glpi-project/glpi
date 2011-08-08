@@ -94,10 +94,10 @@ class Group extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("group","r")) {
+      if (!$withtemplate && haveRight("group","r")) {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();

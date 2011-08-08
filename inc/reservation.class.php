@@ -52,10 +52,10 @@ class Reservation extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("reservation_central","r")) {
+      if (!$withtemplate && haveRight("reservation_central","r")) {
          return $LANG['Menu'][17];
       }
       return '';

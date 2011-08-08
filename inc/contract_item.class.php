@@ -127,10 +127,11 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG, $CFG_GLPI;
 
-      if ($item->getID() && haveRight("contract","r")) {
+      // Can exists on template
+      if (haveRight("contract","r")) {
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {

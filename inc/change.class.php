@@ -161,10 +161,10 @@ class Change extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("show_all_change","1")) {
+      if (haveRight("show_all_change","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = 0;
             switch ($item->getType()) {

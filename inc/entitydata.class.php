@@ -1016,10 +1016,10 @@ class EntityData extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$item->isNewID($item->getID())) {
+      if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Entity' :
                $ong = array();
