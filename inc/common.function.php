@@ -378,30 +378,6 @@ function decodeFromUtf8($string, $to_charset="ISO-8859-1") {
 }
 
 
-/**
- * strtolower function for utf8 string
- *
- * @param $str string: string
- *
- * @return lower case string
-**/
-function utf8_strtolower($str) {
-   return mb_strtolower($str, "UTF-8");
-}
-
-
-/**
- * strtoupper function for utf8 string
- *
- * @param $str string: string
- *
- * @return upper case string
-**/
-function utf8_strtoupper($str) {
-   return mb_strtoupper($str, "UTF-8");
-}
-
-
 /** Returns the utf string corresponding to the unicode value
  * (from php.net, courtesy - romans@void.lv)
  *
@@ -1214,7 +1190,7 @@ function sendFile($file, $filename) {
 function return_bytes_from_ini_vars($val) {
 
    $val  = trim($val);
-   $last = utf8_strtolower($val{strlen($val)-1});
+   $last = Toolbox::strtolower($val{strlen($val)-1});
 
    switch($last) {
       // Le modifieur 'G' est disponible depuis PHP 5.1.0

@@ -731,7 +731,7 @@ class MailCollector  extends CommonDBTM {
 
       $r = mb_list_encodings();
       for ($n=sizeOf($r) ; $n--; ) {
-         $r[$n] = utf8_strtolower($r[$n]);
+         $r[$n] = Toolbox::strtolower($r[$n]);
       }
       return $r;
    }
@@ -755,15 +755,15 @@ class MailCollector  extends CommonDBTM {
 
       if (function_exists('mb_list_encodings') && function_exists('mb_convert_encoding')) {
          $encodings       = $this->mb_list_lowerencodings();
-         $inputCharset    = utf8_strtolower($inputCharset);
-         $targetCharset   = utf8_strtolower($targetCharset);
-         $fallbackCharset = utf8_strtolower($fallbackCharset);
+         $inputCharset    = Toolbox::strtolower($inputCharset);
+         $targetCharset   = Toolbox::strtolower($targetCharset);
+         $fallbackCharset = Toolbox::strtolower($fallbackCharset);
          $decodedStr      = '';
          $mimeStrs        = imap_mime_header_decode($mimeStr);
 
          for ($n=sizeOf($mimeStrs),$i=0 ; $i<$n ; $i++) {
             $mimeStr = $mimeStrs[$i];
-            $mimeStr->charset = utf8_strtolower($mimeStr->charset);
+            $mimeStr->charset = Toolbox::strtolower($mimeStr->charset);
 
             if (($mimeStr->charset == 'default' && $inputCharset == $targetCharset)
                 || $mimeStr->charset == $targetCharset) {
@@ -822,7 +822,7 @@ class MailCollector  extends CommonDBTM {
                 || preg_match("/^Received/i", $line)) {
                // separate name and value
                if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
-                  $key = utf8_strtolower($arg[1]);
+                  $key = Toolbox::strtolower($arg[1]);
 
                   if (!isset($head[$key])) {
                      $head[$key] = '';
@@ -860,26 +860,26 @@ class MailCollector  extends CommonDBTM {
 
       $mail_details=array();
 
-      if (utf8_strtolower($sender->mailbox)!='mailer-daemon'
-          && utf8_strtolower($sender->mailbox)!='postmaster') {
+      if (Toolbox::strtolower($sender->mailbox)!='mailer-daemon'
+          && Toolbox::strtolower($sender->mailbox)!='postmaster') {
 
          // Construct to and cc arrays
          $tos = array();
          $ccs = array();
          if (count($mail_header->to)) {
             foreach ($mail_header->to as $data) {
-               $tos[] = utf8_strtolower($data->mailbox).'@'.$data->host;
+               $tos[] = Toolbox::strtolower($data->mailbox).'@'.$data->host;
             }
          }
          if (isset($mail_header->cc) && count($mail_header->cc)) {
             foreach ($mail_header->cc as $data) {
-               $ccs[] = utf8_strtolower($data->mailbox).'@'.$data->host;
+               $ccs[] = Toolbox::strtolower($data->mailbox).'@'.$data->host;
             }
          }
 
-         $mail_details = array('from'       => utf8_strtolower($sender->mailbox).'@'.$sender->host,
+         $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         => utf8_strtolower($to->mailbox).'@'.$to->host,
+                               'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
                                'ccs'        => $ccs);
@@ -1082,8 +1082,8 @@ class MailCollector  extends CommonDBTM {
             // if there are any dparameters present in this part
             if (count($structure->dparameters)>0) {
                foreach ($structure->dparameters as $dparam) {
-                  if ((utf8_strtoupper($dparam->attribute)=='NAME')
-                      || (utf8_strtoupper($dparam->attribute)=='FILENAME')) {
+                  if ((Toolbox::strtoupper($dparam->attribute)=='NAME')
+                      || (Toolbox::strtoupper($dparam->attribute)=='FILENAME')) {
 
                      $filename = $dparam->value;
                   }
@@ -1096,8 +1096,8 @@ class MailCollector  extends CommonDBTM {
             // if there are any parameters present in this part
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
-                  if ((utf8_strtoupper($param->attribute)=='NAME')
-                      || (utf8_strtoupper($param->attribute)=='FILENAME')) {
+                  if ((Toolbox::strtoupper($param->attribute)=='NAME')
+                      || (Toolbox::strtoupper($param->attribute)=='FILENAME')) {
 
                      $filename = $param->value;
                   }

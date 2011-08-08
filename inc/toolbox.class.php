@@ -115,5 +115,29 @@ class Toolbox {
       return mb_substr($str, $start, $length, "UTF-8");
    }
 
+
+   /**
+    * strtolower function for utf8 string
+    *
+    * @param $str string: string
+    *
+    * @return lower case string
+   **/
+   static function strtolower($str) {
+      return mb_strtolower($str, "UTF-8");
+   }
+
+
+   /**
+    * strtoupper function for utf8 string
+    *
+    * @param $str string: string
+    *
+    * @return upper case string
+   **/
+   static function strtoupper($str) {
+      return mb_strtoupper($str, "UTF-8");
+   }
+
 }
 ?>

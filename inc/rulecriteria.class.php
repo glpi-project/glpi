@@ -204,8 +204,8 @@ class RuleCriteria extends CommonDBChild {
 
       if ($condition != Rule::REGEX_MATCH && $condition != Rule::REGEX_NOT_MATCH) {
          //Perform comparison with fields in lower case
-         $field   = utf8_strtolower($field);
-         $pattern = utf8_strtolower($pattern);
+         $field   = Toolbox::strtolower($field);
+         $pattern = Toolbox::strtolower($pattern);
       }
 
       switch ($condition) {

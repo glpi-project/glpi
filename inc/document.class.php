@@ -1182,7 +1182,7 @@ class Document extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            return utf8_strtoupper($ext);
+            return Toolbox::strtoupper($ext);
          }
       }
       return "";
