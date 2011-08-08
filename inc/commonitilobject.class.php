@@ -2130,7 +2130,7 @@ abstract class CommonITILObject extends CommonDBTM {
                 $this->getField('solution')."</textarea></div>";
 
       } else {
-         echo unclean_cross_side_scripting_deep($this->getField('solution'));
+         echo Toolbox::unclean_cross_side_scripting_deep($this->getField('solution'));
       }
       echo "</td></tr>";
 

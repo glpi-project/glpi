@@ -86,14 +86,14 @@ if (isset($_POST)) {
    }
 
    $_POST = array_map(array('Toolbox','addslashes_deep'), $_POST);
-   $_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+   $_POST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_POST);
 }
 if (isset($_GET)) {
    if (get_magic_quotes_gpc()) {
       $_GET = array_map(array('Toolbox', 'stripslashes_deep'), $_GET);
    }
    $_GET = array_map(array('Toolbox','addslashes_deep'), $_GET);
-   $_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+   $_GET = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_GET);
 }
 
 // Mark if Header is loaded or not :

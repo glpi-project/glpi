@@ -684,7 +684,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
-      $tkt['content']         = clean_cross_side_scripting_deep(Html::clean($tkt['content']));
+      $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
 
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
@@ -1120,7 +1120,7 @@ class MailCollector  extends CommonDBTM {
 
          if ($structure->bytes > $maxsize) {
             $this->addtobody .= "<br>".$LANG['mailgate'][6]." (" .
-                                getSize($structure->bytes) . "): ".$filename;
+                                Toolbox::getSize($structure->bytes) . "): ".$filename;
             return false;
          }
 

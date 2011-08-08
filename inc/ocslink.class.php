@@ -78,7 +78,7 @@ class Ocslink extends CommonDBTM {
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
             $data = $DB->fetch_assoc($result);
-            $data = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
 
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe'>";

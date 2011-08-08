@@ -708,7 +708,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.solution.description##"]
-                              = unclean_cross_side_scripting_deep($this->obj->getField('solution'));
+                     = Toolbox::unclean_cross_side_scripting_deep($this->obj->getField('solution'));
 
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {

@@ -1227,7 +1227,7 @@ class CronTask extends CommonDBTM{
    **/
    static function cronCheckUpdate($task) {
 
-      $result = checkNewVersionAvailable(1);
+      $result = Toolbox::checkNewVersionAvailable(1);
       $task->log($result);
 
       return 1;

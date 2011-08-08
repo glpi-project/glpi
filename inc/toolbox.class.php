@@ -228,6 +228,51 @@ class Toolbox {
    }
 
 
+   /**
+    * Prevent from XSS
+    * Clean code
+    *
+    * @param $value array or string: item to prevent (array or string)
+    *
+    * @return clean item
+    *
+    * @see unclean_cross_side_scripting_deep*
+   **/
+   static function clean_cross_side_scripting_deep($value) {
+
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
+
+      $value = is_array($value) ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'),
+                                            $value)
+                                : (is_null($value) ? NULL : str_replace($in,$out,$value));
+
+      return $value;
+   }
+
+
+   /**
+    *  Invert fonction from clean_cross_side_scripting_deep
+    *
+    * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
+    *
+    * @return unclean item
+    *
+    * @see clean_cross_side_scripting_deep
+   **/
+   static function unclean_cross_side_scripting_deep($value) {
+
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
+
+      $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'),
+                                            $value)
+                                : (is_null($value) ? NULL : str_replace($out,$in,$value));
+
+      return $value;
+   }
+
+
    /** Returns the utf string corresponding to the unicode value
     * (from php.net, courtesy - romans@void.lv)
     *
@@ -605,6 +650,398 @@ class Toolbox {
       return self::convDate($time).' '. substr($time, 11, 5);
    }
 
+
+   /**
+    * Compute PHP memory_limit
+    *
+    * @return memory limit
+   **/
+   static function getMemoryLimit () {
+
+      $mem = ini_get("memory_limit");
+      preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
+      $mem = "";
+
+      // no K M or G
+      if (isset($matches[1])) {
+         $mem = $matches[1];
+         if (isset($matches[2])) {
+            switch ($matches[2]) {
+               case "G" :
+                  $mem *= 1024;
+                  // nobreak;
+
+               case "M" :
+                  $mem *= 1024;
+                  // nobreak;
+
+               case "K" :
+                  $mem *= 1024;
+                  // nobreak;
+            }
+         }
+      }
+
+      return $mem;
+   }
+
+
+   /**
+    * Common Checks needed to use GLPI
+    *
+    * @return 2 : creation error 1 : delete error 0: OK
+   **/
+   static function commonCheckForUseGLPI() {
+      global $LANG;
+
+      $error = 0;
+
+      // Title
+      echo "<tr><th>".$LANG['install'][6]."</th><th >".$LANG['install'][7]."</th></tr>";
+
+      // Parser test
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][8]."</td>";
+
+      // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
+      if (substr(phpversion(),0,1) == "5") {
+         // PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
+         if (ini_get("zend.ze1_compatibility_mode") == 1) {
+            $error = 2;
+            echo "<td class='red'>
+                  <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][10]."</td></tr>";
+         } else {
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][11]."\"
+                       title=\"".$LANG['install'][11]."\"></td></tr>";
+         }
+
+      } else { // PHP <5
+         $error = 2;
+         echo "<td class='red'>
+               <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][9]."</td></tr>";
+      }
+
+      // Check for mysql extension ni php
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][71]."</td>";
+      if (!function_exists("mysql_query")) {
+         echo "<td class='red'>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][72]."</td></tr>";
+         $error = 2;
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][73].
+                    "\" title=\"".$LANG['install'][73]."\"></td></tr>";
+      }
+
+      // session test
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][12]."</td>";
+
+      // check whether session are enabled at all!!
+      if (!extension_loaded('session')) {
+         $error = 2;
+         echo "<td class='red b'>".$LANG['install'][13]."</td></tr>";
+
+      } else if ((isset($_SESSION["Test_session_GLPI"]) && $_SESSION["Test_session_GLPI"] == 1) // From install
+                 || isset($_SESSION["glpi_currenttime"])) { // From Update
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][14].
+                    "\" title=\"".$LANG['install'][14]."\"></td></tr>";
+
+      } else if ($error != 2) {
+         echo "<td class='red'>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][15]."</td></tr>";
+         $error = 1;
+      }
+
+      //Test for session auto_start
+      if (ini_get('session.auto_start')==1) {
+         echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][68]."</td>";
+         echo "<td class='red'>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][69]."</td></tr>";
+         $error = 2;
+      }
+
+      //Test for option session use trans_id loaded or not.
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][74]."</td>";
+
+      if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
+         echo "<td class='red'>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][75]."</td></tr>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][76].
+                    "\" title=\"".$LANG['install'][76]."\"></td></tr>";
+      }
+
+      //Test for sybase extension loaded or not.
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][65]."</td>";
+
+      if (ini_get('magic_quotes_sybase')) {
+         echo "<td class='red'>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][66]."</td></tr>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][67].
+                    "\" title=\"".$LANG['install'][67]."\"></td></tr>";
+      }
+
+      //Test for json_encode function.
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][102]."</td>";
+
+      if (!function_exists('json_encode') || !function_exists('json_decode')) {
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][103]."></td></tr>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
+                    "\" title=\"".$LANG['install'][85]."\"></td></tr>";
+      }
+
+      //Test for mbstring extension.
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][104]."</td>";
+
+      if (!extension_loaded('mbstring')) {
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][105]."></td></tr>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
+                    "\" title=\"".$LANG['install'][85]."\"></td></tr>";
+      }
+
+      // memory test
+      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][86]."</td>";
+
+      $mem = self::getMemoryLimit();
+
+      if ( $mem == "" ) { // memory_limit non compilé -> no memory limit
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][95]." - ".
+                    $LANG['install'][89]."\" title=\"".$LANG['install'][95]." - ".
+                    $LANG['install'][89]."\"></td></tr>";
+
+      } else if ( $mem == "-1" ) { // memory_limit compilé mais illimité
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][96]." - ".
+                    $LANG['install'][89]."\" title=\"".$LANG['install'][96]." - ".
+                    $LANG['install'][89]."\"></td></tr>";
+
+      } else if ($mem<64*1024*1024) { // memoire insuffisante
+         $showmem = $mem/1048576;
+         echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><b>".
+                                $LANG['install'][87]." $showmem Mo</b><br>".$LANG['install'][88]."<br>".
+                                $LANG['install'][90]."</td></tr>";
+         $error = 2;
+
+      } else { // on a sufisament de mémoire on passe à la suite
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][91]." - ".
+                    $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
+                    $LANG['install'][89]."\"></td></tr>";
+      }
+
+      $suberr = checkWriteAccessToDirs();
+
+      return ($suberr ? $suberr : $error);
+   }
+
+
+   /**
+    * Get the filesize of a complete directory (from php.net)
+    *
+    * @param $path string: directory or file to get size
+    *
+    * @return size of the $path
+   **/
+   static function filesizeDirectory($path) {
+
+      if (!is_dir($path)) {
+         return filesize($path);
+      }
+
+      if ($handle = opendir($path)) {
+         $size = 0;
+
+         while (false !== ($file = readdir($handle))) {
+            if ($file!='.' && $file!='..') {
+               $size += filesize($path.'/'.$file);
+               $size += self::filesizeDirectory($path.'/'.$file);
+            }
+         }
+
+         closedir($handle);
+         return $size;
+      }
+   }
+
+
+   /** Format a size passing a size in octet
+    *
+    * @param   $size integer: Size in octet
+    *
+    * @return  formatted size
+   **/
+   static function getSize($size) {
+
+      $bytes = array('o', 'Kio', 'Mio', 'Gio', 'Tio');
+      foreach ($bytes as $val) {
+         if ($size > 1024) {
+            $size = $size / 1024;
+         } else {
+            break;
+         }
+      }
+      return round($size, 2)." ".$val;
+   }
+
+
+   /**
+    * Delete a directory and file contains in it
+    *
+    * @param $dir string: directory to delete
+   **/
+   static function deleteDir($dir) {
+
+      if (file_exists($dir)) {
+         chmod($dir, 0777);
+
+         if (is_dir($dir)) {
+            $id_dir = opendir($dir);
+            while (($element = readdir($id_dir)) !== false) {
+               if ($element != "." && $element != "..") {
+
+                  if (is_dir($dir."/".$element)) {
+                     self::deleteDir($dir."/".$element);
+                  } else {
+                     unlink($dir."/".$element);
+                  }
+
+               }
+            }
+            closedir($id_dir);
+            rmdir($dir);
+
+         } else { // Delete file
+            unlink($dir);
+         }
+      }
+   }
+
+
+   /**
+    * Check if new version is available
+    *
+    * @param $auto boolean: check done autically ? (if not display result)
+    * @param $messageafterredirect boolean: use message after redirect instead of display
+    *
+    * @return string explaining the result
+   **/
+   function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
+      global $LANG, $CFG_GLPI;
+
+      if (!$auto && !haveRight("check_update","r")) {
+         return false;
+      }
+
+      if (!$auto && !$messageafterredirect) {
+         echo "<br>";
+      }
+
+      $error = "";
+      $latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
+
+      if (strlen(trim($latest_version))==0) {
+
+         if (!$auto) {
+
+            if ($messageafterredirect) {
+               addMessageAfterRedirect($error, true, ERROR);
+            } else {
+               echo "<div class='center'>$error</div>";
+            }
+
+         } else {
+            return $error;
+         }
+
+      } else {
+         $splitted = explode(".", trim($CFG_GLPI["version"]));
+
+         if ($splitted[0]<10) {
+            $splitted[0] .= "0";
+         }
+
+         if ($splitted[1]<10) {
+            $splitted[1] .= "0";
+         }
+
+         $cur_version = $splitted[0]*10000+$splitted[1]*100;
+
+         if (isset($splitted[2])) {
+            if ($splitted[2]<10) {
+               $splitted[2] .= "0";
+            }
+            $cur_version += $splitted[2];
+         }
+
+         $splitted = explode(".", trim($latest_version));
+
+         if ($splitted[0]<10) {
+            $splitted[0] .= "0";
+         }
+
+         if ($splitted[1]<10) {
+            $splitted[1] .= "0";
+         }
+
+         $lat_version = $splitted[0]*10000+$splitted[1]*100;
+
+         if (isset($splitted[2])) {
+            if ($splitted[2]<10) {
+               $splitted[2] .= "0";
+            }
+            $lat_version += $splitted[2];
+         }
+
+         if ($cur_version < $lat_version) {
+            $config_object = new Config();
+            $input["id"]   = 1;
+            $input["founded_new_version"] = $latest_version;
+            $config_object->update($input);
+
+            if (!$auto) {
+               if ($messageafterredirect) {
+                  addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.
+                                          $LANG['setup'][302]);
+
+               } else {
+                  echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
+                  echo "<div class='center'>".$LANG['setup'][302]."</div>";
+               }
+
+            } else {
+               if ($messageafterredirect) {
+                  addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
+               } else {
+                  return $LANG['setup'][301]." ".$latest_version;
+               }
+            }
+
+         } else {
+            if (!$auto) {
+               if ($messageafterredirect) {
+                  addMessageAfterRedirect($LANG['setup'][303]);
+               } else {
+                  echo "<div class='center'>".$LANG['setup'][303]."</div>";
+               }
+
+            } else {
+               if ($messageafterredirect) {
+                  addMessageAfterRedirect($LANG['setup'][303]);
+               } else {
+                  return $LANG['setup'][303];
+               }
+            }
+         }
+      }
+      return 1;
+   }
 
 
 }

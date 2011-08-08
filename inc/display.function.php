@@ -2053,7 +2053,7 @@ function commonFooter($keepDB=false) {
    echo $TIMER_DEBUG->getTime()." s - ";
 
    if (function_exists("memory_get_usage")) {
-      echo getSize(memory_get_usage());
+      echo Toolbox::getSize(memory_get_usage());
    }
    echo "</span></td>";
 

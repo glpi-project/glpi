@@ -1524,7 +1524,7 @@ class OcsServer extends CommonDBTM {
 
          if ($result && $DBocs->numrows($result) == 1) {
             $line = $DBocs->fetch_array($result);
-            $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+            $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
 
             $locations_id = (isset($data['locations_id'])?$data['locations_id']:0);
             $input        = self::getComputerInformations($line, self::getConfig($ocsservers_id),
@@ -1850,7 +1850,7 @@ class OcsServer extends CommonDBTM {
 
       if ($DBocs->numrows($result) == 1) {
          $line = $DBocs->fetch_assoc($result);
-         $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+         $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
          $compupdate = array();
 
          if ($options['cfg_ocs']["import_os_serial"]
@@ -1997,7 +1997,7 @@ class OcsServer extends CommonDBTM {
 
       if ($DBocs->numrows($result) == 1) {
          $line = $DBocs->fetch_assoc($result);
-         $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+         $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
          $compupdate = array ();
          if ($cfg_ocs["import_os_serial"] && !in_array("os_license_number", $computer_updates)) {
             if (!empty ($line["WINPRODKEY"])) {
@@ -2119,7 +2119,7 @@ class OcsServer extends CommonDBTM {
       $compupdate = array();
       if ($DBocs->numrows($result) == 1) {
          $line = $DBocs->fetch_assoc($result);
-         $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+         $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
          $compudate = array();
 
          if ($cfg_ocs["import_general_serial"] && !in_array("serial", $computer_updates)) {
@@ -2216,7 +2216,7 @@ class OcsServer extends CommonDBTM {
       $hardware = array();
       if ($DBocs->numrows($result_ocs) > 0) {
          while ($data = $DBocs->fetch_array($result_ocs)) {
-            $data                  = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
             $hardware[$data["ID"]] = $data["DEVICEID"];
          }
       }
@@ -2229,7 +2229,7 @@ class OcsServer extends CommonDBTM {
       $ocs_missing = array();
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
-            $data = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
             if (!isset($hardware[$data["ocsid"]])) {
                $ocs_missing[$data["ocsid"]] = $data["ocsid"];
             }
@@ -2262,7 +2262,7 @@ class OcsServer extends CommonDBTM {
       $already_linked = array();
       if ($DB->numrows($result_glpi) > 0) {
          while ($data = $DB->fetch_assoc($result_glpi)) {
-            $data = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
 
             $already_linked[$data["ocsid"]]["entities_id"]  = $data["entities_id"];
             if (Toolbox::strlen($data["ocs_deviceid"])>20) { // Strip datetime tag
@@ -2453,7 +2453,7 @@ class OcsServer extends CommonDBTM {
          $already_linked = array();
          if ($DB->numrows($result_glpi) > 0) {
             while ($data = $DB->fetch_assoc($result_glpi)) {
-               $data = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+               $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
                if (isset($hardware[$data["ocsid"]])) {
                   $already_linked[$data["ocsid"]]["date"]            = $data["last_update"];
                   $already_linked[$data["ocsid"]]["name"]            = $data["name"];
@@ -2675,7 +2675,7 @@ class OcsServer extends CommonDBTM {
          $hardware = array();
 
          while ($data = $DBocs->fetch_array($result_ocs)) {
-            $data = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
             $hardware[$data["ID"]]["date"]   = $data["LASTDATE"];
             $hardware[$data["ID"]]["name"]   = $data["NAME"];
             $hardware[$data["ID"]]["TAG"]    = $data["TAG"];
@@ -3377,7 +3377,7 @@ class OcsServer extends CommonDBTM {
                      }
                   }
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if (!empty($line2["CAPACITY"]) && $line2["CAPACITY"]!="No") {
                         $ram["designation"] = "";
                         if ($line2["TYPE"]!="Empty Slot" && $line2["TYPE"]!="Unknown") {
@@ -3438,7 +3438,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if (!empty($line2["DISKSIZE"])
                          && preg_match("/disk|spare\sdrive/i", $line2["TYPE"])) {
 
@@ -3495,7 +3495,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if (empty($line2["DISKSIZE"]) || !preg_match("/disk/i", $line2["TYPE"])) {
                         if ($line2["NAME"]) {
                            $stor["designation"] = $line2["NAME"];
@@ -3543,7 +3543,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      $mdm["designation"] = $line2["NAME"];
                      if (!in_array(stripslashes($prevalue.$mdm["designation"]), $import_device)) {
                         if (!empty($line2["DESCRIPTION"])) {
@@ -3578,7 +3578,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      $port["designation"] = "";
                      if ($line2["TYPE"] != "Other") {
                         $port["designation"] .= $line2["TYPE"];
@@ -3628,7 +3628,7 @@ class OcsServer extends CommonDBTM {
                $result = $DBocs->query($query);
                if ($DBocs->numrows($result) == 1) {
                   $line = $DBocs->fetch_array($result);
-                  $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+                  $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
                   for ($i=0 ; $i<$line["PROCESSORN"] ; $i++) {
                      $processor = array();
                      $processor["designation"] = $line["PROCESSORT"];
@@ -3688,7 +3688,7 @@ class OcsServer extends CommonDBTM {
                if ($DBocs->numrows($result2) > 0) {
                   $mac_already_imported = array();
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
                         $network["designation"] = $line2["DESCRIPTION"];
                         if (!in_array($line2["MACADDR"],$mac_already_imported)) {
@@ -3836,7 +3836,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      $video["designation"] = $line2["NAME"];
                      if (!is_numeric($line2["MEMORY"])) {
                         $line2["MEMORY"] = 0;
@@ -3883,7 +3883,7 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
-                     $line2 = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
+                     $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($line2["NAME"])) {
                      $line2["NAME"] = Toolbox::encodeInUtf8($line2["NAME"]);
                      }
@@ -4520,7 +4520,7 @@ class OcsServer extends CommonDBTM {
       $virtualmachine = new ComputerVirtualMachine();
       if ($DBocs->numrows($result) > 0) {
          while ($line = $DBocs->fetch_array($result)) {
-            $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+            $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
             $vm['name'] = $line['NAME'];
             $vm['vcpu'] = $line['VCPU'];
             $vm['ram']  = $line['MEMORY'];
@@ -4583,7 +4583,7 @@ class OcsServer extends CommonDBTM {
       $d = new ComputerDisk();
       if ($DBocs->numrows($result) > 0) {
          while ($line = $DBocs->fetch_array($result)) {
-            $line = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+            $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
 
             // Only not empty disk
             if ($line['TOTAL']>0) {
@@ -4792,7 +4792,7 @@ class OcsServer extends CommonDBTM {
 
          if ($DBocs->numrows($result2) > 0) {
             while ($data2 = $DBocs->fetch_array($result2)) {
-               $data2    = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data2));
+               $data2    = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data2));
                $initname = $data2["INITNAME"];
 
                // Hack for OCS encoding problems
@@ -5011,7 +5011,7 @@ class OcsServer extends CommonDBTM {
 
             //update data
             while ($data = $DBocs->fetch_array($result)) {
-               $data                  = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+               $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
                $input                 = array();
                $input["computers_id"] = $computers_id;
                $input["hive"]         = $data["regtree"];
@@ -5175,7 +5175,7 @@ class OcsServer extends CommonDBTM {
                      if (empty($line["SERIAL"])) {
                         $checkserial = false;
                      }
-                     $lines[] = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+                     $lines[] = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
                   }
                }
                if (count($lines)>0
@@ -5353,7 +5353,7 @@ class OcsServer extends CommonDBTM {
 
                if ($DBocs->numrows($result) > 0) {
                   while ($line = $DBocs->fetch_array($result)) {
-                     $line  = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+                     $line  = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
                      $print = array();
                      // TO TEST : PARSE NAME to have real name.
                      if (!Toolbox::seems_utf8($line["NAME"])){
@@ -5502,7 +5502,7 @@ class OcsServer extends CommonDBTM {
 
                if ($DBocs->numrows($result) > 0) {
                   while ($line = $DBocs->fetch_array($result)) {
-                     $line   = clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+                     $line   = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
                      $periph = array();
 
                      if (!Toolbox::seems_utf8($line["CAPTION"])){

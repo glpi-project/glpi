@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET['action']) && $_GET['action'] == 'check_version') {
    checkRight("check_update", "r");
-   checkNewVersionAvailable(0, true);
+   Toolbox::checkNewVersionAvailable(0, true);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

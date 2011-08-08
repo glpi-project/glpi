@@ -163,7 +163,7 @@ function step1($update) {
    echo "<h3>".$LANG['install'][5]."</h3>";
    echo "<table class='tab_check'>";
 
-   $error = commonCheckForUseGLPI();
+   $error = Toolbox::commonCheckForUseGLPI();
 
    echo "</table>";
    switch ($error) {

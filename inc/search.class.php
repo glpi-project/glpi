@@ -4127,7 +4127,7 @@ class Search {
                }
                $text = str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
                if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                  $text = Html::clean(unclean_cross_side_scripting_deep($text));
+                  $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
                }
                return $text;
 
