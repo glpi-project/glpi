@@ -161,9 +161,9 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             }
 
             //Replay software dictionnary rules
-            $input    = addslashes_deep($input);
+            $input    = Toolbox::addslashes_deep($input);
             $res_rule = $this->processAllRules($input, array(), array());
-            $res_rule = addslashes_deep($res_rule);
+            $res_rule = Toolbox::addslashes_deep($res_rule);
 
             //TODO Walid : verify my correction for parentheses
             //If the software's name or version has changed
@@ -277,11 +277,11 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
-      $input                 = addslashes_deep($input);
+      $input                 = Toolbox::addslashes_deep($input);
 
       if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
-         $res_rule = addslashes_deep($res_rule);
+         $res_rule = Toolbox::addslashes_deep($res_rule);
       }
       $soft = new Software();
 

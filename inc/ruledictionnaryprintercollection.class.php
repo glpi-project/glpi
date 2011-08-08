@@ -124,9 +124,9 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          }
 
          //Replay printer dictionnary rules
-         $input    = addslashes_deep($input);
+         $input    = Toolbox::addslashes_deep($input);
          $res_rule = $this->processAllRules($input, array(), array());
-         $res_rule = addslashes_deep($res_rule);
+         $res_rule = Toolbox::addslashes_deep($res_rule);
 
          foreach (array('manufacturer', 'is_global', 'name') as $attr) {
             if (isset($res_rule[$attr]) && $res_rule[$attr] == '') {
@@ -259,11 +259,11 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
       $input["name"]         = $p['name'];
       $input["manufacturer"] = $p['manufacturer'];
-      $input                 = addslashes_deep($input);
+      $input                 = Toolbox::addslashes_deep($input);
 
       if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
-         $res_rule = addslashes_deep($res_rule);
+         $res_rule = Toolbox::addslashes_deep($res_rule);
       }
 
       $printer = new Printer();

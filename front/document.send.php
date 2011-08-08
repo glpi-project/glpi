@@ -72,7 +72,7 @@ if (isset($_GET['docid'])) { // docid for document
       }
 
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
-         sendFile(GLPI_DOC_DIR."/".$_GET["file"],$splitter[1]);
+         Toolbox::sendFile(GLPI_DOC_DIR."/".$_GET["file"], $splitter[1]);
       } else {
          displayErrorAndDie($LANG['document'][45],true);
       }

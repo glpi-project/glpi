@@ -150,7 +150,8 @@ class AuthLDAP extends CommonDBTM {
          if (empty($input["rootdn_passwd"])) {
             unset($input["rootdn_passwd"]);
          } else {
-            $input["rootdn_passwd"] = encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
+            $input["rootdn_passwd"] = Toolbox::encrypt(stripslashes($input["rootdn_passwd"]),
+                                                       GLPIKEY);
          }
       }
 
@@ -1505,7 +1506,8 @@ class AuthLDAP extends CommonDBTM {
                         $query = "SELECT `ldap_value`
                                   FROM `glpi_groups`
                                   WHERE `ldap_group_dn`
-                                             IN ('".implode("','",addslashes_deep($ou))."')";
+                                             IN ('".implode("', '",
+                                                 Toolbox::addslashes_deep($ou))."')";
 
                         foreach ($DB->request($query) as $group) {
                            $groups[$group['ldap_value']] = array("cn" => $group['ldap_value'],
@@ -1593,7 +1595,7 @@ class AuthLDAP extends CommonDBTM {
       global $DB, $LANG;
       static $conn_cache = array();
 
-      $params      = stripslashes_deep($params);
+      $params      = Toolbox::stripslashes_deep($params);
       $config_ldap = new AuthLDAP();
       $res         = $config_ldap->getFromDB($ldap_server);
       $ldap_users  = array();
@@ -2477,7 +2479,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
-         $input["rootdn_passwd"] = encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
+         $input["rootdn_passwd"] = Toolbox::encrypt(stripslashes($input["rootdn_passwd"]), GLPIKEY);
       }
 
       return $input;

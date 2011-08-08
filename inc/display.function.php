@@ -3659,7 +3659,7 @@ function addConfirmationOnAction($string, $additionalactions='') {
    if (!is_array($string)) {
       $string = array($string);
    }
-   $string = addslashes_deep($string);
+   $string = Toolbox::addslashes_deep($string);
 
    if (empty($additionalactions)) {
       $out = " onclick=\"return window.confirm('";

@@ -994,7 +994,8 @@ class User extends CommonDBTM {
                   $query = "SELECT `id`
                             FROM `glpi_groups`
                             WHERE `ldap_group_dn`
-                                       IN ('".implode("','",addslashes_deep($v[$i]['ou']))."')";
+                                       IN ('".implode("', '",
+                                                      Toolbox::addslashes_deep($v[$i]['ou']))."')";
 
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][] = $group['id'];
@@ -1016,7 +1017,8 @@ class User extends CommonDBTM {
                             FROM `glpi_groups`
                             WHERE `ldap_field` = '$field'
                                   AND `ldap_value`
-                                       IN ('".implode("','",addslashes_deep($v[$i][$field]))."')";
+                                       IN ('".implode("', '",
+                                                      Toolbox::addslashes_deep($v[$i][$field]))."')";
 
                   foreach ($DB->request($query) as $group) {
                      $this->fields["_groups"][]=$group['id'];
@@ -1069,7 +1071,7 @@ class User extends CommonDBTM {
                       FROM `glpi_groups`
                       WHERE `ldap_group_dn`
                         IN ('".implode("', '",
-                                       addslashes_deep($result[$ldap_method["group_member_field"]]))."')";
+                                       Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]]))."')";
 
             foreach ($DB->request($query) as $group) {
                $this->fields["_groups"][]=$group['id'];

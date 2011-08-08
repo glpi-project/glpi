@@ -69,7 +69,7 @@ function update042to05() {
       $result = $DB->query($query);
 
       while ($line = $DB->fetch_array($result)) {
-         $line = addslashes_deep($line);
+         $line = Toolbox::addslashes_deep($line);
          $query2 = "INSERT INTO `glpi_computers`
                         (`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`,
                          `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`,
