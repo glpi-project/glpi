@@ -356,7 +356,8 @@ class SoftwareLicense extends CommonDBTM {
 
          foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
-            $message .= $LANG['mailing'][51]." ".$name.": ".convDate($license["expire"])."<br>\n";
+            $message .= $LANG['mailing'][51]." ".$name.": ".Toolbox::convDate($license["expire"]).
+                        "<br>\n";
             $items[$license['id']] = $license;
          }
 
@@ -621,7 +622,7 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
-               echo "<td class='center'>".convDate($data['expire'])."</td>";
+               echo "<td class='center'>".Toolbox::convDate($data['expire'])."</td>";
                echo "</tr>";
 
                if ($data['number']<0) {

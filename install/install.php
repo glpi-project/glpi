@@ -563,7 +563,7 @@ if (!isset($_POST["install"])) {
          $CFG_GLPI["use_log_in_files"] = 1;
          ini_set('display_errors', 'On');
          error_reporting(E_ALL | E_STRICT);
-         set_error_handler("userErrorHandlerDebug");
+         set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
          header_html($LANG['install'][77]." 1");
          step2($_POST["update"]);
