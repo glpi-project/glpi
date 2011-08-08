@@ -210,38 +210,6 @@ function isViewAllEntities() {
 }
 
 
-
-
-
-
-/** Returns the utf string corresponding to the unicode value
- * (from php.net, courtesy - romans@void.lv)
- *
- * @param $num integer: character code
-**/
-function code2utf($num) {
-
-   if ($num < 128) {
-      return chr($num);
-   }
-
-   if ($num < 2048) {
-      return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
-   }
-
-   if ($num < 65536) {
-      return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-   }
-
-   if ($num < 2097152) {
-      return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) .
-             chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-   }
-
-   return '';
-}
-
-
 /**
  * Get the filesize of a complete directory (from php.net)
  *
@@ -677,16 +645,7 @@ function ldap_get_entries_clean($link, $result) {
    return clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
 }
 
-/**
- * Recursivly execute nl2br on an Array
- *
- * @param $value string or array
- *
- * @return array of value (same struct as input)
-**/
-function nl2br_deep($value) {
-   return (is_array($value) ? array_map('nl2br_deep', $value) : nl2br($value));
-}
+
 
 
 /**
@@ -706,30 +665,7 @@ function resume_text($string, $length=255) {
    return $string;
 }
 
-/**
- * Recursivly execute html_entity_decode on an Array
- *
- * @param $value string or array
- *
- * @return array of value (same struct as input)
-**/
-function html_entity_decode_deep($value) {
 
-   return (is_array($value) ? array_map('html_entity_decode_deep', $value)
-                            : html_entity_decode($value, ENT_QUOTES, "UTF-8"));
-}
-
-/**
- * Recursivly execute htmlentities on an Array
- *
- * @param $value string or array
- *
- * @return array of value (same struct as input)
-**/
-function htmlentities_deep($value) {
-
-   return (is_array($value) ? array_map('htmlentities_deep', $value) : htmlentities($value,ENT_QUOTES, "UTF-8"));
-}
 
 /**
  *  Resume a name for display
@@ -789,38 +725,6 @@ function cleanPostForTextArea($value) {
    return str_replace($order, $replace, $value);
 }
 
-
-/**
- * Clean display value deleting html tags
- *
- *@param $value string: string value
- *
- *@return clean value
-**/
-function html_clean($value) {
-
-   $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
-
-   $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-   $value = preg_replace($specialfilter, ' ', $value);
-
-   $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                   '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
-                   '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
-                   '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
-
-   $value = preg_replace($search, ' ', $value);
-
-   $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-   // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-   $value = str_replace("&#8217;", "'", $value);
-
-// Problem with this regex : may crash
-//   $value = preg_replace("/ +/u", " ", $value);
-   $value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
-
-   return trim($value);
-}
 
 
 /**
@@ -1197,7 +1101,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
          $request .= "Host: ".$taburl["host"]."\r\n";
          if (!empty($CFG_GLPI["proxy_user"])) {
             $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
-                        decrypt($CFG_GLPI["proxy_passwd"],GLPIKEY)) . "\r\n";
+                        Toolbox::decrypt($CFG_GLPI["proxy_passwd"],GLPIKEY)) . "\r\n";
          }
 
       } else {
@@ -1890,7 +1794,7 @@ function csv_clean($value) {
    }
 
    $value = str_replace("\"", "''", $value);
-   $value = html_clean($value);
+   $value = Html::clean($value);
 
    return $value;
 }
@@ -1927,7 +1831,7 @@ function sylk_clean($value) {
    $value = preg_replace('/\x0D/', NULL, $value);
    $value = str_replace("\"", "''", $value);
    $value = str_replace(';', ';;', $value);
-   $value = html_clean($value);
+   $value = Html::clean($value);
 
    return $value;
 }
@@ -1969,27 +1873,6 @@ function manageBeginAndEndPlanDates(&$data) {
 
 
 
-/**
- * Decrypt a string
- *
- * @param $string string to decrypt
- * @param $key string key used to decrypt
- *
- * @return decrypted string
-**/
-function decrypt($string, $key) {
 
-  $result = '';
-  $string = base64_decode($string);
-
-  for($i=0 ; $i<strlen($string) ; $i++) {
-    $char    = substr($string, $i, 1);
-    $keychar = substr($key, ($i % strlen($key))-1, 1);
-    $char    = chr(ord($char)-ord($keychar));
-    $result .= $char;
-  }
-
-  return $result;
-}
 
 ?>

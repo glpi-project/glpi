@@ -963,7 +963,7 @@ class Config extends CommonDBTM {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }
       if (isset($_SERVER["SERVER_SIGNATURE"])) {
-         $msg .= ' ('.html_clean($_SERVER["SERVER_SIGNATURE"]).')';
+         $msg .= ' ('.Html::clean($_SERVER["SERVER_SIGNATURE"]).')';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 

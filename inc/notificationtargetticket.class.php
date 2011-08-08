@@ -383,7 +383,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          foreach ($tasks as $task) {
             $tmp = array();
             $tmp['##task.isprivate##']   = Dropdown::getYesNo($task['is_private']);
-            $tmp['##task.author##']      = html_clean(getUserName($task['users_id']));
+            $tmp['##task.author##']      = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']    = Dropdown::getDropdownName('glpi_taskcategories',
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
@@ -396,7 +396,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##task.end##']    = "";
             $tmp['##task.status##'] = "";
             if (!is_null($task['begin'])) {
-               $tmp['##task.user##']   = html_clean(getUserName($task['users_id_tech']));
+               $tmp['##task.user##']   = Html::clean(getUserName($task['users_id_tech']));
                $tmp['##task.begin##']  = convDateTime($task['begin']);
                $tmp['##task.end##']    = convDateTime($task['end']);
                $tmp['##task.status##'] = Planning::getState($task['state']);
@@ -415,7 +415,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          foreach ($followups as $followup) {
             $tmp = array();
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-            $tmp['##followup.author##']      = html_clean(getUserName($followup['users_id']));
+            $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
             $tmp['##followup.requesttype##']
                   = Dropdown::getDropdownName('glpi_requesttypes', $followup['requesttypes_id']);
             $tmp['##followup.date##']        = convDateTime($followup['date']);
@@ -442,19 +442,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp = array();
             $tmp['##validation.submission.title##']
                   = $LANG['validation'][27]." (".$LANG['job'][4]." ".
-                    html_clean(getUserName($validation['users_id'])).")";
+                    Html::clean(getUserName($validation['users_id'])).")";
             $tmp['##validation.answer.title##']
                   = $LANG['validation'][32]." (".$LANG['validation'][21]." ".
-                    html_clean(getUserName($validation['users_id_validate'])).")";
+                    Html::clean(getUserName($validation['users_id_validate'])).")";
 
-            $tmp['##validation.author##']       = html_clean(getUserName($validation['users_id']));
+            $tmp['##validation.author##']       = Html::clean(getUserName($validation['users_id']));
 
             $tmp['##validation.status##']       = TicketValidation::getStatus($validation['status']);
             $tmp['##validation.storestatus##']       = $validation['status'];
             $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
             $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
             $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
-            $tmp['##validation.validator##']    =  html_clean(getUserName($validation['users_id_validate']));
+            $tmp['##validation.validator##']    =  Html::clean(getUserName($validation['users_id_validate']));
             $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
             $datas['validations'][] = $tmp;
          }
