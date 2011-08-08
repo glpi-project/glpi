@@ -312,7 +312,8 @@ class User extends CommonDBTM {
       // Set no user to consumables
       $query = "UPDATE `glpi_consumables`
                 SET `items_id` = '0'
-                WHERE `items_id` = '".$this->fields['id']."' AND `itemtype` = 'User'";
+                WHERE `items_id` = '".$this->fields['id']."'
+                      AND `itemtype` = 'User'";
       $DB->query($query);
 
 
@@ -2800,12 +2801,12 @@ class User extends CommonDBTM {
          if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
 
             if (NotificationMail::isUserAddressValid($email)) {
-               $input['password_forget_token']     = sha1(getRandomString(30));
+               $input['password_forget_token']      = sha1(getRandomString(30));
                $input['password_forget_token_date'] = $_SESSION["glpi_currenttime"];
-               $input['id']        = $this->fields['id'];
+               $input['id']                         = $this->fields['id'];
                $this->update($input);
                // Notication on root entity (glpi_users.entities_id is only a pref)
-               NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id'=>0));
+               NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
                echo $LANG['users'][10];
             } else {
                echo $LANG['mailing'][110];

@@ -39,8 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Group class
- */
+**/
 class Group extends CommonDBTM {
+
 
    static function getTypeName() {
       global $LANG;
@@ -87,9 +88,9 @@ class Group extends CommonDBTM {
       // Set no group to consumables
       $query = "UPDATE `glpi_consumables`
                 SET `items_id` = '0'
-                WHERE `items_id` = '".$this->fields['id']."' AND `itemtype` = 'Group'";
+                WHERE `items_id` = '".$this->fields['id']."'
+                      AND `itemtype` = 'Group'";
       $DB->query($query);
-
    }
 
 

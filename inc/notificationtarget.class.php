@@ -989,17 +989,18 @@ class NotificationTarget extends CommonDBChild {
    static function countForGroup(Group $group) {
       global $DB;
 
-      $sql = "SELECT COUNT(*) as cpt
+      $sql = "SELECT COUNT(*)AS cpt
               FROM `glpi_notificationtargets`
               INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id`=`glpi_notificationtargets`.`notifications_id`)
+                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
               WHERE `items_id` = '".$group->getID()."'
-                 AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
-                      OR `type`='".Notification::GROUP_TYPE."')".
-                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
+                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
+                         OR `type` = '".Notification::GROUP_TYPE."') ".
+                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
       $data = $DB->request($sql)->next();
       return $data['cpt'];
    }
+
 
    /**
     * Display notification registered for a group
@@ -1020,11 +1021,11 @@ class NotificationTarget extends CommonDBChild {
       $sql = "SELECT `glpi_notifications`.`id`
               FROM `glpi_notificationtargets`
               INNER JOIN `glpi_notifications`
-                    ON (`glpi_notifications`.`id`=`glpi_notificationtargets`.`notifications_id`)
+                    ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
               WHERE `items_id` = '".$group->getID()."'
-                 AND (`type`='".Notification::SUPERVISOR_GROUP_TYPE."'
-                      OR `type`='".Notification::GROUP_TYPE."')".
-                 getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
+                    AND (`type` = '".Notification::SUPERVISOR_GROUP_TYPE."'
+                         OR `type` = '".Notification::GROUP_TYPE."') ".
+                    getEntitiesRestrictRequest('AND', 'glpi_notifications', '', '', true);
       $req = $DB->request($sql);
 
       echo "<table class='tab_cadre_fixe'>";
