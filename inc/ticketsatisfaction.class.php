@@ -154,7 +154,7 @@ class TicketSatisfaction extends CommonDBTM {
          if ($this->fields["date_answered"] > 0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
-            echo convDateTime($this->fields["date_answered"])."</td></tr>\n";
+            echo Toolbox::convDateTime($this->fields["date_answered"])."</td></tr>\n";
          }
 
          $options['candel'] = false;

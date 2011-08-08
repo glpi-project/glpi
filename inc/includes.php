@@ -48,7 +48,7 @@ $TIMER_DEBUG->start();
 include_once (GLPI_ROOT . "/inc/common.function.php");
 
 // Security of PHP_SELF
-$_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
+$_SERVER['PHP_SELF'] = Toolbox::cleanParametersURL($_SERVER['PHP_SELF']);
 
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/plugin.function.php");

@@ -73,7 +73,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
 
       if ($max_closedate != '') {
          echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
-         echo "<td colspan='1'>" . convDateTime($max_closedate)."</td></tr>";
+         echo "<td colspan='1'>" . Toolbox::convDateTime($max_closedate)."</td></tr>";
       }
 
       if ($_REQUEST['inquest_config']==2 ) {

@@ -416,7 +416,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
                            "\" src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
 
          $menu['maintain']['content']['ticket']['links'][$pic_validate]
-                           = '/front/ticket.php?'.append_params($opt, '&amp;');
+                           = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
       }
    }
 
@@ -1788,7 +1788,7 @@ function helpHeader($title, $url='') {
       $opt['link'][1]       = 'AND';
 
 
-      $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;');
+      $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,'&amp;');
       $pic_validate = "<a href='$url_validate'><img title=\"".$LANG['validation'][15]."\" alt=\"".
                         $LANG['validation'][15]."\" src='".
                         $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
@@ -2229,7 +2229,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       $opt['contains'][1]   = getLoginUserID();
       $opt['link'][1]       = 'AND';
 
-      $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt, '&amp;');
+      $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt, '&amp;');
 
       if (TicketValidation::getNumberTicketsToValidate(getLoginUserID()) >0) {
          echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
@@ -2917,10 +2917,10 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
    }
 
    if (!empty($minDate)) {
-      $output .= ",minValue: '".convDate($minDate)."'";
+      $output .= ",minValue: '".Toolbox::convDate($minDate)."'";
    }
    if (!empty($maxDate)) {
-      $output .= ",maxValue: '".convDate($maxDate)."'";
+      $output .= ",maxValue: '".Toolbox::convDate($maxDate)."'";
    }
    $output .= "}";
 
@@ -2960,7 +2960,7 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
    $output .= "Ext.onReady(function() {
       var md$rand = new Ext.ux.form.XDateField({
          name: '$element'
-         ,value: '".convDate($value)."'
+         ,value: '".Toolbox::convDate($value)."'
          ,applyTo: 'showdate$rand'
          ,id: 'date$rand'
          ,submitFormat:'Y-m-d'
@@ -2991,11 +2991,11 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
    }
 
    if (!empty($minDate)) {
-      $output .= ",minValue: '".convDate($minDate)."'";
+      $output .= ",minValue: '".Toolbox::convDate($minDate)."'";
    }
 
    if (!empty($maxDate)) {
-      $output .= ",maxValue: '".convDate($maxDate)."'";
+      $output .= ",maxValue: '".Toolbox::convDate($maxDate)."'";
    }
 
    $output .= " });

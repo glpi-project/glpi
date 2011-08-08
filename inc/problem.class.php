@@ -755,7 +755,7 @@ class Problem extends CommonITILObject {
 
       if ($ID) {
          echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
-         echo "<td><span class='tracking_small'>".convDateTime($this->fields["date_mod"])."\n";
+         echo "<td><span class='tracking_small'>".Toolbox::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";
             echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);

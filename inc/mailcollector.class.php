@@ -222,7 +222,7 @@ class MailCollector  extends CommonDBTM {
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
       if ($ID>0) {
-         echo "<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]);
+         echo "<br>".$LANG['common'][26]."&nbsp;: ".Toolbox::convDateTime($this->fields["date_mod"]);
       }
       echo "</td></tr>";
 

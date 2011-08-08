@@ -192,7 +192,8 @@ class AuthMail extends CommonDBTM {
          echo "<td>";
          echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
          if ($ID>0) {
-            echo "<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]);
+            echo "<br>".$LANG['common'][26]."&nbsp;: ".
+                  Toolbox::convDateTime($this->fields["date_mod"]);
          }
 
          echo "</td></tr>";
@@ -336,10 +337,10 @@ class AuthMail extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$item->isNewID($item->getID() && $item->can($item->getField('id'),'r'))) {
+      if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
          $ong[1] = $LANG['title'][26];    // test connexion
 

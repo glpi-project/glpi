@@ -121,8 +121,8 @@ class Calendar_Holiday extends CommonDBRelation {
             $used[] = $data['id'];
             echo "<td><a href='".getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
-            echo "<td>".convDate($data["begin_date"])."</td>";
-            echo "<td>".convDate($data["end_date"])."</td>";
+            echo "<td>".Toolbox::convDate($data["begin_date"])."</td>";
+            echo "<td>".Toolbox::convDate($data["end_date"])."</td>";
             echo "<td>".Dropdown::getYesNo($data["is_perpetual"])."</td>";
             echo "</tr>";
          }
@@ -168,10 +168,10 @@ class Calendar_Holiday extends CommonDBRelation {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID()) {
+      if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {

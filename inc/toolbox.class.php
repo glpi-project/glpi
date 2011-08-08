@@ -302,7 +302,7 @@ class Toolbox {
       }
 
       if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
-         error_log(convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
+         error_log(self::convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
                    3, GLPI_LOG_DIR."/".$name.".log");
       }
    }
@@ -508,5 +508,104 @@ class Toolbox {
       return (is_array($value) ? array_map(array(__CLASS__, 'nl2br_deep'), $value)
                                : nl2br($value));
    }
+
+
+   /** Converts an array of parameters into a query string to be appended to a URL.
+    *
+    * @param $array  array: parameters to append to the query string.
+    * @param $separator separator : default is & : may be defined as &amp; to display purpose
+    * @param $parent This should be left blank (it is used internally by the function).
+    *
+    * @return string  : Query string to append to a URL.
+   **/
+   static function append_params($array, $separator='&', $parent='') {
+
+      $params = array();
+      foreach ($array as $k => $v) {
+
+         if (is_array($v)) {
+            $params[] = self::append_params($v, $separator,
+                                            (empty($parent) ? rawurlencode($k)
+                                                            : $parent .'[' .rawurlencode($k) . ']'));
+         } else {
+            $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']'
+                                         : rawurlencode($k)) . '=' . rawurlencode($v);
+         }
+      }
+      return implode($separator, $params);
+   }
+
+
+      /**
+       * Clean all parameters of an URL. Get a clean URL
+       *
+       * @param $url string URL
+       *
+       * @return clean URL
+      **/
+      static function cleanParametersURL($url) {
+
+         $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
+         return preg_replace("/\?.*/", "", $url);
+      }
+
+
+   /**
+    * Convert a date YY-MM-DD to DD-MM-YY for calendar
+    *
+    * @param $time date: date to convert
+    *
+    * @return $time or $date
+   **/
+   static function convDate($time) {
+
+      if (is_null($time) || $time=='NULL') {
+         return NULL;
+      }
+
+      if (!isset($_SESSION["glpidate_format"])) {
+         $_SESSION["glpidate_format"] = 0;
+      }
+
+      switch ($_SESSION['glpidate_format']) {
+         case 1 : // DD-MM-YYYY
+            $date = substr($time, 8, 2)."-";  // day
+            $date .= substr($time, 5, 2)."-"; // month
+            $date .= substr($time, 0, 4);     // year
+            return $date;
+
+         case 2 : // MM-DD-YYYY
+            $date = substr($time, 5, 2)."-";  // month
+            $date .= substr($time, 8, 2)."-"; // day
+            $date .= substr($time, 0, 4);     // year
+            return $date;
+
+         default : // YYYY-MM-DD
+            if (strlen($time)>10) {
+               return substr($time, 0, 10);
+            }
+            return $time;
+      }
+   }
+
+
+   /**
+    * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
+    *
+    * @param $time datetime: datetime to convert
+    *
+    * @return $time or $date
+   **/
+   static function convDateTime($time) {
+
+      if (is_null($time) || $time=='NULL') {
+         return NULL;
+      }
+
+      return self::convDate($time).' '. substr($time, 11, 5);
+   }
+
+
+
 }
 ?>

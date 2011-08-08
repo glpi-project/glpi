@@ -206,12 +206,13 @@ class KnowbaseItem extends CommonDBTM {
 
             echo "<span class='baskb_right'>";
             if ($this->fields["date_mod"]) {
-               echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"])."     ";
+               echo $LANG['common'][26]."&nbsp;: ".Toolbox::convDateTime($this->fields["date_mod"]).
+                    "     ";
             }
             echo "</span><br>";
 
             if ($this->fields["date"]) {
-               echo $LANG['common'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
+               echo $LANG['common'][27]."&nbsp;: ". Toolbox::convDateTime($this->fields["date"]);
             }
 
             echo "<span class='baskb_right'>";
@@ -424,14 +425,14 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($this->fields["date"]) {
-         echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
+         echo $LANG['knowbase'][27]."&nbsp;: ". Toolbox::convDateTime($this->fields["date"]);
       }
 
       echo "</th>";
       echo "<th class='tdkb' colspan='2'>";
 
       if ($this->fields["date_mod"]) {
-         echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
+         echo $LANG['common'][26]."&nbsp;: ".Toolbox::convDateTime($this->fields["date_mod"]).
               "<br>";
       }
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";

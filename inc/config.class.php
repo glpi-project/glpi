@@ -843,7 +843,8 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:";
          if (!empty($data["personal_token"])) {
-            echo "<br>(".$LANG['users'][18]."&nbsp;".convDateTime($data["personal_token_date"]).')';
+            echo "<br>(".$LANG['users'][18]."&nbsp;".
+                       Toolbox::convDateTime($data["personal_token_date"]).')';
          }
 
          echo "</td><td colspan='3'>";
@@ -1064,7 +1065,7 @@ class Config extends CommonDBTM {
          chdir(GLPI_ROOT);
          $glpidir = str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
          chdir($currentdir);
-         $globaldir = cleanParametersURL($_SERVER['REQUEST_URI']);
+         $globaldir = Toolbox::cleanParametersURL($_SERVER['REQUEST_URI']);
          $globaldir = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
 
          $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
