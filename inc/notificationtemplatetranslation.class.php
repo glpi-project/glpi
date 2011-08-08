@@ -216,7 +216,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    static function cleanContentHtml($input) {
 
       if (!$input['content_text']) {
-         $input['content_text'] = html_clean(unclean_cross_side_scripting_deep($input['content_html']));
+         $input['content_text'] = Html::clean(unclean_cross_side_scripting_deep($input['content_html']));
       }
       return $input;
    }

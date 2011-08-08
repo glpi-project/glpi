@@ -139,7 +139,7 @@ if (!$_REQUEST['showgraph']) {
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {
-         $newkey             = html_clean($key);
+         $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array($LANG['stats'][5] => $cleandata),
@@ -151,7 +151,7 @@ if (!$_REQUEST['showgraph']) {
 
    if (isset($data['solved']) && is_array($data['solved'])) {
       foreach ($data['solved'] as $key => $val) {
-         $newkey             = html_clean($key);
+         $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array($LANG['stats'][11] => $cleandata),
@@ -163,7 +163,7 @@ if (!$_REQUEST['showgraph']) {
 
    if (isset($data['late']) && is_array($data['late'])) {
       foreach ($data['late'] as $key => $val) {
-         $newkey             = html_clean($key);
+         $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
 
@@ -177,7 +177,7 @@ if (!$_REQUEST['showgraph']) {
 
    if (isset($data['closed']) && is_array($data['closed'])) {
       foreach ($data['closed'] as $key => $val) {
-         $newkey             = html_clean($key);
+         $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array($LANG['stats'][11] => $cleandata),
@@ -189,7 +189,7 @@ if (!$_REQUEST['showgraph']) {
 
    if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
       foreach ($data['opensatisfaction'] as $key => $val) {
-         $newkey             = html_clean($key);
+         $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array($LANG['stats'][11] => $cleandata),

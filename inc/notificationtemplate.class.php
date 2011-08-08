@@ -221,12 +221,12 @@ class NotificationTemplate extends CommonDBTM {
             //Template processing
 
             // Decode html chars to have clean text
-            $template_datas['content_text'] = html_entity_decode_deep($template_datas['content_text']);
+            $template_datas['content_text'] = Html::entity_decode_deep($template_datas['content_text']);
             $save_data = $data;
-            $data      = html_entity_decode_deep($data);
+            $data      = Html::entity_decode_deep($data);
 
-            $template_datas['subject'] = html_entity_decode_deep($template_datas['subject']);
-            $this->signature           = html_entity_decode_deep($this->signature);
+            $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
+            $this->signature           = Html::entity_decode_deep($this->signature);
 
             $lang['subject'] = $target->getSubjectPrefix($event) .
                                self::process($template_datas['subject'], $data);
@@ -235,8 +235,8 @@ class NotificationTemplate extends CommonDBTM {
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
                // Encode in HTML all chars
-               $data_html = htmlentities_deep($data);
-               $data_html = nl2br_deep($data_html);
+               $data_html = Html::entities_deep($data);
+               $data_html = Toolbox::nl2br_deep($data_html);
                // Restore HTML tags
                if (count($target->html_tags)) {
                   foreach ($target->html_tags as $tag) {
@@ -246,8 +246,8 @@ class NotificationTemplate extends CommonDBTM {
                   }
                }
 
-               $signature_html = htmlentities_deep($this->signature);
-               $signature_html = nl2br_deep($signature_html);
+               $signature_html = Html::entities_deep($this->signature);
+               $signature_html = Toolbox::nl2br_deep($signature_html);
 
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
@@ -255,7 +255,7 @@ class NotificationTemplate extends CommonDBTM {
                      "<html>
                         <head>
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
-                         <title>".htmlentities_deep($lang['subject'])."</title>
+                         <title>".Html::entities_deep($lang['subject'])."</title>
                          <style type='text/css'>
                            ".$this->fields['css']."
                          </style>
@@ -266,7 +266,7 @@ class NotificationTemplate extends CommonDBTM {
             }
 
             $lang['content_text']
-                  = html_clean(self::process($template_datas['content_text'],
+                  = Html::clean(self::process($template_datas['content_text'],
                                              $data)."\n\n".$this->signature.
                                              "\n".$LANG['mailing'][3]." ".GLPI_VERSION);
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
@@ -375,7 +375,7 @@ class NotificationTemplate extends CommonDBTM {
             } else { // check exact match
 
                if (isset($data['##'.$if_field.'##'])
-                   && html_entity_decode_deep($data['##'.$if_field.'##']) == html_entity_decode_deep($out[2][$key])) {
+                   && Html::entity_decode_deep($data['##'.$if_field.'##']) == Html::entity_decode_deep($out[2][$key])) {
 
                   $condition_ok = true;
 

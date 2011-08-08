@@ -106,7 +106,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
          foreach ($tasks as $task) {
             $tmp = array();
-            $tmp['##task.author##']       = html_clean(getUserName($task['users_id']));
+            $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
                                                                       $task['taskcategories_id']);
             $tmp['##task.date##']         = convDateTime($task['date']);
@@ -119,7 +119,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $tmp['##task.end##']          = "";
             $tmp['##task.status##']       = "";
             if (!is_null($task['begin'])) {
-               $tmp['##task.user##']      = html_clean(getUserName($task['users_id_tech']));
+               $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
                $tmp['##task.begin##']     = convDateTime($task['begin']);
                $tmp['##task.end##']       = convDateTime($task['end']);
             }

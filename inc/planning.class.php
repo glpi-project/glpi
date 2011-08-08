@@ -801,7 +801,7 @@ class Planning {
             }
 
             if (isset($val["content"])) {
-               $vevent->setProperty( "description", html_clean($val["content"]) );
+               $vevent->setProperty( "description", Html::clean($val["content"]) );
             } else if (isset($val["name"])) {
                $vevent->setProperty( "description", $val["name"] );
             }

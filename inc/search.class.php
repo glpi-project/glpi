@@ -4127,7 +4127,7 @@ class Search {
                }
                $text = str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
                if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
-                  $text = html_clean(unclean_cross_side_scripting_deep($text));
+                  $text = Html::clean(unclean_cross_side_scripting_deep($text));
                }
                return $text;
 
@@ -4841,7 +4841,7 @@ class Search {
 
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_HEADER;
-            $PDF_HEADER[$num] = Toolbox::decodeFromUtf8(html_clean($value), 'windows-1252');
+            $PDF_HEADER[$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
@@ -4897,7 +4897,7 @@ class Search {
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
             $value = weblink_extract($value);
-            $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(html_clean($value), 'windows-1252');
+            $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
