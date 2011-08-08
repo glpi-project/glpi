@@ -44,18 +44,15 @@ class Preference extends CommonGLPI {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $tabs = array();
+      $ong = array();
 
-      $this->addStandardTab('User', $tabs);
-      $this->addStandardTab('Config', $tabs);
+      $this->addStandardTab('User', $ong, $options);
+      $this->addStandardTab('Config', $ong, $options);
+      $this->addStandardTab('DisplayPreference', $ong, $options);
 
-      if (haveRight('search_config', 'w')) {
-         $this->addStandardTab('DisplayPreference', $tabs);
-      }
+      $ong['no_all_tab'] = true;
 
-      $tabs['no_all_tab'] = true;
-
-      return $tabs;
+      return $ong;
    }
 }
 

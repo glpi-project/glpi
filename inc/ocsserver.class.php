@@ -116,19 +116,21 @@ class OcsServer extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $tabs[1] = $LANG['help'][30];
       //If connection to the OCS DB  is ok, and all rights are ok too
-      if ($this->fields['id'] != ''
+      if ($this->isNewItem()
           && self::checkOCSconnection($this->fields['id'])
           && self::checkConfig(1)
           && self::checkConfig(2)
           && self::checkConfig(8)) {
 
-         $tabs[2]  = $LANG['ocsconfig'][5];
-         $tabs[3]  = $LANG['ocsconfig'][27];
-         $this->addStandardTab('Log', $tabs);
+         $ong[1] = $LANG['help'][30];
+         $ong[2] = $LANG['ocsconfig'][5];
+         $ong[3] = $LANG['ocsconfig'][27];
+         $this->addStandardTab('Log', $ong, $options);
+      } else {
+         $ong['empty'] = $this->getTypeName();
       }
-      return $tabs;
+      return $ong;
    }
 
 
