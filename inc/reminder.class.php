@@ -346,7 +346,8 @@ class Reminder extends CommonDBTM {
             echo "<span class='showplan'>";
          }
 
-         echo convDateTime($this->fields["begin"])."->". convDateTime($this->fields["end"]);
+         echo Toolbox::convDateTime($this->fields["begin"])."->".
+              Toolbox::convDateTime($this->fields["end"]);
 
          if ($canedit) {
             echo "</span>";
@@ -476,7 +477,7 @@ class Reminder extends CommonDBTM {
       global $CFG_GLPI;
 
       $out  = self::getTypeName().' : '.convDateTime($val["begin"]).' -> '.
-              convDateTime($val["end"]).' : ';
+              Toolbox::convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                $val["reminders_id"]."'>";
       $out .= resume_text($val["name"],80).'</a>';
