@@ -565,7 +565,10 @@ class DisplayPreference extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Preference' :
-            return $LANG['central'][12];
+            if (haveRight('search_config', 'w')) {
+               return $LANG['central'][12];
+            }
+            break;
       }
       return '';
    }
