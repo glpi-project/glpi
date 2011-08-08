@@ -172,14 +172,10 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       if ($item->getType() == 'Ticket') {
-         if ($item->isNewID($item->getID())) {
-            return $LANG['job'][13];
-         }
-
          if (haveRight('observe_ticket','1')){
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry($LANG['mailing'][141],

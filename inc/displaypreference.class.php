@@ -560,7 +560,7 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       switch ($item->getType()) {

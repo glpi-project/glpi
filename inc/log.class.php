@@ -49,10 +49,10 @@ class Log extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID()) {
+      if (!$withtemplate) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['title'][38],
                                         countElementsInTable('glpi_logs',

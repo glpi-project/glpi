@@ -961,10 +961,10 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (haveRight('notification', 'r') && $item->getID()) {
+      if (!$withtemplate && haveRight('notification', 'r')) {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {

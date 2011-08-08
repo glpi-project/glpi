@@ -149,11 +149,14 @@ class CommonGLPI {
    /**
     * Get Tab Name used for itemtype
     *
-    * @param $item CommonDBTM object for which the tab need to be displayed
+    * @since version 0.83
+    *
+    * @param $item         CommonDBTM object for which the tab need to be displayed
+    * @param $withtemplate boolean is a template object ?
     *
     *  @return string tab name
    **/
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       return '';
    }
 
@@ -161,8 +164,10 @@ class CommonGLPI {
    /**
     * show Tab content
     *
-    * @param $item CommonGLPI object for which the tab need to be displayed
-    * @param $tabnum integer tab number
+    * @since version 0.83
+    *
+    * @param $item         CommonGLPI object for which the tab need to be displayed
+    * @param $tabnum       integer tab number
     * @param $withtemplate boolean is a template object ?
     *
     * @return true
@@ -337,7 +342,7 @@ class CommonGLPI {
 
             }
          }
-         $cleantarget = cleanParametersURL($target);
+         $cleantarget = Toolbox::cleanParametersURL($target);
          echo "<ul>";
          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";

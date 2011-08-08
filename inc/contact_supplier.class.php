@@ -64,10 +64,10 @@ class Contact_Supplier extends CommonDBRelation{
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("contact_enterprise","r")) {
+      if (!$withtemplate && haveRight("contact_enterprise","r")) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {

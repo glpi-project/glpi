@@ -597,10 +597,10 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("cartridge","r")) {
+      if (!$withtemplate && haveRight("cartridge","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][21], self::countForItem($item));
          }

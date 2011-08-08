@@ -63,10 +63,10 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
+      if (!$withtemplate && $item->getType()=='Computer' && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][57],
                                         countElementsInTable('glpi_computervirtualmachines',

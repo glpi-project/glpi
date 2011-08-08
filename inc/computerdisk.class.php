@@ -85,10 +85,11 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && $item->getID() && haveRight("computer","r")) {
+      // can exists for template
+      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][8],
                                         countElementsInTable('glpi_computerdisks',

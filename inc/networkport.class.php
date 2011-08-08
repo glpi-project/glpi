@@ -1024,10 +1024,11 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG, $CFG_GLPI;
 
-      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+      // Can exists on template
+      if (haveRight('networking','r')) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
