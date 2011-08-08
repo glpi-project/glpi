@@ -3881,8 +3881,8 @@ class Search {
                $options['reset'] = 'reset';
 
                $out  = "<a id='ticket$itemtype".$data['id']."' ";
-               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,
-                                                                                          '&amp;')."\">";
+               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                             Toolbox::append_params($options, '&amp;')."\">";
                $out .= $data[$NAME.$num]."</a>";
 
             } else {
@@ -4135,7 +4135,7 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>').convDate($val);
+                  $out .= (empty($out)?'':'<br>').Toolbox::convDate($val);
                }
                return $out;
 
@@ -4143,7 +4143,7 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>').convDateTime($val);
+                  $out .= (empty($out)?'':'<br>').Toolbox::convDateTime($val);
                }
                return $out;
 
@@ -4987,7 +4987,7 @@ class Search {
             $pdf = new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
             $pdf->ezStartPageNumbers(750, 10, 10, 'left',
-                                     "GLPI PDF export - ".convDate(date("Y-m-d")).
+                                     "GLPI PDF export - ".Toolbox::convDate(date("Y-m-d")).
                                        " - ".count($PDF_ARRAY)." ".
                                        Toolbox::decodeFromUtf8($LANG['pager'][5], 'windows-1252').
                                        " - {PAGENUM}/{TOTALPAGENUM}");
@@ -5005,7 +5005,7 @@ class Search {
             $pdf= new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
             $pdf->ezStartPageNumbers(550, 10, 10, 'left',
-                                     "GLPI PDF export - ".convDate(date("Y-m-d")).
+                                     "GLPI PDF export - ".Toolbox::convDate(date("Y-m-d")).
                                        " - ".count($PDF_ARRAY)." ".
                                        Toolbox::decodeFromUtf8($LANG['pager'][5], 'windows-1252').
                                        " - {PAGENUM}/{TOTALPAGENUM}");

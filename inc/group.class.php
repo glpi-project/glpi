@@ -238,11 +238,11 @@ class Group extends CommonDBTM {
       if (!$ID) {
          $template = "newtemplate";
          echo $LANG['computers'][14]."&nbsp;:&nbsp;";
-         echo convDateTime($_SESSION["glpi_currenttime"]);
+         echo Toolbox::convDateTime($_SESSION["glpi_currenttime"]);
 
       } else {
          echo $LANG['common'][26]."&nbsp;:&nbsp;";
-         echo  convDateTime($this->fields["date_mod"]);
+         echo Toolbox::convDateTime($this->fields["date_mod"]);
       }
       echo "</td></tr>";
 

@@ -181,7 +181,8 @@ class Alert extends CommonDBTM {
                    LIMIT 1";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            echo "&nbsp;".$LANG['mailing'][52].' '.convDateTime($DB->result($result,0,'date'));
+            echo "&nbsp;".$LANG['mailing'][52].' '.Toolbox::convDateTime($DB->result($result, 0,
+                                                                                     'date'));
          }
       }
    }

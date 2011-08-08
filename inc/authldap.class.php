@@ -215,7 +215,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
          echo ($ID>0 ?"<td>".$LANG['common'][26]."&nbsp;:</td><td>".
-               convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
+               Toolbox::convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['ldap'][44] . "&nbsp;:</td>";
@@ -1048,13 +1048,13 @@ class AuthLDAP extends CommonDBTM {
                echo "<td>" . $link . "</td>";
 
                if ($stamp != '') {
-                  echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
+                  echo "<td>" .Toolbox::convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if ($_SESSION['ldap_import']['mode']) {
                   if ($date_sync != '') {
-                     echo "<td>" . convDateTime($date_sync) . "</td>";
+                     echo "<td>" . Toolbox::convDateTime($date_sync) . "</td>";
                   } else {
                      echo "<td>&nbsp;</td>";
                   }
@@ -2582,10 +2582,10 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$item->isNewID($item->getID() && $item->can($item->getField('id'),'r'))) {
+      if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
          $ong[1] = $LANG['title'][26];    // test connexion
          $ong[2]  = $LANG['Menu'][14];    // params for user

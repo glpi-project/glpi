@@ -1044,7 +1044,7 @@ class Contract extends CommonDBTM {
          echo "<td class='center'>";
          echo Dropdown::getDropdownName("glpi_contracttypes", $con->fields["contracttypes_id"])."</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
-         echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
+         echo "<td class='center'>".Toolbox::convDate($con->fields["begin_date"])."</td>";
          echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
          if ($con->fields["begin_date"]!='' && !empty($con->fields["begin_date"])) {
             echo " -> ".getWarrantyExpir($con->fields["begin_date"], $con->fields["duration"]);
@@ -1317,8 +1317,8 @@ class Contract extends CommonDBTM {
 
             echo "<option  value='".$data["id"]."'>";
             echo Toolbox::substr($data["name"]." - #".$data["num"]." - ".
-                                 convDateTime($data["begin_date"]), 0,
-                                              $_SESSION["glpidropdown_chars_limit"]);
+                                 Toolbox::convDateTime($data["begin_date"]), 0,
+                                                       $_SESSION["glpidropdown_chars_limit"]);
             echo "</option>";
          }
       }

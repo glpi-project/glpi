@@ -138,7 +138,8 @@ class Budget extends CommonDropdown{
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
          echo "<td>";
-         echo ($this->fields["date_mod"]?convDateTime($this->fields["date_mod"]):$LANG['setup'][307]);
+         echo ($this->fields["date_mod"]?Toolbox::convDateTime($this->fields["date_mod"])
+                                        :$LANG['setup'][307]);
          echo "</td></tr>";
       }
 

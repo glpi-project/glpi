@@ -73,8 +73,8 @@ class Bookmark extends CommonDBTM {
          parse_str($taburl["query"], $query_tab);
       }
 
-      $input['query'] = append_params($this->prepareQueryToStore($input['type'], $query_tab,
-                                                                 $input['itemtype']));
+      $input['query'] = Toolbox::append_params($this->prepareQueryToStore($input['type'],
+                                               $query_tab, $input['itemtype']));
 
       return $input;
    }
@@ -340,7 +340,7 @@ class Bookmark extends CommonDBTM {
 
       if ($params= $this->getParameters($ID)) {
          $url  = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
-         $url .= "?".append_params($params);
+         $url .= "?".Toolbox::append_params($params);
 
          if ($opener) {
             echo "<script type='text/javascript' >\n";

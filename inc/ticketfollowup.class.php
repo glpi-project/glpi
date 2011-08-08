@@ -411,7 +411,7 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if ($with_comment) {
-         $name .= ' ('.convDateTime($this->fields['date']);
+         $name .= ' ('.Toolbox::convDateTime($this->fields['date']);
          $name .= ', '.getUserName($this->fields['users_id']);
          $name .= ', '.($this->fields['is_private'] ? $LANG['common'][77] : $LANG['common'][76]);
          $name .= ')';
@@ -450,7 +450,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
       }
-      echo convDateTime($this->fields["date"]) . "</td>";
+      echo Toolbox::convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
       // echo "<td>&nbsp;</td>";
@@ -518,7 +518,7 @@ class TicketFollowup  extends CommonDBTM {
                $this->fields["content"]."</textarea></td>";
          if ($this->fields["date"]) {
             echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
-            echo "<td>".convDateTime($this->fields["date"]);
+            echo "<td>".Toolbox::convDateTime($this->fields["date"]);
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
@@ -581,7 +581,7 @@ class TicketFollowup  extends CommonDBTM {
       echo "<table width='100%' bgcolor='#FFFFFF'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center' width='10%'>".$LANG['joblist'][6]."<br><br>".$LANG['common'][27].
-            "&nbsp;:<br>".convDateTime($this->fields["date"])."</td>";
+            "&nbsp;:<br>".Toolbox::convDateTime($this->fields["date"])."</td>";
       echo "<td width='90%'>";
       echo "<textarea name='content' cols='50' rows='6'>".$this->fields["content"]."</textarea>";
       echo "</td></tr></table>";
@@ -740,7 +740,7 @@ class TicketFollowup  extends CommonDBTM {
 
          while ($data=$DB->fetch_array($result)) {
             $out .= "<tr class='tab_bg_3'>
-                     <td class='center'>".convDateTime($data["date"])."</td>
+                     <td class='center'>".Toolbox::convDateTime($data["date"])."</td>
                      <td class='center'>".getUserName($data["users_id"],1)."</td>
                      <td width='70%' class='b'>".resume_text($data["content"], $CFG_GLPI["cut"])."
                      </td></tr>";

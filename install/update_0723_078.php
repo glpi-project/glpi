@@ -4091,12 +4091,18 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                $newoptions['glpisearchcount']=$num;
                $newoptions['glpisearchcount2']=$num2;
                $newoptions['itemtype']='Ticket';
-               $query2="UPDATE glpi_bookmarks SET query='".addslashes(append_params($newoptions))."' WHERE id=".$data['id'].";";
-               $DB->query($query2) or die("0.78 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
+               $query2 = "UPDATE `glpi_bookmarks`
+                          SET `query` = '".addslashes(Toolbox::append_params($newoptions))."'
+                          WHERE `id` = '".$data['id']."'";
+               $DB->query($query2)
+               or die("0.78 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
 
             } else {
-               $query2="DELETE FROM glpi_bookmarks WHERE id=".$data['id'].";";
-               $DB->query($query2) or die("0.78 delete ticket bookmarks : cannot convert " . $LANG['update'][90] . $DB->error());
+               $query2 = "DELETE
+                          FROM `glpi_bookmarks`
+                          WHERE `id` = '".$data['id']."'";
+               $DB->query($query2)
+               or die("0.78 delete ticket bookmarks : cannot convert " . $LANG['update'][90] . $DB->error());
             }
             // Lost paramaters
             //only_computers=1&contains=dddd&field=moboard.designation&

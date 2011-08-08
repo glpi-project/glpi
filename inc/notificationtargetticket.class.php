@@ -386,7 +386,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##task.author##']      = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']    = Dropdown::getDropdownName('glpi_taskcategories',
                                                                      $task['taskcategories_id']);
-            $tmp['##task.date##']        = convDateTime($task['date']);
+            $tmp['##task.date##']        = Toolbox::convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
             $tmp['##task.time##']        = Ticket::getActionTime($task['actiontime']);
 
@@ -397,8 +397,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##task.status##'] = "";
             if (!is_null($task['begin'])) {
                $tmp['##task.user##']   = Html::clean(getUserName($task['users_id_tech']));
-               $tmp['##task.begin##']  = convDateTime($task['begin']);
-               $tmp['##task.end##']    = convDateTime($task['end']);
+               $tmp['##task.begin##']  = Toolbox::convDateTime($task['begin']);
+               $tmp['##task.end##']    = Toolbox::convDateTime($task['end']);
                $tmp['##task.status##'] = Planning::getState($task['state']);
             }
 
@@ -418,7 +418,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             $tmp['##followup.author##']      = Html::clean(getUserName($followup['users_id']));
             $tmp['##followup.requesttype##']
                   = Dropdown::getDropdownName('glpi_requesttypes', $followup['requesttypes_id']);
-            $tmp['##followup.date##']        = convDateTime($followup['date']);
+            $tmp['##followup.date##']        = Toolbox::convDateTime($followup['date']);
             $tmp['##followup.description##'] = $followup['content'];
             $datas['followups'][] = $tmp;
          }
@@ -447,14 +447,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   = $LANG['validation'][32]." (".$LANG['validation'][21]." ".
                     Html::clean(getUserName($validation['users_id_validate'])).")";
 
-            $tmp['##validation.author##']       = Html::clean(getUserName($validation['users_id']));
+            $tmp['##validation.author##']      = Html::clean(getUserName($validation['users_id']));
 
-            $tmp['##validation.status##']       = TicketValidation::getStatus($validation['status']);
-            $tmp['##validation.storestatus##']       = $validation['status'];
-            $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
+            $tmp['##validation.status##']      = TicketValidation::getStatus($validation['status']);
+            $tmp['##validation.storestatus##'] = $validation['status'];
+            $tmp['##validation.submissiondate##']
+                                             = Toolbox::convDateTime($validation['submission_date']);
             $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
-            $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
-            $tmp['##validation.validator##']    =  Html::clean(getUserName($validation['users_id_validate']));
+            $tmp['##validation.validationdate##']
+                                             = Toolbox::convDateTime($validation['validation_date']);
+            $tmp['##validation.validator##'] =  Html::clean(getUserName($validation['users_id_validate']));
             $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
             $datas['validations'][] = $tmp;
          }
@@ -482,8 +484,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             }
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
-            $datas['##satisfaction.datebegin##']    = convDateTime($inquest->fields['date_begin']);
-            $datas['##satisfaction.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
+            $datas['##satisfaction.datebegin##']
+                                            = Toolbox::convDateTime($inquest->fields['date_begin']);
+            $datas['##satisfaction.dateanswered##']
+                                            = Toolbox::convDateTime($inquest->fields['date_answered']);
             $datas['##satisfaction.satisfaction##'] = $inquest->fields['satisfaction'];
             $datas['##satisfaction.description##']  = $inquest->fields['comment'];
          }

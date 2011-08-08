@@ -521,14 +521,14 @@ class Computer extends CommonDBTM {
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template   = "newcomp";
          $datestring = $LANG['computers'][14]." : ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = Toolbox::convDateTime($_SESSION["glpi_currenttime"]);
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template   = "newtemplate";
          $datestring = $LANG['computers'][14]." : ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = Toolbox::convDateTime($_SESSION["glpi_currenttime"]);
       } else {
          $datestring = $LANG['common'][26].": ";
-         $date       = convDateTime($this->fields["date_mod"]);
+         $date       = Toolbox::convDateTime($this->fields["date_mod"]);
          $template   = false;
       }
 
@@ -701,9 +701,9 @@ class Computer extends CommonDBTM {
           && count($dataocs)) {
 
          echo "<br>";
-         echo $LANG['ocsng'][14]."&nbsp;: ".convDateTime($dataocs["last_ocs_update"]);
+         echo $LANG['ocsng'][14]."&nbsp;: ".Toolbox::convDateTime($dataocs["last_ocs_update"]);
          echo "<br>";
-         echo $LANG['ocsng'][13]."&nbsp;: ".convDateTime($dataocs["last_update"]);
+         echo $LANG['ocsng'][13]."&nbsp;: ".Toolbox::convDateTime($dataocs["last_update"]);
          echo "<br>";
          if (haveRight("ocsng","r")) {
             echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="

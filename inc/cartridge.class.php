@@ -476,9 +476,9 @@ class Cartridge extends CommonDBTM {
       if ($result=$DB->query($query)) {
          $number = $DB->numrows($result);
          while ($data=$DB->fetch_array($result)) {
-            $date_in  = convDate($data["date_in"]);
-            $date_use = convDate($data["date_use"]);
-            $date_out = convDate($data["date_out"]);
+            $date_in  = Toolbox::convDate($data["date_in"]);
+            $date_use = Toolbox::convDate($data["date_use"]);
+            $date_out = Toolbox::convDate($data["date_out"]);
             $printer  = $data["printers_id"];
             $page     = $data["pages"];
 
@@ -660,9 +660,9 @@ class Cartridge extends CommonDBTM {
       $nb_pages_printed = 0;
 
       while ($data=$DB->fetch_array($result)) {
-         $date_in  = convDate($data["date_in"]);
-         $date_use = convDate($data["date_use"]);
-         $date_out = convDate($data["date_out"]);
+         $date_in  = Toolbox::convDate($data["date_in"]);
+         $date_use = Toolbox::convDate($data["date_use"]);
+         $date_out = Toolbox::convDate($data["date_out"]);
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          echo "<td class='center'>".$data["id"]."</td>";
          echo "<td class='center b'>";
@@ -785,10 +785,10 @@ class Cartridge extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() && haveRight("cartridge","r")) {
+      if (!$withtemplate && haveRight("cartridge","r") && $item->getType()=='Printer') {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][21], self::countForPrinter($item));
          }

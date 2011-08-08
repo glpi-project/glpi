@@ -71,8 +71,8 @@ class NotificationTargetReservation extends NotificationTarget {
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
          }
-         $this->datas['##reservation.begin##']   = convDateTime($this->obj->getField('begin'));
-         $this->datas['##reservation.end##']     = convDateTime($this->obj->getField('end'));
+         $this->datas['##reservation.begin##']   = Toolbox::convDateTime($this->obj->getField('begin'));
+         $this->datas['##reservation.end##']     = Toolbox::convDateTime($this->obj->getField('end'));
          $this->datas['##reservation.comment##'] = $this->obj->getField('comment');
 
          $reservationitem = new ReservationItem();
@@ -106,7 +106,7 @@ class NotificationTargetReservation extends NotificationTarget {
             $obj = new $item['itemtype']();
             $tmp['##reservation.itemtype##']       = $obj->getTypeName();
             $tmp['##reservation.item##']           = $item['item_name'];
-            $tmp['##reservation.expirationdate##'] = convDateTime($item['end']);
+            $tmp['##reservation.expirationdate##'] = Toolbox::convDateTime($item['end']);
             $tmp['##reservation.url##']            = urldecode($CFG_GLPI["url_base"].
                                                                "/index.php?redirect=reservation_".
                                                                $id);
