@@ -83,7 +83,7 @@ class Phone extends CommonDBTM {
          }
 
       } else { // New item
-         $ong['empty'] = $this->getTypeName;
+         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;

@@ -44,6 +44,7 @@ class CommonGLPI {
 
    public $showdebug      = false;
 
+   static protected $othertabs = array();
 
    /**
     * Return the localized name of the current Type
@@ -69,6 +70,24 @@ class CommonGLPI {
          $this->type = get_class($this);
       }
       return $this->type;
+   }
+
+
+   /**
+    * Register tab on an objet
+    *
+    * @since version 0.83
+    *
+    * @param $typeform string object class name to add tab on form
+    * @param $typetab  string object class name which manage the tab
+   **/
+   static function registerStandardTab($typeform, $typetab) {
+
+      if (isset(self::$othertabs[$typeform])) {
+         self::$othertabs[$typeform][] = $typetab;
+      } else {
+         self::$othertabs[$typeform] = array($typetab);
+      }
    }
 
 
@@ -400,6 +419,13 @@ class CommonGLPI {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
 
+         // Object with class with 'addtabon' attribute
+         if (isset(self::$othertabs[$this->getType()])) {
+            foreach(self::$othertabs[$this->getType()] as $typetab) {
+               $this->addStandardTab($typetab, $onglets);
+            }
+         }
+
          foreach ($onglets as $key => $val ) {
             $tabs[$key] = array('title'  => $val,
                                 'url'    => $tabpage,
@@ -407,8 +433,10 @@ class CommonGLPI {
                                             "&glpi_tab=$key&id=$ID$extraparam");
          }
 
+         // Plugin with plugin_get_headings_xxx
          $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
          $tabs += $plug_tabs;
+
          // Not all tab for templates and if only 1 tab
          if ($display_all && empty($withtemplate) && count($tabs)>1) {
             $tabs[-1] = array('title'  => $LANG['common'][66],
