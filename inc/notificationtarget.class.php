@@ -415,7 +415,7 @@ class NotificationTarget extends CommonDBChild {
          $data['email'] = UserEmail::getDefaultForUser($data['id']);
       }
 
-      $new_mail = trim(utf8_strtolower($data['email']));
+      $new_mail = trim(Toolbox::strtolower($data['email']));
       $new_lang = '';
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);

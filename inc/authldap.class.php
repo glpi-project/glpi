@@ -162,7 +162,7 @@ class AuthLDAP extends CommonDBTM {
       if (count($input)) {
          foreach ($input as $key => $val) {
             if (preg_match('/_field$/',$key)) {
-               $input[$key] = utf8_strtolower($val);
+               $input[$key] = Toolbox::strtolower($val);
             }
          }
       }

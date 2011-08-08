@@ -178,7 +178,7 @@ class RuleRightCollection extends RuleCollection {
       while ($param = $DB->fetch_array($result)) {
          //Dn is alwsays retreived from ldap : don't need to ask for it !
          if ($param["value"] != "dn") {
-            $params[] = utf8_strtolower($param["value"]);
+            $params[] = Toolbox::strtolower($param["value"]);
          }
       }
       return $params;
@@ -216,7 +216,7 @@ class RuleRightCollection extends RuleCollection {
             //Get all the ldap fields
             $fields = $this->getFieldsForQuery();
             foreach ($fields as $field) {
-               switch(utf8_strtoupper($field)) {
+               switch(Toolbox::strtoupper($field)) {
                   case "LDAP_SERVER" :
                      $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
                      break;

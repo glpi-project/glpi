@@ -46,7 +46,7 @@ class RuleRightParameter extends CommonDropdown {
 
       //LDAP parameters MUST be in lower case
       //because the are retieved in lower case  from the directory
-      $input["value"] = utf8_strtolower($input["value"]);
+      $input["value"] = Toolbox::strtolower($input["value"]);
       return $input;
    }
 

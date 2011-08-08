@@ -3718,7 +3718,7 @@ class Search {
                   $split = explode("$$$$",$data[$NAME.$num."_2"]);
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
-                     $lowstr=utf8_strtolower($split[$k]);
+                     $lowstr = Toolbox::strtolower($split[$k]);
                      if (strlen(trim($split[$k]))>0 && !in_array($lowstr,$displayed)) {
                         if ($count_display) {
                            $out .= "<br>";
@@ -3736,7 +3736,7 @@ class Search {
                   $split = explode("$$$$",$data[$NAME.$num]);
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
-                     $lowstr = utf8_strtolower($split[$k]);
+                     $lowstr = Toolbox::strtolower($split[$k]);
                      if (strlen(trim($split[$k]))>0 && !in_array($lowstr,$displayed)) {
                         if ($count_display) {
                            $out .= "<br>";

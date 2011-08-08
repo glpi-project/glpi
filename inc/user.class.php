@@ -969,7 +969,7 @@ class User extends CommonDBTM {
       $group_fields = array();
 
       foreach ($DB->request($query) as $data) {
-         $group_fields[] = utf8_strtolower($data["ldap_field"]);
+         $group_fields[] = Toolbox::strtolower($data["ldap_field"]);
       }
       if (count($group_fields)) {
          //Need to sort the array because edirectory don't like it!
@@ -2404,7 +2404,7 @@ class User extends CommonDBTM {
       $filename = $vcard->getFileName();      // "xxx xxx.vcf"
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
-      @Header("Content-Length: ".utf8_strlen($output));
+      @Header("Content-Length: ".Toolbox::strlen($output));
       @Header("Connection: close");
       @Header("content-type: text/x-vcard; charset=UTF-8");
 

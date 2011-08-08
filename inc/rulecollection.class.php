@@ -1009,7 +1009,7 @@ class RuleCollection extends CommonDBTM {
                       AND `glpi_rules`.`is_active` = '1'";
 
       foreach ($DB->request($query) as $param) {
-             $params[] = utf8_strtolower($param["criteria"]);
+             $params[] = Toolbox::strtolower($param["criteria"]);
       }
       return $params;
    }
