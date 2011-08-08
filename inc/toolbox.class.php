@@ -205,6 +205,59 @@ class Toolbox {
 
 
    /**
+    * Decrypt a string
+    *
+    * @param $string string to decrypt
+    * @param $key string key used to decrypt
+    *
+    * @return decrypted string
+   **/
+   static function decrypt($string, $key) {
+
+     $result = '';
+     $string = base64_decode($string);
+
+     for($i=0 ; $i<strlen($string) ; $i++) {
+       $char    = substr($string, $i, 1);
+       $keychar = substr($key, ($i % strlen($key))-1, 1);
+       $char    = chr(ord($char)-ord($keychar));
+       $result .= $char;
+     }
+
+     return $result;
+   }
+
+
+   /** Returns the utf string corresponding to the unicode value
+    * (from php.net, courtesy - romans@void.lv)
+    *
+    * @param $num integer: character code
+   **/
+/*  NOT USED
+   static function code2utf($num) {
+
+      if ($num < 128) {
+         return chr($num);
+      }
+
+      if ($num < 2048) {
+         return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+      }
+
+      if ($num < 65536) {
+         return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+      }
+
+      if ($num < 2097152) {
+         return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) .
+                chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+      }
+
+      return '';
+   }
+*/
+
+   /**
     * Log in 'php-errors' all args
    **/
    static function logDebug() {
@@ -411,7 +464,7 @@ class Toolbox {
    **/
    static function addslashes_deep($value) {
 
-      $value = is_array($value) ? array_map(array(__CLASS, 'addslashes_deep'), $value)
+      $value = is_array($value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
                                 : (is_null($value) ? NULL : mysql_real_escape_string($value));
 
       return $value;
@@ -426,7 +479,7 @@ class Toolbox {
    **/
    static function stripslashes_deep($value) {
 
-      $value = is_array($value) ? array_map(array(__CLASS, 'stripslashes_deep'), $value)
+      $value = is_array($value) ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
                                 : (is_null($value) ? NULL : stripslashes($value));
 
       return $value;
@@ -440,6 +493,20 @@ class Toolbox {
    **/
    static function addToNavigateListItems($itemtype, $ID) {
       $_SESSION['glpilistitems'][$itemtype][] = $ID;
+   }
+
+
+   /**
+    * Recursivly execute nl2br on an Array
+    *
+    * @param $value string or array
+    *
+    * @return array of value (same struct as input)
+   **/
+   static function nl2br_deep($value) {
+
+      return (is_array($value) ? array_map(array(__CLASS__, 'nl2br_deep'), $value)
+                               : nl2br($value));
    }
 }
 ?>
