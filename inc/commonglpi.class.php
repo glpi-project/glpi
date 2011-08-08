@@ -106,13 +106,19 @@ class CommonGLPI {
    /**
     * Add standard define tab
     *
-    * @param $itemtype itemtype link to the tab
-    * @param $ong array defined tab array
+    * @param $itemtype  itemtype link to the tab
+    * @param $ong       array defined tab array
+    * @param $options   array of options (for withtemplate)
     *
     *  @return nothing (set the tab array)
    **/
-   function addStandardTab($itemtype, &$ong) {
+   function addStandardTab($itemtype, &$ong, $options) {
       global $LANG;
+
+      $withtemplate = 0;
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      }
 
       switch ($itemtype) {
          case 'Note' :
@@ -124,7 +130,7 @@ class CommonGLPI {
          default :
             if (!is_integer($itemtype) && class_exists($itemtype)) {
                $obj = new $itemtype();
-               $titles = $obj->getTabNameForItem($this);
+               $titles = $obj->getTabNameForItem($this, $withtemplate);
                if (!is_array($titles)) {
                   $titles = array(1 => $titles);
                }

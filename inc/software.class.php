@@ -91,34 +91,26 @@ class Software extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+
          $ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[2] = $LANG['software'][19];
          }
 
-         $this->addStandardTab('Infocom', $ong);
-
-         $this->addStandardTab('Contract_Item', $ong);
-
-         $this->addStandardTab('Document', $ong);
-
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket', $ong);
-
-            $this->addStandardTab('Link', $ong);
-
-            $this->addStandardTab('Note', $ong);
-
-            $this->addStandardTab('Reservation', $ong);
-
-            $this->addStandardTab('Log', $ong);
-            if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
-               $ong[21] = $LANG['software'][47];
-            }
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Ticket', $ong, $options);
+         $this->addStandardTab('Link', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Reservation', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
+         if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
+            $ong[21] = $LANG['software'][47];
          }
-      } else { // New item
-         $ong[1]=$LANG['title'][26];
       }
       return $ong;
    }

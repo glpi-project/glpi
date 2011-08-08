@@ -396,11 +396,13 @@ class Ticket extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       $ong = array();
-      $this->addStandardTab('TicketFollowup',$ong);
 
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('TicketValidation', $ong);
-         $this->addStandardTab('TicketTask', $ong);
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('TicketFollowup',$ong, $options);
+         $this->addStandardTab('TicketValidation', $ong, $options);
+         $this->addStandardTab('TicketTask', $ong, $options);
 
          $ong[3] = $LANG['job'][47];
          $ong[4] = $LANG['jobresolution'][2];
@@ -409,13 +411,10 @@ class Ticket extends CommonITILObject {
             $ong[10] = $LANG['satisfaction'][0];
          }
 
-         $this->addStandardTab('Document', $ong);
-
-         $this->addStandardTab('Problem', $ong);
-
-         $this->addStandardTab('Change', $ong);
-
-         $this->addStandardTab('Log', $ong);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Problem', $ong, $options);
+         $this->addStandardTab('Change', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
 
          if (haveRight('observe_ticket','1')) {
             $ong[8] = $LANG['Menu'][13];
@@ -3269,7 +3268,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['joblist'][13].
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
                   break;
 
@@ -3287,7 +3286,7 @@ class Ticket extends CommonITILObject {
                         $num++;
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
+                           Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                      break;
 
                   case "requestbyself" :
@@ -3306,7 +3305,7 @@ class Ticket extends CommonITILObject {
 
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                           Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
             }
 
          } else {
@@ -3323,7 +3322,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['joblist'][13].
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
                   break;
 
@@ -3339,7 +3338,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                   break;
 
                case "tovalidate" :
@@ -3354,7 +3353,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]        = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][19]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][19]."</a>";
 
                   break;
 
@@ -3370,7 +3369,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
 
                   break;
 
@@ -3388,7 +3387,7 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                case "toapprove" :
@@ -3413,7 +3412,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][3]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                case "requestbyself" :
@@ -3429,7 +3428,7 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
             }
          }
 
@@ -3541,7 +3540,8 @@ class Ticket extends CommonITILObject {
                 "/pics/menu_add.png' title=\"". $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8].
                 "\"></a>";
       } else {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;').
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                       Toolbox::append_paramsappend_params($options,'&amp;').
                 "\">".$LANG['title'][10]."</a></th></tr>";
       }
       echo "</th></tr>";
@@ -3550,37 +3550,37 @@ class Ticket extends CommonITILObject {
       $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['tracking'][30]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][30]."</a></td>";
       echo "<td>".$status["new"]."</td></tr>";
 
       $options['contains'][0]    = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['tracking'][31]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][31]."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
 
       $options['contains'][0]    = 'plan';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['tracking'][32]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][32]."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['joblist'][26]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][26]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
 
       $options['contains'][0]    = 'solved';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['job'][15]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['job'][15]."</a></td>";
       echo "<td>".$status["solved"]."</td></tr>";
 
       $options['contains'][0]    = 'closed';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 append_params($options,'&amp;')."\">".$LANG['joblist'][33]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][33]."</a></td>";
       echo "<td>".$status["closed"]."</td></tr>";
 
       echo "</table><br>";
@@ -3615,7 +3615,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
+                Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
          self::commonListHeader(HTML_OUTPUT);
@@ -3763,11 +3763,11 @@ class Ticket extends CommonITILObject {
          if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+                   Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          } else {
             echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+                   Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          }
          echo "</th></tr>";
 
