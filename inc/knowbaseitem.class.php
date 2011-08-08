@@ -404,7 +404,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][15]."</h2>\n";
 
-      $answer = unclean_cross_side_scripting_deep($this->fields["answer"]);
+      $answer = Toolbox::unclean_cross_side_scripting_deep($this->fields["answer"]);
 
       echo "<div id='kbanswer'>".$answer."</div>";
       echo "</td></tr>";
@@ -552,7 +552,7 @@ class KnowbaseItem extends CommonDBTM {
 
       // a search with $contains
       if (strlen($params["contains"])>0) {
-         $search  = unclean_cross_side_scripting_deep($params["contains"]);
+         $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
 
          $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
                      AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
@@ -696,15 +696,15 @@ class KnowbaseItem extends CommonDBTM {
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
                                           " $href>".resume_text($data["name"], 80)."</a></div>
                                           <div class='kb_resume'>".
-                                          resume_text(Html::clean(unclean_cross_side_scripting_deep($data["answer"])),
+                                          resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["answer"])),
                                                       600)."</div>",
                                         $item_num, $row_num);
                } else {
                   echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
                   echo Search::showItem($output_type,
-                     Html::clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
-                                                                                      ENT_QUOTES,
-                                                                                      "UTF-8"))),
+                     Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
+                                                                                               ENT_QUOTES,
+                                                                                               "UTF-8"))),
                                         $item_num, $row_num);
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);

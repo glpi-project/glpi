@@ -288,7 +288,7 @@ class NotificationTemplate extends CommonDBTM {
       $output = "";
 
       //Remove all
-      $string = unclean_cross_side_scripting_deep($string);
+      $string = Toolbox::unclean_cross_side_scripting_deep($string);
 
       //First of all process the FOREACH tag
       if (preg_match_all("/##FOREACH[ ]?(FIRST|LAST)?[ ]?([0-9]*)?[ ]?([a-zA-Z-0-9\.]*)##/i",

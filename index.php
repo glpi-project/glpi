@@ -84,7 +84,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<body>";
    echo "<div id='contenulogin'>";
    echo "<div id='logo-login'>";
-   echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
+   echo nl2br(Toolbox::unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
    echo "</div>";
 
    echo "<div id='boxlogin'>";

@@ -54,7 +54,7 @@ if (!isset($_POST['login_name'])) {
 }
 
 if (isset($_POST['login_password'])) {
-   $_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
+   $_POST['login_password'] = Toolbox::unclean_cross_side_scripting_deep($_POST['login_password']);
 } else {
    $_POST['login_password'] = '';
 }

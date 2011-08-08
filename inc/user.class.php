@@ -479,7 +479,7 @@ class User extends CommonDBTM {
          } else {
             if ($input["password"] == $input["password2"]) {
                $input["password"]
-                     = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                unset($input["password2"]);
 
             } else {
@@ -581,7 +581,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                        = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                        = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
                } else {
                   unset($input["password"]);
