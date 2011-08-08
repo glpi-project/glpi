@@ -587,9 +587,9 @@ abstract class CommonDropdown extends CommonDBTM {
    function refreshParentInfos() {
 
       if (!$this->refresh_page) {
-         refreshDropdownPopupInMainWindow();
+         Ajax::refreshDropdownPopupInMainWindow();
       } else {
-         refreshPopupMainWindow();
+         Ajax::refreshPopupMainWindow();
       }
    }
 }

@@ -100,7 +100,7 @@ class Netpoint extends CommonDropdown {
          $this->add($input);
       }
       Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-      refreshDropdownPopupInMainWindow();
+      Ajax::refreshDropdownPopupInMainWindow();
    }
 
    /**
@@ -314,7 +314,7 @@ class Netpoint extends CommonDropdown {
          initNavigateListItems('Netpoint', $item->getTypeName()."= ".$item->fields['name']);
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
-            addToNavigateListItems('Netpoint',$data["id"]);
+            Toolbox::addToNavigateListItems('Netpoint',$data["id"]);
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {
