@@ -541,7 +541,7 @@ class MailCollector  extends CommonDBTM {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
             $_FILES = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/", $this->fields['filesize_max']);
          } else {
-            logInFile('mailgate', GLPI_DOC_DIR."/_tmp/ is not writable");
+            Toolbox::logInFile('mailgate', GLPI_DOC_DIR."/_tmp/ is not writable");
          }
       }
       //  Who is the user ?
@@ -585,12 +585,12 @@ class MailCollector  extends CommonDBTM {
       $tkt['_head']    = $head;
 
       if (!empty($this->charset) && !$this->body_converted) {
-         $body = encodeInUtf8($body,$this->charset);
+         $body = Toolbox::encodeInUtf8($body,$this->charset);
          $this->body_converted = true;
       }
 
-      if (!seems_utf8($body)) {
-         $tkt['content'] = encodeInUtf8($body);
+      if (!Toolbox::seems_utf8($body)) {
+         $tkt['content'] = Toolbox::encodeInUtf8($body);
       } else {
          $tkt['content'] = $body;
       }

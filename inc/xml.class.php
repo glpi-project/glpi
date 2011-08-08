@@ -176,7 +176,7 @@ class XML {
                      $Attributes = " fieldname=\"".$FieldsVector[$j]."\"";
                }
                fputs($fp, "         <".$FieldName.$Attributes.">".
-                     encodeInUtf8(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
+                     Toolbox::encodeInUtf8(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
             }
             fputs($fp, "      </row>\n");
          }

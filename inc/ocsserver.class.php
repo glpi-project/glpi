@@ -1421,7 +1421,7 @@ class OcsServer extends CommonDBTM {
       foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
          if (isset($ocs_fields[$ocs_field])) {
             $table     = getTableNameForForeignKeyField($glpi_field);
-            $ocs_field = encodeInUtf8($ocs_field);
+            $ocs_field = Toolbox::encodeInUtf8($ocs_field);
 
             //Field a a foreing key
             if ($table != '') {
@@ -1897,8 +1897,8 @@ class OcsServer extends CommonDBTM {
                $osname = $line["OSNAME"];
 
                // Hack for OCS encoding problems
-               if (!$options['cfg_ocs']["ocs_db_utf8"] && !seems_utf8($osname)) {
-                  $osname = encodeInUtf8($osname);
+               if (!$options['cfg_ocs']["ocs_db_utf8"] && !Toolbox::seems_utf8($osname)) {
+                  $osname = Toolbox::encodeInUtf8($osname);
                }
                $compupdate["operatingsystems_id"] = Dropdown::importExternal('OperatingSystem',
                                                                              $osname);
@@ -2034,8 +2034,8 @@ class OcsServer extends CommonDBTM {
             if (!in_array("operatingsystems_id", $computer_updates)) {
                $osname=$line["OSNAME"];
                // Hack for OCS encoding problems
-               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($osname)) {
-                  $osname = encodeInUtf8($osname);
+               if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($osname)) {
+                  $osname = Toolbox::encodeInUtf8($osname);
                }
                $compupdate["operatingsystems_id"] = Dropdown::importExternal('OperatingSystem',
                                                                              $osname);
@@ -3880,8 +3880,8 @@ class OcsServer extends CommonDBTM {
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
-                     if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($line2["NAME"])) {
-                     $line2["NAME"] = encodeInUtf8($line2["NAME"]);
+                     if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($line2["NAME"])) {
+                     $line2["NAME"] = Toolbox::encodeInUtf8($line2["NAME"]);
                      }
                      $snd["designation"] = $line2["NAME"];
                      if (!in_array(stripslashes($prevalue.$snd["designation"]), $import_device)) {
@@ -4792,18 +4792,18 @@ class OcsServer extends CommonDBTM {
                $initname = $data2["INITNAME"];
 
                // Hack for OCS encoding problems
-               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($initname)) {
-                  $initname = encodeInUtf8($initname);
+               if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($initname)) {
+                  $initname = Toolbox::encodeInUtf8($initname);
                }
                $name = $data2["NAME"];
                // Hack for OCS encoding problems
-               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($name)) {
-                  $name = encodeInUtf8($name);
+               if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($name)) {
+                  $name = Toolbox::encodeInUtf8($name);
                }
 
                // Hack for OCS encoding problems
-               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($data2["PUBLISHER"])) {
-                  $data2["PUBLISHER"] = encodeInUtf8($data2["PUBLISHER"]);
+               if (!$cfg_ocs["ocs_db_utf8"] && !Toolbox::seems_utf8($data2["PUBLISHER"])) {
+                  $data2["PUBLISHER"] = Toolbox::encodeInUtf8($data2["PUBLISHER"]);
                }
 
                $version       = $data2["VERSION"];
@@ -5352,8 +5352,8 @@ class OcsServer extends CommonDBTM {
                      $line  = clean_cross_side_scripting_deep(addslashes_deep($line));
                      $print = array();
                      // TO TEST : PARSE NAME to have real name.
-                     if (!seems_utf8($line["NAME"])){
-                        $print["name"] = encodeInUtf8($line["NAME"]);
+                     if (!Toolbox::seems_utf8($line["NAME"])){
+                        $print["name"] = Toolbox::encodeInUtf8($line["NAME"]);
                      } else {
                         $print["name"] = $line["NAME"];
                      }
@@ -5386,7 +5386,7 @@ class OcsServer extends CommonDBTM {
                            }
 
 //                            if (isset($res_rule['is_global'])) {
-//                               logDebug($res_rule);
+//                               Toolbox::logDebug($res_rule);
 //                            }
 
                            if (isset($res_rule['is_global'])) {
@@ -5429,7 +5429,7 @@ class OcsServer extends CommonDBTM {
                                     $input["entities_id"] = $entity;
 
 //                                     if (isset($res_rule['is_global'])) {
-//                                        logDebug("global",$input);
+//                                        Toolbox::logDebug("global",$input);
 //                                     }
                                     $id_printer = $p->add($input);
                                  }
@@ -5446,7 +5446,7 @@ class OcsServer extends CommonDBTM {
                                  $input["entities_id"] = $entity;
 
 //                                  if (isset($res_rule['is_global'])) {
-//                                     logDebug("unitary",$input);
+//                                     Toolbox::logDebug("unitary",$input);
 //                                  }
                                  $id_printer = $p->add($input);
                               }
@@ -5501,8 +5501,8 @@ class OcsServer extends CommonDBTM {
                      $line   = clean_cross_side_scripting_deep(addslashes_deep($line));
                      $periph = array();
 
-                     if (!seems_utf8($line["CAPTION"])){
-                        $periph["name"] = encodeInUtf8($line["CAPTION"]);
+                     if (!Toolbox::seems_utf8($line["CAPTION"])){
+                        $periph["name"] = Toolbox::encodeInUtf8($line["CAPTION"]);
                      } else {
                         $periph["name"] = $line["CAPTION"];
                      }

@@ -116,7 +116,7 @@ function __autoload($classname) {
 
    } else if (!isset($notfound["x$classname"])) {
       // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-      //logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
+      //Toolbox::logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
       trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
       $notfound["x$classname"] = true;
    }

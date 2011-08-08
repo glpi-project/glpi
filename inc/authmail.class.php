@@ -262,8 +262,8 @@ class AuthMail extends CommonDBTM {
    static function testAuth($connect_string, $login, $password) {
 
       $auth = new Auth();
-      return $auth->connection_imap($connect_string, decodeFromUtf8($login),
-                                    decodeFromUtf8($password));
+      return $auth->connection_imap($connect_string, Toolbox::decodeFromUtf8($login),
+                                    Toolbox::decodeFromUtf8($password));
    }
 
 
@@ -280,12 +280,12 @@ class AuthMail extends CommonDBTM {
 
       if (isset($mail_method["connect_string"]) && !empty($mail_method["connect_string"])) {
          $auth->auth_succeded = $auth->connection_imap($mail_method["connect_string"],
-                                                       decodeFromUtf8($login),
-                                                       decodeFromUtf8($password));
+                                                       Toolbox::decodeFromUtf8($login),
+                                                       Toolbox::decodeFromUtf8($password));
          if ($auth->auth_succeded) {
             $auth->extauth = 1;
             $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
-            $auth->user->getFromIMAP($mail_method, decodeFromUtf8($login));
+            $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
             //Update the authentication method for the current user
             $auth->user->fields["authtype"] = Auth::MAIL;
             $auth->user->fields["auths_id"] = $mail_method["id"];

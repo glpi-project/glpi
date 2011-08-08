@@ -197,7 +197,7 @@ class DBmysql {
             }
 
             $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
-            logInFile("sql-errors", $error."\n");
+            Toolbox::logInFile("sql-errors", $error."\n");
 
             if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();

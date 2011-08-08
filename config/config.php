@@ -138,13 +138,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       ini_set('display_errors','On');
       // Recommended development settings
       error_reporting(E_ALL | E_STRICT);
-      set_error_handler('userErrorHandlerDebug');
+      set_error_handler(array('Toolbox','userErrorHandlerDebug'));
 
    } else {
       // Recommended production settings
       ini_set('display_errors','Off');
       error_reporting(E_ALL);
-      set_error_handler('userErrorHandlerNormal');
+      set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
    }
 
    if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {

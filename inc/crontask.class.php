@@ -747,32 +747,32 @@ class CronTask extends CommonDBTM{
                if (is_callable($fonction)) {
                   if ($crontask->start()) { // Lock in DB + log start
                      $taskname = $crontask->fields['name'];
-                     logInFile('cron', $prefix."Launch ".$crontask->fields['name']."\n");
+                     Toolbox::logInFile('cron', $prefix."Launch ".$crontask->fields['name']."\n");
                      $retcode = call_user_func($fonction, $crontask);
                      $crontask->end($retcode); // Unlock in DB + log end
                   } else {
-                     logInFile('cron', $prefix."Can't start ".$crontask->fields['name']."\n");
+                     Toolbox::logInFile('cron', $prefix."Can't start ".$crontask->fields['name']."\n");
                   }
 
                } else {
                   if (is_array($fonction)) {
                      $fonction = implode('::',$fonction);
                   }
-                  logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
-                  logInFile('cron',
+                  Toolbox::logInFile('php-errors', "Undefined function '$fonction' (for cron)\n");
+                  Toolbox::logInFile('cron',
                             $prefix."Can't start ".$crontask->fields['name'].
                               "\nUndefined function '$fonction'\n");
                }
 
             } else if ($i==1) {
-               logInFile('cron', $prefix."Nothing to launch\n");
+               Toolbox::logInFile('cron', $prefix."Nothing to launch\n");
             }
          } // end for
          $_SESSION["glpicronuserrunning"]='';
          self::release_lock();
 
       } else {
-         logInFile('cron', "Can't get DB lock'\n");
+         Toolbox::logInFile('cron', "Can't get DB lock'\n");
       }
 
       return $taskname;
