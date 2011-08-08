@@ -117,7 +117,7 @@ class ConsumableItem extends CommonDBTM {
       if ($this->isNewItem()) {
          $ong['empty'] = $this->getTypeName();
       } else {
-         $this->addStandardTab('ConsumableItem', $ong, $options);
+         $this->addStandardTab('Consumable', $ong, $options);
          $this->addStandardTab('Infocom', $ong, $options);
          $this->addStandardTab('Document',$ong, $options);
          $this->addStandardTab('Link',$ong, $options);
@@ -416,36 +416,6 @@ class ConsumableItem extends CommonDBTM {
       $options['consumables']  = array($item);
       NotificationEvent::debugEvent(new Consumable(), $options);
    }
-
-
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
-      if (haveRight("consumable","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][32], self::countForItem($item));
-         }
-         return $LANG['Menu'][32];
-      }
-      return '';
-   }
-
-
-   static function countForItem(CommonDBTM $item) {
-
-      $restrict = "`glpi_consumables`.`consumableitems_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_consumables'), $restrict);
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      Consumable::showForItem($item);
-      Consumable::showForItem($item, 1);
-      return true;
-   }
-
 
 }
 

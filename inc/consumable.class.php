@@ -375,7 +375,7 @@ class Consumable extends CommonDBTM {
     *
     *@return Nothing (displays)
     **/
-   static function showForItem (ConsumableItem $consitem, $show_old=0) {
+   static function showForConsumableItem (ConsumableItem $consitem, $show_old=0) {
       global $DB, $CFG_GLPI, $LANG;
 
       $tID = $consitem->getField('id');
@@ -613,6 +613,42 @@ class Consumable extends CommonDBTM {
          echo "<div class='center b'>".$LANG['consumables'][7]."</div>";
       }
    }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate && haveRight("consumable","r")) {
+         switch ($item->getType()) {
+            case 'ConsumableItem' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['Menu'][32], self::countForConsumableItem($item));
+               }
+               return $LANG['Menu'][32];
+         }
+      }
+      return '';
+   }
+
+
+   static function countForConsumableItem(ConsumableItem $item) {
+
+      $restrict = "`glpi_consumables`.`consumableitems_id` = '".$item->getField('id') ."'";
+
+      return countElementsInTable(array('glpi_consumables'), $restrict);
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+         switch ($item->getType()) {
+            case 'ConsumableItem' :
+               self::showForConsumableItem($item);
+               self::showForConsumableItem($item, 1);
+               return true;
+         }
+   }
+
 }
 
 ?>
