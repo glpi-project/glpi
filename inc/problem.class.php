@@ -206,30 +206,31 @@ class Problem extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
-      $ong[1] = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
 
+         $this->addStandardTab('Ticket', $ong, $options);
 
-         $this->addStandardTab('Ticket', $ong);
-
-         $this->addStandardTab('Change', $ong);
+         $this->addStandardTab('Change', $ong, $options);
 
          // Analysis
          $ong[3] = $LANG['problem'][3];
          // Tasks
-         $this->addStandardTab('ProblemTask', $ong);
+         $this->addStandardTab('ProblemTask', $ong, $options);
          // Hardware
          $ong[7] = $LANG['common'][96];
          // Documents
-         $this->addStandardTab('Document', $ong);
+         $this->addStandardTab('Document', $ong, $options);
          // Solution
          $ong[4] = $LANG['jobresolution'][2];
 
-         $this->addStandardTab('Note', $ong);
+         $this->addStandardTab('Note', $ong, $options);
 
          /// TODO add stats
 
-         $this->addStandardTab('Log', $ong);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }

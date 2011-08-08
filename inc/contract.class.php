@@ -83,16 +83,15 @@ class Contract extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('Contract_Supplier', $ong);
-         $this->addStandardTab('Contract_Item', $ong);
-         $this->addStandardTab('Document', $ong);
-         $this->addStandardTab('Link', $ong);
-         $this->addStandardTab('Note', $ong);
-         $this->addStandardTab('Log', $ong);
-
-      } else { // New item
-         $ong[1] = $LANG['title'][26];
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('Contract_Supplier', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Link', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }

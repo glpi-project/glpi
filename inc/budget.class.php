@@ -62,21 +62,16 @@ class Budget extends CommonDropdown{
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['title'][26];
 
-      if ($this->fields['id'] > 0) {
-
-         $this->addStandardTab('Document',$ong);
-
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $ong[2] = $LANG['common'][96];
-
-            $this->addStandardTab('Link',$ong);
-
-            $this->addStandardTab('Note',$ong);
-
-            $this->addStandardTab('Log',$ong);
-         }
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
+         $this->addStandardTab('Document',$ong, $options);
+         $ong[2] = $LANG['common'][96];
+         $this->addStandardTab('Link',$ong, $options);
+         $this->addStandardTab('Note',$ong, $options);
+         $this->addStandardTab('Log',$ong, $options);
       }
 
       return $ong;

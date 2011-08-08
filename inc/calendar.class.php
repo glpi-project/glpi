@@ -66,12 +66,11 @@ class Calendar extends CommonDropdown {
 
       $ong = array();
 
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('CalendarSegment', $ong);
-         $this->addStandardTab('Calendar_Holiday', $ong);
-
-      } else { // New item
+      if ($this->isNewItem()) {
          $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('CalendarSegment', $ong, $options);
+         $this->addStandardTab('Calendar_Holiday', $ong, $options);
       }
 
       return $ong;

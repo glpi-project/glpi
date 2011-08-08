@@ -151,9 +151,11 @@ class MailCollector  extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('Log',$ong);
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
+         $this->addStandardTab('Log',$ong, $options);
       }
       return $ong;
    }
@@ -682,7 +684,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
-      $tkt['content']         = clean_cross_side_scripting_deep(html_clean($tkt['content']));
+      $tkt['content']         = clean_cross_side_scripting_deep(Html::clean($tkt['content']));
 
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
@@ -788,7 +790,7 @@ class MailCollector  extends CommonDBTM {
     ///Connect To the Mail Box
    function connect() {
       $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                  decrypt($this->fields['passwd'],GLPIKEY), 1);
+                                  Toolbox::decrypt($this->fields['passwd'],GLPIKEY), 1);
    }
 
 
