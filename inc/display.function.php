@@ -2717,7 +2717,7 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
    for ($i=1 ; $i<=12 ; $i++) {
       $val = '-'.$i.'MONTH';
       echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo "- $i ".$LANG['financial'][57]."</option>";
+      echo "- $i ".$LANG['calendar'][14]."</option>";
    }
 
    for ($i=1 ; $i<=10 ; $i++) {
@@ -2750,7 +2750,7 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
       for ($i=1 ; $i<=12 ; $i++) {
          $val = $i.'MONTH';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
-         echo "+ $i ".$LANG['financial'][57]."</option>";
+         echo "+ $i ".$LANG['calendar'][14]."</option>";
       }
 
       for ($i=1 ; $i<=10 ; $i++) {

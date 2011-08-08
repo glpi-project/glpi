@@ -132,7 +132,7 @@ $LANG['calendar'][10] = "Plages horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
 $LANG['calendar'][12] = "jour(s)";
 $LANG['calendar'][13] = "semaine(s)";
-
+$LANG['calendar'][14] = "mois";  // doit rester pour les langues etrangeres (correspond à mois(s)
 $LANG['calendar'][15] = "année(s)";
 $LANG['calendar'][16] = "Maintenant";
 $LANG['calendar'][17] = "Spécifier une date";
