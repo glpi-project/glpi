@@ -665,7 +665,7 @@ class Supplier extends CommonDBTM {
          echo "</td><td class='center'>".$data["num"]."</td>";
          echo "<td class='center'>".
                 Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"])."</td>";
-         echo "<td class='center'>".convDate($data["begin_date"])."</td>";
+         echo "<td class='center'>".Toolbox::convDate($data["begin_date"])."</td>";
          echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
 
          if ($data["begin_date"]!='' && !empty($data["begin_date"])) {

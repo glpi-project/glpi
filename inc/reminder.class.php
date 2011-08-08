@@ -476,7 +476,7 @@ class Reminder extends CommonDBTM {
    static function getAlreadyPlannedInformation($val) {
       global $CFG_GLPI;
 
-      $out  = self::getTypeName().' : '.convDateTime($val["begin"]).' -> '.
+      $out  = self::getTypeName().' : '.Toolbox::convDateTime($val["begin"]).' -> '.
               Toolbox::convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                $val["reminders_id"]."'>";
@@ -653,7 +653,8 @@ class Reminder extends CommonDBTM {
                      "&amp;type=day'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
                      Toolbox::ucfirst($LANG['log'][16]).
-                     "\" title=\"".convDateTime($data["begin"])."=>".convDateTime($data["end"])."\">";
+                     "\" title=\"".Toolbox::convDateTime($data["begin"])."=>".
+                     Toolbox::convDateTime($data["end"])."\">";
                echo "</a></span>";
             }
 
@@ -785,13 +786,13 @@ class Reminder extends CommonDBTM {
                }
 
                echo "</td>";
-               echo "<td class='center' >".convDateTime($val["begin"]);
-               echo "<br>".convDateTime($val["end"])."";
+               echo "<td class='center' >".Toolbox::convDateTime($val["begin"]);
+               echo "<br>".Toolbox::convDateTime($val["end"])."";
 
             } else {
                echo "<td>&nbsp;</td>";
                echo "<td class='center'>";
-               echo "<span style='color:#aaaaaa;'>".convDateTime($val["begin"])."</span>";
+               echo "<span style='color:#aaaaaa;'>".Toolbox::convDateTime($val["begin"])."</span>";
             }
             echo "</td></tr>\n";
          }

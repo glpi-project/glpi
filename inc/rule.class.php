@@ -248,7 +248,7 @@ class Rule extends CommonDBTM {
 
       if (!$this->isNewID($ID)) {
          echo "<br>".$LANG['common'][26]."&nbsp;:&nbsp;";
-         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"])
+         echo ($this->fields["date_mod"] ? Toolbox::convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
       }
       echo"</td></tr>\n";
