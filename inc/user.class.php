@@ -186,8 +186,9 @@ class User extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      // No add process
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
          $ong[1] = $LANG['users'][14]; // principal
          $ong[4] = $LANG['Menu'][36];
          if (haveRight('user','w')
@@ -196,19 +197,14 @@ class User extends CommonDBTM {
          }
          $ong[2] = $LANG['common'][96]; // materiel
 
-         $this->addStandardTab('Ticket', $ong);
-
-         $this->addStandardTab('Document', $ong);
-
-         $this->addStandardTab('Reservation', $ong);
+         $this->addStandardTab('Ticket', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Reservation', $ong, $options);
 
          if (haveRight("user_authtype", "w")) {
             $ong[12] = $LANG['ldap'][12];
          }
-         $this->addStandardTab('Log', $ong);
-
-      } else { // New item
-         $ong[1] = $LANG['title'][26];
+         $this->addStandardTab('Log', $ong, $options);
       }
 
       return $ong;

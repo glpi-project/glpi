@@ -108,17 +108,16 @@ class SoftwareLicense extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
          $ong[2] = $LANG['Menu'][0];
 
-         $this->addStandardTab('Infocom', $ong);
-
-         $this->addStandardTab('Contract_Item', $ong);
-
-         $this->addStandardTab('Document', $ong);
-
-         $this->addStandardTab('Log', $ong);
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }
