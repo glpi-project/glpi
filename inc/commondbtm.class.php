@@ -1850,6 +1850,16 @@ class CommonDBTM extends CommonGLPI {
       return (empty($ID) || $ID<=0);
    }
 
+   /**
+    * is the current object a new  one
+    *
+    * @since version 0.83
+    *
+    * @return boolean
+    */
+   function isNewItem() {
+      return $this->isNewID($this->fields['id']);
+   }
 
    /**
     * Check right on an item
@@ -2702,7 +2712,7 @@ class CommonDBTM extends CommonGLPI {
                         $result = false;
                      }
                      if($fields['action_notify']) {
-                        $params = array('message'     => html_clean($message_text),
+                        $params = array('message'     => Html::clean($message_text),
                                         'action_type' => $add,
                                         'action_user' => getUserName(getLoginUserID()),
                                         'entities_id' => $entities_id,

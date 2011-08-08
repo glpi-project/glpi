@@ -82,13 +82,15 @@ class Computer extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
 
          // All devices : use one to define tab
-         $this->addStandardTab('DeviceProcessor',$ong);
+         $this->addStandardTab('DeviceProcessor',$ong, $options);
 
-         $this->addStandardTab('ComputerDisk',$ong);
-         $this->addStandardTab('Software',$ong);
+         $this->addStandardTab('ComputerDisk',$ong, $options);
+         $this->addStandardTab('Software',$ong, $options);
 
          if (haveRight("networking","r")
              || haveRight("printer","r")
@@ -96,38 +98,30 @@ class Computer extends CommonDBTM {
              || haveRight("peripheral","r")
              || haveRight("phone","r")) {
 
-            $this->addStandardTab('NetworkPort', $ong);
          }
+         $this->addStandardTab('Computer_Item', $ong, $options);
+         $this->addStandardTab('NetworkPort', $ong, $options);
 
-         $this->addStandardTab('Infocom', $ong);
-         $this->addStandardTab('Contract_Item', $ong);
-         $this->addStandardTab('Document',$ong);
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document',$ong, $options);
 
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('ComputerVirtualMachine',$ong);
+         $this->addStandardTab('ComputerVirtualMachine',$ong, $options);
 
-            if ($CFG_GLPI["use_ocs_mode"]) {
-               $ong[14] = $LANG['title'][43];
-            }
-            $this->addStandardTab('Ticket',$ong);
-
-            $this->addStandardTab('Link',$ong);
-
-            $this->addStandardTab('Note',$ong);
-
-            $this->addStandardTab('Reservation',$ong);
-
-            $this->addStandardTab('Log',$ong);
-
-            if ($CFG_GLPI["use_ocs_mode"]
-                && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
-
-               $ong[13] = $LANG['ocsconfig'][0];
-            }
+         if ($CFG_GLPI["use_ocs_mode"]) {
+            $ong[14] = $LANG['title'][43];
          }
+         $this->addStandardTab('Ticket',$ong, $options);
+         $this->addStandardTab('Link',$ong, $options);
+         $this->addStandardTab('Note',$ong, $options);
+         $this->addStandardTab('Reservation',$ong, $options);
+         $this->addStandardTab('Log',$ong, $options);
 
-      } else { // New item
-         $ong[1] = $LANG['title'][26];
+         if ($CFG_GLPI["use_ocs_mode"]
+             && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
+
+            $ong[13] = $LANG['ocsconfig'][0];
+         }
       }
       return $ong;
    }

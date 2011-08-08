@@ -57,14 +57,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $ong = array();
 
-      if ($this->getID()>0) {
-         $this->addStandardTab($this->getType(), $ong);
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab($this->getType(), $ong, $options);
 
          if ($this->dohistory) {
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log',$ong, $options);
          }
-      } else {
-         $ong['empty'] = $this->getTypeName();
       }
 
       return $ong;

@@ -177,9 +177,12 @@ class NetworkPort extends CommonDBChild {
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
-      $ong[1]  = $LANG['title'][26];
-      $this->addStandardTab('Log',$ong);
-
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1]  = $LANG['title'][26];
+         $this->addStandardTab('Log', $ong, $options);
+      }
       return $ong;
    }
 

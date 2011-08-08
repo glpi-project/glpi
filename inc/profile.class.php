@@ -86,15 +86,15 @@ class Profile extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      if (!$this->fields['id']) {
-         $ong[1] = $LANG['common'][12];
+      if ($this->isNewItem()) {
+         $ong['empty'] = $LANG['common'][12];
 
       } else if ($this->fields['interface']=='helpdesk') {
          $ong[1] = $LANG['Menu'][31]; // Helpdesk
          if (haveRight("user","r")) {
             $ong[4] = $LANG['Menu'][14];
          }
-         $this->addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong, $options);
 
       } else {
          $ong[1] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
@@ -104,7 +104,7 @@ class Profile extends CommonDBTM {
          if (haveRight("user","r")) {
             $ong[4] = $LANG['Menu'][14];
          }
-         $this->addStandardTab('Log',$ong);
+         $this->addStandardTab('Log',$ong, $options);
       }
       return $ong;
    }

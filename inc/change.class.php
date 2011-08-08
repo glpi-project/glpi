@@ -205,12 +205,13 @@ class Change extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
-      $ong[1] = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
+         $this->addStandardTab('Problem', $ong, $options);
 
-         $this->addStandardTab('Problem', $ong);
-
-         $this->addStandardTab('Ticket', $ong);
+         $this->addStandardTab('Ticket', $ong, $options);
 
          // Analysis
          $ong[3] = $LANG['problem'][3];
@@ -219,22 +220,22 @@ class Change extends CommonITILObject {
          $ong[5] = $LANG['change'][7];
 
          // Tasks
-         $this->addStandardTab('ChangeTask', $ong);
+         $this->addStandardTab('ChangeTask', $ong, $options);
 
          // Solution
          $ong[4] = $LANG['jobresolution'][2];
 
          // Documents
-         $this->addStandardTab('Document', $ong);
+         $this->addStandardTab('Document', $ong, $options);
 
          // Hardware
          $ong[7] = $LANG['common'][96];
 
          /// TODO add stats
 
-         $this->addStandardTab('Note', $ong);
+         $this->addStandardTab('Note', $ong, $options);
 
-         $this->addStandardTab('Log', $ong);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }

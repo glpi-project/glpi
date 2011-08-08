@@ -141,14 +141,13 @@ class Document extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('Document_Item', $ong);
-         $this->addStandardTab('Document', $ong);
-         $this->addStandardTab('Note', $ong);
-         $this->addStandardTab('Log', $ong);
-
-      } else { // New item
+      if ($this->isNewItem()) {
          $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('Document_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
 
       return $ong;

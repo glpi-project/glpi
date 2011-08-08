@@ -81,8 +81,13 @@ class AuthMail extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $this->addStandardTab('authMail',$ong);
-      $this->addStandardTab('Log',$ong);
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('authMail',$ong, $options);
+         $this->addStandardTab('Log',$ong, $options);
+      }
+
 
       return $ong;
    }

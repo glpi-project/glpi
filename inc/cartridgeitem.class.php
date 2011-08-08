@@ -118,16 +118,15 @@ class CartridgeItem extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('CartridgeItem', $ong);
-         $this->addStandardTab('PrinterModel', $ong);
-         $this->addStandardTab('Infocom', $ong);
-         $this->addStandardTab('Document',$ong);
-
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Link',$ong);
-            $this->addStandardTab('Note',$ong);
-         }
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('CartridgeItem', $ong, $options);
+         $this->addStandardTab('PrinterModel', $ong, $options);
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Document',$ong, $options);
+         $this->addStandardTab('Link',$ong, $options);
+         $this->addStandardTab('Note',$ong, $options);
       }
       return $ong;
    }

@@ -65,9 +65,9 @@ abstract class CommonDropdown extends CommonDBTM {
       $ong = array();
       $ong['empty'] = $this->getTypeName();
 
-      if ($this->getID()>0) {
+      if (!$this->isNewItem()) {
          if ($this->dohistory) {
-            $this->addStandardTab('Log',$ong);
+            $this->addStandardTab('Log',$ong, $options);
          }
       }
 

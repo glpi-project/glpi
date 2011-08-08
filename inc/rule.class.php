@@ -1852,10 +1852,12 @@ class Rule extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];
 
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('Log',$ong);
+      if ($this->isNewItem()) {
+         $ong['empty'] = $this->getTypeName();
+      } else {
+         $ong[1] = $LANG['title'][26];
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }

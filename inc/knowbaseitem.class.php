@@ -79,7 +79,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $ong    = array();
       $ong[1] = $this->getTypeName();
-      $this->addStandardTab('Document',$ong);
+      $this->addStandardTab('Document', $ong, $options);
 
       return $ong;
    }
@@ -695,15 +695,15 @@ class KnowbaseItem extends CommonDBTM {
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
                                           " $href>".resume_text($data["name"], 80)."</a></div>
                                           <div class='kb_resume'>".
-                                          resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),
+                                          resume_text(Html::clean(unclean_cross_side_scripting_deep($data["answer"])),
                                                       600)."</div>",
                                         $item_num, $row_num);
                } else {
                   echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
                   echo Search::showItem($output_type,
-                     html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
-                                                                                     ENT_QUOTES,
-                                                                                     "UTF-8"))),
+                     Html::clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
+                                                                                      ENT_QUOTES,
+                                                                                      "UTF-8"))),
                                         $item_num, $row_num);
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);

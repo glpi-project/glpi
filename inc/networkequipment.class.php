@@ -77,22 +77,18 @@ class NetworkEquipment extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->fields['id'] > 0) {
-         $this->addStandardTab('NetworkPort', $ong);
-         $this->addStandardTab('Infocom', $ong);
-         $this->addStandardTab('Contract_Item', $ong);
-         $this->addStandardTab('Document', $ong);
-
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $this->addStandardTab('Ticket', $ong);
-            $this->addStandardTab('Link', $ong);
-            $this->addStandardTab('Note', $ong);
-            $this->addStandardTab('Reservation', $ong);
-            $this->addStandardTab('Log', $ong);
-         }
-
-      } else { // New item
+      if ($this->isNewItem()) {
          $ong['empty'] = $this->getTypeName();
+      } else {
+         $this->addStandardTab('NetworkPort', $ong, $options);
+         $this->addStandardTab('Infocom', $ong, $options);
+         $this->addStandardTab('Contract_Item', $ong, $options);
+         $this->addStandardTab('Document', $ong, $options);
+         $this->addStandardTab('Ticket', $ong, $options);
+         $this->addStandardTab('Link', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Reservation', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }

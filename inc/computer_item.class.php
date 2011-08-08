@@ -64,6 +64,20 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
+    * Count connection for a Computer
+    *
+    * @param $comp Computer
+    *
+    * @return integer: count
+   **/
+   static function countForComputer(Computer $comp) {
+
+      return countElementsInTable('glpi_computers_items',
+                                  "`computers_id` ='".$comp->getField('id')."'");
+   }
+
+
+   /**
     * Check right on an item - overloaded to check is_global
     *
     * @param $ID ID of the item (-1 if new item)
@@ -341,9 +355,10 @@ class Computer_Item extends CommonDBRelation{
    *
    *@return Nothing (call to classes members)
    **/
-   static function showForComputer($target, Computer $comp, $withtemplate='') {
+   static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI, $LANG;
 
+      $target = $comp->getFormURL();
       $ID = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
 
@@ -688,6 +703,12 @@ class Computer_Item extends CommonDBRelation{
                   return self::createTabEntry($LANG['title'][27], self::countForItem($item));
                }
                return $LANG['title'][27];
+
+            case 'Computer' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['title'][27], self::countForComputer($item));
+               }
+               return $LANG['title'][27];
          }
       }
       return '';
@@ -702,6 +723,10 @@ class Computer_Item extends CommonDBRelation{
          case 'Peripheral' :
          case 'Monitor' :
             self::showForItem($item);
+            return true;
+
+         case 'Computer' :
+            self::showForComputer($item);
             return true;
       }
    }

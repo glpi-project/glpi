@@ -422,7 +422,7 @@ class CommonGLPI {
          // Object with class with 'addtabon' attribute
          if (isset(self::$othertabs[$this->getType()])) {
             foreach(self::$othertabs[$this->getType()] as $typetab) {
-               $this->addStandardTab($typetab, $onglets);
+               $this->addStandardTab($typetab, $onglets, $options);
             }
          }
 
