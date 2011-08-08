@@ -322,7 +322,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       if (haveRight("show_all_ticket","1")) {
@@ -2624,7 +2624,7 @@ class Ticket extends CommonITILObject {
       if ($canupdate) {
          showDateTimeFormItem("date", $date, 1, false);
       } else {
-         echo convDateTime($date);
+         echo Toolbox::convDateTime($date);
       }
 
       echo "</td></tr>";
@@ -2664,7 +2664,7 @@ class Ticket extends CommonITILObject {
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
             echo "<span class='tracking_small'>&nbsp;";
-            echo convDateTime($this->fields["due_date"])."</span>";
+            echo Toolbox::convDateTime($this->fields["due_date"])."</span>";
 
             echo "</td></tr><tr><td><span class='tracking_small'>".$LANG['sla'][1]."&nbsp;:</span>";
             echo "</td><td><span class='tracking_small'>";
@@ -2679,7 +2679,7 @@ class Ticket extends CommonITILObject {
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
                $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
-                              convDateTime($nextaction->fields['date']).'<br>';
+                              Toolbox::convDateTime($nextaction->fields['date']).'<br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
                   $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
                                  $slalevel->getName().'<br>';
@@ -3905,7 +3905,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['closedate']);
+            $second_col .= Toolbox::convDateTime($job->fields['closedate']);
 
          } else if ($job->fields['status']=='solved') {
             $second_col = $LANG['joblist'][14];
@@ -3914,7 +3914,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['solvedate']);
+            $second_col .= Toolbox::convDateTime($job->fields['solvedate']);
 
          } else if ($job->fields['begin_waiting_date']) {
             $second_col = $LANG['joblist'][15];
@@ -3923,7 +3923,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['begin_waiting_date']);
+            $second_col .= Toolbox::convDateTime($job->fields['begin_waiting_date']);
 
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
@@ -3932,7 +3932,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['due_date']);
+            $second_col .= Toolbox::convDateTime($job->fields['due_date']);
 
          } else {
             $second_col = $LANG['joblist'][11];
@@ -3941,13 +3941,13 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= convDateTime($job->fields['date']);
+            $second_col .= Toolbox::convDateTime($job->fields['date']);
          }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
 
          // Second BIS column
-         $second_col = convDateTime($job->fields["date_mod"]);
+         $second_col = Toolbox::convDateTime($job->fields["date_mod"]);
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
 
          // Second TER column

@@ -65,10 +65,10 @@ class Software extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && $item->getID() && haveRight("software","r")) {
+      if ($item->getType() == 'Computer' && haveRight("software","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][4],
                                         countElementsInTable('glpi_computers_softwareversions',
@@ -249,16 +249,16 @@ class Software extends CommonDBTM {
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template   = "newcomp";
          $datestring = $LANG['computers'][14] . "&nbsp;: ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = Toolbox::convDateTime($_SESSION["glpi_currenttime"]);
 
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template   = "newtemplate";
          $datestring = $LANG['computers'][14] . "&nbsp;: ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = Toolbox::convDateTime($_SESSION["glpi_currenttime"]);
 
       } else {
          $datestring = $LANG['common'][26] . "&nbsp;: ";
-         $date       = convDateTime($this->fields["date_mod"]);
+         $date       = Toolbox::convDateTime($this->fields["date_mod"]);
          $template   = false;
       }
 
