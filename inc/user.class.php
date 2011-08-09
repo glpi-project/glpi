@@ -1777,7 +1777,6 @@ class User extends CommonDBTM {
       $tab[17]['field']         = 'language';
       $tab[17]['name']          = $LANG['setup'][41];
       $tab[17]['datatype']      = 'language';
-      $tab[17]['massiveaction'] = false;
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
