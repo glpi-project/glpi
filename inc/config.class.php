@@ -332,7 +332,7 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (haveRight("transfer","w") && isMultiEntitiesMode()) {
+      if (haveRight("transfer","w") && Toolbox::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
@@ -978,7 +978,7 @@ class Config extends CommonDBTM {
       }
       echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n\n";
 
-      checkWriteAccessToDirs(true);
+      Toolbox::checkWriteAccessToDirs(true);
 
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {

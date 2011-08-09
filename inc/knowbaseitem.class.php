@@ -223,7 +223,7 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<p class='center'>";
 
-         if (isMultiEntitiesMode()) {
+         if (Toolbox::isMultiEntitiesMode()) {
             echo $LANG['entity'][0]."&nbsp;: ";
             Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
                                            'comments' => 0 ));
@@ -538,7 +538,7 @@ class KnowbaseItem extends CommonDBTM {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
       } else {
          // Anonymous access
-         if (isMultiEntitiesMode()) {
+         if (Toolbox::isMultiEntitiesMode()) {
             $where = " (`glpi_knowbaseitems`.`entities_id` = '0'
                         AND `glpi_knowbaseitems`.`is_recursive` = '1')
                         AND ";
@@ -772,7 +772,7 @@ class KnowbaseItem extends CommonDBTM {
 
       } else {
          // Anonymous access
-         if (isMultiEntitiesMode()) {
+         if (Toolbox::isMultiEntitiesMode()) {
             $faq_limit .= " WHERE (`glpi_knowbaseitems`.`entities_id` = '0'
                                    AND `glpi_knowbaseitems`.`is_recursive` = '1')";
          } else {

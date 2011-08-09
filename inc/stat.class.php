@@ -1361,7 +1361,7 @@ class Stat {
    static function showItems($target, $date1, $date2, $start) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $view_entities = isMultiEntitiesMode();
+      $view_entities = Toolbox::isMultiEntitiesMode();
 
       if ($view_entities) {
          $entities = getAllDatasFromTable('glpi_entities');
