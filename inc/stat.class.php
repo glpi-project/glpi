@@ -1103,7 +1103,7 @@ class Stat {
     *     - width integer width of the graph (default 700)
     *     - height integer height of the graph (default 300)
     *     - unit integer height of the graph (default empty)
-    *     - type integer height of the graph (default line) : line bar pie
+    *     - type integer height of the graph (default line) : line bar stack pie
     *     - csv boolean export to CSV (default true)
     *     - datatype string datatype (count or average / default is count)
     *
@@ -1183,6 +1183,8 @@ class Stat {
                break;
 
             case 'bar' :
+            case 'stack' :
+
                $graph           = new ezcGraphBarChart();
                $graph->options->fillLines                   = 210;
                $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedBoxedLabelRenderer();
@@ -1196,13 +1198,19 @@ class Stat {
                $graph->renderer->options->legendSymbolGleam = .5;
                $graph->renderer->options->barChartGleam     = .5;
 
+               if ($param['type'] == 'stack') {
+                  $graph->options->stackBars                   = true;
+               }
+
                $max = 0;
+               $valtmp = array();
                foreach ($entrees as $key => $val) {
-                  if (count($val) > $max) {
-                     $max = count($val);
+                  foreach ($val as $key2=>$val2) {
+                     $valtmp[$key2] = $val2;
                   }
                }
-               $graph->xAxis->labelCount = $max;
+               $graph->xAxis->labelCount = count($valtmp);
+
                break;
 
             case 'line' :
