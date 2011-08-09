@@ -904,7 +904,10 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      if (isset($attrib['addtabon']) && is_array($attrib['addtabon'])) {
+      if (isset($attrib['addtabon'])) {
+         if (!is_array($attrib['addtabon'])) {
+            $attrib['addtabon'] = array($attrib['addtabon']);
+         }
          foreach ($attrib['addtabon'] as $form) {
             CommonGLPI::registerStandardTab($form, $itemtype);
          }
