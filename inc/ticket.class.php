@@ -1443,7 +1443,7 @@ class Ticket extends CommonITILObject {
             if ($nbfollow > 0) {
                while ($data = $DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
-                  $message .= "<strong>[ ".Toolbox::convDateTime($fup->fields["date"])." ] ".
+                  $message .= "<strong>[ ".Html::convDateTime($fup->fields["date"])." ] ".
                                ($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"").
                                "</strong>\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
@@ -1472,7 +1472,7 @@ class Ticket extends CommonITILObject {
             if ($nbfollow > 0) {
                while ($data=$DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
-                  $message .= "[ ".Toolbox::convDateTime($fup->fields["date"])." ]".
+                  $message .= "[ ".Html::convDateTime($fup->fields["date"])." ]".
                                ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
                   $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
                   $message .= $LANG['knowbase'][15]."&nbsp;:\n".$fup->fields["content"]."\n";
@@ -2625,7 +2625,7 @@ class Ticket extends CommonITILObject {
       if ($canupdate) {
          showDateTimeFormItem("date", $date, 1, false);
       } else {
-         echo Toolbox::convDateTime($date);
+         echo Html::convDateTime($date);
       }
 
       echo "</td></tr>";
@@ -2649,7 +2649,7 @@ class Ticket extends CommonITILObject {
 
       if ($ID) {
          echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
-         echo "<td><span class='tracking_small'>".Toolbox::convDateTime($this->fields["date_mod"])."\n";
+         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";
             echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
@@ -2665,7 +2665,7 @@ class Ticket extends CommonITILObject {
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
             echo "<span class='tracking_small'>&nbsp;";
-            echo Toolbox::convDateTime($this->fields["due_date"])."</span>";
+            echo Html::convDateTime($this->fields["due_date"])."</span>";
 
             echo "</td></tr><tr><td><span class='tracking_small'>".$LANG['sla'][1]."&nbsp;:</span>";
             echo "</td><td><span class='tracking_small'>";
@@ -2680,7 +2680,7 @@ class Ticket extends CommonITILObject {
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
                $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
-                              Toolbox::convDateTime($nextaction->fields['date']).'<br>';
+                              Html::convDateTime($nextaction->fields['date']).'<br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
                   $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
                                  $slalevel->getName().'<br>';
@@ -3906,7 +3906,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= Toolbox::convDateTime($job->fields['closedate']);
+            $second_col .= Html::convDateTime($job->fields['closedate']);
 
          } else if ($job->fields['status']=='solved') {
             $second_col = $LANG['joblist'][14];
@@ -3915,7 +3915,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= Toolbox::convDateTime($job->fields['solvedate']);
+            $second_col .= Html::convDateTime($job->fields['solvedate']);
 
          } else if ($job->fields['begin_waiting_date']) {
             $second_col = $LANG['joblist'][15];
@@ -3924,7 +3924,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= Toolbox::convDateTime($job->fields['begin_waiting_date']);
+            $second_col .= Html::convDateTime($job->fields['begin_waiting_date']);
 
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
@@ -3933,7 +3933,7 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= Toolbox::convDateTime($job->fields['due_date']);
+            $second_col .= Html::convDateTime($job->fields['due_date']);
 
          } else {
             $second_col = $LANG['joblist'][11];
@@ -3942,13 +3942,13 @@ class Ticket extends CommonITILObject {
             } else {
                $second_col .= " : ";
             }
-            $second_col .= Toolbox::convDateTime($job->fields['date']);
+            $second_col .= Html::convDateTime($job->fields['date']);
          }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
 
          // Second BIS column
-         $second_col = Toolbox::convDateTime($job->fields["date_mod"]);
+         $second_col = Html::convDateTime($job->fields["date_mod"]);
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
 
          // Second TER column
@@ -4980,18 +4980,18 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
-      echo "<td>".Toolbox::convDateTime($this->fields['date'])."</td></tr>";
+      echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['sla'][5]."&nbsp;:</td>";
-      echo "<td>".Toolbox::convDateTime($this->fields['due_date'])."</td></tr>";
+      echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
       if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][64]."&nbsp;:</td>";
-         echo "<td>".Toolbox::convDateTime($this->fields['solvedate'])."</td></tr>";
+         echo "<td>".Html::convDateTime($this->fields['solvedate'])."</td></tr>";
       }
 
       if ($this->fields['status']=='closed') {
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
-         echo "<td>".Toolbox::convDateTime($this->fields['closedate'])."</td></tr>";
+         echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
       echo "<tr><th colspan='2'>".$LANG['common'][100]."</th></tr>";
 

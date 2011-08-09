@@ -603,7 +603,7 @@ if (count($files)) {
       $taille_fic = (int)$taille_fic;
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
            "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
-           "<td>&nbsp;" . Toolbox::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
+           "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;".
            "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
                                                'backup.php?delfile=$file')\">".$LANG['buttons'][6].
@@ -639,7 +639,7 @@ if (count($files)) {
       echo "<tr class='tab_bg_1'><td colspan='6'><hr noshade></td></tr>".
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
-            "<td>&nbsp;" . Toolbox::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
+            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;".
              "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
                                                  'backup.php?delfile=$file')\">".$LANG['buttons'][6].

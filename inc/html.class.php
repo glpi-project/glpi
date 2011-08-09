@@ -96,5 +96,103 @@ class Html {
       return (is_array($value) ? array_map(array(__CLASS__, 'entities_deep'), $value)
                                : htmlentities($value,ENT_QUOTES, "UTF-8"));
    }
+
+
+   /**
+    * Convert a date YY-MM-DD to DD-MM-YY for calendar
+    *
+    * @param $time date: date to convert
+    *
+    * @return $time or $date
+   **/
+   static function convDate($time) {
+
+      if (is_null($time) || $time=='NULL') {
+         return NULL;
+      }
+
+      if (!isset($_SESSION["glpidate_format"])) {
+         $_SESSION["glpidate_format"] = 0;
+      }
+
+      switch ($_SESSION['glpidate_format']) {
+         case 1 : // DD-MM-YYYY
+            $date = substr($time, 8, 2)."-";  // day
+            $date .= substr($time, 5, 2)."-"; // month
+            $date .= substr($time, 0, 4);     // year
+            return $date;
+
+         case 2 : // MM-DD-YYYY
+            $date = substr($time, 5, 2)."-";  // month
+            $date .= substr($time, 8, 2)."-"; // day
+            $date .= substr($time, 0, 4);     // year
+            return $date;
+
+         default : // YYYY-MM-DD
+            if (strlen($time)>10) {
+               return substr($time, 0, 10);
+            }
+            return $time;
+      }
+   }
+
+
+   /**
+    * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
+    *
+    * @param $time datetime: datetime to convert
+    *
+    * @return $time or $date
+   **/
+   static function convDateTime($time) {
+
+      if (is_null($time) || $time=='NULL') {
+         return NULL;
+      }
+
+      return self::convDate($time).' '. substr($time, 11, 5);
+   }
+
+
+   /**
+    * Clean string for input text field
+    *
+    * @param $string string: input text
+    *
+    * @return clean string
+   **/
+   static function cleanInputText($string) {
+      return preg_replace('/\"/', '&quot;', $string);
+   }
+
+
+   /**
+    * Clean all parameters of an URL. Get a clean URL
+    *
+    * @param $url string URL
+    *
+    * @return clean URL
+   **/
+   static function cleanParametersURL($url) {
+
+      $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
+      return preg_replace("/\?.*/", "", $url);
+   }
+
+
+   /**
+    * Recursivly execute nl2br on an Array
+    *
+    * @param $value string or array
+    *
+    * @return array of value (same struct as input)
+   **/
+   static function nl2br_deep($value) {
+
+      return (is_array($value) ? array_map(array(__CLASS__, 'nl2br_deep'), $value)
+                               : nl2br($value));
+   }
+
+
 }
 ?>

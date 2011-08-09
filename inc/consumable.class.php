@@ -445,8 +445,8 @@ class Consumable extends CommonDBTM {
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
          while ($data=$DB->fetch_array($result)) {
-            $date_in  = Toolbox::convDate($data["date_in"]);
-            $date_out = Toolbox::convDate($data["date_out"]);
+            $date_in  = Html::convDate($data["date_in"]);
+            $date_out = Html::convDate($data["date_out"]);
 
             echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
             echo "<td class='center'>".self::getStatus($data["id"])."</td>";

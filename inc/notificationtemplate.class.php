@@ -240,7 +240,7 @@ class NotificationTemplate extends CommonDBTM {
             if (!empty($template_datas['content_html'])) {
                // Encode in HTML all chars
                $data_html = Html::entities_deep($data);
-               $data_html = Toolbox::nl2br_deep($data_html);
+               $data_html = Html::nl2br_deep($data_html);
                // Restore HTML tags
                if (count($target->html_tags)) {
                   foreach ($target->html_tags as $tag) {
@@ -251,7 +251,7 @@ class NotificationTemplate extends CommonDBTM {
                }
 
                $signature_html = Html::entities_deep($this->signature);
-               $signature_html = Toolbox::nl2br_deep($signature_html);
+               $signature_html = Html::nl2br_deep($signature_html);
 
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"

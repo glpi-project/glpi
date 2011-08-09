@@ -149,7 +149,7 @@ if (isset($query) && count($query)) {
             }
 
             if ($data['buy_date']) {
-               echo "<td> ".Toolbox::convDate($data['buy_date'])." </td>";
+               echo "<td> ".Html::convDate($data['buy_date'])." </td>";
                if ($data["warranty_duration"]) {
                   echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>";
                } else {
@@ -166,7 +166,7 @@ if (isset($query) && count($query)) {
             }
 
             if ($data['begin_date']) {
-               echo "<td> ".Toolbox::convDate($data['begin_date'])." </td>";
+               echo "<td> ".Html::convDate($data['begin_date'])." </td>";
                if ($data["duration"]) {
                   echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>";
                } else {

@@ -2917,10 +2917,10 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
    }
 
    if (!empty($minDate)) {
-      $output .= ",minValue: '".Toolbox::convDate($minDate)."'";
+      $output .= ",minValue: '".Html::convDate($minDate)."'";
    }
    if (!empty($maxDate)) {
-      $output .= ",maxValue: '".Toolbox::convDate($maxDate)."'";
+      $output .= ",maxValue: '".Html::convDate($maxDate)."'";
    }
    $output .= "}";
 
@@ -2960,7 +2960,7 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
    $output .= "Ext.onReady(function() {
       var md$rand = new Ext.ux.form.XDateField({
          name: '$element'
-         ,value: '".Toolbox::convDate($value)."'
+         ,value: '".Html::convDate($value)."'
          ,applyTo: 'showdate$rand'
          ,id: 'date$rand'
          ,submitFormat:'Y-m-d'
@@ -2991,11 +2991,11 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
    }
 
    if (!empty($minDate)) {
-      $output .= ",minValue: '".Toolbox::convDate($minDate)."'";
+      $output .= ",minValue: '".Html::convDate($minDate)."'";
    }
 
    if (!empty($maxDate)) {
-      $output .= ",maxValue: '".Toolbox::convDate($maxDate)."'";
+      $output .= ",maxValue: '".Html::convDate($maxDate)."'";
    }
 
    $output .= " });
@@ -3474,7 +3474,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       $rand = mt_rand();
       $name = "field_".$params['name'].$rand;
       echo "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-            "' value=\"".Toolbox::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+            "' value=\"".Html::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
       $output = "<script type='text/javascript' >\n";
 
       $output .= "var text$name = new Ext.data.Store({
@@ -3524,7 +3524,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
 
    } else {
       echo "<input ".$params['option']." type='text' name='".$params['name']."'
-             value=\"".Toolbox::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+             value=\"".Html::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
 

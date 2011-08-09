@@ -876,8 +876,8 @@ class Reservation extends CommonDBChild {
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".Toolbox::convDateTime($data["begin"])."</td>";
-               echo "<td class='center'>".Toolbox::convDateTime($data["end"])."</td>";
+               echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
+               echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$data["users_id"]."'>".
                      getUserName($data["users_id"])."</a></td>";
@@ -923,8 +923,8 @@ class Reservation extends CommonDBChild {
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".Toolbox::convDateTime($data["begin"])."</td>";
-               echo "<td class='center'>".Toolbox::convDateTime($data["end"])."</td>";
+               echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
+               echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$data["users_id"]."'>".
                      getUserName($data["users_id"])."</a></td>";
@@ -986,8 +986,8 @@ class Reservation extends CommonDBChild {
 
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".Toolbox::convDateTime($data["begin"])."</td>";
-            echo "<td class='center'>".Toolbox::convDateTime($data["end"])."</td>";
+            echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
+            echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
 
             if ($ri->getFromDB($data["reservationitems_id"])) {
                $link = "&nbsp;";
@@ -1042,8 +1042,8 @@ class Reservation extends CommonDBChild {
 
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".Toolbox::convDateTime($data["begin"])."</td>";
-            echo "<td class='center'>".Toolbox::convDateTime($data["end"])."</td>";
+            echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
+            echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
 
             if ($ri->getFromDB($data["reservationitems_id"])) {
                $link = "&nbsp;";

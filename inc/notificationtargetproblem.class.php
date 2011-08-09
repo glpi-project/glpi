@@ -109,7 +109,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
                                                                       $task['taskcategories_id']);
-            $tmp['##task.date##']         = Toolbox::convDateTime($task['date']);
+            $tmp['##task.date##']         = Html::convDateTime($task['date']);
             $tmp['##task.description##']  = $task['content'];
             $tmp['##task.time##']         = Problem::getActionTime($task['actiontime']);
             $tmp['##task.status##']       = Planning::getState($task['state']);
@@ -120,8 +120,8 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $tmp['##task.status##']       = "";
             if (!is_null($task['begin'])) {
                $tmp['##task.user##']      = Html::clean(getUserName($task['users_id_tech']));
-               $tmp['##task.begin##']     = Toolbox::convDateTime($task['begin']);
-               $tmp['##task.end##']       = Toolbox::convDateTime($task['end']);
+               $tmp['##task.begin##']     = Html::convDateTime($task['begin']);
+               $tmp['##task.end##']       = Html::convDateTime($task['end']);
             }
 
             $datas['tasks'][] = $tmp;

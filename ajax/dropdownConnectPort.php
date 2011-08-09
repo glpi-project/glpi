@@ -96,7 +96,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
             $output_long .= " ($ID)";
          }
          $output = Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]);
-         echo "<option value='$ID' title=\"".Toolbox::cleanInputText($output_long)."\">".$output;
+         echo "<option value='$ID' title=\"".Html::cleanInputText($output_long)."\">".$output;
          echo "</option>";
       }
    }

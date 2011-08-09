@@ -206,13 +206,13 @@ class KnowbaseItem extends CommonDBTM {
 
             echo "<span class='baskb_right'>";
             if ($this->fields["date_mod"]) {
-               echo $LANG['common'][26]."&nbsp;: ".Toolbox::convDateTime($this->fields["date_mod"]).
+               echo $LANG['common'][26]."&nbsp;: ".Html::convDateTime($this->fields["date_mod"]).
                     "     ";
             }
             echo "</span><br>";
 
             if ($this->fields["date"]) {
-               echo $LANG['common'][27]."&nbsp;: ". Toolbox::convDateTime($this->fields["date"]);
+               echo $LANG['common'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
             }
 
             echo "<span class='baskb_right'>";
@@ -425,14 +425,14 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($this->fields["date"]) {
-         echo $LANG['knowbase'][27]."&nbsp;: ". Toolbox::convDateTime($this->fields["date"]);
+         echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
       }
 
       echo "</th>";
       echo "<th class='tdkb' colspan='2'>";
 
       if ($this->fields["date_mod"]) {
-         echo $LANG['common'][26]."&nbsp;: ".Toolbox::convDateTime($this->fields["date_mod"]).
+         echo $LANG['common'][26]."&nbsp;: ".Html::convDateTime($this->fields["date_mod"]).
               "<br>";
       }
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
@@ -478,7 +478,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr><th colspan='2'>".$LANG['search'][0]."&nbsp;:</th></tr>";
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
-             stripslashes(Toolbox::cleanInputText($params["contains"]))."\"></td>";
+             stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
       echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['itemtype']) && isset($options['items_id'])) {

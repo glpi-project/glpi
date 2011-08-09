@@ -225,7 +225,7 @@ class SoftwareLicense extends CommonDBTM {
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
-         echo "<td>".($this->fields["date_mod"] ? Toolbox::convDateTime($this->fields["date_mod"])
+         echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                                 : $LANG['setup'][307]);
          echo "</td></tr>";
       }
@@ -356,7 +356,7 @@ class SoftwareLicense extends CommonDBTM {
 
          foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
-            $message .= $LANG['mailing'][51]." ".$name.": ".Toolbox::convDate($license["expire"]).
+            $message .= $LANG['mailing'][51]." ".$name.": ".Html::convDate($license["expire"]).
                         "<br>\n";
             $items[$license['id']] = $license;
          }
@@ -622,7 +622,7 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
-               echo "<td class='center'>".Toolbox::convDate($data['expire'])."</td>";
+               echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
                echo "</tr>";
 
                if ($data['number']<0) {

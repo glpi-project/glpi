@@ -284,7 +284,7 @@ if (isset($_REQUEST['searchtype'])) {
    // Default case : text field
    if (!$display) {
         echo "<input type='text' size='13' name='$inputname' value=\"".
-               Toolbox::cleanInputText($_REQUEST['value'])."\">";
+               Html::cleanInputText($_REQUEST['value'])."\">";
    }
 }
 

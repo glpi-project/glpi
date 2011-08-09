@@ -522,7 +522,7 @@ function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
       return "";
    }
 
-   return Toolbox::convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
+   return Html::convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
 }
 
 
