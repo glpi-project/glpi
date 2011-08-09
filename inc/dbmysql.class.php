@@ -523,6 +523,48 @@ class DBmysql {
       return new DBmysqlIterator($this, $tableorsql, $crit);
    }
 
+
+    /**
+     *  Optimize sql table
+     *
+     * @param $migration migration class
+     * @param $cron to know if optimize must be done
+     *
+     * @return number of tables
+    **/
+    static function optimize_tables ($migration=NULL, $cron=false) {
+       global $DB;
+
+       if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+          $migration->displayMessage("optimize - start");
+       }
+       $result = $DB->list_tables("glpi_%");
+       $nb     = 0;
+
+
+       while ($line = $DB->fetch_array($result)) {
+          $table = $line[0];
+
+       // For big database to reduce delay of migration
+          if ($cron || countElementsInTable($table) < 15000000) {
+
+             if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+                $migration->displayMessage("optimize - $table");
+             }
+
+             $query = "OPTIMIZE TABLE `".$table."` ;";
+             $DB->query($query);
+             $nb++;
+          }
+       }
+       $DB->free_result($result);
+
+       if (!is_null($migration) && method_exists ($migration,'displayMessage') ){
+          $migration->displayMessage("optimize - end");
+       }
+
+       return $nb;
+    }
 }
 
 

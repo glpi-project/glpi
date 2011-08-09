@@ -538,8 +538,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
                      $interv[$data["begin"]."$$$".$i]["name"]     = $parentitem->fields["name"];
                      $interv[$data["begin"]."$$$".$i]["content"]
-                                                      = resume_text($parentitem->fields["content"],
-                                                                    $CFG_GLPI["cut"]);
+                                                      = Html::resume_text($parentitem->fields["content"],
+                                                                          $CFG_GLPI["cut"]);
                      $interv[$data["begin"]."$$$".$i]["status"]   = $parentitem->fields["status"];
                      $interv[$data["begin"]."$$$".$i]["priority"] = $parentitem->fields["priority"];
                      /// Specific for tickets
@@ -573,7 +573,7 @@ abstract class CommonITILTask  extends CommonDBTM {
               Html::convDateTime($val["end"]).' : ';
       $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                 $val[getForeignKeyFieldForItemType($itemtype)]."'>";
-      $out .= resume_text($val["name"],80).'</a>';
+      $out .= Html::resume_text($val["name"],80).'</a>';
 
       return $out;
    }
@@ -633,7 +633,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "<br>- #".$val[$parenttype_fk]." ";
-      echo  resume_text($val["name"],80). " ";
+      echo Html::resume_text($val["name"],80). " ";
 
       if (!empty($val["device"])) {
          echo "<br>- ".$val["device"];

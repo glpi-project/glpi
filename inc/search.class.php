@@ -3913,7 +3913,7 @@ class Search {
             }
             return "<a title=\"".$LANG['reservation'][22]."\"
                      href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                     $data['refID']."' >".resume_text($data[$NAME.$num])."</a>";
+                     $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
 
          case 'glpi_notifications.mode' :
                return Notification::getMode($data[$NAME.$num]);

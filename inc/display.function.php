@@ -1374,7 +1374,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
                     $menu[$sector]['content'][$item]['options'][$option]['page'].
                     "' class='here' title=\"".
                     $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
-         echo resume_name($menu[$sector]['content'][$item]['options'][$option]['title'], 17);
+         echo Html::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'], 17);
          echo "</a></li>";
       }
 

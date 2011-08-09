@@ -179,7 +179,8 @@ class Document extends CommonDBTM {
          if ($item->getFromDB($input["items_id"])) {
             $name = $item->getNameID();
          }
-         $input["name"] = addslashes(resume_text($LANG['document'][18]." $typename - ".$name, 200));
+         $input["name"] = addslashes(Html::resume_text($LANG['document'][18]." $typename - ".$name,
+                                                       200));
          $create_from_item = true;
       }
 
