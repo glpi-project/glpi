@@ -377,7 +377,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             }
             echo "</td>";
             echo "</tr>";
-            Toolbox::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
+            Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
 
          }
       }

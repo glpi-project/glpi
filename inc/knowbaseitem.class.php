@@ -676,7 +676,7 @@ class KnowbaseItem extends CommonDBTM {
             for ($i=0 ; $i<$numrows_limit ; $i++) {
                $data = $DB->fetch_array($result_limit);
 
-               Toolbox::addToNavigateListItems('KnowbaseItem', $data["id"]);
+               Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                // Column num
                $item_num = 1;
                $row_num++;

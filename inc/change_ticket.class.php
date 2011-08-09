@@ -109,7 +109,7 @@ class Change_Ticket extends CommonDBRelation{
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
-            Toolbox::addToNavigateListItems('Ticket', $data["id"]);
+            Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {
@@ -191,7 +191,7 @@ class Change_Ticket extends CommonDBRelation{
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
-            Toolbox::addToNavigateListItems('Change', $data["id"]);
+            Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {

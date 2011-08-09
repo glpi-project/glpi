@@ -357,7 +357,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "</tr>\n";
 
             do {
-               Toolbox::addToNavigateListItems('Computer',$data["cID"]);
+               Session::addToNavigateListItems('Computer',$data["cID"]);
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
@@ -578,10 +578,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
             $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit);
-            Toolbox::addToNavigateListItems('Software', $data["softwares_id"]);
+            Session::addToNavigateListItems('Software', $data["softwares_id"]);
 
             foreach ($licids as $licid) {
-               Toolbox::addToNavigateListItems('SoftwareLicense', $licid);
+               Session::addToNavigateListItems('SoftwareLicense', $licid);
                $installed[] = $licid;
             }
          }
@@ -622,7 +622,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $cat = false;
             }
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
-            Toolbox::addToNavigateListItems('SoftwareLicense', $data["id"]);
+            Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
          self::displayCategoryFooter(NULL, $rand, $canedit);
       }

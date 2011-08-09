@@ -109,7 +109,7 @@ class Calendar_Holiday extends CommonDBRelation {
          initNavigateListItems('Holiday', $LANG['buttons'][15] ." = ". $calendar->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            Toolbox::addToNavigateListItems('Holiday', $data["id"]);
+            Session::addToNavigateListItems('Holiday', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {

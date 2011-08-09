@@ -276,7 +276,7 @@ class ComputerDisk extends CommonDBChild {
                                                          'forcepadding' => false));
                echo "</td>";
 
-               Toolbox::addToNavigateListItems('ComputerDisk',$data['id']);
+               Session::addToNavigateListItems('ComputerDisk',$data['id']);
             }
 
          } else {

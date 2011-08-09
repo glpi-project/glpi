@@ -111,7 +111,7 @@ class Change_Problem extends CommonDBRelation{
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
-            Toolbox::addToNavigateListItems('Change', $data["id"]);
+            Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {
@@ -190,7 +190,7 @@ class Change_Problem extends CommonDBRelation{
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
-            Toolbox::addToNavigateListItems('Problem', $data["id"]);
+            Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
             if ($canedit) {

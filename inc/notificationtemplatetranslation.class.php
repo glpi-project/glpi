@@ -186,7 +186,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                             array('notificationtemplates_id' => $nID)) as $data) {
 
          if ($this->getFromDB($data['id'])) {
-            Toolbox::addToNavigateListItems('NotificationTemplateTranslation',$data['id']);
+            Session::addToNavigateListItems('NotificationTemplateTranslation',$data['id']);
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='checkbox' name=\"languages[" . $data['id'] . "]\"></td>";
             echo "<td class='center'>";
