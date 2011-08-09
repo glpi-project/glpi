@@ -254,7 +254,7 @@ class RuleImportComputer extends Rule {
          if (!empty($criteria)) {
             foreach ($criteria as $crit) {
 
-               // criteria is global search one
+               // is a real complex criteria
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
                   if (!isset($input[$criterion]) || $input[$criterion] == '') {
                      $continue = false;   
