@@ -782,11 +782,15 @@ class Dropdown {
     *    - display_none : allow selection of no language
    **/
    static function showLanguages($myname, $options=array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $LANG;
 
       $values = array();
       if (isset($options['display_none']) && ($options['display_none'])) {
          $values[''] = DROPDOWN_EMPTY_VALUE;
+      }
+
+      if (isset($options['display_defaultvalue']) && ($options['display_defaultvalue'])) {
+         $values['NULL'] = $LANG['setup'][46];
       }
 
       foreach ($CFG_GLPI["languages"] as $key => $val) {
