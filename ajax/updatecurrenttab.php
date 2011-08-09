@@ -37,6 +37,7 @@ define('GLPI_ROOT','..');
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
