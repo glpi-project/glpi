@@ -178,7 +178,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -279,7 +279,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -413,7 +413,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -455,7 +455,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
@@ -518,7 +518,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -679,7 +679,7 @@ class Config extends CommonDBTM {
 
       $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
       $userpref  = false;
-      $url       = getItemTypeFormURL(__CLASS__);
+      $url       = Toolbox::getItemTypeFormURL(__CLASS__);
 
       if (array_key_exists('last_login',$data)) {
          $userpref = true;
@@ -870,7 +870,7 @@ class Config extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
       echo "<div class='center' id='tabsbody'>";
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
       echo "<table class='tab_cadre_fixe'>";

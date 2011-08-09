@@ -299,7 +299,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ID = $this->getField('id');
 
-      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_2'><th colspan='4'>";
@@ -406,7 +406,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ID = $this->getField('id');
 
-      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -452,7 +452,7 @@ class AuthLDAP extends CommonDBTM {
       $ID = $this->getField('id');
 
       if ($ID>0) {
-         echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
@@ -478,7 +478,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ID = $this->getField('id');
 
-      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -553,7 +553,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ID = $this->getField('id');
 
-      echo "<form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
@@ -1028,7 +1028,8 @@ class AuthLDAP extends CommonDBTM {
             foreach ($ldap_users as $userinfos) {
                $link = $user = $userinfos["user"];
                if (isset($userinfos['id']) && haveRight('user','r')) {
-                  $link = "<a href='".getItemTypeFormURL('User').'?id='.$userinfos['id']."'>$user</a>";
+                  $link = "<a href='".Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'].
+                          "'>$user</a>";
                }
                if (isset($userinfos["timestamp"])) {
                   $stamp = $userinfos["timestamp"];

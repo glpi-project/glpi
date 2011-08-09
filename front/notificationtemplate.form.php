@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
               $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
 
    $language = new NotificationTemplateTranslation();
-   $url = getItemTypeFormURL('NotificationTemplateTranslation',true);
+   $url = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation',true);
    $url.="?notificationtemplates_id=$newID";
    glpi_header($url);
 

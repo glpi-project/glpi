@@ -104,7 +104,7 @@ class Profile_User extends CommonDBTM {
       $canshowentity = haveRight("entity","r");
       $rand=mt_rand();
       echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -164,7 +164,7 @@ class Profile_User extends CommonDBTM {
             echo "<td>";
 
             if ($canshowentity) {
-               echo "<a href='".getItemTypeFormURL('Entity')."?id=".$data["entities_id"]."'>";
+               echo "<a href='".Toolbox::getItemTypeFormURL('Entity')."?id=".$data["entities_id"]."'>";
             }
             echo $data["completename"].
                  ($_SESSION["glpiis_ids_visible"]?" (".$data["entities_id"].")":"");
@@ -223,7 +223,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit) {
          echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-         echo getItemTypeFormURL(__CLASS__)."'>";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          $headerspan = $nb_per_line*2;
       } else {
          $headerspan = $nb_per_line;
@@ -439,7 +439,7 @@ class Profile_User extends CommonDBTM {
 
                   echo "<tr><td>";
                   echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand.
-                         "_$temp' method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+                         "_$temp' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
                   echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
                   echo "<table class='tab_cadre_fixe'>\n";
                }

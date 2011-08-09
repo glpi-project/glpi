@@ -197,7 +197,7 @@ class Computer_Device extends CommonDBTM {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__).
+         echo "<form name='form_device_action' action='".Toolbox::getItemTypeFormURL(__CLASS__).
                 "' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }

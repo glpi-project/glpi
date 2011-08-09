@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
-   glpi_header(getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
+   glpi_header(Toolbox::getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
                ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {

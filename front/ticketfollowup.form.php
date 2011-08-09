@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+   glpi_header(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
 } else if (isset($_POST["delete"])) {
    $fup->check($_POST['id'], 'w');
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+   glpi_header(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 
 displayErrorAndDie('Lost');

@@ -51,9 +51,9 @@ if (!empty($_POST["update"])) {
    if (isset($_POST["use_ocs_mode"])
        && $_POST["use_ocs_mode"]
        && !$CFG_GLPI["use_ocs_mode"]) {
-      glpi_header(getItemTypeSearchURL('OcsServer'));
+      glpi_header(Toolbox::getItemTypeSearchURL('OcsServer'));
    } else {
-      glpi_header(getItemTypeFormURL('Config'));
+      glpi_header(Toolbox::getItemTypeFormURL('Config'));
    }
 }
 

@@ -400,20 +400,20 @@ class Rule extends CommonDBTM {
          $canedit = false;
          $style   = "class='tab_cadre'";
       }
-      $this->getTitleAction(getItemTypeFormURL(get_class($this)));
+      $this->getTitleAction(Toolbox::getItemTypeFormURL(get_class($this)));
 
       if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount())
           && $canedit) {
 
          echo "<form name='actionsaddform' method='post' action='".
-                getItemTypeFormURL(get_class($this))."'>\n";
+                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
          $this->addActionForm($rules_id);
          echo "</form>";
       }
 
       if ($canedit) {
          echo "<form name='actionsform' id='actionsform' method='post' action='".
-                getItemTypeFormURL(get_class($this))."'>\n";
+                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       }
       echo "<div class='spaced'>";
       echo "<table $style>";
@@ -531,13 +531,13 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       $canedit = $this->can($rules_id, "w");
-      $this->getTitleCriteria(getItemTypeFormURL(get_class($this)));
+      $this->getTitleCriteria(Toolbox::getItemTypeFormURL(get_class($this)));
 
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
           && $canedit) {
 
          echo "<form name='criteriasaddform' method='post' action='".
-                getItemTypeFormURL(get_class($this))."'>\n";
+                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
          $this->addCriteriaForm($rules_id);
          echo "</form>";
       }
@@ -545,7 +545,7 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
 
       echo "<form name='criteriasform' id='criteriasform' method='post' action='".
-             getItemTypeFormURL(get_class($this))."'>\n";
+             Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
 
@@ -601,9 +601,9 @@ class Rule extends CommonDBTM {
          $itemtype = get_class($this).'Parameter';
          echo "<img alt='' title=\"".$LANG['rulesengine'][140]."\" src='".$CFG_GLPI["root_doc"].
                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".getItemTypeFormURL($itemtype)."?popup=1&amp;rand=".
-                $params['rand']."' ,'glpipopup', 'height=400, "."width=1000, top=100, left=100, ".
-                "scrollbars=yes' );w.focus();\">";
+                onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
+                "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
+                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
 
       return key($items);
@@ -1754,7 +1754,7 @@ class Rule extends CommonDBTM {
    function showNewRuleForm($ID) {
       global $LANG;
 
-      echo "<form method='post' action='".getItemTypeFormURL('Entity')."'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>" . $this->getTitle() . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
@@ -1804,7 +1804,7 @@ class Rule extends CommonDBTM {
          if ($canedit) {
             $formname = $item->getType()."_".$this->getType()."_form";
             echo "\n<form name='$formname' id='$formname' method='post' ".
-                   "action='".getItemTypeSearchURL(get_class($this))."'>";
+                   "action='".Toolbox::getItemTypeSearchURL(get_class($this))."'>";
          }
          echo "<table class='tab_cadre_fixehov'><tr>";
 
@@ -1825,7 +1825,7 @@ class Rule extends CommonDBTM {
                echo "<td width='10'>";
                echo "<input type='checkbox' name='item[" . $rule->fields["id"] . "]' value='1'>";
                echo "</td>";
-               echo "<td><a href='".getItemTypeFormURL(get_class($this))."?id=" .
+               echo "<td><a href='".Toolbox::getItemTypeFormURL(get_class($this))."?id=" .
                       $rule->fields["id"] . "&amp;onglet=1'>" .$rule->fields["name"] ."</a></td>";
 
             } else {

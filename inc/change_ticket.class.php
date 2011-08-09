@@ -83,7 +83,7 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
@@ -118,7 +118,7 @@ class Change_Ticket extends CommonDBRelation{
                echo "&nbsp;";
             }
             echo "</td>";
-            echo "<td><a href='".getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
+            echo "<td><a href='".Toolbox::getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             if ($change->isRecursive()) {
                echo "<td>".Dropdown::getDropdownName('glpi_entities',$data["entities_id"])."</td>";
@@ -165,13 +165,13 @@ class Change_Ticket extends CommonDBRelation{
       $rand    = mt_rand();
       echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
              action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
-      echo "<a href='".getItemTypeFormURL('Change')."?tickets_id=$ID'>".$LANG['change'][1]."</a>";
-      echo "</th></tr>";
+      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>".$LANG['change'][1];
+      echo "</a></th></tr>";
 
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
       echo "</tr>";
@@ -200,7 +200,7 @@ class Change_Ticket extends CommonDBRelation{
                echo "&nbsp;";
             }
             echo "</td>";
-            echo "<td><a href='".getItemTypeFormURL('Change')."?id=".$data['id']."'>".
+            echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             echo "</tr>";
          }

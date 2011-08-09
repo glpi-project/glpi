@@ -552,7 +552,7 @@ class Supplier extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
-               echo "<a href='". getItemTypeSearchURL($linktype) . "?" .
+               echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
                       rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                       $LANG['reports'][57]."</a></td>";
@@ -565,7 +565,7 @@ class Supplier extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $ID = " (".$data["id"].")";
                   }
-                  $link = getItemTypeFormURL($linktype);
+                  $link = Toolbox::getItemTypeFormURL($linktype);
                   $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$data["name"]."$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";

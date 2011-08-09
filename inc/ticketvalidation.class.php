@@ -625,7 +625,7 @@ class TicketValidation  extends CommonDBChild {
                 && !strstr($ticket->fields["status"], "solved")
                 && !strstr($ticket->fields["status"],"closed")) {
 
-               $link_validation = getItemTypeFormURL('TicketValidation');
+               $link_validation = Toolbox::getItemTypeFormURL('TicketValidation');
                echo "<td>". Toolbox::convDateTime($row["submission_date"])."</td>";
             } else {
                echo "<td>".Toolbox::convDateTime($row["submission_date"])."</a></td>";

@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
+   glpi_header(Toolbox::getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
 } else if (isset($_POST["delete"])) {
    $task->check($_POST['id'], 'd');
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header(getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
+   glpi_header(Toolbox::getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
 } else if (isset($_POST["update"])) {
    $task->check($_POST["id"], 'w');

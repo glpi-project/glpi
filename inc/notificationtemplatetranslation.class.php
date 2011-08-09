@@ -113,7 +113,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$template->getTypeName()."</td>";
-      echo "<td colspan='2'><a href='".getItemTypeFormURL('NotificationTemplate').
+      echo "<td colspan='2'><a href='".Toolbox::getItemTypeFormURL('NotificationTemplate').
             "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
       echo "</td><td><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
@@ -170,7 +170,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center'>".
-              "<a href='".getItemTypeFormURL('NotificationTemplateTranslation').
+              "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                 "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a></div><br>";
       }
 
@@ -190,7 +190,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='checkbox' name=\"languages[" . $data['id'] . "]\"></td>";
             echo "<td class='center'>";
-            echo "<a href='".getItemTypeFormURL('NotificationTemplateTranslation').
+            echo "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                   "?id=".$data['id']."&notificationtemplates_id=".$nID."'>";
 
             if ($data['language'] != '') {

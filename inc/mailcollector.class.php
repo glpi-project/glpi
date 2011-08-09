@@ -236,7 +236,7 @@ class MailCollector  extends CommonDBTM {
       global $LANG;
 
       echo "<br><br><div class='center'>";
-      echo "<form name='form' method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
