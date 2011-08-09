@@ -42,7 +42,7 @@ checkRight("config", "w");
 
 commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
 
-if (!canUseImapPop()) {
+if (!MailCollector::canUseImapPop()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";

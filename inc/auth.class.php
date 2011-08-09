@@ -537,7 +537,7 @@ class Auth {
             $this->user->fields['authtype'] = $authtype;
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
-            if (canUseLdap()) {
+            if (AuthLDAP::canUse()) {
                if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
@@ -612,7 +612,7 @@ class Auth {
                   case self::CAS :
                   case self::EXTERNAL :
                   case self::LDAP :
-                     if (canUseLdap()) {
+                     if (AuthLDAP::canUse()) {
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"],
                                               $this->user->fields["user_dn"]);
@@ -623,7 +623,7 @@ class Auth {
                      break;
 
                   case self::MAIL :
-                     if (canUseImapPop()) {
+                     if (MailCollector::canUseImapPop()) {
                         AuthMail::tryMailAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"]);
                      }
@@ -635,12 +635,12 @@ class Auth {
 
             } else if (!$exists) {
                //test all ldap servers only is user is not present in glpi's DB
-               if (!$this->auth_succeded && canUseLdap()) {
+               if (!$this->auth_succeded && AuthLDAP::canUse()) {
                   AuthLdap::tryLdapAuth($this, $login_name, $login_password, 0, false, false);
                }
 
                //test all imap/pop servers
-               if (!$this->auth_succeded && canUseImapPop()) {
+               if (!$this->auth_succeded && MailCollector::canUseImapPop()) {
                   AuthMail::tryMailAuth($this, $login_name, $login_password, 0, false);
                }
             }

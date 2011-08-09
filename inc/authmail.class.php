@@ -167,7 +167,7 @@ class AuthMail extends CommonDBTM {
          }
       }
 
-      if (canUseImapPop()) {
+      if (MailCollector::canUseImapPop()) {
          $options['colspan']=1;
          $this->showTabs($options);
          $this->showFormHeader($options);

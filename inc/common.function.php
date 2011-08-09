@@ -381,20 +381,6 @@ function key_exists_deep($need, $tab) {
 
 
 
-/**
- * Get ldap query results and clean them at the same time
- *
- * @param link the directory connection
- * @param result the query results
- *
- * @return an array which contains ldap query results
-**/
-function ldap_get_entries_clean($link, $result) {
-   return Toolbox::clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
-}
-
-
-
 
 /**
  *  Resume text for followup
@@ -430,21 +416,6 @@ function resume_name($string, $length=255) {
    }
 
    return $string;
-}
-
-
-/**
- *  Format mail row
- *
- * @param $string string: label string
- * @param $value string: value string
- *
- * @return string
-**/
-function mailRow($string, $value) {
-
-   $row = Toolbox::str_pad( $string . ': ', 25, ' ', STR_PAD_RIGHT).$value."\n";
-   return $row;
 }
 
 
@@ -579,45 +550,6 @@ function glpi_header($dest) {
 
 
 
-
-
-/**
- * Call cron without time check
- *
- * @return boolean : true if launched
-**/
-function callCronForce() {
-   global $CFG_GLPI;
-
-   $path = $CFG_GLPI['root_doc']."/front/cron.php";
-
-   echo "<div style=\"background-image: url('$path');\"></div>";
-   return true;
-}
-
-
-/**
- * Call cron if time since last launch elapsed
- *
- * @return nothing
-**/
-function callCron() {
-
-   if (isset($_SESSION["glpicrontimer"])) {
-      // call function callcron() every 5min
-      if ((time()-$_SESSION["glpicrontimer"])>300) {
-
-         if (callCronForce()) {
-            // Restart timer
-            $_SESSION["glpicrontimer"] = time();
-         }
-      }
-
-   } else {
-      // Start timer
-      $_SESSION["glpicrontimer"] = time();
-   }
-}
 
 
 /**
@@ -1197,30 +1129,6 @@ function isValidLogin($login="") {
 }
 
 
-/**
- * Determine if Ldap is usable checking ldap extension existence
- *
- * @return boolean
-**/
-function canUseLdap() {
-   return extension_loaded('ldap');
-}
-
-
-/**
- * Determine if Imap/Pop is usable checking extension existence
- *
- * @return boolean
-**/
-function canUseImapPop() {
-   return extension_loaded('imap');
-}
-
-
-
-
-
-
 /** Display how many logins since
  *
  * @return  nothing
@@ -1357,6 +1265,54 @@ function manageBeginAndEndPlanDates(&$data) {
 
 
 
+
+//******************* FUNCTIONS NEVER USED *******************
+
+   /**
+    *  Format mail row
+    *
+    * @param $string string: label string
+    * @param $value string: value string
+    *
+    * @return string
+   **/
+   function mailRow($string, $value) {
+
+      $row = Toolbox::str_pad( $string . ': ', 25, ' ', STR_PAD_RIGHT).$value."\n";
+      return $row;
+   }
+
+
+   /** Returns the utf string corresponding to the unicode value
+    * (from php.net, courtesy - romans@void.lv)
+    *
+    * @param $num integer: character code
+   **/
+
+
+   function code2utf($num) {
+
+      if ($num < 128) {
+         return chr($num);
+      }
+
+      if ($num < 2048) {
+         return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+      }
+
+      if ($num < 65536) {
+         return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+      }
+
+      if ($num < 2097152) {
+         return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) .
+                chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+      }
+
+      return '';
+   }
+
+// ******************************************************
 
 
 
