@@ -373,7 +373,7 @@ class Contact extends CommonDBTM{
 
       $used = array();
       if ($number>0) {
-         initNavigateListItems('Supplier', $LANG['common'][92]." = ".$this->fields['name']);
+         Session::initNavigateListItems('Supplier', $LANG['common'][92]." = ".$this->fields['name']);
 
          while ($data= $DB->fetch_array($result)) {
             $ID = $data["id"];

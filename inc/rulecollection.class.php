@@ -406,7 +406,7 @@ class RuleCollection extends CommonDBTM {
 
       if (count($this->RuleList->list)) {
          $ruletype = $this->RuleList->list[0]->getType();
-         initNavigateListItems($ruletype);
+         Session::initNavigateListItems($ruletype);
       }
 
       for ($i=$p['start'],$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {

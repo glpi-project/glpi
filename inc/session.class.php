@@ -198,6 +198,32 @@ class Session {
    }
 
 
+    /** Initialise a list of items to use navigate through search results
+     *
+     * @param $itemtype device type
+     * @param $title titre de la liste
+    **/
+    static function initNavigateListItems($itemtype, $title="") {
+       global $LANG;
+
+       if (empty($title)) {
+          $title = $LANG['common'][53];
+       }
+       $url = '';
+
+       if (!isset($_SERVER['REQUEST_URI']) || strpos($_SERVER['REQUEST_URI'],"tabs")>0) {
+          if (isset($_SERVER['HTTP_REFERER'])) {
+             $url = $_SERVER['HTTP_REFERER'];
+          }
+
+       } else {
+          $url = $_SERVER['REQUEST_URI'];
+       }
+
+       $_SESSION['glpilisttitle'][$itemtype] = $title;
+       $_SESSION['glpilistitems'][$itemtype] = array();
+       $_SESSION['glpilisturl'][$itemtype]   = $url;
+    }
 
 }
 ?>

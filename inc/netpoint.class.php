@@ -311,7 +311,7 @@ class Netpoint extends CommonDropdown {
                        'START'        => $start,
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
-         initNavigateListItems('Netpoint', $item->getTypeName()."= ".$item->fields['name']);
+         Session::initNavigateListItems('Netpoint', $item->getTypeName()."= ".$item->fields['name']);
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
             Session::addToNavigateListItems('Netpoint',$data["id"]);

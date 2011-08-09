@@ -1308,7 +1308,7 @@ class Document extends CommonDBTM {
          // Don't use this for document associated to document
          // To not loose navigation list for current document
          if ($item->getType() != 'Document') {
-            initNavigateListItems('Document', $item->getTypeName()." = ".$item->getName());
+            Session::initNavigateListItems('Document', $item->getTypeName()." = ".$item->getName());
          }
 
          $document = new Document();

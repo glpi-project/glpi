@@ -123,7 +123,7 @@ class SlaLevel extends RuleTicket {
             echo "<th>".$LANG['sla'][3]."</th>";
             echo "<th>".$LANG['common'][60]."</th>";
             echo "</tr>";
-            initNavigateListItems('SlaLevel',$LANG['sla'][1]." - ".$sla->getName());
+            Session::initNavigateListItems('SlaLevel', $LANG['sla'][1]." - ".$sla->getName());
 
             while ($data = $DB->fetch_array($result)) {
 

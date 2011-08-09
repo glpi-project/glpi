@@ -546,7 +546,8 @@ class SoftwareLicense extends CommonDBTM {
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-      initNavigateListItems('SoftwareLicense', $LANG['help'][31] ." = ". $software->fields["name"]);
+      Session::initNavigateListItems('SoftwareLicense',
+                                     $LANG['help'][31] ." = ". $software->fields["name"]);
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {

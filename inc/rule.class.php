@@ -1815,7 +1815,7 @@ class Rule extends CommonDBTM {
          echo "<th>" . $LANG['joblist'][6] . "</th>";
          echo "<th>" . $LANG['common'][60] . "</th>";
          echo "</tr>\n";
-         initNavigateListItems(get_class($this), $item->getTypeName()."=".$item->getName());
+         Session::initNavigateListItems(get_class($this), $item->getTypeName()."=".$item->getName());
 
          foreach ($rules as $rule) {
             Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);

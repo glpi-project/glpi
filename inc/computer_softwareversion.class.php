@@ -303,7 +303,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($crit=="id") {
                $title .= " - " . $data["vername"];
             }
-            initNavigateListItems('Computer', $title);
+            Session::initNavigateListItems('Computer', $title);
             $sort_img="<img src='".$CFG_GLPI["root_doc"]."/pics/".
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
 
@@ -560,14 +560,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $cat = -1;
 
-      initNavigateListItems('Software',
-                            $LANG['help'][25]." = ".(empty($comp->fields["name"])
-                                                     ?"(".$comp->fields["id"].")"
-                                                     :$comp->fields["name"]));
-      initNavigateListItems('SoftwareLicense',
-                            $LANG['help'][25]." = ".(empty($comp->fields["name"])
-                                                     ?"(".$comp->fields["id"].")"
-                                                     :$comp->fields["name"]));
+      Session::initNavigateListItems('Software',
+                                     $LANG['help'][25]." = ".(empty($comp->fields["name"])
+                                                               ?"(".$comp->fields["id"].")"
+                                                               :$comp->fields["name"]));
+      Session::initNavigateListItems('SoftwareLicense',
+                                     $LANG['help'][25]." = ".(empty($comp->fields["name"])
+                                                               ?"(".$comp->fields["id"].")"
+                                                               :$comp->fields["name"]));
 
       $installed = array();
       if ($DB->numrows($result)) {

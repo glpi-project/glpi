@@ -289,7 +289,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $showEntity = ($license->isRecursive());
             $title      =$LANG['help'][31] ." = ". $soft->fields["name"]." - " . $data["vername"];
 
-            initNavigateListItems('Computer',$title);
+            Session::initNavigateListItems('Computer', $title);
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
             if ($canedit) {

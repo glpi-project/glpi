@@ -211,7 +211,8 @@ class Computer_Device extends CommonDBTM {
                                  'DeviceGraphicCard' => $LANG['common'][82]);
 
       foreach ($devtypes as $itemtype) {
-         initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
+         Session::initNavigateListItems($itemtype,
+                                        $computer->getTypeName()." = ".$computer->getName());
 
          $device        = new $itemtype();
          $specificities = $device->getSpecifityLabel();
