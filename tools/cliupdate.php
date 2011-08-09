@@ -57,11 +57,11 @@ Config::detectRootDoc();
 
 
 if (is_writable(GLPI_SESSION_DIR)) {
-   Toolbox::setGlpiSessionPath();
+   Session::setPath();
 } else {
    die("Can't write in ".GLPI_SESSION_DIR."\n");
 }
-Toolbox::startGlpiSession();
+Session::start();
 
 // Init debug variable
 $_SESSION['glpi_use_mode'] = DEBUG_MODE;
