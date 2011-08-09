@@ -1374,15 +1374,5 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   /**
-    * Determine if Imap/Pop is usable checking extension existence
-    *
-    * @return boolean
-   **/
-   static function canUseImapPop() {
-      return extension_loaded('imap');
-   }
-
-
 }
 ?>

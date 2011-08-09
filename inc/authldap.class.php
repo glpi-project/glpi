@@ -200,7 +200,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
-      if (self::canUse()) {
+      if (Toolbox::canUseLdap()) {
          $this->showTabs($options);
          $this->showFormHeader($options);
          if (empty($ID)) {
@@ -2644,18 +2644,5 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   /**
-    * Determine if Ldap is usable checking ldap extension existence
-    *
-    * @return boolean
-   **/
-   static function canUse() {
-      return extension_loaded('ldap');
-   }
-
-
-
-
 }
-
 ?>
