@@ -2332,7 +2332,7 @@ class User extends CommonDBTM {
       }
 
       echo "<div class='center'>\n";
-      echo "<form method='get' action='".getItemTypeFormURL('User')."'>\n";
+      echo "<form method='get' action='".Toolbox::getItemTypeFormURL('User')."'>\n";
 
       echo "<table class='tab_cadre'>\n";
       echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
@@ -2477,7 +2477,7 @@ class User extends CommonDBTM {
                   $cansee = $item->can($data["id"],"r");
                   $link = $data["name"];
                   if ($cansee) {
-                     $link_item = getItemTypeFormURL($itemtype);
+                     $link_item = Toolbox::getItemTypeFormURL($itemtype);
                      $link = "<a href='".$link_item."?id=".$data["id"]."'>".$link.
                               (($_SESSION["glpiis_ids_visible"]||empty($link))?" (".$data["id"].")":"")
                               ."</a>";
@@ -2544,7 +2544,7 @@ class User extends CommonDBTM {
                      $cansee = $item->can($data["id"],"r");
                      $link = $data["name"];
                      if ($cansee) {
-                        $link_item = getItemTypeFormURL($itemtype);
+                        $link_item = Toolbox::getItemTypeFormURL($itemtype);
                         $link = "<a href='".$link_item."?id=".$data["id"]."'>".$link.
                                  (($_SESSION["glpiis_ids_visible"] || empty($link))?" (".
                                  $data["id"].")":"")."</a>";
