@@ -225,7 +225,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];
+      $ong['empty'] = $LANG['title'][26];
 
       return $ong;
    }
