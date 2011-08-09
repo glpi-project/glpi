@@ -94,6 +94,8 @@ class CommonGLPI {
    /**
     * Define tabs to display
     *
+    * NB : Only called for existing object
+    *
     * @param $options array
     *     - withtemplate is a template view ?
     *
@@ -149,6 +151,9 @@ class CommonGLPI {
    /**
     * Get Tab Name used for itemtype
     *
+    * NB : Only called for existing object
+    *      Must check right on what will be displayed + template
+    *
     * @since version 0.83
     *
     * @param $item         CommonDBTM object for which the tab need to be displayed
@@ -193,6 +198,11 @@ class CommonGLPI {
          case -1 :
             // get tabs and loop over
             $ong = $item->defineTabs(array('withtemplate' => $withtemplate));
+            if (isset(self::$othertabs[$item->getType()]) && !$item->isNewItem()) {
+               foreach(self::$othertabs[$item->getType()] as $typetab) {
+                  $item->addStandardTab($typetab, $ong, array('withtemplate' => $withtemplate));
+               }
+            }
             if (count($ong)) {
                foreach ($ong as $key => $val) {
                   if ($key != 'empty') {
@@ -269,6 +279,18 @@ class CommonGLPI {
       } else {
          glpi_header($this->getSearchURL());
       }
+   }
+
+
+   /**
+    * is the current object a new  one - Always false here (virtual Objet)
+    *
+    * @since version 0.83
+    *
+    * @return boolean
+    */
+   function isNewItem() {
+      return false;
    }
 
 
@@ -409,7 +431,15 @@ class CommonGLPI {
       echo "<div id='tabspanel' class='center-h'></div>";
 
       $active      = 0;
-      $onglets     = $this->defineTabs($options);
+      if ($this->isNewItem()) {
+         $onglets  = array();
+      } else {
+         $onglets  = $this->defineTabs($options);
+      }
+      if (empty($onglets)) {
+         $onglets['empty'] = $this->getTypeName();
+      }
+
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
          $display_all = false;
@@ -431,7 +461,7 @@ class CommonGLPI {
          $tabs    = array();
 
          // Object with class with 'addtabon' attribute
-         if (isset(self::$othertabs[$this->getType()])) {
+         if (isset(self::$othertabs[$this->getType()]) && !$this->isNewItem()) {
             foreach(self::$othertabs[$this->getType()] as $typetab) {
                $this->addStandardTab($typetab, $onglets, $options);
             }
@@ -477,7 +507,7 @@ class CommonGLPI {
     * @param $full path or relative one
    **/
    function getSearchURL($full=true) {
-      return getItemTypeSearchURL(get_class($this), $full);
+      return Toolbox::getItemTypeSearchURL(get_class($this), $full);
    }
 
 
@@ -487,7 +517,7 @@ class CommonGLPI {
     * @param $full path or relative one
    **/
    function getFormURL($full=true) {
-      return getItemTypeFormURL(get_class($this), $full);
+      return Toolbox::getItemTypeFormURL(get_class($this), $full);
    }
 
 

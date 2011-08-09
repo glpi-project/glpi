@@ -148,17 +148,15 @@ class Group extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $ong['empty'] = $this->getTypeName();
 
-      if (!$this->isNewItem()) {
-         if ($this->fields['is_usergroup']) {
-            $this->addStandardTab('User', $ong, $options);
-         }
-         if ($this->fields['is_notify']) {
-            $this->addStandardTab('NotificationTarget', $ong, $options);
-         }
-         $this->addStandardTab('Group', $ong, $options);
+      if ($this->fields['is_usergroup']) {
+         $this->addStandardTab('User', $ong, $options);
       }
+      if ($this->fields['is_notify']) {
+         $this->addStandardTab('NotificationTarget', $ong, $options);
+      }
+      $this->addStandardTab('Group', $ong, $options);
+
       return $ong;
    }
 
