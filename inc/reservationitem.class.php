@@ -178,7 +178,8 @@ class ReservationItem extends CommonDBTM {
 
       $ri = new ReservationItem();
 
-      echo "<div><form method='post' name=form action='".getItemTypeFormURL('ReservationItem')."'>";
+      echo "<div><form method='post' name=form action='".
+                  Toolbox::getItemTypeFormURL('ReservationItem')."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['reservation'][9]."</th></tr>";
       echo "<tr class='tab_bg_1'>";

@@ -85,7 +85,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $rand=mt_rand();
       echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
              action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
@@ -119,7 +119,7 @@ class Calendar_Holiday extends CommonDBRelation {
             }
             echo "</td>";
             $used[] = $data['id'];
-            echo "<td><a href='".getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
+            echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             echo "<td>".Toolbox::convDate($data["begin_date"])."</td>";
             echo "<td>".Toolbox::convDate($data["end_date"])."</td>";

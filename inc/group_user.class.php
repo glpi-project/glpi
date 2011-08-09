@@ -90,7 +90,7 @@ class Group_User extends CommonDBRelation{
       if ($canedit) {
          $headerspan = $nb_per_line*2;
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
-         echo " action='".getItemTypeFormURL('User')."'>";
+         echo " action='".Toolbox::getItemTypeFormURL('User')."'>";
       } else {
          $headerspan = $nb_per_line;
       }

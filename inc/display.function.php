@@ -711,12 +711,12 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
                $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['title']
                               = $rulecollection->getRuleClass()->getTitle();
                $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['page']
-                              = getItemTypeSearchURL($ruleclassname,false);
+                              = Toolbox::getItemTypeSearchURL($ruleclassname,false);
                $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['search']
-                              = getItemTypeSearchURL($ruleclassname,false);
+                              = Toolbox::getItemTypeSearchURL($ruleclassname,false);
                if ($rulecollection->canCreate()) {
                   $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['add']
-                                 = getItemTypeFormURL($ruleclassname,false);
+                                 = Toolbox::getItemTypeFormURL($ruleclassname,false);
                }
             }
          }

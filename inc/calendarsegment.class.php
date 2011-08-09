@@ -292,7 +292,7 @@ class CalendarSegment extends CommonDBChild {
       $rand    = mt_rand();
       echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
              action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
          echo "<div class='spaced'>";

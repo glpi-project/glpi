@@ -2689,7 +2689,7 @@ class Ticket extends CommonITILObject {
             $slaoptions = array();
             if (haveRight('config', 'r')) {
             }
-            $slaoptions['link'] = getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
+            $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
             showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".

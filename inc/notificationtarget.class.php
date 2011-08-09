@@ -199,7 +199,7 @@ class NotificationTarget extends CommonDBChild {
 
       echo "<form name='notificationtargets_form' id='notificationtargets_form'
              method='post' action=' ";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['mailing'][121] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";

@@ -781,7 +781,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if (!empty($licdata['type'])) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
-         $link_item = getItemTypeFormURL('SoftwareLicense');
+         $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
          $link      = $link_item."?id=".$licdata['id'];
          showToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>". $LANG['common'][19].
                         "&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
@@ -819,7 +819,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       $multiple  = false;
-      $link_item = getItemTypeFormURL('SoftwareLicense');
+      $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
 
       echo "<tr class='tab_bg_1'>";

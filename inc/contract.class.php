@@ -860,7 +860,7 @@ class Contract extends CommonDBTM {
                }
                echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
-               echo "<a href='". getItemTypeSearchURL($itemtype) . "?" .
+               echo "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
                      rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
                      "&amp;start=0". "'>" . $LANG['reports'][57]."</a></td>";
@@ -872,7 +872,7 @@ class Contract extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $ID = " (".$data["id"].")";
                   }
-                  $link = getItemTypeFormURL($itemtype);
+                  $link = Toolbox::getItemTypeFormURL($itemtype);
                   $name = "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";

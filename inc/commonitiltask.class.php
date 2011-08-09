@@ -571,7 +571,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $item = new $itemtype();
       $out  = $item->getTypeName().' : '.Toolbox::convDateTime($val["begin"]).' -> '.
               Toolbox::convDateTime($val["end"]).' : ';
-      $out .= "<a href='".getItemTypeFormURL($itemtype)."?id=".
+      $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                 $val[getForeignKeyFieldForItemType($itemtype)]."'>";
       $out .= resume_text($val["name"],80).'</a>';
 
@@ -612,7 +612,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
              $parent->getStatus($val["status"])."' title=\"".$parent->getStatus($val["status"])."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
-                   href='".getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
+                   href='".Toolbox::getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
 
       switch ($type) {

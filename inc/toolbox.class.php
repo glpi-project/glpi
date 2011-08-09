@@ -1275,6 +1275,61 @@ class Toolbox {
    }
 
 
+   /**
+    * Get form URL for itemtype
+    *
+    * @param $itemtype string: item type
+    * @param $full path or relative one
+    *
+    * return string itemtype Form URL
+   **/
+   static function getItemTypeFormURL($itemtype, $full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
+      if ($plug=isPluginItemType($itemtype)) {
+         $dir .= "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
+
+      } else { // Standard case
+         $item = strtolower($itemtype);
+      }
+
+      return "$dir/front/$item.form.php";
+   }
+
+
+   /**
+    * Get search URL for itemtype
+    *
+    * @param $itemtype string: item type
+    * @param $full path or relative one
+    *
+    * return string itemtype search URL
+   **/
+   static function getItemTypeSearchURL($itemtype, $full=true) {
+      global $CFG_GLPI;
+
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+
+      if ($plug=isPluginItemType($itemtype)) {
+         $dir .=  "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
+
+      } else { // Standard case
+         if ($itemtype == 'Cartridge') {
+            $itemtype = 'CartridgeItem';
+         }
+         if ($itemtype == 'Consumable') {
+            $itemtype = 'ConsumableItem';
+         }
+         $item = strtolower($itemtype);
+      }
+
+      return "$dir/front/$item.php";
+   }
+
 
 
 

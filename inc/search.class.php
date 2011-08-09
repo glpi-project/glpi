@@ -112,7 +112,7 @@ class Search {
          }
       }
 
-      $target = getItemTypeSearchURL($itemtype);
+      $target = Toolbox::getItemTypeSearchURL($itemtype);
 
       $limitsearchopt = self::getCleanedOptions($itemtype);
 
@@ -1066,7 +1066,8 @@ class Search {
                                     if (isset($split2[1])) {
                                        $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
                                                 $split2[1]."' ";
-                                       $out .= "href=\"".getItemTypeFormURL($p['itemtype2'][$j]).
+                                       $out .= "href=\"".
+                                                Toolbox::getItemTypeFormURL($p['itemtype2'][$j]).
                                                 "?id=".$p['itemtype2'][$j]."\">";
                                        $out .= $split2[0].$unit;
                                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
@@ -1113,7 +1114,7 @@ class Search {
                         echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
                      } else {
                         echo self::showItem($output_type,
-                                            "<a href=\"".getItemTypeFormURL($itemtype)."?id=".
+                                            "<a href=\"".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
                                               "&amp;update=update\" "."title=\"".
                                               ($data["ACTIVE"]?$LANG['buttons'][42]
@@ -1124,7 +1125,7 @@ class Search {
                                             $item_num, $row_num, "class='center'");
 
                         echo self::showItem($output_type,
-                                            "<a href='".getItemTypeFormURL($itemtype)."?id=".
+                                            "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;delete=delete' ".
                                               addConfirmationOnAction(array($LANG['reservation'][38],$LANG['reservation'][39])).
                                               " title=\"".$LANG['reservation'][6]."\">".
@@ -1368,7 +1369,7 @@ class Search {
       }
 
       $options = self::getCleanedOptions($itemtype);
-      $target  = getItemTypeSearchURL($itemtype);
+      $target  = Toolbox::getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -3980,7 +3981,7 @@ class Search {
             return '&nbsp;';
 
          case 'glpi_tickets.name' :
-            $link = getItemTypeFormURL('Ticket');
+            $link = Toolbox::getItemTypeFormURL('Ticket');
             $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
             $out .= 'id='.$data[$NAME.$num."_2"];
@@ -4075,9 +4076,9 @@ class Search {
             case "itemlink" :
                if (!empty($data[$NAME.$num."_2"])) {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
-                     $link = getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
+                     $link = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                   } else {
-                     $link = getItemTypeFormURL($itemtype);
+                     $link = Toolbox::getItemTypeFormURL($itemtype);
                   }
                   $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
@@ -4106,7 +4107,7 @@ class Search {
                               $out .= $separate;
                            }
                            $count_display++;
-                           $page = getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
+                           $page = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
                            $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$data['id']."_".
                                      $split2[1]."' href='$page=".$split2[1]."'>".$split2[0].$unit;

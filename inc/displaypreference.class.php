@@ -521,7 +521,7 @@ class DisplayPreference extends CommonDBTM {
    static function showForUser($users_id) {
       global $DB, $LANG;
 
-      $url = getItemTypeFormURL(__CLASS__);
+      $url = Toolbox::getItemTypeFormURL(__CLASS__);
 
       $query = "SELECT `itemtype`,
                        COUNT(*) AS nb

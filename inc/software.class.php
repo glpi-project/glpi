@@ -798,7 +798,7 @@ class Software extends CommonDBTM {
       $req = $DB->request($sql);
 
       if ($req->numrows()) {
-         $link = getItemTypeFormURL('Software');
+         $link = Toolbox::getItemTypeFormURL('Software');
          echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand'
                 action='".$link."'>";
          echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";

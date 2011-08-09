@@ -649,7 +649,7 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             if ($output_type==HTML_OUTPUT) {
-               printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
+               printPager($params['start'], $numrows, Toolbox::getItemTypeSearchURL('KnowbaseItem'),
                           $parameters, 'KnowbaseItem');
             }
 
@@ -713,9 +713,9 @@ class KnowbaseItem extends CommonDBTM {
                    && isset($options['items_id'])
                    && $output_type==HTML_OUTPUT) {
 
-                  $content = "<a href='".getItemTypeFormURL($options['itemtype'])."?load_kb_sol=".
-                               $data['id']."&amp;id=".$options['items_id']."&amp;forcetab=4'>".
-                               $LANG['job'][24]."</a>";
+                  $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
+                               "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
+                               "&amp;forcetab=4'>".$LANG['job'][24]."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 
@@ -734,7 +734,7 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo "<br>";
             if ($output_type==HTML_OUTPUT) {
-               printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
+               printPager($params['start'], $numrows, Toolbox::getItemTypeSearchURL('KnowbaseItem'),
                           $parameters, 'KnowbaseItem');
             }
 

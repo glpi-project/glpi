@@ -193,7 +193,7 @@ class EntityData extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -294,7 +294,7 @@ class EntityData extends CommonDBChild {
 
 
       if ($canedit) {
-         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -395,7 +395,7 @@ class EntityData extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -523,7 +523,7 @@ class EntityData extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";
@@ -701,7 +701,7 @@ class EntityData extends CommonDBChild {
 
       echo "<div class='spaced'>";
       if ($canedit) {
-         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
 
       echo "<table class='tab_cadre_fixe'>";

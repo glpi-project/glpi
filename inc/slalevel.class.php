@@ -85,7 +85,7 @@ class SlaLevel extends RuleTicket {
 
       $rand=mt_rand();
       echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
          echo "<div class='center first-bloc'>";
@@ -140,7 +140,7 @@ class SlaLevel extends RuleTicket {
 
                echo "<td>";
                if ($canedit) {
-                  echo "<a href='".getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
+                  echo "<a href='".Toolbox::getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
                }
                   echo $data["name"];
                   if (empty($data["name"])) {

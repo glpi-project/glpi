@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $newID = $link->add($_POST);
    Event::log($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".
               $_POST["name"].".");
-   glpi_header(getItemTypeFormURL('Link')."?id=".$newID);
+   glpi_header(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
    $link->check($_GET["id"],'w');

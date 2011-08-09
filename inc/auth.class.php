@@ -989,7 +989,7 @@ class Auth {
 
          if ($DB->numrows($result) == 1) {
             $data = $DB->fetch_array($result);
-            echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
+            echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
             echo "<div class='firstbloc'>";
 
             switch($data["authtype"]) {

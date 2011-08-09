@@ -107,7 +107,7 @@ class NotificationMailSetting extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       echo "<div>";
-      echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
+      echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
 
@@ -205,7 +205,7 @@ class NotificationMailSetting extends CommonDBTM {
    function showFormAlerts() {
       global $LANG, $CFG_GLPI;
 
-      echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
+      echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
 

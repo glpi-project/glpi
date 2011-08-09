@@ -41,14 +41,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET["itemtype"])) {
 
-   $link=getItemTypeFormURL($_GET["itemtype"]);
-   
+   $link = Toolbox::getItemTypeFormURL($_GET["itemtype"]);
+
    $item = str_replace(".form.php","",$link);
    $item = str_replace("front/","",$item);
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"inventory",$item);
-   
+
    listTemplates($_GET["itemtype"],$link,$_GET["add"]);
-   
+
    commonFooter();
 }
 
