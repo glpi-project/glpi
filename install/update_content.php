@@ -48,8 +48,8 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-Toolbox::setGlpiSessionPath();
-Toolbox::startGlpiSession();
+Session::setPath();
+Session::start();
 
 // Init debug variable
 $_SESSION['glpi_use_mode'] = DEBUG_MODE;
