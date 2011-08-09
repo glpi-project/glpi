@@ -504,10 +504,10 @@ function update1($host, $user, $password, $DBname) {
 
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)) {
-   Toolbox::setGlpiSessionPath();
+   Session::setPath();
 }
 
-Toolbox::startGlpiSession();
+Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 
 if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {

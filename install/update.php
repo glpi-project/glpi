@@ -111,7 +111,7 @@ define("POWER_DEVICE",    12);
 
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)) {
-   Toolbox::setGlpiSessionPath();
+   Session::setPath();
 }
 
 // Init debug variable
@@ -815,7 +815,7 @@ function updateTreeDropdown() {
 //Debut du script
 $HEADER_LOADED = true;
 
-Toolbox::startGlpiSession();
+Session::start();
 
 if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {
    $_SESSION["glpilanguage"] = "en_GB";
