@@ -243,7 +243,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 
    // Clean text fields
    $values['name']    = stripslashes($values['name']);
-   $values['content'] = cleanPostForTextArea($values['content']);
+   $values['content'] = Toolbox::cleanPostForTextArea($values['content']);
 
    if (isset($_SESSION["helpdeskSaved"])) {
       unset($_SESSION["helpdeskSaved"]);

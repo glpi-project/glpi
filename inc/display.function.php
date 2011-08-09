@@ -2271,7 +2271,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       $items_id = stripslashes($_SESSION["helpdeskSaved"]["items_id"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["content"])) {
-      $content = cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
+      $content = Toolbox::cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["name"])) {
       $title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
@@ -3474,7 +3474,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       $rand = mt_rand();
       $name = "field_".$params['name'].$rand;
       echo "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-            "' value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+            "' value=\"".Toolbox::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
       $output = "<script type='text/javascript' >\n";
 
       $output .= "var text$name = new Ext.data.Store({
@@ -3524,7 +3524,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
 
    } else {
       echo "<input ".$params['option']." type='text' name='".$params['name']."'
-             value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+             value=\"".Toolbox::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
 

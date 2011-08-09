@@ -2454,9 +2454,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][40]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
-                formatNumber($this->fields["cost_time"], true)."'>";
+                Toolbox::formatNumber($this->fields["cost_time"], true)."'>";
       } else {
-         echo formatNumber($this->fields["cost_time"]);
+         echo Toolbox::formatNumber($this->fields["cost_time"]);
       }
       echo "</td></tr>\n";
 
@@ -2464,9 +2464,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][41]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                formatNumber($this->fields["cost_fixed"], true)."'>";
+                Toolbox::formatNumber($this->fields["cost_fixed"], true)."'>";
       } else {
-         echo formatNumber($this->fields["cost_fixed"]);
+         echo Toolbox::formatNumber($this->fields["cost_fixed"]);
       }
       echo "</td></tr>\n";
 
@@ -2474,9 +2474,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][42]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
-                formatNumber($this->fields["cost_material"], true)."'>";
+                Toolbox::formatNumber($this->fields["cost_material"], true)."'>";
       } else {
-         echo formatNumber($this->fields["cost_material"]);
+         echo Toolbox::formatNumber($this->fields["cost_material"]);
       }
       echo "</td></tr>\n";
 
@@ -2538,7 +2538,8 @@ class Ticket extends CommonITILObject {
    **/
    static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
                                      $edit = true) {
-      return formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material, $edit);
+      return Toolbox::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
+                                   $edit);
    }
 
 

@@ -256,7 +256,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
-         echo $LANG['backup'][22]." ".formatNumber($offset, false, 0)."<br>";
+         echo $LANG['backup'][22]." ".Toolbox::formatNumber($offset, false, 0)."<br>";
          return false;
       }
       glpi_flush();

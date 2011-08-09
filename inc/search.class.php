@@ -1502,7 +1502,8 @@ class Search {
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
                   $nb_in_group ++;
-                  $group .= "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
+                  $group .= "<option title=\"".Toolbox::cleanInputText($val["name"]).
+                                           "\" value='$key'";
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
                      $group .= "selected";
                      $selected = $key;
@@ -4202,12 +4203,14 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', formatNumber($split[$k], false, 0)).$unit;
+                        $out .= str_replace(' ', '&nbsp;', Toolbox::formatNumber($split[$k], false,
+                                            0)).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', formatNumber($data[$NAME.$num], false, 0)).$unit;
+               return str_replace(' ', '&nbsp;', Toolbox::formatNumber($data[$NAME.$num], false, 0)).
+                      $unit;
 
             case "decimal" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
@@ -4220,12 +4223,12 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', formatNumber($split[$k])).$unit;
+                        $out .= str_replace(' ', '&nbsp;', Toolbox::formatNumber($split[$k])).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', formatNumber($data[$NAME.$num])).$unit;
+               return str_replace(' ', '&nbsp;', Toolbox::formatNumber($data[$NAME.$num])).$unit;
 
             case "bool" :
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
@@ -4851,7 +4854,7 @@ class Search {
             break;
 
          case CSV_OUTPUT : //CSV
-            $out = "\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            $out = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
@@ -4909,7 +4912,7 @@ class Search {
 
          case CSV_OUTPUT : //csv
             $value = weblink_extract($value);
-            $out = "\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            $out = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
@@ -5216,6 +5219,26 @@ class Search {
          $complexjoin = md5($complexjoin);
       }
       return $complexjoin;
+   }
+
+
+   /**
+    * Clean display value for csv export
+    *
+    * @param $value string value
+    *
+    * @return clean value
+   **/
+   static function csv_clean($value) {
+
+      if (get_magic_quotes_runtime()) {
+         $value = stripslashes($value);
+      }
+
+      $value = str_replace("\"", "''", $value);
+      $value = Html::clean($value);
+
+      return $value;
    }
 
 }

@@ -245,76 +245,7 @@ function resume_name($string, $length=255) {
 
 
 
-/**
- * Clean post value for display in textarea
- *
- * @param $value string: string value
- *
- * @return clean value
-**/
-function cleanPostForTextArea($value) {
 
-   $order   = array('\r\n',
-                    '\n',
-                    "\\'",
-                    '\"',
-                    '\\\\');
-   $replace = array("\n",
-                    "\n",
-                    "'",
-                    '"',
-                    "\\");
-   return str_replace($order, $replace, $value);
-}
-
-
-
-
-
-/**
- * Convert a number to correct display
- *
- * @param $number float: Number to display
- * @param $edit boolean: display number for edition ? (id edit use . in all case)
- * @param $forcedecimal integer: Force decimal number (do not use default value)
- *
- * @return formatted number
-**/
-function formatNumber($number, $edit=false, $forcedecimal=-1) {
-   global $CFG_GLPI;
-
-   // Php 5.3 : number_format() expects parameter 1 to be double,
-   if ($number=="") {
-      $number = 0;
-
-   } else if ($number=="-") { // used for not defines value (from Infocom::Amort, p.e.)
-      return "-";
-   }
-
-   $number = doubleval($number);
-
-   $decimal = $CFG_GLPI["decimal_number"];
-   if ($forcedecimal>=0) {
-      $decimal = $forcedecimal;
-   }
-
-   // Edit : clean display for mysql
-   if ($edit) {
-      return number_format($number, $decimal, '.', '');
-   }
-
-   // Display : clean display
-   switch ($_SESSION['glpinumber_format']) {
-      case 2 : // Other French
-         return str_replace(' ', '&nbsp;', number_format($number, $decimal, ', ', ' '));
-
-      case 0 : // French
-         return str_replace(' ', '&nbsp;', number_format($number, $decimal, '.', ' '));
-
-      default: // English
-         return number_format($number, $decimal, '.', ', ');
-   }
-}
 
 
 
@@ -650,32 +581,6 @@ function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
 }
 
 
-/**
- * Get date using a begin date and a period in month and a notice one
- *
- * @param $begin date: begin date
- * @param $duration integer: period in months
- * @param $notice integer: notice in months
- *
- * @return expiration string
-**/
-function getExpir($begin, $duration, $notice="0") {
-   global $LANG;
-
-   if ($begin==NULL || empty($begin)) {
-      return "";
-   }
-
-   $diff      = strtotime("$begin+$duration month -$notice month")-time();
-   $diff_days = floor($diff/60/60/24);
-
-   if ($diff_days>0) {
-      return $diff_days." ".Toolbox::ucfirst($LANG['calendar'][12]);
-   }
-
-   return "<span class='red'>".$diff_days." ".Toolbox::ucfirst($LANG['calendar'][12])."</span>";
-}
-
 
 /**
  * Manage login redirection
@@ -825,16 +730,7 @@ function manageRedirect($where) {
 }
 
 
-/**
- * Clean string for input text field
- *
- * @param $string string: input text
- *
- * @return clean string
-**/
-function cleanInputText($string) {
-   return preg_replace('/\"/', '&quot;', $string);
-}
+
 
 
 /**
@@ -1008,25 +904,6 @@ function initNavigateListItems($itemtype, $title="") {
 
 
 
-/**
- * Clean display value for csv export
- *
- * @param $value string value
- *
- * @return clean value
-**/
-function csv_clean($value) {
-
-   if (get_magic_quotes_runtime()) {
-      $value = stripslashes($value);
-   }
-
-   $value = str_replace("\"", "''", $value);
-   $value = Html::clean($value);
-
-   return $value;
-}
-
 
 /**
  * Extract url from web link
@@ -1135,6 +1012,32 @@ function manageBeginAndEndPlanDates(&$data) {
       return '';
    }
 
+
+   /**
+    * Get date using a begin date and a period in month and a notice one
+    *
+    * @param $begin date: begin date
+    * @param $duration integer: period in months
+    * @param $notice integer: notice in months
+    *
+    * @return expiration string
+   **/
+   function getExpir($begin, $duration, $notice="0") {
+      global $LANG;
+
+      if ($begin==NULL || empty($begin)) {
+         return "";
+      }
+
+      $diff      = strtotime("$begin+$duration month -$notice month")-time();
+      $diff_days = floor($diff/60/60/24);
+
+      if ($diff_days>0) {
+         return $diff_days." ".Toolbox::ucfirst($LANG['calendar'][12]);
+      }
+
+      return "<span class='red'>".$diff_days." ".Toolbox::ucfirst($LANG['calendar'][12])."</span>";
+   }
 // ******************************************************
 
 

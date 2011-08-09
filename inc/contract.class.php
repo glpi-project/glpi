@@ -174,7 +174,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][5]."&nbsp;:</td><td>";
-      echo "<input type='text' name='cost' value='".formatNumber($this->fields["cost"], true).
+      echo "<input type='text' name='cost' value='".Toolbox::formatNumber($this->fields["cost"], true).
             "' size='14'></td>";
       echo "<td>".$LANG['search'][8]."&nbsp;:</td>";
       echo "<td>";

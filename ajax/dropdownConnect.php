@@ -176,7 +176,7 @@ if ($DB->numrows($result)) {
          $output .= " - ".$data["otherserial"];
       }
 
-      echo "<option value='$ID' title=\"".cleanInputText($output)."\">".
+      echo "<option value='$ID' title=\"".Toolbox::cleanInputText($output)."\">".
             Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 
