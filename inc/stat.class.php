@@ -1123,7 +1123,7 @@ class Stat {
          $param['width']     = 900;
          $param['height']    = 300;
          $param['unit']      = '';
-         $param['type']      = 'stack';
+         $param['type']      = 'line';
          $param['csv']       = true;
          $param['datatype']  = 'count';
 
