@@ -694,10 +694,10 @@ class KnowbaseItem extends CommonDBTM {
                   echo Search::showItem($output_type,
                                         "<div class='kb'><a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " $href>".resume_text($data["name"], 80)."</a></div>
+                                          " $href>".Html::resume_text($data["name"], 80)."</a></div>
                                           <div class='kb_resume'>".
-                                          resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["answer"])),
-                                                      600)."</div>",
+                                          Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["answer"])),
+                                                            600)."</div>",
                                         $item_num, $row_num);
                } else {
                   echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
@@ -798,7 +798,8 @@ class KnowbaseItem extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
-                  $target."?id=".$data["id"]."\">".resume_text($data["name"],80)."</a></td></tr>";
+                  $target."?id=".$data["id"]."\">".Html::resume_text($data["name"],80)."</a></td>".
+                  "</tr>";
          }
          echo "</table>";
       }

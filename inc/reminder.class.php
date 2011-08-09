@@ -453,8 +453,10 @@ class Reminder extends CommonDBTM {
                } else {
                   $interv[$data["begin"]."$$".$i]["end"] = $data["end"];
                }
-               $interv[$data["begin"]."$$".$i]["name"] = resume_text($data["name"],$CFG_GLPI["cut"]);
-               $interv[$data["begin"]."$$".$i]["text"] = resume_text($data["text"],$CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["name"]       = Html::resume_text($data["name"],
+                                                                                 $CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["text"]       = Html::resume_text($data["text"],
+                                                                                 $CFG_GLPI["cut"]);
                $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
                $interv[$data["begin"]."$$".$i]["is_private"] = $data["is_private"];
                $interv[$data["begin"]."$$".$i]["state"]      = $data["state"];
@@ -479,7 +481,7 @@ class Reminder extends CommonDBTM {
               Html::convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                $val["reminders_id"]."'>";
-      $out .= resume_text($val["name"],80).'</a>';
+      $out .= Html::resume_text($val["name"],80).'</a>';
       return $out;
    }
 
@@ -528,7 +530,7 @@ class Reminder extends CommonDBTM {
             break;
       }
 
-      echo resume_text($val["name"],80);
+      echo Html::resume_text($val["name"],80);
       echo $users_id;
       echo "</a>";
 
@@ -731,8 +733,10 @@ class Reminder extends CommonDBTM {
             $tabremind[$sort."$$".$i]["begin"]        = ($data["is_planned"]?"".$data["begin"]."":"".
                                                          $data["date"]."");
             $tabremind[$sort."$$".$i]["end"]          = ($data["is_planned"]?"".$data["end"]."":"");
-            $tabremind[$sort."$$".$i]["name"] = resume_text($remind->fields["name"], $CFG_GLPI["cut"]);
-            $tabremind[$sort."$$".$i]["text"] = resume_text($remind->fields["text"], $CFG_GLPI["cut"]);
+            $tabremind[$sort."$$".$i]["name"]         = Html::resume_text($remind->fields["name"],
+                                                                          $CFG_GLPI["cut"]);
+            $tabremind[$sort."$$".$i]["text"]         = Html::resume_text($remind->fields["text"],
+                                                                          $CFG_GLPI["cut"]);
          }
       }
       ksort($tabremind);
@@ -764,7 +768,7 @@ class Reminder extends CommonDBTM {
             echo "<td width='60%' class='left'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                   $val["reminders_id"]."'>".$val["name"]."</a>";
-            echo "<div class='kb_resume'>".resume_text($val["text"], 125)."</div></td>";
+            echo "<div class='kb_resume'>".Html::resume_text($val["text"], 125)."</div></td>";
 
             if ($val["end"]!="") {
                echo "<td class='center'>";

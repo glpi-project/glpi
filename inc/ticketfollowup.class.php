@@ -738,7 +738,8 @@ class TicketFollowup  extends CommonDBTM {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
                      <td class='center'>".getUserName($data["users_id"],1)."</td>
-                     <td width='70%' class='b'>".resume_text($data["content"], $CFG_GLPI["cut"])."
+                     <td width='70%' class='b'>".Html::resume_text($data["content"],
+                                                                   $CFG_GLPI["cut"])."
                      </td></tr>";
          }
          $out .= "</table></div>";

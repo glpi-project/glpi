@@ -194,28 +194,42 @@ class Html {
    }
 
 
-    /** Display how many logins since
+    /**
+     *  Resume text for followup
      *
-     * @return  nothing
+     * @param $string string: string to resume
+     * @param $length integer: resume length
+     *
+     * @return cut string
     **/
-    static function getCountLogin() {
-       global $DB;
+    static function resume_text($string, $length=255) {
 
-       $query = "SELECT count(*)
-                 FROM `glpi_events`
-                 WHERE `message` LIKE '%logged in%'";
+       if (strlen($string)>$length) {
+          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
+       }
 
-       $query2 = "SELECT `date`
-                  FROM `glpi_events`
-                  ORDER BY `date` ASC
-                  LIMIT 1";
-
-       $result   = $DB->query($query);
-       $result2  = $DB->query($query2);
-       $nb_login = $DB->result($result, 0, 0);
-       $date     = $DB->result($result2, 0, 0);
-
-       echo '<b>'.$nb_login.'</b> logins since '.$date ;
+       return $string;
     }
+
+
+    /**
+     *  Resume a name for display
+     *
+     * @param $string string: string to resume
+     * @param $length integer: resume length
+     *
+     * @return cut string
+     **/
+    static function resume_name($string, $length=255) {
+
+       if (strlen($string)>$length) {
+          $string = Toolbox::substr($string, 0, $length)."...";
+       }
+
+       return $string;
+    }
+
+
+
 }
 ?>

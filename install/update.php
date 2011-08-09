@@ -770,7 +770,7 @@ function updateDbUpTo031() {
 
    echo "<h3>".$LANG['update'][139]."</h3>";
 
-   optimize_tables($migration);
+   DBmysql::optimize_tables($migration);
 
    return $ret;
 }

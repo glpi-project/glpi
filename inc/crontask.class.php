@@ -1242,7 +1242,7 @@ class CronTask extends CommonDBTM{
     **/
    static function cronOptimize($task) {
 
-      $nb = optimize_tables(NULL, true);
+      $nb = DBmysql::optimize_tables(NULL, true);
       $task->setVolume($nb);
 
       return 1;
