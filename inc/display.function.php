@@ -1160,7 +1160,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['config']['content']['mailcollector']['title'] = $LANG['Menu'][39];
       $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
-      if (MailCollector::canUseImapPop()) {
+      if (Toolbox::canUseImapPop()) {
          $menu['config']['content']['mailcollector']['links']['search'] = '/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['add']
                                     = '/front/mailcollector.form.php';

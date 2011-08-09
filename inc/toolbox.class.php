@@ -1054,6 +1054,26 @@ class Toolbox {
    }
 
 
+   /**
+    * Determine if Imap/Pop is usable checking extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseImapPop() {
+      return extension_loaded('imap');
+   }
+
+
+   /**
+    * Determine if Ldap is usable checking ldap extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseLdap() {
+      return extension_loaded('ldap');
+   }
+
+
 
 }
 ?>

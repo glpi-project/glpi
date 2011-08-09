@@ -308,7 +308,7 @@ class EntityData extends CommonDBChild {
       autocompletionTextField($entdata, "tag", array('size' => 100));
       echo "</td></tr>";
 
-      if (AuthLDAP::canUse()) {
+      if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
          echo "<td>";
@@ -322,7 +322,7 @@ class EntityData extends CommonDBChild {
       autocompletionTextField($entdata, "mail_domain", array('size' => 100));
       echo "</td></tr>";
 
-      if (AuthLDAP::canUse()) {
+      if (Toolbox::canUseLdap()) {
          echo "<tr><th colspan='2'>".$LANG['entity'][24]."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";

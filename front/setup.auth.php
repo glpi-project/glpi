@@ -48,14 +48,14 @@ if (haveRight("config","w")) {
 }
 echo $LANG['common'][12]. ' ' . $LANG['login'][10]."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
-if (AuthLDAP::canUse()) {
+if (Toolbox::canUseLdap()) {
    echo "<a href='authldap.php'>". $LANG['login'][2] ."</a>";
 } else {
    echo "<p class='red'>".$LANG['setup'][157] ."</p><p>".$LANG['setup'][158].'</p>';
 }
 echo "</td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
-if (MailCollector::canUseImapPop()) {
+if (Toolbox::canUseImapPop()) {
    echo "<a href='authmail.php'>" .$LANG['login'][3] ."</a>";
 } else {
    echo "<p class='red'>".$LANG['setup'][165] ."</p><p>".$LANG['setup'][166].'</p>';
