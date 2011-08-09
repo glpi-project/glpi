@@ -793,10 +793,6 @@ class Dropdown {
          }
       }
 
-      if (isset($options['display_defaultvalue']) && ($options['display_defaultvalue'])) {
-         $values['NULL'] = $LANG['setup'][46];
-      }
-
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
             $values[$key] = $val[0];
