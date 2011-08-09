@@ -177,9 +177,9 @@ class FieldUnicity extends CommonDropdown {
 
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $ID);
-         ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownUnicityFields.php",
-                                     $params);
+         Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownUnicityFields.php",
+                                       $params);
       }
 
    }

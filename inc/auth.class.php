@@ -933,9 +933,9 @@ class Auth {
             $rand             = self::dropdown(array('name' => 'authtype'));
             $paramsmassaction = array('authtype' => '__VALUE__',
                                       'name'     => 'change_auth_method');
-            ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
-                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
-                                        $paramsmassaction);
+            Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
+                                          $paramsmassaction);
             echo "<input type='hidden' name='id' value='" . $ID . "'>";
             echo "<span id='show_massiveaction_field'></span>";
             echo "</td></tr></table>";

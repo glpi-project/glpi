@@ -164,7 +164,7 @@ class Netpoint extends CommonDropdown {
                       'devtype'         => $devtype,);
 
       $default = "<select name='$myname'><option value='$value'>$name</option></select>";
-      ajaxDropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
+      Ajax::dropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
 
       // Display comment
       if ($display_comment) {

@@ -117,12 +117,12 @@ $params = array('duration'     => '__VALUE__',
                 'global_begin' => $CFG_GLPI["planning_begin"],
                 'global_end'   => $CFG_GLPI["planning_end"]);
 
-ajaxUpdateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
-                            $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
+Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 
 if ($default_delay==0) {
    $params['duration'] = 0;
-   ajaxUpdateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
+  Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 }
 
 echo "</td></tr>\n";

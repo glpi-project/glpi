@@ -109,9 +109,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
                          'searchopt'  => $searchopt,
                          'meta'       => $_POST['meta']);
 
-   ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch",
-                               "span$dropdownname",
-                               $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php", $paramsaction);
+   Ajax::updateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch",
+                                 "span$dropdownname",
+                                 $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
+                                 $paramsaction);
 }
 
 ?>

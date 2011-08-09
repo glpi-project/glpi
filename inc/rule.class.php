@@ -594,8 +594,8 @@ class Rule extends CommonDBTM {
                       'rand'     => $rand,
                       'sub_type' => $this->getType());
 
-      ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
-                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
+      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
 
       if ($this->specific_parameters) {
          $itemtype = get_class($this).'Parameter';
@@ -662,8 +662,8 @@ class Rule extends CommonDBTM {
       $params = array('field'    => '__VALUE__',
                       'sub_type' => $this->getType());
 
-      ajaxUpdateItemOnSelectEvent("dropdown_field$rand", "action_span",
-                                  $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
+      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
 
       return $value;
    }
@@ -1691,7 +1691,7 @@ class Rule extends CommonDBTM {
 
       $default  = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
       $default .= "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
-      ajaxDropdown($use_ajax, "/ajax/dropdownRules.php", $params, $default, $rand);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownRules.php", $params, $default, $rand);
 
       return $rand;
    }

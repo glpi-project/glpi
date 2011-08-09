@@ -2412,9 +2412,9 @@ class Ticket extends CommonITILObject {
                             'admin'           => $admin,
                             'myname'          => "items_id",);
 
-            ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",
-                                        $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
-                                        $params);
+            Ajax::updateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
+                                          $params);
             echo "<span id='results_$myname$rand'>\n";
 
             // Display default value if itemtype is displayed
@@ -2890,8 +2890,8 @@ class Ticket extends CommonITILObject {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
                          'priority' => $idpriority);
-         ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
-                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+         Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
+                                       $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       }
       echo "</td>";
       echo "</tr>";

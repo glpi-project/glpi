@@ -845,8 +845,8 @@ class EntityData extends CommonDBChild {
 
       echo "</div>";
 
-      ajaxUpdateItemOnSelectEvent("dropdown_inquest_config$rand", "inquestconfig",
-                                  $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
+      Ajax::updateItemOnSelectEvent("dropdown_inquest_config$rand", "inquestconfig",
+                                    $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
    }
 
    /**

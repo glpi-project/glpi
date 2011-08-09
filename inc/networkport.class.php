@@ -257,9 +257,9 @@ class NetworkPort extends CommonDBChild {
                       'comments'        => $p['comments'],
                       'myname'          => $p['name']);
 
-      ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",
-                                  $params);
+      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",
+                                    $params);
 
       echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
 

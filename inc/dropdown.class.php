@@ -48,7 +48,7 @@ class Dropdown {
     *    - entity_sons : boolean / if entity restrict specified auto select its sons
     *                   only available if entity is a single value not an array (default false)
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - auto_submit : boolean / autosubmit on change (default false)
@@ -185,7 +185,7 @@ class Dropdown {
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
-      ajaxDropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
 
       // Display comment
       if ($params['comments']) {
@@ -921,8 +921,8 @@ class Dropdown {
          if ($onlyglobal) {
             $params['condition'] = "`is_global` = '1'";
          }
-         ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $params);
+         Ajax::updateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $params);
 
          echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
 
@@ -1237,9 +1237,9 @@ class Dropdown {
          $params = array('action'  => '__VALUE__',
                         'itemtype' => $itemtype);
 
-         ajaxUpdateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",
-                                     $params);
+         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",
+                                       $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 
@@ -1463,9 +1463,9 @@ class Dropdown {
             }
          }
 
-         ajaxUpdateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
-                                     $params);
+         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                       $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
       }

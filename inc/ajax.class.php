@@ -101,6 +101,21 @@ class Ajax {
 
 
     /**
+     * Javascript code for update an item when a select item changed
+     *
+     * @param $toobserve id of the select to observe
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     *
+     **/
+    function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array()) {
+
+       self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"));
+    }
+
+
+    /**
      * Javascript code for update an item when a Input text item changed
      *
      * @param $toobserve id of the Input text to observe
@@ -186,7 +201,7 @@ class Ajax {
      *
      * @param $options array of options
      *    - toupdate : array / Update a specific item on select change on dropdown
-     *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
      *                   and may have moreparams)
      *
     **/
@@ -216,8 +231,8 @@ class Ajax {
                 }
              }
 
-             ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
-                                         $data['to_update'], $data['url'], $paramsupdate);
+             Ajax::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+                                           $data['to_update'], $data['url'], $paramsupdate);
           }
        }
     }
@@ -272,6 +287,79 @@ class Ajax {
           echo $out."'\n";
        }
        echo "});";
+    }
+
+
+    /**
+     * Complete Dropdown system using ajax to get datas
+     *
+     * @param $use_ajax Use ajax search system (if not display a standard dropdown)
+     * @param $relativeurl Relative URL to the root directory of GLPI
+     * @param $params Parameters to send to ajax URL
+     * @param $default Default datas t print in case of $use_ajax
+     * @param $rand Random parameter used
+     *
+     **/
+    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
+       global $CFG_GLPI, $DB, $LANG;
+
+       $initparams = $params;
+       if ($rand==0) {
+          $rand = mt_rand();
+       }
+
+       if ($use_ajax) {
+          self::displaySearchTextForDropdown($rand);
+          self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
+                                           $CFG_GLPI["root_doc"].$relativeurl, $params,
+                                           $CFG_GLPI['ajax_min_textsearch_load']);
+       }
+       echo "<span id='results_$rand'>\n";
+       if (!$use_ajax) {
+          // Save post datas if exists
+          $oldpost = array();
+          if (isset($_POST) && count($_POST)) {
+             $oldpost = $_POST;
+          }
+          $_POST = $params;
+          $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
+          include (GLPI_ROOT.$relativeurl);
+          // Restore $_POST datas
+          if (count($oldpost)) {
+             $_POST = $oldpost;
+          }
+       } else {
+          echo $default;
+       }
+       echo "</span>\n";
+       echo "<script type='text/javascript'>";
+       echo "function update_results_$rand() {";
+       if ($use_ajax) {
+          self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams,
+                                 "search_$rand");
+       } else {
+          $initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
+          self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams);
+       }
+       echo "}";
+       echo "</script>";
+    }
+
+
+    /**
+     * Javascript code for update an item
+     *
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     * @param $toobserve id of another item used to get value in case of __VALUE__ used
+     *
+     **/
+    function updateItem($toupdate, $url, $parameters=array(), $toobserve="") {
+
+       echo "<script type='text/javascript'>";
+       self::updateItemJsCode($toupdate,$url,$parameters,$toobserve);
+       echo "</script>";
     }
 
 }

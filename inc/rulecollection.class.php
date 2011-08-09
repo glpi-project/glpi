@@ -433,9 +433,9 @@ class RuleCollection extends CommonDBTM {
                          'sub_type'        => $this->getRuleClassName(),
                          'entity_restrict' => $this->entity);
 
-         ajaxUpdateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
-                                     $params);
+         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                       $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 
