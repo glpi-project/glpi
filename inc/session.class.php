@@ -43,7 +43,7 @@ class Session {
    **/
    static function destroy() {
 
-      Session::start();
+      self::start();
       // Unset all of the session variables.
       session_unset();
       // destroy may cause problems (no login / back to login page)
@@ -72,7 +72,7 @@ class Session {
             }
          }
          self::destroy();
-         Session::start();
+         self::start();
          $_SESSION = $save;
 
          // Normal mode for this request
@@ -186,6 +186,17 @@ class Session {
 
       return $_SESSION['glpi_multientitiesmode'];
    }
+
+
+   /** Add an item to the navigate through search results list
+    *
+    * @param $itemtype device type
+    * @param $ID ID of the item
+   **/
+   static function addToNavigateListItems($itemtype, $ID) {
+      $_SESSION['glpilistitems'][$itemtype][] = $ID;
+   }
+
 
 
 }

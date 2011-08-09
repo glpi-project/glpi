@@ -502,17 +502,6 @@ class Toolbox {
    }
 
 
-   /** Add an item to the navigate through search results list
-    *
-    * @param $itemtype device type
-    * @param $ID ID of the item
-   **/
-   static function addToNavigateListItems($itemtype, $ID) {
-      $_SESSION['glpilistitems'][$itemtype][] = $ID;
-   }
-
-
-
    /** Converts an array of parameters into a query string to be appended to a URL.
     *
     * @param $array  array: parameters to append to the query string.

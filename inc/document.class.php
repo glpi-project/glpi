@@ -1323,7 +1323,7 @@ class Document extends CommonDBTM {
             }
 
             if ($item->getType() != 'Document') {
-               Toolbox::addToNavigateListItems('Document', $docID);
+               Session::addToNavigateListItems('Document', $docID);
             }
             $used[$docID] = $docID;
             $assocID      = $data["assocID"];

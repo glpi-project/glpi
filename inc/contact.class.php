@@ -377,7 +377,7 @@ class Contact extends CommonDBTM{
 
          while ($data= $DB->fetch_array($result)) {
             $ID = $data["id"];
-            Toolbox::addToNavigateListItems('Supplier', $data["entID"]);
+            Session::addToNavigateListItems('Supplier', $data["entID"]);
             $used[$data["entID"]] = $data["entID"];
             $website              = $data["website"];
 

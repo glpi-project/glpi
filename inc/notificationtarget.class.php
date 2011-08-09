@@ -1042,7 +1042,7 @@ class NotificationTarget extends CommonDBChild {
          $notif = new Notification();
          initNavigateListItems('Notification', $group->getTypeName()." = ".$group->getNameID());
          foreach ($req as $data) {
-            Toolbox::addToNavigateListItems('Notification', $data['id']);
+            Session::addToNavigateListItems('Notification', $data['id']);
 
             if ($notif->getFromDB($data['id'])) {
                echo "<tr class='tab_bg_2'><td>".$notif->getLink();

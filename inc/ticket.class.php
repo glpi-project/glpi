@@ -3622,7 +3622,7 @@ class Ticket extends CommonITILObject {
          self::commonListHeader(HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
-            Toolbox::addToNavigateListItems('Ticket',$data["id"]);
+            Session::addToNavigateListItems('Ticket',$data["id"]);
             self::showShort($data["id"], 0);
          }
          echo "</table></div>";
@@ -3796,7 +3796,7 @@ class Ticket extends CommonITILObject {
          self::commonListHeader(HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
-            Toolbox::addToNavigateListItems('Ticket',$data["id"]);
+            Session::addToNavigateListItems('Ticket',$data["id"]);
             self::showShort($data["id"], 0);
          }
       }
@@ -3826,7 +3826,7 @@ class Ticket extends CommonITILObject {
             self::commonListHeader(HTML_OUTPUT);
 
             while ($data=$DB->fetch_assoc($result)) {
-               // Toolbox::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+               // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"], 0);
             }
          } else {

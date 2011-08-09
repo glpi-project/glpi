@@ -314,7 +314,7 @@ class Netpoint extends CommonDropdown {
          initNavigateListItems('Netpoint', $item->getTypeName()."= ".$item->fields['name']);
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
-            Toolbox::addToNavigateListItems('Netpoint',$data["id"]);
+            Session::addToNavigateListItems('Netpoint',$data["id"]);
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

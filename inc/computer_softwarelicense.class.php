@@ -332,7 +332,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo "</tr>\n";
 
             do {
-               Toolbox::addToNavigateListItems('Computer',$data["cID"]);
+               Session::addToNavigateListItems('Computer',$data["cID"]);
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
