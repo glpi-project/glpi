@@ -263,9 +263,9 @@ class ComputerDisk extends CommonDBChild {
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";
                echo "<td>".$data['fsname']."</td>";
-               echo "<td class='right'>".formatNumber($data['totalsize'], false, 0)."&nbsp;".
+               echo "<td class='right'>".Toolbox::formatNumber($data['totalsize'], false, 0)."&nbsp;".
                       $LANG['common'][82]."<span class='small_space'></span></td>";
-               echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
+               echo "<td class='right'>".Toolbox::formatNumber($data['freesize'], false, 0)."&nbsp;".
                       $LANG['common'][82]."<span class='small_space'></span></td>";
                echo "<td>";
                $percent = 0;

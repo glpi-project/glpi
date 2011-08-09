@@ -178,8 +178,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
             }
          }
 
-         echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".
-               formatNumber($valeurnette)."</td><td class='right'>".
+         echo "<td class='right'>".Toolbox::formatNumber($line["value"])."</td><td class='right'>".
+               Toolbox::formatNumber($valeurnette)."</td><td class='right'>".
                Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
                Toolbox::convDate($line["buy_date"])."</td><td>".Toolbox::convDate($line["use_date"]).
                "</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
@@ -189,8 +189,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurnettetot += $valeurnettesoustot;
 
       echo "<tr><td colspan='6' class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-            $LANG['financial'][21]."=".formatNumber($valeursoustot)." - ".
-            $LANG['financial'][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
+            $LANG['financial'][21]."=".Toolbox::formatNumber($valeursoustot)." - ".
+            $LANG['financial'][81]."=".Toolbox::formatNumber($valeurnettesoustot)."</h3></td></tr>";
 
       if (count($valeurnettegraph)>0) {
          echo "<tr><td colspan='5' class='center'>";
@@ -262,8 +262,8 @@ echo "</td></tr></table>";
 
 
 echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-      $LANG['financial'][21]."=".formatNumber($valeurtot)." - ".
-      $LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
+      $LANG['financial'][21]."=".Toolbox::formatNumber($valeurtot)." - ".
+      $LANG['financial'][81]."=".Toolbox::formatNumber($valeurnettetot)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);

@@ -478,7 +478,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr><th colspan='2'>".$LANG['search'][0]."&nbsp;:</th></tr>";
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
-             stripslashes(cleanInputText($params["contains"]))."\"></td>";
+             stripslashes(Toolbox::cleanInputText($params["contains"]))."\"></td>";
       echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['itemtype']) && isset($options['items_id'])) {

@@ -119,7 +119,8 @@ if (isset($_POST['value'])) {
    $output = getUserName($_POST['value']);
 
    if (!empty($output) && $output!="&nbsp;") {
-      echo "<option selected value='".$_POST['value']."' title=\"".cleanInputText($output)."\">".
+      echo "<option selected value='".$_POST['value']."' title=\"".
+            Toolbox::cleanInputText($output)."\">".
             Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
@@ -127,7 +128,7 @@ if (isset($_POST['value'])) {
 if (count($users)) {
    foreach ($users as $ID => $output) {
       echo "<option value='$ID' ".($ID == $_POST['value']?"selected":"")." title='".
-            cleanInputText($output)."'>".Toolbox::substr($output, 0,
+            Toolbox::cleanInputText($output)."'>".Toolbox::substr($output, 0,
                                                          $_SESSION["glpidropdown_chars_limit"]).
             "</option>";
    }

@@ -75,7 +75,7 @@ if ($_POST['softwares_id']>0) {
             $output .= " - " . $data['sname'];
          }
          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
-               cleanInputText($output)."\">".$output."</option>";
+               Toolbox::cleanInputText($output)."\">".$output."</option>";
       }
    }
    echo "</select>&nbsp;";
