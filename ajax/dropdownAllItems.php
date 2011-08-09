@@ -79,7 +79,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
    $default = "<select name='".$_POST["myname"]."'><option value='0'>".DROPDOWN_EMPTY_VALUE.
               "</option></select>";
-   ajaxDropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
+   Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
 
 }
 

@@ -2205,7 +2205,7 @@ class User extends CommonDBTM {
     *          all=-1-> nothing
     *    - rand : integer / already computed rand value
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - auto_submit : boolean / autosubmit on change (default false)
@@ -2292,7 +2292,7 @@ class User extends CommonDBTM {
          }
       }
 
-      ajaxDropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
 
       // Display comment
       if ($p['comments']) {

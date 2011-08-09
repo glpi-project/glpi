@@ -1719,10 +1719,10 @@ abstract class CommonITILObject extends CommonDBTM {
                       'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
                       'entity_restrict' => $entities_id);
 
-      ajaxUpdateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
-                                  "showitilactor".$typename."_$rand",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
-                                  $params);
+      Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
+                                    "showitilactor".$typename."_$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
+                                    $params);
       echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
       if ($inobject) {
          echo "<hr>";

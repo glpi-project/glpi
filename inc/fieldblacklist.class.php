@@ -171,9 +171,9 @@ class Fieldblacklist extends CommonDropdown {
 
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $this->fields['id']);
-         ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
-                                     $params);
+         Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownFieldsBlacklist.php",
+                                       $params);
       }
    }
 
@@ -215,9 +215,9 @@ class Fieldblacklist extends CommonDropdown {
       $params = array('itemtype' => $this->fields['itemtype'],
                       'id_field' => '__VALUE__',
                       'id'       => $this->fields['id']);
-      ajaxUpdateItemOnSelectEvent("dropdown_field$rand", "span_values",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
-                                  $params);
+      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "span_values",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
+                                    $params);
       echo "</span>";
    }
 

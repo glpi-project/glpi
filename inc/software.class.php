@@ -580,7 +580,7 @@ class Software extends CommonDBTM {
 
       $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option>
                   </select>";
-      ajaxDropdown($use_ajax, "/ajax/dropdownSelectSoftware.php", $params, $default, $rand);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftware.php", $params, $default, $rand);
 
       return $rand;
    }
@@ -614,7 +614,7 @@ class Software extends CommonDBTM {
 
       $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option>
                   </select>";
-      ajaxDropdown($use_ajax, "/ajax/dropdownSelectSoftwareLicense.php", $params, $default, $rand);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftwareLicense.php", $params, $default, $rand);
 
       return $rand;
    }

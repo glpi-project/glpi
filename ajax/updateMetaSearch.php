@@ -111,9 +111,9 @@ $params = array('field'       => '__VALUE__',
                  'searchtype' => $_POST["searchtype2"],
                  'meta'       => 1);
 
-ajaxUpdateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
-                            "Search2Span".$_POST["itemtype"].$_POST["num"],
-                            $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
+Ajax::updateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
+                              "Search2Span".$_POST["itemtype"].$_POST["num"],
+                              $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 echo '</td></tr></table>';
 
 ?>

@@ -2362,7 +2362,7 @@ class CommonDBTM extends CommonGLPI {
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - auto_submit : boolean / preselected value (default 0)

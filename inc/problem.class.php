@@ -833,8 +833,8 @@ class Problem extends CommonITILObject {
       $params = array('urgency'  => '__VALUE0__',
                       'impact'   => '__VALUE1__',
                       'priority' => $idpriority);
-      ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
-                                  $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+      Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
+                                    $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
       echo "</tr>";
       echo "</table>";

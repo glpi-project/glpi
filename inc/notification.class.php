@@ -165,12 +165,12 @@ class Notification extends CommonDBTM {
       }
 
       $params = array('itemtype' => '__VALUE__');
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationEvent.php",
-                                  $params);
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "show_templates",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
-                                  $params);
+      Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationEvent.php",
+                                    $params);
+      Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_templates",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
+                                    $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][120] . "&nbsp;:</td>";

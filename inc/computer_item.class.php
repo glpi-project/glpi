@@ -684,7 +684,7 @@ class Computer_Item extends CommonDBRelation{
 
       $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>
                   </select>\n";
-      ajaxDropdown($use_ajax, "/ajax/dropdownConnect.php", $params, $default, $rand);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownConnect.php", $params, $default, $rand);
 
       return $rand;
    }

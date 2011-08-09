@@ -1496,8 +1496,8 @@ class Document extends CommonDBTM {
                       'myname' => $p['name'],
                       'used'   => $p['used']);
 
-      ajaxUpdateItemOnSelectEvent("rubdoc$rand","show_".$p['name']."$rand",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);
+      Ajax::updateItemOnSelectEvent("rubdoc$rand","show_".$p['name']."$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);
 
       echo "<span id='show_".$p['name']."$rand'>";
       $_POST["entity"] = $p['entity'];

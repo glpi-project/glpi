@@ -79,12 +79,13 @@ if (isset($_POST["sub_type"])) {
                               'criteria'  => $_POST["criteria"],
                               'sub_type'  => $_POST["sub_type"]);
 
-      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span$randcrit",
-                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
-                                  $paramscriteria);
+      Ajax::updateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span$randcrit",
+                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
+                                    $paramscriteria);
 
-      ajaxUpdateItem("condition_span$randcrit", $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
-                     $paramscriteria, "dropdown_condition$randcrit");
+      Ajax::updateItem("condition_span$randcrit",
+                       $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php", $paramscriteria,
+                       "dropdown_condition$randcrit");
    }
 }
 

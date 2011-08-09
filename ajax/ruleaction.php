@@ -63,11 +63,11 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
                          'field'       => $_POST["field"],
                          'sub_type'    => $_POST["sub_type"]);
 
-   ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction", "action_type_span$randaction",
-                               $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction);
+   Ajax::updateItemOnSelectEvent("dropdown_action_type$randaction", "action_type_span$randaction",
+                                 $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction);
 
-   ajaxUpdateItem("action_type_span$randaction", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",
-                  $paramsaction, "dropdown_action_type$randaction");
+   Ajax::updateItem("action_type_span$randaction", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",
+                    $paramsaction, "dropdown_action_type$randaction");
 }
 
 ?>
