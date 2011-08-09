@@ -394,7 +394,7 @@ class CommonGLPI {
 
             }
          }
-         $cleantarget = Toolbox::cleanParametersURL($target);
+         $cleantarget = HTML::cleanParametersURL($target);
          echo "<ul>";
          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
