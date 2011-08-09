@@ -69,8 +69,7 @@ if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
    $toADD .= "noAUTO=1";
 }
 
-$auth = new Auth();
-$auth->destroySession();
+Session::destroy();
 
 // Redirect to the login-page
 

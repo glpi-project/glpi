@@ -41,8 +41,8 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-Toolbox::setGlpiSessionPath();
-Toolbox::startGlpiSession();
+Session::setPath();
+Session::start();
 
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {

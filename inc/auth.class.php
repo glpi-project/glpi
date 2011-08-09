@@ -353,113 +353,6 @@ class Auth {
 
 
    /**
-    * Init session for the user is defined
-    *
-    * @return nothing
-   **/
-   function initSession() {
-      global $CFG_GLPI, $LANG;
-
-      if ($this->auth_succeded) {
-         // Restart GLPi session : complete destroy to prevent lost datas
-         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS');
-         $save   = array();
-         foreach ($tosave as $t) {
-            if (isset($_SESSION[$t])) {
-               $save[$t] = $_SESSION[$t];
-            }
-         }
-         $this->destroySession();
-         Toolbox::startGlpiSession();
-         $_SESSION = $save;
-
-         // Normal mode for this request
-         $_SESSION["glpi_use_mode"] = NORMAL_MODE;
-         // Check ID exists and load complete user from DB (plugins...)
-         if (isset($this->user->fields['id'])
-             && $this->user->getFromDB($this->user->fields['id'])) {
-
-            if (!$this->user->fields['is_deleted'] && $this->user->fields['is_active']) {
-               $_SESSION["glpiID"]              = $this->user->fields['id'];
-               $_SESSION["glpiname"]            = $this->user->fields['name'];
-               $_SESSION["glpirealname"]        = $this->user->fields['realname'];
-               $_SESSION["glpifirstname"]       = $this->user->fields['firstname'];
-               $_SESSION["glpidefault_entity"]  = $this->user->fields['entities_id'];
-               $_SESSION["glpiusers_idisation"] = true;
-               $_SESSION["glpiextauth"]         = $this->extauth;
-               $_SESSION["glpiauthtype"]        = $this->user->fields['authtype'];
-               $_SESSION["glpisearchcount"]     = array();
-               $_SESSION["glpisearchcount2"]    = array();
-               $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
-               $_SESSION["glpi_use_mode"]       = $this->user->fields['use_mode'];
-               $_SESSION["glpicrontimer"]       = time();
-               // Default tab
-//               $_SESSION['glpi_tab']=1;
-               $_SESSION['glpi_tabs']           = array();
-               $this->user->computePreferences();
-               foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                  if (isset($this->user->fields[$field])) {
-                     $_SESSION["glpi$field"] = $this->user->fields[$field];
-                  }
-               }
-               // Do it here : do not reset on each page, cause export issue
-               if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
-                  $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
-               }
-               // Init not set value for language
-               if (empty($_SESSION["glpilanguage"])) {
-                  $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
-               }
-               loadLanguage();
-
-               // glpiprofiles -> other available profile with link to the associated entities
-               doHook("init_session");
-
-               initEntityProfiles(getLoginUserID());
-
-               // Use default profile if exist
-               if (isset($_SESSION['glpiprofiles'][$this->user->fields['profiles_id']])) {
-                  changeProfile($this->user->fields['profiles_id']);
-
-               } else { // Else use first
-                  changeProfile(key($_SESSION['glpiprofiles']));
-               }
-
-               if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
-                  $this->auth_succeded = false;
-                  $this->addToError($LANG['login'][25]);
-               }
-
-            } else {
-               $this->auth_succeded = false;
-               $this->addToError($LANG['login'][20]);
-            }
-
-         } else {
-            $this->auth_succeded = false;
-            $this->addToError($LANG['login'][25]);
-         }
-      }
-   }
-
-
-   /**
-    * Destroy the current session
-    *
-    * @return nothing
-   **/
-   function destroySession() {
-
-      Toolbox::startGlpiSession();
-      // Unset all of the session variables.
-      session_unset();
-      // destroy may cause problems (no login / back to login page)
-      $_SESSION = array();
-      // write_close may cause troubles (no login / back to login page)
-   }
-
-
-   /**
     * Get the current identification error
     *
     * @return string : current identification error
@@ -702,7 +595,7 @@ class Auth {
          }
       }
 
-      $this->initSession();
+      Session::init();
 
       if ($noauto) {
          $_SESSION["noAUTO"] = 1;

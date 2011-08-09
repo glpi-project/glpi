@@ -38,8 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if ($CFG_GLPI["use_anonymous_helpdesk"]) {
-   $auth = new Auth();
-   $auth->initSession();
+   Session::init();
 } else {
    exit();
 }

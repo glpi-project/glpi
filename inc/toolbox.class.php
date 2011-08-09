@@ -1332,51 +1332,5 @@ class Toolbox {
 
 
 
-
-// ****  functions on $_SESSION *****
-
-   /**
-    * Set the directory where are store the session file
-   **/
-   static function setGlpiSessionPath() {
-
-      if (ini_get("session.save_handler")=="files") {
-         session_save_path(GLPI_SESSION_DIR);
-      }
-   }
-
-
-   /**
-    * Start the GLPI php session
-   **/
-   static function startGlpiSession() {
-
-      if (!session_id()) {
-         @session_start();
-      }
-      // Define current time for sync of action timing
-      $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-   }
-
-
-   /**
-    * Is GLPI used in multi-entities mode ?
-    *
-    * @return boolean
-   **/
-   static function isMultiEntitiesMode() {
-
-      if (!isset($_SESSION['glpi_multientitiesmode'])) {
-         if (countElementsInTable("glpi_entities")>0) {
-            $_SESSION['glpi_multientitiesmode'] = 1;
-         } else {
-            $_SESSION['glpi_multientitiesmode'] = 0;
-         }
-      }
-
-      return $_SESSION['glpi_multientitiesmode'];
-   }
-
-
 }
 ?>

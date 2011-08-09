@@ -724,7 +724,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("transfer","r" ) && Toolbox::isMultiEntitiesMode()) {
+   if (haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
       $menu['admin']['content']['rule']['options']['transfer']['title'] = $LANG['transfer'][1];
       $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
       $menu['admin']['content']['rule']['options']['transfer']['links']['search']
@@ -2301,7 +2301,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
    echo "<div class='center'><table class='tab_cadre_fixe'>";
 
    echo "<tr><th colspan='2'>".$LANG['job'][11]."&nbsp;:&nbsp;";
-   if (Toolbox::isMultiEntitiesMode()) {
+   if (Session::isMultiEntitiesMode()) {
 
       echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
    }
@@ -3284,7 +3284,7 @@ function showProfileSelecter($target) {
       echo '</select></form></li>';
    }
 
-   if (Toolbox::isMultiEntitiesMode()) {
+   if (Session::isMultiEntitiesMode()) {
       echo "<li>";
 
       echo "<script type='text/javascript'>";

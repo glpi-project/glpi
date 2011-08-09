@@ -332,7 +332,7 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (haveRight("transfer","w") && Toolbox::isMultiEntitiesMode()) {
+      if (haveRight("transfer","w") && Session::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
          echo "<tr class='tab_bg_2'>";

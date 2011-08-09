@@ -283,7 +283,7 @@ class DisplayPreference extends CommonDBTM {
 
 
          // print entity
-         if (Toolbox::isMultiEntitiesMode()
+         if (Session::isMultiEntitiesMode()
              && (isset($CFG_GLPI["union_search_type"][$itemtype])
                  || ($item && $item->maybeRecursive())
                  || count($_SESSION["glpiactiveentities"])>1)
@@ -435,7 +435,7 @@ class DisplayPreference extends CommonDBTM {
       echo "</td></tr>";
 
       // print entity
-      if (Toolbox::isMultiEntitiesMode()
+      if (Session::isMultiEntitiesMode()
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
               || count($_SESSION["glpiactiveentities"])>1)
