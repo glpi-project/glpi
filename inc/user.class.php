@@ -1575,7 +1575,7 @@ class User extends CommonDBTM {
          }
 
       } else {
-         if (!isMultiEntitiesMode()) {
+         if (!Session::isMultiEntitiesMode()) {
             // Display all locations : only one entity
             Dropdown::show('Location', array('value' => $this->fields["locations_id"]));
          } else {

@@ -1302,7 +1302,7 @@ class Dropdown {
             }
 
             if (haveRight('transfer','r')
-                && isMultiEntitiesMode()
+                && Session::isMultiEntitiesMode()
                 && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem',
                                              'Contact', 'Contract', 'Supplier', 'Monitor',
                                              'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
