@@ -786,7 +786,11 @@ class Dropdown {
 
       $values = array();
       if (isset($options['display_none']) && ($options['display_none'])) {
-         $values[''] = DROPDOWN_EMPTY_VALUE;
+         if (isset($options['emptylabel'])) {
+            $values[''] = $options['emptylabel'];
+         } else {
+            $values[''] = DROPDOWN_EMPTY_VALUE;
+         }
       }
 
       if (isset($options['display_defaultvalue']) && ($options['display_defaultvalue'])) {
