@@ -73,6 +73,7 @@ class Config extends CommonDBTM {
 
    function showForm($ID, $options=array()) {
 
+      $this->getFromDB(1);
       $this->showTabs($options);
       $this->addDivForTabs();
    }
