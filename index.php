@@ -159,7 +159,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    if (GLPI_DEMO_MODE) {
       echo "<div class='center'>";
-      getCountLogin();
+      Html::getCountLogin();
       echo "</div>";
    }
 

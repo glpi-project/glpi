@@ -3605,7 +3605,7 @@ class Ticket extends CommonITILObject {
       $number = $DB->numrows($result);
 
       if ($number > 0) {
-         initNavigateListItems('Ticket');
+         Session::initNavigateListItems('Ticket');
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
@@ -3758,7 +3758,7 @@ class Ticket extends CommonITILObject {
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
-         initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
+         Session::initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
 
          echo "<tr><th colspan='10'>";
          if ($number==1) {

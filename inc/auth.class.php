@@ -320,7 +320,7 @@ class Auth {
                   $login = substr($login, 0, $pos);
                }
             }
-            if (isValidLogin($login)) {
+            if (self::isValidLogin($login)) {
                $this->user->fields['name'] = $login;
                return true;
             }
@@ -337,7 +337,7 @@ class Auth {
             }
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && NotificationMail::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
-                && isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
+                && self::isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
 
                $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
 
@@ -943,6 +943,18 @@ class Auth {
          }
       }
    }
+
+
+    /**
+     * Determine if a login is valid
+     *
+     * @param $login string: login to check
+     *
+     * @return boolean
+    **/
+    static function isValidLogin($login="") {
+       return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
+    }
 }
 
 ?>

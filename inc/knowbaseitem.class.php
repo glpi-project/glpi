@@ -616,7 +616,7 @@ class KnowbaseItem extends CommonDBTM {
                                                 : $KbCategory->fields['name']);
          }
 
-         initNavigateListItems('KnowbaseItem', $title);
+         Session::initNavigateListItems('KnowbaseItem', $title);
 
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];

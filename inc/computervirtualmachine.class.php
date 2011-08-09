@@ -335,9 +335,9 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
 
-         initNavigateListItems('ComputerVirtualMachine',
-                               $LANG['help'][25]." = ". (empty($comp->fields['name'])
-                                                         ? "($ID)" : $comp->fields['name']));
+         Session::initNavigateListItems('ComputerVirtualMachine',
+                                        $LANG['help'][25]." = ". (empty($comp->fields['name'])
+                                                                   ? "($ID)" : $comp->fields['name']));
 
          foreach ($virtualmachines as $virtualmachine) {
             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";

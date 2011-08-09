@@ -143,7 +143,7 @@ class Group_User extends CommonDBRelation{
 
 
       if (!empty($groups)) {
-         initNavigateListItems('Group', $user->getTypeName()." = ".$user->getName());
+         Session::initNavigateListItems('Group', $user->getTypeName()." = ".$user->getName());
          $i = 0;
          foreach ($groups as $data) {
             Session::addToNavigateListItems('Group', $data["id"]);
@@ -283,7 +283,7 @@ class Group_User extends CommonDBRelation{
       }
 
       if (count($used)) {
-         initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
+         Session::initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
          foreach (array(1,0) as $is_manager) {
             echo "<div id='groupuser_form$rand-$is_manager' class='spaced'>";
             echo "<table class='tab_cadre_fixe'>";

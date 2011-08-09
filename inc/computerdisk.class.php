@@ -248,9 +248,10 @@ class ComputerDisk extends CommonDBChild {
             echo "<th>".$LANG['computers'][1]."</th>";
             echo "</tr>";
 
-            initNavigateListItems('ComputerDisk', $LANG['help'][25]." = ".
-                                  (empty($comp->fields['name']) ? "($ID)"
-                                                                : $comp->fields['name']));
+            Session::initNavigateListItems('ComputerDisk',
+                                           $LANG['help'][25]." = ".
+                                             (empty($comp->fields['name']) ? "($ID)"
+                                                                           : $comp->fields['name']));
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";

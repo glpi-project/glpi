@@ -101,24 +101,6 @@ function isViewAllEntities() {
 
 
 
-/**
- * Get the $RELATION array. It's defined all relations between tables in the DB.
- *
- * @return the $RELATION array
-**/
-function getDbRelations() {
-   global $CFG_GLPI;
-
-   include (GLPI_ROOT . "/inc/relation.constant.php");
-
-   // Add plugins relations
-   $plug_rel = getPluginsDatabaseRelations();
-   if (count($plug_rel)>0) {
-      $RELATION = array_merge_recursive($RELATION,$plug_rel);
-   }
-   return $RELATION;
-}
-
 
 
 
@@ -250,21 +232,6 @@ function glpi_header($dest) {
 
 
 
-
-/**
- * Get hour from sql
- *
- * @param $time datetime: time
- *
- * @return  array
-**/
-function get_hour_from_sql($time) {
-
-   $t = explode(" ", $time);
-   $p = explode(":", $t[1]);
-
-   return $p[0].":".$p[1];
-}
 
 
 /**
@@ -781,69 +748,7 @@ function getTimestampTimeUnits($time) {
 
 
 
-/**
- * Determine if a login is valid
- *
- * @param $login string: login to check
- *
- * @return boolean
-**/
-function isValidLogin($login="") {
-   return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
-}
 
-
-/** Display how many logins since
- *
- * @return  nothing
-**/
-function getCountLogin() {
-   global $DB;
-
-   $query = "SELECT count(*)
-             FROM `glpi_events`
-             WHERE `message` LIKE '%logged in%'";
-
-   $query2 = "SELECT `date`
-              FROM `glpi_events`
-              ORDER BY `date` ASC
-              LIMIT 1";
-
-   $result   = $DB->query($query);
-   $result2  = $DB->query($query2);
-   $nb_login = $DB->result($result, 0, 0);
-   $date     = $DB->result($result2, 0, 0);
-
-   echo '<b>'.$nb_login.'</b> logins since '.$date ;
-}
-
-
-/** Initialise a list of items to use navigate through search results
- *
- * @param $itemtype device type
- * @param $title titre de la liste
-**/
-function initNavigateListItems($itemtype, $title="") {
-   global $LANG;
-
-   if (empty($title)) {
-      $title = $LANG['common'][53];
-   }
-   $url = '';
-
-   if (!isset($_SERVER['REQUEST_URI']) || strpos($_SERVER['REQUEST_URI'],"tabs")>0) {
-      if (isset($_SERVER['HTTP_REFERER'])) {
-         $url = $_SERVER['HTTP_REFERER'];
-      }
-
-   } else {
-      $url = $_SERVER['REQUEST_URI'];
-   }
-
-   $_SESSION['glpilisttitle'][$itemtype] = $title;
-   $_SESSION['glpilistitems'][$itemtype] = array();
-   $_SESSION['glpilisturl'][$itemtype]   = $url;
-}
 
 
 

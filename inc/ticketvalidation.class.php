@@ -592,8 +592,8 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</tr>";
 
-         initNavigateListItems('TicketValidation',
-                               $LANG['validation'][26]." = ".$ticket->fields['name']);
+         Session::initNavigateListItems('TicketValidation',
+                                        $LANG['validation'][26]." = ".$ticket->fields['name']);
 
          while ($row = $DB->fetch_assoc($result)) {
             $canedit = $this->can($row["id"],'w');

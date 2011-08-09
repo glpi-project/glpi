@@ -1481,4 +1481,39 @@ function importArrayFromDB($DATA) {
    return $TAB;
 }
 
+
+/**
+ * Get hour from sql
+ *
+ * @param $time datetime: time
+ *
+ * @return  array
+**/
+function get_hour_from_sql($time) {
+
+   $t = explode(" ", $time);
+   $p = explode(":", $t[1]);
+
+   return $p[0].":".$p[1];
+}
+
+
+/**
+ * Get the $RELATION array. It's defined all relations between tables in the DB.
+ *
+ * @return the $RELATION array
+**/
+function getDbRelations() {
+   global $CFG_GLPI;
+
+   include (GLPI_ROOT . "/inc/relation.constant.php");
+
+   // Add plugins relations
+   $plug_rel = getPluginsDatabaseRelations();
+   if (count($plug_rel)>0) {
+      $RELATION = array_merge_recursive($RELATION,$plug_rel);
+   }
+   return $RELATION;
+}
+
 ?>

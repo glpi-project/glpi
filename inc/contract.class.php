@@ -1020,7 +1020,7 @@ class Contract extends CommonDBTM {
       echo "</tr>";
 
       if ($number>0) {
-         initNavigateListItems('Contract', $item->getTypeName()." = ".$item->getName());
+         Session::initNavigateListItems('Contract', $item->getTypeName()." = ".$item->getName());
       }
       $contracts = array();
       while ($i < $number) {

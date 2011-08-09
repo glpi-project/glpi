@@ -302,7 +302,7 @@ class NetworkPort extends CommonDBChild {
          echo "</tr></table></div>\n";
       }
 
-      initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
+      Session::initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
 
       $query = "SELECT `id`
                 FROM `glpi_networkports`

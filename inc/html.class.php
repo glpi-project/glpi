@@ -194,5 +194,28 @@ class Html {
    }
 
 
+    /** Display how many logins since
+     *
+     * @return  nothing
+    **/
+    static function getCountLogin() {
+       global $DB;
+
+       $query = "SELECT count(*)
+                 FROM `glpi_events`
+                 WHERE `message` LIKE '%logged in%'";
+
+       $query2 = "SELECT `date`
+                  FROM `glpi_events`
+                  ORDER BY `date` ASC
+                  LIMIT 1";
+
+       $result   = $DB->query($query);
+       $result2  = $DB->query($query2);
+       $nb_login = $DB->result($result, 0, 0);
+       $date     = $DB->result($result2, 0, 0);
+
+       echo '<b>'.$nb_login.'</b> logins since '.$date ;
+    }
 }
 ?>

@@ -106,7 +106,8 @@ class Calendar_Holiday extends CommonDBRelation {
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Holiday', $LANG['buttons'][15] ." = ". $calendar->fields["name"]);
+         Session::initNavigateListItems('Holiday',
+                                        $LANG['buttons'][15] ." = ". $calendar->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             Session::addToNavigateListItems('Holiday', $data["id"]);

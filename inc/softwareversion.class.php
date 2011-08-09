@@ -278,7 +278,8 @@ class SoftwareVersion extends CommonDBChild {
                 WHERE `softwares_id` = '$softwares_id'
                 ORDER BY `name`";
 
-      initNavigateListItems('SoftwareVersion',$LANG['help'][31] ." = ". $soft->fields["name"]);
+      Session::initNavigateListItems('SoftwareVersion',
+                                     $LANG['help'][31] ." = ". $soft->fields["name"]);
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {

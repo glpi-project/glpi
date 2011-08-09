@@ -107,7 +107,8 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Change', $LANG['problem'][0] ." = ". $problem->fields["name"]);
+         Session::initNavigateListItems('Change',
+                                        $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];
@@ -186,7 +187,8 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         initNavigateListItems('Problem', $LANG['change'][0] ." = ". $change->fields["name"]);
+         Session::initNavigateListItems('Problem',
+                                        $LANG['change'][0] ." = ". $change->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
             $used[] = $data['id'];

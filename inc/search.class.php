@@ -963,7 +963,7 @@ class Search {
 
             // Init list of items displayed
             if ($output_type==HTML_OUTPUT) {
-               initNavigateListItems($itemtype);
+               Session::initNavigateListItems($itemtype);
             }
 
             // Num of the row (1=header_line)
