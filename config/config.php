@@ -41,8 +41,8 @@ include_once (GLPI_ROOT."/config/based_config.php");
 include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 include (GLPI_ROOT."/config/define.php");
 
-setGlpiSessionPath();
-startGlpiSession();
+Toolbox::setGlpiSessionPath();
+Toolbox::startGlpiSession();
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    nullHeader("DB Error",$CFG_GLPI["root_doc"]);

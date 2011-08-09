@@ -1943,7 +1943,7 @@ class Search {
       array_push($toview, 1);
 
       // Add entity view :
-      if (isMultiEntitiesMode()
+      if (Toolbox::isMultiEntitiesMode()
          && (isset($CFG_GLPI["union_search_type"][$itemtype])
              || ($item && $item->maybeRecursive())
              || count($_SESSION["glpiactiveentities"])>1)) {

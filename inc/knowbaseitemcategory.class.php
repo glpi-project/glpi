@@ -111,7 +111,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                                                     true);
          } else {
             // Anonymous access
-            if (isMultiEntitiesMode()) {
+            if (Toolbox::isMultiEntitiesMode()) {
                $faq_limit = " AND (`glpi_knowbaseitemcategories`.`entities_id` = '0'
                                    AND `glpi_knowbaseitemcategories`.`is_recursive` = '1')";
             }

@@ -40,8 +40,8 @@ include_once (GLPI_ROOT . "/inc/display.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-setGlpiSessionPath();
-startGlpiSession();
+Toolbox::setGlpiSessionPath();
+Toolbox::startGlpiSession();
 
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {

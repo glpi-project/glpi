@@ -1788,7 +1788,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (isset($this->fields["entities_id"])
-          && isMultiEntitiesMode()
+          && Toolbox::isMultiEntitiesMode()
           && $this->isEntityAssign()) {
 
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]).")";
@@ -1801,7 +1801,7 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($this->maybeRecursive()) {
-            if (isMultiEntitiesMode()) {
+            if (Toolbox::isMultiEntitiesMode()) {
                echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
                if ($params['canedit']) {
@@ -2804,6 +2804,27 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
+   /**
+    * get the Entity of an Item
+    *
+    * @param $itemtype string item type
+    * @param $items_id integer id of the item
+    *
+    * @return integer ID of the entity or -1
+   **/
+   static function getItemEntity ($itemtype, $items_id) {
+
+      if ($itemtype && class_exists($itemtype)) {
+         $item = new $itemtype();
+
+         if ($item->getFromDB($items_id)) {
+            return $item->getEntityID();
+         }
+
+      }
+      return -1;
+   }
 }
 
 ?>

@@ -61,16 +61,24 @@ class System_PHP extends PHPUnit_Framework_TestCase {
       // TODO : memory limit
    }
 
+
    public function testDir() {
 
       // From commonCheckForUseGLPI
-      $this->assertTrue(error_log("PHPUnit\n", 3, GLPI_LOG_DIR."/php-errors.log"), "Fail: no write access to ".GLPI_LOG_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_DUMP_DIR), "Fail: no write access to ".GLPI_DUMP_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_DOC_DIR), "Fail: no write access to ".GLPI_DOC_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_CONFIG_DIR), "Fail: no write access to ".GLPI_CONFIG_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_SESSION_DIR), "Fail: no write access to ".GLPI_SESSION_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_CRON_DIR), "Fail: no write access to ".GLPI_CRON_DIR);
-      $this->assertEquals(0, testWriteAccessToDirectory(GLPI_CACHE_DIR), "Fail: no write access to ".GLPI_CACHE_DIR);
+      $this->assertTrue(error_log("PHPUnit\n", 3, GLPI_LOG_DIR."/php-errors.log"),
+                        "Fail: no write access to ".GLPI_LOG_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_DUMP_DIR),
+                          "Fail: no write access to ".GLPI_DUMP_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_DOC_DIR),
+                          "Fail: no write access to ".GLPI_DOC_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_CONFIG_DIR),
+                          "Fail: no write access to ".GLPI_CONFIG_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_SESSION_DIR),
+                          "Fail: no write access to ".GLPI_SESSION_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_CRON_DIR),
+                          "Fail: no write access to ".GLPI_CRON_DIR);
+      $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_CACHE_DIR),
+                          "Fail: no write access to ".GLPI_CACHE_DIR);
    }
 }
 

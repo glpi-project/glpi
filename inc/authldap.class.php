@@ -1289,7 +1289,7 @@ class AuthLDAP extends CommonDBTM {
          $action      = "toimport";
          $form_action = "import_ok";
 
-         $colspan = (isMultiEntitiesMode()?5:4);
+         $colspan = (Toolbox::isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             $parameters = "check=$check";
             printPager($start, $numrows, $target, $parameters);
@@ -1318,7 +1318,7 @@ class AuthLDAP extends CommonDBTM {
                                         1, $order);
             echo "<th>".$LANG['setup'][261]."</th>";
             echo"<th>".$LANG['ldap'][27]."</th>";
-            if (isMultiEntitiesMode()) {
+            if (Toolbox::isMultiEntitiesMode()) {
                echo"<th>".$LANG['entity'][9]."</th>";
             }
             echo "</tr>";
@@ -1339,7 +1339,7 @@ class AuthLDAP extends CommonDBTM {
                               array('value'  => $entity,
                                     'name'   => "toimport_entities[" .$group_dn . "]=".$entity));
                echo "</td>";
-               if (isMultiEntitiesMode()) {
+               if (Toolbox::isMultiEntitiesMode()) {
                   echo "<td>";
                   Dropdown::showYesNo("toimport_recursive[" .$group_dn . "]", 0);
                   echo "</td>";
@@ -2250,7 +2250,7 @@ class AuthLDAP extends CommonDBTM {
          default :
             //If multi-entity mode and more than one entity visible
             //else no need to select entity
-            if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
+            if (Toolbox::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
                echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
                Dropdown::show('Entity',
                               array('value'       => $_SESSION['ldap_import']['entities_id'],

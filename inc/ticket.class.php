@@ -2592,7 +2592,7 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
 
       // Optional line
-      $ismultientities=isMultiEntitiesMode();
+      $ismultientities = Toolbox::isMultiEntitiesMode();
       echo '<tr><th colspan="4">';
 
       if ($ID) {

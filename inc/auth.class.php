@@ -370,7 +370,7 @@ class Auth {
             }
          }
          $this->destroySession();
-         startGlpiSession();
+         Toolbox::startGlpiSession();
          $_SESSION = $save;
 
          // Normal mode for this request
@@ -450,7 +450,7 @@ class Auth {
    **/
    function destroySession() {
 
-      startGlpiSession();
+      Toolbox::startGlpiSession();
       // Unset all of the session variables.
       session_unset();
       // destroy may cause problems (no login / back to login page)

@@ -165,7 +165,7 @@ class RuleMailCollector extends Rule {
       $criterias['PROFILES']['id']              = 'profiles';
       $criterias['PROFILES']['allow_condition'] = array(Rule::PATTERN_IS);
 
-      if (isMultiEntitiesMode()) {
+      if (Toolbox::isMultiEntitiesMode()) {
          $criterias['UNIQUE_PROFILE']['field']           = 'name';
          $criterias['UNIQUE_PROFILE']['name']            = $LANG['rulesengine'][147];
          $criterias['UNIQUE_PROFILE']['table']           = 'glpi_profiles';
