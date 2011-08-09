@@ -173,7 +173,7 @@ $vlan_loc = array();
 
 generateGlobalDropdowns();
 
-optimize_tables ();
+DBmysql::optimize_tables ();
 
 // Root entity
 generate_entity(0);
@@ -211,6 +211,6 @@ for ($i=0 ; $i<max(1,pow($entity_number,1/2))&&$added<$entity_number ; $i++) {
    }
 }
 
-optimize_tables();
+DBmysql::optimize_tables();
 
 ?>
