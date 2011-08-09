@@ -216,7 +216,7 @@ if ($item instanceof CommonTreeDropdown) {
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
             echo "<option class='tree' ".($_POST['value']==$key?'selected':'').
-                 " value='$key' title=\"".Toolbox::cleanInputText($val)."\">".
+                 " value='$key' title=\"".Html::cleanInputText($val)."\">".
                   Toolbox::substr($val, 0, $_POST["limit"])."</option>";
          }
       }
@@ -338,8 +338,7 @@ if ($item instanceof CommonTreeDropdown) {
                            }
 
                            $to_display = "<option disabled value='$work_parentID' $class2
-                                           title=\"".
-                                             Toolbox::cleanInputText($item->fields['completename'].
+                                           title=\"".Html::cleanInputText($item->fields['completename'].
                                              $addcomment)."\">".
                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
                                          $raquo2.$output2."</option>".$to_display;
@@ -379,7 +378,7 @@ if ($item instanceof CommonTreeDropdown) {
             if (isset($data["comment"])) {
                $addcomment = " - ".$data["comment"];
             }
-            echo "<option value='$ID' $class title=\"".Toolbox::cleanInputText($data['completename'].
+            echo "<option value='$ID' $class title=\"".Html::cleanInputText($data['completename'].
                    $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
                  "</option>";
          }
@@ -479,7 +478,7 @@ if ($item instanceof CommonTreeDropdown) {
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            echo "<option title=\"".Toolbox::cleanInputText($val)."\" value='$key' ".
+            echo "<option title=\"".Html::cleanInputText($val)."\" value='$key' ".
                   ($_POST['value']==$key?'selected':'').">".
                   Toolbox::substr($val, 0, $_POST["limit"])."</option>";
          }
@@ -525,7 +524,7 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
-            echo "<option value='$ID' title=\"".Toolbox::cleanInputText($output.$addcomment)."\">".
+            echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\">".
                   Toolbox::substr($output, 0, $_POST["limit"])."</option>";
          }
 

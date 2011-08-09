@@ -476,9 +476,9 @@ class Cartridge extends CommonDBTM {
       if ($result=$DB->query($query)) {
          $number = $DB->numrows($result);
          while ($data=$DB->fetch_array($result)) {
-            $date_in  = Toolbox::convDate($data["date_in"]);
-            $date_use = Toolbox::convDate($data["date_use"]);
-            $date_out = Toolbox::convDate($data["date_out"]);
+            $date_in  = Html::convDate($data["date_in"]);
+            $date_use = Html::convDate($data["date_use"]);
+            $date_out = Html::convDate($data["date_out"]);
             $printer  = $data["printers_id"];
             $page     = $data["pages"];
 
@@ -660,9 +660,9 @@ class Cartridge extends CommonDBTM {
       $nb_pages_printed = 0;
 
       while ($data=$DB->fetch_array($result)) {
-         $date_in  = Toolbox::convDate($data["date_in"]);
-         $date_use = Toolbox::convDate($data["date_use"]);
-         $date_out = Toolbox::convDate($data["date_out"]);
+         $date_in  = Html::convDate($data["date_in"]);
+         $date_use = Html::convDate($data["date_use"]);
+         $date_out = Html::convDate($data["date_out"]);
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          echo "<td class='center'>".$data["id"]."</td>";
          echo "<td class='center b'>";

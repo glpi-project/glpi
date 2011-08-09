@@ -459,7 +459,7 @@ class CronTask extends CommonDBTM{
       if (empty($this->fields['lastrun'])) {
          echo $LANG['setup'][307];
       } else {
-         echo Toolbox::convDateTime($this->fields['lastrun']);
+         echo Html::convDateTime($this->fields['lastrun']);
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetdate=1'>";
          echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".$LANG['buttons'][16]."\" title=\"".
                 $LANG['buttons'][16]."\"></a>";
@@ -510,9 +510,9 @@ class CronTask extends CommonDBTM{
          }
 
          if ($next<time()) {
-            echo $LANG['crontask'][42].' ('.Toolbox::convDateTime($disp).') ';
+            echo $LANG['crontask'][42].' ('.Html::convDateTime($disp).') ';
          } else {
-            echo Toolbox::convDateTime($disp);
+            echo Html::convDateTime($disp);
          }
       }
 
@@ -893,7 +893,7 @@ class CronTask extends CommonDBTM{
 
          if ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".Toolbox::convDateTime($data['datemin'])."</td></tr>";
+            echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:&nbsp;</td>";
             echo "<td class='right'>".number_format($data['elapsedmin'],2)." ".$LANG['stats'][34];
@@ -989,7 +989,7 @@ class CronTask extends CommonDBTM{
             do {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
-                          $data['crontasklogs_id']."\");'>".Toolbox::convDateTime($data['date']).
+                          $data['crontasklogs_id']."\");'>".Html::convDateTime($data['date']).
                     "</a></td>";
                echo "<td class='right'>".number_format($data['elapsed'], 3)."s</td>";
                echo "<td class='right'>".$data['volume']."</td>";
@@ -1040,7 +1040,7 @@ class CronTask extends CommonDBTM{
             $first = true;
             do {
                echo "<tr class='tab_bg_2'>";
-               echo "<td class='center'>".($first ? Toolbox::convDateTime($data['date'])
+               echo "<td class='center'>".($first ? Html::convDateTime($data['date'])
                                                   : "&nbsp;")."</a></td>";
 
                switch ($data['state']) {

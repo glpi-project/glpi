@@ -361,7 +361,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($with_comment) {
-         $name .= ' ('.Toolbox::convDateTime($this->fields['date']);
+         $name .= ' ('.Html::convDateTime($this->fields['date']);
          $name .= ', '.getUserName($this->fields['users_id']);
          // Manage private case
          if (isset($this->maybeprivate)) {
@@ -569,8 +569,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $CFG_GLPI;
 
       $item = new $itemtype();
-      $out  = $item->getTypeName().' : '.Toolbox::convDateTime($val["begin"]).' -> '.
-              Toolbox::convDateTime($val["end"]).' : ';
+      $out  = $item->getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
+              Html::convDateTime($val["end"]).' : ';
       $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                 $val[getForeignKeyFieldForItemType($itemtype)]."'>";
       $out .= resume_text($val["name"],80).'</a>';
@@ -709,7 +709,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</script>\n";
       }
       //else echo "--no--";
-      echo Toolbox::convDateTime($this->fields["date"]) . "</td>";
+      echo Html::convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
       $units=getTimestampTimeUnits($this->fields["actiontime"]);
@@ -737,8 +737,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (empty($this->fields["begin"])) {
          echo $LANG['job'][32];
       } else {
-         echo Toolbox::convDateTime($this->fields["begin"])."<br>->".
-              Toolbox::convDateTime($this->fields["end"])."<br>".getUserName($this->fields["users_id_tech"]);
+         echo Html::convDateTime($this->fields["begin"])."<br>->".
+              Html::convDateTime($this->fields["end"])."<br>".
+              getUserName($this->fields["users_id_tech"]);
       }
       echo "</td>";
 
@@ -804,7 +805,7 @@ abstract class CommonITILTask  extends CommonDBTM {
            "</textarea></td>";
       if ($this->fields["date"]) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
-         echo "<td>".Toolbox::convDateTime($this->fields["date"]);
+         echo "<td>".Html::convDateTime($this->fields["date"]);
       } else {
          echo "<td colspan='2'>&nbsp;";
       }
@@ -874,8 +875,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($this->fields["state"])) {
             echo Planning::getState($this->fields["state"])."<br>";
          }
-         echo Toolbox::convDateTime($this->fields["begin"]).
-               "<br>->".Toolbox::convDateTime($this->fields["end"])."<br>".
+         echo Html::convDateTime($this->fields["begin"]).
+               "<br>->".Html::convDateTime($this->fields["end"])."<br>".
                getUserName($this->fields["users_id_tech"]);
 
          if (haveRight('show_planning', 1)) {

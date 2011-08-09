@@ -360,7 +360,7 @@ class Log extends CommonDBTM {
          $tmp = array();
          $tmp['display_history'] = true;
          $tmp['id']              = $data["id"];
-         $tmp['date_mod']        = Toolbox::convDateTime($data["date_mod"]);
+         $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
          $tmp['user_name']       = $data["user_name"];
          $tmp['field']           = "";
          $tmp['change']          = "";
@@ -559,13 +559,13 @@ class Log extends CommonDBTM {
                   break;
 
                case "datetime" :
-                  $data["old_value"] = Toolbox::convDateTime($data["old_value"]);
-                  $data["new_value"] = Toolbox::convDateTime($data["new_value"]);
+                  $data["old_value"] = Html::convDateTime($data["old_value"]);
+                  $data["new_value"] = Html::convDateTime($data["new_value"]);
                   break;
 
                case "date" :
-                  $data["old_value"] = Toolbox::convDate($data["old_value"]);
-                  $data["new_value"] = Toolbox::convDate($data["new_value"]);
+                  $data["old_value"] = Html::convDate($data["old_value"]);
+                  $data["new_value"] = Html::convDate($data["new_value"]);
                   break;
 
                case "timestamp" :

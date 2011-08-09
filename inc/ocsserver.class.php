@@ -593,7 +593,7 @@ class OcsServer extends CommonDBTM {
       if (!empty($ID)) {
          echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
          echo "<td>";
-         echo ($this->fields["date_mod"] ? Toolbox::convDateTime($this->fields["date_mod"])
+         echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
          echo "</td>";
       }
@@ -2329,7 +2329,7 @@ class OcsServer extends CommonDBTM {
          foreach ($already_linked as $ID => $tab) {
             echo "<tr class='tab_bg_2 center'>";
             echo "<td>" . $tab["ocs_deviceid"] . "</td>\n";
-            echo "<td>" . Toolbox::convDateTime($tab["date"]) . "</td>\n";
+            echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
             echo "<td>" . $LANG['choice'][$tab["in_glpi"]] . "</td>\n";
             echo "<td>" . $LANG['choice'][$tab["in_ocs"]] . "</td>\n";
             if (Session::isMultiEntitiesMode()) {
@@ -2500,8 +2500,8 @@ class OcsServer extends CommonDBTM {
                echo "<tr class='tab_bg_2 center'>";
                echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?id=" .
                           $tab["computers_id"] . "'>" . $tab["name"] . "</a></td>\n";
-               echo "<td>" . Toolbox::convDateTime($tab["date"]) . "</td>\n";
-               echo "<td>" . Toolbox::convDateTime($hardware[$tab["ocsid"]]["date"]) . "</td>\n";
+               echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
+               echo "<td>" . Html::convDateTime($hardware[$tab["ocsid"]]["date"]) . "</td>\n";
                echo "<td>" . $LANG['choice'][$tab["use_auto_update"]] . "</td>\n";
                echo "<td><input type='checkbox' name='toupdate[" . $tab["id"] . "]' " .
                           ($check == "all" ? "checked" : "") . "></td></tr>\n";
@@ -2795,7 +2795,7 @@ class OcsServer extends CommonDBTM {
                }
                echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td>\n";
                echo "<td>".$tab["serial"]."</td>\n";
-               echo "<td>" . Toolbox::convDateTime($tab["date"]) . "</td>\n";
+               echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . $tab["TAG"] . "</td>\n";
                if ($advanced && !$tolinked) {
                   if (!isset($data['entities_id']) || $data['entities_id'] == -1) {

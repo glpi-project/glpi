@@ -346,8 +346,7 @@ class Reminder extends CommonDBTM {
             echo "<span class='showplan'>";
          }
 
-         echo Toolbox::convDateTime($this->fields["begin"])."->".
-              Toolbox::convDateTime($this->fields["end"]);
+         echo Html::convDateTime($this->fields["begin"])."->".Html::convDateTime($this->fields["end"]);
 
          if ($canedit) {
             echo "</span>";
@@ -476,8 +475,8 @@ class Reminder extends CommonDBTM {
    static function getAlreadyPlannedInformation($val) {
       global $CFG_GLPI;
 
-      $out  = self::getTypeName().' : '.Toolbox::convDateTime($val["begin"]).' -> '.
-              Toolbox::convDateTime($val["end"]).' : ';
+      $out  = self::getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
+              Html::convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                $val["reminders_id"]."'>";
       $out .= resume_text($val["name"],80).'</a>';
@@ -653,8 +652,8 @@ class Reminder extends CommonDBTM {
                      "&amp;type=day'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
                      Toolbox::ucfirst($LANG['log'][16]).
-                     "\" title=\"".Toolbox::convDateTime($data["begin"])."=>".
-                     Toolbox::convDateTime($data["end"])."\">";
+                     "\" title=\"".Html::convDateTime($data["begin"])."=>".
+                     Html::convDateTime($data["end"])."\">";
                echo "</a></span>";
             }
 
@@ -786,13 +785,13 @@ class Reminder extends CommonDBTM {
                }
 
                echo "</td>";
-               echo "<td class='center' >".Toolbox::convDateTime($val["begin"]);
-               echo "<br>".Toolbox::convDateTime($val["end"])."";
+               echo "<td class='center' >".Html::convDateTime($val["begin"]);
+               echo "<br>".Html::convDateTime($val["end"])."";
 
             } else {
                echo "<td>&nbsp;</td>";
                echo "<td class='center'>";
-               echo "<span style='color:#aaaaaa;'>".Toolbox::convDateTime($val["begin"])."</span>";
+               echo "<span style='color:#aaaaaa;'>".Html::convDateTime($val["begin"])."</span>";
             }
             echo "</td></tr>\n";
          }

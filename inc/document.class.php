@@ -313,7 +313,7 @@ class Document extends CommonDBTM {
          }
          echo "</th>";
          echo "<th colspan='2'>".$LANG['common'][26]."&nbsp;: ".
-               Toolbox::convDateTime($this->fields["date_mod"])."</th>";
+               Html::convDateTime($this->fields["date_mod"])."</th>";
          echo "</tr>\n";
       }
 

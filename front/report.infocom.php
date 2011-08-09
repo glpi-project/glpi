@@ -181,7 +181,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          echo "<td class='right'>".Toolbox::formatNumber($line["value"])."</td><td class='right'>".
                Toolbox::formatNumber($valeurnette)."</td><td class='right'>".
                Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
-               Toolbox::convDate($line["buy_date"])."</td><td>".Toolbox::convDate($line["use_date"]).
+               Html::convDate($line["buy_date"])."</td><td>".Html::convDate($line["use_date"]).
                "</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
       }
 

@@ -215,7 +215,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
          echo ($ID>0 ?"<td>".$LANG['common'][26]."&nbsp;:</td><td>".
-               Toolbox::convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
+               Html::convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['ldap'][44] . "&nbsp;:</td>";
@@ -1049,13 +1049,13 @@ class AuthLDAP extends CommonDBTM {
                echo "<td>" . $link . "</td>";
 
                if ($stamp != '') {
-                  echo "<td>" .Toolbox::convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
+                  echo "<td>" .Html::convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if ($_SESSION['ldap_import']['mode']) {
                   if ($date_sync != '') {
-                     echo "<td>" . Toolbox::convDateTime($date_sync) . "</td>";
+                     echo "<td>" . Html::convDateTime($date_sync) . "</td>";
                   } else {
                      echo "<td>&nbsp;</td>";
                   }

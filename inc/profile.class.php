@@ -441,7 +441,7 @@ class Profile extends CommonDBTM {
       if ($ID>0) {
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][26]."&nbsp;: </td>";
          echo "<td>";
-         echo ($this->fields["date_mod"] ? Toolbox::convDateTime($this->fields["date_mod"])
+         echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
          echo "</td></tr>";
       }

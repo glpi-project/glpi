@@ -3010,7 +3010,7 @@ class Transfer extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
-         echo "<td>".($this->fields["date_mod"] ? Toolbox::convDateTime($this->fields["date_mod"])
+         echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                                 : $LANG['setup'][307]);
          echo "</td></tr>";
       }
