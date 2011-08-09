@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Gravi (non usato)";
 $LANG['setup'][105]="3- Importanti (connessioni riuscite)"; 
 $LANG['setup'][106]="4- Avvisi (inserimento, cancellazione, monitoraggio)"; 
 $LANG['setup'][107]="5- Completo (tutti)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Per quanto tempo, in giorni, i log di sistema sono tenuti in archivio (0=sempre)"; 
 $LANG['setup'][110]="Mostra le nuove chiamate nella pagina principale"; 
 $LANG['setup'][111]="Numero massimo di elementi da visualizzare in una pagina"; 

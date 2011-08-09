@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2 - Kiti (Nenaudojamas)";
 $LANG['setup'][105]="3- Svarbus (įvykę prisijungimai)"; 
 $LANG['setup'][106]="4- Pastabos (Pridėti, pašalinti, sekti)"; 
 $LANG['setup'][107]="5- Pilnas (Viską)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="How long system logs are keep in database (in days, 0 for infinite)"; 
 $LANG['setup'][110]="Prisijungus rodyti naujas paraiškas"; 
 $LANG['setup'][111]="Maximum number of search results to display on a page"; 

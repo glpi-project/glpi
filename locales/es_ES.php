@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Severo (No utilizado)";
 $LANG['setup'][105]="3- Importante (Autenticaciones correctas)"; 
 $LANG['setup'][106]="4- Avisos (Creación, borrado, seguimiento)"; 
 $LANG['setup'][107]="5- Completo (Todo)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Tiempo de conservación de los registros de los sistemas, en días (0=infinit"; 
 $LANG['setup'][110]="Mostrar las incidencias nuevas al entrar en el sistema"; 
 $LANG['setup'][111]="Cantidad de elementos a mostrar por página"; 

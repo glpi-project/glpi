@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Nopietns (netiek izmantots)";
 $LANG['setup'][105]="3- Svarīgi (veiksmīgās pieslēgšanās)"; 
 $LANG['setup'][106]="4- Paziņojumi (pievienots, dzēsts, sekošana)"; 
 $LANG['setup'][107]="5- Pilnīgs (Visu)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Cik ilgi glabāt žurnālus datubāzē (dienās, 0 - neierobežoti)"; 
 $LANG['setup'][110]="Pieslēdzoties rādīt jaunos pieteikumus"; 
 $LANG['setup'][111]="Maksimālais attēlojamais sameklēto elementu skaits lapā"; 

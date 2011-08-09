@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Vážne (Nepoužíva sa)";
 $LANG['setup'][105]="3- Dôležité (úspešné prihlásenia)"; 
 $LANG['setup'][106]="4- Poznámky (Pridať, zmazať, sledovanie)"; 
 $LANG['setup'][107]="5- Komplet (Všetko)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Ako dlho uchovávať logy v databáze (v dňoch, 0 pre neobmedzené)"; 
 $LANG['setup'][110]="Zobraziť nové úlohy pri prihlásení"; 
 $LANG['setup'][111]="Počet položiek, ktoré sa budú tlačiť na stránku"; 

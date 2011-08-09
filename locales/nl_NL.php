@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Hoog (niet gebruikt)";
 $LANG['setup'][105]="3- Belangrijk (Geslaagde aanmeldingen log-ins)"; 
 $LANG['setup'][106]="4- Notities (toevoegen, verwijderen, opvolgen)"; 
 $LANG['setup'][107]="5 - Volledig (alles)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Hoe lang worden de logs bijgehouden in de databank (in dagen, 0 voor oneindig)"; 
 $LANG['setup'][110]="Toon de niet-aangestelde tussenkomsten bij het inloggen"; 
 $LANG['setup'][111]="Maximum aantal zoek resultaten per pagina"; 

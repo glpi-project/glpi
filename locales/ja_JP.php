@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="②　危険（使用していません）";
 $LANG['setup'][105]="③　重大（成功したログインを含む）"; 
 $LANG['setup'][106]="④　通知（追加・削除・進捗）"; 
 $LANG['setup'][107]="⑤　完了（全て）"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="ログの保存期間（日数、0は無制限）"; 
 $LANG['setup'][110]="ホーム画面に新しいチケットを表示"; 
 $LANG['setup'][111]="一ページに表示される最大検索結果数"; 

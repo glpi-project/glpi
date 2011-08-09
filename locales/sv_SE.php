@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2 - Allvarliga händelser";
 $LANG['setup'][105]="3 - Viktiga (lyckade inloggningar)"; 
 $LANG['setup'][106]="4 - Information"; 
 $LANG['setup'][107]="5 - Total (allt)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="How long system logs are keep in database (in days, 0 for infinite)"; 
 $LANG['setup'][110]="Visa nya ärenden vid inloggning"; 
 $LANG['setup'][111]="Maximum number of search results to display on a page"; 

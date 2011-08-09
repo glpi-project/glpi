@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Alta Importância(não usado)";
 $LANG['setup'][105]="3- Importante (logins com sucesso)"; 
 $LANG['setup'][106]="4- Noticias (Adicionados, Excluídos, tracking)"; 
 $LANG['setup'][107]="5- Completo (Tudo)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Por quanto tempo os registos são mantidos na base de dados (em dias, 0 para infinito)"; 
 $LANG['setup'][110]="Mostrar o número de senhas ao autenticar-se"; 
 $LANG['setup'][111]="Numero de elementos a serem impressos por página"; 

@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Larria (Erabili gabea)";
 $LANG['setup'][105]="3- Garrantzitsua (Autentikazio zuzenak)"; 
 $LANG['setup'][106]="4- Oharrak (Sortze, ezabatze, jarraipena)"; 
 $LANG['setup'][107]="5- Osoa (Dena)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="How long system logs are keep in database (in days, 0 for infinite)"; 
 $LANG['setup'][110]="Show new tickets on the home page"; 
 $LANG['setup'][111]="Maximum number of search results to display on a page"; 

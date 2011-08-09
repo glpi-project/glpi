@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Ciężki (Nie używany)";
 $LANG['setup'][105]="3- Ważny (poprawne logowania)"; 
 $LANG['setup'][106]="4- Informacje (Dodanie, usunięcie, śledzenie)"; 
 $LANG['setup'][107]="5- Całkowity (Wszystko)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Jak długo logi maja zostać w bazie (w dniach, 0=bez ograniczeń)"; 
 $LANG['setup'][110]="Pokaż nowe zgłoszenia na stronie głównej"; 
 $LANG['setup'][111]="Maksymalna ilość wyników wyszukiwania na stronie"; 

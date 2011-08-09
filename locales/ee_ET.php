@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Severe (Not used)";
 $LANG['setup'][105]="3- Important (successful logins)"; 
 $LANG['setup'][106]="4- Notices (Add, delete, tracking)"; 
 $LANG['setup'][107]="5- Complete (All)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="How long system logs are keep in database (in days, 0 for infinite)"; 
 $LANG['setup'][110]="Näita uusi teateid avalehel"; 
 $LANG['setup'][111]="Maksimaalne näidatav otsingutulemuste hulk"; 

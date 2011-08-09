@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Alta Importância (Não usado)";
 $LANG['setup'][105]="3- Importante (Logins com sucesso)"; 
 $LANG['setup'][106]="4- Noticias (Adicionados, Excluídos, tracking)"; 
 $LANG['setup'][107]="5- Completo (Tudo)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Por quanto tempo os logs serão mantidos no banco de dados (em dias, 0 sem limite de tempo)"; 
 $LANG['setup'][110]="Mostrar chamados novos na página inicial"; 
 $LANG['setup'][111]="Número de resultados da pesquisa a serem exibidos por página"; 

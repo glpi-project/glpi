@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Servar (Nefolosit)";
 $LANG['setup'][105]="3- Important (logare reușită)"; 
 $LANG['setup'][106]="4- Instintare (Adauga, Sterge, Urmarire)"; 
 $LANG['setup'][107]="5- Complet (Tot/Toate)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Cât timp vor fi ținute logurile în baza de date (în zile, 0 pentru infinit)"; 
 $LANG['setup'][110]="Afișează problemele noi după deschiderea sesiunii"; 
 $LANG['setup'][111]="Maximum number of search results to display on a page"; 

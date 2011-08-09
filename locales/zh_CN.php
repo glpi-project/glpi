@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2 -服务器(没使用的)";
 $LANG['setup'][105]="3 -重要(成功登录)"; 
 $LANG['setup'][106]="4 -通知(添加，删除，跟踪)"; 
 $LANG['setup'][107]="5 -完成(所有)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="日志保留在数据库的时长(天数，0为无限)"; 
 $LANG['setup'][110]="在首页显示新票单"; 
 $LANG['setup'][111]="一页上显示的搜索结果最大数"; 

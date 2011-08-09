@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Severo (No utilizado)";
 $LANG['setup'][105]="3- Importante (logines exitosos)"; 
 $LANG['setup'][106]="4- Avisos (Creación, borrado, seguimiento)"; 
 $LANG['setup'][107]="5- Completo (Todo)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Tiempo que será guardado los logs en la base de datos (en días, 0 para infinito)"; 
 $LANG['setup'][110]="Mostrar las reportes en la página principal"; 
 $LANG['setup'][111]="Máximo número de resultados a mostrar en la una página"; 

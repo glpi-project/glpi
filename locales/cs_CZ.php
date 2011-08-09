@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Závažné (nepoužívá se)";
 $LANG['setup'][105]="3- Důležité (úspěšná přihlášení)"; 
 $LANG['setup'][106]="4- Upozornění (přidat, smazat, sledování)"; 
 $LANG['setup'][107]="5- Kompletní (vše)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Jak dlouho uchovávat logy v databázi (ve dnech, 0 pro nekončeno)"; 
 $LANG['setup'][110]="Zobrazit nové požadavky na domovské stránce"; 
 $LANG['setup'][111]="Maximální počet zobrazených výsledků vyhledávání na stránku"; 

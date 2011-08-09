@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2 – Schwerwiegend (Nicht benutzt)";
 $LANG['setup'][105]="3 – Wichtig (erfolgreiche Anmeldungen)"; 
 $LANG['setup'][106]="4 – Informationen (Hinzufügen, Löschen, Verlauf)"; 
 $LANG['setup'][107]="5 – Vollständig (Alles)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Haltezeit für Systemprotokolle (in Tagen, 0 = unbegrenzt)"; 
 $LANG['setup'][110]="Neue Tickets bei Anmeldung anzeigen"; 
 $LANG['setup'][111]="Maximale Anzahl Suchergebnisse pro Seite"; 

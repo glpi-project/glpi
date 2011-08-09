@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2- Sever (No utilitzat)";
 $LANG['setup'][105]="3- Important (Autenticacions correctes)"; 
 $LANG['setup'][106]="4- Avisos (Creació, esborrat, seguiments)"; 
 $LANG['setup'][107]="5- Complet (Tot)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="Temps de conservació dels registres dels sistemes, en dies (0=infinit)"; 
 $LANG['setup'][110]="Mostrar les incidències noves a l'entrar al sistema"; 
 $LANG['setup'][111]="Quantitat d'elements a mostrar per pàgina"; 

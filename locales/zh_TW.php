@@ -1716,6 +1716,7 @@ $LANG['setup'][104]="2 -嚴重(未使用)";
 $LANG['setup'][105]="3- 重要 (成功登入)"; 
 $LANG['setup'][106]="4 -通知(新增，刪除，追蹤)"; 
 $LANG['setup'][107]="5 -完成(所有)"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
 $LANG['setup'][109]="資料庫保留LOG的期限 (天, 0 無限制)"; 
 $LANG['setup'][110]="在首頁顯示新問題單"; 
 $LANG['setup'][111]="每頁需列印項目的數量"; 
