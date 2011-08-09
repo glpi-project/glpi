@@ -3541,7 +3541,7 @@ class Ticket extends CommonITILObject {
                 "\"></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                       Toolbox::append_paramsappend_params($options,'&amp;').
+                       Toolbox::append_params($options,'&amp;').
                 "\">".$LANG['title'][10]."</a></th></tr>";
       }
       echo "</th></tr>";
