@@ -273,35 +273,6 @@ class Toolbox {
    }
 
 
-   /** Returns the utf string corresponding to the unicode value
-    * (from php.net, courtesy - romans@void.lv)
-    *
-    * @param $num integer: character code
-   **/
-/*  NOT USED
-   static function code2utf($num) {
-
-      if ($num < 128) {
-         return chr($num);
-      }
-
-      if ($num < 2048) {
-         return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
-      }
-
-      if ($num < 65536) {
-         return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-      }
-
-      if ($num < 2097152) {
-         return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) .
-                chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-      }
-
-      return '';
-   }
-*/
-
    /**
     * Log in 'php-errors' all args
    **/
@@ -1042,6 +1013,46 @@ class Toolbox {
       }
       return 1;
    }
+
+
+   /**
+    * Call cron without time check
+    *
+    * @return boolean : true if launched
+   **/
+   static function callCronForce() {
+      global $CFG_GLPI;
+
+      $path = $CFG_GLPI['root_doc']."/front/cron.php";
+
+      echo "<div style=\"background-image: url('$path');\"></div>";
+      return true;
+   }
+
+
+   /**
+    * Call cron if time since last launch elapsed
+    *
+    * @return nothing
+   **/
+   static function callCron() {
+
+      if (isset($_SESSION["glpicrontimer"])) {
+         // call function callcron() every 5min
+         if ((time()-$_SESSION["glpicrontimer"])>300) {
+
+            if (self::callCronForce()) {
+               // Restart timer
+               $_SESSION["glpicrontimer"] = time();
+            }
+         }
+
+      } else {
+         // Start timer
+         $_SESSION["glpicrontimer"] = time();
+      }
+   }
+
 
 
 }

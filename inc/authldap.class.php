@@ -200,7 +200,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
-      if (canUseLdap()) {
+      if (self::canUse()) {
          $this->showTabs($options);
          $this->showFormHeader($options);
          if (empty($ID)) {
@@ -1161,7 +1161,7 @@ class AuthLDAP extends CommonDBTM {
                // openldap return 4 for Size limit exceeded
                $limitexceeded = true;
             }
-            $info = ldap_get_entries_clean($ds, $sr);
+            $info = self::get_entries_clean($ds, $sr);
             if (in_array(ldap_errno($ds),array(4,11))) {
                $limitexceeded = true;
             }
@@ -1454,7 +1454,7 @@ class AuthLDAP extends CommonDBTM {
    static function getGroupCNByDn($ldap_connection, $group_dn) {
 
       $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", array("cn"));
-      $v  = ldap_get_entries_clean($ldap_connection, $sr);
+      $v  = self::get_entries_clean($ldap_connection, $sr);
       if (!is_array($v) || count($v) == 0 || empty($v[0]["cn"][0])) {
          return false;
       }
@@ -1484,7 +1484,7 @@ class AuthLDAP extends CommonDBTM {
       $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter , $attrs);
 
       if ($sr) {
-         $infos = ldap_get_entries_clean($ldap_connection, $sr);
+         $infos = self::get_entries_clean($ldap_connection, $sr);
          for ($ligne=0 ; $ligne < $infos["count"] ; $ligne++) {
             if ($search_in_groups) {
                // No cn : not a real object
@@ -2019,7 +2019,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
-         $info = ldap_get_entries_clean($ds, $result);
+         $info = self::get_entries_clean($ds, $result);
 
          if (is_array($info) && $info['count'] == 1) {
             return array('dn'        => $info[0]['dn'],
@@ -2041,7 +2041,7 @@ class AuthLDAP extends CommonDBTM {
    static function getObjectByDn($ds, $condition, $dn, $attrs=array()) {
 
       if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
-         $info = ldap_get_entries_clean($ds, $result);
+         $info = self::get_entries_clean($ds, $result);
 
          if (is_array($info) && $info['count'] == 1) {
             return $info[0];
@@ -2629,6 +2629,31 @@ class AuthLDAP extends CommonDBTM {
       }
       return true;
    }
+
+
+   /**
+    * Get ldap query results and clean them at the same time
+    *
+    * @param link the directory connection
+    * @param result the query results
+    *
+    * @return an array which contains ldap query results
+   **/
+   static function get_entries_clean($link, $result) {
+      return Toolbox::clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
+   }
+
+
+   /**
+    * Determine if Ldap is usable checking ldap extension existence
+    *
+    * @return boolean
+   **/
+   static function canUse() {
+      return extension_loaded('ldap');
+   }
+
+
 
 
 }

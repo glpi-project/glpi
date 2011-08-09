@@ -40,7 +40,7 @@ checkRight("config", "w");
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
 
-if (canUseImapPop()) {
+if (MailCollector::canUseImapPop()) {
    Search::show('AuthMail');
 }
 

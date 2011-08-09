@@ -1372,6 +1372,17 @@ class MailCollector  extends CommonDBTM {
       Rule::cleanForItemCriteria($this, 'mailcollector');
       Rule::cleanForItemCriteria($this, '_mailgate');
    }
-}
 
+
+   /**
+    * Determine if Imap/Pop is usable checking extension existence
+    *
+    * @return boolean
+   **/
+   static function canUseImapPop() {
+      return extension_loaded('imap');
+   }
+
+
+}
 ?>

@@ -1160,7 +1160,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['config']['content']['mailcollector']['title'] = $LANG['Menu'][39];
       $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
-      if (canUseImapPop()) {
+      if (MailCollector::canUseImapPop()) {
          $menu['config']['content']['mailcollector']['links']['search'] = '/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['add']
                                     = '/front/mailcollector.form.php';
@@ -1548,7 +1548,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
    // call function callcron() every 5min
-   callCron();
+   Toolbox::callCron();
    displayMessageAfterRedirect();
 }
 
@@ -1824,7 +1824,7 @@ function helpHeader($title, $url='') {
    echo "<div id='page' >";
 
    // call function callcron() every 5min
-   callCron();
+   Toolbox::callCron();
    displayMessageAfterRedirect();
 }
 
@@ -1892,7 +1892,7 @@ function simpleHeader($title, $links=array()) {
    echo "<div id='page'>";
 
    // call function callcron() every 5min
-   callCron();
+   Toolbox::callCron();
 }
 
 
