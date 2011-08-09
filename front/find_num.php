@@ -37,9 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if ($CFG_GLPI["use_anonymous_helpdesk"]) {
-   Session::init();
-} else {
+if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
    exit();
 }
 
