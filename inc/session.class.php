@@ -43,7 +43,7 @@ class Session {
    **/
    static function destroy() {
 
-      Toolbox::startGlpiSession();
+      Sesion::start();
       // Unset all of the session variables.
       session_unset();
       // destroy may cause problems (no login / back to login page)
@@ -71,7 +71,7 @@ class Session {
             }
          }
          self::destroy();
-         Toolbox::startGlpiSession();
+         Session::start();
          $_SESSION = $save;
 
          // Normal mode for this request
