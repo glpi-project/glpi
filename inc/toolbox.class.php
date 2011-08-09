@@ -932,7 +932,7 @@ class Toolbox {
     *
     * @return string explaining the result
    **/
-   function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
+   static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
       global $LANG, $CFG_GLPI;
 
       if (!$auto && !haveRight("check_update","r")) {

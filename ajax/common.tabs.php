@@ -39,9 +39,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!isset($_REQUEST["id"])) {
-   exit();
-}
 
 if (!isset($_REQUEST['glpi_tab'])) {
    exit();
@@ -65,9 +62,11 @@ if (!isset($_REQUEST["withtemplate"])) {
 
 $item = new $_REQUEST['itemtype']();
 
-if (($item instanceof CommonDBTM) && !$item->can($_REQUEST["id"],'r')) {
+if (($item instanceof CommonDBTM)
+    && (!isset($_REQUEST["id"]) || !$item->can($_REQUEST["id"],'r'))) {
    exit();
 }
+
 CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
 
 ajaxFooter();

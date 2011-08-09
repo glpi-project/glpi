@@ -43,13 +43,46 @@ class Central extends CommonGLPI {
 
 
    function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      $tabs[1] = $LANG['central'][12]; // My
-      $tabs[2] = $LANG['central'][14]; // Group
-      $tabs[3] = $LANG['central'][13]; // Global
+      if ($item->getType() == __CLASS__) {
+         $tabs[1] = $LANG['central'][12]; // My
+         $tabs[2] = $LANG['central'][14]; // Group
+         $tabs[3] = $LANG['central'][13]; // Global
 
-      return $tabs;
+         return $tabs;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 : // all
+               $item->showMyView();
+               break;
+
+            case 2 :
+               $item->showGroupView();
+               break;
+
+            case 3 :
+               $item->showGlobalView();
+               break;
+         }
+      }
+      return true;
    }
 
 
