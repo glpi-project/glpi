@@ -43,7 +43,7 @@ class Session {
    **/
    static function destroy() {
 
-      Sesion::start();
+      Session::start();
       // Unset all of the session variables.
       session_unset();
       // destroy may cause problems (no login / back to login page)
@@ -56,12 +56,13 @@ class Session {
    /**
     * Init session for the user is defined
     *
+    * @param $auth Auth object to init session
     * @return nothing
    **/
-   static function init() {
+   static function init(Auth $auth) {
       global $CFG_GLPI, $LANG;
 
-      if ($this->auth_succeded) {
+      if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
          $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS');
          $save   = array();
@@ -77,30 +78,30 @@ class Session {
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = NORMAL_MODE;
          // Check ID exists and load complete user from DB (plugins...)
-         if (isset($this->user->fields['id'])
-             && $this->user->getFromDB($this->user->fields['id'])) {
+         if (isset($auth->user->fields['id'])
+             && $auth->user->getFromDB($auth->user->fields['id'])) {
 
-            if (!$this->user->fields['is_deleted'] && $this->user->fields['is_active']) {
-               $_SESSION["glpiID"]              = $this->user->fields['id'];
-               $_SESSION["glpiname"]            = $this->user->fields['name'];
-               $_SESSION["glpirealname"]        = $this->user->fields['realname'];
-               $_SESSION["glpifirstname"]       = $this->user->fields['firstname'];
-               $_SESSION["glpidefault_entity"]  = $this->user->fields['entities_id'];
+            if (!$auth->user->fields['is_deleted'] && $auth->user->fields['is_active']) {
+               $_SESSION["glpiID"]              = $auth->user->fields['id'];
+               $_SESSION["glpiname"]            = $auth->user->fields['name'];
+               $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
+               $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
+               $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
                $_SESSION["glpiusers_idisation"] = true;
-               $_SESSION["glpiextauth"]         = $this->extauth;
-               $_SESSION["glpiauthtype"]        = $this->user->fields['authtype'];
+               $_SESSION["glpiextauth"]         = $auth->extauth;
+               $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
                $_SESSION["glpisearchcount"]     = array();
                $_SESSION["glpisearchcount2"]    = array();
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
-               $_SESSION["glpi_use_mode"]       = $this->user->fields['use_mode'];
+               $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
                $_SESSION["glpicrontimer"]       = time();
                // Default tab
 //               $_SESSION['glpi_tab']=1;
                $_SESSION['glpi_tabs']           = array();
-               $this->user->computePreferences();
+               $auth->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                  if (isset($this->user->fields[$field])) {
-                     $_SESSION["glpi$field"] = $this->user->fields[$field];
+                  if (isset($auth->user->fields[$field])) {
+                     $_SESSION["glpi$field"] = $auth->user->fields[$field];
                   }
                }
                // Do it here : do not reset on each page, cause export issue
@@ -119,26 +120,26 @@ class Session {
                initEntityProfiles(getLoginUserID());
 
                // Use default profile if exist
-               if (isset($_SESSION['glpiprofiles'][$this->user->fields['profiles_id']])) {
-                  changeProfile($this->user->fields['profiles_id']);
+               if (isset($_SESSION['glpiprofiles'][$auth->user->fields['profiles_id']])) {
+                  changeProfile($auth->user->fields['profiles_id']);
 
                } else { // Else use first
                   changeProfile(key($_SESSION['glpiprofiles']));
                }
 
                if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
-                  $this->auth_succeded = false;
-                  $this->addToError($LANG['login'][25]);
+                  $auth->auth_succeded = false;
+                  $auth->addToError($LANG['login'][25]);
                }
 
             } else {
-               $this->auth_succeded = false;
-               $this->addToError($LANG['login'][20]);
+               $auth->auth_succeded = false;
+               $auth->addToError($LANG['login'][20]);
             }
 
          } else {
-            $this->auth_succeded = false;
-            $this->addToError($LANG['login'][25]);
+            $auth->auth_succeded = false;
+            $auth->addToError($LANG['login'][25]);
          }
       }
    }

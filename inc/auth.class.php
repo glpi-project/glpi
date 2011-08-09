@@ -595,7 +595,7 @@ class Auth {
          }
       }
 
-      Session::init();
+      Session::init($this);
 
       if ($noauto) {
          $_SESSION["noAUTO"] = 1;
