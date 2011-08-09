@@ -44,28 +44,9 @@ if (!defined('GLPI_ROOT')) {
 //*************************************************************************************************
 //*************************************************************************************************
 
-/**
- * Set the directory where are store the session file
-**/
-function setGlpiSessionPath() {
-
-   if (ini_get("session.save_handler")=="files") {
-      session_save_path(GLPI_SESSION_DIR);
-   }
-}
 
 
-/**
- * Start the GLPI php session
-**/
-function startGlpiSession() {
 
-   if (!session_id()) {
-      @session_start();
-   }
-   // Define current time for sync of action timing
-   $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-}
 
 
 /**
@@ -158,23 +139,6 @@ function getItemTypeTabsURL($itemtype, $full=true) {
 
 
 
-/**
- * Is GLPI used in mutli-entities mode ?
- *
- * @return boolean
-**/
-function isMultiEntitiesMode() {
-
-   if (!isset($_SESSION['glpi_multientitiesmode'])) {
-      if (countElementsInTable("glpi_entities")>0) {
-         $_SESSION['glpi_multientitiesmode'] = 1;
-      } else {
-         $_SESSION['glpi_multientitiesmode'] = 0;
-      }
-   }
-
-   return $_SESSION['glpi_multientitiesmode'];
-}
 
 
 /**
@@ -211,127 +175,7 @@ function getDbRelations() {
 }
 
 
-/**
- * Check Write Access to a directory
- *
- * @param $dir string: directory to check
- *
- * @return 2 : creation error 1 : delete error 0: OK
-**/
-function testWriteAccessToDirectory($dir) {
 
-   $rand = rand();
-
-   // Check directory creation which can be denied by SElinux
-   $sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
-
-   if (!mkdir($sdir)) {
-      return 4;
-   }
-
-   if (!rmdir($sdir)) {
-      return 3;
-   }
-
-   // Check file creation
-   $path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
-   $fp   = fopen($path, 'w');
-
-   if (empty($fp)) {
-      return 2;
-   }
-
-   $fw = fwrite($fp, "This file was created for testing reasons. ");
-   fclose($fp);
-   $delete = unlink($path);
-
-   if (!$delete) {
-      return 1;
-   }
-
-   return 0;
-}
-
-
-
-
-
-/**
- * Check Write Access to needed directories
- *
- * @param $fordebug boolean display for debug
- *
- * @return 2 : creation error 1 : delete error 0: OK
-**/
-function checkWriteAccessToDirs($fordebug=false) {
-   global $LANG;
-
-   $dir_to_check = array(GLPI_CONFIG_DIR  => $LANG['install'][23],
-                         GLPI_DOC_DIR     => $LANG['install'][21],
-                         GLPI_DUMP_DIR    => $LANG['install'][16],
-                         GLPI_SESSION_DIR => $LANG['install'][50],
-                         GLPI_CRON_DIR    => $LANG['install'][52],
-                         GLPI_CACHE_DIR   => $LANG['install'][99],
-                         GLPI_GRAPH_DIR   => $LANG['install'][106]);
-   $error = 0;
-
-   foreach ($dir_to_check as $dir => $message) {
-
-      if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
-      }
-      $tmperror = testWriteAccessToDirectory($dir);
-
-      $errors = array(4 => $LANG['install'][100],
-                      3 => $LANG['install'][101],
-                      2 => $LANG['install'][17],
-                      1 => $LANG['install'][19]);
-
-      if ($tmperror > 0) {
-         if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".$LANG['install'][97]." $dir - ".
-                           $errors[$tmperror]."\n";
-         } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
-                       $errors[$tmperror]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
-         }
-         $error = 2;
-      } else {
-         if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
-         } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][20].
-                        "\" title=\"".$LANG['install'][20]."\"></td></tr>";
-         }
-      }
-   }
-
-   // Only write test for GLPI_LOG as SElinux prevent removing log file.
-   if (!$fordebug) {
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][53]."</td>";
-   }
-
-   if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-      if ($fordebug) {
-         echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
-      } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][22].
-                    "\" title=\"".$LANG['install'][22]."\"></td></tr>";
-      }
-
-   } else {
-      if ($fordebug) {
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".
-                        GLPI_LOG_DIR."\n";
-      } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-                   "<p class='red'>".$LANG['install'][19]."</p>".
-                   $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
-      }
-      $error = 1;
-   }
-   return $error;
-}
 
 
 
