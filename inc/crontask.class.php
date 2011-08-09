@@ -1350,5 +1350,43 @@ class CronTask extends CommonDBTM{
       Dropdown::showFromArray($name, $tab, array('value' => $value));
    }
 
+
+   /**
+    * Call cron without time check
+    *
+    * @return boolean : true if launched
+   **/
+   static function callCronForce() {
+      global $CFG_GLPI;
+
+      $path = $CFG_GLPI['root_doc']."/front/cron.php";
+
+      echo "<div style=\"background-image: url('$path');\"></div>";
+      return true;
+   }
+
+
+   /**
+    * Call cron if time since last launch elapsed
+    *
+    * @return nothing
+   **/
+   static function callCron() {
+
+      if (isset($_SESSION["glpicrontimer"])) {
+         // call static function callcron() every 5min
+         if ((time()-$_SESSION["glpicrontimer"])>300) {
+
+            if (self::callCronForce()) {
+               // Restart timer
+               $_SESSION["glpicrontimer"] = time();
+            }
+         }
+
+      } else {
+         // Start timer
+         $_SESSION["glpicrontimer"] = time();
+      }
+   }
 }
 ?>
