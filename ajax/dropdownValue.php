@@ -545,5 +545,5 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
 }
 
-commonDropdownUpdateItem($_POST);
+Ajax::commonDropdownUpdateItem($_POST);
 ?>

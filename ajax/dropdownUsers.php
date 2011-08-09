@@ -136,5 +136,5 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                $paramscomment);
 }
 
-commonDropdownUpdateItem($_POST);
+Ajax::commonDropdownUpdateItem($_POST);
 ?>

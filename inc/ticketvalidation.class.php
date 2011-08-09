@@ -553,8 +553,8 @@ class TicketValidation  extends CommonDBChild {
                          'parenttype' => 'Ticket',
                          'tickets_id' => $tID,
                          'id'         => -1);
-         ajaxUpdateItemJsCode("viewfollowup" . $tID . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         Ajax::updateItemJsCode("viewfollowup" . $tID . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
@@ -613,8 +613,8 @@ class TicketValidation  extends CommonDBChild {
                                'parenttype' => 'Ticket',
                                'tickets_id' => $this->fields["tickets_id"],
                                'id'         => $row["id"]);
-               ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+               Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
+                                      $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                echo "};";
                echo "</script>\n";
             }

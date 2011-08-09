@@ -60,5 +60,219 @@ class Ajax {
          echo "</script>";
       }
    }
+
+
+    /**
+     * Input text used as search system in ajax system
+     *
+     * @param $id ID of the ajax item
+     * @param $size size of the input text field
+     *
+    **/
+    static function displaySearchTextForDropdown($id, $size=4) {
+       global $CFG_GLPI, $LANG;
+
+       echo "<input title=\"".$LANG['buttons'][0]." (".$CFG_GLPI['ajax_wildcard']." ".
+              $LANG['search'][1].")\" type='text' ondblclick=\"this.value='".
+              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+    }
+
+
+    /**
+     * Javascript code for update an item when another item changed
+     *
+     * @param $toobserve id (or array of id) of the select to observe
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     * @param $events array of the observed events
+     * @param $minsize minimum size of data to update content
+     * @param $forceloadfor array of content which must force update content
+     *
+    **/
+    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
+                                      $events=array("change"), $minsize = -1, $forceloadfor=array()) {
+
+       echo "<script type='text/javascript'>";
+       self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events, $minsize,
+                                     $forceloadfor);
+       echo "</script>";
+    }
+
+
+    /**
+     * Javascript code for update an item when a Input text item changed
+     *
+     * @param $toobserve id of the Input text to observe
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     * @param $minsize minimum size of data to update content
+     * @param $forceloadfor array of content which must force update content
+     *
+    **/
+    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
+                                               $minsize=-1, $forceloadfor=array()) {
+       global $CFG_GLPI;
+
+       if (count($forceloadfor)==0) {
+          $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+       }
+       // Need to define min size for text search
+       if ($minsize < 0) {
+          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+       }
+
+       self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
+                               $minsize, $forceloadfor);
+    }
+
+
+    /**
+     * Javascript code for update an item when another item changed (Javascript code only)
+     *
+     * @param $toobserve id (or array of id) of the select to observe
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     * @param $events array of the observed events
+     * @param $minsize minimum size of data to update content
+     * @param $forceloadfor array of content which must force update content
+     *
+    **/
+    function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
+                                     $events=array("change"), $minsize = -1, $forceloadfor=array()) {
+
+       if (is_array($toobserve)) {
+          $zones = $toobserve;
+       } else {
+          $zones = array($toobserve);
+       }
+
+       foreach ($zones as $zone) {
+          foreach ($events as $event) {
+             echo "
+                Ext.get('$zone').on(
+                   '$event',
+                   function() {";
+                      $condition = '';
+                      if ($minsize >= 0) {
+                         $condition = " Ext.get('$toobserve').getValue().length >= $minsize ";
+                      }
+                      if (count($forceloadfor)) {
+                         foreach ($forceloadfor as $value) {
+                            if (!empty($condition)) {
+                               $condition .= " || ";
+                            }
+                            $condition .= "Ext.get('$toobserve').getValue() == '$value'";
+                         }
+                      }
+                      if (!empty($condition)) {
+                         echo "if ($condition) {";
+                      }
+                      self::updateItemJsCode($toupdate, $url, $parameters, $toobserve);
+                      if (!empty($condition)) {
+                         echo "}";
+                      }
+
+             echo "});\n";
+          }
+       }
+    }
+
+
+    /**
+     * Javascript code for update an item (Javascript code only)
+     *
+     * @param $options array of options
+     *    - toupdate : array / Update a specific item on select change on dropdown
+     *                   (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations)
+     *                   and may have moreparams)
+     *
+    **/
+    static function commonDropdownUpdateItem($options) {
+
+       if (isset($options["update_item"])
+           && (is_array($options["update_item"]) || strlen($options["update_item"])>0)) {
+
+          if (!is_array($options["update_item"])) {
+             $data = unserialize(stripslashes($options["update_item"]));
+          } else {
+             $data = $options["update_item"];
+          }
+
+          if (is_array($data) && count($data)) {
+             $paramsupdate = array();
+             if (isset($data['value_fieldname'])) {
+                $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
+             }
+
+             if (isset($data["moreparams"])
+                 && is_array($data["moreparams"])
+                 && count($data["moreparams"])) {
+
+                foreach ($data["moreparams"] as $key => $val) {
+                   $paramsupdate[$key] = $val;
+                }
+             }
+
+             ajaxUpdateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+                                         $data['to_update'], $data['url'], $paramsupdate);
+          }
+       }
+    }
+
+
+    /**
+     * Javascript code for update an item (Javascript code only)
+     *
+     * @param $toupdate id of the item to update
+     * @param $url Url to get datas to update the item
+     * @param $parameters Parameters to send to ajax URL
+     * @param $toobserve id of another item used to get value in case of __VALUE__ used
+     *                   array of id to get value in case of __VALUE#__ used
+     *
+    **/
+    function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="") {
+
+       // Get it from a Ext.Element object
+       $out = "Ext.get('$toupdate').load({
+          url: '$url',
+          scripts: true";
+
+       if (count($parameters)) {
+          $out .= ",
+             params:'";
+          $first = true;
+          foreach ($parameters as $key => $val) {
+             if ($first) {
+                $first = false;
+             } else {
+                $out .= "&";
+             }
+
+             $out .= $key."=";
+             if (is_array($val)) {
+                $out .=  serialize($val);
+
+             } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+                $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
+
+             } else if ($val==="__VALUE__") {
+                $out .=  "'+Ext.get('$toobserve').getValue()+'";
+
+             } else {
+                if (preg_match("/'/",$val)) {
+                   $out .=  rawurlencode($val);
+                } else {
+                   $out .=  $val;
+                }
+             }
+          }
+          echo $out."'\n";
+       }
+       echo "});";
+    }
+
 }
 ?>

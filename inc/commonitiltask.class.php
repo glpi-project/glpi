@@ -703,8 +703,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                                          $item->getForeignKeyField()
                                              => $this->fields[$item->getForeignKeyField()],
                          'id'         => $this->fields["id"]);
-         ajaxUpdateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
       }
@@ -865,7 +865,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                             'begin'    => $this->fields["begin"],
                             'end'      => $this->fields["end"],
                             'entity'   => $item->fields["entities_id"]);
-            ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
+            Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
             echo "}";
             echo "</script>\n";
             echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
@@ -893,7 +893,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             $params = array('form'     => 'followups',
                             'users_id' => getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"]);
-            ajaxUpdateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "};";
             echo "</script>";
 
@@ -958,8 +958,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                          'parenttype'                => $item->getType(),
                          $item->getForeignKeyField() => $item->fields['id'],
                          'id'                        => -1);
-         ajaxUpdateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
          if ($item->fields["status"] != 'solved' && $item->fields["status"] != 'closed') {
