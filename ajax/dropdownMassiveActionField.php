@@ -107,6 +107,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             TicketValidation::dropdownStatus($search["linkfield"]);
             break;
 
+         case "glpi_users.language" :
+            Dropdown::showLanguages("language", array('display_none' => true, 
+                                                      'emptylabel'   => $LANG['setup'][46]));
+            break;
+
+
          default :
             // Specific plugin Type case
             $plugdisplay = false;
