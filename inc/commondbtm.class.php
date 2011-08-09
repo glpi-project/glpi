@@ -1788,7 +1788,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (isset($this->fields["entities_id"])
-          && Toolbox::isMultiEntitiesMode()
+          && Session::isMultiEntitiesMode()
           && $this->isEntityAssign()) {
 
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]).")";
@@ -1801,7 +1801,7 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($this->maybeRecursive()) {
-            if (Toolbox::isMultiEntitiesMode()) {
+            if (Session::isMultiEntitiesMode()) {
                echo $LANG['entity'][9]."&nbsp;:&nbsp;";
 
                if ($params['canedit']) {

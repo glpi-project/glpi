@@ -1069,7 +1069,7 @@ class OcsServer extends CommonDBTM {
              || $idlink = self::ocsLink($ocsid, $ocsservers_id, $computers_id)) {
 
              // automatic transfer computer
-             if ($CFG_GLPI['transfers_id_auto']>0 && Toolbox::isMultiEntitiesMode()) {
+             if ($CFG_GLPI['transfers_id_auto']>0 && Session::isMultiEntitiesMode()) {
 
                 // Retrieve data from glpi_ocslinks
                 $ocsLink = new Ocslink();
@@ -1641,7 +1641,7 @@ class OcsServer extends CommonDBTM {
             $data_ocs = Toolbox::addslashes_deep($DBocs->fetch_array($result_ocs));
 
             // automatic transfer computer
-            if ($CFG_GLPI['transfers_id_auto']>0 && Toolbox::isMultiEntitiesMode()) {
+            if ($CFG_GLPI['transfers_id_auto']>0 && Session::isMultiEntitiesMode()) {
                self::transferComputer($line, $data_ocs);
                $comp->getFromDB($line["computers_id"]);
             }
@@ -2311,7 +2311,7 @@ class OcsServer extends CommonDBTM {
          echo "<table class='tab_cadre'>";
          echo "<tr><th>" . $LANG['common'][1] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
          echo "<th>" . $LANG['ocsng'][59] . "</th><th>" . $LANG['ocsng'][60] . "</th>";
-         if (Toolbox::isMultiEntitiesMode()) {
+         if (Session::isMultiEntitiesMode()) {
             echo "<th>" . $LANG['entity'][0] . "</th>";
          }
          if ($canedit) {
@@ -2332,7 +2332,7 @@ class OcsServer extends CommonDBTM {
             echo "<td>" . Toolbox::convDateTime($tab["date"]) . "</td>\n";
             echo "<td>" . $LANG['choice'][$tab["in_glpi"]] . "</td>\n";
             echo "<td>" . $LANG['choice'][$tab["in_ocs"]] . "</td>\n";
-            if (Toolbox::isMultiEntitiesMode()) {
+            if (Session::isMultiEntitiesMode()) {
                echo "<td>".Dropdown::getDropdownName('glpi_entities', $tab['entities_id'])."</td>\n";
             }
             if ($canedit) {
@@ -2736,7 +2736,7 @@ class OcsServer extends CommonDBTM {
             }
 
             //Show preview form only in import and in multi-entity mode
-            if (!$tolinked && Toolbox::isMultiEntitiesMode()) {
+            if (!$tolinked && Session::isMultiEntitiesMode()) {
                echo "<div class='firstbloc'>";
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode'
                       action='$target'>\n";

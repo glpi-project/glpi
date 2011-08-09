@@ -269,7 +269,7 @@ class ReservationItem extends CommonDBTM {
 
       $ri = new ReservationItem();
       $ok = false;
-      $showentity = Toolbox::isMultiEntitiesMode();
+      $showentity = Session::isMultiEntitiesMode();
 
       echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";

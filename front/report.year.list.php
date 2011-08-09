@@ -116,7 +116,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       }
    }
 }
-$display_entity = Toolbox::isMultiEntitiesMode();
+$display_entity = Session::isMultiEntitiesMode();
 
 if (isset($query) && count($query)) {
    foreach ($query as $key => $val) {

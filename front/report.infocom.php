@@ -108,7 +108,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
    $query .= " ORDER BY entname ASC, `buy_date`, `use_date`";
 
-   $display_entity = Toolbox::isMultiEntitiesMode();
+   $display_entity = Session::isMultiEntitiesMode();
 
    $result = $DB->query($query);
    if ($DB->numrows($result)>0) {
