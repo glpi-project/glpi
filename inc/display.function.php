@@ -1547,8 +1547,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       echo "</div>";
    }
 
-   // call function callcron() every 5min
-   Toolbox::callCron();
+   // call static function callcron() every 5min
+   CronTask::callCron();
    displayMessageAfterRedirect();
 }
 
@@ -1823,8 +1823,8 @@ function helpHeader($title, $url='') {
    echo "</div>"; // fin header
    echo "<div id='page' >";
 
-   // call function callcron() every 5min
-   Toolbox::callCron();
+   // call static function callcron() every 5min
+   CronTask::callCron();
    displayMessageAfterRedirect();
 }
 
@@ -1891,8 +1891,8 @@ function simpleHeader($title, $links=array()) {
    echo "</div>"; // fin header
    echo "<div id='page'>";
 
-   // call function callcron() every 5min
-   Toolbox::callCron();
+   // call static function callcron() every 5min
+   CronTask::callCron();
 }
 
 
