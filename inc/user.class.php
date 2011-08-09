@@ -1514,7 +1514,7 @@ class User extends CommonDBTM {
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
                echo '<br>'.$LANG['login'][29].'&nbsp;: '.
-                    Toolbox::convDateTime($this->fields["date_sync"]);
+                    HTML::convDateTime($this->fields["date_sync"]);
             }
 
             echo "</td>";
@@ -1607,13 +1607,13 @@ class User extends CommonDBTM {
          echo "<td colspan='2' class='center'>" . $LANG['login'][24] . "&nbsp;: ";
 
          if (!empty($this->fields["date_mod"])) {
-            echo Toolbox::convDateTime($this->fields["date_mod"]);
+            echo HTML::convDateTime($this->fields["date_mod"]);
          }
 
          echo "<br>" . $LANG['login'][0] . "&nbsp;: ";
 
          if (!empty($this->fields["last_login"])) {
-            echo Toolbox::convDateTime($this->fields["last_login"]);
+            echo HTML::convDateTime($this->fields["last_login"]);
          }
 
          echo "</td><td colspan='2'class='center'>";
