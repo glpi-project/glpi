@@ -853,7 +853,7 @@ class Problem extends CommonITILObject {
                       'size'      => 110,
                       'name'      => 'name',
                       'data'      => rawurlencode($this->fields["name"]));
-      ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
+      Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
       echo "}";
       echo "</script>\n";
       echo "<div id='name$rand' class='tracking left' onClick='showName$rand()'>\n";
@@ -883,7 +883,7 @@ class Problem extends CommonITILObject {
                       'cols'  => 110,
                       'name'  => 'content',
                       'data'  => rawurlencode($this->fields["content"]));
-      ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
+      Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
       echo "}";
       echo "</script>\n";
       echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";

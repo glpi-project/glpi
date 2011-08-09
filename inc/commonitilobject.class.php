@@ -1797,9 +1797,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
-         ajaxUpdateItemJsCode("notif_".$typename."_$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                              "dropdown__users_id_".$typename.$rand);
+         Ajax::updateItemJsCode("notif_".$typename."_$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                "dropdown__users_id_".$typename.$rand);
          echo "</script>";
       }
    }

@@ -51,7 +51,7 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
    }
 
    echo "&nbsp;";
-   ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);
+   Ajax::displaySearchTextForDropdown($_POST['myname'].$rand,8);
 
    $paramstrackingdt = array('searchText'      => '__VALUE__',
                              'myname'          => $_POST["myname"],
@@ -59,9 +59,9 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
                              'itemtype'        => $_POST["itemtype"],
                              'entity_restrict' => $_POST['entity_restrict']);
 
-   ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand, "results_ID$rand",
-                                  $CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",
-                                  $paramstrackingdt);
+   Ajax::updateItemOnInputTextEvent("search_".$_POST['myname'].$rand, "results_ID$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",
+                                    $paramstrackingdt);
 
    echo "<span id='results_ID$rand'>";
    echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";

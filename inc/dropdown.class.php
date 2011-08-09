@@ -997,8 +997,8 @@ class Dropdown {
                          'entities_id'  => $entity,
                          'rand'         => $rand);
 
-         ajaxUpdateItemJsCode('private_switch'.$rand,
-                              $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
+         Ajax::updateItemJsCode('private_switch'.$rand,
+                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
       echo "};";
 
       echo "function setPublic$rand() {\n";
@@ -1007,8 +1007,8 @@ class Dropdown {
                          'is_recursive' => $is_recursive,
                          'entities_id'  => $entity,
                          'rand'         => $rand);
-         ajaxUpdateItemJsCode('private_switch'.$rand,
-                              $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
+         Ajax::updateItemJsCode('private_switch'.$rand,
+                                $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params);
       echo "};";
       echo "</script>";
 
@@ -1034,12 +1034,12 @@ class Dropdown {
       echo "<script type='text/javascript' >\n";
       echo "function activateRestriction() {\n";
          $params = array('enabled'=> 1);
-         ajaxUpdateItemJsCode('date_restriction', $url, $params);
+         Ajax::updateItemJsCode('date_restriction', $url, $params);
       echo "};";
 
       echo "function deactivateRestriction() {\n";
          $params = array('enabled' => 0);
-         ajaxUpdateItemJsCode('date_restriction', $url, $params);
+         Ajax::updateItemJsCode('date_restriction', $url, $params);
       echo "};";
       echo "</script>";
 

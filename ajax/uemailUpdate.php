@@ -85,5 +85,5 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
    }
 }
 
-commonDropdownUpdateItem($_POST);
+Ajax::commonDropdownUpdateItem($_POST);
 ?>
