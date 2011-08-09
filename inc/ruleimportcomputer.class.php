@@ -253,10 +253,14 @@ class RuleImportComputer extends Rule {
          $criteria = $this->getCriteriaByID($criterion);
          if (!empty($criteria)) {
             foreach ($criteria as $crit) {
-               if (!isset($input[$criterion]) || $input[$criterion] == '') {
-                  $continue = false;
-               } else if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
+
+               // criteria is global search one
+               if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
+                  if (!isset($input[$criterion]) || $input[$criterion] == '') {
+                     $continue = false;   
+                  } else  {
                   $complex_criterias[] = $crit;
+                  }
                }
             }
          }
