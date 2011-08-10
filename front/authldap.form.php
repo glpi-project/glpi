@@ -112,7 +112,7 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['login'][2], $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
+commonHeader(AuthLDAP::getTypeName(1), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
 $config_ldap->showForm($_GET["id"]);
 
 commonFooter();

@@ -1334,8 +1334,9 @@ $LANG['Menu'][3]  = "Moniteurs";
 $LANG['Menu'][4]  = "Logiciels";
 $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
-$LANG['Menu'][7] = "Problèmes";
-$LANG['Menu'][8] = "Changements";
+$LANG['Menu'][7]  = "Problèmes";
+$LANG['Menu'][8]  = "Changements";
+$LANG['Menu'][9]  = "Annuaires LDAP";
 
 $LANG['Menu'][11] = "Préférences";
 $LANG['Menu'][12] = "Maintenance";

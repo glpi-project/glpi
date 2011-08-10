@@ -49,7 +49,7 @@ if (haveRight("config","w")) {
 echo $LANG['common'][12]. ' ' . $LANG['login'][10]."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseLdap()) {
-   echo "<a href='authldap.php'>". $LANG['login'][2] ."</a>";
+   echo "<a href='authldap.php'>". $LANG['Menu'][9] ."</a>";
 } else {
    echo "<p class='red'>".$LANG['setup'][157] ."</p><p>".$LANG['setup'][158].'</p>';
 }

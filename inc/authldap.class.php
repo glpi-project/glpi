@@ -58,9 +58,12 @@ class AuthLDAP extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][9];
+      }
       return $LANG['login'][2];
    }
 
@@ -595,7 +598,7 @@ class AuthLDAP extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['login'][2];
+      $tab['common'] = $this->getTypeName(1);
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -768,7 +771,7 @@ class AuthLDAP extends CommonDBTM {
       $ldap_servers = self::getLdapServers ();
 
       if (!empty($ldap_servers)) {
-         echo "\n</pre></td><tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>\n";
+         echo "\n</pre></td><tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
          foreach ($ldap_servers as $ID => $value) {
             $fields = array($LANG['common'][52] => 'host',
