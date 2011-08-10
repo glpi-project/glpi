@@ -667,7 +667,7 @@ class Auth {
          case self::LDAP :
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
-               return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
+               return $auth->getTypeName(1) . "&nbsp;" . $auth->getLink();
             }
             return $LANG['login'][2]."&nbsp;$name";
 

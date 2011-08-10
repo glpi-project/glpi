@@ -665,7 +665,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
       }
 
-     $menu['admin']['content']['user']['options']['ldap']['title'] = $LANG['login'][2];
+     $menu['admin']['content']['user']['options']['ldap']['title'] = $LANG['Menu'][9];
      $menu['admin']['content']['user']['options']['ldap']['page']  = "/front/ldap.php";
    }
 
@@ -678,7 +678,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
       if (haveRight("group","w")) {
          $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
-         $menu['admin']['content']['group']['options']['ldap']['title'] = $LANG['login'][2];
+         $menu['admin']['content']['group']['options']['ldap']['title'] = $LANG['Menu'][9];
          $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
       }
    }
@@ -1130,7 +1130,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['config']['content']['extauth']['title'] = $LANG['login'][10];
       $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
 
-      $menu['config']['content']['extauth']['options']['ldap']['title'] = $LANG['login'][2];
+      $menu['config']['content']['extauth']['options']['ldap']['title'] = $LANG['Menu'][9];
       $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
 
       $menu['config']['content']['extauth']['options']['imap']['title'] = $LANG['login'][3];
