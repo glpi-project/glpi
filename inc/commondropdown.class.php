@@ -147,7 +147,12 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</textarea></td></tr>\n";
 
       foreach ($fields as $field) {
-         echo "<tr class='tab_bg_1'><td>".$field['label']."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>".$field['label'];
+         if (isset($field['comment']) && !empty($field['comment'])) {
+            echo "&nbsp;";
+            showToolTip($field['comment']);
+         }
+         echo "&nbsp;:</td><td>";
          switch ($field['type']) {
             case 'UserDropdown' :
                User::dropdown(array('name'   => $field['name'],
