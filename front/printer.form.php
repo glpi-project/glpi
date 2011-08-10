@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "printers", 4, "inventory",
                  $_SESSION["glpiname"]."  ".$LANG['log'][20]."  ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $print->check($_POST["id"],'d');
@@ -86,14 +86,14 @@ if (isset($_POST["add"])) {
 
    $print->update($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["unglobalize"])) {
    $print->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($print);
    Event::log($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
+   Html::header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
 } else {
    commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");

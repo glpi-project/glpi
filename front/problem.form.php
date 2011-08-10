@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $newID = $problem->add($_POST);
    Event::log($newID, "problem", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $problem->check($_POST["id"], 'w');
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    $problem->update($_POST);
    Event::log($_POST["id"], "problem", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_REQUEST['delete_user'])) {
    $problem_user = new Problem_User();
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_REQUEST['problems_id'], "problem", 4,
               "tracking", $_SESSION["glpiname"]." ".$LANG['log'][122]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
+   Html::header($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
    $group_ticket = new Group_Ticket();
@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][122]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
+   Html::header($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else {
    commonHeader($LANG['Menu'][7], $_SERVER['PHP_SELF'], "maintain", "problem");

@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "budget", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $budget->check($_POST["id"],'w');
@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    if ($budget->update($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    /// TODO To manage using dropdown.common.form

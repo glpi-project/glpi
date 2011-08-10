@@ -58,7 +58,7 @@ if (isset($_POST["delete_criteria"])) {
    // Can't do this in RuleCriteria, so do it here
    $rule->update(array('id'       => $_POST['rules_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete_action"])) {
    $rulecollection->checkGlobal('w');
@@ -72,7 +72,7 @@ if (isset($_POST["delete_criteria"])) {
    // Can't do this in RuleAction, so do it here
    $rule->update(array('id'       => $_POST['rules_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add_criteria"])) {
    $rulecollection->checkGlobal('w');
@@ -81,7 +81,7 @@ if (isset($_POST["delete_criteria"])) {
    // Can't do this in RuleCriteria, so do it here
    $rule->update(array('id'       => $_POST['rules_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add_action"])) {
    $rulecollection->checkGlobal('w');
@@ -90,21 +90,21 @@ if (isset($_POST["delete_criteria"])) {
    // Can't do this in RuleCriteria, so do it here
    $rule->update(array('id'       => $_POST['rules_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["update"])) {
    $rulecollection->checkGlobal('w');
    $rule->update($_POST);
 
    Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add"])) {
    $rulecollection->checkGlobal('w');
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
+   Html::header($_SERVER['HTTP_REFERER']."?id=$newID");
 
 } else if (isset($_POST["delete"])) {
    $rulecollection->checkGlobal('w');

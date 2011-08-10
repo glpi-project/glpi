@@ -148,7 +148,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
-      glpi_header($_SESSION["glpiroot"]);
+      Html::header($_SESSION["glpiroot"]);
    }
 
    // Override cfg_features by session value

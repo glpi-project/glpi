@@ -41,7 +41,7 @@ if (isset($_POST["add"])) {
    if ($data->add($_POST)) {
       Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["update"])) {
    $data->check($_POST["entities_id"],'w');
@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    if ($data->update($_POST)) {
       Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 }
 displayErrorAndDie("lost");

@@ -57,7 +57,7 @@ if (isset($_POST["add_several"])) {
    Event::log($_POST["tID"], "consumables", 4, "inventory",
             $_SESSION["glpiname"]." ".$LANG['log'][89].": ".$_POST["to_add"]);
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["delete"])) {
    $constype->check($_GET["tID"],'w');
@@ -66,7 +66,7 @@ if (isset($_POST["add_several"])) {
       Event::log($_GET["tID"], "consumables", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][91]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["give"])) {
    $constype->check($_POST["tID"],'w');
@@ -82,7 +82,7 @@ if (isset($_POST["add_several"])) {
       Event::log($_POST["tID"], "consumables", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$item->getNameID());
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["restore"])) {
    $constype->check($_GET["tID"],'w');
@@ -91,10 +91,10 @@ if (isset($_POST["add_several"])) {
       Event::log($_GET["tID"], "consumables", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][93]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 
 ?>

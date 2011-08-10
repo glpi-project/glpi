@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $newID = $peripheral->add($_POST);
    Event::log($newID, "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $peripheral->check($_POST["id"],'d');
@@ -89,14 +89,14 @@ if (isset($_POST["add"])) {
    $peripheral->update($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["unglobalize"])) {
    $peripheral->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($peripheral);
    Event::log($_GET["id"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_GET["id"]);
+   Html::header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_GET["id"]);
 
 } else {
    commonHeader($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");

@@ -49,7 +49,7 @@ $track = new Ticket();
 
 // Security check
 if (empty($_POST) || count($_POST) == 0) {
-   glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+   Html::header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
 if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {

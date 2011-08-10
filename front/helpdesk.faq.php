@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 // Redirect management
 if (isset($_GET["redirect"])) {
-   manageRedirect($_GET["redirect"]);
+   Toolbox::manageRedirect($_GET["redirect"]);
 }
 
 //*******************

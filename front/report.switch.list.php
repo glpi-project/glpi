@@ -142,7 +142,7 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
    commonFooter();
 
 } else  {
-   glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
+   Html::header($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>

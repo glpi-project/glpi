@@ -29,7 +29,7 @@
 */
 
 // ----------------------------------------------------------------------
-// Original Author of file: 
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["update"])) {
    $validation->check($_POST['id'],'w');
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $validation->check($_POST['id'], 'd');
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 
 displayErrorAndDie('Lost');

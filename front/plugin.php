@@ -57,7 +57,7 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
    } else {
       echo "Action ".$_GET['action']." undefined";
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 
 $plugin->listPlugins();

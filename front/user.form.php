@@ -57,7 +57,7 @@ $groupuser = new Group_User();
 if (empty($_GET["id"]) && isset($_GET["name"])) {
 
    $user->getFromDBbyName($_GET["name"]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+   Html::header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
 }
 
 if (empty($_GET["name"])) {
@@ -66,7 +66,7 @@ if (empty($_GET["name"])) {
 
 if (isset($_REQUEST['getvcard'])) {
    if (empty($_GET["id"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+      Html::header($CFG_GLPI["root_doc"]."/front/user.php");
    }
    $user->check($_GET['id'], 'r');
    $user->generateVcard($_GET["id"]);
@@ -79,7 +79,7 @@ if (isset($_REQUEST['getvcard'])) {
       Event::log($newID, "users", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $user->check($_POST['id'], 'w');
@@ -108,14 +108,14 @@ if (isset($_REQUEST['getvcard'])) {
    AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                             'value'  => $user->fields["name"]),
                                       true, $user->fields["auths_id"], true);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["update"])) {
    $user->check($_POST['id'], 'w');
    $user->update($_POST);
    Event::log(0, "users", 5, "setup",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$user->fields["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["addgroup"])) {
    $groupuser->check(-1,'w',$_POST);
@@ -123,7 +123,7 @@ if (isset($_REQUEST['getvcard'])) {
       Event::log($_POST["users_id"], "users", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][48]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["deletegroup"])) {
    if (count($_POST["item"])) {
@@ -134,7 +134,7 @@ if (isset($_REQUEST['getvcard'])) {
       }
    }
    Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["change_auth_method"])) {
    checkRight('user_authtype', 'w');
@@ -143,7 +143,7 @@ if (isset($_REQUEST['getvcard'])) {
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    if (!isset($_GET["ext_auth"])) {
@@ -159,7 +159,7 @@ if (isset($_REQUEST['getvcard'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
             AuthLdap::importUserFromServers(array('name' => $_GET['login']));
          }
-         glpi_header($_SERVER['HTTP_REFERER']);
+         Html::header();
       }
       if (isset($_GET['add_ext_auth_simple'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
@@ -171,7 +171,7 @@ if (isset($_REQUEST['getvcard'])) {
             Event::log($newID, "users", 4, "setup",
                        $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
          }
-         glpi_header($_SERVER['HTTP_REFERER']);
+         Html::header();
       }
 
       commonHeader($LANG['title'][13], '', "admin", "user");

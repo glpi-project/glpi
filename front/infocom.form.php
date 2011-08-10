@@ -43,21 +43,22 @@ if (isset($_GET["add"])) {
 
    $newID = $ic->add($_GET, false);
    Event::log($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->delete($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["update"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
+
 } else {
    checkRight("infocom","r");
 

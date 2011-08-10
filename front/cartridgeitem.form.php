@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $cartype->check($_POST["id"],'w');
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["addtype"])) {
    $cartype->check($_POST["tID"],'w');
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][30]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["deletetype"])) {
    $cartype->check($_GET["tID"],'w');
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
       Event::log($_GET["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][31]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");

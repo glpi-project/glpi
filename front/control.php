@@ -36,5 +36,5 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
-glpi_header (GLPI_ROOT . "/front/fieldunicity.php");
+Html::header (GLPI_ROOT . "/front/fieldunicity.php");
 ?>

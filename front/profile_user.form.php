@@ -42,7 +42,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["users_id"], "users", 4, "setup",
                   $_SESSION["glpiname"]." ".$LANG['log'][61]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
 
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
                     $_SESSION["glpiname"]." ".$LANG['log'][62]);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["moveentity"])) {
    if (isset($_POST['entities_id']) && $_POST['entities_id'] >= 0) {
@@ -76,9 +76,10 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
+   Html::header();
 }
+
+
 displayErrorAndDie("lost");
 
 ?>

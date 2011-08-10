@@ -475,7 +475,7 @@ if (isset($_POST["itemtype"])) {
                }
                $_SESSION['glpi_massiveaction']['item_count']
                   = count($_SESSION['glpi_massiveaction']['items']);
-               glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');
+               Html::header($_SERVER['PHP_SELF'].'?multiple_actions=1');
 
             } else {
                if (count($_SESSION['glpi_massiveaction']['items']) >0) {
@@ -492,11 +492,11 @@ if (isset($_POST["itemtype"])) {
                         OcsServer::updateComputer($data['id'], $data['ocsservers_id'], 1, 1);
                      }
                   }
-                  glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');
+                  Html::header($_SERVER['PHP_SELF'].'?multiple_actions=1');
                } else {
                   $REDIRECT = $_SESSION['glpi_massiveaction']['REDIRECT'];
                   unset($_SESSION['glpi_massiveaction']);
-                  glpi_header($REDIRECT);
+                  Html::header($REDIRECT);
                }
             }
             break;
@@ -744,7 +744,7 @@ if (isset($_POST["itemtype"])) {
             }
       }
       addMessageAfterRedirect($LANG['common'][23]);
-      glpi_header($REDIRECT);
+      Html::header($REDIRECT);
 
    } else { //action, itemtype or item not defined
       echo "<div class='center'>".
