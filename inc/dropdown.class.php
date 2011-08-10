@@ -932,7 +932,7 @@ class Dropdown {
             echo "</script>\n";
 
             $params["idtable"] = $value_type;
-            ajaxUpdateItem("show_$myname$rand", $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",
+            Ajax::updateItem("show_$myname$rand", $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",
                            $params);
          }
       }
