@@ -2353,7 +2353,7 @@ class Search {
          // No link
          case 'User' :
             // View all entities
-            if (isViewAllEntities()) {
+            if (Session::isViewAllEntities()) {
                return "";
             }
             return getEntitiesRestrictRequest("","glpi_profiles_users");

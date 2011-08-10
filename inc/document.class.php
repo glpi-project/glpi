@@ -380,7 +380,7 @@ class Document extends CommonDBTM {
    static function getMaxUploadSize() {
       global $LANG;
 
-      $max_size  = return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+      $max_size  = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
       $max_size /= 1024*1024;
       return round($max_size,1)." ".$LANG['common'][45];
    }

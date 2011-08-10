@@ -1437,5 +1437,32 @@ class Toolbox {
    }
 
 
+   /**
+    * Convert a value in byte, kbyte, megabyte etc...
+    *
+    * @param $val string: config value (like 10k, 5M)
+    *
+    * @return $val
+   **/
+   static function return_bytes_from_ini_vars($val) {
+
+      $val  = trim($val);
+      $last = self::strtolower($val{strlen($val)-1});
+
+      switch($last) {
+         // Le modifieur 'G' est disponible depuis PHP 5.1.0
+         case 'g' :
+            $val *= 1024;
+
+         case 'm' :
+            $val *= 1024;
+
+         case 'k' :
+            $val *= 1024;
+      }
+
+      return $val;
+   }
+
 }
 ?>
