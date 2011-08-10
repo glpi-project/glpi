@@ -55,12 +55,9 @@ class NotificationTemplate extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['common'][12];
-         $this->addStandardTab('Log', $ong, $options);
-      }
+      $ong = array();
+      $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

@@ -1288,6 +1288,7 @@ $LANG['mailing'][100] = "Pas de catégorie attribuée";
 
 $LANG['mailing'][104] = "Durée de l'intervention";
 
+$LANG['mailing'][109] = "Traductions";
 $LANG['mailing'][110] = "Adresse invalide";
 $LANG['mailing'][111] = "Adresse de courriel";
 $LANG['mailing'][112] = "Modèle de notifications";
