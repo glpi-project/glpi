@@ -579,13 +579,13 @@ class Log extends CommonDBTM {
                   break;
 
                case "number" :
-                  $data["old_value"] = Toolbox::formatNumber($data["old_value"],false,0);
-                  $data["new_value"] = Toolbox::formatNumber($data["new_value"],false,0);
+                  $data["old_value"] = Html::formatNumber($data["old_value"],false,0);
+                  $data["new_value"] = Html::formatNumber($data["new_value"],false,0);
                   break;
 
                case "decimal" :
-                  $data["old_value"] = Toolbox::formatNumber($data["old_value"]);
-                  $data["new_value"] = Toolbox::formatNumber($data["new_value"]);
+                  $data["old_value"] = Html::formatNumber($data["old_value"]);
+                  $data["new_value"] = Html::formatNumber($data["new_value"]);
                   break;
 
                case "right" :

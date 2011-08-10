@@ -2454,9 +2454,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][40]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
-                Toolbox::formatNumber($this->fields["cost_time"], true)."'>";
+                Html::formatNumber($this->fields["cost_time"], true)."'>";
       } else {
-         echo Toolbox::formatNumber($this->fields["cost_time"]);
+         echo Html::formatNumber($this->fields["cost_time"]);
       }
       echo "</td></tr>\n";
 
@@ -2464,9 +2464,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][41]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                Toolbox::formatNumber($this->fields["cost_fixed"], true)."'>";
+                Html::formatNumber($this->fields["cost_fixed"], true)."'>";
       } else {
-         echo Toolbox::formatNumber($this->fields["cost_fixed"]);
+         echo Html::formatNumber($this->fields["cost_fixed"]);
       }
       echo "</td></tr>\n";
 
@@ -2474,9 +2474,9 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['job'][42]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
-                Toolbox::formatNumber($this->fields["cost_material"], true)."'>";
+                Html::formatNumber($this->fields["cost_material"], true)."'>";
       } else {
-         echo Toolbox::formatNumber($this->fields["cost_material"]);
+         echo Html::formatNumber($this->fields["cost_material"]);
       }
       echo "</td></tr>\n";
 
@@ -2538,7 +2538,7 @@ class Ticket extends CommonITILObject {
    **/
    static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
                                      $edit = true) {
-      return Toolbox::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
+      return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
                                    $edit);
    }
 

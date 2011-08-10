@@ -144,7 +144,7 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][21]."&nbsp;:</td>";
       echo "<td><input type='text' name='value' size='14'
-             value='".Toolbox::formatNumber($this->fields["value"], true)."'></td></tr>";
+             value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['search'][8]."&nbsp;: </td>";
@@ -399,7 +399,7 @@ class Budget extends CommonDropdown{
                      echo "<td class='center'>".
                             (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                      echo "<td class='center'>".
-                            (isset($data["value"]) ? "".Toolbox::formatNumber($data["value"], true).""
+                            (isset($data["value"]) ? "".Html::formatNumber($data["value"], true).""
                                                    :"-");
 
                      echo "</td></tr>";
@@ -513,12 +513,12 @@ class Budget extends CommonDropdown{
                   if (isset($entitiestype_values[$entity][$type])) {
                      $typevalue = $entitiestype_values[$entity][$type];
                   }
-                  echo Toolbox::formatNumber($typevalue);
+                  echo Html::formatNumber($typevalue);
                   echo "</td>";
                }
             }
 
-            echo "<td class='right b'>".Toolbox::formatNumber($value)."</td>";
+            echo "<td class='right b'>".Html::formatNumber($value)."</td>";
             echo "</tr>";
             $total += $value;
          }
@@ -526,11 +526,11 @@ class Budget extends CommonDropdown{
          echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][108]."</td>";
-         echo "<td class='right b'>".Toolbox::formatNumber($total)."</td></tr>";
+         echo "<td class='right b'>".Html::formatNumber($total)."</td></tr>";
          if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][109]."</td>";
-            echo "<td class='right b'>".Toolbox::formatNumber($budget->fields['value'] - $total).
+            echo "<td class='right b'>".Html::formatNumber($budget->fields['value'] - $total).
                  "</td></tr>";
          }
          echo "</table></div>";

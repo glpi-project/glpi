@@ -4204,13 +4204,13 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', Toolbox::formatNumber($split[$k], false,
+                        $out .= str_replace(' ', '&nbsp;', Html::formatNumber($split[$k], false,
                                             0)).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', Toolbox::formatNumber($data[$NAME.$num], false, 0)).
+               return str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0)).
                       $unit;
 
             case "decimal" :
@@ -4224,12 +4224,12 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', Toolbox::formatNumber($split[$k])).$unit;
+                        $out .= str_replace(' ', '&nbsp;', Html::formatNumber($split[$k])).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', Toolbox::formatNumber($data[$NAME.$num])).$unit;
+               return str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num])).$unit;
 
             case "bool" :
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;

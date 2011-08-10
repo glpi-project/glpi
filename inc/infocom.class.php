@@ -582,11 +582,11 @@ class Infocom extends CommonDBChild {
          $diff = floor(($timestamp - $timestamp2) / (MONTH_TIMESTAMP)); // Mois d'utilisation
 
          if ($diff) {
-            return Toolbox::formatNumber((($totalcost+$value)/$diff)); // TCO mensuel
+            return Html::formatNumber((($totalcost+$value)/$diff)); // TCO mensuel
          }
          return "";
       }
-      return Toolbox::formatNumber(($totalcost+$value)); // TCO
+      return Html::formatNumber(($totalcost+$value)); // TCO
    }// fin showTCO
 
 
@@ -938,7 +938,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][21]."&nbsp;:</td>";
             echo "<td><input type='text' name='value' $option value='".
-                  Toolbox::formatNumber($ic->fields["value"], true)."' size='14'></td>";
+                  Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
             echo "<td>".$LANG['financial'][114]."&nbsp;:</td><td>";
             showDateFormItem("inventory_date",$ic->fields["inventory_date"], true, $editcalendar);
@@ -947,7 +947,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][78]."&nbsp;:</td>";
             echo "<td><input type='text' $option name='warranty_value' value='".
-                       Toolbox::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
+                       Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
             echo "<td rowspan='5'>".$LANG['common'][25]."&nbsp;:</td>";
             echo "<td rowspan='5' class='middle'>";
             echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
@@ -955,7 +955,7 @@ class Infocom extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
-            echo Toolbox::formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
+            echo Html::formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
                                                    $ic->fields["sink_time"],
                                                    $ic->fields["sink_coeff"],
                                                    $ic->fields["warranty_date"],
