@@ -100,22 +100,22 @@ class Notification extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][704];
+      if ($nb>1) {
+         return $LANG['setup'][704];
+      }
+      return $LANG['setup'][705];
    }
 
 
    function defineTabs($options=array()) {
       global $LANG;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1]  = $LANG['common'][12];
-         $this->addStandardTab('Log', $ong, $options);
-      }
+      $ong = array();
+      $this->addStandardTab('NotificationTarget', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

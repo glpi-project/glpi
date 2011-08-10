@@ -971,6 +971,14 @@ class NotificationTarget extends CommonDBChild {
                   return self::createTabEntry($LANG['setup'][704], self::countForGroup($item));
                }
                return $LANG['setup'][704];
+
+            case 'Notification' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['mailing'][121],
+                                              countElementsInTable($this->getTable(),
+                                                                   "notifications_id = '".$item->getID()."'"));
+               }
+               return $LANG['mailing'][121];
          }
       }
       return '';
@@ -1071,6 +1079,14 @@ class NotificationTarget extends CommonDBChild {
 
       if ($item->getType()=='Group') {
          self::showForGroup($item);
+
+      } else if ($item->getType()=='Notification') {
+         $target = self::getInstanceByType($item->getField('itemtype'),
+                                           $item->getField('event'),
+                                           array('entities_id' => $item->getField('entities_id')));
+         if ($target) {
+            $target->showForNotification($item);
+         }
       }
       return true;
    }
