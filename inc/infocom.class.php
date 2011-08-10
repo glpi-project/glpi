@@ -1170,7 +1170,7 @@ class Infocom extends CommonDBChild {
       $tab[120]['name']          = $LANG['financial'][80];
       $tab[120]['datatype']      = 'date';
       $tab[120]['datatype']      = 'date_delay';
-      $tab[120]['datafields'][1] = 'buy_date';
+      $tab[120]['datafields'][1] = 'warranty_date';
       $tab[120]['datafields'][2] = 'warranty_duration';
       $tab[120]['searchunit']    = 'MONTH';
       $tab[120]['delayunit']     = 'MONTH';
