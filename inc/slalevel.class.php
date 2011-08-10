@@ -150,7 +150,9 @@ class SlaLevel extends RuleTicket {
                   echo "</a>";
                }
                echo "</td>";
-               echo "<td>".($data["execution_time"]<>0?timestampToString($data["execution_time"],false):$LANG['sla'][5])."</td>";
+               echo "<td>".($data["execution_time"]<>0?Html::timestampToString($data["execution_time"],
+                                                                               false)
+                                                      :$LANG['sla'][5])."</td>";
                echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
                echo "</tr>";
                echo "<tr class='tab_bg_1'><td colspan='4'>";

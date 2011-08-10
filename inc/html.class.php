@@ -299,5 +299,68 @@ class Html {
    }
 
 
+   /**
+    * Make a good string from the unix timestamp $sec
+    *
+    * @param $time integer: timestamp
+    * @param $display_sec boolean: display seconds ?
+    *
+    * @return string
+   **/
+   static function timestampToString($time, $display_sec=true) {
+      global $LANG;
+
+      $sign = '';
+      if ($time<0) {
+         $sign = '- ';
+         $time = abs($time);
+      }
+      $time = floor($time);
+
+      // Force display seconds if time is null
+      if ($time==0) {
+         $display_sec = true;
+      }
+
+      $units = getTimestampTimeUnits($time);
+      $out   = $sign;
+
+      if ($units['day']>0) {
+         $out .= " ".$units['day']."&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
+      }
+
+      if ($units['hour']>0) {
+         $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
+      }
+
+      if ($units['minute']>0) {
+         $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
+      }
+
+      if ($display_sec) {
+         $out.=" ".$units['second']."&nbsp;".$LANG['stats'][34];
+      }
+
+      return $out;
+   }
+
+
+   /**
+    * Extract url from web link
+    *
+    * @param $value string value
+    *
+    * @return clean value
+   **/
+   static function weblink_extract($value) {
+
+      $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
+      return $value;
+   }
+
+
+
+
+
 }
 ?>

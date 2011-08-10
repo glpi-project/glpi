@@ -183,7 +183,8 @@ class Contract extends CommonDBTM {
       Dropdown::showInteger("duration", $this->fields["duration"], 0, 120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"])) {
-         echo " -> ".getWarrantyExpir($this->fields["begin_date"], $this->fields["duration"]);
+         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
+                                               $this->fields["duration"]);
       }
       echo "</td>";
       echo "<td>".$LANG['financial'][13]."&nbsp;:</td><td>";
@@ -204,8 +205,8 @@ class Contract extends CommonDBTM {
       Dropdown::showInteger("notice", $this->fields["notice"], 0, 120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
-         echo " -> ".getWarrantyExpir($this->fields["begin_date"], $this->fields["duration"],
-                                      $this->fields["notice"]);
+         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
+                                               $this->fields["duration"], $this->fields["notice"]);
       }
       echo "</td></tr>";
 
@@ -1044,7 +1045,8 @@ class Contract extends CommonDBTM {
          echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
          echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
          if ($con->fields["begin_date"]!='' && !empty($con->fields["begin_date"])) {
-            echo " -> ".getWarrantyExpir($con->fields["begin_date"], $con->fields["duration"]);
+            echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
+                                                  $con->fields["duration"]);
          }
          echo "</td>";
 
@@ -1168,9 +1170,9 @@ class Contract extends CommonDBTM {
          foreach ($querys as $type => $query) {
             foreach ($DB->request($query) as $data) {
                $entity = $data['entities_id'];
-               $message = $data["name"].": ".getWarrantyExpir($data["begin_date"],
-                                                              $data["duration"],
-                                                              $data["notice"])."<br>\n";
+               $message = $data["name"].": ".Infocom::getWarrantyExpir($data["begin_date"],
+                                                                       $data["duration"],
+                                                                       $data["notice"])."<br>\n";
                $contract_infos[$type][$entity][$data['id']] = $data;
 
                 if (!isset($contract_messages[$type][$entity])) {

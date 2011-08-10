@@ -163,8 +163,9 @@ if (isset($query) && count($query)) {
             if ($data['buy_date']) {
                echo "<td class='center'>".Html::convDate($data['buy_date'])."</td>";
                if ($data["warranty_duration"]) {
-                  echo "<td class='center'>".getWarrantyExpir($data["buy_date"],
-                                                              $data["warranty_duration"])."</td>";
+                  echo "<td class='center'>".Infocom::getWarrantyExpir($data["buy_date"],
+                                                                       $data["warranty_duration"]).
+                       "</td>";
                } else {
                   echo "<td class='center'>".NOT_AVAILABLE."</td>";
                }
@@ -182,8 +183,8 @@ if (isset($query) && count($query)) {
             if ($data['begin_date']) {
                echo "<td class='center'>".Html::convDate($data['begin_date'])."</td>";
                if ($data["duration"]) {
-                  echo "<td class='center'>".getWarrantyExpir($data["begin_date"],
-                                                              $data["duration"])."</td>";
+                  echo "<td class='center'>".Infocom::getWarrantyExpir($data["begin_date"],
+                                                                       $data["duration"])."</td>";
                } else {
                   echo "<td class='center'>".NOT_AVAILABLE."</td>";
                }

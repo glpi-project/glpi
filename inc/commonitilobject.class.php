@@ -2021,7 +2021,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    static function getActionTime($actiontime) {
-      return timestampToString($actiontime, false);
+      return Html::timestampToString($actiontime, false);
    }
 
 

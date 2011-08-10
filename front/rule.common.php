@@ -139,7 +139,7 @@ if (isset($_GET["action"])) {
       // Work ended
       $end   = explode(" ",microtime());
       $duree = round($end[0]+$end[1]-$start);
-      changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).")");
+      changeProgressBarMessage($LANG['rulesengine'][91]." (".Html::timestampToString($duree).")");
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
 
    } else {

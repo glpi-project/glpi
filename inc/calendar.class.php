@@ -207,9 +207,9 @@ class Calendar extends CommonDropdown {
                } else {
                   $timeoftheday = $cache_duration[$dayofweek];
                }
-//                 echo "time of the day = $timeoftheday ".timestampToString($timeoftheday).'<br>';
+//                 echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
                $activetime+=$timeoftheday;
-//                 echo "cumulate time = $activetime ".timestampToString($activetime).'<br>';
+//                 echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
 
             } else {
 //                 echo "$actualdate is an holiday<br>";

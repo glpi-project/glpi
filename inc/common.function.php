@@ -374,30 +374,6 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 }
 
 
-/**
- * Get date using a begin date and a period in month
- *
- * @param $from date: begin date
- * @param $addwarranty integer: period in months
- * @param $deletenotice integer: period in months of notice
- *
- * @return expiration date string
-**/
-function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
-   global $LANG;
-
-   // Life warranty
-   if ($addwarranty==-1 && $deletenotice==0) {
-      return $LANG['setup'][307];
-   }
-
-   if ($from==NULL || empty($from)) {
-      return "";
-   }
-
-   return Html::convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
-}
-
 
 
 /**
@@ -571,51 +547,6 @@ function getRandomString($length) {
 }
 
 
-/**
- * Make a good string from the unix timestamp $sec
- *
- * @param $time integer: timestamp
- * @param $display_sec boolean: display seconds ?
- *
- * @return string
-**/
-function timestampToString($time, $display_sec=true) {
-   global $LANG;
-
-   $sign = '';
-   if ($time<0) {
-      $sign = '- ';
-      $time = abs($time);
-   }
-   $time = floor($time);
-
-   // Force display seconds if time is null
-   if ($time==0) {
-      $display_sec = true;
-   }
-
-   $units = getTimestampTimeUnits($time);
-   $out   = $sign;
-
-   if ($units['day']>0) {
-      $out .= " ".$units['day']."&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
-   }
-
-   if ($units['hour']>0) {
-      $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
-   }
-
-   if ($units['minute']>0) {
-      $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
-   }
-
-   if ($display_sec) {
-      $out.=" ".$units['second']."&nbsp;".$LANG['stats'][34];
-   }
-
-   return $out;
-}
-
 
 /**
  * Split timestamp in time units
@@ -674,28 +605,6 @@ function weblink_extract($value) {
    return $value;
 }
 
-
-/**
- * Clean display value for sylk export
- *
- * @param $value string value
- *
- * @return clean value
-**/
-function sylk_clean($value) {
-
-   if (get_magic_quotes_runtime()) {
-      $value = stripslashes($value);
-   }
-
-   $value = preg_replace('/\x0A/', ' ', $value);
-   $value = preg_replace('/\x0D/', NULL, $value);
-   $value = str_replace("\"", "''", $value);
-   $value = str_replace(';', ';;', $value);
-   $value = Html::clean($value);
-
-   return $value;
-}
 
 
 

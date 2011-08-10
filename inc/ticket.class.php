@@ -4998,7 +4998,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['stats'][12]."&nbsp;:</td><td>";
       if ($this->fields['takeintoaccount_delay_stat']>0) {
-         echo timestampToString($this->fields['takeintoaccount_delay_stat'],0);
+         echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'],0);
       } else {
          echo '&nbsp;';
       }
@@ -5008,7 +5008,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_2'><td>".$LANG['stats'][9]."&nbsp;:</td><td>";
 
          if ($this->fields['solve_delay_stat']>0) {
-            echo timestampToString($this->fields['solve_delay_stat'],0);
+            echo Html::timestampToString($this->fields['solve_delay_stat'],0);
          } else {
             echo '&nbsp;';
          }
@@ -5018,7 +5018,7 @@ class Ticket extends CommonITILObject {
       if ($this->fields['status']=='closed') {
          echo "<tr class='tab_bg_2'><td>".$LANG['stats'][10]."&nbsp;:</td><td>";
          if ($this->fields['close_delay_stat']>0) {
-            echo timestampToString($this->fields['close_delay_stat']);
+            echo Html::timestampToString($this->fields['close_delay_stat']);
          } else {
             echo '&nbsp;';
          }
@@ -5027,7 +5027,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['joblist'][26]."&nbsp;:</td><td>";
       if ($this->fields['ticket_waiting_duration']>0) {
-         echo timestampToString($this->fields['ticket_waiting_duration'],0);
+         echo Html::timestampToString($this->fields['ticket_waiting_duration'],0);
       } else {
          echo '&nbsp;';
       }

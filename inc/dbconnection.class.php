@@ -350,7 +350,7 @@ class DBConnection extends CommonDBTM {
                $task->log($LANG['install'][30]." : '$name', ".$LANG['install'][35]);
             } else {
                $task->log($LANG['install'][30]." : '$name', ".
-                          $LANG['setup'][803]." : ".timestampToString($diff, true));
+                          $LANG['setup'][803]." : ".Html::timestampToString($diff, true));
             }
 
             if ($diff > ($task->fields['param']*60)) {
@@ -388,7 +388,7 @@ class DBConnection extends CommonDBTM {
          if ($diff > 1000000000) {
             echo $LANG['install'][35] . "<br>";
          } else if ($diff) {
-            echo $LANG['setup'][803] . "&nbsp;: " . timestampToString($diff, 1) . "<br>";
+            echo $LANG['setup'][803] . "&nbsp;: " . Html::timestampToString($diff, 1) . "<br>";
          } else {
             echo $LANG['setup'][803] . "&nbsp;: " . $LANG['common'][49] . "<br>";
          }

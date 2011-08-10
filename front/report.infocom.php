@@ -182,7 +182,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
                Html::formatNumber($valeurnette)."</td><td class='right'>".
                Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
                Html::convDate($line["buy_date"])."</td><td>".Html::convDate($line["use_date"]).
-               "</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+               "</td><td>".Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]).
+               "</td></tr>";
       }
 
       $valeurtot += $valeursoustot;

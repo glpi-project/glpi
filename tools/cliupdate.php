@@ -97,7 +97,7 @@ class CliMigration extends Migration {
 
    function displayMessage ($msg) {
 
-      $msg .= " (".Html::clean(timestampToString(time()-$this->deb)).")";
+      $msg .= " (".Html::clean(Html::timestampToString(time()-$this->deb)).")";
       echo str_pad($msg, 100)."\r";
    }
 
