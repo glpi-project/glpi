@@ -94,11 +94,9 @@ class FieldUnicity extends CommonDropdown {
 
       $ong = array();
       $ong['empty'] = $this->getTypeName();
+      $this->addStandardTab($this->getType(), $ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
 
-      if (!$this->isNewItem()) {
-         $this->addStandardTab($this->getType(), $ong, $options);
-         $this->addStandardTab('Log',$ong, $options);
-      }
       return $ong;
    }
 
