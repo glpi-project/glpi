@@ -90,6 +90,30 @@ class Ocslink extends CommonDBTM {
    }
 
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG, $CFG_GLPI;
+
+      if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
+         switch ($item->getType()) {
+            case 'Computer' :
+               if (haveRight('sync_ocsng', 'w') || haveRight('computer', 'w')) {
+                  return $LANG['ocsconfig'][0];
+               }
+               break;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Computer') {
+         OcsLink::showForItem($item);
+         OcsServer::editLock($item);
+      }
+      return true;
+   }
 }
 
 ?>
