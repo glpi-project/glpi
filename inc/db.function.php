@@ -822,40 +822,6 @@ function regenerateTreeCompleteName($table) {
    }
 }
 
-
-/**
- * Compute completename of Dropdown Tree table under the element of ID $ID
- *
- * @param $table : dropdown tree table to compute
- * @param $ID : root ID to used : regenerate all under this element
- *
- * @return nothing
-**/
-function regenerateTreeCompleteNameUnderID($table, $ID) {
-   global $DB;
-
-   $parentIDfield      = getForeignKeyFieldForTable($table);
-   list($name, $level) = getTreeValueName($table, $ID);
-
-   $query = "UPDATE `$table`
-             SET `completename` = '".addslashes($name)."',
-                 `level` = '$level'
-             WHERE `id` = '$ID'";
-   $DB->query($query);
-
-   $query = "SELECT `id`
-             FROM `$table`
-             WHERE `$parentIDfield` = '$ID'";
-   $result = $DB->query($query);
-
-   if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_array($result)) {
-         regenerateTreeCompleteNameUnderID($table, $data["id"]);
-      }
-   }
-}
-
-
 /**
  * Get the ID of the next Item
  *
