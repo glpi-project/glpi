@@ -583,13 +583,9 @@ class AuthLDAP extends CommonDBTM {
       global $LANG;
 
       $ong = array();
+      $this->addStandardTab('AuthLDAP', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $this->addStandardTab('AuthLDAP',$ong, $options);
-         $this->addStandardTab('Log',$ong, $options);
-      }
       return $ong;
    }
 
