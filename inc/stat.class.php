@@ -1199,13 +1199,13 @@ class Stat {
                $graph->renderer->options->barChartGleam     = .5;
 
                if ($param['type'] == 'stack') {
-                  $graph->options->stackBars                   = true;
+                  $graph->options->stackBars                = true;
                }
 
-               $max = 0;
+               $max    = 0;
                $valtmp = array();
                foreach ($entrees as $key => $val) {
-                  foreach ($val as $key2=>$val2) {
+                  foreach ($val as $key2 => $val2) {
                      $valtmp[$key2] = $val2;
                   }
                }

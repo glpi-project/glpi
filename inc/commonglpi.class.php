@@ -105,6 +105,7 @@ class CommonGLPI {
       return array();
    }
 
+
    /**
     * return all the tabs for current object
     *
