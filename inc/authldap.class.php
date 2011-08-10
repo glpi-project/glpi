@@ -2255,7 +2255,7 @@ class AuthLDAP extends CommonDBTM {
                Dropdown::show('Entity',
                               array('value'       => $_SESSION['ldap_import']['entities_id'],
                                     'entity'      => $_SESSION['glpiactiveentities'],
-                                    'auto_submit' => 1));
+                                    'on_change'    => 'submit()'));
                echo "</td></tr>";
             } else {
                //Only one entity is active, store it

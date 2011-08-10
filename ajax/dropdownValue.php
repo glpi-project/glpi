@@ -204,8 +204,8 @@ if ($item instanceof CommonTreeDropdown) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
 
-      if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
-         echo " onChange='submit()'";
+      if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
+         echo " onChange='".$_POST["on_change"]."'";
       }
       echo ">";
 
@@ -464,9 +464,10 @@ if ($item instanceof CommonTreeDropdown) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
 
-      if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
-         echo " onChange='submit()'";
+      if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
+         echo " onChange='".$_POST["on_change"]."'";
       }
+
       echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {

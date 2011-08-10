@@ -2208,7 +2208,7 @@ class User extends CommonDBTM {
     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - auto_submit : boolean / autosubmit on change (default false)
+    *    - on_change : string / value to transmit to "onChange"
     *
     * @param $options possible options
     *
@@ -2222,7 +2222,7 @@ class User extends CommonDBTM {
       $p['value']          = '';
       $p['right']          = 'id';
       $p['all']            = 0;
-      $p['auto_submit']    = false;
+      $p['on_change']      = '';
       $p['comments']       = 1;
       $p['entity']         = -1;
       $p['entity_sons']    = false;
@@ -2271,7 +2271,7 @@ class User extends CommonDBTM {
                       'right'            => $p['right'],
                       'comment'          => $p['comments'],
                       'rand'             => $p['rand'],
-                      'auto_submit'      => $p['auto_submit'],
+                      'on_change'        => $p['on_change'],
                       'entity_restrict'  => $p['entity'],
                       'used'             => $p['used'],
                       'update_item'      => $p['toupdate'],);
