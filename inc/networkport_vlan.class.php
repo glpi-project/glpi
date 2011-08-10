@@ -202,6 +202,34 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       return $vlans;
    }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'NetworkPort' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['setup'][90],
+                                              countElementsInTable($this->getTable(),
+                                                                   "networkports_id = '".$item->getID()."'"));
+               }
+               return $LANG['setup'][90];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='NetworkPort') {
+         self::showForNetworkPortForm($item->getID());
+      }
+      return true;
+   }
+
 }
 
 ?>

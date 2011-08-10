@@ -175,14 +175,12 @@ class NetworkPort extends CommonDBChild {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $LANG;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1]  = $LANG['title'][26];
-         $this->addStandardTab('Log', $ong, $options);
-      }
+      $ong = array();
+      $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+
       return $ong;
    }
 
@@ -560,7 +558,7 @@ class NetworkPort extends CommonDBChild {
             }
          }
       }
-      $this->showTabs($ID);
+      $this->showTabs();
 
       $options['entities_id'] = $item->getField('entities_id');
       $this->showFormHeader($options);
