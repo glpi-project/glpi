@@ -532,7 +532,7 @@ class DBmysql {
      *
      * @return number of tables
     **/
-    static function optimize_tables ($migration=NULL, $cron=false) {
+    static function optimize_tables($migration=NULL, $cron=false) {
        global $DB;
 
        if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
