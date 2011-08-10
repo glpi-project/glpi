@@ -39,9 +39,10 @@ if (!defined('GLPI_ROOT')) {
 
 class RegistryKey extends CommonDBTM {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      // No plural
       return $LANG['title'][43];
    }
 
@@ -68,9 +69,9 @@ class RegistryKey extends CommonDBTM {
 
 
    /** Display registry values for a computer
-    * 
+    *
    * @param $ID integer : computer ID
-   * 
+   *
    */
    static function showForComputer($ID) {
       global $DB, $LANG;
@@ -120,6 +121,33 @@ class RegistryKey extends CommonDBTM {
             echo "</table></div>";
          }
       }
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG, $CFG_GLPI;
+
+      if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
+         switch ($item->getType()) {
+            case 'Computer' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "computers_id = '".$item->getID()."'"));
+               }
+               return self::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Computer') {
+         self::showForComputer($item);
+      }
+      return true;
    }
 
 }

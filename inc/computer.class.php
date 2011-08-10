@@ -82,47 +82,23 @@ class Computer extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
+      $this->addStandardTab('DeviceProcessor', $ong, $options); // All devices : use one to define tab
+      $this->addStandardTab('ComputerDisk', $ong, $options);
+      $this->addStandardTab('Software', $ong, $options);
+      $this->addStandardTab('Computer_Item', $ong, $options);
+      $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab('Infocom', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
+      $this->addStandardTab('RegistryKey', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Reservation', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('OcsLink', $ong, $options);
 
-         // All devices : use one to define tab
-         $this->addStandardTab('DeviceProcessor',$ong, $options);
-
-         $this->addStandardTab('ComputerDisk',$ong, $options);
-         $this->addStandardTab('Software',$ong, $options);
-
-         if (haveRight("networking","r")
-             || haveRight("printer","r")
-             || haveRight("monitor","r")
-             || haveRight("peripheral","r")
-             || haveRight("phone","r")) {
-
-         }
-         $this->addStandardTab('Computer_Item', $ong, $options);
-         $this->addStandardTab('NetworkPort', $ong, $options);
-
-         $this->addStandardTab('Infocom', $ong, $options);
-         $this->addStandardTab('Contract_Item', $ong, $options);
-         $this->addStandardTab('Document',$ong, $options);
-
-         $this->addStandardTab('ComputerVirtualMachine',$ong, $options);
-
-         if ($CFG_GLPI["use_ocs_mode"]) {
-            $ong[14] = $LANG['title'][43];
-         }
-         $this->addStandardTab('Ticket',$ong, $options);
-         $this->addStandardTab('Link',$ong, $options);
-         $this->addStandardTab('Note',$ong, $options);
-         $this->addStandardTab('Reservation',$ong, $options);
-         $this->addStandardTab('Log',$ong, $options);
-
-         if ($CFG_GLPI["use_ocs_mode"]
-             && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
-
-            $ong[13] = $LANG['ocsconfig'][0];
-         }
-      }
       return $ong;
    }
 

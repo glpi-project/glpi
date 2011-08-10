@@ -3061,8 +3061,11 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function editLock($target, $ID) {
+   static function editLock(Computer $comp) {
       global $DB, $LANG;
+
+      $ID = $comp->getID();
+      $target = $comp->getFormURL();
 
       if (!haveRight("computer","w")) {
          return false;
