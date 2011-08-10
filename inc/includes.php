@@ -45,8 +45,6 @@ $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
 
-include_once (GLPI_ROOT . "/inc/common.function.php");
-
 // Security of PHP_SELF
 $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 
