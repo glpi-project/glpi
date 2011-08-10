@@ -49,11 +49,18 @@ class Vlan extends CommonDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => 'tag',
-                         'label' => $LANG['common'][114],
-                         'type'  => 'text',
-                         'list'  => true));
+      return array(array('name'     => 'tag',
+                         'label'    => $LANG['common'][114],
+                         'datatype' => 'number',
+                         'list'     => true));
    }
+
+   function displaySpecificTypeField($ID, $field=array()) {
+      if ($field['name'] == 'tag') {
+         Dropdown::showInteger('tag',$this->fields['tag'],0,pow(2,12));
+      }
+   }
+
 
    /**
     * Get search function for the class
