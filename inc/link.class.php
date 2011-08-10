@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 // CLASSES link
 class Link extends CommonDBTM {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['title'][33];
+      if ($nb>1) {
+         return $LANG['title'][33];
+      }
+      return $LANG['title'][32];
    }
 
 
@@ -83,7 +86,8 @@ class Link extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['title'][26];
+      $this->addStandardTab('Link_ItemType', $ong, $options);
+
       return $ong;
    }
 

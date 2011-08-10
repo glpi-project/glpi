@@ -102,5 +102,33 @@ class Link_ItemType extends CommonDBTM{
       }
       echo "</table></div></form>";
    }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Link' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['links'][4],
+                                              countElementsInTable($this->getTable(),
+                                                                   "links_id = '".$item->getID()."'"));
+               }
+               return $LANG['links'][4];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Link') {
+         self::showForLink($item);
+      }
+      return true;
+   }
+
 }
 ?>
