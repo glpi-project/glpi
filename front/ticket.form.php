@@ -193,6 +193,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    '_users_id_observer'        => 0,
                    '_users_id_observer_notif'  => array('use_notification' => 1),
                    '_groups_id_observer'       => 0,
+                   '_link'                     => array('tickets_id_2' => ''),
                    'suppliers_id_assign'       => 0,
                    'name'                      => '',
                    'content'                   => '',

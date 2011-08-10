@@ -4698,7 +4698,9 @@ class Ticket extends CommonDBTM {
             Ticket_Ticket::dropdownLinks('_link[link]');
             echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
-            echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
+            echo "<input type='text' name='_link[tickets_id_2]'
+                         value='".(isset($options["_link"])?$options["_link"]['tickets_id_2']:'')."'
+                         size='10'>\n";
             echo "&nbsp;";
             echo "</div>";
          }
