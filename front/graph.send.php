@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET["switchto"])) {
    $_SESSION['glpigraphtype']=$_GET["switchto"];
-   Html::header();
+   Html::back();
 }
 
 if ($uid=getLoginUserID(false) && isset($_GET["file"])) {

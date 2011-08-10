@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    $newID = $soft->add($_POST);
    Event::log($newID, "software", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $soft->check($_POST["id"],'d');
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 
    $soft->update($_POST);
    Event::log($_POST["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["mergesoftware"])) {
    popHeader($LANG['Menu'][4]);
@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
       $soft->check($_POST["id"],'w');
       $soft->merge($_POST["item"]);
    }
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");

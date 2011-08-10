@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
 
    Event::log($newID, "slas", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   Html::header($CFG_GLPI["root_doc"]."/front/sla.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["delete"])) {
    $sla->check($_GET["id"], 'w');
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    $sla->update($_POST);
 
    Event::log($_GET["id"], "slas", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][43], $_SERVER['PHP_SELF'], "config", "sla");

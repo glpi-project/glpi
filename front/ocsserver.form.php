@@ -54,17 +54,17 @@ if (isset($_POST["delete"])) {
 //Update server
 } else if (isset($_POST["update"])) {
    $ocs->update($_POST);
-   Html::header();
+   Html::back();
 
 //Update server
 } else if (isset($_POST["update_server"])) {
    $ocs->update($_POST);
-   Html::header();
+   Html::back();
 
 //Add new server
 } else if (isset($_POST["add"])) {
    $newid = $ocs->add($_POST);
-   Html::header();
+   Html::back();
 
 //Other
 } else {

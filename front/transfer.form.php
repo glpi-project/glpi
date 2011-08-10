@@ -50,21 +50,21 @@ if (isset($_POST["add"])) {
    $newID = $transfer->add($_POST);
    Event::log($newID, "transfers", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $transfer->check($_POST["id"],'w');
 
    $transfer->delete($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   Html::header($CFG_GLPI["root_doc"]."/front/transfer.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
    $transfer->check($_POST["id"],'w');
 
    $transfer->update($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 }
 
 commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');

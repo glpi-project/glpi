@@ -47,7 +47,7 @@ if (isset($_REQUEST["add"])) {
                $_SESSION["glpiname"]." ".$LANG['log'][116]);
 
    }
-   Html::header();
+   Html::back();
 
 // From association list
 } else if (isset($_REQUEST["move"])) {
@@ -61,7 +61,7 @@ if (isset($_REQUEST["add"])) {
          }
       }
    }
-   Html::header();
+   Html::back();
 
 // From association list
 } else if (isset($_REQUEST["delete"])) {
@@ -75,7 +75,7 @@ if (isset($_REQUEST["add"])) {
    Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][118]);
 
-   Html::header();
+   Html::back();
 }
 displayErrorAndDie('Lost');
 ?>

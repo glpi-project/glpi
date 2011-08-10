@@ -66,7 +66,7 @@ if (isset($_SESSION["ocs_link"])) {
 
       $key = array_pop($_SESSION["ocs_link"]);
       OcsServer::linkComputer($key["ocsid"], $_SESSION["ocsservers_id"], $key["computers_id"]);
-      Html::header($_SERVER['PHP_SELF']);
+      Html::redirect($_SERVER['PHP_SELF']);
 
    } else {
       displayProgressBar(400,100);
@@ -101,7 +101,7 @@ if (!isset($_POST["import_ok"])) {
          }
       }
    }
-   Html::header($_SERVER['PHP_SELF']);
+   Html::redirect($_SERVER['PHP_SELF']);
 }
 
 commonFooter();

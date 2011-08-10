@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $newID = $monitor->add($_POST);
    Event::log($newID, "monitors", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $monitor->check($_POST["id"],'d');
@@ -85,14 +85,14 @@ if (isset($_POST["add"])) {
 
    $monitor->update($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
    $monitor->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($monitor);
    Event::log($_GET["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
-   Html::header($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_GET["id"]);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_GET["id"]);
 
 } else {
    commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");

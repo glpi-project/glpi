@@ -358,20 +358,23 @@ class Html {
       return $value;
    }
 
-
    /**
-    * Header redirection hack
-    *
-    * @param $dest string: Redirection destination
-    *    - if empty => $_SERVER['HTTP_REFERER']
+    * Redirection to $_SERVER['HTTP_REFERER'] page
     *
     * @return nothing
    **/
-   static function header($dest='') {
+   static function back() {
+      Html::redirect($_SERVER['HTTP_REFERER']);
+   }
 
-      if (empty($dest)) {
-         $dest = $_SERVER['HTTP_REFERER'];
-      }
+   /**
+    * Redirection hack
+    *
+    * @param $dest string: Redirection destination
+    *
+    * @return nothing
+   **/
+   static function redirect($dest) {
 
       $toadd = '';
       if (!strpos($dest,"?")) {

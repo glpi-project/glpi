@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "groups", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $group->check($_POST["id"],'w');
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $group->check($_POST["id"],'w');
    $group->update($_POST);
    Event::log($_POST["id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["adduser"])) {
    $groupuser->check(-1,'w',$_POST);
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["groups_id"], "groups", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][48]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["deleteuser"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["unset_manager"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["set_manager"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {
    if (isset($_POST['item'])
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");

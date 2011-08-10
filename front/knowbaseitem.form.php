@@ -78,7 +78,7 @@ if ($_GET["id"] == "new") {
 
    $newID = $kb->add($_POST);
    Event::log($newID, "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   Html::header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
@@ -86,7 +86,7 @@ if ($_GET["id"] == "new") {
 
    $kb->update($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
    // modifier un item dans la base de connaissance
@@ -108,17 +108,17 @@ if ($_GET["id"] == "new") {
    // ajouter  un item dans la faq
    $kb->check($_GET["id"],'w');
    $kb->addToFaq();
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["removefromfaq"],"yes") == 0) {
    // retirer  un item de la faq
    $kb->check($_GET["id"],'w');
    $kb->removeFromFaq($_GET["id"]);
-   Html::header();
+   Html::back();
 
 } else if (empty($_GET["id"])) {
    // No id or no tickets id to create from solution
-   Html::header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else {
    // Affiche un item de la base de connaissances

@@ -49,7 +49,7 @@ if (isset($_REQUEST["install"])) {
       Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][110]);
    }
-   Html::header();
+   Html::back();
 
 // From Computer - Software tab (installed software)
 } else if (isset($_GET["uninstall"])) {
@@ -58,7 +58,7 @@ if (isset($_REQUEST["install"])) {
 
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][111]);
-   Html::header();
+   Html::back();
 
 // From Computer - Software tab  (installed software)
 } else if (isset($_POST["massuninstall"])) {
@@ -70,7 +70,7 @@ if (isset($_REQUEST["install"])) {
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][112]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["massinstall"]) && isset($_POST["computers_id"])) {
    checkRight("software","w");
@@ -84,7 +84,7 @@ if (isset($_REQUEST["install"])) {
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][113]);
-   Html::header();
+   Html::back();
 
 // From installation list on Software form
 } else if (isset($_POST["deleteinstalls"])) {
@@ -97,7 +97,7 @@ if (isset($_REQUEST["install"])) {
                     $_SESSION["glpiname"]." ".$LANG['log'][114]);
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["moveinstalls"])) {
    checkRight("software","w");
@@ -108,7 +108,7 @@ if (isset($_REQUEST["install"])) {
                     $_SESSION["glpiname"]." ".$LANG['log'][115]);
       }
    }
-   Html::header();
+   Html::back();
 }
 displayErrorAndDie('Lost');
 ?>

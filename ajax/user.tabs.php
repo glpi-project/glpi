@@ -62,7 +62,7 @@ if (!isset($_POST["order"])) {
 
 if (empty($_POST["id"]) && isset($_POST["name"])) {
    $user->getFromDBbyName($_POST["name"]);
-   Html::header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
 }
 
 if (empty($_POST["name"])) {

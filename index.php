@@ -38,7 +38,7 @@ define('GLPI_ROOT', '.');
 include (GLPI_ROOT . "/config/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   Html::header("install/install.php");
+   Html::redirect("install/install.php");
    die();
 
 } else {

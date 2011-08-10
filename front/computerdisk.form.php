@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $disk->check($_POST["id"],'w');
@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
-   Html::header(Toolbox::getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
+   Html::redirect(Toolbox::getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
                ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][21]." ".$_POST["id"]);
    }
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");

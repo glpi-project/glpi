@@ -47,21 +47,21 @@ if (isset($_REQUEST["add"])) {
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST["itemtype"]."-".
                      $_REQUEST["items_id"].".");
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_REQUEST["delete"])) {
    checkRight("reservation_central","w");
    $ri->delete($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_REQUEST["update"])) {
    checkRight("reservation_central","w");
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else {
    checkRight("reservation_central","w");

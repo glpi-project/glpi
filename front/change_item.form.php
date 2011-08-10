@@ -40,7 +40,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["changes_id"], "change", 4, "tracking",
                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
 
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["changes_id"], "change", 4, "tracking",
                  $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   Html::header();
+   Html::back();
 
 }
 

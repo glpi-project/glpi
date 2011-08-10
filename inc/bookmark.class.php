@@ -347,7 +347,7 @@ class Bookmark extends CommonDBTM {
             echo "window.opener.location.href='$url';";
             echo "</script>";
          } else {
-            Html::header($url);
+            Html::redirect($url);
          }
       }
    }

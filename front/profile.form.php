@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
-   Html::header($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 } else if (isset($_POST["delete"])) {
    $prof->check($_POST['id'],'w');
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $prof->check($_POST['id'],'w');
 
    $prof->update($_POST);
-   Html::header();
+   Html::back();
 }
 
 commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");

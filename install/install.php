@@ -522,7 +522,7 @@ if (!isset($_POST["install"])) {
    $_SESSION = array();
 
    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-      Html::header(GLPI_ROOT ."/index.php");
+      Html::redirect(GLPI_ROOT ."/index.php");
       die();
 
    } else {

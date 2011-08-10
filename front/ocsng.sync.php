@@ -55,7 +55,7 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
       displayProgressBar(400, $percent);
 
-      Html::header($_SERVER['PHP_SELF']);
+      Html::redirect($_SERVER['PHP_SELF']);
 
    } else {
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics'], true);
@@ -89,7 +89,7 @@ if (!isset($_POST["update_ok"])) {
          }
       }
    }
-   Html::header($_SERVER['PHP_SELF']);
+   Html::redirect($_SERVER['PHP_SELF']);
 }
 
 commonFooter();

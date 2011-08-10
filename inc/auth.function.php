@@ -147,7 +147,7 @@ function checkRight($module, $right) {
    if (!haveRight($module, $right)) {
       // Gestion timeout session
       if (!getLoginUserID()) {
-         Html::header($CFG_GLPI["root_doc"] . "/index.php");
+         Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
       displayRightError();
@@ -185,7 +185,7 @@ function checkSeveralRightsOr($modules) {
    if (!$valid) {
       // Gestion timeout session
       if (!getLoginUserID()) {
-         Html::header($CFG_GLPI["root_doc"] . "/index.php");
+         Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
       displayRightError();
@@ -205,7 +205,7 @@ function checkCentralAccess() {
        || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
       // Gestion timeout session
       if (!getLoginUserID()) {
-         Html::header($CFG_GLPI["root_doc"] . "/index.php");
+         Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
       displayRightError();
@@ -225,7 +225,7 @@ function checkHelpdeskAccess() {
        || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
       // Gestion timeout session
       if (!getLoginUserID()) {
-         Html::header($CFG_GLPI["root_doc"] . "/index.php");
+         Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
       displayRightError();
@@ -244,7 +244,7 @@ function checkLoginUser() {
    if (!isset($_SESSION["glpiname"])) {
       // Gestion timeout session
       if (!getLoginUserID()) {
-         Html::header($CFG_GLPI["root_doc"] . "/index.php");
+         Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
       displayRightError();

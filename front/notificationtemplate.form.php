@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    $language = new NotificationTemplateTranslation();
    $url = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation',true);
    $url.="?notificationtemplates_id=$newID";
-   Html::header($url);
+   Html::redirect($url);
 
 } else if (isset($_POST["delete"])) {
    $notificationtemplate->check($_POST["id"],'d');
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["update"])) {
    $notificationtemplate->check($_POST["id"],'w');
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $notificationtemplate->update($_POST);
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing",

@@ -46,7 +46,7 @@ $contactsupplier = new Contact_Supplier();
 
 if (isset($_REQUEST['getvcard'])) {
    if ($_GET["id"]<0) {
-      Html::header($CFG_GLPI["root_doc"]."/front/contact.php");
+      Html::redirect($CFG_GLPI["root_doc"]."/front/contact.php");
    }
    $contact->check($_GET["id"],'r');
    $contact->generateVcard();
@@ -57,7 +57,7 @@ if (isset($_REQUEST['getvcard'])) {
       Event::log($newID, "contacts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $contact->check($_POST["id"],'w');
@@ -89,7 +89,7 @@ if (isset($_REQUEST['getvcard'])) {
    if ($contact->update($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["addcontactsupplier"])) {
    $contactsupplier->check(-1,'w',$_POST);
@@ -101,7 +101,7 @@ if (isset($_REQUEST['getvcard'])) {
          $_SESSION["glpiname"]."  ".$LANG['log'][34]);
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["deletecontactsupplier"])) {
    $contactsupplier->check($_GET["id"],'w');
@@ -110,7 +110,7 @@ if (isset($_REQUEST['getvcard'])) {
       Event::log($_GET["contacts_id"], "contacts", 4, "financial",
                $_SESSION["glpiname"]."  ".$LANG['log'][35]);
    }
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");

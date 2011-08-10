@@ -52,7 +52,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    if ($cart->updatePages($_POST['pages'])) {
       Event::log(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["add_several"])) {
    $cartype->check($_POST["tID"],'w');
@@ -63,7 +63,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    }
    Event::log($_POST["tID"], "cartridges", 4, "inventory",
             $_SESSION["glpiname"]." ".$LANG['log'][88].": ".$_POST["to_add"]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["delete"])) {
    $cartype->check($_GET["tID"],'w');
@@ -73,7 +73,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
       Event::log($_GET["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][90]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["restore"])) {
    $cartype->check($_GET["tID"],'w');
@@ -82,7 +82,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
       Event::log($_GET["tID"], "cartridges", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][92]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["install"])) {
    $cartype->check($_POST["tID"],'w');
@@ -91,7 +91,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
       Event::log($_POST["tID"], "cartridges", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][95]);
    }
-   Html::header($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
 
 } else if (isset($_GET["uninstall"])) {
    $cartype->check($_GET["tID"],'w');
@@ -100,9 +100,9 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
       Event::log($_GET["tID"], "cartridges", 5, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][96]);
    }
-   Html::header();
+   Html::back();
 
 } else {
-   Html::header();
+   Html::back();
 }
 ?>

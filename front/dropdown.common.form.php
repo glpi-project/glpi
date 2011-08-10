@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
                     $_SESSION["glpiname"]." added ".$_POST["name"].".");
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
@@ -96,12 +96,12 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["execute"])) {
    if (method_exists($dropdown, $_POST["_method"])) {
       call_user_func(array(&$dropdown, $_POST["_method"]), $_POST);
-      Html::header();
+      Html::back();
    } else {
       displayErrorAndDie($LANG['common'][24]);
    }

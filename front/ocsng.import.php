@@ -81,7 +81,7 @@ if (isset($_SESSION["ocs_import"]["id"])) {
       OcsServer::manageImportStatistics($_SESSION["ocs_import"]['statistics'], $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_import"]['statistics']);
       displayProgressBar(400, $percent);
-      Html::header($_SERVER['PHP_SELF']);
+      Html::redirect($_SERVER['PHP_SELF']);
 
    } else {
       //displayProgressBar(400, 100);
@@ -128,7 +128,7 @@ if (!isset($_POST["import_ok"])) {
          }
       }
    }
-   Html::header($_SERVER['PHP_SELF']);
+   Html::redirect($_SERVER['PHP_SELF']);
 }
 
 commonFooter();

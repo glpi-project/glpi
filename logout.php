@@ -73,6 +73,6 @@ Session::destroy();
 
 // Redirect to the login-page
 
-Html::header($CFG_GLPI["root_doc"]."/index.php".$toADD);
+Html::redirect($CFG_GLPI["root_doc"]."/index.php".$toADD);
 
 ?>
