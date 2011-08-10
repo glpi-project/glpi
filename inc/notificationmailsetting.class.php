@@ -54,14 +54,44 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
-      $tabs[1] = $LANG['common'][12];
-      if ($CFG_GLPI['use_mailing']) {
-         $tabs[2] = $LANG['setup'][242];
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG, $CFG_GLPI;
+
+      switch ($item->getType()) {
+         case __CLASS__ :
+            $tabs[1] = $LANG['common'][12];
+            if ($CFG_GLPI['use_mailing']) {
+               $tabs[2] = $LANG['setup'][242];
+            }
+            return $tabs;
       }
+      return '';
+   }
 
-      return $tabs;
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      if($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showFormMailServerConfig();
+               break;
+
+            case 2 :
+               $item->showFormAlerts();
+               break;
+         }
+      }
+      return true;
    }
 
 
