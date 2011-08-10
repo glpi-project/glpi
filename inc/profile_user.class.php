@@ -97,7 +97,7 @@ class Profile_User extends CommonDBTM {
       $canedit = $user->can($ID,'w');
 
       $strict_entities = self::getUserEntities($ID,false);
-      if (!haveAccessToOneOfEntities($strict_entities) && !isViewAllEntities()) {
+      if (!haveAccessToOneOfEntities($strict_entities) && !Session::isViewAllEntities()) {
          $canedit = false;
       }
 

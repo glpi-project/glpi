@@ -188,6 +188,19 @@ class Session {
    }
 
 
+   /**
+    * Is the user have right to see all entities ?
+    *
+    * @return boolean
+   **/
+   Static function isViewAllEntities() {
+
+      // Command line can see all entities
+      return (isCommandLine()
+              || (countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"]));
+   }
+
+
    /** Add an item to the navigate through search results list
     *
     * @param $itemtype device type
