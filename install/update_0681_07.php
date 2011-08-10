@@ -2108,7 +2108,7 @@ function computeTicketTco($item_type,$item) {
  * @return total cost formatted string
 **/
 function trackingTotalCost($realtime, $cost_time, $cost_fixed, $cost_material) {
-   return Toolbox::formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
+   return Html::formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
 }
 
 ?>

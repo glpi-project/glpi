@@ -253,8 +253,8 @@ if (($i%2)==0) {
 echo "&nbsp;</td></tr></table>";
 
 echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-      $LANG['financial'][21]." = ".Toolbox::formatNumber($valeurtot)." - ".
-      $LANG['financial'][81]." = ".Toolbox::formatNumber($valeurnettetot)."</h3></div>\n";
+      $LANG['financial'][21]." = ".Html::formatNumber($valeurtot)." - ".
+      $LANG['financial'][81]." = ".Html::formatNumber($valeurnettetot)."</h3></div>\n";
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);

@@ -1056,35 +1056,35 @@ class Stat {
       echo "<table>";
       echo "<tr><td height='15' class='top'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' class ='b'>".
-             Toolbox::formatNumber($maxgraph, false, $r)."</font></td></tr>";
+             Html::formatNumber($maxgraph, false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".
-             Toolbox::formatNumber(7*($maxgraph/8), false, $r)."</font></td></tr>";
+             Html::formatNumber(7*($maxgraph/8), false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1'>".
-             Toolbox::formatNumber(3*($maxgraph/4), false, $r)."</font></td></tr>";
+             Html::formatNumber(3*($maxgraph/4), false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".
-             Toolbox::formatNumber(5*($maxgraph/8), false, $r)."</font></td></tr>";
+             Html::formatNumber(5*($maxgraph/8), false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' class ='b'>".
-            Toolbox::formatNumber($maxgraph/2, false, $r)."</font></td></tr>";
+            Html::formatNumber($maxgraph/2, false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".
-             Toolbox::formatNumber(3*($maxgraph/8), false, $r)."</font></td></tr>";
+             Html::formatNumber(3*($maxgraph/8), false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1'>".
-             Toolbox::formatNumber($maxgraph/4, false, $r)."</font></td></tr>";
+             Html::formatNumber($maxgraph/4, false, $r)."</font></td></tr>";
 
       echo "<tr><td height='25' class='middle'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".
-             Toolbox::formatNumber(1*($maxgraph/8), false, $r)."</font></td></tr>";
+             Html::formatNumber(1*($maxgraph/8), false, $r)."</font></td></tr>";
 
       echo "<tr><td height='10' class='bottom'>";
       echo "<font face='arial,helvetica,sans-serif' size='1' class='b'>0</font></td></tr>";

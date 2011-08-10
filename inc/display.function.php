@@ -2271,7 +2271,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       $items_id = stripslashes($_SESSION["helpdeskSaved"]["items_id"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["content"])) {
-      $content = Toolbox::cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
+      $content = Html::cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["name"])) {
       $title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
