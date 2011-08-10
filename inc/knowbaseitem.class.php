@@ -77,11 +77,33 @@ class KnowbaseItem extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong    = array();
-      $ong[1] = $this->getTypeName();
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
 
       return $ong;
+   }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               return $this->getTypeName(1);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      if($item->getType() == __CLASS__) {
+         $item->showMenu();
+      }
+      return true;
    }
 
 

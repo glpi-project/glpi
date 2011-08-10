@@ -101,17 +101,14 @@ class Entity extends CommonTreeDropdown {
       global $LANG;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $this->addStandardTab($this->getType(), $ong, $options);
-         $this->addStandardTab('Profile_User',$ong, $options);
-         $this->addStandardTab('EntityData', $ong, $options);
-         $this->addStandardTab('Rule', $ong, $options);
-         $this->addStandardTab('Document',$ong, $options);
-         $this->addStandardTab('Note',$ong, $options);
-         $this->addStandardTab('Log',$ong, $options);
-      }
+      $this->addStandardTab($this->getType(), $ong, $options);
+      $this->addStandardTab('Profile_User',$ong, $options);
+      $this->addStandardTab('EntityData', $ong, $options);
+      $this->addStandardTab('Rule', $ong, $options);
+      $this->addStandardTab('Document',$ong, $options);
+      $this->addStandardTab('Note',$ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
+
       return $ong;
    }
 
