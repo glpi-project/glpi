@@ -71,10 +71,13 @@ class MailCollector  extends CommonDBTM {
    public $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['Menu'][39];
+      if ($nb>1) {
+         return $LANG['Menu'][39];
+      }
+      return $LANG['mailgate'][0];
    }
 
 
@@ -151,13 +154,32 @@ class MailCollector  extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
-         $this->addStandardTab('Log',$ong, $options);
-      }
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+
       return $ong;
+   }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               return self::getTypeName(1);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      if($item->getType() == __CLASS__) {
+         $item->showGetMessageForm($item->getID());
+      }
+      return true;
    }
 
 

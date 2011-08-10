@@ -134,10 +134,7 @@ class Location extends CommonTreeDropdown {
       global $LANG;
 
       $ong = parent::defineTabs($options);
-
-      if (!$this->isNewItem()) {
-         $this->addStandardTab('Netpoint', $ong, $options);
-      }
+      $this->addStandardTab('Netpoint', $ong, $options);
 
       return $ong;
    }
