@@ -670,7 +670,7 @@ class Supplier extends CommonDBTM {
          echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
 
          if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
-            echo " -> ".getWarrantyExpir($data["begin_date"], $data["duration"]);
+            echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);
          }
          echo "</td>";
          echo "<td class='tab_bg_2 center'>";

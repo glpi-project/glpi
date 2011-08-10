@@ -59,7 +59,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
       if ($options['diff'] > 1000000000) {
          $tmp = $LANG['install'][35];
       } else {
-         $tmp = timestampToString($options['diff'], true);
+         $tmp = Html::timestampToString($options['diff'], true);
       }
       $this->datas['##dbconnection.delay##'] = $tmp." (".$options['name'].")";
 

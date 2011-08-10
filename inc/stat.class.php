@@ -433,7 +433,7 @@ class Stat {
             if ($output_type==HTML_OUTPUT
                 || $output_type==PDF_OUTPUT_LANDSCAPE
                 || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = timestampToString($timedisplay, 0);
+               $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
@@ -453,7 +453,7 @@ class Stat {
             if ($output_type==HTML_OUTPUT
                 || $output_type==PDF_OUTPUT_LANDSCAPE
                 || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = timestampToString($timedisplay, 0);
+               $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
@@ -472,7 +472,7 @@ class Stat {
             if ($output_type==HTML_OUTPUT
                 || $output_type==PDF_OUTPUT_LANDSCAPE
                 || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = timestampToString($timedisplay, 0);
+               $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
@@ -497,7 +497,7 @@ class Stat {
             if ($output_type==HTML_OUTPUT
                 || $output_type==PDF_OUTPUT_LANDSCAPE
                 || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = timestampToString($timedisplay, 0);
+               $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             //Le temps total de l'intervention reelle - The total actiontime to resolv
@@ -506,7 +506,7 @@ class Stat {
             if ($output_type==HTML_OUTPUT
                 || $output_type==PDF_OUTPUT_LANDSCAPE
                 || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = timestampToString($timedisplay, 0);
+               $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 

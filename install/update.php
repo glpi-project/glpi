@@ -167,7 +167,7 @@ function displayMigrationMessage ($id, $msg="") {
          $msg = $LANG['rulesengine'][91];
       }
       $fin = time();
-      $tps = timestampToString($fin-$deb);
+      $tps = Html::timestampToString($fin-$deb);
       echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML =
              '<p class=\"center\">$msg ($tps)</p>';</script>\n";
    }

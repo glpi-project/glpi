@@ -4154,7 +4154,7 @@ class Search {
                if (isset($searchopt[$ID]['withseconds'])) {
                   $withseconds = $searchopt[$ID]['withseconds'];
                }
-               return timestampToString($data[$NAME.$num],$withseconds);
+               return Html::timestampToString($data[$NAME.$num],$withseconds);
 
             case "date_delay" :
                $split = explode('$$$$', $data[$NAME.$num]);
@@ -4163,7 +4163,7 @@ class Search {
                   if (strpos($val,',')) {
                      list($dat,$dur) = explode(',', $val);
                      if (!empty($dat)) {
-                        $out .= (empty($out)?'':'<br>').getWarrantyExpir($dat, $dur);
+                        $out .= (empty($out)?'':'<br>').Infocom::getWarrantyExpir($dat, $dur);
                      }
                   }
                }
@@ -4850,7 +4850,7 @@ class Search {
 
          case SYLK_OUTPUT : //sylk
             global $SYLK_HEADER,$SYLK_SIZE;
-            $SYLK_HEADER[$num] = sylk_clean($value);
+            $SYLK_HEADER[$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]   = Toolbox::strlen($SYLK_HEADER[$num]);
             break;
 
@@ -4900,20 +4900,20 @@ class Search {
 
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
-            $value = weblink_extract($value);
+            $value                 = Html::weblink_extract($value);
             $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
-            $value = weblink_extract($value);
-            $SYLK_ARRAY[$row][$num] = sylk_clean($value);
-            $SYLK_SIZE[$num] = max($SYLK_SIZE[$num], Toolbox::strlen($SYLK_ARRAY[$row][$num]));
+            $value                  = Html::weblink_extract($value);
+            $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
+            $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num], Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case CSV_OUTPUT : //csv
-            $value = weblink_extract($value);
-            $out = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            $value = Html::weblink_extract($value);
+            $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
@@ -5032,14 +5032,14 @@ class Search {
             // Header
             foreach ($SYLK_HEADER as $num => $val) {
                $out .= "F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
-               $out .= "C;N;K\"".sylk_clean($val)."\"\n";
+               $out .= "C;N;K\"".self::sylk_clean($val)."\"\n";
                $out .= "\n";
             }
             // Datas
             foreach ($SYLK_ARRAY as $row => $tab) {
                foreach ($tab as $num => $val) {
                   $out .= "F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
-                  $out .= "C;N;K\"".sylk_clean($val)."\"\n";
+                  $out .= "C;N;K\"".self::sylk_clean($val)."\"\n";
                }
             }
             $out.= "E\n";
@@ -5241,6 +5241,30 @@ class Search {
 
       return $value;
    }
+
+
+   /**
+    * Clean display value for sylk export
+    *
+    * @param $value string value
+    *
+    * @return clean value
+   **/
+   static function sylk_clean($value) {
+
+      if (get_magic_quotes_runtime()) {
+         $value = stripslashes($value);
+      }
+
+      $value = preg_replace('/\x0A/', ' ', $value);
+      $value = preg_replace('/\x0D/', NULL, $value);
+      $value = str_replace("\"", "''", $value);
+      $value = str_replace(';', ';;', $value);
+      $value = Html::clean($value);
+
+      return $value;
+   }
+
 
 }
 

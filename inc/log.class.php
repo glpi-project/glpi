@@ -569,8 +569,8 @@ class Log extends CommonDBTM {
                   break;
 
                case "timestamp" :
-                  $data["old_value"] = timestampToString($data["old_value"]);
-                  $data["new_value"] = timestampToString($data["new_value"]);
+                  $data["old_value"] = Html::timestampToString($data["old_value"]);
+                  $data["new_value"] = Html::timestampToString($data["new_value"]);
                   break;
 
                case "actiontime" :

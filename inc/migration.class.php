@@ -62,7 +62,7 @@ class Migration {
       global $LANG;
 
       $fin = time();
-      $tps = timestampToString($fin-$this->deb);
+      $tps = Html::timestampToString($fin-$this->deb);
       echo "<script type='text/javascript'>document.getElementById('migration_message_".
              $this->version."').innerHTML=\"<p class='center'>$msg ($tps)</p>\";</script>\n";
 

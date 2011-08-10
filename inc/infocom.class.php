@@ -448,7 +448,7 @@ class Infocom extends CommonDBChild {
             $item_infocom = new $data["itemtype"]();
             if ($item_infocom->getFromDB($data["items_id"])) {
                $entity   = $data['entities_id'];
-               $warranty = getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
+               $warranty = self::getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
                $message  = $LANG['mailing'][40]." ".$item_infocom->getTypeName()." - ".
                            $item_infocom->getName()." : ".$warranty."<br>";
                $data['warrantyexpiration']        = $warranty;
@@ -1031,7 +1031,8 @@ class Infocom extends CommonDBChild {
                echo " ".$LANG['financial'][57];
             }
             echo "<span class='small_space'>".$LANG['financial'][88]."</span>&nbsp;";
-            echo getWarrantyExpir($ic->fields["warranty_date"], $ic->fields["warranty_duration"]);
+            echo self::getWarrantyExpir($ic->fields["warranty_date"],
+                                        $ic->fields["warranty_duration"]);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1483,6 +1484,33 @@ class Infocom extends CommonDBChild {
          $this->add($input);
       }
    }
+
+
+   /**
+    * Get date using a begin date and a period in month
+    *
+    * @param $from date: begin date
+    * @param $addwarranty integer: period in months
+    * @param $deletenotice integer: period in months of notice
+    *
+    * @return expiration date string
+   **/
+   static function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
+      global $LANG;
+
+      // Life warranty
+      if ($addwarranty==-1 && $deletenotice==0) {
+         return $LANG['setup'][307];
+      }
+
+      if ($from==NULL || empty($from)) {
+         return "";
+      }
+
+      return Html::convDate(date("Y-m-d",
+                                 strtotime("$from+$addwarranty month -$deletenotice month")));
+   }
+
 
 }
 
