@@ -116,21 +116,55 @@ class OcsServer extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      //If connection to the OCS DB  is ok, and all rights are ok too
-      if ($this->isNewItem()
-          && self::checkOCSconnection($this->fields['id'])
-          && self::checkConfig(1)
-          && self::checkConfig(2)
-          && self::checkConfig(8)) {
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
-         $ong[1] = $LANG['help'][30];
-         $ong[2] = $LANG['ocsconfig'][5];
-         $ong[3] = $LANG['ocsconfig'][27];
-         $this->addStandardTab('Log', $ong, $options);
-      } else {
-         $ong['empty'] = $this->getTypeName();
-      }
       return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               //If connection to the OCS DB  is ok, and all rights are ok too
+               $ong = array();
+               $ong[1] = self::getTypeName(1);
+               if (self::checkOCSconnection($item->getID())
+                   && self::checkConfig(1)
+                   && self::checkConfig(2)
+                   && self::checkConfig(8)) {
+                  $ong[2] = $LANG['ocsconfig'][5];
+                  $ong[3] = $LANG['ocsconfig'][27];
+               }
+               return $ong;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showDBConnectionStatus($item->getID());
+               break;
+
+            case 2 :
+               $item->ocsFormImportOptions($_POST['target'], $item->getID());
+               break;
+
+            case 3 :
+               $item->ocsFormConfig($_POST['target'], $item->getID());
+               break;
+         }
+      }
+      return true;
    }
 
 
