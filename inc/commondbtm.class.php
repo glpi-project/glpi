@@ -2812,7 +2812,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return integer ID of the entity or -1
    **/
-   static function getItemEntity ($itemtype, $items_id) {
+   static function getItemEntity($itemtype, $items_id) {
 
       if ($itemtype && class_exists($itemtype)) {
          $item = new $itemtype();

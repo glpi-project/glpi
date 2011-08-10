@@ -45,7 +45,7 @@ class System_PHP extends PHPUnit_Framework_TestCase {
 
    public function testPHP() {
 
-      // From commonCheckForUseGLPI
+      // From Toolbox::commonCheckForUseGLPI
       $this->assertEquals('5', substr(phpversion(),0,1), "Bad PHP Version ".phpversion());
 
       // Use assertTrue(!init...) because some return false, others return '0'
@@ -64,7 +64,7 @@ class System_PHP extends PHPUnit_Framework_TestCase {
 
    public function testDir() {
 
-      // From commonCheckForUseGLPI
+      // From Toolbox::commonCheckForUseGLPI
       $this->assertTrue(error_log("PHPUnit\n", 3, GLPI_LOG_DIR."/php-errors.log"),
                         "Fail: no write access to ".GLPI_LOG_DIR);
       $this->assertEquals(0, Toolbox::testWriteAccessToDirectory(GLPI_DUMP_DIR),

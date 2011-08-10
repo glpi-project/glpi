@@ -986,7 +986,7 @@ class Config extends CommonDBTM {
       }
       echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n\n";
 
-      Toolbox::checkWriteAccessToDirs(true);
+      self::checkWriteAccessToDirs(true);
 
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
@@ -1171,6 +1171,83 @@ class Config extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * Check Write Access to needed directories
+    *
+    * @param $fordebug boolean display for debug
+    *
+    * @return 2 : creation error 1 : delete error 0: OK
+   **/
+   static function checkWriteAccessToDirs($fordebug=false) {
+      global $LANG;
+
+      $dir_to_check = array(GLPI_CONFIG_DIR  => $LANG['install'][23],
+                            GLPI_DOC_DIR     => $LANG['install'][21],
+                            GLPI_DUMP_DIR    => $LANG['install'][16],
+                            GLPI_SESSION_DIR => $LANG['install'][50],
+                            GLPI_CRON_DIR    => $LANG['install'][52],
+                            GLPI_CACHE_DIR   => $LANG['install'][99],
+                            GLPI_GRAPH_DIR   => $LANG['install'][106]);
+      $error = 0;
+
+      foreach ($dir_to_check as $dir => $message) {
+
+         if (!$fordebug) {
+            echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
+         }
+         $tmperror = Toolbox::testWriteAccessToDirectory($dir);
+
+         $errors = array(4 => $LANG['install'][100],
+                         3 => $LANG['install'][101],
+                         2 => $LANG['install'][17],
+                         1 => $LANG['install'][19]);
+
+         if ($tmperror > 0) {
+            if ($fordebug) {
+               echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".$LANG['install'][97]." $dir - ".
+                              $errors[$tmperror]."\n";
+            } else {
+               echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
+                          $errors[$tmperror]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+            }
+            $error = 2;
+         } else {
+            if ($fordebug) {
+               echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
+            } else {
+               echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][20].
+                           "\" title=\"".$LANG['install'][20]."\"></td></tr>";
+            }
+         }
+      }
+
+      // Only write test for GLPI_LOG as SElinux prevent removing log file.
+      if (!$fordebug) {
+         echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][53]."</td>";
+      }
+
+      if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
+         if ($fordebug) {
+            echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
+         } else {
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][22].
+                       "\" title=\"".$LANG['install'][22]."\"></td></tr>";
+         }
+
+      } else {
+         if ($fordebug) {
+            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".
+                           GLPI_LOG_DIR."\n";
+         } else {
+            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                      "<p class='red'>".$LANG['install'][19]."</p>".
+                      $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
+         }
+         $error = 1;
+      }
+      return $error;
+   }
 }
 
 ?>
