@@ -721,7 +721,7 @@ class Dropdown {
          echo "<optgroup label=\"$label\">";
 
          foreach ($dp as $key => $val) {
-            $search = getItemTypeSearchURL($key);
+            $search = Toolbox::getItemTypeSearchURL($key);
 
             if (basename($search) == basename($value)) {
                $sel = 'selected';
@@ -768,7 +768,7 @@ class Dropdown {
          echo "<tr><th>$label</th></tr>\n";
 
          foreach ($dp as $key => $val) {
-            echo "<tr class='tab_bg_1'><td><a href='".getItemTypeSearchURL($key)."'>";
+            echo "<tr class='tab_bg_1'><td><a href='".Toolbox::getItemTypeSearchURL($key)."'>";
             echo "$val</a></td></tr>\n";
             $i++;
          }
