@@ -40,9 +40,12 @@ class NotificationTemplateTranslation extends CommonDBChild {
    public $items_id  = 'notificationtemplates_id';
    public $dohistory = true;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['mailing'][109];
+      }
       return $LANG['mailing'][126];
    }
 
@@ -334,6 +337,34 @@ class NotificationTemplateTranslation extends CommonDBChild {
                </tr>";
       }
       echo "</table></div>";
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'NotificationTemplate' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "notificationtemplates_id = '".$item->getID()."'"));
+               }
+               return self::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='NotificationTemplate') {
+         $temp = new self();
+         $temp->showSummary($item);
+      }
+      return true;
    }
 
 }
