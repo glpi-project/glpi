@@ -55,7 +55,6 @@ include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/auth.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
-//include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
 
 // Standard includes
