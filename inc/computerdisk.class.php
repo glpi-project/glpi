@@ -192,15 +192,6 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
-      global $LANG;
-
-      $ong['empty'] = $LANG['title'][26];
-
-      return $ong;
-   }
-
-
    /**
     * Print the computers disks
     *
