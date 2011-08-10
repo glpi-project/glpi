@@ -350,8 +350,8 @@ $LANG['common'][107] = "Moyenne";
 $LANG['common'][108] = "Clé d'accès distant";
 $LANG['common'][109] = "Groupe technique";
 $LANG['common'][110] = "Pas de changement d'entité";
-$LANG['common'][111] = "Matériel utilisé";
-$LANG['common'][112] = "Matériel géré";
+$LANG['common'][111] = "Matériels utilisés";
+$LANG['common'][112] = "Matériels gérés";
 $LANG['common'][113] = "Visibilité";
 
 
