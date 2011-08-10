@@ -64,14 +64,12 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['common'][12];
-         $this->addStandardTab('Log', $ong, $options);
-      }
+
+      $ong = array();
+      $ong['empty'] = $this->getTypeName(1); // History as single tab seems "strange"
+      $this->addStandardTab('Log', $ong, $options);
+
       return $ong;
    }
 
