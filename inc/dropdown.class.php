@@ -51,7 +51,7 @@ class Dropdown {
     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - auto_submit : boolean / autosubmit on change (default false)
+    *    - on_change : string / value to transmit to "onChange"
     *    - rand : integer / already computed rand value
     *    - condition : string / aditional SQL condition to limit display
     *    - displaywith : array / array of field to display with request
@@ -79,7 +79,7 @@ class Dropdown {
       $params['toupdate']    = '';
       $params['used']        = array();
       $params['toadd']       = array();
-      $params['auto_submit'] = 0;
+      $params['on_change']   = '';
       $params['condition']   = '';
       $params['rand']        = mt_rand();
       $params['displaywith'] = array();
@@ -176,10 +176,11 @@ class Dropdown {
                       'entity_restrict'     => $params['entity'],
                       'update_item'         => $params['toupdate'],
                       'used'                => $params['used'],
-                      'auto_submit'         => $params['auto_submit'],
+                      'on_change'           => $params['on_change'],
                       'condition'           => $params['condition'],
                       'emptylabel'          => $params['emptylabel'],
                       'display_emptychoice' => $params['display_emptychoice'],
+                      'displaywith'         => $params['displaywith'],
                       'display_rootentity'  => $params['display_rootentity']);
 
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].

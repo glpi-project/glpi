@@ -1772,8 +1772,11 @@ abstract class CommonITILObject extends CommonDBTM {
                       'entity'      => $_SESSION['glpiactiveentities'],
                       'right'       => $right,
                       'rand'        => $rand,
-                      'auto_submit' => $this->userentity_oncreate && $type==self::REQUESTER,
                       'ldap_import' => true);
+
+      if ($this->userentity_oncreate && $type==self::REQUESTER) {
+         $params['on_change'] = 'submit()';
+      }
 
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment = array('value' => '__VALUE__',
@@ -1905,7 +1908,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<br>";
             $rand = Dropdown::show('Entity', array('value'       => $this->fields["entities_id"],
                                                    'entity'      => $this->userentities,
-                                                   'auto_submit' => 1));
+                                                   'on_change'   => 'submit()'));
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
