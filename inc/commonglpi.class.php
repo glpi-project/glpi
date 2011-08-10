@@ -514,7 +514,7 @@ class CommonGLPI {
     * @param $full path or relative one
    **/
    function getTabsURL($full=true) {
-      return getItemTypeTabsURL(get_class($this), $full);
+      return Toolbox::getItemTypeTabsURL(get_class($this), $full);
    }
 
 

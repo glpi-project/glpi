@@ -152,7 +152,8 @@ function addReservation($type, $ID, $ID_entity) {
          $query = "INSERT INTO `glpi_reservations`
                    VALUES (NULL, '$tID', '".date("Y-m-d H:i:s", $date1)."',
                            '".date("Y-m-d H:i:s", $date2)."', '".mt_rand($FIRST['users_normal'],
-                           $LAST['users_postonly'])."', 'comments $i ".getRandomString(15)."',0)";
+                           $LAST['users_postonly'])."',
+                           'comments $i ".Toolbox::getRandomString(15)."',0)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $DB->insert_id();
@@ -333,7 +334,7 @@ function addTracking($type, $ID, $ID_entity) {
             $closedate = $opendate+$closetime;
          }
          $solutiontype = mt_rand(0, $MAX['solutiontypes']);
-         $solution     = "Solution ".getRandomString(20);
+         $solution     = "Solution ".Toolbox::getRandomString(20);
       }
       $updatedate = $opendate+max($firstactiontime, $solvetime, $closetime);
       $hour_cost  = 100;
@@ -350,11 +351,12 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
       $query = "INSERT INTO `glpi_tickets`
-                VALUES (NULL, '$ID_entity', 'Title ".getRandomString(20)."',
+                VALUES (NULL, '$ID_entity', 'Title ".Toolbox::getRandomString(20)."',
                         '".date("Y-m-d H:i:s", intval($opendate))."', $closedatetoadd,
                         $solvedatetoadd, '".date("Y-m-d H:i:s", intval($updatedate))."',
                         '".$users[0]."', '$status', '".$users[0]."', '".mt_rand(0,6)."',
-                        '$enterprise', '$type', '$ID', 'tracking ".getRandomString(15)."',
+                        '$enterprise', '$type', '$ID',
+                        'tracking ".Toolbox::getRandomString(15)."',
                         '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."',
                         '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
                         '$hour_cost', '0', '0', '$solutiontype', '$solution', 'none', 0, 0,
@@ -401,7 +403,7 @@ function addTracking($type, $ID, $ID_entity) {
 
          $query = "INSERT INTO `glpi_ticketfollowups`
                    VALUES (NULL, '$tID', '".date("Y-m-d H:i:s", $date)."', '".$users[1]."',
-                           'followup $i ".getRandomString(15)."', '0', '".mt_rand(0, 3)."')";
+                           'followup $i ".Toolbox::getRandomString(15)."', '0', '".mt_rand(0, 3)."')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $fID = $DB->insert_id();
@@ -427,7 +429,8 @@ function addTracking($type, $ID, $ID_entity) {
          $query = "INSERT INTO `glpi_tickettasks`
                    VALUES (NULL, '$tID', '".mt_rand($FIRST['taskcategory'], $LAST['taskcategory'])."',
                            '".date("Y-m-d H:i:s",$date)."', '".$users[1]."',
-                           'task $i ".getRandomString(15)."', '".mt_rand(0,1)."', '$actiontime', $plan_string)";
+                           'task $i ".Toolbox::getRandomString(15)."', '".mt_rand(0,1)."',
+                           '$actiontime', $plan_string)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $fID = $DB->insert_id();
@@ -1557,7 +1560,7 @@ function generate_entity($ID_entity) {
          $k++;
          $query = "INSERT INTO `glpi_knowbaseitems`
                    VALUES (NULL, '$ID_entity', '1', '$i', 'Entity $ID_entity Recursive Question $k',
-                           'Reponse $k ".getRandomString(50)."','".mt_rand(0,1)."', '10',
+                           'Reponse $k ".Toolbox::getRandomString(50)."','".mt_rand(0,1)."', '10',
                            '".mt_rand(0,1000)."', NOW(), NOW())";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
@@ -1898,9 +1901,10 @@ function generate_entity($ID_entity) {
 
       $query = "INSERT INTO `glpi_networkequipments`
                 VALUES (NULL, '$ID_entity', '0', '$netname', '".mt_rand(32,256)."',
-                        '".getRandomString(10)."', '".getRandomString(10)."', 'contact $i',
-                        'num $i', '$techID', '$gtechID', NOW(), 'comment $i', '".$data['id']."', '$domainID',
-                        '$networkID', '".mt_rand(1,$MAX['type_networking'])."',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                        'contact $i', 'num $i', '$techID', '$gtechID', NOW(), 'comment $i',
+                        '".$data['id']."', '$domainID', '$networkID',
+                        '".mt_rand(1,$MAX['type_networking'])."',
                         '".mt_rand(1,$MAX['model_networking'])."', '".mt_rand(1,$MAX['firmware'])."',
                         '".mt_rand(1,$MAX['enterprises'])."', '0', '0', '', '".getNextMAC()."',
                         '".$infoIP["ip"]."', 'notes networking $i',
@@ -1988,10 +1992,10 @@ function generate_entity($ID_entity) {
       $query = "INSERT INTO `glpi_printers`
                 VALUES (NULL, '$ID_entity', '$recur', 'printer of loc ".$data['id']."', NOW(),
                         'contact ".$data['id']."', 'num ".$data['id']."', '$techID', '$gtechID',
-                        '".getRandomString(10)."', '".getRandomString(10)."', '".mt_rand(0,1)."',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
-                        '".mt_rand(0,1)."', 'comment $i', '".mt_rand(0,64)."', '".$data['id']."',
-                        '$domainID', '$networkID', '$modelID', '$typeID',
+                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i', '".mt_rand(0,64)."',
+                        '".$data['id']."', '$domainID', '$networkID', '$modelID', '$typeID',
                         '".mt_rand(1,$MAX['manufacturer'])."', '1', '0', '0', '', '0',
                         'notes printers ".$data['id']."',
                         '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
@@ -2101,9 +2105,10 @@ function generate_entity($ID_entity) {
       $networkID = mt_rand(1,$MAX['network']);
 
       $query = "INSERT INTO `glpi_computers`
-                VALUES (NULL, '$ID_entity', 'computers $i-$ID_entity', '".getRandomString(10)."',
-                        '".getRandomString(10)."', 'contact $i', 'num $i', '$techID', '$gtechID', '',
-                        NOW(), '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
+                VALUES (NULL, '$ID_entity', 'computers $i-$ID_entity',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                        'contact $i', 'num $i', '$techID', '$gtechID', '', NOW(),
+                        '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
                         '".mt_rand(1,$MAX['os_sp'])."', 'os sn $i', 'os id $i',
                         '".mt_rand(1,$MAX['auto_update'])."', '".$loc."', '$domainID', '$networkID',
                         '".mt_rand(1,$MAX['model'])."', '".mt_rand(1,$MAX['type_computers'])."','0',
@@ -2250,8 +2255,8 @@ function generate_entity($ID_entity) {
       // Ajout d'un ecran sur l'ordi
       $query = "INSERT INTO `glpi_monitors`
                 VALUES (NULL, '$ID_entity', 'monitor $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
-                        '".getRandomString(10)."', '".mt_rand(14,22)."', '".mt_rand(0,1)."',
+                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
+                        '".Toolbox::getRandomString(10)."', '".mt_rand(14,22)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                         '".mt_rand(0,1)."', '$loc',
@@ -2276,11 +2281,12 @@ function generate_entity($ID_entity) {
       // Ajout d'un telephhone avec l'ordi
       $query = "INSERT INTO `glpi_phones`
                 VALUES (NULL, '$ID_entity', 'phone $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
-                        '".getRandomString(10)."', '".getRandomString(10)."', '$loc',
-                        '".mt_rand(1,$MAX['type_phones'])."', '".mt_rand(1,$MAX['model_phones'])."',
-                        '".getRandomString(10)."', '".mt_rand(0,$MAX['phone_power'])."',
-                        '".getRandomString(10)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
+                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                        '$loc', '".mt_rand(1,$MAX['type_phones'])."',
+                        '".mt_rand(1,$MAX['model_phones'])."', '".Toolbox::getRandomString(10)."',
+                        '".mt_rand(0,$MAX['phone_power'])."', '".Toolbox::getRandomString(10)."',
+                        '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                         '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '', 'notes phone $i',
                         '".$userID."', '".$groupID."',
                         '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
@@ -2301,9 +2307,9 @@ function generate_entity($ID_entity) {
       while (mt_rand(0,100)<$percent['peripherals']) {
          $query = "INSERT INTO `glpi_peripherals`
                    VALUES (NULL, '$ID_entity', 'periph of comp $i-$ID_entity', NOW(), 'contact $i',
-                           'num $i', '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
-                           '".getRandomString(10)."', '$loc',
-                           '".mt_rand(1,$MAX['type_peripherals'])."',
+                           'num $i', '$techID', '$gtechID', 'comment $i',
+                           '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                           '$loc', '".mt_rand(1,$MAX['type_peripherals'])."',
                            '".mt_rand(1,$MAX['model_peripherals'])."', 'brand $i',
                            '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '',
                            'notes peripherals $i', '".$userID."', '".$groupID."',
@@ -2334,9 +2340,10 @@ function generate_entity($ID_entity) {
 
          $query = "INSERT INTO `glpi_printers`
                    VALUES (NULL, '$ID_entity', '0', 'printer of comp $i-$ID_entity', NOW(),
-                           'contact $i', 'num $i', '$techID', '$gtechID', '".getRandomString(10)."',
-                           '".getRandomString(10)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
-                           '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i',
+                           'contact $i', 'num $i', '$techID', '$gtechID',
+                           '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                           '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
+                           '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i',
                            '".mt_rand(0,64)."', '$loc', '$domainID', '$networkID', '$modelID',
                            '$typeID', '".mt_rand(1,$MAX['enterprises'])."', '0', '0', '0', '', '0',
                            'notes printers $i',
@@ -2408,8 +2415,9 @@ function generate_entity($ID_entity) {
 
       $query = "INSERT INTO `glpi_peripherals`
                 VALUES (NULL, '$ID_entity', 'periph $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', '$gtechID', 'comment $i', '".getRandomString(10)."',
-                        '".getRandomString(10)."', '0', '".mt_rand(1,$MAX['type_peripherals'])."',
+                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
+                        '".Toolbox::getRandomString(10)."', '0',
+                        '".mt_rand(1,$MAX['type_peripherals'])."',
                         '".mt_rand(1,$MAX['model_peripherals'])."', 'brand $i',
                         '".mt_rand(1,$MAX['manufacturer'])."', '1', '0', '0', '',
                         'notes peripherals $i',

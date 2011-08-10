@@ -1039,6 +1039,59 @@ class Toolbox {
    }
 
 
+   /**
+    * Get ajax tabs url for itemtype
+    *
+    * @param $itemtype string: item type
+    * @param $full path or relative one
+    *
+    * return string itemtype tabs URL
+   **/
+   static function getItemTypeTabsURL($itemtype, $full=true) {
+      global $CFG_GLPI;
+
+      /// TODO only use common.tabs.php when all items migrate to new tabs system or clean tabs file on migration
+
+      $predir = ($full ? $CFG_GLPI['root_doc'] : '');
+      $dir = '';
+
+      if ($plug=isPluginItemType($itemtype)) {
+         $dir = "/plugins/".strtolower($plug['plugin']);
+         $item = strtolower($plug['class']);
+
+      } else { // Standard case
+         $item = strtolower($itemtype);
+      }
+
+      $filename = $dir."/ajax/$item.tabs.php";
+      // Use default one is tabs not exists
+      if (!file_exists(GLPI_ROOT.$filename)) {
+         $filename = "/ajax/common.tabs.php";
+      }
+      return $predir.$filename;
+   }
+
+
+   /**
+    * Get a random string
+    *
+    * @param $length integer: length of the random string
+    *
+    * @return random string
+   **/
+   static function getRandomString($length) {
+
+      $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
+      $rndstring = "";
+
+      for ($a=0 ; $a<=$length ; $a++) {
+         $b = rand(0, strlen($alphabet) - 1);
+         $rndstring .= $alphabet[$b];
+      }
+      return $rndstring;
+   }
+
+
 
 }
 ?>
