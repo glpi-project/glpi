@@ -1781,10 +1781,10 @@ class CommonDBTM extends CommonGLPI {
          autocompletionTextField($this, "template_name", array('size' => 25));
 
       } else if ($this->isNewID($ID)) {
-         echo $this->getTypeName()." - ".$LANG['common'][87];
+         echo $LANG['common'][87];
 
       } else {
-         echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
+         echo $this->getTypeName(1)." - ".$LANG['common'][2]." $ID";
       }
 
       if (isset($this->fields["entities_id"])
