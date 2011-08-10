@@ -1621,7 +1621,7 @@ class Search {
                 && !empty($p['itemtype2'][$i])) {
 
                $params['itemtype'] = $p['itemtype2'][$i];
-               ajaxUpdateItem("show_".$itemtype."_".$i."_$rand",
+               Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
                               $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
                echo "<script type='text/javascript' >";
                echo "window.document.getElementById('itemtype2_".$itemtype."_".$i."_$rand').value='".
