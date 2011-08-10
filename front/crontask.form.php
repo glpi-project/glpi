@@ -41,21 +41,21 @@ $crontask = new CronTask();
 if (isset($_POST["update"])) {
    checkRight('config','w');
    $crontask->update($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET['resetdate']) && isset($_GET["id"])) {
    checkRight('config','w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetDate();
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET['resetstate']) && isset($_GET["id"])) {
    checkRight('config','w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetState();
    }
-   Html::header();
+   Html::back();
 
 }else {
    if (!isset($_GET["id"]) || empty($_GET["id"])) {

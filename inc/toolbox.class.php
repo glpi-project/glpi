@@ -1349,25 +1349,25 @@ class Toolbox {
                         }
 
                         if ($valid) {
-                           Html::header($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
                         } else {
-                           Html::header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                         }
                         break;
 
                      // Use for compatibility with old name
                      case "tracking" :
                      case "ticket" :
-                        Html::header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
                                      "&$forcetab");
                         break;
 
                      case "preference" :
-                        Html::header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                         break;
 
                      default :
-                        Html::header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                         break;
                   }
                   break;
@@ -1407,14 +1407,14 @@ class Toolbox {
                         }
 
                         if ($valid) {
-                           Html::header($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/plugins/$plugin/$page?id=$id&$forcetab");
                         } else {
-                           Html::header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                         }
                         break;
 
                      case "preference" :
-                        Html::header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                         break;
 
                      // Use for compatibility with old name
@@ -1423,10 +1423,10 @@ class Toolbox {
 
                      default :
                         if (!empty($data[0] )&& $data[1]>0) {
-                           Html::header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
                                         $data[1]."&$forcetab");
                         } else {
-                           Html::header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                         }
                         break;
                   }

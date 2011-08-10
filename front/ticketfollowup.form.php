@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    $ticket = new Ticket();
@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
 
       Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
                  $_SESSION["glpiname"]."  ".$LANG['log'][29]);
-      Html::header();
+      Html::back();
    }
 
 } else if (isset($_POST["update"])) {
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
-   Html::header(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+   Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
 } else if (isset($_POST["delete"])) {
    $fup->check($_POST['id'], 'w');
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
+   Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 
 displayErrorAndDie('Lost');

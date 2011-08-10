@@ -44,11 +44,11 @@ if (isset($_POST['newprofile'])) {
    if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       changeProfile($_POST['newprofile']);
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-         Html::header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+         Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
       }
-      Html::header($_SERVER['PHP_SELF']);
+      Html::redirect($_SERVER['PHP_SELF']);
    }
-   Html::header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+   Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
 }
 
 // Manage entity change
@@ -59,7 +59,7 @@ if (isset($_GET["active_entity"])) {
    if (changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
       if (($_GET["active_entity"] == $_SESSION["glpiactive_entity"])
           && isset($_SERVER['HTTP_REFERER'])) {
-         Html::header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+         Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
       }
    }
 }

@@ -51,10 +51,10 @@ if (isset($_POST["add"])) {
    if ($newID = $version->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
                  $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
-      Html::header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
+      Html::redirect($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
                   $version->fields['softwares_id']);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $version->check($_POST['id'],'w');
@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $version->update($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
-   Html::header();
+   Html::back();
 
 } else {
    commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");

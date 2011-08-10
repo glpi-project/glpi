@@ -47,14 +47,14 @@ $config_mail = new AuthMail();
 //IMAP/POP Server add/update/delete
 if (isset($_POST["update"])) {
    $config_mail->update($_POST);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       $newID = $config_mail->add($_POST);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $config_mail->delete($_POST);
@@ -67,7 +67,7 @@ if (isset($_POST["update"])) {
    } else {
       addMessageAfterRedirect($LANG['login'][23], false, ERROR);
    }
-   Html::header();
+   Html::back();
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'], "config", "extauth", "imap");

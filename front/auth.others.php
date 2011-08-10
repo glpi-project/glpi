@@ -44,7 +44,7 @@ $config = new Config();
 //Update CAS configuration
 if (isset($_POST["update"])) {
    $config->update($_POST);
-   Html::header($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+   Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
 if (!isset($_GET["id"])) {

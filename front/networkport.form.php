@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
       $np->check(-1,'w',$_POST);
       $np->add($_POST);
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
-      Html::header();
+      Html::back();
 
    } else {
       checkRight("networking","w");
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".
                  ($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
-      Html::header();
+      Html::back();
    }
 
 } else if (isset($_POST["delete"])) {
@@ -95,9 +95,9 @@ if (isset($_POST["add"])) {
 
    if (class_exists($np->fields['itemtype'])) {
       $item = new $np->fields['itemtype']();
-      Html::header($item->getFormURL().'?id='.$np->fields['items_id']);
+      Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
    }
-   Html::header($CFG_GLPI["root_doc"]."/front/central.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if (isset($_POST["delete_several"])) {
    checkRight("networking","w");
@@ -110,7 +110,7 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
-   Html::header();
+   Html::back();
 
 }
 // Interest of this massive action ?
@@ -129,7 +129,7 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
-   Html::header();
+   Html::back();
 
 }*/ else if (isset($_POST["update"])) {
    $np->check($_POST['id'],'w');
@@ -137,7 +137,7 @@ if (isset($_POST["add"])) {
    $np->update($_POST);
    Event::log($_POST["id"], "networkport", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["connect"])) {
    if (isset($_POST["dport"]) && count($_POST["dport"])) {
@@ -149,7 +149,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET["disconnect"])) {
    $nn->check($_GET['id'],'d');
@@ -160,9 +160,9 @@ if (isset($_POST["add"])) {
       if (isset($_GET["sport"])) {
          $fin = "?sport=".$_GET["sport"];
       }
-      Html::header($_SERVER['HTTP_REFERER'].$fin);
+      Html::redirect($_SERVER['HTTP_REFERER'].$fin);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["assign_vlan_several"])) {
    checkRight("networking","w");
@@ -175,7 +175,7 @@ if (isset($_POST["add"])) {
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST['assign_vlan'])) {
    $npv->check(-1,'w',$_POST);
@@ -184,7 +184,7 @@ if (isset($_POST["add"])) {
       $npv->assignVlan($_POST["networkports_id"],$_POST["vlans_id"]);
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["unassign_vlan_several"])) {
    checkRight("networking","w");
@@ -200,14 +200,14 @@ if (isset($_POST["add"])) {
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
    }
-   Html::header();
+   Html::back();
 
 } else if (isset($_GET['unassign_vlan'])) {
    $npv->check($_GET['id'],'d');
 
    $npv->unassignVlanbyID($_GET['id']);
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
-   Html::header();
+   Html::back();
 
 } else {
    if (empty($_GET["items_id"])) {

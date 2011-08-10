@@ -46,7 +46,7 @@ if (isset($_GET['activate'])) {
    $tmp['id'] = $CFG_GLPI['id'];
    $tmp['use_mailing'] = 1;
    $config->update($tmp);
-   Html::header();
+   Html::back();
 }
 
 if (!$CFG_GLPI['use_mailing']) {
@@ -58,7 +58,7 @@ if (!$CFG_GLPI['use_mailing']) {
 
 } else {
    if (!haveRight("config","r") && haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
-      Html::header($CFG_GLPI["root_doc"].'/front/notification.php');
+      Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
 
    } else {
       echo "<table class='tab_cadre'>";

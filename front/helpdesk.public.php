@@ -43,13 +43,13 @@ if (isset($_POST['newprofile'])) {
       changeProfile($_POST['newprofile']);
 
       if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-         Html::header($CFG_GLPI['root_doc']."/front/central.php");
+         Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
       } else {
-         Html::header($_SERVER['PHP_SELF']);
+         Html::redirect($_SERVER['PHP_SELF']);
       }
 
    } else {
-      Html::header(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
+      Html::redirect(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
    }
 }
 
@@ -60,7 +60,7 @@ if (isset($_GET["active_entity"])) {
    }
    if (changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
       if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
-         Html::header(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+         Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
       }
    }
 }
@@ -73,11 +73,11 @@ if (isset($_GET["redirect"])) {
 // redirect if no create ticket right
 if (!haveRight('create_ticket',1)) {
    if (haveRight('observe_ticket',1) || haveRight('validate_ticket',1)) {
-      Html::header($CFG_GLPI['root_doc']."/front/ticket.php");
+      Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
    } else if (haveRight('reservation_helpdesk',1)) {
-      Html::header($CFG_GLPI['root_doc']."/front/reservationitem.php");
+      Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
    } else if (haveRight('faq','r')) {
-      Html::header($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
+      Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
 }
 

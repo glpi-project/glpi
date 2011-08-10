@@ -170,7 +170,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    commonFooter();
 
 } else  {
-   Html::header($CFG_GLPI['root_doc']."/front/report.networking.php");
+   Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>

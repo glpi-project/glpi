@@ -43,21 +43,21 @@ if (isset($_GET["add"])) {
 
    $newID = $ic->add($_GET, false);
    Event::log($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["delete"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->delete($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["update"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 } else {
    checkRight("infocom","r");

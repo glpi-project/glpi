@@ -45,7 +45,7 @@ if (isset($_POST["update"])) {
 
    Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   Html::header();
+   Html::back();
 
 }
 

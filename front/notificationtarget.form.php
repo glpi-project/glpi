@@ -32,6 +32,6 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 NotificationTarget::updateTargets($_POST);
-Html::header();
+Html::back();
 
 ?>

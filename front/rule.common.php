@@ -48,7 +48,7 @@ $rulecollection->checkGlobal('r');
 if (isset($_GET["action"])) {
    $rulecollection->checkGlobal('w');
    $rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
-   Html::header();
+   Html::back();
 
 } else if (isset($_POST["action"])) {
    $rulecollection->checkGlobal('w');
@@ -64,7 +64,7 @@ if (isset($_GET["action"])) {
                $rule->delete(array('id' => $key));
             }
             Event::log(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-            Html::header();
+            Html::back();
          }
          break;
 
@@ -144,7 +144,7 @@ if (isset($_GET["action"])) {
 
    } else {
       // Need more work
-      Html::header($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=".
+      Html::redirect($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=".
                    "$manufacturer");
    }
 

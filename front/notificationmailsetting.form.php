@@ -41,12 +41,12 @@ $notificationmail = new NotificationMailSetting();
 
 if (!empty($_POST["test_smtp_send"])) {
    NotificationMail::testNotification();
-   Html::header();
+   Html::back();
 
 } else if (!empty($_POST["update"])) {
    $config = new Config();
    $config->update($_POST);
-   Html::header();
+   Html::back();
 }
 
 commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");

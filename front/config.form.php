@@ -44,16 +44,16 @@ $config = new Config();
 
 if (!empty($_POST["update_auth"])) {
    $config->update($_POST);
-   Html::header();
+   Html::back();
 }
 if (!empty($_POST["update"])) {
    $config->update($_POST);
    if (isset($_POST["use_ocs_mode"])
        && $_POST["use_ocs_mode"]
        && !$CFG_GLPI["use_ocs_mode"]) {
-      Html::header(Toolbox::getItemTypeSearchURL('OcsServer'));
+      Html::redirect(Toolbox::getItemTypeSearchURL('OcsServer'));
    } else {
-      Html::header(Toolbox::getItemTypeFormURL('Config'));
+      Html::redirect(Toolbox::getItemTypeFormURL('Config'));
    }
 }
 

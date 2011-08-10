@@ -834,7 +834,7 @@ class Auth {
           && strstr($_SERVER['SSL_CLIENT_S_DN'], $CFG_GLPI["x509_email_field"])) {
 
          if ($redirect) {
-            Html::header("login.php".$redir_string);
+            Html::redirect("login.php".$redir_string);
          } else {
             return self::X509;
          }
@@ -846,7 +846,7 @@ class Auth {
           && !empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
 
          if ($redirect) {
-            Html::header("login.php".$redir_string);
+            Html::redirect("login.php".$redir_string);
          } else {
             return self::EXTERNAL;
          }
@@ -855,7 +855,7 @@ class Auth {
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
-            Html::header("login.php".$redir_string);
+            Html::redirect("login.php".$redir_string);
          } else {
             return self::CAS;
          }

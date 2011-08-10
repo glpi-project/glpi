@@ -1554,7 +1554,7 @@ class AuthLDAP extends CommonDBTM {
          //If only one server, do not show the choose ldap server window
          $ldap                    = $DB->fetch_array($result);
          $_SESSION["ldap_server"] = $ldap["id"];
-         Html::header($_SERVER['PHP_SELF']);
+         Html::redirect($_SERVER['PHP_SELF']);
       }
 
       echo "<form action='$target' method=\"post\">";

@@ -4301,26 +4301,26 @@ class Search {
 
       if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
          $_SESSION["glpisearchcount"][$itemtype]++;
-         Html::header(str_replace("add_search_count=1&", "", $_SERVER['REQUEST_URI']));
+         Html::redirect(str_replace("add_search_count=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
          if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
             $_SESSION["glpisearchcount"][$itemtype]--;
          }
-         Html::header(str_replace("delete_search_count=1&", "", $_SERVER['REQUEST_URI']));
+         Html::redirect(str_replace("delete_search_count=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["add_search_count2"]) && $_GET["add_search_count2"]) {
          $_SESSION["glpisearchcount2"][$itemtype]++;
-         Html::header(str_replace("add_search_count2=1&", "", $_SERVER['REQUEST_URI']));
+         Html::redirect(str_replace("add_search_count2=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
          if ($_SESSION["glpisearchcount2"][$itemtype] >= 1) {
             $_SESSION["glpisearchcount2"][$itemtype]--;
          }
-         Html::header(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
+         Html::redirect(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       $tab = array();
