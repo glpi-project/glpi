@@ -56,15 +56,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $this->addStandardTab($this->getType(), $ong, $options);
-
-         if ($this->dohistory) {
-            $this->addStandardTab('Log',$ong, $options);
-         }
+      $this->addStandardTab($this->getType(), $ong, $options);
+      if ($this->dohistory) {
+         $this->addStandardTab('Log',$ong, $options);
       }
 
       return $ong;

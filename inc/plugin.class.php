@@ -915,7 +915,7 @@ class Plugin extends CommonDBTM {
       // Use it for plugin debug
 //       if (count($attrib)) {
 //          foreach ($attrib as $key => $val) {
-//             logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
+//             Toolbox::logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
 //          }
       //}
       return true;

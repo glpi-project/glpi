@@ -222,15 +222,6 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
-      global $LANG;
-
-      $ong['empty'] = $LANG['title'][26];
-
-      return $ong;
-   }
-
-
    /**
     * Show hosts for a virtualmachine
     *

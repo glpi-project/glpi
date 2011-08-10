@@ -54,26 +54,33 @@ class Config extends CommonDBTM {
    }
 
 
+   function canCreate() {
+      return false;
+   }
+
+
+   function canUpdate() {
+      return haveRight('config', 'w');
+   }
+
+
+   function canView() {
+      return haveRight('config', 'r');
+   }
+
+
    function defineTabs($options=array()) {
-      global $LANG;
 
-      $tabs[1] = $LANG['setup'][70];  // Display
-      $tabs[2] = $LANG['setup'][48];    // Prefs
-      $tabs[3] = $LANG['Menu'][38];  // Inventory
-      $tabs[4] = $LANG['title'][24];   // Helpdesk
-      $tabs[5] = $LANG['setup'][720];  // SysInfo
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
 
-      if (DBConnection::isDBSlaveActive()) {
-         $tabs[6]  = $LANG['setup'][800];  // Slave
-      }
-
-      return $tabs;
+      return $ong;
    }
 
 
    function showForm($ID, $options=array()) {
 
-      $this->getFromDB(1);
+      $this->check(1, 'r');
       $this->showTabs($options);
       $this->addDivForTabs();
    }
@@ -1105,12 +1112,25 @@ class Config extends CommonDBTM {
       switch ($item->getType()) {
          case 'Preference' :
             return $LANG['setup'][6];
+
+         case __CLASS__ :
+            $tabs[1] = $LANG['setup'][70];   // Display
+            $tabs[2] = $LANG['setup'][48];   // Prefs
+            $tabs[3] = $LANG['Menu'][38];    // Inventory
+            $tabs[4] = $LANG['title'][24];   // Helpdesk
+            $tabs[5] = $LANG['setup'][720];  // SysInfo
+
+            if (DBConnection::isDBSlaveActive()) {
+               $tabs[6]  = $LANG['setup'][800];  // Slave
+            }
+            return $tabs;
       }
       return '';
    }
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
 
       if ($item->getType()=='Preference') {
          $config = new self();
@@ -1118,6 +1138,34 @@ class Config extends CommonDBTM {
          if ($user->getFromDB(getLoginUserID())) {
             $user->computePreferences();
             $config->showFormUserPrefs($user->fields);
+         }
+
+      } else if($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showFormDisplay();
+               break;
+
+            case 2 :
+               $item->showFormUserPrefs($CFG_GLPI);
+               break;
+
+            case 3 :
+               $item->showFormInventory();
+               break;
+
+            case 4 :
+               $item->showFormHelpdesk();
+               break;
+
+            case 5 :
+               $item->showSystemInformations();
+               break;
+
+            case 6 :
+               $item->showFormDBSlave();
+               break;
+
          }
       }
       return true;
