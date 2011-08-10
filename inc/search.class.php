@@ -2288,6 +2288,11 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "date_delay" :
+               $interval = "MONTH";
+               if (isset($searchopt[$ID]['delayunit'])) {
+                  $interval = $searchopt[$ID]['delayunit'];
+               }
+
                $add_minus = '';
                if (isset($searchopt[$ID]["datafields"][3])) {
                   $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
@@ -2295,16 +2300,14 @@ class Search {
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT
-                                        CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                                               ',',
-                                               `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`
-                                                   $add_minus) SEPARATOR '$$$$')
+                                 ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
+                                 INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
+                                        "` $add_minus) $interval) SEPARATOR '$$$$')
                               AS ".$NAME."_$num, ";
                }
-               return "CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                              ',',
-                              `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`$add_minus)
-                           AS ".$NAME."_$num, ";
+               return "ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
+                                 INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
+                                        "` $add_minus) $interval) AS ".$NAME."_$num, ";
 
             case "itemlink" :
                if ($meta
@@ -4134,6 +4137,8 @@ class Search {
                return $text;
 
             case "date" :
+            case "date_delay" :
+
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
@@ -4155,19 +4160,6 @@ class Search {
                   $withseconds = $searchopt[$ID]['withseconds'];
                }
                return Html::timestampToString($data[$NAME.$num],$withseconds);
-
-            case "date_delay" :
-               $split = explode('$$$$', $data[$NAME.$num]);
-               $out   = '';
-               foreach ($split as $val) {
-                  if (strpos($val,',')) {
-                     list($dat,$dur) = explode(',', $val);
-                     if (!empty($dat)) {
-                        $out .= (empty($out)?'':'<br>').Infocom::getWarrantyExpir($dat, $dur);
-                     }
-                  }
-               }
-               return (empty($out) ? "&nbsp;" : $out);
 
             case "email" :
                $split = explode('$$$$', $data[$NAME.$num]);
