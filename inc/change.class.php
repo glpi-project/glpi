@@ -63,6 +63,9 @@ class Change extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][8];
+      }
       return $LANG['change'][0];
    }
 
@@ -165,22 +168,27 @@ class Change extends CommonITILObject {
       global $LANG;
 
       if (haveRight("show_all_change","1")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = 0;
-            switch ($item->getType()) {
-               case 'Problem' :
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'Problem' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_problems',
                                              "`problems_id` = '".$item->getID()."'");
-                  break;
+               }
+            return self::createTabEntry(self::getTypeName(2), $nb);
 
-               case 'Ticket' :
+            case 'Ticket' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
-                  break;
-            }
-            return self::createTabEntry($LANG['Menu'][8], $nb);
+               }
+               return self::createTabEntry(self::getTypeName(2), $nb);
+
+            case __CLASS__ :
+               return array (1 => $LANG['problem'][3],         // Analysis
+                             2 => $LANG['change'][7],          // Plans
+                             3 => $LANG['jobresolution'][2]);  // Solution
          }
-         return $LANG['Menu'][8];
       }
       return '';
    }
@@ -189,12 +197,31 @@ class Change extends CommonITILObject {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case "Problem" :
+         case 'Problem' :
             Change_Problem::showForProblem($item);
             break;
 
-         case "Ticket" :
+         case 'Ticket' :
             Change_Ticket::showForTicket($item);
+            break;
+
+         case __CLASS__ :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showAnalysisForm();
+                  break;
+
+               case 2 :
+                  $item->showPlanForm();
+                  break;
+
+               case 3 :
+                  if (!isset($_POST['load_kb_sol'])) {
+                     $_POST['load_kb_sol'] = 0;
+                  }
+                  $item->showSolutionForm($_POST['load_kb_sol']);
+                  break;
+            }
             break;
       }
       return true;
@@ -205,38 +232,17 @@ class Change extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
-         $this->addStandardTab('Problem', $ong, $options);
+      $ong['empty'] = $this->getTypeName(1);
+      $this->addStandardTab('Problem', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('ChangeTask', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Change_Item', $ong, $options);
+      /// TODO add stats
+      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
-         $this->addStandardTab('Ticket', $ong, $options);
-
-         // Analysis
-         $ong[3] = $LANG['problem'][3];
-
-         // Plans
-         $ong[5] = $LANG['change'][7];
-
-         // Tasks
-         $this->addStandardTab('ChangeTask', $ong, $options);
-
-         // Solution
-         $ong[4] = $LANG['jobresolution'][2];
-
-         // Documents
-         $this->addStandardTab('Document', $ong, $options);
-
-         // Hardware
-         $ong[7] = $LANG['common'][96];
-
-         /// TODO add stats
-
-         $this->addStandardTab('Note', $ong, $options);
-
-         $this->addStandardTab('Log', $ong, $options);
-      }
       return $ong;
    }
 

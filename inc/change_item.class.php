@@ -234,5 +234,27 @@ class Change_Item extends CommonDBRelation{
       echo "</div></form>";
    }
 
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Change' :
+               return $LANG['common'][96];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Change') {
+         self::showForChange($item);
+      }
+      return true;
+   }
+
 }
 ?>
