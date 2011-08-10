@@ -46,6 +46,34 @@ class Vlan extends CommonDropdown {
       return $LANG['setup'][90];
    }
 
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'tag',
+                         'label' => $LANG['common'][114],
+                         'type'  => 'text',
+                         'list'  => true));
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'tag';
+      $tab[11]['name']     = $LANG['common'][114];
+      $tab[11]['datatype'] = 'number';
+
+      return $tab;
+   }
+
+
    function cleanDBonPurge() {
       global $DB;
 
