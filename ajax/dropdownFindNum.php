@@ -72,7 +72,7 @@ if ($item->maybeTemplate()) {
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $search = makeTextSearch($_POST['searchText']);
+   $search = Search::makeTextSearch($_POST['searchText']);
 
    $where .= " AND (`name` ".$search."
                     OR `id` = '".$_POST['searchText']."'";

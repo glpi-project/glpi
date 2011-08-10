@@ -147,7 +147,7 @@ if (isset($_POST['condition']) && $_POST['condition'] != '') {
 if ($item instanceof CommonTreeDropdown) {
 
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-      $where .= " AND `completename` ".makeTextSearch($_POST['searchText']);
+      $where .= " AND `completename` ".Search::makeTextSearch($_POST['searchText']);
    }
    $multi = false;
 
@@ -418,7 +418,7 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-      $search = makeTextSearch($_POST['searchText']);
+      $search = Search::makeTextSearch($_POST['searchText']);
       $where .=" AND  (`$table`.`$field` ".$search;
 
       if ($_POST['itemtype']=="SoftwareLicense") {
