@@ -524,7 +524,7 @@ if (!isset($_POST["install"])) {
    $_SESSION = array();
 
    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-      glpi_header(GLPI_ROOT ."/index.php");
+      Html::header(GLPI_ROOT ."/index.php");
       die();
 
    } else {

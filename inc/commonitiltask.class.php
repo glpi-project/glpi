@@ -144,7 +144,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $LANG;
 
-      manageBeginAndEndPlanDates($input['plan']);
+      Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
@@ -225,7 +225,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $itemtype = $this->getItilObjectItemType();
 
-      manageBeginAndEndPlanDates($input['plan']);
+      Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
@@ -712,7 +712,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo Html::convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
-      $units=getTimestampTimeUnits($this->fields["actiontime"]);
+      $units = Toolbox::getTimestampTimeUnits($this->fields["actiontime"]);
 
       $hour   = $units['hour']+24*$units['day'];
       $minute = $units['minute'];
@@ -839,7 +839,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
 
-      $units = getTimestampTimeUnits($this->fields["actiontime"]);
+      $units = Toolbox::getTimestampTimeUnits($this->fields["actiontime"]);
 
       $hour   = $units['hour']+24*$units['day'];
       $minute = $units['minute'];

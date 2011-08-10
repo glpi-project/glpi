@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_SESSION["glpicookietest"]) || $_SESSION["glpicookietest"]!='testcookie') {
    if (!is_writable(GLPI_SESSION_DIR)) {
-      glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=2");
+      Html::header($CFG_GLPI['root_doc'] . "/index.php?error=2");
    } else {
-      glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=1");
+      Html::header($CFG_GLPI['root_doc'] . "/index.php?error=1");
    }
 }
 
@@ -78,15 +78,15 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
-         glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
+         Html::header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
       }
-      glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
+      Html::header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
 
    } else {
       if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
-         glpi_header($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
+         Html::header($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
       }
-      glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
+      Html::header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
    }
 
 } else {

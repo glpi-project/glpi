@@ -94,7 +94,7 @@ class Reminder extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
-      manageBeginAndEndPlanDates($input['plan']);
+      Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       $input["name"] = trim($input["name"]);
 
@@ -145,7 +145,7 @@ class Reminder extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $LANG;
 
-      manageBeginAndEndPlanDates($input['plan']);
+      Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
       $input["name"] = trim($input["name"]);
 
