@@ -67,8 +67,7 @@ class CronTask extends CommonDBTM{
       global $LANG;
 
       $ong = array();
-      $ong[1] = $LANG['Menu'][13]; // Stat
-      $ong[2] = $LANG['Menu'][30]; // Logs
+      $this->addStandardTab('CronTaskLog', $ong, $options);
 
       return $ong;
    }
