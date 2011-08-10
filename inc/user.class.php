@@ -195,8 +195,9 @@ class User extends CommonDBTM {
              && $this->currentUserHaveMoreRightThan($this->fields['id'])) {
             $ong[6] = $LANG['Menu'][11];
          }
-         $ong[2] = $LANG['common'][96]; // materiel
-
+         $ong[2] = $LANG['common'][111];
+         $ong[3] = $LANG['common'][112];
+         
          $this->addStandardTab('Ticket', $ong, $options);
          $this->addStandardTab('Document', $ong, $options);
          $this->addStandardTab('Reservation', $ong, $options);
@@ -2413,11 +2414,23 @@ class User extends CommonDBTM {
    /**
     * Show items of the current user
    **/
-   function showItems() {
+   function showItems($tech) {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $this->getField('id');
-
+      
+      if ($tech) {
+         $type_user = $CFG_GLPI['linkuser_tech_types'];
+         $type_group = $CFG_GLPI['linkgroup_tech_types'];
+         $field_user = 'users_id_tech';
+         $field_group = 'groups_id_tech';
+      } else {
+         $type_user = $CFG_GLPI['linkuser_types'];
+         $type_group = $CFG_GLPI['linkgroup_types'];
+         $field_user = 'users_id';
+         $field_group = 'groups_id';
+      }
+      
       $group_where = "";
       $groups = array();
       $query = "SELECT `glpi_groups_users`.`groups_id`,
@@ -2438,7 +2451,7 @@ class User extends CommonDBTM {
                $group_where .= " OR ";
             }
 
-            $group_where .= " `groups_id` = '".$data["groups_id"]."' ";
+            $group_where .= " `".$field_group."` = '".$data["groups_id"]."' ";
             $groups[$data["groups_id"]] = $data["name"];
          }
       }
@@ -2451,7 +2464,7 @@ class User extends CommonDBTM {
       echo "<th>".$LANG['common'][20]."</th>";
       echo "<th>&nbsp;</th></tr>";
 
-      foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+      foreach ($type_user as $itemtype) {
          if (!class_exists($itemtype)) {
             continue;
          }
@@ -2460,7 +2473,7 @@ class User extends CommonDBTM {
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT *
                       FROM `$itemtable`
-                      WHERE `users_id` = '$ID'";
+                      WHERE `".$field_user."` = '$ID'";
 
             if ($item->maybeTemplate()) {
                $query .= " AND `is_template` = '0' ";
@@ -2483,7 +2496,7 @@ class User extends CommonDBTM {
                               ."</a>";
                   }
                   $linktype = "";
-                  if ($data["users_id"] == $ID) {
+                  if ($data[$field_user] == $ID) {
                      $linktype = $LANG['common'][34];
                   }
                   echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
@@ -2517,7 +2530,7 @@ class User extends CommonDBTM {
                "<th>".$LANG['common'][19]."</th>".
                "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 
-         foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+         foreach ($type_group as $itemtype) {
             if (!class_exists($itemtype)) {
                continue;
             }
@@ -2550,8 +2563,8 @@ class User extends CommonDBTM {
                                  $data["id"].")":"")."</a>";
                      }
                      $linktype = "";
-                     if (isset($groups[$data["groups_id"]])) {
-                        $linktype = $LANG['common'][35]." ".$groups[$data["groups_id"]];
+                     if (isset($groups[$data[$field_group]])) {
+                        $linktype = $LANG['common'][35]." ".$groups[$data[$field_group]];
                      }
                      echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",

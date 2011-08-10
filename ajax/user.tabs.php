@@ -87,7 +87,11 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 2 :
-         $user->showItems();
+         $user->showItems(false);
+         break;
+      
+      case 3 :
+         $user->showItems(true);
          break;
 
       case 4 :

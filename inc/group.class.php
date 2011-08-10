@@ -422,7 +422,7 @@ class Group extends CommonDBTM {
       $ID = $this->fields['id'];
 
       if ($tech) {
-         $types = $CFG_GLPI['ticket_types'];
+         $types = $CFG_GLPI['linkgroup_tech_types'];
          $field = 'groups_id_tech';
       } else {
          $types = $CFG_GLPI['linkgroup_types'];
