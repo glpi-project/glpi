@@ -592,19 +592,6 @@ function getTimestampTimeUnits($time) {
 
 
 
-/**
- * Extract url from web link
- *
- * @param $value string value
- *
- * @return clean value
-**/
-function weblink_extract($value) {
-
-   $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
-   return $value;
-}
-
 
 
 
