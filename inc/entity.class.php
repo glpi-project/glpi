@@ -472,7 +472,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Html::header();
    }
 
 

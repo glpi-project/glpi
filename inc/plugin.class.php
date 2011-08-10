@@ -437,7 +437,7 @@ class Plugin extends CommonDBTM {
                      if ($function(true)) {
                         $this->update(array('id'    => $ID,
                                             'state' => self::NOTACTIVATED));
-                        glpi_header($this->getSearchURL());
+                        Html::header($this->getSearchURL());
                      }
                   } else {
                      echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_check_config";

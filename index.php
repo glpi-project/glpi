@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/config/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    include (GLPI_ROOT . "/inc/common.function.php");
-   glpi_header("install/install.php");
+   Html::header("install/install.php");
    die();
 
 } else {
@@ -97,7 +97,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // redirect to ticket
    if (isset($_GET["redirect"])) {
-      manageRedirect($_GET["redirect"]);
+      Toolbox::manageRedirect($_GET["redirect"]);
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
    }
    echo "<fieldset>";

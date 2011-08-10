@@ -207,7 +207,7 @@ class CalendarSegment extends CommonDBChild {
                   list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
                   $beginstamp = $begin_hour*HOUR_TIMESTAMP+$begin_minute*MINUTE_TIMESTAMP+$begin_second;
                   $endstamp   = $beginstamp+$delay;
-                  $units      = getTimestampTimeUnits($endstamp);
+                  $units      = Toolbox::getTimestampTimeUnits($endstamp);
                   return str_pad($units['hour'], 2, '0', STR_PAD_LEFT).':'.
                          str_pad($units['minute'], 2, '0', STR_PAD_LEFT).':'.
                          str_pad($units['second'], 2, '0', STR_PAD_LEFT);

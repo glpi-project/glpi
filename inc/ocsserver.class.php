@@ -4246,7 +4246,7 @@ class OcsServer extends CommonDBTM {
 
       } else if ($DB->numrows($result) == 1) {
          $ocs = $DB->fetch_array($result);
-         glpi_header($CFG_GLPI['root_doc']."/front/ocsng.php?ocsservers_id=" . $ocs["id"]);
+         Html::header($CFG_GLPI['root_doc']."/front/ocsng.php?ocsservers_id=" . $ocs["id"]);
 
       } else {
          echo "<form action='$target' method='get'>";

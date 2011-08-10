@@ -300,15 +300,15 @@ class CommonGLPI {
 
       if (isset($_GET['withtemplate'])
           && !empty($_GET['withtemplate'])) {
-         glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
+         Html::header($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
                      $this->getType());
 
       } else if (isset($_SESSION['glpilisturl'][$this->getType()])
                  && !empty($_SESSION['glpilisturl'][$this->getType()])) {
-         glpi_header($_SESSION['glpilisturl'][$this->getType()]);
+         Html::header($_SESSION['glpilisturl'][$this->getType()]);
 
       } else {
-         glpi_header($this->getSearchURL());
+         Html::header($this->getSearchURL());
       }
    }
 
