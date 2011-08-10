@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "suppliers", 4, "financial",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $ent->check($_POST["id"],'w');
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
    $ent->check($_POST["id"],'w');
    $ent->update($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['Menu'][23],'',"financial","supplier");

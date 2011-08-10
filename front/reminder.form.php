@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
 
    $newID = $remind->add($_POST);
    Event::log($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $remind->check($_POST["id"],'w');
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 
    $remind->update($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

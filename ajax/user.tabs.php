@@ -62,7 +62,7 @@ if (!isset($_POST["order"])) {
 
 if (empty($_POST["id"]) && isset($_POST["name"])) {
    $user->getFromDBbyName($_POST["name"]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
+   Html::header($CFG_GLPI["root_doc"]."/front/user.form.php?id=".$user->fields['id']);
 }
 
 if (empty($_POST["name"])) {
@@ -89,7 +89,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
       case 2 :
          $user->showItems(false);
          break;
-      
+
       case 3 :
          $user->showItems(true);
          break;

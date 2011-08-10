@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    $newID = $netdevice->add($_POST);
    Event::log($newID, "networkequipment", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $netdevice->check($_POST["id"],'d');
@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 
    $netdevice->update($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");

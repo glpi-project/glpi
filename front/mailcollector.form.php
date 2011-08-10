@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
 
    Event::log($newID, "mailcollector", 4, "setup",
               $_SESSION["glpiname"]." added ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $mailgate->check($_POST['id'],'w');
@@ -64,13 +64,13 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["get_mails"])) {
    $mailgate->check($_POST['id'],'w');
    $mailgate->collect($_POST["id"],1);
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config", "mailcollector");

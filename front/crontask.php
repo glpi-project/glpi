@@ -50,7 +50,7 @@ if (isset($_GET['execute'])) {
    if ($name) {
       addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 

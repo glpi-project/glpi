@@ -39,7 +39,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["changes_id"], "change", 4, "tracking",
                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
 
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["changes_id"], "change", 4, "tracking",
                  $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 }
 

@@ -66,7 +66,7 @@ if (isset($_GET['next'])) {
                                          "entities_id"  => $entity,
                                          "is_recursive" => $_SESSION["ldap_import_recursive"][$key],
                                          "type"         => $_SESSION["ldap_import_type"][$key]));
-         glpi_header($_SERVER['PHP_SELF']);
+         Html::header($_SERVER['PHP_SELF']);
 
       } else {
          unset($_SESSION["ldap_import"]);
@@ -84,7 +84,7 @@ if (isset($_GET['next'])) {
       if (isset($_POST["ldap_filter2"])) {
          $_SESSION["ldap_group_filter2"] = $_POST["ldap_filter2"];
       }
-      glpi_header($_SERVER['PHP_SELF']);
+      Html::header($_SERVER['PHP_SELF']);
 
    } else if (!isset($_POST["import_ok"])) {
       if (!isset($_GET['check'])) {
@@ -101,7 +101,7 @@ if (isset($_GET['next'])) {
          if (isset($_POST["ldap_server"])) {
             $_SESSION["ldap_server"] = $_POST["ldap_server"];
          } else {
-            glpi_header($CFG_GLPI["root_doc"]."/front/ldap.php");
+            Html::header($CFG_GLPI["root_doc"]."/front/ldap.php");
          }
       }
 
@@ -145,7 +145,7 @@ if (isset($_GET['next'])) {
             }
          }
       }
-      glpi_header($_SERVER['PHP_SELF']);
+      Html::header($_SERVER['PHP_SELF']);
    }
 }
 

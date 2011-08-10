@@ -45,7 +45,7 @@ if (isset($_REQUEST["delete"])) {
 
    Event::log($email->getField('users_id'), "users", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][36]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_REQUEST["update"])) {
    $email->check($_REQUEST["id"], 'w');
@@ -53,7 +53,7 @@ if (isset($_REQUEST["delete"])) {
 
    Event::log($email->getField('users_id'), "users", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][36]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 }
 

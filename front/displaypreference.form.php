@@ -68,7 +68,7 @@ if (isset($_POST["activate"])) {
                     'itemtype' => $itemtype);
       $setupdisplay->deleteByCriteria($crit);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 
 if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {

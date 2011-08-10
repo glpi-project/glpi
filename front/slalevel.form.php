@@ -40,7 +40,7 @@ if (isset($_POST["update"])) {
    $item->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add"])) {
    $item->check(-1, 'w', $_POST);
@@ -48,7 +48,7 @@ if (isset($_POST["update"])) {
    if ($item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
 
@@ -72,7 +72,7 @@ if (isset($_POST["update"])) {
       $item->redirectToList();
    }
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add_action"])) {
    $item->check($_POST['slalevels_id'], 'w');
@@ -83,7 +83,7 @@ if (isset($_POST["update"])) {
    // Can't do this in SlaLevelAction, so do it here
    $item->update(array('id'       => $_POST['slalevels_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete_action"])) {
    $item->check($_POST['slalevels_id'], 'w');
@@ -99,7 +99,7 @@ if (isset($_POST["update"])) {
    // Can't do this in RuleAction, so do it here
    $item->update(array('id'       => $_POST['slalevels_id'],
                        'date_mod' => $_SESSION['glpi_currenttime']));
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
  } else {//print computer informations
    commonHeader($LANG['sla'][6], $_SERVER['PHP_SELF'], "config", "sla");

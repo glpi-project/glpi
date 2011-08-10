@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "contracts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $contract->check($_POST['id'],'w');
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    if ($contract->update($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["additem"])) {
    $contractitem->check(-1,'w',$_POST);
@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["deleteitem"])) {
    if (count($_POST["item"])) {
@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
    }
    Event::log($_POST["contracts_id"], "contracts", 4, "financial",
             $_SESSION["glpiname"]." ".$LANG['log'][33]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["deleteitem"])) {
    $contractitem->check($_GET["id"], 'w');
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["addcontractsupplier"])) {
    $contractsupplier->check(-1,'w',$POST);
@@ -127,7 +127,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][34]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["deletecontractsupplier"])) {
    $contractsupplier->check($_GET['id'],'w');
@@ -136,7 +136,7 @@ if (isset($_POST["add"])) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",
                $_SESSION["glpiname"]." ".$LANG['log'][35]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");

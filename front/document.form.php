@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
                $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$name.".");
    }
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $doc->check($_POST["id"],'w');
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
    if ($doc->update($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["adddocumentitem"])) {
    $documentitem->check(-1,'w',$_POST);
@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["documents_id"], "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["deletedocumentitem"])) {
 
@@ -120,7 +120,7 @@ if (isset($_POST["add"])) {
    }
    Event::log($_POST["documents_id"], "documents", 4, "document",
             $_SESSION["glpiname"]." ".$LANG['log'][33]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_GET["deletedocumentitem"])
            && isset($_GET["documents_id"])
@@ -131,7 +131,7 @@ if (isset($_POST["add"])) {
       Event::log($_GET["documents_id"], "documents", 4, "document",
                $_SESSION["glpiname"]." ".$LANG['log'][33]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");

@@ -86,7 +86,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
                                             $_SESSION['ldap_import']["mode"],
                                             $_SESSION['ldap_import']["authldaps_id"],
                                             true);
-         glpi_header($_SERVER['PHP_SELF']);
+         Html::header($_SERVER['PHP_SELF']);
 
       } else {
          unset($_SESSION["ldap_process"]);
@@ -113,7 +113,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
             }
          }
       }
-      glpi_header($_SERVER['PHP_SELF']);
+      Html::header($_SERVER['PHP_SELF']);
    }
 }
 

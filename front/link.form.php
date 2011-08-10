@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $newID = $link->add($_POST);
    Event::log($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".
               $_POST["name"].".");
-   glpi_header(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
+   Html::header(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
    $link->check($_GET["id"],'w');
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $link->check($_GET["id"],'w');
    $link->update($_POST);
    Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {
    commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");

@@ -48,7 +48,7 @@ if (!isset($_GET['id'])) {
 //LDAP Server add/update/delete
 if (isset($_POST["update"])) {
    $config_ldap->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
@@ -59,10 +59,10 @@ if (isset($_POST["update"])) {
          } else {
             addMessageAfterRedirect($LANG['login'][23],false,ERROR);
          }
-         glpi_header($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=".$newID);
+         Html::header($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=".$newID);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
    $config_ldap->delete($_POST);
@@ -80,7 +80,7 @@ if (isset($_POST["update"])) {
       $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][23].
                                        " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["test_ldap_replicate"])) {
    foreach ($_POST["test_ldap_replicate"] as $replicate_id => $value) {
@@ -95,21 +95,21 @@ if (isset($_POST["update"])) {
                                           " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete_replicate"])) {
    $replicate = new AuthLdapReplicate();
    foreach ($_POST["item"] as $index=>$val) {
       $replicate->delete(array("id" => $index));
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["add_replicate"])) {
    $replicate = new AuthLdapReplicate();
    unset($_POST["next"]);
    unset($_POST["id"]);
    $replicate->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 
 commonHeader(AuthLDAP::getTypeName(1), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');

@@ -322,7 +322,7 @@ class Html {
          $display_sec = true;
       }
 
-      $units = getTimestampTimeUnits($time);
+      $units = Toolbox::getTimestampTimeUnits($time);
       $out   = $sign;
 
       if ($units['day']>0) {
@@ -358,6 +358,36 @@ class Html {
       return $value;
    }
 
+
+   /**
+    * Header redirection hack
+    *
+    * @param $dest string: Redirection destination
+    *    - if empty => $_SERVER['HTTP_REFERER']
+    *
+    * @return nothing
+   **/
+   static function header($dest='') {
+
+      if (empty($dest)) {
+         $dest = $_SERVER['HTTP_REFERER'];
+      }
+
+      $toadd = '';
+      if (!strpos($dest,"?")) {
+         $toadd = '?tokonq='.Toolbox::getRandomString(5);
+      }
+
+      echo "<script language=javascript>
+            NomNav = navigator.appName;
+            if (NomNav=='Konqueror') {
+               window.location='".$dest.$toadd."';
+            } else {
+               window.location='".$dest."';
+            }
+         </script>";
+      exit();
+   }
 
 
 

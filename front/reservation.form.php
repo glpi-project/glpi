@@ -53,8 +53,8 @@ if (isset($_POST["update"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item'] = key($_POST["items"]);
       if ($rr->update($_POST)) {
-         glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+         Html::header($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                      $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
       }
    }
 
@@ -66,8 +66,8 @@ if (isset($_POST["update"])) {
    }
 
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-               "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
+   Html::header($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
 } else if (isset($_POST["add"])) {
    $all_ok = true;
@@ -121,7 +121,7 @@ if (isset($_POST["update"])) {
       if (count($_POST['items']) == 1) {
          $toadd = "?reservationitems_id=$reservationitems_id";
       }
-      glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
+      Html::header($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }
 
 } else if (isset($_GET["id"])) {
@@ -130,7 +130,7 @@ if (isset($_POST["update"])) {
    }
    if (empty($_GET["id"])
        && (!isset($_GET['item']) || count($_GET['item']) == 0 )) {
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Html::header();
    }
    if (!empty($_GET["id"])
        || (isset($_GET['item']) && isset($_GET['date']))) {

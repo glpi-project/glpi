@@ -50,13 +50,13 @@ if (isset($_POST["add"])) {
    if ($link_itemtype->add($_POST)) {
     Event::log($_POST["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
+   Html::header($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
 else if (isset($_GET["delete"])) {
    $link->check($_GET["links_id"],'w');
 
    $link_itemtype->delete($_GET);
    Event::log($_GET["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 }
 ?>

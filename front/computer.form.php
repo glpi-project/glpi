@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "computers", 4, "inventory",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 // delete a computer
 } else if (isset($_POST["delete"])) {
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
 } else if (isset($_GET["disconnect"])) {
@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
    $computer->check($_GET['computers_id'], 'w');
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][26]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 // Connect a computer to a printer/monitor/phone/peripheral
 } else if (isset($_POST["connect"]) && isset($_POST["items_id"]) && $_POST["items_id"]>0) {
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
    $conn->add($_POST);
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"] ." ".$LANG['log'][27]);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_monitor"])) {
    $computer->check($_POST['id'], 'w');
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_monitor");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock"])) {
    $computer->check($_POST['id'], 'w');
@@ -141,7 +141,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_printer"])) {
    $computer->check($_POST['id'], 'w');
@@ -150,7 +150,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_printer");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_soft"])) {
    $computer->check($_POST['id'], 'w');
@@ -159,7 +159,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_software");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_disk"])) {
    $computer->check($_POST['id'], 'w');
@@ -168,7 +168,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_disk");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_periph"])) {
    $computer->check($_POST['id'], 'w');
@@ -177,7 +177,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_peripheral");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_ip"])) {
    $computer->check($_POST['id'], 'w');
@@ -186,7 +186,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "import_ip");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["unlock_field"])) {
    $computer->check($_POST['id'], 'w');
@@ -195,7 +195,7 @@ if (isset($_POST["add"])) {
          OcsServer::deleteInOcsArray($_POST["id"], $key, "computer_update");
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["force_ocs_resynch"])) {
    $computer->check($_POST['id'], 'w');
@@ -203,7 +203,7 @@ if (isset($_POST["add"])) {
    $ocsservers_id = OcsServer::getByMachineID($_POST["id"]);
    //Update the computer
    OcsServer::updateComputer($_POST["resynch_id"], $ocsservers_id, 1, 1);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else {//print computer informations
    commonHeader($LANG['Menu'][0], $_SERVER['PHP_SELF'], "inventory", "computer");

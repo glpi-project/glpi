@@ -40,7 +40,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 } else if (isset($_POST["delete"])) {
 
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::header();
 
 }
 

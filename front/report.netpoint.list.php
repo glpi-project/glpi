@@ -172,7 +172,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
    commonFooter();
 
 } else  {
-   glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php");
+   Html::header($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
 
 ?>
