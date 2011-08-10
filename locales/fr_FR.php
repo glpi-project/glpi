@@ -2422,6 +2422,7 @@ $LANG['title'][26] = "Principal";
 $LANG['title'][27] = "Connexions";
 $LANG['title'][28] = "Tickets";
 
+$LANG['title'][32] = "Lien externe";
 $LANG['title'][33] = "Liens externes";
 $LANG['title'][34] = "Liens";
 
