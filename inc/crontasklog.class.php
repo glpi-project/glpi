@@ -66,5 +66,44 @@ class CronTaskLog extends CommonDBTM{
       return $DB->affected_rows();
    }
 
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'CronTask' :
+               $ong = array();
+               $ong[1] = $LANG['Menu'][13]; // Stat
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $ong[2] = self::createTabEntry($LANG['Menu'][30],
+                                              countElementsInTable($this->getTable(),
+                                                                   "crontasks_id = '".$item->getID()."'"));
+               } else {
+                  $ong[2] = $LANG['Menu'][30];
+               }
+               return $ong;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='CronTask') {
+         switch ($tabnum) {
+            case 1 :
+               $item->showStatistics();
+               break;
+
+            case 2 :
+               $item->showHistory();
+               break;
+         }
+      }
+      return true;
+   }
+
 }
 ?>

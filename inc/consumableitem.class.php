@@ -114,15 +114,11 @@ class ConsumableItem extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $this->addStandardTab('Consumable', $ong, $options);
-         $this->addStandardTab('Infocom', $ong, $options);
-         $this->addStandardTab('Document',$ong, $options);
-         $this->addStandardTab('Link',$ong, $options);
-         $this->addStandardTab('Note',$ong, $options);
-      }
+      $this->addStandardTab('Consumable', $ong, $options);
+      $this->addStandardTab('Infocom', $ong, $options);
+      $this->addStandardTab('Document',$ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
 
       return $ong;
    }
