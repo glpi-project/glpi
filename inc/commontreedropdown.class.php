@@ -91,13 +91,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
-   function getCompleteNameFromParents($parentCompleteName, $thisName) {
-     return addslashes($parentCompleteName) . " > "  . $thisName;
+   /**
+   * Compute completename based on parent one
+   *
+   * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
+   * @param $thisName string item name (need to be addslashes : comes from input)
+   **/
+   static function getCompleteNameFromParents($parentCompleteName, $thisName) {
+     return addslashes($parentCompleteName). " > ".$thisName;
    }
 
-
-   function prepareInputForAdd($input) {
-
+   function adaptTreeFieldsFromUpdateOrAdd($input) {
       $parent = clone $this;
 
       if (isset($input[$this->getForeignKeyField()])
@@ -106,6 +110,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
          $input['level']        = $parent->fields['level']+1;
          // Sometimes (internet address), the complete name may be different ...
+         // Update case input['name'] not set :
+         if (!isset($input['name']) && isset($this->fields['name'])) {
+            $input['name'] = addslashes($this->fields['name']);
+         }
          $input['completename'] = $this->getCompleteNameFromParents($parent->fields['completename'],
                                                                      $input['name']);
       } else {
@@ -115,6 +123,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       return $input;
+   }
+
+   function prepareInputForAdd($input) {
+     return $this->adaptTreeFieldsFromUpdateOrAdd($input);
    }
 
 
@@ -141,35 +153,66 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return true;
    }
 
-
    function prepareInputForUpdate($input) {
-
       // Can't move a parent under a child
       if (isset($input[$this->getForeignKeyField()])
           && in_array($input[$this->getForeignKeyField()],
                       getSonsOf($this->getTable(), $input['id']))) {
          return false;
       }
+      if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
+         // Only the parents changes, so we must update theses, but not the sons !
+         $input["ancestors_cache"] = NULL;
+         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+      }
       return $input;
    }
 
-
-   function post_updateItem($history=1) {
-
-      if (in_array('name', $this->updates)
-          || in_array($this->getForeignKeyField(), $this->updates)) {
-
-         if (in_array($this->getForeignKeyField(), $this->updates)) {
-            CleanFields($this->getTable(), array('ancestors_cache', 'sons_cache'));
+   function regenerateTreeUnderID($ID, $updateName, $changeParent) {
+      global $DB;
+      if (($updateName) || ($changeParent)) {
+         $currentNode = clone $this;
+         $currentNode->getFromDB($ID);
+         $query = "SELECT `id`, `name`
+                  FROM `".$this->getTable()."`
+                  WHERE `".$this->getForeignKeyField()."` = $ID";
+         foreach ($DB->request($query) as $data) {
+            $query = "UPDATE `".$this->getTable()."` SET ";
+            $fieldsToUpdate = array();
+            if ($updateName || $changeParent)
+               $fieldsToUpdate[] = "`completename`='".
+                                    $this->getCompleteNameFromParents($currentNode->getField("completename"),
+                                                                      addslashes($data["name"]))."'";
+            if ($changeParent) {
+               // We have to reset the ancestors as only these changes (ie : not the children).
+               $fieldsToUpdate[] = "`ancestors_cache`=NULL";
+            }
+            $query .= implode(', ',$fieldsToUpdate)." WHERE `id`='".$data["id"]."'";
+            $DB->query($query);
+            $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
          }
-
-         regenerateTreeCompleteNameUnderID($this->getTable(), $this->input['id']);
       }
    }
 
+   function recursiveCleanSonsAboveID($ID) {
+      global $DB;
+      if ($ID > 0) {
+         $query = "UPDATE `".$this->getTable()."`
+                     SET `sons_cache` = NULL
+                     WHERE `id`='$ID'";
+         $DB->query($query);
+
+         $currentNode = clone $this;
+         if ($currentNode->getFromDB($ID)) {
+            $parentID = $currentNode->getField($this->getForeignKeyField());
+            if ($ID != $parentID) {
+               $this->recursiveCleanSonsAboveID($parentID);
+            }
+         }
+      }
+   }
 
    function post_addItem() {
-
       CleanFields($this->getTable(), 'sons_cache');
 
       $parent = $this->fields[$this->getForeignKeyField()];
@@ -181,6 +224,54 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
    }
 
+
+   function post_updateItem($history=1) {
+      $ID = $this->getID();
+      $changeParent = in_array($this->getForeignKeyField(), $this->updates);
+      $this->regenerateTreeUnderID($ID, in_array('name', $this->updates), $changeParent);
+      $this->recursiveCleanSonsAboveID($ID);
+
+      if ($changeParent) {
+         $oldParentID = $this->oldvalues[$this->getForeignKeyField()];
+         $newParentID = $this->fields[$this->getForeignKeyField()];
+         $oldParentNameID = '';
+         $newParentNameID = '';
+
+         $parent = clone $this;
+         if ($oldParentID > 0) {
+            $this->recursiveCleanSonsAboveID($oldParentID);
+            if ($history) {
+               if ($parent->getFromDB($oldParentID)) {
+               $oldParentNameID = $parent->getNameID();
+               }
+               $changes[0] = '0';
+               $changes[1] = addslashes($this->getNameID());
+               $changes[2] = '';
+               Log::history($oldParentID, $this->getType(), $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+            }
+         }
+
+         if ($newParentID > 0) {
+            if ($history) {
+               if ($parent->getFromDB($newParentID)) {
+               $newParentNameID = $parent->getNameID();
+               }
+               $changes[0] = '0';
+               $changes[1] = '';
+               $changes[2] = addslashes($this->getNameID());
+               Log::history($newParentID, $this->getType(), $changes, $this->getType(), HISTORY_ADD_SUBITEM);
+            }
+         }
+
+         if ($history) {
+            $changes[0] = '0';
+            $changes[1] = $oldParentNameID;
+            $changes[2] = $newParentNameID;
+            Log::history($ID, $this->getType(), $changes, $this->getType(), HISTORY_UPDATE_SUBITEM);
+         }
+
+      }
+   }
 
    function post_deleteFromDB() {
 
