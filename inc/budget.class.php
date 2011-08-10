@@ -62,19 +62,43 @@ class Budget extends CommonDropdown{
       global $LANG;
 
       $ong = array();
-
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
-         $this->addStandardTab('Document',$ong, $options);
-         $ong[2] = $LANG['common'][96];
-         $this->addStandardTab('Link',$ong, $options);
-         $this->addStandardTab('Note',$ong, $options);
-         $this->addStandardTab('Log',$ong, $options);
-      }
+      $this->addStandardTab(__CLASS__,$ong, $options);
+      $this->addStandardTab('Document',$ong, $options);
+      $this->addStandardTab('Link',$ong, $options);
+      $this->addStandardTab('Note',$ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               return array (1 => $LANG['title'][26],
+                             2 => $LANG['common'][96]);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showValuesByEntity();
+               break;
+            case 2 :
+               $item->showItems();
+               break;
+         }
+      }
+      return true;
    }
 
 
