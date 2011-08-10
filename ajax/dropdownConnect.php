@@ -76,9 +76,9 @@ if ($item->maybeTemplate()) {
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $where .= " AND (`$table`.`name` ".makeTextSearch($_POST['searchText'])."
-                    OR `$table`.`otherserial` ".makeTextSearch($_POST['searchText'])."
-                    OR `$table`.`serial` ".makeTextSearch($_POST['searchText'])." )";
+   $where .= " AND (`$table`.`name` ".Search::makeTextSearch($_POST['searchText'])."
+                    OR `$table`.`otherserial` ".Search::makeTextSearch($_POST['searchText'])."
+                    OR `$table`.`serial` ".Search::makeTextSearch($_POST['searchText'])." )";
 }
 
 $multi = $item->maybeRecursive();

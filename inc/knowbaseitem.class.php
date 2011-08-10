@@ -602,8 +602,8 @@ class KnowbaseItem extends CommonDBTM {
                              /* 8 */   "/\)/",
                              /* 9 */   "/\-/");
             $contains = preg_replace($search1,"", $params["contains"]);
-            $where .= " (`glpi_knowbaseitems`.`name` ".makeTextSearch($contains)."
-                         OR `glpi_knowbaseitems`.`answer` ".makeTextSearch($contains).")";
+            $where .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
+                         OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
          } else {
             $where = $where_1;
          }

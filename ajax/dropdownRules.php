@@ -62,7 +62,7 @@ $sql = "SELECT `id`, `name`, `ranking`
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 } else {
-   $sql .= " AND `name` ".makeTextSearch($_POST['searchText']);
+   $sql .= " AND `name` ".Search::makeTextSearch($_POST['searchText']);
 }
 
 if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']!='') {

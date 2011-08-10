@@ -1799,10 +1799,10 @@ class Search {
          $ADD = " OR `$NAME$num` IS NULL";
       }
 
-      return " $LINK (`$NAME$num`".makeTextSearch($val,$NOT)."
+      return " $LINK (`$NAME$num`".self::makeTextSearch($val,$NOT)."
                      $ADD ) ";
 */
-      return makeTextCriteria("`$NAME$num`",$val,$NOT,$LINK);
+      return self::makeTextCriteria("`$NAME$num`",$val,$NOT,$LINK);
    }
 
 
@@ -2530,7 +2530,7 @@ class Search {
       }
       switch ($searchtype) {
          case "contains" :
-            $SEARCH = makeTextSearch($val, $nott);
+            $SEARCH = self::makeTextSearch($val, $nott);
             break;
 
          case "equals" :
@@ -2577,7 +2577,7 @@ class Search {
                if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link `$table`.`id`".$SEARCH;
                }
-               return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+               return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             }
             if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
                $name1 = 'firstname';
@@ -2595,7 +2595,7 @@ class Search {
                             OR `$table`.`$name2` $SEARCH
                             OR CONCAT(`$table`.`$name1`, ' ',
                                       `$table`.`$name2`) $SEARCH".
-                            makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
+                            self::makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
 
          case "glpi_groups.name" :
             $linkfield = "";
@@ -2603,15 +2603,15 @@ class Search {
                return " $link (`$table`.`id`".$SEARCH.
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
-               return "$link (".makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",
-                                                 $val, $nott,'').
-                              makeTextCriteria("`$table`.`$field`", $val ,$nott, 'OR').")";
+               return "$link (".self::makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",
+                                                       $val, $nott,'').
+                              self::makeTextCriteria("`$table`.`$field`", $val ,$nott, 'OR').")";
             }
-            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_infocoms.sink_time" :
          case "glpi_infocoms.warranty_duration" :
@@ -2704,7 +2704,7 @@ class Search {
                $regs[1] .= $regs[2];
                return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." ".ip2long($regs[3]).") ";
             }
-            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_tickets.status" :
          case "glpi_problems.status" :
@@ -2822,7 +2822,7 @@ class Search {
                      if ($searchtype=='notequals') {
                         $nott = !$nott;
                      }
-                     return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+                     return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
                   }
                }
 
@@ -2876,7 +2876,7 @@ class Search {
                // ELSE standard search
                // Date format modification if needed
                $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1', $val);
-               return makeTextCriteria($date_computation, $val, $nott, $link);
+               return self::makeTextCriteria($date_computation, $val, $nott, $link);
 
             case "right" :
                if ($val=='NULL' || $val=='null') {
@@ -2956,7 +2956,7 @@ class Search {
          $out .= ')';
          return $out;
       }
-      return makeTextCriteria($tocompute,$val,$nott,$link);
+      return self::makeTextCriteria($tocompute,$val,$nott,$link);
    }
 
 
@@ -5263,6 +5263,73 @@ class Search {
       $value = Html::clean($value);
 
       return $value;
+   }
+
+
+   /**
+    * Create SQL search condition
+    *
+    * @param $field name (should be ` protected)
+    * @param $val string: value to search
+    * @param $not boolean: is a negative search ?
+    * @param $link with previous criteria
+    *
+    * @return search SQL string
+   **/
+   static function makeTextCriteria ($field, $val, $not=false, $link='AND') {
+
+      $sql = $field . self::makeTextSearch($val, $not);
+
+      if (($not && $val!='NULL' && $val!='null' && $val!='^$')    // Not something
+          ||(!$not && $val=='^$')) {   // Empty
+         $sql = "($sql OR $field IS NULL)";
+      }
+      return " $link $sql ";
+   }
+
+
+   /**
+    * Create SQL search condition
+    *
+    * @param $val string: value to search
+    * @param $not boolean: is a negative search ?
+    *
+    * @return search string
+   **/
+   static function makeTextSearch($val, $not=false) {
+
+      $NOT = "";
+      if ($not) {
+         $NOT = "NOT";
+      }
+
+      // Unclean to permit < and > search
+      $val = Toolbox::unclean_cross_side_scripting_deep($val);
+
+      if ($val=='NULL' || $val=='null') {
+         $SEARCH = " IS $NOT NULL ";
+
+      } else {
+         $begin = 0;
+         $end   = 0;
+         if (($length=strlen($val))>0) {
+            if (($val[0]=='^')) {
+               $begin = 1;
+            }
+
+            if ($val[$length-1]=='$') {
+               $end = 1;
+            }
+         }
+
+         if ($begin || $end) {
+            // no Toolbox::substr, to be consistent with strlen result
+            $val = substr($val, $begin, $length-$end-$begin);
+         }
+
+         $SEARCH = " $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+      }
+      return $SEARCH;
    }
 
 

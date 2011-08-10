@@ -54,8 +54,8 @@ if (!isset($_POST["limit"])) {
 }
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-   $where = " WHERE (`glpi_netpoints`.`name` ".makeTextSearch($_POST['searchText'])."
-                     OR `glpi_locations`.`completename` ".makeTextSearch($_POST['searchText']).")";
+   $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_POST['searchText'])."
+                     OR `glpi_locations`.`completename` ".Search::makeTextSearch($_POST['searchText']).")";
 } else {
    $where = " WHERE 1 ";
 }

@@ -197,7 +197,7 @@ class User extends CommonDBTM {
          }
          $ong[2] = $LANG['common'][111];
          $ong[3] = $LANG['common'][112];
-         
+
          $this->addStandardTab('Ticket', $ong, $options);
          $this->addStandardTab('Document', $ong, $options);
          $this->addStandardTab('Reservation', $ong, $options);
@@ -2157,13 +2157,13 @@ class User extends CommonDBTM {
          $query .= " WHERE $where ";
       } else {
          if (strlen($search)>0 && $search!=$CFG_GLPI["ajax_wildcard"]) {
-            $where .= " AND (`glpi_users`.`name` ".makeTextSearch($search)."
-                             OR `glpi_users`.`realname` ".makeTextSearch($search)."
-                             OR `glpi_users`.`firstname` ".makeTextSearch($search)."
-                             OR `glpi_users`.`phone` ".makeTextSearch($search)."
-                             OR `glpi_useremails`.`email` ".makeTextSearch($search)."
+            $where .= " AND (`glpi_users`.`name` ".Search::makeTextSearch($search)."
+                             OR `glpi_users`.`realname` ".Search::makeTextSearch($search)."
+                             OR `glpi_users`.`firstname` ".Search::makeTextSearch($search)."
+                             OR `glpi_users`.`phone` ".Search::makeTextSearch($search)."
+                             OR `glpi_useremails`.`email` ".Search::makeTextSearch($search)."
                              OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
-                                      makeTextSearch($search).")";
+                                       Search::makeTextSearch($search).")";
          }
          $query .= " WHERE $where ";
 
@@ -2418,7 +2418,7 @@ class User extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $this->getField('id');
-      
+
       if ($tech) {
          $type_user = $CFG_GLPI['linkuser_tech_types'];
          $type_group = $CFG_GLPI['linkgroup_tech_types'];
@@ -2430,7 +2430,7 @@ class User extends CommonDBTM {
          $field_user = 'users_id';
          $field_group = 'groups_id';
       }
-      
+
       $group_where = "";
       $groups = array();
       $query = "SELECT `glpi_groups_users`.`groups_id`,
