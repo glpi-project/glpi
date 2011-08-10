@@ -667,6 +667,9 @@ function update0801to083() {
    $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
                         array('after' => 'admin_reply_name'));
 
+   $migration->addField("glpi_vlans", 'tag', "string");
+   $ADDTODISPLAYPREF['Vlan'] = array(11);
+
    $migration->addField("glpi_profiles", 'create_ticket_on_login', "bool");
 
    $migration->addField("glpi_reminders", 'begin_view_date', "datetime");

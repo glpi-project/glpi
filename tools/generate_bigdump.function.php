@@ -849,7 +849,7 @@ function generateGlobalDropdowns() {
          $val = "VLAN $i";
       }
       $query = "INSERT INTO `glpi_vlans`
-                VALUES (NULL, '$val', 'comment $val')";
+                VALUES (NULL, '$val', 'comment $val', '$i')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 

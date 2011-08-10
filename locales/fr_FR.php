@@ -353,6 +353,7 @@ $LANG['common'][110] = "Pas de changement d'entité";
 $LANG['common'][111] = "Matériels utilisés";
 $LANG['common'][112] = "Matériels gérés";
 $LANG['common'][113] = "Visibilité";
+$LANG['common'][114] = "TAG";
 
 
 $LANG['computers'][0]  = "Volume";
