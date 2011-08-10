@@ -355,7 +355,7 @@ class Ajax {
    * @param $toobserve id of another item used to get value in case of __VALUE__ used
    *
    **/
-   function updateItem($toupdate, $url, $parameters=array(), $toobserve="") {
+   static function updateItem($toupdate, $url, $parameters=array(), $toobserve="") {
 
       echo "<script type='text/javascript'>";
       self::updateItemJsCode($toupdate,$url,$parameters,$toobserve);
