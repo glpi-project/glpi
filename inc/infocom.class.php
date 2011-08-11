@@ -65,12 +65,12 @@ class Infocom extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('infocom', 'w');
+      return Session::haveRight('infocom', 'w');
    }
 
 
    function canView() {
-      return haveRight('infocom', 'r');
+      return Session::haveRight('infocom', 'r');
    }
 
 
@@ -90,7 +90,7 @@ class Infocom extends CommonDBChild {
       global $LANG;
 
       // Can exists on template
-      if (haveRight("infocom","r")) {
+      if (Session::haveRight("infocom","r")) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -602,7 +602,7 @@ class Infocom extends CommonDBChild {
    static function showDisplayLink($itemtype, $device_id, $update=0) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if (!haveRight("infocom","r") || !class_exists($itemtype)) {
+      if (!Session::haveRight("infocom","r") || !class_exists($itemtype)) {
          return false;
       }
       $item = new $itemtype();
@@ -618,7 +618,7 @@ class Infocom extends CommonDBChild {
       if ($DB->result($result,0,0)>0) {
          $add = "";
          $text = $LANG['buttons'][23];
-      } else if (!haveRight("infocom","w")) {
+      } else if (!Session::haveRight("infocom","w")) {
          return false;
       }
 
@@ -828,7 +828,7 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI, $LANG;
 
       // Show Infocom or blank form
-      if (!haveRight("infocom","r")) {
+      if (!Session::haveRight("infocom","r")) {
          return false;
       }
 
@@ -884,7 +884,7 @@ class Infocom extends CommonDBChild {
                                                 'entity' => $item->getEntityID()));
             }
             echo "</td>";
-            if (haveRight("budget","r")) {
+            if (Session::haveRight("budget","r")) {
                echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
                Dropdown::show('Budget', array('value'    => $ic->fields["budgets_id"],
                                               'entity'   => $item->getEntityID(),

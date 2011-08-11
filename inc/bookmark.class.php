@@ -43,12 +43,12 @@ class Bookmark extends CommonDBTM {
    const WIDTH = 750;
 
    function canCreate() {
-      return haveRight('bookmark_public', 'w');
+      return Session::haveRight('bookmark_public', 'w');
    }
 
 
    function canView() {
-      return haveRight('bookmark_public', 'r');
+      return Session::haveRight('bookmark_public', 'r');
    }
 
 
@@ -164,7 +164,7 @@ class Bookmark extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
 
-      if (haveRight("bookmark_public","w")) {
+      if ($this->canCreate()) {
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
                                            $this->fields["entities_id"],
                                            $this->fields["is_recursive"]);
@@ -448,7 +448,7 @@ class Bookmark extends CommonDBTM {
    function showBookmarkList($target, $is_private=1) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!$is_private && !haveRight('bookmark_public','r')) {
+      if (!$is_private && !$this->canView()) {
          return false;
       }
 

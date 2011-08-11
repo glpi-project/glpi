@@ -42,34 +42,34 @@ class TicketTask  extends CommonITILTask {
 
    function canCreate() {
 
-      return (haveRight('global_add_tasks', 1)
-              || haveRight('own_ticket', 1));
+      return (Session::haveRight('global_add_tasks', 1)
+              || Session::haveRight('own_ticket', 1));
    }
 
 
    function canView() {
 
-      return (haveRight('observe_ticket', 1)
-              || haveRight('show_full_ticket', 1)
-              || haveRight('own_ticket', 1));
+      return (Session::haveRight('observe_ticket', 1)
+              || Session::haveRight('show_full_ticket', 1)
+              || Session::haveRight('own_ticket', 1));
    }
 
 
    function canUpdate() {
 
-      return (haveRight('global_add_tasks', 1)
-              || haveRight('own_ticket', 1)
-              || haveRight('update_tasks', 1) );
+      return (Session::haveRight('global_add_tasks', 1)
+              || Session::haveRight('own_ticket', 1)
+              || Session::haveRight('update_tasks', 1) );
    }
 
 
    function canViewPrivates () {
-      return haveRight('show_full_ticket', 1);
+      return Session::haveRight('show_full_ticket', 1);
    }
 
 
    function canEditAll () {
-      return haveRight('update_tasks', 1);
+      return Session::haveRight('update_tasks', 1);
    }
 
 
@@ -84,11 +84,11 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if (haveRight('show_full_ticket', 1)) {
+      if (Session::haveRight('show_full_ticket', 1)) {
          return true;
       }
 
-      if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
+      if (!$this->fields['is_private'] && Session::haveRight('observe_ticket',1)) {
          return true;
       }
 
@@ -110,7 +110,7 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      return (haveRight("global_add_tasks","1")
+      return (Session::haveRight("global_add_tasks","1")
               || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
@@ -129,7 +129,7 @@ class TicketTask  extends CommonITILTask {
       }
 
       if ($this->fields["users_id"] != Session::getLoginUserID()
-          && !haveRight('update_tasks',1)) {
+          && !Session::haveRight('update_tasks',1)) {
          return false;
       }
 

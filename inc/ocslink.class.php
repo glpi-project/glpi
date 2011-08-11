@@ -48,12 +48,12 @@ class Ocslink extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('ocsng', 'w');
+      return Session::haveRight('ocsng', 'w');
    }
 
 
    function canView() {
-      return haveRight('ocsng', 'r');
+      return Session::haveRight('ocsng', 'r');
    }
 
 
@@ -96,7 +96,7 @@ class Ocslink extends CommonDBTM {
       if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
          switch ($item->getType()) {
             case 'Computer' :
-               if (haveRight('sync_ocsng', 'w') || haveRight('computer', 'w')) {
+               if (Session::haveRight('sync_ocsng', 'w') || Session::haveRight('computer', 'w')) {
                   return $LANG['ocsconfig'][0];
                }
                break;

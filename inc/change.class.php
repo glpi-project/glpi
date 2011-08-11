@@ -71,25 +71,25 @@ class Change extends CommonITILObject {
 
 
    function canAdminActors(){
-      return haveRight('edit_all_change', '1');
+      return Session::haveRight('edit_all_change', '1');
    }
 
 
    function canAssign(){
-      return haveRight('edit_all_change', '1');
+      return Session::haveRight('edit_all_change', '1');
    }
 
 
    function canAssignToMe(){
-      return haveRight('edit_all_change', '1');
+      return Session::haveRight('edit_all_change', '1');
    }
 
 
    function canSolve(){
 
       return (self::isAllowedStatus($this->fields['status'], 'solved')
-              && (haveRight("edit_all_change","1")
-                  || (haveRight('show_my_change', 1)
+              && (Session::haveRight("edit_all_change", "1")
+                  || (Session::haveRight('show_my_change', 1)
                       && ($this->isUser(parent::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))))));
@@ -97,12 +97,13 @@ class Change extends CommonITILObject {
 
 
    function canCreate() {
-      return haveRight('edit_all_change', '1');
+      return Session::haveRight('edit_all_change', '1');
    }
 
 
    function canView() {
-      return haveRight('edit_all_change', '1') || haveRight('show_my_change', '1');
+      return (Session::haveRight('edit_all_change', '1')
+              || Session::haveRight('show_my_change', '1'));
    }
 
 
@@ -113,11 +114,11 @@ class Change extends CommonITILObject {
    **/
    function canViewItem() {
 
-      if (!haveAccessToEntity($this->getEntityID())) {
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (haveRight('edit_all_change', 1)
-              || (haveRight('show_my_change', 1)
+      return (Session::haveRight('edit_all_change', 1)
+              || (Session::haveRight('show_my_change', 1)
                   && ($this->isUser(parent::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(parent::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -150,10 +151,10 @@ class Change extends CommonITILObject {
    **/
    function canCreateItem() {
 
-      if (!haveAccessToEntity($this->getEntityID())) {
+      if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return haveRight('edit_all_change', 1);
+      return Session::haveRight('edit_all_change', 1);
    }
 
 
@@ -167,7 +168,7 @@ class Change extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (haveRight("show_all_change","1")) {
+      if (Session::haveRight("show_all_change","1")) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Problem' :
@@ -762,7 +763,7 @@ class Change extends CommonITILObject {
       }
 
       $showuserlink = 0;
-      if (haveRight('user','r')) {
+      if (Session::haveRight('user','r')) {
          $showuserlink = 1;
       }
 

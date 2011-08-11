@@ -46,15 +46,15 @@ echo "<tr><th colspan='4'>" . $LANG['rulesengine'][77] . "</th></tr>";
 echo "<tr class='tab_bg_1'><td class='top'><table class='tab_cadre'>";
 echo "<tr><th>".$LANG['rulesengine'][80]."</th></tr>";
 
-if (haveRight("rule_dictionnary_software","r")) {
+if (Session::haveRight("rule_dictionnary_software","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnarysoftware.php\">" . $LANG['rulesengine'][35] ."</a></td></tr>";
 }
-if (haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnarymanufacturer.php\">" . $LANG['rulesengine'][36] ."</a></td></tr>";
 }
-if (haveRight("rule_dictionnary_printer","r")) {
+if (Session::haveRight("rule_dictionnary_printer","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnaryprinter.php\">" . $LANG['rulesengine'][39] ."</a></td></tr>";
 }
@@ -62,7 +62,7 @@ if (haveRight("rule_dictionnary_printer","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['rulesengine'][56]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarycomputermodel.php'>" . $LANG['rulesengine'][50] . "</a></td>";
@@ -80,7 +80,7 @@ if (haveRight("rule_dictionnary_dropdown","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['rulesengine'][66]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarycomputertype.php'>" . $LANG['rulesengine'][60] . "</a></td>";
@@ -98,7 +98,7 @@ if (haveRight("rule_dictionnary_dropdown","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['computers'][9]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystem.php'>" . $LANG['rulesengine'][67] . "</a></td></tr>";

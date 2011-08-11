@@ -54,23 +54,24 @@ class TicketValidation  extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('create_validation', 1);
+      return Session::haveRight('create_validation', 1);
    }
 
 
    function canView() {
-      return (haveRight('create_validation', 1)
-              || haveRight('validate_ticket', 1));
+      return (Session::haveRight('create_validation', 1)
+              || Session::haveRight('validate_ticket', 1));
    }
 
 
    function canUpdate() {
-      return (haveRight('validate_ticket', 1) || haveRight('create_validation', 1));
+      return (Session::haveRight('validate_ticket', 1)
+              || Session::haveRight('create_validation', 1));
    }
 
 
    function canDelete() {
-      return haveRight('create_validation', 1);
+      return Session::haveRight('create_validation', 1);
    }
 
 
@@ -81,7 +82,7 @@ class TicketValidation  extends CommonDBChild {
     */
    function canUpdateItem() {
 
-      if (!haveRight('create_validation', 1)
+      if (!Session::haveRight('create_validation', 1)
           && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
@@ -109,11 +110,12 @@ class TicketValidation  extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (haveRight('create_validation','1') || haveRight('validate_ticket','1')) {
+      if (Session::haveRight('create_validation','1')
+          || Session::haveRight('validate_ticket','1')) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
-            if (!haveRight('create_validation','1')) {
+            if (!Session::haveRight('create_validation','1')) {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
             return self::createTabEntry($LANG['validation'][8],
@@ -250,7 +252,7 @@ class TicketValidation  extends CommonDBChild {
          $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
                                 'comment_submission', 'submission_date');
 
-      } else if (haveRight('create_validation',1)) { // Update validation request
+      } else if (Session::haveRight('create_validation',1)) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
@@ -534,11 +536,12 @@ class TicketValidation  extends CommonDBChild {
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight('validate_ticket',1) && !haveRight('create_validation',1)) {
+      if (!Session::haveRight('validate_ticket',1)
+          && !Session::haveRight('create_validation',1)) {
          return false;
       }
       $tID = $ticket->fields['id'];
-      //$canadd = haveRight("create_validation", "1");
+      //$canadd = Session::haveRight("create_validation", "1");
 
       $tmp    = array('tickets_id' => $tID);
       $canadd = $this->can(-1,'w',$tmp);

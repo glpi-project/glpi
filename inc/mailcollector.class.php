@@ -82,12 +82,12 @@ class MailCollector  extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -195,7 +195,7 @@ class MailCollector  extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      if (!haveRight("config", "r")) {
+      if (!Session::haveRight("config", "r")) {
          return false;
       }
       if ($ID > 0) {

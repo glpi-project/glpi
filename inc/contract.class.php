@@ -53,12 +53,12 @@ class Contract extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('contract', 'w');
+      return Session::haveRight('contract', 'w');
    }
 
 
    function canView() {
-      return haveRight('contract', 'r');
+      return Session::haveRight('contract', 'r');
    }
 
 
@@ -136,11 +136,6 @@ class Contract extends CommonDBTM {
    **/
    function showForm ($ID,$options=array()) {
       global $LANG;
-      // Show Contract or blank form
-
-      if (!haveRight("contract","r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -536,7 +531,7 @@ class Contract extends CommonDBTM {
    static function showCentral() {
       global $DB,$CFG_GLPI, $LANG;
 
-      if (!haveRight("contract","r")) {
+      if (!Session::haveRight("contract","r")) {
          return false;
       }
 
@@ -662,7 +657,7 @@ class Contract extends CommonDBTM {
 
       $instID = $this->fields['id'];
 
-      if (!$this->can($instID,'r') || !haveRight("contact_enterprise","r")) {
+      if (!$this->can($instID,'r') || !Session::haveRight("contact_enterprise","r")) {
          return false;
       }
       $canedit = $this->can($instID,'w');
@@ -969,7 +964,7 @@ class Contract extends CommonDBTM {
       $itemtype = $item->getType();
       $ID = $item->fields['id'];
 
-      if (!haveRight("contract","r") || !$item->can($ID,"r")) {
+      if (!Session::haveRight("contract","r") || !$item->can($ID,"r")) {
          return false;
       }
 

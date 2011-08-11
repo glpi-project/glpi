@@ -53,9 +53,12 @@ class SlaLevel extends RuleTicket {
    }
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['sla'][15];
+      }
       return $LANG['sla'][6];
    }
 
@@ -369,6 +372,34 @@ class SlaLevel extends RuleTicket {
          }
       }
       return 0;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+toolbox::logdebug("getTabNameForItem", $item->getType());
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Sla' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "slas_id = '".$item->getID()."'"));
+               }
+               return self::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Sla') {
+         $slalevel = new self();
+         $slalevel->showForSLA($item);
+      }
+      return true;
    }
 
 }

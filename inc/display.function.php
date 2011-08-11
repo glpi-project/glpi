@@ -231,7 +231,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    $showstate = false;
    $menu['inventory']['title'] = $LANG['Menu'][38];
 
-   if (haveRight("computer","r")) {
+   if (Session::haveRight("computer","r")) {
       $menu['inventory']['default'] = '/front/computer.php';
 
       $menu['inventory']['content']['computer']['title']           = $LANG['Menu'][0];
@@ -239,7 +239,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['inventory']['content']['computer']['page']            = '/front/computer.php';
       $menu['inventory']['content']['computer']['links']['search'] = '/front/computer.php';
 
-      if (haveRight("computer","w")) {
+      if (Session::haveRight("computer","w")) {
          $menu['inventory']['content']['computer']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=1';
          $menu['inventory']['content']['computer']['links']['template']
@@ -249,13 +249,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("monitor","r")) {
+   if (Session::haveRight("monitor","r")) {
       $menu['inventory']['content']['monitor']['title']           = $LANG['Menu'][3];
       $menu['inventory']['content']['monitor']['shortcut']        = 'm';
       $menu['inventory']['content']['monitor']['page']            = '/front/monitor.php';
       $menu['inventory']['content']['monitor']['links']['search'] = '/front/monitor.php';
 
-      if (haveRight("monitor","w")) {
+      if (Session::haveRight("monitor","w")) {
          $menu['inventory']['content']['monitor']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=1';
          $menu['inventory']['content']['monitor']['links']['template']
@@ -265,13 +265,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("software","r")) {
+   if (Session::haveRight("software","r")) {
       $menu['inventory']['content']['software']['title']           = $LANG['Menu'][4];
       $menu['inventory']['content']['software']['shortcut']        = 's';
       $menu['inventory']['content']['software']['page']            = '/front/software.php';
       $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
 
-      if (haveRight("software","w")) {
+      if (Session::haveRight("software","w")) {
          $menu['inventory']['content']['software']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Software&amp;add=1';
          $menu['inventory']['content']['software']['links']['template']
@@ -281,13 +281,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("networking","r")) {
+   if (Session::haveRight("networking","r")) {
       $menu['inventory']['content']['networking']['title']           = $LANG['Menu'][1];
       $menu['inventory']['content']['networking']['shortcut']        = 'n';
       $menu['inventory']['content']['networking']['page']            = '/front/networkequipment.php';
       $menu['inventory']['content']['networking']['links']['search'] = '/front/networkequipment.php';
 
-      if (haveRight("networking","w")) {
+      if (Session::haveRight("networking","w")) {
          $menu['inventory']['content']['networking']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=1';
          $menu['inventory']['content']['networking']['links']['template']
@@ -297,13 +297,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("peripheral","r")) {
+   if (Session::haveRight("peripheral","r")) {
       $menu['inventory']['content']['peripheral']['title']           = $LANG['Menu'][16];
       $menu['inventory']['content']['peripheral']['shortcut']        = 'n';
       $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
       $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
 
-      if (haveRight("peripheral","w")) {
+      if (Session::haveRight("peripheral","w")) {
          $menu['inventory']['content']['peripheral']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=1';
          $menu['inventory']['content']['peripheral']['links']['template']
@@ -313,13 +313,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("printer","r")) {
+   if (Session::haveRight("printer","r")) {
       $menu['inventory']['content']['printer']['title']           = $LANG['Menu'][2];
       $menu['inventory']['content']['printer']['shortcut']        = 'p';
       $menu['inventory']['content']['printer']['page']            = '/front/printer.php';
       $menu['inventory']['content']['printer']['links']['search'] = '/front/printer.php';
 
-      if (haveRight("printer","w")) {
+      if (Session::haveRight("printer","w")) {
          $menu['inventory']['content']['printer']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=1';
          $menu['inventory']['content']['printer']['links']['template']
@@ -329,25 +329,25 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("cartridge","r")) {
+   if (Session::haveRight("cartridge","r")) {
       $menu['inventory']['content']['cartridge']['title']           = $LANG['Menu'][21];
       $menu['inventory']['content']['cartridge']['shortcut']        = 'c';
       $menu['inventory']['content']['cartridge']['page']            = '/front/cartridgeitem.php';
       $menu['inventory']['content']['cartridge']['links']['search'] = '/front/cartridgeitem.php';
 
-      if (haveRight("cartridge","w")) {
+      if (Session::haveRight("cartridge","w")) {
          $menu['inventory']['content']['cartridge']['links']['add'] = '/front/cartridgeitem.form.php';
       }
    }
 
 
-   if (haveRight("consumable","r")) {
+   if (Session::haveRight("consumable","r")) {
       $menu['inventory']['content']['consumable']['title']           = $LANG['Menu'][32];
       $menu['inventory']['content']['consumable']['shortcut']        = 'g';
       $menu['inventory']['content']['consumable']['page']            = '/front/consumableitem.php';
       $menu['inventory']['content']['consumable']['links']['search'] = '/front/consumableitem.php';
 
-      if (haveRight("consumable","w")) {
+      if (Session::haveRight("consumable","w")) {
          $menu['inventory']['content']['consumable']['links']['add']
                                                                = '/front/consumableitem.form.php';
       }
@@ -357,13 +357,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("phone","r")) {
+   if (Session::haveRight("phone","r")) {
       $menu['inventory']['content']['phone']['title']           = $LANG['Menu'][34];
       $menu['inventory']['content']['phone']['shortcut']        = 't';
       $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
       $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
 
-      if (haveRight("phone","w")) {
+      if (Session::haveRight("phone","w")) {
          $menu['inventory']['content']['phone']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=1';
          $menu['inventory']['content']['phone']['links']['template']
@@ -386,9 +386,9 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    // ASSISTANCE
    $menu['maintain']['title'] = $LANG['title'][24];
 
-   if (haveRight("observe_ticket","1")
-       || haveRight("show_all_ticket","1")
-       || haveRight("create_ticket","1")) {
+   if (Session::haveRight("observe_ticket","1")
+       || Session::haveRight("show_all_ticket","1")
+       || Session::haveRight("create_ticket","1")) {
 
       $menu['maintain']['default'] = '/front/ticket.php';
 
@@ -398,7 +398,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
       $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
-      if (haveRight('validate_ticket',1)) {
+      if (Session::haveRight('validate_ticket',1)) {
          $opt = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -420,38 +420,38 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       }
    }
 
-   if (haveRight("create_ticket","1")) {
+   if (Session::haveRight("create_ticket","1")) {
       $menu['maintain']['content']['ticket']['links']['add'] = '/front/ticket.form.php';
    }
 
-   if (haveRight("show_all_problem","1") || haveRight("show_my_problem","1")) {
+   if (Session::haveRight("show_all_problem","1") || Session::haveRight("show_my_problem","1")) {
       $menu['maintain']['content']['problem']['title']           = $LANG['Menu'][7];
       $menu['maintain']['content']['problem']['shortcut']        = 'p';
       $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
       $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
-      if (haveRight("edit_all_problem","1")) {
+      if (Session::haveRight("edit_all_problem","1")) {
          $menu['maintain']['content']['problem']['links']['add'] = '/front/problem.form.php';
       }
    }
 
-   if (haveRight("show_all_change","1") || haveRight("show_my_change","1")) {
+   if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
       $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
       $menu['maintain']['content']['change']['shortcut']        = 'c';
       $menu['maintain']['content']['change']['page']            = '/front/change.php';
       $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
-      if (haveRight("edit_all_change","1")) {
+      if (Session::haveRight("edit_all_change","1")) {
          $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
       }
    }
 
-   if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
+   if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']           = Toolbox::ucfirst($LANG['log'][16]);
       $menu['maintain']['content']['planning']['shortcut']        = 'l';
       $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
       $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
    }
 
-   if (haveRight("statistic","1")) {
+   if (Session::haveRight("statistic","1")) {
       $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
       $menu['maintain']['content']['stat']['shortcut'] = '1';
       $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
@@ -462,7 +462,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    // FINANCIAL
    $menu['financial']['title'] = $LANG['Menu'][26];
 
-   if (haveRight("budget", "r")) {
+   if (Session::haveRight("budget", "r")) {
       $menu['financial']['default'] = '/front/budget.php';
 
       $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
@@ -470,7 +470,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['financial']['content']['budget']['page']            = '/front/budget.php';
       $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';
 
-      if (haveRight("budget","w")) {
+      if (Session::haveRight("budget","w")) {
          $menu['financial']['content']['budget']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Budget&amp;add=1';
          $menu['financial']['content']['budget']['links']['template']
@@ -478,7 +478,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       }
    }
 
-   if (haveRight("contact_enterprise", "r")) {
+   if (Session::haveRight("contact_enterprise", "r")) {
       $menu['financial']['content']['supplier']['title']           = $LANG['Menu'][23];
       $menu['financial']['content']['supplier']['shortcut']        = 'e';
       $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
@@ -490,20 +490,20 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['financial']['content']['contact']['page']            = '/front/contact.php';
       $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
 
-      if (haveRight("contact_enterprise", "w")) {
+      if (Session::haveRight("contact_enterprise", "w")) {
          $menu['financial']['content']['contact']['links']['add']  = '/front/contact.form.php';
          $menu['financial']['content']['supplier']['links']['add'] = '/front/supplier.form.php';
       }
    }
 
 
-   if (haveRight("contract", "r")) {
+   if (Session::haveRight("contract", "r")) {
       $menu['financial']['content']['contract']['title']           = $LANG['Menu'][25];
       $menu['financial']['content']['contract']['shortcut']        = 'n';
       $menu['financial']['content']['contract']['page']            = '/front/contract.php';
       $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
 
-      if (haveRight("contract", "w")) {
+      if (Session::haveRight("contract", "w")) {
          $menu['financial']['content']['contract']['links']['add']
                            = '/front/setup.templates.php?itemtype=Contract&amp;add=1';
          $menu['financial']['content']['contract']['links']['template']
@@ -512,13 +512,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("document", "r")) {
+   if (Session::haveRight("document", "r")) {
       $menu['financial']['content']['document']['title']           = $LANG['Menu'][27];
       $menu['financial']['content']['document']['shortcut']        = 'd';
       $menu['financial']['content']['document']['page']            = '/front/document.php';
       $menu['financial']['content']['document']['links']['search'] = '/front/document.php';
 
-      if (haveRight("document","w")) {
+      if (Session::haveRight("document","w")) {
          $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
       }
    }
@@ -535,8 +535,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
    $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
 
-   if (haveRight("knowbase","r") || haveRight("faq","r")) {
-      if (haveRight("knowbase","r")) {
+   if (Session::haveRight("knowbase","r") || Session::haveRight("faq","r")) {
+      if (Session::haveRight("knowbase","r")) {
          $menu['utils']['content']['knowbase']['title']        = $LANG['Menu'][19];
       } else {
          $menu['utils']['content']['knowbase']['title']        = $LANG['knowbase'][1];
@@ -544,14 +544,15 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
       $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
 
-      if (haveRight("knowbase","w") || haveRight("faq","w")) {
+      if (Session::haveRight("knowbase","w") || Session::haveRight("faq","w")) {
          $menu['utils']['content']['knowbase']['links']['add']
                                                          = '/front/knowbaseitem.form.php?id=new';
       }
    }
 
 
-   if (haveRight("reservation_helpdesk","1") || haveRight("reservation_central","r")) {
+   if (Session::haveRight("reservation_helpdesk","1")
+       || Session::haveRight("reservation_central","r")) {
       $menu['utils']['content']['reservation']['title']            = $LANG['Menu'][17];
       $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
       $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
@@ -559,13 +560,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("reports","r")) {
+   if (Session::haveRight("reports","r")) {
       $menu['utils']['content']['report']['title'] = $LANG['Menu'][6];
       $menu['utils']['content']['report']['page']  = '/front/report.php';
    }
 
 
-   if ($CFG_GLPI["use_ocs_mode"] && haveRight("ocsng","w")) {
+   if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("ocsng","w")) {
       $menu['utils']['content']['ocsng']['title']                      = $LANG['ocsconfig'][0];
       $menu['utils']['content']['ocsng']['page']                       = '/front/ocsng.php';
 
@@ -653,7 +654,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    /// ADMINISTRATION
    $menu['admin']['title'] = $LANG['Menu'][15];
 
-   if (haveRight("user","r")) {
+   if (Session::haveRight("user","r")) {
       $menu['admin']['default'] = '/front/user.php';
 
       $menu['admin']['content']['user']['title']           = $LANG['Menu'][14];
@@ -661,7 +662,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['admin']['content']['user']['page']            = '/front/user.php';
       $menu['admin']['content']['user']['links']['search'] = '/front/user.php';
 
-      if (haveRight("user","w")) {
+      if (Session::haveRight("user","w")) {
          $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
       }
 
@@ -670,13 +671,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("group","r")) {
+   if (Session::haveRight("group","r")) {
       $menu['admin']['content']['group']['title']           = $LANG['Menu'][36];
       $menu['admin']['content']['group']['shortcut']        = 'g';
       $menu['admin']['content']['group']['page']            = '/front/group.php';
       $menu['admin']['content']['group']['links']['search'] = '/front/group.php';
 
-      if (haveRight("group","w")) {
+      if (Session::haveRight("group","w")) {
          $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
          $menu['admin']['content']['group']['options']['ldap']['title'] = $LANG['Menu'][9];
          $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
@@ -684,7 +685,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("entity","r")) {
+   if (Session::haveRight("entity","r")) {
       $menu['admin']['content']['entity']['title']           = $LANG['Menu'][37];
       $menu['admin']['content']['entity']['shortcut']        = 'z';
       $menu['admin']['content']['entity']['page']            = '/front/entity.php';
@@ -693,11 +694,11 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("rule_ldap","r")
-       || haveRight("rule_ocs","r")
-       || haveRight("entity_rule_ticket","r")
-       || haveRight("rule_softwarecategories","r")
-       || haveRight("rule_mailcollector","r")) {
+   if (Session::haveRight("rule_ldap","r")
+       || Session::haveRight("rule_ocs","r")
+       || Session::haveRight("entity_rule_ticket","r")
+       || Session::haveRight("rule_softwarecategories","r")
+       || Session::haveRight("rule_mailcollector","r")) {
 
       $menu['admin']['content']['rule']['title']    = $LANG['rulesengine'][17];
       $menu['admin']['content']['rule']['shortcut'] = 'r';
@@ -724,13 +725,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
+   if (Session::haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
       $menu['admin']['content']['rule']['options']['transfer']['title'] = $LANG['transfer'][1];
       $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
       $menu['admin']['content']['rule']['options']['transfer']['links']['search']
                                                                         = "/front/transfer.php";
 
-      if (haveRight("transfer","w")) {
+      if (Session::haveRight("transfer","w")) {
          $menu['admin']['content']['rule']['options']['transfer']['links']['summary']
                                                                      = "/front/transfer.action.php";
          $menu['admin']['content']['rule']['options']['transfer']['links']['add']
@@ -739,9 +740,9 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("rule_dictionnary_dropdown","r")
-       || haveRight("rule_dictionnary_software","r")
-       || haveRight("rule_dictionnary_printer","r")) {
+   if (Session::haveRight("rule_dictionnary_dropdown","r")
+       || Session::haveRight("rule_dictionnary_software","r")
+       || Session::haveRight("rule_dictionnary_printer","r")) {
 
       $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
       $menu['admin']['content']['dictionnary']['shortcut'] = 'r';
@@ -755,7 +756,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']
                         = '/front/ruledictionnarymanufacturer.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['add']
                            = '/front/ruledictionnarymanufacturer.form.php';
          }
@@ -768,7 +769,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['software']['links']['search']
                         = '/front/ruledictionnarysoftware.php';
 
-         if (haveRight("rule_dictionnary_software","w")) {
+         if (Session::haveRight("rule_dictionnary_software","w")) {
             $menu['admin']['content']['dictionnary']['options']['software']['links']['add']
                            = '/front/ruledictionnarysoftware.form.php';
          }
@@ -781,7 +782,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
                         = '/front/ruledictionnarycomputermodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['add']
                            = '/front/ruledictionnarycomputermodel.form.php';
          }
@@ -794,7 +795,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
                         = '/front/ruledictionnarymonitormodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['add']
                            = '/front/ruledictionnarymonitormodel.form.php';
          }
@@ -807,7 +808,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']
                         = '/front/ruledictionnaryprintermodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['add']
                            = '/front/ruledictionnaryprintermodel.form.php';
          }
@@ -820,7 +821,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']
                         = '/front/ruledictionnaryperipheralmodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['add']
                            = '/front/ruledictionnaryperipheralmodel.form.php';
          }
@@ -833,7 +834,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['search']
                         = '/front/ruledictionnarynetworkequipmentmodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['add']
                            = '/front/ruledictionnarynetworkequipmentmodel.form.php';
          }
@@ -846,7 +847,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']
                         = '/front/ruledictionnaryphonemodel.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['add']
                            = '/front/ruledictionnaryphonemodel.form.php';
          }
@@ -859,7 +860,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']
                         = '/front/ruledictionnarycomputertype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['add']
                            = '/front/ruledictionnarycomputertype.form.php';
          }
@@ -872,7 +873,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']
                         = '/front/ruledictionnarymonitortype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['add']
                            = '/front/ruledictionnarymonitortype.form.php';
          }
@@ -885,7 +886,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
                         = '/front/ruledictionnaryprintertype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['add']
                            = '/front/ruledictionnaryprintertype.form.php';
          }
@@ -898,7 +899,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
                         = '/front/ruledictionnaryperipheraltype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['add']
                            = '/front/ruledictionnaryperipheraltype.form.php';
          }
@@ -911,7 +912,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']
                         = '/front/ruledictionnarynetworkequipmenttype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['add']
                            = '/front/ruledictionnarynetworkequipmenttype.form.php';
          }
@@ -924,7 +925,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']
                         = '/front/ruledictionnaryphonetype.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['add']
                            = '/front/ruledictionnaryphonetype.form.php';
          }
@@ -936,7 +937,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['os']['links']['search']
                         = '/front/ruledictionnaryoperatingsystem.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['os']['links']['add']
                            = '/front/ruledictionnaryoperatingsystem.form.php';
          }
@@ -949,7 +950,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']
                         = '/front/ruledictionnaryoperatingsystemservicepack.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['add']
                            = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
          }
@@ -962,7 +963,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']
                         = '/front/ruledictionnaryoperatingsystemversion.php';
 
-         if (haveRight("rule_dictionnary_dropdown","w")) {
+         if (Session::haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['os_version']['links']['add']
                            = '/front/ruledictionnaryoperatingsystemversion.form.php';
          }
@@ -974,7 +975,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']
                         = '/front/ruledictionnaryprinter.php';
 
-         if (haveRight("rule_dictionnary_printer","w")) {
+         if (Session::haveRight("rule_dictionnary_printer","w")) {
             $menu['admin']['content']['dictionnary']['options']['printer']['links']['add']
                            = '/front/ruledictionnaryprinter.form.php';
          }
@@ -983,25 +984,25 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("profile","r")) {
+   if (Session::haveRight("profile","r")) {
       $menu['admin']['content']['profile']['title']           = $LANG['Menu'][35];
       $menu['admin']['content']['profile']['shortcut']        = 'p';
       $menu['admin']['content']['profile']['page']            = '/front/profile.php';
       $menu['admin']['content']['profile']['links']['search'] = "/front/profile.php";
 
-      if (haveRight("profile","w")) {
+      if (Session::haveRight("profile","w")) {
          $menu['admin']['content']['profile']['links']['add'] = "/front/profile.form.php";
       }
    }
 
-   if (haveRight("backup","w")) {
+   if (Session::haveRight("backup","w")) {
       $menu['admin']['content']['backup']['title']    = $LANG['Menu'][12];
       $menu['admin']['content']['backup']['shortcut'] = 'b';
       $menu['admin']['content']['backup']['page']     = '/front/backup.php';
    }
 
 
-   if (haveRight("logs","r")) {
+   if (Session::haveRight("logs","r")) {
       $menu['admin']['content']['log']['title']    = $LANG['Menu'][30];
       $menu['admin']['content']['log']['shortcut'] = 'l';
       $menu['admin']['content']['log']['page']     = '/front/event.php';
@@ -1014,7 +1015,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    $addconfig = array();
    $menu['config']['title'] = $LANG['common'][12];
 
-   if (haveRight("dropdown","r") || haveRight("entity_dropdown","r")) {
+   if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")) {
       $menu['config']['content']['dropdowns']['title'] = $LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']  = '/front/dropdown.php';
 
@@ -1043,7 +1044,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("device","w")) {
+   if (Session::haveRight("device","w")) {
       $menu['config']['content']['device']['title'] = Toolbox::ucfirst($LANG['log'][18]);
       $menu['config']['content']['device']['page']  = '/front/device.php';
 
@@ -1070,7 +1071,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (($CFG_GLPI['use_mailing'] && haveRight("notification","r")) || haveRight("config","w")) {
+   if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
+       || Session::haveRight("config","w")) {
       $menu['config']['content']['mailing']['title'] = $LANG['setup'][704];
       $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
       $menu['config']['content']['mailing']['options']['notification']['title']
@@ -1084,16 +1086,16 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("sla","r")) {
+   if (Session::haveRight("sla","r")) {
       $menu['config']['content']['sla']['title']           = $LANG['Menu'][43];
       $menu['config']['content']['sla']['page']            = '/front/sla.php';
       $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
-      if (haveRight("sla","w")) {
+      if (Session::haveRight("sla","w")) {
          $menu['config']['content']['sla']['links']['add']    = "/front/sla.form.php";
       }
    }
 
-   if (haveRight("config","w")) {
+   if (Session::haveRight("config","w")) {
 
       $menu['config']['content']['config']['title'] = $LANG['setup'][703];
       $menu['config']['content']['config']['page']  = '/front/config.form.php';
@@ -1170,7 +1172,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {
+   if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("config","w")) {
       $menu['config']['content']['ocsng']['title']           = $LANG['ocsconfig'][24];
       $menu['config']['content']['ocsng']['page']            = '/front/ocsserver.php';
       $menu['config']['content']['ocsng']['links']['search'] = '/front/ocsserver.php';
@@ -1178,19 +1180,19 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("link","r")) {
+   if (Session::haveRight("link","r")) {
       $menu['config']['content']['link']['title']           = $LANG['title'][33];
       $menu['config']['content']['link']['page']            = '/front/link.php';
       $menu['config']['content']['link']['hide']            = true;
       $menu['config']['content']['link']['links']['search'] = '/front/link.php';
 
-      if (haveRight("link","w")) {
+      if (Session::haveRight("link","w")) {
          $menu['config']['content']['link']['links']['add'] = "/front/link.form.php";
       }
    }
 
 
-   if (haveRight("config","w")) {
+   if (Session::haveRight("config","w")) {
       $menu['config']['content']['plugins']['title'] = $LANG['common'][29];
       $menu['config']['content']['plugins']['page']  = '/front/plugin.php';
    }
@@ -1687,7 +1689,7 @@ function helpHeader($title, $url='') {
    echo "</li>";
 
    //  Create ticket
-   if (haveRight("create_ticket","1")) {
+   if (Session::haveRight("create_ticket","1")) {
       echo "<li id='menu2'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' title=\"".
              $LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
@@ -1695,7 +1697,7 @@ function helpHeader($title, $url='') {
    }
 
    //  Suivi ticket
-   if (haveRight("observe_ticket","1")) {
+   if (Session::haveRight("observe_ticket","1")) {
       echo "<li id='menu2'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
              $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
@@ -1703,7 +1705,7 @@ function helpHeader($title, $url='') {
    }
 
    // Reservation
-   if (haveRight("reservation_helpdesk","1")) {
+   if (Session::haveRight("reservation_helpdesk","1")) {
       echo "<li id='menu3'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
              $LANG['Menu'][17]."\" class='itemP'>".$LANG['Menu'][17]."</a>";
@@ -1711,7 +1713,7 @@ function helpHeader($title, $url='') {
    }
 
    // FAQ
-   if (haveRight("faq","r")) {
+   if (Session::haveRight("faq","r")) {
       echo "<li id='menu4' >";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
              $LANG['knowbase'][1]."\" class='itemP'>".$LANG['Menu'][20]."</a>";
@@ -1774,7 +1776,7 @@ function helpHeader($title, $url='') {
    echo "<li><a href='#' title=''>".$LANG['central'][5]."></a></li>";
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-   if (haveRight('validate_ticket',1)) {
+   if (Session::haveRight('validate_ticket',1)) {
       $opt = array();
       $opt['reset']         = 'reset';
       $opt['field'][0]      = 55; // validation status
@@ -1797,7 +1799,7 @@ function helpHeader($title, $url='') {
    }
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-   if (haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
+   if (Session::haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".$LANG['buttons'][8].
              "\" alt=\"".$LANG['buttons'][8]."\"></a></li>";
@@ -2212,11 +2214,11 @@ function displayErrorAndDie ($message, $minimal=false) {
 function printHelpDesk ($ID, $from_helpdesk) {
    global $DB, $CFG_GLPI, $LANG;
 
-   if (!haveRight("create_ticket","1")) {
+   if (!Session::haveRight("create_ticket","1")) {
       return false;
    }
 
-   if (haveRight('validate_ticket',1)) {
+   if (Session::haveRight('validate_ticket',1)) {
       $opt = array();
       $opt['reset']         = 'reset';
       $opt['field'][0]      = 55; // validation status

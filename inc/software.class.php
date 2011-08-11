@@ -56,19 +56,19 @@ class Software extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('software', 'w');
+      return Session::haveRight('software', 'w');
    }
 
 
    function canView() {
-      return haveRight('software', 'r');
+      return Session::haveRight('software', 'r');
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("software","r")) {
+      if ($item->getType() == 'Computer' && Session::haveRight("software","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][4],
                                         countElementsInTable('glpi_computers_softwareversions',
@@ -231,11 +231,6 @@ class Software extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
-      // Show Software or blank form
-
-      if (!haveRight("software", "r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID,'r');

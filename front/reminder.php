@@ -42,11 +42,10 @@ commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
 Reminder::showList();
 
-if (haveRight("reminder_public","r")) {
+if (Session::haveRight("reminder_public","r")) {
    Reminder::showList(false,false);
    Reminder::showList(false,true);
 }
 
 commonFooter();
-
 ?>

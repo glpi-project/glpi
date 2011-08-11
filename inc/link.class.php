@@ -51,19 +51,19 @@ class Link extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('link', 'w');
+      return Session::haveRight('link', 'w');
    }
 
 
    function canView() {
-      return haveRight('link', 'r');
+      return Session::haveRight('link', 'r');
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (haveRight("link","r")) {
+      if (Session::haveRight("link","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['title'][34],
                                         countElementsInTable('glpi_links_itemtypes',
@@ -114,9 +114,6 @@ class Link extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("link","r")) {
-         return false;
-      }
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -334,7 +331,7 @@ class Link extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("link","r")) {
+      if (!Session::haveRight("link","r")) {
          return false;
       }
 

@@ -55,12 +55,12 @@ class RuleMailCollector extends Rule {
 
 
    function canCreate() {
-      return haveRight('rule_mailcollector', 'w');
+      return Session::haveRight('rule_mailcollector', 'w');
    }
 
 
    function canView() {
-      return haveRight('rule_mailcollector', 'r');
+      return Session::haveRight('rule_mailcollector', 'r');
    }
 
 

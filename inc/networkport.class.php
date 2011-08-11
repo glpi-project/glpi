@@ -279,7 +279,7 @@ class NetworkPort extends CommonDBChild {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      if (!haveRight('networking','r') || !$item->can($items_id, 'r')) {
+      if (!Session::haveRight('networking','r') || !$item->can($items_id, 'r')) {
          return false;
       }
 
@@ -519,7 +519,7 @@ class NetworkPort extends CommonDBChild {
          $options['several'] = false;
       }
 
-      if (!haveRight("networking", "r")) {
+      if (!Session::haveRight("networking", "r")) {
          return false;
       }
 
@@ -1026,7 +1026,7 @@ class NetworkPort extends CommonDBChild {
       global $LANG, $CFG_GLPI;
 
       // Can exists on template
-      if (haveRight('networking','r')) {
+      if (Session::haveRight('networking','r')) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry($LANG['networking'][6], self::countForItem($item));

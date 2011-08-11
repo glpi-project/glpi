@@ -441,7 +441,7 @@ class Log extends CommonDBTM {
                   break;
 
                case HISTORY_OCS_IMPORT :
-                  if (haveRight("view_ocsng","r")) {
+                  if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]." :";
                      $tmp['change'].= " "."\"".$data["new_value"]."\"";
@@ -451,7 +451,7 @@ class Log extends CommonDBTM {
                   break;
 
                case HISTORY_OCS_DELETE :
-                  if (haveRight("view_ocsng","r")) {
+                  if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  ="";
                      $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]." :";
                      $tmp['change'].= " "."\"".$data["old_value"]."\"";
@@ -461,7 +461,7 @@ class Log extends CommonDBTM {
                   break;
 
                case HISTORY_OCS_LINK :
-                  if (haveRight("view_ocsng","r")) {
+                  if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field'] = NOT_AVAILABLE;
                      if (class_exists($data["itemtype_link"])) {
                         $item         = new $data["itemtype_link"]();
@@ -476,7 +476,7 @@ class Log extends CommonDBTM {
                   break;
 
                case HISTORY_OCS_IDCHANGED :
-                  if (haveRight("view_ocsng","r")) {
+                  if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][48]." "." : "."\"".
                                       $data["old_value"]."\" -->  : "."\"".

@@ -700,7 +700,7 @@ class Computer_Item extends CommonDBRelation{
             case 'Printer' :
             case 'Peripheral' :
             case 'Monitor' :
-               if (haveRight('computer', 'r')) {
+               if (Session::haveRight('computer', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry($LANG['title'][27], self::countForItem($item));
                   }
@@ -709,10 +709,10 @@ class Computer_Item extends CommonDBRelation{
                break;
 
             case 'Computer' :
-               if (haveRight('phone', 'r')
-                   || haveRight('printer', 'r')
-                   || haveRight('peripheral', 'r')
-                   || haveRight('monitor', 'r')) {
+               if (Session::haveRight('phone', 'r')
+                   || Session::haveRight('printer', 'r')
+                   || Session::haveRight('peripheral', 'r')
+                   || Session::haveRight('monitor', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry($LANG['title'][27], self::countForComputer($item));
                   }

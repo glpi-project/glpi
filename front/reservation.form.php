@@ -48,7 +48,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
-   if (haveRight("reservation_central","w")
+   if (Session::haveRight("reservation_central","w")
        || Session::getLoginUserID() === $_POST["users_id"]) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item'] = key($_POST["items"]);
@@ -98,7 +98,7 @@ if (isset($_POST["update"])) {
          $_POST["begin"] = date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
          $_POST["end"] = date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
 
-         if (haveRight("reservation_central","w")
+         if (Session::haveRight("reservation_central","w")
              || Session::getLoginUserID() === $_POST["users_id"]) {
             unset($rr->fields["id"]);
             $_POST['_ok'] = $rr->add($_POST);

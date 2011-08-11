@@ -79,7 +79,7 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI, $LANG;
 
       $ID = $user->fields['id'];
-      if (!haveRight("group","r") || !$user->can($ID,'r')) {
+      if (!Session::haveRight("group","r") || !$user->can($ID,'r')) {
          return false;
       }
 
@@ -116,7 +116,7 @@ class Group_User extends CommonDBRelation{
 
          // Keep only entities "connected user" have access
          foreach ($strict_entities as $key => $val) {
-            if (!haveAccessToEntity($val)) {
+            if (!Session::haveAccessToEntity($val)) {
                unset($strict_entities[$key]);
             }
          }
@@ -209,7 +209,7 @@ class Group_User extends CommonDBRelation{
       global $DB, $LANG, $CFG_GLPI;
 
       $ID = $group->fields['id'];
-      if (!haveRight("user","r") || !$group->can($ID,'r')) {
+      if (!Session::haveRight("user","r") || !$group->can($ID,'r')) {
          return false;
       }
       // Have right to manage members

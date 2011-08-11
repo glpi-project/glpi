@@ -64,12 +64,12 @@ class NetworkEquipment extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('networking', 'w');
+      return Session::haveRight('networking', 'w');
    }
 
 
    function canView() {
-      return haveRight('networking', 'r');
+      return Session::haveRight('networking', 'r');
    }
 
 
@@ -250,7 +250,7 @@ class NetworkEquipment extends CommonDBTM {
 
       // Show device or blank form
 
-      if (!haveRight("networking","r")) {
+      if (!Session::haveRight("networking","r")) {
          return false;
       }
 

@@ -75,12 +75,12 @@ class Computer_Device extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
 

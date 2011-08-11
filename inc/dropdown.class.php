@@ -219,7 +219,7 @@ class Dropdown {
             }
          }
 
-         if ($itemtype=='ITILCategory' && haveRight('knowbase','r')) {
+         if ($itemtype=='ITILCategory' && Session::haveRight('knowbase','r')) {
             if ($params['value'] && $item->getFromDB($params['value'])) {
                echo '&nbsp;'.$item->getLinks();
             }
@@ -565,7 +565,7 @@ class Dropdown {
       global $LANG, $CFG_GLPI;
       static $optgroup = NULL;
 
-      if (!haveRight('device', 'r')) {
+      if (!Session::haveRight('device', 'r')) {
          return array();
       }
 
@@ -1254,7 +1254,7 @@ class Dropdown {
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
              && (($isadmin && $itemtype != 'Ticket')
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
-                 || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
+                 || ($itemtype == 'Ticket' && Session::haveRight('update_ticket',1)))) {
 
             echo "<option value='update'>".$LANG['buttons'][14]."</option>";
          }
@@ -1273,7 +1273,7 @@ class Dropdown {
             // No delete for entities and tracking of not have right
             if (!in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])
                 && (($isadmin && $itemtype != 'Ticket')
-                    || ($itemtype == 'Ticket' && haveRight('delete_ticket',1)))) {
+                    || ($itemtype == 'Ticket' && Session::haveRight('delete_ticket',1)))) {
 
                if ($item->maybeDeleted()) {
                   echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
@@ -1302,7 +1302,7 @@ class Dropdown {
                }
             }
 
-            if (haveRight('transfer','r')
+            if (Session::haveRight('transfer','r')
                 && Session::isMultiEntitiesMode()
                 && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem',
                                              'Contact', 'Contract', 'Supplier', 'Monitor',
@@ -1323,7 +1323,7 @@ class Dropdown {
                            $LANG['rulesengine'][40]."</option>";
                   }
 
-                  if (haveRight("rule_dictionnary_software","w")
+                  if (Session::haveRight("rule_dictionnary_software","w")
                       && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'")>0) {
 
                      echo "<option value='replay_dictionnary'>".$LANG['rulesengine'][76]."</option>";
@@ -1337,7 +1337,8 @@ class Dropdown {
 
                      if ($CFG_GLPI['use_ocs_mode']) {
 
-                        if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")) {
+                        if (Session::haveRight("ocsng","w")
+                            || Session::haveRight("sync_ocsng","w")) {
                            echo "<option value='force_ocsng_update'>".$LANG['ldap'][11]."</option>";
                         }
 
@@ -1381,7 +1382,7 @@ class Dropdown {
                      echo "<option value='add_userprofile'>".$LANG['setup'][607]."</option>";
                   }
 
-                  if (haveRight("user_authtype","w")) {
+                  if (Session::haveRight("user_authtype","w")) {
                      echo "<option value='change_authtype'>".$LANG['login'][30]."</option>";
                      echo "<option value='force_user_ldap_update'>".$LANG['ldap'][11]."</option>";
                   }
@@ -1403,7 +1404,7 @@ class Dropdown {
                      echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
 
-                  if (haveRight("update_ticket","1")) {
+                  if (Session::haveRight("update_ticket","1")) {
                      echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
                      echo "<option value='link_ticket'>".$LANG['job'][56]."</option>";
                   }

@@ -58,12 +58,12 @@ class Consumable extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('consumable', 'w');
+      return Session::haveRight('consumable', 'w');
    }
 
 
    function canView() {
-      return haveRight('consumable', 'r');
+      return Session::haveRight('consumable', 'r');
    }
 
 
@@ -498,7 +498,7 @@ class Consumable extends CommonDBTM {
    static function showSummary() {
       global $DB, $LANG;
 
-      if (!haveRight("consumable","r")) {
+      if (!Session::haveRight("consumable","r")) {
          return false;
       }
 
@@ -618,7 +618,7 @@ class Consumable extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("consumable","r")) {
+      if (!$withtemplate && Session::haveRight("consumable","r")) {
          switch ($item->getType()) {
             case 'ConsumableItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {

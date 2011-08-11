@@ -873,7 +873,7 @@ class Auth {
    static function showSynchronizationForm($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
-      if (haveRight("user", "w")) {
+      if (Session::haveRight("user", "w")) {
          //Look it the user's auth method is LDAP
          $sql = "SELECT `authtype`, `auths_id`
                  FROM `glpi_users`

@@ -52,26 +52,28 @@ if (isset($_GET['activate'])) {
 
 if (!$CFG_GLPI['use_mailing']) {
    echo "<div align='center'<p>";
-   if (haveRight("config","w")) {
+   if (Session::haveRight("config","w")) {
       echo "<a href='setup.notification.php?activate=1' class='icon_consol b'>" .
                $LANG['setup'][202] ."</a></p></div>";
    }
 
 } else {
-   if (!haveRight("config","r") && haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+   if (!Session::haveRight("config","r")
+       && Session::haveRight("notification","r")
+       && $CFG_GLPI['use_mailing']) {
       Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
 
    } else {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>&nbsp;" . $LANG['setup'][704]."&nbsp;</th></tr>";
-      if (haveRight("config","r")) {
+      if (Session::haveRight("config","r")) {
          echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
                $LANG['setup'][201] ."</a></td></tr>";
             echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
                   $LANG['mailing'][113] ."</a></td> </tr>";
       }
 
-      if (haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+      if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
          echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
                "</a></td></tr>";
       } else {

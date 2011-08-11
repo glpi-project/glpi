@@ -56,12 +56,12 @@ class SoftwareLicense extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('software', 'w');
+      return Session::haveRight('software', 'w');
    }
 
 
    function canView() {
-      return haveRight('software', 'r');
+      return Session::haveRight('software', 'r');
    }
 
 
@@ -141,7 +141,7 @@ class SoftwareLicense extends CommonDBTM {
          $softwares_id = $options['softwares_id'];
       }
 
-      if (!haveRight("software","w")) {
+      if (!Session::haveRight("software","w")) {
          return false;
       }
 
@@ -498,7 +498,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit = haveRight("software", "w");
+      $canedit = Session::haveRight("software", "w");
 
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",

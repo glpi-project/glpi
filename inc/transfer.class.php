@@ -78,11 +78,11 @@ class Transfer extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('transfer', 'w');
+      return Session::haveRight('transfer', 'w');
    }
 
    function canView() {
-      return haveRight('transfer', 'r');
+      return Session::haveRight('transfer', 'r');
    }
 
 
@@ -2960,10 +2960,6 @@ class Transfer extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      if (!haveRight("transfer","r")) {
-         return false;
-      }
-
       $edit_form = true;
       if (!strpos($_SERVER['PHP_SELF'],"transfer.form.php")) {
          $edit_form = false;
@@ -2976,8 +2972,8 @@ class Transfer extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $params=array();
-      if (!haveRight("transfer","w")) {
+      $params = array();
+      if (!Session::haveRight("transfer","w")) {
          $params['readonly']=true;
       }
 
@@ -3188,7 +3184,7 @@ class Transfer extends CommonDBTM {
       Dropdown::showFromArray('clean_contract', $clean, $params);
       echo "</td></tr>";
 
-      if (haveRight("transfer", "w")) {
+      if (Session::haveRight("transfer", "w")) {
          if ($edit_form) {
             $this->showFormButtons($options);
             $this->addDivForTabs();

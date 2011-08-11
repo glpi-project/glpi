@@ -280,7 +280,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       /// TODO own_ticket -> own_itilobject
       if ($type == self::ASSIGN) {
-         if (haveRight("own_ticket","1")) {
+         if (Session::haveRight("own_ticket","1")) {
             return Session::getLoginUserID();
          }
       }
@@ -1389,7 +1389,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI,$LANG;
 
       $showgrouplink = 0;
-      if (haveRight('group','r')) {
+      if (Session::haveRight('group','r')) {
          $showgrouplink = 1;
       }
 
@@ -1604,7 +1604,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       $showuserlink = 0;
-      if (haveRight('user','r')) {
+      if (Session::haveRight('user','r')) {
          $showuserlink = 2;
       }
       $usericon = self::getActorIcon('user',$type);
@@ -1820,7 +1820,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $showuserlink = 0;
-      if (haveRight('user','r')) {
+      if (Session::haveRight('user','r')) {
          $showuserlink = 1;
       }
       // Manage actors : requester and assign

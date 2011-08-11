@@ -49,12 +49,12 @@ class Budget extends CommonDropdown{
 
 
    function canCreate() {
-      return haveRight('budget', 'w');
+      return Session::haveRight('budget', 'w');
    }
 
 
    function canView() {
-      return haveRight('budget', 'r');
+      return Session::haveRight('budget', 'r');
    }
 
 
@@ -114,8 +114,6 @@ class Budget extends CommonDropdown{
     **/
    function showForm ($ID, $options=array()) {
       global $LANG;
-
-      if (!haveRight("budget","r")) return false;
 
       $use_cache = true;
 

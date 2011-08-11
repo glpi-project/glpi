@@ -98,14 +98,13 @@ class DocumentType  extends CommonDropdown {
 
 
    function canCreate() {
-      return haveRight('typedoc', 'w');
+      return Session::haveRight('typedoc', 'w');
    }
 
 
    function canView() {
-      return haveRight('typedoc', 'r');
+      return Session::haveRight('typedoc', 'r');
    }
 
 }
-
 ?>

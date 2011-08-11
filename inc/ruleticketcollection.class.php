@@ -50,7 +50,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function canList() {
-      return haveRight("rule_ticket","r") || $this->canView();
+      return Session::haveRight("rule_ticket","r") || $this->canView();
    }
 
 
@@ -67,14 +67,13 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function showInheritedTab() {
-      return haveRight('rule_ticket','r') && ($this->entity);
+      return Session::haveRight('rule_ticket','r') && ($this->entity);
    }
 
 
    function showChildrensTab() {
-      return haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
+      return Session::haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
    }
 
 }
-
 ?>

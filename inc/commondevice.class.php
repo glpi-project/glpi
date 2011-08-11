@@ -37,19 +37,19 @@ if (!defined('GLPI_ROOT')) {
 abstract class CommonDevice extends CommonDropdown {
 
    function canCreate() {
-      return haveRight('device','w');
+      return Session::haveRight('device', 'w');
    }
 
 
    function canView() {
-      return haveRight('device','r');
+      return Session::haveRight('device', 'r');
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
+      if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb    = 0;
             $types =  Computer_Device::getDeviceTypes();

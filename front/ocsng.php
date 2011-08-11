@@ -73,7 +73,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    echo "<div class='center'><table class='tab_cadre'>";
    echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
 
-   if (haveRight('ocsng','w')) {
+   if (Session::haveRight('ocsng','w')) {
       echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>".$LANG['ocsng'][2].
             "</a></td></tr>";
 
@@ -84,7 +84,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
             "</a></td></tr>";
    }
 
-   if (haveRight('clean_ocsng','r')) {
+   if (Session::haveRight('clean_ocsng','r')) {
       echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.clean.php'>".$LANG['ocsng'][3].
             "</a></td> </tr>";
    }

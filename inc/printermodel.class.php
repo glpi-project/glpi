@@ -62,7 +62,7 @@ class PrinterModel extends CommonDropdown {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("printer","r")) {
+      if (!$withtemplate && Session::haveRight("printer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['setup'][96], self::countForCartridge($item));
          }

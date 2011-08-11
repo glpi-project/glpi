@@ -44,12 +44,12 @@ class NotImportedEmail extends CommonDBTM {
    const USER_UNKNOWN  = 1;
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 

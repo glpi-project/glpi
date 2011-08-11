@@ -812,7 +812,7 @@ class Toolbox {
    static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
       global $LANG, $CFG_GLPI;
 
-      if (!$auto && !haveRight("check_update","r")) {
+      if (!$auto && !Session::haveRight("check_update","r")) {
          return false;
       }
 

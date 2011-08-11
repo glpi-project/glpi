@@ -54,12 +54,12 @@ class Phone extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('phone', 'w');
+      return Session::haveRight('phone', 'w');
    }
 
 
    function canView() {
-      return haveRight('phone', 'r');
+      return Session::haveRight('phone', 'r');
    }
 
 
@@ -210,10 +210,6 @@ class Phone extends CommonDBTM {
 
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
-      }
-
-      if (!haveRight("phone","r")) {
-         return false;
       }
 
       if ($ID > 0) {

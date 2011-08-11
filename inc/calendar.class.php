@@ -52,12 +52,12 @@ class Calendar extends CommonDropdown {
 
 
    function canCreate() {
-      return haveRight('calendar', 'w');
+      return Session::haveRight('calendar', 'w');
    }
 
 
    function canView() {
-      return haveRight('calendar', 'r');
+      return Session::haveRight('calendar', 'r');
    }
 
 

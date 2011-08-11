@@ -195,7 +195,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 
    $users_id_requester = Session::getLoginUserID();
    // No default requester if own ticket right = tech and update_ticket right to update requester
-   if (haveRight('own_ticket',1) && haveRight('update_ticket',1)) {
+   if (Session::haveRight('own_ticket',1) && Session::haveRight('update_ticket',1)) {
       $users_id_requester = 0;
    }
 

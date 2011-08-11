@@ -109,7 +109,7 @@ class NotificationMailSetting extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
       if (!$CFG_GLPI['use_mailing']) {
@@ -124,12 +124,12 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 

@@ -124,10 +124,6 @@ class Notification extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
 
-      if (!haveRight("notification", "r")) {
-         return false;
-      }
-
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -154,7 +150,7 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td>";
       echo "<td>";
-      if (haveRight('config', 'w') && $this->getEntityID() == 0) {
+      if (Session::haveRight('config', 'w') && $this->getEntityID() == 0) {
          $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
                                          $CFG_GLPI["notificationtemplates_types"]);
       } else {
@@ -255,22 +251,22 @@ class Notification extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('notification', 'w');
+      return Session::haveRight('notification', 'w');
    }
 
 
    function canView() {
-      return haveRight('notification', 'r');
+      return Session::haveRight('notification', 'r');
    }
 
 
    function canViewItem() {
 
       if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
-          && !haveRight('config', 'w')) {
+          && !Session::haveRight('config', 'w')) {
           return false;
       }
-      return haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+      return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
    }
 
 
@@ -282,10 +278,10 @@ class Notification extends CommonDBTM {
    function canCreateItem() {
 
       if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
-          && !haveRight('config', 'w')) {
+          && !Session::haveRight('config', 'w')) {
           return false;
       }
-      return haveAccessToEntity($this->getEntityID());
+      return Session::haveAccessToEntity($this->getEntityID());
    }
 
 

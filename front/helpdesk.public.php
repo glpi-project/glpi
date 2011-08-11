@@ -71,12 +71,12 @@ if (isset($_GET["redirect"])) {
 }
 
 // redirect if no create ticket right
-if (!haveRight('create_ticket',1)) {
-   if (haveRight('observe_ticket',1) || haveRight('validate_ticket',1)) {
+if (!Session::haveRight('create_ticket',1)) {
+   if (Session::haveRight('observe_ticket',1) || Session::haveRight('validate_ticket',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
-   } else if (haveRight('reservation_helpdesk',1)) {
+   } else if (Session::haveRight('reservation_helpdesk',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
-   } else if (haveRight('faq','r')) {
+   } else if (Session::haveRight('faq','r')) {
       Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
 }
@@ -92,13 +92,13 @@ if (isset($_GET['create_ticket'])) {
    echo "<table class='tab_cadre_central'><tr>";
    echo "<td class='top'><br>";
    echo "<table>";
-   if (haveRight('create_ticket',1)) {
+   if (Session::haveRight('create_ticket',1)) {
       echo "<tr><td class='top' width='450px'>";
       Ticket::showCentralCount(true);
       echo "</td></tr>";
    }
 
-   if (haveRight("reminder_public","r")) {
+   if (Session::haveRight("reminder_public","r")) {
       echo "<tr><td class='top' width='450px'>";
       Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
       $entities = array_reverse(getAncestorsOf("glpi_entities", $_SESSION["glpiactive_entity"]));
@@ -121,7 +121,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table>";
 
    // Show KB items
-   if (haveRight("faq","r")) {
+   if (Session::haveRight("faq","r")) {
       echo "<tr><td class='top' width='450px'>";
       KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "popular", 1);
       echo "</td></tr>";

@@ -71,24 +71,24 @@ class Entity extends CommonTreeDropdown {
 
 
    function canCreate() {
-      return haveRight('entity', 'w');
+      return Session::haveRight('entity', 'w');
    }
 
 
    function canView() {
-      return haveRight('entity', 'r');
+      return Session::haveRight('entity', 'r');
    }
 
 
    function canCreateItem() {
       // Check the parent
-      return haveRecursiveAccessToEntity($this->getField('entities_id'));
+      return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
    }
 
 
    function canUpdateItem() {
       // Check the current entity
-      return haveAccessToEntity($this->getField('id'));
+      return Session::haveAccessToEntity($this->getField('id'));
    }
 
 

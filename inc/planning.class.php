@@ -180,7 +180,7 @@ class Planning {
              title=\"".$LANG['buttons'][12]."\"></a>";
       echo "</td>";
       echo "<td>";
-      if (haveRight("show_all_planning","1")) {
+      if (Session::haveRight("show_all_planning","1")) {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
                 ($usertype=="user"?"checked":"").">";
          $rand_user  =User::dropdown(array( 'name'   => 'uID',
@@ -209,7 +209,7 @@ class Planning {
          echo "});";
          echo "</script>\n";
 
-      } else if (haveRight("show_group_planning","1")) {
+      } else if (Session::haveRight("show_group_planning","1")) {
          echo "<select name='usertype'>";
          echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG['joblist'][1];
          echo "</option>";
@@ -278,7 +278,8 @@ class Planning {
    static function show($who, $who_group, $when, $type) {
       global $LANG, $CFG_GLPI, $DB;
 
-      if (!haveRight("show_planning","1") && !haveRight("show_all_planning","1")) {
+      if (!Session::haveRight("show_planning","1")
+          && !Session::haveRight("show_all_planning","1")) {
          return false;
       }
 
@@ -645,7 +646,7 @@ class Planning {
    static function showCentral($who) {
       global $CFG_GLPI, $LANG;
 
-      if (!haveRight("show_planning","1") || $who<=0) {
+      if (!Session::haveRight("show_planning","1") || $who<=0) {
          return false;
       }
 

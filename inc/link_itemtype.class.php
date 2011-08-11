@@ -57,7 +57,7 @@ class Link_ItemType extends CommonDBTM{
       $canedit = $link->can($links_id, 'w');
       $canrecu = $link->can($links_id, 'recursive');
 
-      if (!haveRight("link","r") || !$link->can($links_id, 'r')) {
+      if (!Session::haveRight("link","r") || !$link->can($links_id, 'r')) {
          return false;
       }
 

@@ -131,7 +131,7 @@ class Contract_Item extends CommonDBRelation{
       global $LANG, $CFG_GLPI;
 
       // Can exists on template
-      if (haveRight("contract","r")) {
+      if (Session::haveRight("contract","r")) {
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {

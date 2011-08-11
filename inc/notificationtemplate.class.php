@@ -64,12 +64,12 @@ class NotificationTemplate extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -82,7 +82,7 @@ class NotificationTemplate extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 

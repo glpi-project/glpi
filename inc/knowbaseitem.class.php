@@ -49,15 +49,15 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function canCreate() {
-      return (haveRight('knowbase', 'w') || haveRight('faq', 'w'));
+      return (Session::haveRight('knowbase', 'w') || Session::haveRight('faq', 'w'));
    }
 
 
    function canView() {
       global $CFG_GLPI;
 
-      return (haveRight('knowbase', 'r')
-              || haveRight('faq', 'r')
+      return (Session::haveRight('knowbase', 'r')
+              || Session::haveRight('faq', 'r')
               || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -66,11 +66,11 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($this->fields["is_faq"]) {
-         return (haveRight('knowbase', 'r')
-                 || haveRight('faq', 'r')
+         return (Session::haveRight('knowbase', 'r')
+                 || Session::haveRight('faq', 'r')
                  || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
       }
-      return haveRight("knowbase", "r");
+      return Session::haveRight("knowbase", "r");
    }
 
 
@@ -114,7 +114,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function post_getEmpty () {
 
-      if (haveRight("faq", "w") && !haveRight("knowbase", "w")) {
+      if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
          $this->fields["is_faq"] = 1;
       }
    }
@@ -132,10 +132,10 @@ class KnowbaseItem extends CommonDBTM {
          $input["name"] = $LANG['common'][30];
       }
 
-      if (haveRight("faq", "w") && !haveRight("knowbase", "w")) {
+      if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
          $input["is_faq"] = 1;
       }
-      if (!haveRight("faq", "w") && haveRight("knowbase", "w")) {
+      if (!Session::haveRight("faq", "w") && Session::haveRight("knowbase", "w")) {
          $input["is_faq"] = 0;
       }
       return $input;
@@ -166,7 +166,7 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG;
 
       // show kb item form
-      if (!haveRight("knowbase","w" ) && !haveRight("faq","w")) {
+      if (!Session::haveRight("knowbase","w" ) && !Session::haveRight("faq","w")) {
          return false;
       }
 
@@ -258,7 +258,7 @@ class KnowbaseItem extends CommonDBTM {
          }
          echo "<br><br>" . $LANG['knowbase'][5]."&nbsp;: ";
 
-         if (haveRight("faq","w") && haveRight("knowbase","w")) {
+         if (Session::haveRight("faq","w") && Session::haveRight("knowbase","w")) {
             Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
          } else {
             echo Dropdown::getYesNo($this->fields["is_faq"]);
@@ -332,7 +332,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $edit    = $this->can($ID, 'w');
       $isFAQ   = $this->fields["is_faq"];
-      $editFAQ = haveRight("faq", "w");
+      $editFAQ = Session::haveRight("faq", "w");
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
       if ($isFAQ) {
@@ -388,7 +388,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       // show item : question and answer
-      if (!haveRight("user","r")) {
+      if (!Session::haveRight("user","r")) {
          $linkusers_id = false;
       }
 
@@ -479,7 +479,9 @@ class KnowbaseItem extends CommonDBTM {
    static function searchForm($options, $faq=0) {
       global $LANG, $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
+      if (!$CFG_GLPI["use_public_faq"]
+          && !Session::haveRight("knowbase","r")
+          && !Session::haveRight("faq","r")) {
          return false;
       }
 

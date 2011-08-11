@@ -52,12 +52,12 @@ class RuleImportComputer extends Rule {
 
 
    function canCreate() {
-      return haveRight('rule_ocs', 'w');
+      return Session::haveRight('rule_ocs', 'w');
    }
 
 
    function canView() {
-      return haveRight('rule_ocs', 'r');
+      return Session::haveRight('rule_ocs', 'r');
    }
 
 
@@ -257,7 +257,7 @@ class RuleImportComputer extends Rule {
                // is a real complex criteria
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
                   if (!isset($input[$criterion]) || $input[$criterion] == '') {
-                     $continue = false;   
+                     $continue = false;
                   } else  {
                   $complex_criterias[] = $crit;
                   }

@@ -193,7 +193,7 @@ class NotificationTarget extends CommonDBChild {
    function showForNotification(Notification $notification) {
       global $LANG;
 
-      if (!haveRight("notification", "r")) {
+      if (!Session::haveRight("notification", "r")) {
          return false;
       }
 
@@ -612,7 +612,7 @@ class NotificationTarget extends CommonDBChild {
    function getNotificationTargets($entity) {
       global $LANG;
 
-      if (haveRight("config", "w")) {
+      if (Session::haveRight("config", "w")) {
          $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, $LANG['setup'][237]);
       }
       $this->addTarget(Notification::ENTITY_ADMINISTRATOR,
@@ -964,7 +964,7 @@ class NotificationTarget extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight('notification', 'r')) {
+      if (!$withtemplate && Session::haveRight('notification', 'r')) {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1022,7 +1022,7 @@ class NotificationTarget extends CommonDBChild {
    static function showForGroup(Group $group) {
       global $LANG, $DB;
 
-      if (!haveRight("notification", "r")) {
+      if (!Session::haveRight("notification", "r")) {
          return false;
       }
 

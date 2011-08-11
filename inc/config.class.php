@@ -60,12 +60,12 @@ class Config extends CommonDBTM {
 
 
    function canUpdate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -182,7 +182,7 @@ class Config extends CommonDBTM {
    function showFormDisplay() {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -283,7 +283,7 @@ class Config extends CommonDBTM {
    function showFormInventory() {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -340,7 +340,7 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (haveRight("transfer","w") && Session::isMultiEntitiesMode()) {
+      if (Session::haveRight("transfer","w") && Session::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
@@ -417,7 +417,7 @@ class Config extends CommonDBTM {
    function showFormAuthentication() {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -459,7 +459,7 @@ class Config extends CommonDBTM {
    function showFormDBSlave() {
       global $DB, $LANG, $CFG_GLPI, $DBSlave;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -522,7 +522,7 @@ class Config extends CommonDBTM {
    function showFormHelpdesk() {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -782,7 +782,7 @@ class Config extends CommonDBTM {
          echo "<td colspan='2'></td>";
       }
       echo "<td>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . "&nbsp;:</td><td>";
-      if (haveRight("config","w") || !GLPI_DEMO_MODE) {
+      if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
          echo "&nbsp;";

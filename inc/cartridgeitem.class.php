@@ -56,12 +56,12 @@ class CartridgeItem extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('cartridge', 'w');
+      return Session::haveRight('cartridge', 'w');
    }
 
 
    function canView() {
-      return haveRight('cartridge', 'r');
+      return Session::haveRight('cartridge', 'r');
    }
 
 
@@ -213,7 +213,7 @@ class CartridgeItem extends CommonDBTM {
       global $LANG;
 
    // Show CartridgeItem or blank form
-      if (!haveRight("cartridge", "r")) {
+      if (!Session::haveRight("cartridge", "r")) {
         return false;
       }
 
@@ -555,7 +555,7 @@ class CartridgeItem extends CommonDBTM {
          $used[] = $pmid;
          $i++;
       }
-      if (haveRight("cartridge", "w")) {
+      if (Session::haveRight("cartridge", "w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<input type='hidden' name='tID' value='$instID'>";
          Dropdown::show('PrinterModel', array('used' => $used));

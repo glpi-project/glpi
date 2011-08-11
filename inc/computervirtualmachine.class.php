@@ -54,19 +54,22 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && $item->getType()=='Computer' && haveRight("computer","r")) {
+      if (!$withtemplate
+          && $item->getType()=='Computer'
+          && Session::haveRight("computer","r")) {
+
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][57],
                                         countElementsInTable('glpi_computervirtualmachines',
@@ -126,7 +129,7 @@ class ComputerVirtualMachine extends CommonDBChild {
         $computers_id = $options['computers_id'];
       }
 
-      if (!haveRight("computer","w")) {
+      if (!Session::haveRight("computer","w")) {
         return false;
       }
 

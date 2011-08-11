@@ -41,17 +41,20 @@ class ProblemTask extends CommonITILTask {
 
 
    function canCreate() {
-      return (haveRight('show_my_problem', '1') || haveRight('edit_all_problem', '1'));
+      return (Session::haveRight('show_my_problem', '1')
+              || Session::haveRight('edit_all_problem', '1'));
    }
 
 
    function canView() {
-      return (haveRight('show_all_problem', 1) || haveRight('show_my_problem', 1));
+      return (Session::haveRight('show_all_problem', 1)
+              || Session::haveRight('show_my_problem', 1));
    }
 
 
    function canUpdate() {
-      return (haveRight('edit_all_problem', 1) || haveRight('show_my_problem', 1));
+      return (Session::haveRight('edit_all_problem', 1)
+              || Session::haveRight('show_my_problem', 1));
    }
 
 
@@ -61,7 +64,7 @@ class ProblemTask extends CommonITILTask {
 
 
    function canEditAll () {
-      return haveRight('edit_all_problem', 1);
+      return Session::haveRight('edit_all_problem', 1);
    }
 
 
@@ -86,8 +89,8 @@ class ProblemTask extends CommonITILTask {
          return false;
       }
 
-      return (haveRight("edit_all_problem","1")
-              || (haveRight("show_my_problem","1")
+      return (Session::haveRight("edit_all_problem","1")
+              || (Session::haveRight("show_my_problem","1")
                   && ($ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $ticket->haveAGroup(CommonITILObject::ASSIGN,
@@ -107,7 +110,7 @@ class ProblemTask extends CommonITILTask {
       }
 
       if ($this->fields["users_id"] != Session::getLoginUserID()
-          && !haveRight('edit_all_problem',1)) {
+          && !Session::haveRight('edit_all_problem',1)) {
          return false;
       }
 

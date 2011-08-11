@@ -105,7 +105,7 @@ function listTemplates($itemtype, $target, $add = 0) {
 function showOtherAuthList($target) {
    global $DB, $LANG, $CFG_GLPI;
 
-   if (!haveRight("config", "w")) {
+   if (!Session::haveRight("config", "w")) {
       return false;
    }
 
@@ -196,7 +196,7 @@ function showOtherAuthList($target) {
 function showMailServerConfig($value) {
    global $LANG;
 
-   if (!haveRight("config", "w")) {
+   if (!Session::haveRight("config", "w")) {
       return false;
    }
    if (strstr($value,":")) {

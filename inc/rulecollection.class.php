@@ -68,12 +68,12 @@ class RuleCollection extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight($this->right, 'w');
+      return Session::haveRight($this->right, 'w');
    }
 
 
    function canView() {
-      return haveRight($this->right, 'r');
+      return Session::haveRight($this->right, 'r');
    }
 
 
@@ -368,7 +368,7 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit = (haveRight($this->right, "w") && !$display_entities);
+      $canedit = (Session::haveRight($this->right, "w") && !$display_entities);
 
       $nb = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
