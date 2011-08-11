@@ -281,7 +281,7 @@ abstract class CommonITILObject extends CommonDBTM {
       /// TODO own_ticket -> own_itilobject
       if ($type == self::ASSIGN) {
          if (haveRight("own_ticket","1")) {
-            return getLoginUserID();
+            return Session::getLoginUserID();
          }
       }
       return 0;
@@ -473,7 +473,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater
-      if ($lastupdater=getLoginUserID(true)) {
+      if ($lastupdater=Session::getLoginUserID(true)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
@@ -703,21 +703,21 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater
-      if ($lastupdater=getLoginUserID(true)) {
+      if ($lastupdater=Session::getLoginUserID(true)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
       // No Auto set Import for external source
       if (!isset($input['_auto_import'])) {
          if (!isset($input["_users_id_requester"])) {
-            if ($uid = getLoginUserID()) {
+            if ($uid = Session::getLoginUserID()) {
                $input["_users_id_requester"] = $uid;
             }
          }
       }
 
       // No Auto set Import for external source
-      if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
+      if (($uid=Session::getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
       } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]) {
          $input["users_id_recipient"] = $input["_users_id_requester"];
@@ -1650,7 +1650,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo "&nbsp;";
 
                if ($canedit
-                   || $d['users_id'] == getLoginUserID()) {
+                   || $d['users_id'] == Session::getLoginUserID()) {
                   $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
                                'popup' => 'edit_user_notification&amp;id='.$d['id']);
                   showToolTip($text, $opt);
@@ -1856,8 +1856,8 @@ abstract class CommonITILObject extends CommonDBTM {
          $candeleteobserver = true;
 
       } else if ($ID > 0
-                 && !$this->isUser(self::OBSERVER, getLoginUserID())
-                 && !$this->isUser(self::REQUESTER, getLoginUserID())) {
+                 && !$this->isUser(self::OBSERVER, Session::getLoginUserID())
+                 && !$this->isUser(self::REQUESTER, Session::getLoginUserID())) {
          echo "&nbsp;&nbsp;";
          echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
               "/front/ticket.form.php?addme_observer=addme_observer".
@@ -2158,7 +2158,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $query = "UPDATE `".$this->getTable()."`
                    SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
-         if ($lastupdater=getLoginUserID(true)) {
+         if ($lastupdater=Session::getLoginUserID(true)) {
             $query .= ", `users_id_lastupdater` = '$lastupdater' ";
          }
 

@@ -49,7 +49,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
    if (haveRight("reservation_central","w")
-       || getLoginUserID() === $_POST["users_id"]) {
+       || Session::getLoginUserID() === $_POST["users_id"]) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item'] = key($_POST["items"]);
       if ($rr->update($_POST)) {
@@ -73,7 +73,7 @@ if (isset($_POST["update"])) {
    $all_ok = true;
    $reservationitems_id = 0;
    if (empty($_POST['users_id'])) {
-      $_POST['users_id'] = getLoginUserID();
+      $_POST['users_id'] = Session::getLoginUserID();
    }
    foreach ($_POST['items'] as $reservationitems_id) {
       $_POST['reservationitems_id'] = $reservationitems_id;
@@ -99,7 +99,7 @@ if (isset($_POST["update"])) {
          $_POST["end"] = date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
 
          if (haveRight("reservation_central","w")
-             || getLoginUserID() === $_POST["users_id"]) {
+             || Session::getLoginUserID() === $_POST["users_id"]) {
             unset($rr->fields["id"]);
             $_POST['_ok'] = $rr->add($_POST);
          }

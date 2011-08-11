@@ -146,7 +146,7 @@ class Search {
       $toview = self::addDefaultToView($itemtype);
 
       // Add items to display depending of personal prefs
-      $displaypref = DisplayPreference::getForTypeUser($itemtype, getLoginUserID());
+      $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
       if (count($displaypref)) {
          foreach ($displaypref as $val) {
             array_push($toview,$val);
@@ -2375,8 +2375,8 @@ class Search {
 
                $condition = "(";
 
-               $condition .= " $requester_table.users_id = '".getLoginUserID()."'
-                              OR $observer_table.users_id = '".getLoginUserID()."'";
+               $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
+                              OR $observer_table.users_id = '".Session::getLoginUserID()."'";
 
                if (count($_SESSION['glpigroups'])) {
                   $condition .= " OR $observergroup_table.`groups_id`
@@ -2391,12 +2391,12 @@ class Search {
                }
 
                if (haveRight("own_ticket","1")) {// Can own ticket : show assign to me
-                  $condition .= " OR $assign_table.users_id = '".getLoginUserID()."' ";
+                  $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
 
-                  $condition .=" OR $assign_table.`users_id` = '".getLoginUserID()."'";
+                  $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -2407,7 +2407,8 @@ class Search {
                }
 
                if (haveRight("validate_ticket",1)) {
-                  $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
+                  $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
+                                          = '".Session::getLoginUserID()."'";
                }
                $condition .= ") ";
             }
@@ -4357,7 +4358,7 @@ class Search {
 
          $query = "SELECT `bookmarks_id`
                    FROM `glpi_bookmarks_users`
-                   WHERE `users_id`='".getLoginUserID()."'
+                   WHERE `users_id`='".Session::getLoginUserID()."'
                          AND `itemtype` = '$itemtype'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
@@ -4594,7 +4595,7 @@ class Search {
             $search[$itemtype] = $item->getSearchOptions();
          }
 
-         if (getLoginUserID() && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+         if (Session::getLoginUserID() && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';

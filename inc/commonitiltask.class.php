@@ -100,7 +100,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
             if ($this->maybePrivate() && !$this->canViewPrivates()) {
                $restrict .= " AND (`is_private` = '0'
-                                   OR `users_id` = '" . getLoginUserID() . "') ";
+                                   OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
 
             return self::createTabEntry($LANG['mailing'][142],
@@ -148,7 +148,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
-      if (isset($input['update']) && $uid=getLoginUserID()) { // Change from task form
+      if (isset($input['update']) && $uid=Session::getLoginUserID()) { // Change from task form
          $input["users_id"] = $uid;
       }
 
@@ -254,7 +254,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
       }
 
-      if (!isset($input["users_id"]) && $uid=getLoginUserID()) {
+      if (!isset($input["users_id"]) && $uid=Session::getLoginUserID()) {
          $input["users_id"] = $uid;
       }
 
@@ -891,7 +891,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "function showPlanUpdate() {\n";
             echo "Ext.get('plan').setDisplayed('none');";
             $params = array('form'     => 'followups',
-                            'users_id' => getLoginUserID(),
+                            'users_id' => Session::getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"]);
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "};";
@@ -936,7 +936,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $RESTRICT = "";
       if ($this->maybePrivate() && !$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                            OR `users_id` ='" . getLoginUserID() . "') ";
+                            OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
 
       $query = "SELECT `id`, `date`

@@ -58,7 +58,7 @@ class KnowbaseItem extends CommonDBTM {
 
       return (haveRight('knowbase', 'r')
               || haveRight('faq', 'r')
-              || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+              || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
    }
 
 
@@ -68,7 +68,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["is_faq"]) {
          return (haveRight('knowbase', 'r')
                  || haveRight('faq', 'r')
-                 || (getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+                 || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
       }
       return haveRight("knowbase", "r");
    }
@@ -268,7 +268,7 @@ class KnowbaseItem extends CommonDBTM {
          if ($ID>0) {
             echo "<input type='submit' class='submit' name='update' value=\"".$LANG['buttons'][7]."\">";
          } else {
-            echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
+            echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\">";
          }
 
@@ -326,7 +326,7 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ID = $this->fields['id'];
-      if (!$this->can($ID,'r') || getLoginUserID()===false) {
+      if (!$this->can($ID,'r') || Session::getLoginUserID()===false) {
          return false;
       }
 
@@ -512,7 +512,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td>";
 
       // Category select not for anonymous FAQ
-      if (getLoginUserID()
+      if (Session::getLoginUserID()
           && !$faq
           && (!isset($options['itemtype']) || !isset($options['items_id']))) {
 
@@ -556,7 +556,7 @@ class KnowbaseItem extends CommonDBTM {
       $score = "";
 
       // Build query
-      if (getLoginUserID()) {
+      if (Session::getLoginUserID()) {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
       } else {
          // Anonymous access
@@ -789,7 +789,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $faq_limit = "";
-      if (getLoginUserID()) {
+      if (Session::getLoginUserID()) {
          $faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true);
 
       } else {

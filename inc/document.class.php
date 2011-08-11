@@ -156,8 +156,8 @@ class Document extends CommonDBTM {
       // security (don't accept filename from $_POST)
       unset($input['filename']);
 
-      if ($uid=getLoginUserID()) {
-         $input["users_id"] = getLoginUserID();
+      if ($uid=Session::getLoginUserID()) {
+         $input["users_id"] = Session::getLoginUserID();
       }
 
       // Create a doc only selecting a file from a item form
@@ -501,7 +501,8 @@ class Document extends CommonDBTM {
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
 
          // My doc Check and Common doc right access
-         if ($this->can($this->fields["id"],'r') || $this->fields["users_id"]===getLoginUserID()) {
+         if ($this->can($this->fields["id"],'r')
+             || $this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
 
@@ -518,7 +519,7 @@ class Document extends CommonDBTM {
                         ON (`glpi_knowbaseitems`.`id` = `glpi_reminders`.`items_id`
                             AND `glpi_documents_items`.`itemtype` = 'Reminder')
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                         AND ((`glpi_reminders`.`users_id` = '".getLoginUserID()."'
+                         AND ((`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
                                 AND `is_private` = '1')
                               $add_public_reminder_restrict )";
 
@@ -577,10 +578,10 @@ class Document extends CommonDBTM {
             }
          }
 
-      } else if (getLoginUserID()) { // ! central
+      } else if (Session::getLoginUserID()) { // ! central
 
          // Check if it is my doc
-         if ($this->fields["users_id"]===getLoginUserID()) {
+         if ($this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
          if (haveRight("faq","r")) {
@@ -1234,7 +1235,7 @@ class Document extends CommonDBTM {
                 WHERE `glpi_documents_items`.`items_id` = '$ID'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-      if (getLoginUserID()) {
+      if (Session::getLoginUserID()) {
          $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
       } else {
          // Anonymous access from FAQ
@@ -1256,7 +1257,7 @@ class Document extends CommonDBTM {
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-         if (getLoginUserID()) {
+         if (Session::getLoginUserID()) {
             $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
          } else {
             // Anonymous access from FAQ

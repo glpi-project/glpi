@@ -162,7 +162,7 @@ if (isset($_POST["add"])) {
    $ticket_user = new Ticket_User();
    $track->check($_REQUEST['tickets_id'], 'r');
    $input = array('tickets_id'       => $_REQUEST['tickets_id'],
-                  'users_id'         => getLoginUserID(),
+                  'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,
                   'type'             => Ticket::OBSERVER);
    $ticket_user->add($input);
@@ -193,7 +193,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 } else {
    commonHeader($LANG['job'][13],'',"maintain","ticket");
 
-   $users_id_requester = getLoginUserID();
+   $users_id_requester = Session::getLoginUserID();
    // No default requester if own ticket right = tech and update_ticket right to update requester
    if (haveRight('own_ticket',1) && haveRight('update_ticket',1)) {
       $users_id_requester = 0;

@@ -201,7 +201,7 @@ class NotificationTemplate extends CommonDBTM {
       if (!isset($this->templates_by_languages[$additionnaloption][$language])) {
          //Switch to the desired language
          $start = microtime(true);
-         loadLanguage($language);
+         Session::loadLanguage($language);
 
          //If event is raised by a plugin, load it in order to get the language file available
          if ($plug = isPluginItemType(get_class($target->obj))) {
@@ -213,7 +213,7 @@ class NotificationTemplate extends CommonDBTM {
          $data = &$target->getForTemplate($event,$options);
 
          //Restore default language
-         loadLanguage();
+         Session::loadLanguage();
          if ($plug = isPluginItemType(get_class($target->obj))) {
             Plugin::loadLang(strtolower($plug['plugin']));
          }

@@ -83,7 +83,7 @@ class Bookmark extends CommonDBTM {
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
-      if ($this->fields['users_id']==0 && $uid=getLoginUserID()) {
+      if ($this->fields['users_id']==0 && $uid=Session::getLoginUserID()) {
          $this->input['users_id']  = $uid;
          $this->fields['users_id'] = $uid;
          $this->updates[]          = "users_id";
@@ -93,7 +93,7 @@ class Bookmark extends CommonDBTM {
 
    function post_getEmpty () {
 
-      $this->fields["users_id"]     = getLoginUserID();
+      $this->fields["users_id"]     = Session::getLoginUserID();
       $this->fields["is_private"]   = 1;
       $this->fields["is_recursive"] = 0;
       $this->fields["entities_id"]  = $_SESSION["glpiactive_entity"];
@@ -387,7 +387,7 @@ class Bookmark extends CommonDBTM {
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
                    FROM `glpi_bookmarks_users`
-                   WHERE `users_id` = '".getLoginUserID()."'
+                   WHERE `users_id` = '".Session::getLoginUserID()."'
                          AND `itemtype` = '".$this->fields['itemtype']."'";
 
          if ($result=$DB->query($query)) {
@@ -398,7 +398,7 @@ class Bookmark extends CommonDBTM {
                                  'bookmarks_id' => $ID));
             } else {
                $dd->add(array('bookmarks_id' => $ID,
-                              'users_id'     => getLoginUserID(),
+                              'users_id'     => Session::getLoginUserID(),
                               'itemtype'     => $this->fields['itemtype']));
             }
          }
@@ -422,7 +422,7 @@ class Bookmark extends CommonDBTM {
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
                    FROM `glpi_bookmarks_users`
-                   WHERE `users_id` = '".getLoginUserID()."'
+                   WHERE `users_id` = '".Session::getLoginUserID()."'
                          AND `bookmarks_id` = '$ID'
                          AND `itemtype` = '".$this->fields['itemtype']."'";
 
@@ -462,7 +462,7 @@ class Bookmark extends CommonDBTM {
 
       if ($is_private) {
          $query .= "(`".$this->getTable()."`.`is_private`='1'
-                     AND `".$this->getTable()."`.`users_id`='".getLoginUserID()."') ";
+                     AND `".$this->getTable()."`.`users_id`='".Session::getLoginUserID()."') ";
       } else {
          $query .= "(`".$this->getTable()."`.`is_private`='0' ".
                      getEntitiesRestrictRequest("AND", $this->getTable(), "", "", true) . ")";

@@ -77,7 +77,7 @@ class Reservation extends CommonDBChild {
       global $CFG_GLPI;
 
       if (isset($this->fields["users_id"])
-          && ($this->fields["users_id"]===getLoginUserID()
+          && ($this->fields["users_id"]===Session::getLoginUserID()
               || haveRight("reservation_central","w"))) {
 
          // Processing Email
@@ -272,7 +272,7 @@ class Reservation extends CommonDBChild {
       }
 
       // Original user always have right
-      if ($this->fields['users_id']===getLoginUserID()) {
+      if ($this->fields['users_id']===Session::getLoginUserID()) {
          return true;
       }
 
@@ -618,13 +618,13 @@ class Reservation extends CommonDBChild {
           || is_null($item)
           || !haveAccessToEntity($item->fields["entities_id"])) {
 
-         echo "<input type='hidden' name='users_id' value='".getLoginUserID()."'>";
+         echo "<input type='hidden' name='users_id' value='".Session::getLoginUserID()."'>";
 
       } else {
          echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
          echo "<td>";
          if (empty($ID)) {
-            User::dropdown(array('value'  => getLoginUserID(),
+            User::dropdown(array('value'  => Session::getLoginUserID(),
                                  'entity' => $item->getEntityID(),
                                  'right'  => 'all'));
          } else {
@@ -754,7 +754,7 @@ class Reservation extends CommonDBChild {
    static function displayReservationsForAnItem($ID,$date) {
       global $DB, $LANG;
 
-      $users_id = getLoginUserID();
+      $users_id = Session::getLoginUserID();
       $resa     = new self();
       $user     = new User;
       list($year, $month, $day) = explode("-", $date);

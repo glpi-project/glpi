@@ -56,7 +56,7 @@ if (isset($_GET['lostpassword'])) {
 
 checkLoginUser();
 
-if (isset($_POST["update"]) && $_POST["id"] === getLoginUserID()) {
+if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
    $user->update($_POST);
    Event::log(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
               $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");

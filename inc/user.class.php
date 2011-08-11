@@ -175,7 +175,8 @@ class User extends CommonDBTM {
 
          case 'Preference' :
             $user = new self();
-            $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", getLoginUserID());
+            $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php",
+                              Session::getLoginUserID());
             return true;
       }
       return false;
@@ -575,7 +576,7 @@ class User extends CommonDBTM {
             if ($input["password"]==$input["password2"]) {
                // Check right : my password of user with lesser rights
                if (isset($input['id'])
-                   && ($input['id'] == getLoginUserID()
+                   && ($input['id'] == Session::getLoginUserID()
                        || $this->currentUserHaveMoreRightThan($input['id'])
                        || ($input['password_forget_token'] == $this->fields['password_forget_token'] // Permit to change password with token and email
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
@@ -607,7 +608,7 @@ class User extends CommonDBTM {
       }
 
       if (isset($input["entities_id"])
-          && getLoginUserID() === $input['id']) {
+          && Session::getLoginUserID() === $input['id']) {
 
          $_SESSION["glpidefault_entity"] = $input["entities_id"];
       }
@@ -633,16 +634,16 @@ class User extends CommonDBTM {
 
 
       // Manage preferences fields
-      if (getLoginUserID() === $input['id']) {
+      if (Session::getLoginUserID() === $input['id']) {
          if (isset($input['use_mode']) && $_SESSION['glpi_use_mode'] !=  $input['use_mode']) {
             $_SESSION['glpi_use_mode'] = $input['use_mode'];
-            //loadLanguage();
+            //Session::loadLanguage();
          }
       }
 
       foreach ($CFG_GLPI['user_pref_field'] as $f) {
          if (isset($input[$f])) {
-            if (getLoginUserID() === $input['id']) {
+            if (Session::getLoginUserID() === $input['id']) {
                if ($_SESSION["glpi$f"] != $input[$f]) {
                   $_SESSION["glpi$f"] = $input[$f];
                }
@@ -1430,7 +1431,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       // Affiche un formulaire User
-      if ($ID != getLoginUserID() && !haveRight("user", "r")) {
+      if ($ID != Session::getLoginUserID() && !haveRight("user", "r")) {
          return false;
       }
 
@@ -1645,7 +1646,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI, $LANG, $PLUGIN_HOOKS;
 
       // Affiche un formulaire User
-      if ($ID != getLoginUserID() && !$this->currentUserHaveMoreRightThan($ID)) {
+      if ($ID != Session::getLoginUserID() && !$this->currentUserHaveMoreRightThan($ID)) {
          return false;
       }
       if ($this->getFromDB($ID)) {
@@ -1826,10 +1827,10 @@ class User extends CommonDBTM {
       }
 
       /// Security system except for login update
-      if (getLoginUserID() && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],
+      if (Session::getLoginUserID() && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],
                                                                  "login.php")) {
 
-         if (getLoginUserID() === $this->input['id']) {
+         if (Session::getLoginUserID() === $this->input['id']) {
             if (isset($this->fields["authtype"])) {
 
                // extauth ldap case
@@ -2091,7 +2092,7 @@ class User extends CommonDBTM {
             break;
 
          case "id" :
-            $where = " `glpi_users`.`id` = '".getLoginUserID()."' ";
+            $where = " `glpi_users`.`id` = '".Session::getLoginUserID()."' ";
             break;
 
          case "all" :

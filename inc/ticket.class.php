@@ -132,14 +132,14 @@ class Ticket extends CommonITILObject {
       }
 
       return (haveRight("show_all_ticket","1")
-              || $this->isUser(parent::REQUESTER,getLoginUserID())
-              || $this->isUser(parent::OBSERVER,getLoginUserID())
+              || $this->isUser(parent::REQUESTER,Session::getLoginUserID())
+              || $this->isUser(parent::OBSERVER,Session::getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(parent::REQUESTER,$_SESSION["glpigroups"])
                      || $this->haveAGroup(parent::OBSERVER,$_SESSION["glpigroups"])))
               || (haveRight("show_assign_ticket",'1')
-                  && ($this->isUser(parent::ASSIGN,getLoginUserID())
+                  && ($this->isUser(parent::ASSIGN,Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $this->haveAGroup(parent::ASSIGN,$_SESSION["glpigroups"]))
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
@@ -158,7 +158,7 @@ class Ticket extends CommonITILObject {
    function canSolve() {
       /// TODO block solution edition on closed status ?
       return ((haveRight("update_ticket","1")
-               || $this->isUser(parent::ASSIGN, getLoginUserID())
+               || $this->isUser(parent::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"])))
               && self::isAllowedStatus($this->fields['status'], 'solved'));
@@ -172,8 +172,8 @@ class Ticket extends CommonITILObject {
    **/
    function canApprove() {
 
-      return ($this->fields["users_id_recipient"] === getLoginUserID()
-              || $this->isUser(parent::REQUESTER, getLoginUserID())
+      return ($this->fields["users_id_recipient"] === Session::getLoginUserID()
+              || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
    }
@@ -260,7 +260,7 @@ class Ticket extends CommonITILObject {
       }
 
       if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
-            && $this->isUser(parent::REQUESTER,getLoginUserID())) {
+            && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
          return true;
       }
 
@@ -280,7 +280,7 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if ($this->isUser(parent::REQUESTER,getLoginUserID())
+      if ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
           && $this->numberOfFollowups() == 0
           && $this->numberOfTasks() == 0
           && $this->fields["date"] == $this->fields["date_mod"]) {
@@ -295,7 +295,7 @@ class Ticket extends CommonITILObject {
 
       if ($type == self::ASSIGN) {
          if (haveRight("own_ticket","1")) {
-            return getLoginUserID();
+            return Session::getLoginUserID();
          }
       }
       return 0;
@@ -506,7 +506,7 @@ class Ticket extends CommonITILObject {
       $this->getFromDB($input['id']);
 
       // Security checks
-      if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
+      if (is_numeric(Session::getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
              && $input['_itil_assign']['_type'] == 'user') {
@@ -515,7 +515,7 @@ class Ticket extends CommonITILObject {
             if ($this->countUsers(parent::ASSIGN)==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
                    || !isset($input["_itil_assign"]['users_id'])
-                   || ($input["_itil_assign"]['users_id'] != getLoginUserID())) {
+                   || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
                }
 
@@ -523,7 +523,7 @@ class Ticket extends CommonITILObject {
                // Can not steal or can steal and not assign to me
                if (!haveRight("steal_ticket","1")
                    || !isset($input["_itil_assign"]['users_id'])
-                   || ($input["_itil_assign"]['users_id'] != getLoginUserID())) {
+                   || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
                }
             }
@@ -542,7 +542,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (is_numeric(getLoginUserID(false)) && !haveRight("update_ticket","1")) {
+      if (is_numeric(Session::getLoginUserID(false)) && !haveRight("update_ticket","1")) {
 
          $allowed_fields = array('id');
 
@@ -565,7 +565,7 @@ class Ticket extends CommonITILObject {
          // Can only update initial fields if no followup or task already added
          if ($this->numberOfFollowups() == 0
              && $this->numberOfTasks() == 0
-             && $this->isUser(parent::REQUESTER,getLoginUserID())) {
+             && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
             $allowed_fields[] = 'itilcategories_id';
@@ -1202,7 +1202,7 @@ class Ticket extends CommonITILObject {
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                 getUserName(getLoginUserID())." ".$LANG['log'][20]);
+                 getUserName(Session::getLoginUserID())." ".$LANG['log'][20]);
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
@@ -1398,7 +1398,7 @@ class Ticket extends CommonITILObject {
          if (!$no_stat_computation
              && (haveRight("global_add_tasks", "1")
                  || haveRight("global_add_followups", "1")
-                 || ($this->isUser(parent::ASSIGN,getLoginUserID()))
+                 || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
                  || (isset($_SESSION["glpigroups"])
                      && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
 
@@ -1500,12 +1500,12 @@ class Ticket extends CommonITILObject {
    function canAddFollowups() {
 
       return ((haveRight("add_followups","1")
-               && $this->isUser(parent::REQUESTER,getLoginUserID()))
+               && $this->isUser(parent::REQUESTER,Session::getLoginUserID()))
               || haveRight("global_add_followups","1")
               || (haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION['glpigroups']))
-              || ($this->isUser(parent::ASSIGN,getLoginUserID()))
+              || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])));
    }
@@ -1899,7 +1899,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Filter search fields for helpdesk
-      if (getLoginUserID(true) === getLoginUserID(false) // no filter for cron
+      if (Session::getLoginUserID(true) === Session::getLoginUserID(false) // no filter for cron
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tokeep = array('common');
          if (haveRight('validate_ticket',1) || haveRight('create_validation',1)) {
@@ -2101,7 +2101,7 @@ class Ticket extends CommonITILObject {
       global $DB, $LANG, $CFG_GLPI;
 
       if ($userID == 0) {
-         $userID = getLoginUserID();
+         $userID = Session::getLoginUserID();
       }
 
       $rand        = mt_rand();
@@ -2563,7 +2563,7 @@ class Ticket extends CommonITILObject {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
-                                        && $this->isUser(parent::REQUESTER, getLoginUserID())
+                                        && $this->isUser(parent::REQUESTER, Session::getLoginUserID())
                                         && $this->numberOfFollowups() == 0
                                         && $this->numberOfTasks() == 0);
 
@@ -3165,9 +3165,9 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      $search_users_id = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
+      $search_users_id = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."') ";
-      $search_assign   = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
+      $search_assign   = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".parent::ASSIGN."')";
 
       if ($showgrouptickets) {
@@ -3210,7 +3210,7 @@ class Ticket extends CommonITILObject {
             $query .= "WHERE (`status` = 'solved')
                              AND ($search_users_id";
             if (!$showgrouptickets) {
-               $query .= " OR `glpi_tickets`.users_id_recipient = '".getLoginUserID()."' ";
+               $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
             }
             $query .= ")".
                       getEntitiesRestrictRequest("AND", "glpi_tickets");
@@ -3219,7 +3219,7 @@ class Ticket extends CommonITILObject {
          case "tovalidate" : // on affiche les tickets à valider
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
-                        WHERE `users_id_validate` = '".getLoginUserID()."'
+                        WHERE `users_id_validate` = '".Session::getLoginUserID()."'
                               AND `glpi_ticketvalidations`.`status` = 'waiting' ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
@@ -3322,7 +3322,7 @@ class Ticket extends CommonITILObject {
 
                   $options['field'][1]      = 5; // users_id_assign
                   $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = getLoginUserID();
+                  $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -3333,7 +3333,7 @@ class Ticket extends CommonITILObject {
                case "process" :
                   $options['field'][0]      = 5; // users_id_assign
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = getLoginUserID();
+                  $options['contains'][0]   = Session::getLoginUserID();
                   $options['link'][0]       = 'AND';
 
                   $options['field'][1]      = 12; // status
@@ -3353,7 +3353,7 @@ class Ticket extends CommonITILObject {
 
                   $options['field'][1]      = 59; // validation aprobator
                   $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = getLoginUserID();
+                  $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]        = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -3369,7 +3369,7 @@ class Ticket extends CommonITILObject {
 
                   $options['field'][1]      = 5; // assign user
                   $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = getLoginUserID();
+                  $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -3402,12 +3402,12 @@ class Ticket extends CommonITILObject {
 
                   $options['field'][1]      = 4; // users_id_assign
                   $options['searchtype'][1] = 'equals';
-                  $options['contains'][1]   = getLoginUserID();
+                  $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]       = 'AND';
 
                   $options['field'][2]      = 22; // users_id_recipient
                   $options['searchtype'][2] = 'equals';
-                  $options['contains'][2]   = getLoginUserID();
+                  $options['contains'][2]   = Session::getLoginUserID();
                   $options['link'][2]       = 'OR';
 
                   $options['field'][3]      = 12; // status
@@ -3423,7 +3423,7 @@ class Ticket extends CommonITILObject {
                default :
                   $options['field'][0]      = 4; // users_id
                   $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = getLoginUserID();
+                  $options['contains'][0]   = Session::getLoginUserID();
                   $options['link'][0]       = 'AND';
 
                   $options['field'][1]      = 12; // status
@@ -3509,7 +3509,7 @@ class Ticket extends CommonITILObject {
 
       if ($foruser) {
          $query .= " AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."'
-                     AND `glpi_tickets_users`.`users_id` = '".getLoginUserID()."' ";
+                     AND `glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
       }
 
       $query .= "GROUP BY `status`";

@@ -96,7 +96,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       return (parent::canUpdateItem()
               || (isset($this->fields['users_id'])
-                  && $this->fields['users_id'] == getLoginUserID()));
+                  && $this->fields['users_id'] == Session::getLoginUserID()));
    }
 
 
@@ -112,7 +112,8 @@ abstract class CommonITILActor extends CommonDBRelation {
    function can($ID, $right, &$input=NULL) {
 
       if ($ID>0) {
-         if (isset($this->fields['users_id']) && $this->fields['users_id']===getLoginUserID()) {
+         if (isset($this->fields['users_id'])
+             && $this->fields['users_id']===Session::getLoginUserID()) {
             return true;
          }
       }

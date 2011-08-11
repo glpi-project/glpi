@@ -88,7 +88,7 @@ class ChangeTask extends CommonITILTask {
 
       return (haveRight("edit_all_change","1")
               || (haveRight("show_my_change","1")
-                  && ($ticket->isUser(CommonITILObject::ASSIGN, getLoginUserID())
+                  && ($ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $ticket->haveAGroup(CommonITILObject::ASSIGN,
                                                  $_SESSION['glpigroups'])))));
@@ -106,7 +106,8 @@ class ChangeTask extends CommonITILTask {
          return false;
       }
 
-      if ($this->fields["users_id"] != getLoginUserID() && !haveRight('edit_all_change',1)) {
+      if ($this->fields["users_id"] != Session::getLoginUserID()
+          && !haveRight('edit_all_change',1)) {
          return false;
       }
 

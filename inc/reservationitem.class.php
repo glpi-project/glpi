@@ -449,7 +449,7 @@ class ReservationItem extends CommonDBTM {
       $resa->fields['reservationitems_id'] = $this->getField('id');
       $resa->fields['begin']               = $_SESSION['glpi_currenttime'];
       $resa->fields['end']                 = $_SESSION['glpi_currenttime'];
-      $resa->fields['users_id']            = getLoginUserID();
+      $resa->fields['users_id']            = Session::getLoginUserID();
       $resa->fields['comment']             = '';
 
       NotificationEvent::debugEvent($resa);

@@ -92,7 +92,7 @@ class TicketTask  extends CommonITILTask {
          return true;
       }
 
-      if ($this->fields["users_id"] === getLoginUserID()) {
+      if ($this->fields["users_id"] === Session::getLoginUserID()) {
          return true;
       }
       return false;
@@ -111,7 +111,7 @@ class TicketTask  extends CommonITILTask {
       }
 
       return (haveRight("global_add_tasks","1")
-              || $ticket->isUser(CommonITILObject::ASSIGN, getLoginUserID())
+              || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
    }
@@ -128,7 +128,8 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if ($this->fields["users_id"] != getLoginUserID() && !haveRight('update_tasks',1)) {
+      if ($this->fields["users_id"] != Session::getLoginUserID()
+          && !haveRight('update_tasks',1)) {
          return false;
       }
 

@@ -55,7 +55,7 @@ if (!class_exists($_GET['type'])) {
    die("** unknown type\n");
 }
 if (isset($_GET['lang'])) {
-   loadLanguage($_GET['lang']);
+   Session::loadLanguage($_GET['lang']);
 }
 
 $opts = &Search::getOptions($_GET['type']);

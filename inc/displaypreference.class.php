@@ -218,7 +218,7 @@ class DisplayPreference extends CommonDBTM {
          $item = new $itemtype();
       }
 
-      $IDuser = getLoginUserID();
+      $IDuser = Session::getLoginUserID();
 
       echo "<div class='center' id='tabsbody' >";
       // Defined items
@@ -577,7 +577,7 @@ class DisplayPreference extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='Preference') {
-         self::showForUser(getLoginUserID());
+         self::showForUser(Session::getLoginUserID());
       }
       return true;
    }
