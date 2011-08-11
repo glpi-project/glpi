@@ -257,7 +257,7 @@ class Profile_User extends CommonDBTM {
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                      AND `glpi_users`.`is_deleted` = '0'";
+                      ";//AND `glpi_users`.`is_deleted` = '0'";
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
@@ -723,15 +723,32 @@ class Profile_User extends CommonDBTM {
       global $LANG;
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  // Keep this ? (only approx. as count deleted users)
-                  return self::createTabEntry($LANG['Menu'][14],
-                                              countElementsInTable($this->getTable(),
-                                                                   "entities_id = '".$item->getID()."'"));
+               if (haveRight('user', 'r')) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     // Keep this ? (only approx. as count deleted users)
+                     $nb = countElementsInTable($this->getTable(),
+                                                "entities_id = '".$item->getID()."'");
+                  }
+                  return self::createTabEntry($LANG['Menu'][14], $nb);
                }
-               return $LANG['Menu'][14];
+
+            case 'Profile' :
+               if (haveRight('user', 'r')) {
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     // Keep this ? (only approx. as count deleted users)
+                     $nb = countElementsInTable($this->getTable(),
+                                                "profiles_id = '".$item->getID()."'".
+                                                getEntitiesRestrictRequest('AND',
+                                                                           'glpi_profiles_users',
+                                                                           'entities_id',
+                                                                           $_SESSION['glpiactiveentities'],
+                                                                           true));
+                  }
+                  return self::createTabEntry($LANG['Menu'][14], $nb);
+               }
          }
       }
       return '';
@@ -740,8 +757,14 @@ class Profile_User extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Entity') {
-         self::showForEntity($item);
+      switch ($item->getType()) {
+         case 'Entity' :
+            self::showForEntity($item);
+            break;
+
+         case 'Profile' :
+            self::showForProfile($item);
+            break;
       }
       return true;
    }

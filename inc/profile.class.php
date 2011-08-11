@@ -84,29 +84,64 @@ class Profile extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Profile_User', $ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $LANG['common'][12];
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               if ($item->fields['interface']=='helpdesk') {
+                  $ong[1] = $LANG['Menu'][31]; // Helpdesk
 
-      } else if ($this->fields['interface']=='helpdesk') {
-         $ong[1] = $LANG['Menu'][31]; // Helpdesk
-         if (haveRight("user","r")) {
-            $ong[4] = $LANG['Menu'][14];
+               } else {
+                  $ong[2] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
+                  $ong[3] = $LANG['title'][24]; // Assistance
+                  $ong[4] = $LANG['setup'][619]; // Life cycles
+                  $ong[5] = $LANG['Menu'][15].'/'.$LANG['common'][12]; // Administration/Setup
+               }
+               return $ong;
          }
-         $this->addStandardTab('Log',$ong, $options);
-
-      } else {
-         $ong[1] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
-         $ong[2] = $LANG['title'][24]; // Assistance
-         $ong[5] = $LANG['setup'][619]; // Life cycles
-         $ong[3] = $LANG['Menu'][15].'/'.$LANG['common'][12]; // Administration/Setup
-         if (haveRight("user","r")) {
-            $ong[4] = $LANG['Menu'][14];
-         }
-         $this->addStandardTab('Log',$ong, $options);
       }
-      return $ong;
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showFormHelpdesk();
+               break;
+
+            case 2 :
+               $item->showFormInventory();
+               break;
+
+            case 3 :
+               $item->showFormTracking();
+               break;
+
+            case 4 :
+               $item->showFormLifeCycle();
+               break;
+
+            case 5 :
+               $item->showFormAdmin();
+               break;
+
+         }
+      }
+      return true;
    }
 
 
@@ -452,16 +487,15 @@ class Profile extends CommonDBTM {
       return true;
    }
 
-
    /**
-   * Print the helpdesk right form for the current profile
-   *
-   * @param $target of the form
+    * Print the helpdesk right form for the current profile
+    *
    **/
-   function showFormHelpdesk($target) {
+   function showFormHelpdesk() {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
+      $target = $this->getFormURL();
 
       if (!haveRight("profile","r")) {
          return false;
@@ -579,14 +613,14 @@ class Profile extends CommonDBTM {
    /**
     * Print the Inventory/Management/Toolsd right form for the current profile
     *
-    * @param $target of the form
     * @param $openform boolean open the form
     * @param $closeform boolean close the form
    **/
-   function showFormInventory($target, $openform=true, $closeform=true) {
+   function showFormInventory($openform=true, $closeform=true) {
       global $LANG;
 
       $ID = $this->fields['id'];
+      $target = $this->getFormURL();
 
       if (!haveRight("profile","r")) {
          return false;
@@ -722,16 +756,16 @@ class Profile extends CommonDBTM {
 
 
    /**
-   * Print the Tracking right form for the current profile
-   *
-   * @param $target of the form
-   * @param $openform boolean open the form
-   * @param $closeform boolean close the form
+    * Print the Tracking right form for the current profile
+    *
+    * @param $openform boolean open the form
+    * @param $closeform boolean close the form
    **/
-   function showFormTracking($target, $openform=true, $closeform=true) {
+   function showFormTracking($openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
+      $target = $this->getFormURL();
 
       if (!haveRight("profile","r")) {
          return false;
@@ -949,14 +983,14 @@ class Profile extends CommonDBTM {
    /**
    * Print the Life Cycles form for the current profile
    *
-   * @param $target of the form
    * @param $openform boolean open the form
    * @param $closeform boolean close the form
    **/
-   function showFormLifeCycle($target, $openform=true, $closeform=true) {
+   function showFormLifeCycle($openform=true, $closeform=true) {
       global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
+      $target = $this->getFormURL();
 
       if (!haveRight("profile","r")) {
          return false;
@@ -1064,17 +1098,19 @@ class Profile extends CommonDBTM {
       }
       echo "</div>";
    }
+
+
    /**
-   * Print the central form for a profile
-   *
-   * @param $target target of the form
-   * @param $openform boolean open the form
-   * @param $closeform boolean close the form
+    * Print the central form for a profile
+    *
+    * @param $openform boolean open the form
+    * @param $closeform boolean close the form
    **/
-   function showFormAdmin($target, $openform=true, $closeform=true) {
+   function showFormAdmin($openform=true, $closeform=true) {
       global $LANG;
 
       $ID = $this->fields['id'];
+      $target = $this->getFormURL();
 
       if (!haveRight("profile","r")) {
          return false;
