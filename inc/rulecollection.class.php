@@ -346,12 +346,11 @@ class RuleCollection extends CommonDBTM {
     * Show the list of rules
     *
     * @param $target
-    * @param $tab
     * @param $options
     *
     * @return nothing
    **/
-   function showListRules($target, $tab=0, $options=array()) {
+   function showListRules($target, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $p['inherited'] = true;
