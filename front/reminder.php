@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 

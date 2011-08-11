@@ -81,7 +81,7 @@ if (!haveRight('create_ticket',1)) {
    }
 }
 
-checkHelpdeskAccess();
+Session::checkHelpdeskAccess();
 
 helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 

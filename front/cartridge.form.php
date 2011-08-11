@@ -68,7 +68,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
 } else if (isset($_GET["delete"])) {
    $cartype->check($_GET["tID"],'w');
 
-   checkRight("cartridge","w");
+   Session::checkRight("cartridge", "w");
    if ($cart->delete($_GET)) {
       Event::log($_GET["tID"], "cartridges", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][90]);

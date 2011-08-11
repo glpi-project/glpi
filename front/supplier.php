@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("contact_enterprise","r");
+Session::checkRight("contact_enterprise", "r");
 
 commonHeader($LANG['Menu'][23],'',"financial","supplier");
 
 Search::show('Supplier');
 
 commonFooter();
-
 ?>

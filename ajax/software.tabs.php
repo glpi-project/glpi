@@ -45,7 +45,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-checkRight("software", "r");
+Session::checkRight("software", "r");
 
 if (!isset($_POST["sort"])) {
    $_POST["sort"] = "";

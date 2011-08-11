@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
 
-checkRight("statistic", "1");
+Session::checkRight("statistic", "1");
 
 if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
    $year              = date("Y")-1;

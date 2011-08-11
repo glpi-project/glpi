@@ -31,7 +31,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_GET["popup"])) {
    $_SESSION["glpipopup"]["name"] = $_GET["popup"];

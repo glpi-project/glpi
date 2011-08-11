@@ -55,8 +55,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
    }
 
    if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-      checkSeveralRightsOr(array($_POST["itemtype"] => "w",
-                                 "infocom"          => "w"));
+      Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
+                                          "infocom"          => "w"));
    } else {
       $item->checkGlobal("w");
    }

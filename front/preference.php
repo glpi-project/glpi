@@ -53,8 +53,7 @@ if (isset($_GET['lostpassword'])) {
 }
 
 
-
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
    $user->update($_POST);

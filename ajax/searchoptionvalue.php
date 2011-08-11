@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_REQUEST['searchtype'])) {
    $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));

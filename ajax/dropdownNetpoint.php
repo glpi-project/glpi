@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {

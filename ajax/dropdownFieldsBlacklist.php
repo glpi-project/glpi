@@ -40,7 +40,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownFieldsBlacklist.php")) {
    header_nocache();
 }
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 $field = new Fieldblacklist();
 if ($_POST['id'] > 0) {

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (!isset($_GET["reservationitems_id"])) {
    $_GET["reservationitems_id"] = '';

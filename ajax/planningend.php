@@ -41,7 +41,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_POST['duration']) && $_POST['duration']==0) {
    showDateTimeFormItem("plan[end]", $_POST['end'], -1, false, true, '', '',

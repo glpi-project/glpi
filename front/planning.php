@@ -79,8 +79,8 @@ if (isset($_GET['genical'])) {
 } else {
    commonHeader(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
 
-   checkSeveralRightsOr(array('show_all_planning' => '1',
-                              'show_planning'     => '1'));
+   Session::checkSeveralRightsOr(array('show_all_planning' => '1',
+                                       'show_planning'     => '1'));
 
    if (!isset($_GET["date"]) || empty($_GET["date"])) {
       $_GET["date"] = strftime("%Y-%m-%d");

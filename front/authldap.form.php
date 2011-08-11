@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 $config = new Config();
 $config_ldap = new AuthLDAP();

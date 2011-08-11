@@ -40,7 +40,7 @@ if (empty($_GET["id"])) {
    $_GET["id"] = '';
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 $problem = new Problem();
 if (isset($_POST["add"])) {

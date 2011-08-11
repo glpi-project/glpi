@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("device","w");
+Session::checkRight("device", "w");
 
 commonHeader(Toolbox::ucfirst($LANG['log'][18]),$_SERVER['PHP_SELF'],"config","device");
 echo "<div align='center'>";
@@ -47,5 +47,4 @@ Dropdown::showItemTypeList($optgroup);
 
 echo "</div>";
 commonFooter();
-
 ?>

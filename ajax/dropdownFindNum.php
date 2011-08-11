@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("create_ticket", "1");
+Session::checkRight("create_ticket", "1");
 
 // Security
 if (!TableExists($_POST['table'])) {

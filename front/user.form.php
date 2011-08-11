@@ -101,7 +101,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
-   checkRight('user_authtype', 'w');
+   Session::checkRight('user_authtype', 'w');
    $user->check($_POST['id'], 'w');
 
    $user->getFromDB($_POST["id"]);
@@ -137,7 +137,7 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {
-   checkRight('user_authtype', 'w');
+   Session::checkRight('user_authtype', 'w');
    $user->check($_POST['id'], 'w');
 
    if (isset($_POST["auths_id"])) {
@@ -147,13 +147,13 @@ if (isset($_REQUEST['getvcard'])) {
 
 } else {
    if (!isset($_GET["ext_auth"])) {
-      checkRight("user", "r");
+      Session::checkRight("user", "r");
       commonHeader($LANG['title'][13], '', "admin", "user");
       $user->showForm($_GET["id"]);
       commonFooter();
 
    } else {
-      checkRight("import_externalauth_users", "w");
+      Session::checkRight("import_externalauth_users", "w");
 
       if (isset($_GET['add_ext_auth_ldap'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {

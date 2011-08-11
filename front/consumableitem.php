@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("consumable","r");
+Session::checkRight("consumable", "r");
 
 commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
@@ -49,5 +49,4 @@ if (isset($_GET["synthese"])) {
 }
 
 commonFooter();
-
 ?>

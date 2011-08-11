@@ -39,7 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("networking", "w");
+Session::checkRight("networking", "w");
 
 if (isset($_POST["action"])) {
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";

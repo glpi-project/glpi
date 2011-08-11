@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
       Html::back();
 
    } else {
-      checkRight("networking","w");
+      Session::checkRight("networking", "w");
 
       $input = $_POST;
       unset($input['several']);
@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if (isset($_POST["delete_several"])) {
-   checkRight("networking","w");
+   Session::checkRight("networking", "w");
 
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
@@ -115,7 +115,7 @@ if (isset($_POST["add"])) {
 }
 // Interest of this massive action ?
 /*else if(isset($_POST["move"])) {
-   checkRight("networking","w");
+   Session::checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
          if ($np->getFromDB($port_id)) {
@@ -165,7 +165,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["assign_vlan_several"])) {
-   checkRight("networking","w");
+   Session::checkRight("networking", "w");
    if ($_POST["vlans_id"] >0) {
 
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
@@ -187,7 +187,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unassign_vlan_several"])) {
-   checkRight("networking","w");
+   Session::checkRight("networking", "w");
 
    if ($_POST["vlans_id"] >0) {
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
@@ -219,12 +219,11 @@ if (isset($_POST["add"])) {
    if (empty($_GET["several"])) {
       $_GET["several"] = "";
    }
-   checkRight("networking","w");
+   Session::checkRight("networking", "w");
    commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory");
 
 //   NetworkPort::showNetportForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
    $np->showForm($_GET["id"], $_GET);
    commonFooter();
 }
-
 ?>

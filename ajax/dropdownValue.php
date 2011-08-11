@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 // Security
 if (!class_exists($_POST['itemtype']) ) {

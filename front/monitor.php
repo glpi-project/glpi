@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("monitor","r");
+Session::checkRight("monitor", "r");
 
 commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 

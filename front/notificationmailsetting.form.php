@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 $notificationmail = new NotificationMailSetting();
 
 if (!empty($_POST["test_smtp_send"])) {

@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSelectSoftware.php")) {
    header_nocache();
 }
 
-checkRight("software","w");
+Session::checkRight("software", "w");
 
 // Make a select box
 $rand  = mt_rand();

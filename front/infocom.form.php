@@ -60,7 +60,7 @@ if (isset($_GET["add"])) {
    Html::back();
 
 } else {
-   checkRight("infocom","r");
+   Session::checkRight("infocom", "r");
 
    popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 

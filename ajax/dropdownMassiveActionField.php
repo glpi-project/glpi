@@ -46,8 +46,8 @@ if (!isset($_POST["itemtype"]) || !class_exists($_POST["itemtype"])) {
 $item = new $_POST["itemtype"]();
 
 if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-   checkSeveralRightsOr(array($_POST["itemtype"] => "w",
-                              "infocom"          => "w"));
+   Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
+                                       "infocom"          => "w"));
 } else {
    $item->checkGlobal("w");
 }
@@ -108,7 +108,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
 
          case "glpi_users.language" :
-            Dropdown::showLanguages("language", array('display_none' => true, 
+            Dropdown::showLanguages("language", array('display_none' => true,
                                                       'emptylabel'   => $LANG['setup'][46]));
             break;
 

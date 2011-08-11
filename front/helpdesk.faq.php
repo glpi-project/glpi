@@ -47,7 +47,8 @@ if (isset($_GET["redirect"])) {
 //******************
 
 $name = "";
-checkFaqAccess();
+Session:: checkFaqAccess();
+
 if (Session::getLoginUserID()) {
    helpHeader($LANG['Menu'][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {

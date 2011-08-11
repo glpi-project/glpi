@@ -55,7 +55,7 @@ if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
 
-checkRight("software", "r");
+Session::checkRight("software", "r");
 
 $license = new SoftwareLicense();
 

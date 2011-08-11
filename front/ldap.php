@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("import_externalauth_users",'w');
+Session::checkRight("import_externalauth_users", 'w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 

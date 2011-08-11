@@ -40,7 +40,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (!isset($_GET['target'])) {
    $_GET['target'] = $CFG_GLPI['root_doc']."/front/central.php";

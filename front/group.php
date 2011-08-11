@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("group","r");
+Session::checkRight("group", "r");
 
 commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
 

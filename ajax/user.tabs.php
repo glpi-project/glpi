@@ -45,7 +45,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-checkRight("user","r");
+Session::checkRight("user", "r");
 
 $user = new User();
 

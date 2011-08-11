@@ -56,7 +56,7 @@ if ($_POST["id"]<0) {
          break;
 
       case 2 :
-         checkRight('search_config','w');
+         Session::checkRight('search_config', 'w');
          $setupdisplay->showFormPerso($_POST['target'], $_POST["displaytype"]);
          break;
    }

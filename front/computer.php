@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("computer","r");
+Session::checkRight("computer", "r");
 
 commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
 

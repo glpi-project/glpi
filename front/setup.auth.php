@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","r");
+Session::checkRight("config", "r");
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth",-1);
 

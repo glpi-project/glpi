@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_POST["sub_type"])) {
    $rule      = new $_POST["sub_type"]();

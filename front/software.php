@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("software","r");
+Session::checkRight("software", "r");
 
 commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 
 Search::show('Software');
 
 commonFooter();
-
 ?>

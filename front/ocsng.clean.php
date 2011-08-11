@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
 
 if (!isset($_POST["clean_ok"])) {
-   checkRight("clean_ocsng", "r");
+   Session::checkRight("clean_ocsng", "r");
 
    if (!isset($_GET['check'])) {
       $_GET['check'] = 'all';
@@ -52,7 +52,7 @@ if (!isset($_POST["clean_ok"])) {
    OcsServer::showComputersToClean($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
 
 } else {
-   checkRight("clean_ocsng", "w");
+   Session::checkRight("clean_ocsng", "w");
    if (count($_POST['toclean']) >0) {
       OcsServer::cleanLinksFromList($_SESSION["ocsservers_id"], $_POST['toclean']);
       echo "<div class='center b'>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";

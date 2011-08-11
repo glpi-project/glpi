@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 // Change profile system
 if (isset($_POST['newprofile'])) {

@@ -38,7 +38,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 // Make a select box
 if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {

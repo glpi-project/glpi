@@ -37,8 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-checkRight("phone","r");
+Session::checkRight("phone", "r");
 
 commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
 

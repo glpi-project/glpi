@@ -34,7 +34,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("reports","r");
+Session::checkRight("reports", "r");
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {

@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSoftwareLicense.php")) {
    header_nocache();
 }
 
-checkRight("software", "w");
+Session::checkRight("software", "w");
 
 if ($_POST['softwares_id']>0) {
    if (!isset($_POST['value'])) {

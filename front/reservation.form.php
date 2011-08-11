@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("reservation_helpdesk","1");
+Session::checkRight("reservation_helpdesk", "1");
 
 $rr = new Reservation();
 

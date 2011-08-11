@@ -37,8 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsOr(array('ocsng'        => 'r',
-                           'clean_ocsng'  => 'r'));
+Session::checkSeveralRightsOr(array('ocsng'        => 'r',
+                                    'clean_ocsng'  => 'r'));
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset($_SESSION["ocs_import"])) {

@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (isset($_POST['is_private'])) {
-   checkLoginUser();
+   Session::checkLoginUser();
 
    switch ($_POST['is_private']) {
       case true :

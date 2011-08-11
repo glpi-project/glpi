@@ -52,7 +52,7 @@ if (!isset($_POST["order"])) {
    $_POST["order"] = "";
 }
 
-checkRight("software","r");
+Session::checkRight("software", "r");
 
 $version = new SoftwareVersion();
 

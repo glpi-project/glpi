@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 // Non define case
 if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {

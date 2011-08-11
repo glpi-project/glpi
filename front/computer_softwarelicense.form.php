@@ -37,10 +37,10 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkRight("software", "w");
 $csl = new Computer_SoftwareLicense();
 
 if (isset($_REQUEST["add"])) {
-   checkRight("software", "w");
    if ($_REQUEST['softwarelicenses_id'] > 0 ) {
       $csl->add($_REQUEST);
       Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
@@ -51,7 +51,6 @@ if (isset($_REQUEST["add"])) {
 
 // From association list
 } else if (isset($_REQUEST["move"])) {
-   checkRight("software", "w");
    if ($_REQUEST['softwarelicenses_id'] > 0 ) {
       foreach ($_REQUEST["item"] as $key => $val) {
          if ($val == 1) {
@@ -65,8 +64,6 @@ if (isset($_REQUEST["add"])) {
 
 // From association list
 } else if (isset($_REQUEST["delete"])) {
-   checkRight("software", "w");
-
    foreach ($_REQUEST["item"] as $key => $val) {
       if ($val == 1) {
          $csl->delete(array('id' => $key));

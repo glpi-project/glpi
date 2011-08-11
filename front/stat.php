@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['Menu'][13],'',"maintain","stat");
 
-checkRight("statistic","1");
+Session::checkRight("statistic", "1");
 
 //Affichage du tableau de presentation des stats
 echo "<table class='tab_cadre_fixe'>";

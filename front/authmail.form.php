@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkLoginUser();
+Session::checkLoginUser();
 $fup   = new TicketFollowup();
 $track = new Ticket();
 
@@ -110,9 +110,9 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
-   checkSeveralRightsOr(array('add_followups'     => '1',
-                              'global_add_followups' => '1',
-                              'show_assign_ticket' => '1'));
+   Session::checkSeveralRightsOr(array('add_followups'     => '1',
+                                       'global_add_followups' => '1',
+                                       'show_assign_ticket' => '1'));
    $newID = $fup->add($_POST);
 
    Event::log($_POST["tickets_id"], "ticket", 4, "tracking",

@@ -33,8 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-checkCentralAccess();
+// autoload include in objecttask.form (tickettask, problemtask,...)
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
+Session::checkCentralAccess();
 
 if (!($task instanceof CommonITILTask)) {
    displayErrorAndDie('');

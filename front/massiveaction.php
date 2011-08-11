@@ -57,28 +57,28 @@ if (isset($_POST["itemtype"])) {
       case 'Ticket' :
          switch ($_POST["action"]) {
             case "delete" :
-               checkRight("delete_ticket", "1");
+               Session::checkRight("delete_ticket", "1");
                break;
 
             case "add_followup" :
-               checkSeveralRightsOr(array('global_add_followups' => 1,
-                                          'own_ticket'           => 1));
+               Session::checkSeveralRightsOr(array('global_add_followups' => 1,
+                                                   'own_ticket'           => 1));
                break;
 
             case "add_task" :
-               checkSeveralRightsOr(array('global_add_tasks' => 1,
-                                          'own_ticket'       => 1));
+               Session::checkSeveralRightsOr(array('global_add_tasks' => 1,
+                                                   'own_ticket'       => 1));
                break;
 
             default :
-               checkRight("update_ticket","1");
+               Session::checkRight("update_ticket", "1");
          }
          break;
 
       default :
          if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-            checkSeveralRightsOr(array($_POST["itemtype"] => 'w',
-                                       'infocom'          => 'w'));
+            Session::checkSeveralRightsOr(array($_POST["itemtype"] => 'w',
+                                                'infocom'          => 'w'));
          } else {
             $item->checkGlobal('w');
          }
@@ -530,7 +530,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "force_user_ldap_update" :
-            checkRight("user", "w");
+            Session::checkRight("user", "w");
             $user = new User();
             $ids = array();
             foreach ($_POST["item"] as $key => $val) {
@@ -646,7 +646,7 @@ if (isset($_POST["itemtype"])) {
 
          case 'reset' :
             if ($_POST["itemtype"] == 'CronTask') {
-               checkRight('config','w');
+               Session::checkRight('config', 'w');
                $crontask = new CronTask();
                foreach ($_POST["item"] as $key => $val) {
                   if ($val==1 && $crontask->getFromDB($key)) {

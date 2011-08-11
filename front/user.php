@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("user","r");
+Session::checkRight("user", "r");
 
 commonHeader($LANG['Menu'][14],'',"admin","user");
 
@@ -46,5 +46,4 @@ $user->title();
 Search::show('User');
 
 commonFooter();
-
 ?>

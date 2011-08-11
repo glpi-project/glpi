@@ -38,7 +38,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
 
@@ -57,5 +57,4 @@ if (!Toolbox::canUseImapPop()) {
    Search::show('MailCollector');
    commonFooter();
 }
-
 ?>

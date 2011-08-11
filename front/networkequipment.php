@@ -36,12 +36,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("networking","r");
+Session::checkRight("networking", "r");
 
 commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
 Search::show('NetworkEquipment');
 
 commonFooter();
-
 ?>
