@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 // Change profile system
 if (isset($_POST['newprofile'])) {
    if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
-      changeProfile($_POST['newprofile']);
+      Session::changeProfile($_POST['newprofile']);
 
       if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
          Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
@@ -58,7 +58,7 @@ if (isset($_GET["active_entity"])) {
    if (!isset($_GET["is_recursive"])) {
       $_GET["is_recursive"] = 0;
    }
-   if (changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
+   if (Session::changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
       if ($_GET["active_entity"] == $_SESSION["glpiactive_entity"]) {
          Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
       }
