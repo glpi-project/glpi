@@ -165,23 +165,26 @@ class Problem extends CommonITILObject {
       global $LANG;
 
       if (haveRight("show_all_problem","1")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = 0;
-            switch ($item->getType()) {
-               case 'Change' :
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'Change' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_problems',
                                              "`changes_id` = '".$item->getID()."'");
-                  break;
+               }
+               return self::createTabEntry($LANG['Menu'][7], $nb);
 
-               case 'Ticket' :
+            case 'Ticket' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
-                  break;
+               }
+               return self::createTabEntry($LANG['Menu'][7], $nb);
 
-            }
-            return self::createTabEntry($LANG['Menu'][7], $nb);
+            case __CLASS__ :
+               return array (1 => $LANG['problem'][3],         // Analysis
+                             2 => $LANG['jobresolution'][2]);  // Solution
          }
-         return $LANG['Menu'][7];
       }
       return '';
    }
@@ -190,13 +193,27 @@ class Problem extends CommonITILObject {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case "Change" :
+         case 'Change' :
             Change_Problem::showForChange($item);
             break;
 
-         case "Ticket" :
+         case 'Ticket' :
             Problem_Ticket::showForTicket($item);
             break;
+
+         case __CLASS__ :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showAnalysisForm();
+                  break;
+
+               case 2 :
+                  if (!isset($_POST['load_kb_sol'])) {
+                     $_POST['load_kb_sol'] = 0;
+                  }
+                  $item->showSolutionForm($_POST['load_kb_sol']);
+                  break;
+            }
       }
       return true;
    }
@@ -206,32 +223,17 @@ class Problem extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
+      $ong['empty'] = $this->getTypeName(1);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('ProblemTask', $ong, $options);
+      $this->addStandardTab('Item_Problem', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
+      /// TODO add stats
+      $this->addStandardTab('Log', $ong, $options);
 
-         $this->addStandardTab('Ticket', $ong, $options);
-
-         $this->addStandardTab('Change', $ong, $options);
-
-         // Analysis
-         $ong[3] = $LANG['problem'][3];
-         // Tasks
-         $this->addStandardTab('ProblemTask', $ong, $options);
-         // Hardware
-         $ong[7] = $LANG['common'][96];
-         // Documents
-         $this->addStandardTab('Document', $ong, $options);
-         // Solution
-         $ong[4] = $LANG['jobresolution'][2];
-
-         $this->addStandardTab('Note', $ong, $options);
-
-         /// TODO add stats
-
-         $this->addStandardTab('Log', $ong, $options);
-      }
       return $ong;
    }
 
