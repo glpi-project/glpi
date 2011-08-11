@@ -2003,6 +2003,15 @@ class Rule extends CommonDBTM {
                }
                return $this->getTypeName(2);
 
+            case 'SLA' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry($LANG['rulesengine'][17],
+                                              countElementsInTable('glpi_ruleactions',
+                                                                   "`field` = 'slas_id'
+                                                                    AND `value` = '".$item->getID()."'"));
+               }
+               return $this->getTypeName(2);
+
             default:
                if ($item instanceof Rule) {
                   return $this->getTypeName(1);
@@ -2033,6 +2042,10 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
+      } else if ($item->getType()=='SLA') {
+         $rule = new RuleTicket();
+         $rule->showAndAddRuleForm($item);
+
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
          $item->showCriteriasList($item->getID());

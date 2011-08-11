@@ -349,7 +349,7 @@ class Ticket extends CommonITILObject {
                                              "`suppliers_id_assign` = '".$item->getID()."'");
                   break;
 
-               case 'Sla' :
+               case 'SLA' :
                   $nb = countElementsInTable('glpi_tickets',
                                              "`slas_id` = '".$item->getID()."'");
                   break;
@@ -367,7 +367,7 @@ class Ticket extends CommonITILObject {
                   break;
             }
 
-            return self::createTabEntry($LANG['title'][28],$nb);
+            return self::createTabEntry($LANG['title'][28], $nb);
          }
          return $LANG['title'][28];
       }
@@ -386,6 +386,7 @@ class Ticket extends CommonITILObject {
             Problem_Ticket::showForProblem($item);
             break;
 
+         case 'SLA' :
          default :
             self::showListForItem($item);
       }
