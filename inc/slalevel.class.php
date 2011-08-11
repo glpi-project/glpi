@@ -377,10 +377,10 @@ class SlaLevel extends RuleTicket {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
-toolbox::logdebug("getTabNameForItem", $item->getType());
+
       if (!$withtemplate) {
          switch ($item->getType()) {
-            case 'Sla' :
+            case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
@@ -395,7 +395,7 @@ toolbox::logdebug("getTabNameForItem", $item->getType());
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Sla') {
+      if ($item->getType()=='SLA') {
          $slalevel = new self();
          $slalevel->showForSLA($item);
       }

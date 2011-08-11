@@ -2324,6 +2324,7 @@ $LANG['sla'][11] = "Calendrier du ticket";
 $LANG['sla'][12] = "Affecter un SLA";
 $LANG['sla'][13] = "L'affectation d'un SLA à un ticket a posteriori entraîne le recalcul de la date d'échéance.";
 $LANG['sla'][14] = "Les escalades définies dans le SLA seront également déclenchées conformément à cette nouvelle date.";
+$LANG['sla'][15] = "Niveaux d'escalade";
 
 
 $LANG['software'][1]  = "Version d'achat";

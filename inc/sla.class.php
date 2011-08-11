@@ -76,12 +76,11 @@ class SLA extends CommonDBTM {
    }
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong    = array();
       $this->addStandardTab('SlaLevel', $ong, $options);
-      $ong[4] = $LANG['rulesengine'][17]; // Rules
-      $ong[6] = $LANG['Menu'][5]; // Tickets
+      $this->addStandardTab('Rule', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
       return $ong;
    }
 
