@@ -82,10 +82,7 @@ class Reminder extends CommonDBTM {
       global $LANG;
 
       $ong    = array();
-      $ong['empty'] = $this->getTypeName();
-      if (!$this->isNewItem()) {
-         $this->addStandardTab('Document', $ong, $options);
-      }
+      $this->addStandardTab('Document', $ong, $options);
 
       return $ong;
    }
