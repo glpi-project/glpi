@@ -234,5 +234,26 @@ class Item_Problem extends CommonDBRelation{
       echo "</div></form>";
    }
 
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Problem' :
+               return $LANG['common'][96];
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Problem') {
+         self::showForProblem($item);
+      }
+      return true;
+   }
 }
 ?>
