@@ -86,16 +86,6 @@ class Transfer extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()) {
-      global $LANG;
-
-      $ong = array();
-      $ong[1] = $LANG['title'][26];
-
-      return $ong;
-   }
-
-
    function getSearchOptions() {
       global $LANG;
 
