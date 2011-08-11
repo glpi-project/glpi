@@ -100,6 +100,16 @@ class Rule extends CommonDBTM {
    }
 
 
+   static function getTypeName($nb=0) {
+      global $LANG;
+
+      if ($nb>1) {
+         return $LANG['rulesengine'][17];
+      }
+      return Toolbox::ucfirst($LANG['log'][65]);
+   }
+
+
    function canCreate() {
       return haveRight($this->right, 'w');
    }
@@ -1850,15 +1860,11 @@ class Rule extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
-         $this->addStandardTab('Log', $ong, $options);
-      }
       return $ong;
    }
 
@@ -1995,7 +2001,12 @@ class Rule extends CommonDBTM {
                                                                    "`field` = 'entities_id'
                                                                     AND `value` = '".$item->getID()."'"));
                }
-               return $LANG['rulesengine'][17];
+               return $this->getTypeName(2);
+
+            default:
+               if ($item instanceof Rule) {
+                  return $this->getTypeName(1);
+               }
          }
       }
       return '';
@@ -2022,7 +2033,12 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
+      } else if ($item instanceof Rule) {
+         $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
+         $item->showCriteriasList($item->getID());
+         $item->showActionsList($item->getID());
       }
+
       return true;
    }
 
