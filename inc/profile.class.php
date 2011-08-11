@@ -74,12 +74,12 @@ class Profile extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('profile', 'w');
+      return Session::haveRight('profile', 'w');
    }
 
 
    function canView() {
-      return haveRight('profile', 'r');
+      return Session::haveRight('profile', 'r');
    }
 
 
@@ -310,7 +310,7 @@ class Profile extends CommonDBTM {
       }
 
       // Profile right : may modify profile so can attach all profile
-      if (haveRight("profile","w")) {
+      if (Session::haveRight("profile","w")) {
          return $query." 1 ";
       }
 
@@ -497,10 +497,10 @@ class Profile extends CommonDBTM {
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      if ($canedit=Session::haveRight("profile","w")) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -622,10 +622,10 @@ class Profile extends CommonDBTM {
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if (($canedit=haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -767,10 +767,10 @@ class Profile extends CommonDBTM {
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if (($canedit=haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -992,11 +992,11 @@ class Profile extends CommonDBTM {
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
 
-      if (($canedit=haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 
@@ -1112,12 +1112,12 @@ class Profile extends CommonDBTM {
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
 
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit=haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
 

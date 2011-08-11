@@ -45,12 +45,12 @@ class Location extends CommonTreeDropdown {
 
 
    function canCreate() {
-      return haveRight('entity_dropdown', 'w');
+      return Session::haveRight('entity_dropdown', 'w');
    }
 
 
    function canView() {
-      return haveRight('entity_dropdown', 'r');
+      return Session::haveRight('entity_dropdown', 'r');
    }
 
 

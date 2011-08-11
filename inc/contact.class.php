@@ -53,11 +53,11 @@ class Contact extends CommonDBTM{
 
 
    function canCreate() {
-      return haveRight('contact_enterprise', 'w');
+      return Session::haveRight('contact_enterprise', 'w');
    }
 
    function canView() {
-      return haveRight('contact_enterprise', 'r');
+      return Session::haveRight('contact_enterprise', 'r');
    }
 
 
@@ -142,10 +142,6 @@ class Contact extends CommonDBTM{
    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
-
-      if (!haveRight("contact_enterprise","r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID,'r');

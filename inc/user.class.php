@@ -56,8 +56,8 @@ class User extends CommonDBTM {
 
    function canCreate() {
 
-      if (haveRight('user', 'w')             // Write right
-          && (haveAccessToEntity(0)          // Access to root entity (required when no default profile)
+      if (Session::haveRight('user', 'w')             // Write right
+          && (Session::haveAccessToEntity(0) // Access to root entity (required when no default profile)
               || Profile::getDefault()>0)) { // Default profile will be given in current entity
          return true;
       }
@@ -66,24 +66,24 @@ class User extends CommonDBTM {
 
 
    function canUpdate() {
-      return haveRight('user', 'w');
+      return Session::haveRight('user', 'w');
    }
 
 
    function canDelete() {
-      return haveRight('user', 'w');
+      return Session::haveRight('user', 'w');
    }
 
 
    function canView() {
-      return haveRight('user', 'r');
+      return Session::haveRight('user', 'r');
    }
 
 
    function canViewItem() {
 
       $entities = Profile_User::getUserEntities($this->fields['id'], true);
-      if (Session::isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+      if (Session::isViewAllEntities() || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
       return false;
@@ -99,7 +99,7 @@ class User extends CommonDBTM {
    function canUpdateItem() {
 
       $entities = Profile_User::getUserEntities($this->fields['id'], true);
-      if (Session::isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+      if (Session::isViewAllEntities() || Session::haveAccessToOneOfEntities($entities)) {
          return true;
       }
       return false;
@@ -109,7 +109,7 @@ class User extends CommonDBTM {
    function canDeleteItem() {
 
       $entities = Profile_User::getUserEntities($this->fields['id'], true);
-      if (Session::isViewAllEntities() || haveAccessToAllOfEntities($entities)) {
+      if (Session::isViewAllEntities() || Session::haveAccessToAllOfEntities($entities)) {
          return true;
       }
       return false;
@@ -148,7 +148,7 @@ class User extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Group' :
-            if (haveRight("user","r")) {
+            if (Session::haveRight("user","r")) {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['Menu'][14],
                                               countElementsInTable("glpi_groups_users",
@@ -192,7 +192,7 @@ class User extends CommonDBTM {
       } else {
          $ong[1] = $LANG['users'][14]; // principal
          $ong[4] = $LANG['Menu'][36];
-         if (haveRight('user','w')
+         if (Session::haveRight('user','w')
              && $this->currentUserHaveMoreRightThan($this->fields['id'])) {
             $ong[6] = $LANG['Menu'][11];
          }
@@ -203,7 +203,7 @@ class User extends CommonDBTM {
          $this->addStandardTab('Document', $ong, $options);
          $this->addStandardTab('Reservation', $ong, $options);
 
-         if (haveRight("user_authtype", "w")) {
+         if (Session::haveRight("user_authtype", "w")) {
             $ong[12] = $LANG['ldap'][12];
          }
          $this->addStandardTab('Log', $ong, $options);
@@ -234,7 +234,7 @@ class User extends CommonDBTM {
       $all = true;
       if (!$view_all) {
          foreach ($entities as $ent) {
-            if (!haveAccessToEntity($ent)) {
+            if (!Session::haveAccessToEntity($ent)) {
                $all = false;
             }
          }
@@ -244,7 +244,7 @@ class User extends CommonDBTM {
       }
       // only delete profile
       foreach ($entities as $ent) {
-         if (haveAccessToEntity($ent)) {
+         if (Session::haveAccessToEntity($ent)) {
             $all = false;
             $query = "DELETE
                       FROM `glpi_profiles_users`
@@ -1394,7 +1394,7 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
          }
       }
-      if (haveRight("import_externalauth_users", "w")) {
+      if (Session::haveRight("import_externalauth_users", "w")) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = $LANG['setup'][3];
          }
@@ -1431,7 +1431,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       // Affiche un formulaire User
-      if ($ID != Session::getLoginUserID() && !haveRight("user", "r")) {
+      if ($ID != Session::getLoginUserID() && !Session::haveRight("user", "r")) {
          return false;
       }
 
@@ -1470,7 +1470,7 @@ class User extends CommonDBTM {
       }
 
       //do some rights verification
-      if (haveRight("user", "w")) {
+      if (Session::haveRight("user", "w")) {
          if ((!$extauth || empty($ID))
              && $caneditpassword) {
 
@@ -1490,7 +1490,7 @@ class User extends CommonDBTM {
       echo "</td>";
 
        //do some rights verification
-      if (haveRight("user", "w")) {
+      if (Session::haveRight("user", "w")) {
          if ((!$extauth || empty($ID))
              && $caneditpassword) {
 
@@ -1511,7 +1511,7 @@ class User extends CommonDBTM {
      //Authentications informations : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
-         if (haveRight("user_authtype", "r")) {
+         if (Session::haveRight("user_authtype", "r")) {
             echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
@@ -1681,7 +1681,7 @@ class User extends CommonDBTM {
          echo "</td>";
 
          //do some rights verification
-         if (!$extauth && haveRight("password_update", "1")) {
+         if (!$extauth && Session::haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][19] . "&nbsp;:</td>";
             echo "<td><input type='password' name='password' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
@@ -1700,7 +1700,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-         if (!$extauth && haveRight("password_update", "1")) {
+         if (!$extauth && Session::haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
             echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
@@ -1775,7 +1775,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-        if (haveRight("config", "w")) {
+        if (Session::haveRight("config", "w")) {
             echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td>";
             $modes[NORMAL_MODE]      = $LANG['setup'][135];
             $modes[TRANSLATION_MODE] = $LANG['setup'][136];
@@ -1827,8 +1827,9 @@ class User extends CommonDBTM {
       }
 
       /// Security system except for login update
-      if (Session::getLoginUserID() && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],
-                                                                 "login.php")) {
+      if (Session::getLoginUserID()
+          && !Session::haveRight("user", "w")
+          && !strpos($_SERVER['PHP_SELF'], "login.php")) {
 
          if (Session::getLoginUserID() === $this->input['id']) {
             if (isset($this->fields["authtype"])) {
@@ -2264,7 +2265,7 @@ class User extends CommonDBTM {
       $default_display .= Toolbox::substr($user["name"], 0, $_SESSION["glpidropdown_chars_limit"]);
       $default_display .= "</option></select>";
 
-      $view_users = (haveRight("user","r"));
+      $view_users = (Session::haveRight("user", "r"));
 
       $params = array('searchText'       => '__VALUE__',
                       'value'            => $p['value'],
@@ -2308,7 +2309,7 @@ class User extends CommonDBTM {
                                              'linkid'    => "comment_link_".$p["name"].$p['rand']));
       }
 
-      if (haveRight('import_externalauth_users','w')
+      if (Session::haveRight('import_externalauth_users','w')
           && $p['ldap_import']
           && EntityData::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
@@ -2329,7 +2330,7 @@ class User extends CommonDBTM {
    static function showAddExtAuthForm() {
       global $LANG;
 
-      if (!haveRight("import_externalauth_users","w")) {
+      if (!Session::haveRight("import_externalauth_users","w")) {
          return false;
       }
 

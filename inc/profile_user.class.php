@@ -46,12 +46,12 @@ class Profile_User extends CommonDBTM {
 
 
    function canView() {
-      return haveRight('user','r');
+      return Session::haveRight('user','r');
    }
 
 
    function canCreate() {
-      return haveRight('user','w');
+      return Session::haveRight('user','w');
    }
 
 
@@ -60,7 +60,7 @@ class Profile_User extends CommonDBTM {
       return $user->can($this->fields['users_id'],'r')
              && Profile::currentUserHaveMoreRightThan(
                                array($this->fields['profiles_id'] => $this->fields['profiles_id']))
-             && haveAccessToEntity($this->fields['entities_id']);
+             && Session::haveAccessToEntity($this->fields['entities_id']);
    }
 
 
@@ -97,11 +97,12 @@ class Profile_User extends CommonDBTM {
       $canedit = $user->can($ID,'w');
 
       $strict_entities = self::getUserEntities($ID,false);
-      if (!haveAccessToOneOfEntities($strict_entities) && !Session::isViewAllEntities()) {
+      if (!Session::haveAccessToOneOfEntities($strict_entities)
+          && !Session::isViewAllEntities()) {
          $canedit = false;
       }
 
-      $canshowentity = haveRight("entity","r");
+      $canshowentity = Session::haveRight("entity","r");
       $rand=mt_rand();
       echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -217,7 +218,7 @@ class Profile_User extends CommonDBTM {
       }
 
       $canedit     = $entity->can($ID,"w");
-      $canshowuser = haveRight("user","r");
+      $canshowuser = Session::haveRight("user", "r");
       $nb_per_line = 3;
       $rand        = mt_rand();
 
@@ -357,7 +358,7 @@ class Profile_User extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
       $ID      = $prof->fields['id'];
-      $canedit = haveRight("user","w");
+      $canedit = Session::haveRight("user", "w");
 
       if (!$prof->can($ID,'r')) {
          return false;
@@ -726,7 +727,7 @@ class Profile_User extends CommonDBTM {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if (haveRight('user', 'r')) {
+               if (Session::haveRight('user', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
@@ -736,7 +737,7 @@ class Profile_User extends CommonDBTM {
                }
 
             case 'Profile' :
-               if (haveRight('user', 'r')) {
+               if (Session::haveRight('user', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),

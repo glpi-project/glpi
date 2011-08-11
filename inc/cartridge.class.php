@@ -58,12 +58,12 @@ class Cartridge extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('cartridge', 'w');
+      return Session::haveRight('cartridge', 'w');
    }
 
 
    function canView() {
-      return haveRight('cartridge', 'r');
+      return Session::haveRight('cartridge', 'r');
    }
 
 
@@ -611,10 +611,10 @@ class Cartridge extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $instID = $printer->getField('id');
-      if (!haveRight("cartridge","r")) {
+      if (!Session::haveRight("cartridge","r")) {
          return false;
       }
-      $canedit = haveRight("cartridge","w");
+      $canedit = Session::haveRight("cartridge", "w");
 
       $query = "SELECT `glpi_cartridgeitems`.`id` AS tID,
                        `glpi_cartridgeitems`.`is_deleted`,
@@ -788,7 +788,7 @@ class Cartridge extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("cartridge","r"))
+      if (!$withtemplate && Session::haveRight("cartridge","r"))
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {

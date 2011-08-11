@@ -55,12 +55,12 @@ class ConsumableItem extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('consumable', 'w');
+      return Session::haveRight('consumable', 'w');
    }
 
 
    function canView() {
-      return haveRight('consumable', 'r');
+      return Session::haveRight('consumable', 'r');
    }
 
 
@@ -139,7 +139,7 @@ class ConsumableItem extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       // Show ConsumableItem or blank form
-      if (!haveRight("consumable","r")) {
+      if (!Session::haveRight("consumable","r")) {
          return false;
       }
 

@@ -593,7 +593,7 @@ class Session {
    static function checkFaqAccess() {
       global $CFG_GLPI;
 
-      if ($CFG_GLPI["use_public_faq"] == 0 && !haveRight("faq", "r")) {
+      if ($CFG_GLPI["use_public_faq"] == 0 && !self::haveRight("faq", "r")) {
          displayRightError();
       }
    }
@@ -610,7 +610,7 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
          // Gestion timeout session
-         if (!Session::getLoginUserID()) {
+         if (!self::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
@@ -649,7 +649,7 @@ class Session {
    static function checkRight($module, $right) {
       global $CFG_GLPI;
 
-      if (!haveRight($module, $right)) {
+      if (!self::haveRight($module, $right)) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
@@ -681,7 +681,7 @@ class Session {
                      $valid = true;
                   }
                }
-            } else if (haveRight($mod, $right)) {
+            } else if (self::haveRight($mod, $right)) {
                $valid = true;
             }
          }
@@ -695,6 +695,137 @@ class Session {
          }
          displayRightError();
       }
+   }
+
+
+   /**
+    * Check if you could access to ALL the entities of an list
+    *
+    * @param $tab : list ID of entities
+    *
+    * @return Boolean :
+   **/
+   static function haveAccessToAllOfEntities($tab) {
+
+      if (is_array($tab) && count($tab)) {
+         foreach ($tab as $val) {
+            if (!self::haveAccessToEntity($val)) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
+
+   /**
+    * Check if you could access (read) to the entity of id = $ID
+    *
+    * @param $ID : ID of the entity
+    * @param $is_recursive : boolean if recursive item
+    *
+    * @return Boolean : read access to entity
+   **/
+   static function haveAccessToEntity($ID, $is_recursive=0) {
+
+      // Quick response when passing wrong ID : default value of getEntityID is -1
+      if ($ID<0) {
+         return false;
+      }
+
+      if (!isset($_SESSION['glpiactiveentities'])) {
+         return false;
+      }
+
+      if (!$is_recursive) {
+         return in_array($ID, $_SESSION['glpiactiveentities']);
+      }
+
+      if (in_array($ID, $_SESSION['glpiactiveentities'])) {
+         return true;
+      }
+
+      /// Recursive object
+      foreach ($_SESSION['glpiactiveentities'] as $ent) {
+         if (in_array($ID, getAncestorsOf("glpi_entities", $ent))) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+
+   /**
+    * Check if you could access to one entity of an list
+    *
+    * @param $tab : list ID of entities
+    *
+    * @return Boolean :
+   **/
+   static function haveAccessToOneOfEntities($tab) {
+
+      if (is_array($tab) && count($tab)) {
+         foreach ($tab as $val) {
+            if (self::haveAccessToEntity($val)) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+
+   /**
+    * Check if you could create recursive object in the entity of id = $ID
+    *
+    * @param $ID : ID of the entity
+    *
+    * @return Boolean :
+   **/
+   static function haveRecursiveAccessToEntity($ID) {
+
+      // Right by profile
+      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+         if ($val['id']==$ID) {
+            return $val['is_recursive'];
+         }
+      }
+      // Right is from a recursive profile
+      if (isset($_SESSION['glpiactiveentities'])) {
+         return in_array($ID, $_SESSION['glpiactiveentities']);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the right $right to module $module (conpare to session variable)
+    *
+    * @param $module Module to check
+    * @param $right Right to check
+    *
+    * @return Boolean : session variable have more than the right specified for the module
+   **/
+   static function haveRight($module, $right) {
+      global $DB;
+
+      //If GLPI is using the slave DB -> read only mode
+      if ($DB->isSlave() && $right == "w") {
+         return false;
+      }
+
+      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
+                       "r" => array("r", "w"),
+                       "w" => array("w"),
+                       "1" => array("1"),
+                       "0" => array("0", "1")); // ne doit pas arriver non plus
+
+      if (isset($_SESSION["glpiactiveprofile"][$module])
+          && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
+         return true;
+      }
+      return false;
    }
 
 }

@@ -55,7 +55,7 @@ class Reservation extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("reservation_central","r")) {
+      if (!$withtemplate && Session::haveRight("reservation_central","r")) {
          return $LANG['Menu'][17];
       }
       return '';
@@ -78,7 +78,7 @@ class Reservation extends CommonDBChild {
 
       if (isset($this->fields["users_id"])
           && ($this->fields["users_id"]===Session::getLoginUserID()
-              || haveRight("reservation_central","w"))) {
+              || Session::haveRight("reservation_central","w"))) {
 
          // Processing Email
          if ($CFG_GLPI["use_mailing"]) {
@@ -261,7 +261,7 @@ class Reservation extends CommonDBChild {
    function can($ID, $right, &$input=NULL) {
 
       if (empty($ID) || $ID<=0) {
-         return haveRight("reservation_helpdesk", "1");
+         return Session::haveRight("reservation_helpdesk", "1");
       }
 
       if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
@@ -276,7 +276,7 @@ class Reservation extends CommonDBChild {
          return true;
       }
 
-      if (!haveRight("reservation_central",$right)) {
+      if (!Session::haveRight("reservation_central",$right)) {
          return false;
       }
 
@@ -294,7 +294,7 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      return haveAccessToEntity($item->getEntityID());
+      return Session::haveAccessToEntity($item->getEntityID());
    }
 
 
@@ -322,7 +322,7 @@ class Reservation extends CommonDBChild {
    static function showCalendar($ID="") {
       global $LANG, $CFG_GLPI;
 
-      if (!haveRight("reservation_helpdesk","1")) {
+      if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
       }
 
@@ -547,7 +547,7 @@ class Reservation extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("reservation_helpdesk","1")) {
+      if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
       }
 
@@ -614,9 +614,9 @@ class Reservation extends CommonDBChild {
       }
 
       echo "</td></tr>\n";
-      if (!haveRight("reservation_central","w")
+      if (!Session::haveRight("reservation_central","w")
           || is_null($item)
-          || !haveAccessToEntity($item->fields["entities_id"])) {
+          || !Session::haveAccessToEntity($item->fields["entities_id"])) {
 
          echo "<input type='hidden' name='users_id' value='".Session::getLoginUserID()."'>";
 
@@ -717,7 +717,7 @@ class Reservation extends CommonDBChild {
                $item = new $m->fields["itemtype"]();
 
                if ($item->getFromDB($m->fields["items_id"])
-                  && haveAccessToEntity($item->fields["entities_id"])) {
+                  && Session::haveAccessToEntity($item->fields["entities_id"])) {
 
                   $typename = $item->getTypeName();
 
@@ -835,7 +835,7 @@ class Reservation extends CommonDBChild {
       global $DB, $LANG, $CFG_GLPI;
 
       $resaID = 0;
-      if (!haveRight("reservation_central", "r")) {
+      if (!Session::haveRight("reservation_central", "r")) {
          return false;
       }
 
@@ -954,7 +954,7 @@ class Reservation extends CommonDBChild {
 
       $resaID = 0;
 
-      if (!haveRight("reservation_central", "r")) {
+      if (!Session::haveRight("reservation_central", "r")) {
          return false;
       }
 

@@ -50,12 +50,12 @@ class AuthMail extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -148,7 +148,7 @@ class AuthMail extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
       $spotted = false;

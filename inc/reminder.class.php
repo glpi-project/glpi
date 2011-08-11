@@ -49,12 +49,12 @@ class Reminder extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('reminder_public', 'w');
+      return Session::haveRight('reminder_public', 'w');
    }
 
 
    function canView() {
-      return haveRight('reminder_public', 'r');
+      return Session::haveRight('reminder_public', 'r');
    }
 
 
@@ -126,7 +126,7 @@ class Reminder extends CommonDBTM {
 
       if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
 
-         if (!haveRecursiveAccessToEntity($input["entities_id"])) {
+         if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
             addMessageAfterRedirect($LANG['common'][75], false, ERROR);
          }
@@ -175,7 +175,7 @@ class Reminder extends CommonDBTM {
 
       if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
 
-         if (!haveRecursiveAccessToEntity($input["entities_id"])) {
+         if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
             addMessageAfterRedirect($LANG['common'][75], false, ERROR);
          }
@@ -255,7 +255,7 @@ class Reminder extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      if ($canedit && haveRight("reminder_public","w")) {
+      if ($canedit && Session::haveRight("reminder_public","w")) {
          if (!$ID) {
             if (isset($_GET["is_private"])) {
                $this->fields["is_private"] = $_GET["is_private"];
@@ -279,7 +279,7 @@ class Reminder extends CommonDBTM {
 
       echo "</td>\n";
 
-      if (haveRight("reminder_public","w") && !$this->fields["is_private"]) {
+      if (Session::haveRight("reminder_public","w") && !$this->fields["is_private"]) {
          echo "<td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          if ($canedit) {
@@ -329,9 +329,9 @@ class Reminder extends CommonDBTM {
       }
 
       if (!$ID || !$this->fields["is_planned"]) {
-         if (haveRight("show_planning","1")
-             || haveRight("show_group_planning","1")
-             || haveRight("show_all_planning","1")) {
+         if (Session::haveRight("show_planning","1")
+             || Session::haveRight("show_group_planning","1")
+             || Session::haveRight("show_all_planning","1")) {
 
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<span class='showplan'>".$LANG['reminder'][12]."</span>";
@@ -406,7 +406,7 @@ class Reminder extends CommonDBTM {
       $readpub = $readpriv="";
 
       // See public reminder ?
-      if (haveRight("reminder_public","r")) {
+      if (Session::haveRight("reminder_public","r")) {
          $readpub = "(is_private=0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
                                                                    true).")";
       }
@@ -589,7 +589,7 @@ class Reminder extends CommonDBTM {
             $titre = $LANG['reminder'][1]." (".Dropdown::getDropdownName("glpi_entities", $entity).")";
          }
 
-         if (haveRight("reminder_public","w")) {
+         if (Session::haveRight("reminder_public","w")) {
             $is_private = 0;
          }
 
@@ -670,7 +670,7 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       // show reminder that are not planned
-      $planningRight = haveRight("show_planning", "1");
+      $planningRight = Session::haveRight("show_planning", "1");
       $users_id      = Session::getLoginUserID();
 
       $is_helpdesk_visible = '';

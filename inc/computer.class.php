@@ -69,12 +69,12 @@ class Computer extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
 
@@ -483,10 +483,6 @@ class Computer extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI, $DB;
 
-      if (!haveRight("computer","r")) {
-        return false;
-      }
-
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -654,7 +650,10 @@ class Computer extends CommonDBTM {
 
       // Get OCS Datas :
       $dataocs = array();
-      if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")) {
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && Session::haveRight("view_ocsng","r")) {
+
          $query = "SELECT *
                    FROM `glpi_ocslinks`
                    WHERE `computers_id` = '$ID'";
@@ -673,7 +672,7 @@ class Computer extends CommonDBTM {
       }
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
-          && haveRight("view_ocsng","r")
+          && Session::haveRight("view_ocsng","r")
           && count($dataocs)) {
 
          echo "<br>";
@@ -681,7 +680,7 @@ class Computer extends CommonDBTM {
          echo "<br>";
          echo $LANG['ocsng'][13]."&nbsp;: ".Html::convDateTime($dataocs["last_update"]);
          echo "<br>";
-         if (haveRight("ocsng","r")) {
+         if (Session::haveRight("ocsng","r")) {
             echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
             $query = "SELECT `ocs_agent_version`, `ocsid`
@@ -694,7 +693,7 @@ class Computer extends CommonDBTM {
             $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
 
             //If have write right on OCS and ocsreports url is not empty in OCS config
-            if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
+            if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
                echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
                                                                  $data_version["ocsid"],
                                                                  $LANG['ocsng'][57]);
@@ -713,8 +712,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
-          && haveRight("view_ocsng","r")
-          && haveRight("sync_ocsng","w")
+          && Session::haveRight("view_ocsng","r")
+          && Session::haveRight("sync_ocsng","w")
           && count($dataocs)) {
 
          echo "<td >".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";

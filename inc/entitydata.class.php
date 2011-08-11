@@ -104,7 +104,7 @@ class EntityData extends CommonDBChild {
    function canCreate() {
 
       foreach (self::$field_right as $right => $fields) {
-         if (haveRight($right, 'w')) {
+         if (Session::haveRight($right, 'w')) {
             return true;
          }
       }
@@ -113,7 +113,7 @@ class EntityData extends CommonDBChild {
 
 
    function canView() {
-      return haveRight('entity', 'r');
+      return Session::haveRight('entity', 'r');
    }
 
 
@@ -156,7 +156,7 @@ class EntityData extends CommonDBChild {
 
       foreach (self::$field_right as $right => $fields) {
 
-         if (haveRight($right, 'w')) {
+         if (Session::haveRight($right, 'w')) {
             foreach ($fields as $field) {
                if (isset($input[$field])) {
                   $tmp[$field] = $input[$field];
@@ -385,7 +385,7 @@ class EntityData extends CommonDBChild {
       }
 
       // Notification right applied
-      $canedit = haveRight('entity', 'w') && haveAccessToEntity($ID);
+      $canedit = Session::haveRight('entity', 'w') && Session::haveAccessToEntity($ID);
 
       // Get data
       $entitydata = new EntityData();
@@ -508,12 +508,12 @@ class EntityData extends CommonDBChild {
       global $LANG;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r') || !haveRight('notification','r')) {
+      if (!$entity->can($ID,'r') || !Session::haveRight('notification','r')) {
          return false;
       }
 
       // Notification right applied
-      $canedit = haveRight('notification','w') && haveAccessToEntity($ID);
+      $canedit = Session::haveRight('notification','w') && Session::haveAccessToEntity($ID);
 
       // Get data
       $entitynotification = new EntityData();
@@ -688,10 +688,10 @@ class EntityData extends CommonDBChild {
       global $LANG, $CFG_GLPI;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r') || !haveRight('entity_helpdesk','r')) {
+      if (!$entity->can($ID,'r') || !Session::haveRight('entity_helpdesk','r')) {
          return false;
       }
-      $canedit = haveRight('entity_helpdesk','w') && haveAccessToEntity($ID);
+      $canedit = Session::haveRight('entity_helpdesk','w') && Session::haveAccessToEntity($ID);
 
       // Get data
       $entdata = new EntityData();
@@ -1025,10 +1025,10 @@ class EntityData extends CommonDBChild {
                $ong = array();
                $ong[1] = $LANG['financial'][44];      // Address
                $ong[2] = $LANG['entity'][14];         // Advanced
-               if (haveRight('notification','r')) {
+               if (Session::haveRight('notification','r')) {
                   $ong[3] = $LANG['setup'][704];      // Notification
                }
-               if (haveRight('entity_helpdesk','r')) {
+               if (Session::haveRight('entity_helpdesk','r')) {
                   $ong[4] = $LANG['title'][24];       // Helpdesk
                }
                $ong[5] = $LANG['Menu'][38];           // Inventory

@@ -76,7 +76,7 @@ class Contract_Supplier extends CommonDBRelation {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Supplier' :
-               if (haveRight("contract","r")) {
+               if (Session::haveRight("contract","r")) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry($LANG['Menu'][25], self::countForSupplier($item));
                   }
@@ -85,7 +85,7 @@ class Contract_Supplier extends CommonDBRelation {
                break;
 
             case 'Contract' :
-               if (haveRight("contact_enterprise","r")) {
+               if (Session::haveRight("contact_enterprise","r")) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry($LANG['Menu'][23], self::countForContract($item));
                   }

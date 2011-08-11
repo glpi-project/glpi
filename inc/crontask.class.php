@@ -74,12 +74,12 @@ class CronTask extends CommonDBTM{
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -382,7 +382,7 @@ class CronTask extends CommonDBTM{
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      if (!haveRight("config","r") || !$this->getFromDB($ID)) {
+      if (!Session::haveRight("config","r") || !$this->getFromDB($ID)) {
          return false;
       }
 

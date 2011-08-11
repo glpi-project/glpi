@@ -91,7 +91,7 @@ class Central extends CommonGLPI {
    **/
    static function showGlobalView() {
 
-      $showticket = haveRight("show_all_ticket","1");
+      $showticket = Session::haveRight("show_all_ticket","1");
 
       echo "<table class='tab_cadre_central'><tr>";
       echo "<td class='top'><br>";
@@ -101,14 +101,14 @@ class Central extends CommonGLPI {
          Ticket::showCentralCount();
          echo "</td></tr>";
       }
-      if (haveRight("contract","r")) {
+      if (Session::haveRight("contract","r")) {
          echo "<tr><td class='top' width='450px'>";
          Contract::showCentral();
          echo "</td></tr>";
       }
       echo "</table></td>";
 
-      if (haveRight("logs","r")) {
+      if (Session::haveRight("logs","r")) {
          echo "<td class='top' width='450px'>";
 
          //Show last add events
@@ -132,7 +132,8 @@ class Central extends CommonGLPI {
    static function showMyView() {
       global $LANG, $DB;
 
-      $showticket = (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1"));
+      $showticket = (Session::haveRight("show_all_ticket", "1")
+                     || Session::haveRight("show_assign_ticket", "1"));
       echo "<table class='tab_cadre_central'>";
 
       if ($DB->isSlave() && !$DB->first_connection) {
@@ -142,7 +143,7 @@ class Central extends CommonGLPI {
       }
       echo "<tr><td class='top'><table>";
 
-      if (haveRight('validate_ticket',1)) {
+      if (Session::haveRight('validate_ticket',1)) {
          echo "<tr><td class='top' width='450px'><br>";
          Ticket::showCentralList(0,"tovalidate",false);
          echo "</td></tr>";
@@ -176,7 +177,7 @@ class Central extends CommonGLPI {
       Reminder::showListForCentral();
       echo "</td></tr>";
 
-      if (haveRight("reminder_public","r")) {
+      if (Session::haveRight("reminder_public","r")) {
          echo "<tr><td class='top' width='450px'>";
          Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
          $entities = array_reverse(getAncestorsOf("glpi_entities", $_SESSION["glpiactive_entity"]));
@@ -199,7 +200,8 @@ class Central extends CommonGLPI {
    **/
    static function showGroupView() {
 
-      $showticket = haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1");
+      $showticket = (Session::haveRight("show_all_ticket","1")
+                     || Session::haveRight("show_assign_ticket","1"));
 
       echo "<table class='tab_cadre_central'>";
       echo "<tr><td class='top'><table>";
@@ -209,7 +211,7 @@ class Central extends CommonGLPI {
          Ticket::showCentralList(0, "process", true);
          echo "</td></tr>";
       }
-      if (haveRight('show_group_ticket','1')) {
+      if (Session::haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
          Ticket::showCentralList(0, "waiting", true);
          echo "</td></tr>";
@@ -217,7 +219,7 @@ class Central extends CommonGLPI {
       echo "</table></td>";
       echo "<td class='top'><table>";
 
-      if (haveRight('show_group_ticket','1')) {
+      if (Session::haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
          Ticket::showCentralList(0, "toapprove", true);
          echo "</td></tr>";

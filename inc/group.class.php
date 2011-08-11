@@ -51,12 +51,12 @@ class Group extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('group', 'w');
+      return Session::haveRight('group', 'w');
    }
 
 
    function canView() {
-      return haveRight('group', 'r');
+      return Session::haveRight('group', 'r');
    }
 
 
@@ -97,7 +97,7 @@ class Group extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if (!$withtemplate && haveRight("group","r")) {
+      if (!$withtemplate && Session::haveRight("group","r")) {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();
@@ -108,7 +108,7 @@ class Group extends CommonDBTM {
                   $ong[2] = $LANG['common'][112];
                }
                if ($item->getField('is_usergroup')
-                   && haveRight('config', 'r')
+                   && Session::haveRight('config', 'r')
                    && AuthLdap::useAuthLdap()) {
                   $ong[3] = $LANG['setup'][3];
                }
@@ -173,10 +173,6 @@ class Group extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $LANG;
-
-      if (!haveRight("group", "r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID, 'r');
@@ -260,7 +256,10 @@ class Group extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $buttons = array();
-      if (haveRight("group", "w") && haveRight("user_authtype", "w") && AuthLdap::useAuthLdap()) {
+      if (Session::haveRight("group", "w")
+          && Session::haveRight("user_authtype", "w")
+          && AuthLdap::useAuthLdap()) {
+
          $buttons["ldap.group.php"] = $LANG['setup'][3];
          $title = "";
 
@@ -361,10 +360,6 @@ class Group extends CommonDBTM {
    function showLDAPForm ($ID) {
       global $LANG;
 
-      if (!haveRight("group", "r")) {
-         return false;
-      }
-
       if ($ID > 0) {
          $this->check($ID, 'r');
       } else {
@@ -376,7 +371,7 @@ class Group extends CommonDBTM {
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
+      if (Session::haveRight("config","r") && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:&nbsp;</td></tr>";
 

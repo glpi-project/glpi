@@ -69,12 +69,12 @@ class AuthLDAP extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -186,7 +186,7 @@ class AuthLDAP extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
       $spotted = false;
@@ -359,7 +359,7 @@ class AuthLDAP extends CommonDBTM {
 
       if ($DB->numrows($result) >0) {
          echo "<br>";
-         $canedit = haveRight("config", "w");
+         $canedit = Session::haveRight("config", "w");
          echo "<form action='$target' method='post' name='ldap_replicates_form'
                 id='ldap_replicates_form'>";
          echo "<div class='center'>";
@@ -1026,7 +1026,7 @@ class AuthLDAP extends CommonDBTM {
 
             foreach ($ldap_users as $userinfos) {
                $link = $user = $userinfos["user"];
-               if (isset($userinfos['id']) && haveRight('user','r')) {
+               if (isset($userinfos['id']) && Session::haveRight('user','r')) {
                   $link = "<a href='".Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'].
                           "'>$user</a>";
                }
@@ -2106,7 +2106,7 @@ class AuthLDAP extends CommonDBTM {
             $_SESSION['ldap_import']['authldaps_id'] = NOT_AVAILABLE;
          }
 
-         if ((!haveRight('config','w') && !haveRight('entity','w'))
+         if ((!Session::haveRight('config','w') && !Session::haveRight('entity','w'))
              || (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface']))) {
             $options['interface'] = self::SIMPLE_INTERFACE;
          }
@@ -2198,7 +2198,7 @@ class AuthLDAP extends CommonDBTM {
 
       // Expert interface allow user to override configuration.
       // If not coming from the ticket form, then give expert/simple link
-      if ((haveRight('config','w') || haveRight('entity','w'))
+      if ((Session::haveRight('config','w') || Session::haveRight('entity','w'))
           && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
 
          echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]."&nbsp;: ";

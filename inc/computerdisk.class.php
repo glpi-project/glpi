@@ -54,12 +54,12 @@ class ComputerDisk extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
 
@@ -89,7 +89,7 @@ class ComputerDisk extends CommonDBChild {
       global $LANG;
 
       // can exists for template
-      if ($item->getType() == 'Computer' && haveRight("computer","r")) {
+      if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['computers'][8],
                                         countElementsInTable('glpi_computerdisks',
@@ -126,7 +126,7 @@ class ComputerDisk extends CommonDBChild {
         $computers_id = $options['computers_id'];
       }
 
-      if (!haveRight("computer","w")) {
+      if (!Session::haveRight("computer","w")) {
         return false;
       }
 

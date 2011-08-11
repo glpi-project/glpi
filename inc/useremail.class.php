@@ -60,7 +60,7 @@ class UserEmail  extends CommonDBChild {
 
 
    function canCreateItem() {
-      return (haveRight('user','w') || $this->fields['users_id'] == Session::getLoginUserID());
+      return (Session::haveRight('user','w') || $this->fields['users_id'] == Session::getLoginUserID());
    }
 
 
@@ -70,7 +70,8 @@ class UserEmail  extends CommonDBChild {
 
 
    function canViewItem() {
-      return (haveRight('user','r') || $this->fields['users_id'] == Session::getLoginUserID());
+      return (Session::haveRight('user','r')
+              || $this->fields['users_id'] == Session::getLoginUserID());
    }
 
 

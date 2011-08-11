@@ -49,12 +49,12 @@ class RegistryKey extends CommonDBTM {
 
    function canCreate() {
       // Only create on ocsng sync
-      return haveRight('sync_ocsng', 'w');
+      return Session::haveRight('sync_ocsng', 'w');
    }
 
 
    function canView() {
-      return haveRight('ocsng', 'r');
+      return Session::haveRight('ocsng', 'r');
    }
 
 
@@ -76,7 +76,7 @@ class RegistryKey extends CommonDBTM {
    static function showForComputer($ID) {
       global $DB, $LANG;
 
-      if (!haveRight("computer","r")) {
+      if (!Session::haveRight("computer","r")) {
          return false;
       }
 

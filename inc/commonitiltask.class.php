@@ -514,7 +514,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             if ($item->getFromDB($data["id"])) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
                   // Do not check entity here because webcal used non authenticated access
-//                  if (haveAccessToEntity($job->fields["entities_id"])) {
+//                  if (Session::haveAccessToEntity($job->fields["entities_id"])) {
                      $interv[$data["begin"]."$$$".$i][$item->getForeignKeyField()] = $data["id"];
                      $interv[$data["begin"]."$$$".$i]["id"]                        = $data["id"];
                      if (isset($data["state"])) {
@@ -789,7 +789,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check(-1,'w',$input);
       }
 
-      $canplan = haveRight("show_planning", "1");
+      $canplan = Session::haveRight("show_planning", "1");
 
       $this->showFormHeader($options);
 
@@ -855,7 +855,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (!empty($this->fields["begin"])) {
 
-         if (haveRight('show_planning', 1)) {
+         if (Session::haveRight('show_planning', 1)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan".$ID."() {\n";
             echo "Ext.get('plan').setDisplayed('none');";
@@ -879,14 +879,14 @@ abstract class CommonITILTask  extends CommonDBTM {
                "<br>->".Html::convDateTime($this->fields["end"])."<br>".
                getUserName($this->fields["users_id_tech"]);
 
-         if (haveRight('show_planning', 1)) {
+         if (Session::haveRight('show_planning', 1)) {
             echo "</span>";
             echo "</div>\n";
             echo "<div id='viewplan'></div>\n";
          }
 
       } else {
-         if (haveRight('show_planning', 1)) {
+         if (Session::haveRight('show_planning', 1)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate() {\n";
             echo "Ext.get('plan').setDisplayed('none');";

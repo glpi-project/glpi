@@ -1361,7 +1361,7 @@ class CommonDBTM extends CommonGLPI {
       // Is an item assign to an entity
       if ($this->isEntityAssign()) {
          // Have access to entity
-         return haveAccessToEntity($this->getEntityID());
+         return Session::haveAccessToEntity($this->getEntityID());
       }
       // else : Global item
       return true;
@@ -1439,10 +1439,10 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isEntityAssign()) {
          // Can be recursive check
          if ($this->maybeRecursive()) {
-            return haveAccessToEntity($this->getEntityID(),$this->isRecursive());
+            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
          }
          //  else : No recursive item
-         return haveAccessToEntity($this->getEntityID());
+         return Session::haveAccessToEntity($this->getEntityID());
       }
       //  else : Global item
       return true;
@@ -1927,9 +1927,9 @@ class CommonDBTM extends CommonGLPI {
 
          case 'recursive' :
             if ($this->isEntityAssign() && $this->maybeRecursive()) {
-               if ($this->canCreate() && haveAccessToEntity($this->getEntityID())) {
+               if ($this->canCreate() && Session::haveAccessToEntity($this->getEntityID())) {
                   // Can make recursive if recursive access to entity
-                  return haveRecursiveAccessToEntity($this->getEntityID());
+                  return Session::haveRecursiveAccessToEntity($this->getEntityID());
                }
             }
             break;
@@ -2759,7 +2759,7 @@ class CommonDBTM extends CommonGLPI {
    function showNotesForm() {
       global $LANG;
 
-      if (!haveRight("notes","r")) {
+      if (!Session::haveRight("notes","r")) {
          return false;
       }
 
@@ -2768,8 +2768,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       //getFromDB
-      $canedit = (haveRight("notes", "w")
-                  && (!$this->isEntityAssign() || haveAccessToEntity($this->getEntityID())));
+      $canedit = (Session::haveRight("notes", "w")
+                  && (!$this->isEntityAssign()
+                      || Session::haveAccessToEntity($this->getEntityID())));
       $target = $this->getFormURL();
 
       if ($canedit) {

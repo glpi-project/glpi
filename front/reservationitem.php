@@ -45,7 +45,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }
 
-if (!haveRight("reservation_central","r")) {
+if (!Session::haveRight("reservation_central","r")) {
    ReservationItem::showListSimple();
 } else {
    Search::show('ReservationItem');
@@ -56,5 +56,4 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 } else {
    commonFooter();
 }
-
 ?>

@@ -64,12 +64,12 @@ class Printer  extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('printer', 'w');
+      return Session::haveRight('printer', 'w');
    }
 
 
    function canView() {
-      return haveRight('printer', 'r');
+      return Session::haveRight('printer', 'r');
    }
 
 
@@ -311,10 +311,6 @@ class Printer  extends CommonDBTM {
 
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
-      }
-
-      if (!haveRight("printer","r")) {
-         return false;
       }
 
       if ($ID > 0) {

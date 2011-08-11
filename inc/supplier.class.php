@@ -64,12 +64,12 @@ class Supplier extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('contact_enterprise', 'w');
+      return Session::haveRight('contact_enterprise', 'w');
    }
 
 
    function canView() {
-      return haveRight('contact_enterprise', 'r');
+      return Session::haveRight('contact_enterprise', 'r');
    }
 
 
@@ -122,11 +122,6 @@ class Supplier extends CommonDBTM {
    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
-
-      // Show Supplier or blank form
-      if (!haveRight("contact_enterprise","r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -605,7 +600,7 @@ class Supplier extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $this->fields['id'];
-      if (!haveRight("contract","r") || !$this->can($ID,'r')) {
+      if (!Session::haveRight("contract","r") || !$this->can($ID,'r')) {
          return false;
       }
       $canedit = $this->can($ID,'w');

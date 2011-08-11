@@ -64,12 +64,12 @@ class Monitor extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('monitor', 'w');
+      return Session::haveRight('monitor', 'w');
    }
 
 
    function canView() {
-      return haveRight('monitor', 'r');
+      return Session::haveRight('monitor', 'r');
    }
 
 
@@ -194,10 +194,6 @@ class Monitor extends CommonDBTM {
 
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
-      }
-
-      if (!haveRight("monitor", "r")) {
-         return false;
       }
 
       if ($ID > 0) {

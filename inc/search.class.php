@@ -881,7 +881,9 @@ class Search {
 
             if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
                $search_config = "";
-               if (haveRight("search_config","w") || haveRight("search_config_global","w")) {
+               if (Session::haveRight("search_config","w")
+                   || Session::haveRight("search_config_global","w")) {
+
                   $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
@@ -943,7 +945,7 @@ class Search {
                echo self::showHeaderItem($output_type, $LANG['state'][6], $header_num);
             }
             if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
-               if (haveRight("reservation_central","w")) {
+               if (Session::haveRight("reservation_central","w")) {
                   echo self::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
                   echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
                }
@@ -1108,8 +1110,8 @@ class Search {
                   echo self::showItem($output_type, $typename, $item_num, $row_num);
                }
                if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
-                  if (haveRight("reservation_central","w")) {
-                     if (!haveAccessToEntity($data["ENTITY"])) {
+                  if (Session::haveRight("reservation_central","w")) {
+                     if (!Session::haveAccessToEntity($data["ENTITY"])) {
                         echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
                         echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
                      } else {
@@ -1322,7 +1324,7 @@ class Search {
             break;
 
          case 'Ticket' :
-            if (haveRight("show_all_ticket","1")) {
+            if (Session::haveRight("show_all_ticket","1")) {
                $linked = array_keys(Ticket::getAllTypesForHelpdesk());
             }
             break;
@@ -2345,7 +2347,7 @@ class Search {
 
       switch ($itemtype) {
          case 'Notification' :
-            if (!haveRight('config','w')) {
+            if (!Session::haveRight('config','w')) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
@@ -2361,7 +2363,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultJoin
             $condition = '';
-            if (!haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("show_all_ticket","1")) {
 
                $searchopt            = &self::getOptions($itemtype);
                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
@@ -2383,30 +2385,30 @@ class Search {
                                           IN ('".implode("','",$_SESSION['glpigroups'])."')";
                }
 
-               if (haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
                }
 
-               if (haveRight("own_ticket","1")) {// Can own ticket : show assign to me
+               if (Session::haveRight("own_ticket","1")) {// Can own ticket : show assign to me
                   $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
-               if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
 
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
-                  if (haveRight('assign_ticket',1)) {
+                  if (Session::haveRight('assign_ticket',1)) {
                      $condition .= " OR `glpi_tickets`.`status`='new'";
                   }
                }
 
-               if (haveRight("validate_ticket",1)) {
+               if (Session::haveRight("validate_ticket",1)) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
                                           = '".Session::getLoginUserID()."'";
                }
@@ -2989,7 +2991,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
-            if (!haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("show_all_ticket","1")) {
                $searchopt = &self::getOptions($itemtype);
 
 //                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
@@ -3004,7 +3006,7 @@ class Search {
                                          "glpi_tickets_users", "tickets_users_id", 0, 0,
                                          $searchopt[4]['joinparams']['beforejoin']['joinparams']);
 
-               if (haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,
@@ -3023,13 +3025,13 @@ class Search {
                                             $searchopt[65]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (haveRight("own_ticket","1")) { // Can own ticket : show assign to me
+               if (Session::haveRight("own_ticket","1")) { // Can own ticket : show assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
 
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
@@ -3042,7 +3044,7 @@ class Search {
                   }
                }
 
-               if (haveRight("validate_ticket",1)) {
+               if (Session::haveRight("validate_ticket",1)) {
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
                                             $searchopt[58]['joinparams']['beforejoin']['joinparams']);
@@ -3853,7 +3855,7 @@ class Search {
 
 
          case "glpi_tickets.count" :
-            if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
+            if ($data[$NAME.$num]>0 && Session::haveRight("show_all_ticket","1")) {
 
                if ($itemtype == 'User') {
                   $options['field'][0]      = 4;
@@ -4454,29 +4456,29 @@ class Search {
       $options = &self::getOptions($itemtype, $withplugins);
       $todel   = array();
 
-      if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
+      if (!Session::haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
-      if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
+      if (!Session::haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
       if ($itemtype == 'Computer') {
-         if (!haveRight('networking',$action)) {
+         if (!Session::haveRight('networking',$action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
             $todel      = array_merge($todel, array_keys($itemstodel));
          }
          if (!$CFG_GLPI['use_ocs_mode']) {
-            if (($action=='r' && !haveRight('view_ocsng',$action))
-                || ($action=='w' && !haveRight('sync_ocsng',$action))) {
+            if (($action=='r' && !Session::haveRight('view_ocsng',$action))
+                || ($action=='w' && !Session::haveRight('sync_ocsng',$action))) {
                $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103, 104));
             }
          }
       }
-      if (!haveRight('notes',$action)) {
+      if (!Session::haveRight('notes',$action)) {
          $todel[] = 90;
       }
 

@@ -58,11 +58,11 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('software', 'w');
+      return Session::haveRight('software', 'w');
    }
 
    function canView() {
-      return haveRight('software', 'r');
+      return Session::haveRight('software', 'r');
    }
 
 
@@ -128,7 +128,7 @@ class SoftwareVersion extends CommonDBChild {
          $softwares_id = $options['softwares_id'];
       }
 
-      if (!haveRight("software","r")) {
+      if (!Session::haveRight("software","r")) {
          return false;
       }
 

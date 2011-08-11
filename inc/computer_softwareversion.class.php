@@ -175,12 +175,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function showInstallations($searchID, $crit) {
       global $DB, $CFG_GLPI, $LANG;
 
-      if (!haveRight("software", "r") || !$searchID) {
+      if (!Session::haveRight("software", "r") || !$searchID) {
          return false;
       }
 
-      $canedit         = haveRight("software", "w");
-      $canshowcomputer = haveRight("computer", "r");
+      $canedit         = Session::haveRight("software", "w");
+      $canshowcomputer = Session::haveRight("computer", "r");
 
       if (isset($_REQUEST["start"])) {
          $start = $_REQUEST["start"];
@@ -297,7 +297,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             $soft       = new Software();
             $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser   = haveRight('user', 'r');
+            $linkUser   = Session::haveRight('user', 'r');
             $title      = $LANG['help'][31] ." = ". $soft->fields["name"];
 
             if ($crit=="id") {
@@ -444,7 +444,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $softwareversions_id = $version->getField('id');
 
-      if (!haveRight("software", "r") || !$softwareversions_id) {
+      if (!Session::haveRight("software", "r") || !$softwareversions_id) {
          return false;
       }
 
@@ -498,13 +498,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function showForComputer(Computer $comp, $withtemplate = '') {
       global $DB, $CFG_GLPI, $LANG;
 
-      if (!haveRight("software", "r")) {
+      if (!Session::haveRight("software", "r")) {
          return false;
       }
 
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
-      $canedit      = haveRight("software", "w");
+      $canedit      = Session::haveRight("software", "w");
       $entities_id  = $comp->fields["entities_id"];
 
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,

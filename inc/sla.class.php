@@ -54,12 +54,12 @@ class SLA extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('sla', 'w');
+      return Session::haveRight('sla', 'w');
    }
 
 
    function canView() {
-      return haveRight('sla', 'r');
+      return Session::haveRight('sla', 'r');
    }
 
 
@@ -79,7 +79,7 @@ class SLA extends CommonDBTM {
       global $LANG;
 
       $ong    = array();
-      $ong[1] = $LANG['title'][26];
+      $this->addStandardTab('SlaLevel', $ong, $options);
       $ong[4] = $LANG['rulesengine'][17]; // Rules
       $ong[6] = $LANG['Menu'][5]; // Tickets
       return $ong;
@@ -138,12 +138,6 @@ class SLA extends CommonDBTM {
    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
-
-      // Show device or blank form
-
-      if (!haveRight("sla", "r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID, 'r');

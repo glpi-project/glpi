@@ -75,19 +75,19 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    function canView() {
-      return haveRight('config', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
    function showForm($ID, $options) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("config", "w")) {
+      if (!Session::haveRight("config", "w")) {
          return false;
       }
 
@@ -102,7 +102,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
           }
        }
 
-      $canedit = haveRight("config", "w");
+      $canedit = Session::haveRight("config", "w");
 
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
@@ -166,7 +166,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $DB, $LANG, $CFG_GLPI;
 
       $nID     = $template->getField('id');
-      $canedit = haveRight("config", "w");
+      $canedit = Session::haveRight("config", "w");
 
 
       if ($canedit) {

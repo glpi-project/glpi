@@ -64,12 +64,12 @@ class Peripheral  extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('peripheral', 'w');
+      return Session::haveRight('peripheral', 'w');
    }
 
 
    function canView() {
-      return haveRight('peripheral', 'r');
+      return Session::haveRight('peripheral', 'r');
    }
 
 
@@ -218,10 +218,6 @@ class Peripheral  extends CommonDBTM {
 
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
-      }
-
-      if (!haveRight("peripheral","r")) {
-         return false;
       }
 
       if ($ID > 0) {

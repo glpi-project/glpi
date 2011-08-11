@@ -45,7 +45,7 @@ $transfer->checkGlobal('r');
 
 if (isset($_POST['transfer'])) {
    if (isset($_SESSION['glpitransfer_list'])) {
-      if (!haveAccessToEntity($_POST['to_entity'])) {
+      if (!Session::haveAccessToEntity($_POST['to_entity'])) {
          displayRightError();
       }
       $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);

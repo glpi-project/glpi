@@ -56,8 +56,8 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function canCreate() {
 
-      return haveRight('create_ticket', 1) // Add on creation
-             || haveRight('update_ticket', 1);
+      return (Session::haveRight('create_ticket', 1) // Add on creation
+             || Session::haveRight('update_ticket', 1));
    }
 
 
@@ -117,7 +117,7 @@ class Ticket_Ticket extends CommonDBRelation {
       global $DB, $LANG, $CFG_GLPI;
 
       $tickets   = self::getLinkedTicketsTo($ID);
-      $canupdate = haveRight('update_ticket','1');
+      $canupdate = Session::haveRight('update_ticket', '1');
 
       $ticket = new Ticket();
       if (is_array($tickets) && count($tickets)) {

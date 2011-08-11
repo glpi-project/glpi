@@ -58,12 +58,12 @@ class Document extends CommonDBTM {
    function canCreate() {
 
       // Have right to add document OR ticket followup
-      return haveRight('document', 'w') || haveRight('add_followups', '1');
+      return Session::haveRight('document', 'w') || Session::haveRight('add_followups', '1');
    }
 
 
    function canUpdate() {
-      return haveRight('document', 'w');
+      return Session::haveRight('document', 'w');
    }
 
 
@@ -78,7 +78,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if (haveRight('document', 'w')) {
+      if (Session::haveRight('document', 'w')) {
          return parent::canCreateItem();
       }
       return false;
@@ -86,7 +86,7 @@ class Document extends CommonDBTM {
 
 
    function canView() {
-      return haveRight('document', 'r');
+      return Session::haveRight('document', 'r');
    }
 
 
@@ -119,7 +119,7 @@ class Document extends CommonDBTM {
       global $LANG;
 
       // Can exist for template
-      if (haveRight("document","r") || $item->getType()=='Ticket') {
+      if (Session::haveRight("document","r") || $item->getType()=='Ticket') {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
@@ -285,10 +285,6 @@ class Document extends CommonDBTM {
    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
-
-      if (!haveRight("document","r")) {
-         return false;
-      }
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -508,7 +504,7 @@ class Document extends CommonDBTM {
 
          // Reminder Case
          $add_public_reminder_restrict = '';
-         if (haveRight("reminder_public","r")) {
+         if (Session::haveRight("reminder_public","r")) {
             $add_public_reminder_restrict = "OR (`is_private` = '0'
                                                  AND ".getEntitiesRestrictRequest("AND",
                                                                                   "glpi_reminders").")";
@@ -529,7 +525,7 @@ class Document extends CommonDBTM {
          }
 
          // Knowbase Case
-         if (haveRight("knowbase","r")) {
+         if (Session::haveRight("knowbase","r")) {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
@@ -544,7 +540,7 @@ class Document extends CommonDBTM {
             }
          }
 
-         if (haveRight("faq","r")) {
+         if (Session::haveRight("faq","r")) {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
@@ -584,7 +580,7 @@ class Document extends CommonDBTM {
          if ($this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
-         if (haveRight("faq","r")) {
+         if (Session::haveRight("faq","r")) {
             // Check if it is a FAQ document
             $query = "SELECT *
                       FROM `glpi_documents_items`
@@ -1091,7 +1087,7 @@ class Document extends CommonDBTM {
       if (empty($dir)) {
          $message = $LANG['document'][32];
 
-         if (haveRight('dropdown','r')) {
+         if (Session::haveRight('dropdown','r')) {
             $dt = new DocumentType();
             $message .= " <a target='_blank' href='".$dt->getSearchURL()."'>
                          <img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"></a>";
@@ -1203,7 +1199,7 @@ class Document extends CommonDBTM {
 
       if ($item->getType() != 'Ticket'
           && $item->getType() != 'KnowbaseItem'
-          && !haveRight('document','r')) {
+          && !Session::haveRight('document','r')) {
          return false;
       }
 
@@ -1418,7 +1414,7 @@ class Document extends CommonDBTM {
                $used[$ID] = $ID;
             }
 
-            if (haveRight('document','r') && $nb>count($used)) {
+            if (Session::haveRight('document','r') && $nb>count($used)) {
                echo "<tr class='tab_bg_1'>";
                echo "<td colspan='5' class='center'>";
                self::dropdown(array('entity' => $entities ,

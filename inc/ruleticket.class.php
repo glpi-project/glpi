@@ -52,12 +52,12 @@ class RuleTicket extends Rule {
 
 
    function canCreate() {
-      return haveRight('entity_rule_ticket', 'w');
+      return Session::haveRight('entity_rule_ticket', 'w');
    }
 
 
    function canView() {
-      return haveRight('entity_rule_ticket', 'r');
+      return Session::haveRight('entity_rule_ticket', 'r');
    }
 
 

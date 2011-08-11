@@ -103,7 +103,7 @@ class DisplayPreference extends CommonDBTM {
    function activatePerso($input) {
       global $DB;
 
-      if (!haveRight("search_config", "w")) {
+      if (!Session::haveRight("search_config", "w")) {
          return false;
       }
 
@@ -375,7 +375,7 @@ class DisplayPreference extends CommonDBTM {
          $item = new $itemtype();
       }
 
-      $global_write = haveRight("search_config_global", "w");
+      $global_write = Session::haveRight("search_config_global", "w");
 
       echo "<div class='center' id='tabsbody' >";
       // Defined items
@@ -565,7 +565,7 @@ class DisplayPreference extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Preference' :
-            if (haveRight('search_config', 'w')) {
+            if (Session::haveRight('search_config', 'w')) {
                return $LANG['central'][12];
             }
             break;

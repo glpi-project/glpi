@@ -111,12 +111,12 @@ class Rule extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight($this->right, 'w');
+      return Session::haveRight($this->right, 'w');
    }
 
 
    function canView() {
-      return haveRight($this->right, 'r');
+      return Session::haveRight($this->right, 'r');
    }
 
 
@@ -1031,7 +1031,7 @@ class Rule extends CommonDBTM {
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
       global $LANG, $CFG_GLPI;
 
-      $canedit = haveRight($this->right, "w") && !$display_entities;
+      $canedit = Session::haveRight($this->right, "w") && !$display_entities;
       echo "<tr class='tab_bg_1'>";
 
       if ($canedit) {
@@ -1790,7 +1790,7 @@ class Rule extends CommonDBTM {
    function showAndAddRuleForm($item) {
       global $LANG;
 
-      $canedit = haveRight($this->right, "w");
+      $canedit = Session::haveRight($this->right, "w");
 
       if ($canedit && $item->getType()=='Entity') {
          $this->showNewRuleForm($item->getField('id'));

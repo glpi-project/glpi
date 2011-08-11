@@ -61,7 +61,7 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
    $_GET["knowbaseitemcategories_id"] = "0";
 }
 
-$faq = !haveRight("knowbase","r");
+$faq = !Session::haveRight("knowbase","r");
 
 KnowbaseItem::searchForm($_GET, $faq);
 if (!isset($_GET["itemtype"]) || !isset($_GET["items_id"])) {

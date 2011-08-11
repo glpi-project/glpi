@@ -161,13 +161,13 @@ class ReservationItem extends CommonDBTM {
    static function showActivationFormForItem(CommonDBTM $item) {
       global $CFG_GLPI, $LANG;
 
-      if (!haveRight("reservation_central","w")) {
+      if (!Session::haveRight("reservation_central","w")) {
          return false;
       }
       if ($item->getID()) {
          // Recursive type case => need entity right
          if ($item->isRecursive()) {
-            if (!haveAccessToEntity($item->fields["entities_id"])) {
+            if (!Session::haveAccessToEntity($item->fields["entities_id"])) {
                return false;
             }
          }
@@ -217,7 +217,7 @@ class ReservationItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("reservation_central","w")) {
+      if (!Session::haveRight("reservation_central","w")) {
          return false;
       }
 
@@ -263,7 +263,7 @@ class ReservationItem extends CommonDBTM {
    static function showListSimple() {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight("reservation_helpdesk","1")) {
+      if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
       }
 

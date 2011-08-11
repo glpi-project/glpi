@@ -104,12 +104,12 @@ class OcsServer extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('ocsng', 'w');
+      return Session::haveRight('ocsng', 'w');
    }
 
 
    function canView() {
-      return haveRight('ocsng', 'r');
+      return Session::haveRight('ocsng', 'r');
    }
 
 
@@ -221,7 +221,7 @@ class OcsServer extends CommonDBTM {
    function ocsFormConfig($target, $ID) {
       global $LANG;
 
-      if (!haveRight("ocsng", "w")) {
+      if (!Session::haveRight("ocsng", "w")) {
          return false;
       }
       $this->getFromDB($ID);
@@ -506,7 +506,7 @@ class OcsServer extends CommonDBTM {
    function ocsFormAutomaticLinkConfig($target, $ID, $withtemplate='', $templateid='') {
       global $LANG;
 
-      if (!haveRight("ocsng", "w")) {
+      if (!Session::haveRight("ocsng", "w")) {
          return false;
       }
       $this->getFromDB($ID);
@@ -564,7 +564,7 @@ class OcsServer extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("ocsng", "w")) {
+      if (!Session::haveRight("ocsng", "w")) {
          return false;
       }
 
@@ -2237,10 +2237,10 @@ class OcsServer extends CommonDBTM {
 
       self::checkOCSconnection($ocsservers_id);
 
-      if (!haveRight("clean_ocsng", "r")) {
+      if (!Session::haveRight("clean_ocsng", "r")) {
          return false;
       }
-      $canedit = haveRight("clean_ocsng", "w");
+      $canedit = Session::haveRight("clean_ocsng", "w");
 
       // Select unexisting OCS hardware
       $query_ocs = "SELECT *
@@ -2451,7 +2451,7 @@ class OcsServer extends CommonDBTM {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
 
       self::checkOCSconnection($ocsservers_id);
-      if (!haveRight("ocsng", "w")) {
+      if (!Session::haveRight("ocsng", "w")) {
          return false;
       }
 
@@ -2676,7 +2676,7 @@ class OcsServer extends CommonDBTM {
                                       $tolinked=false) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
 
-      if (!haveRight("ocsng", "w")) {
+      if (!Session::haveRight("ocsng", "w")) {
          return false;
       }
 
@@ -3101,7 +3101,7 @@ class OcsServer extends CommonDBTM {
       $ID = $comp->getID();
       $target = $comp->getFormURL();
 
-      if (!haveRight("computer","w")) {
+      if (!Session::haveRight("computer","w")) {
          return false;
       }
       $query = "SELECT *
@@ -3111,7 +3111,7 @@ class OcsServer extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) == 1) {
          $data = $DB->fetch_assoc($result);
-         if (haveRight("sync_ocsng","w")) {
+         if (Session::haveRight("sync_ocsng","w")) {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>";
@@ -5832,7 +5832,7 @@ class OcsServer extends CommonDBTM {
       if (isset($data['entities_id'])
           && $data['entities_id'] != $line_links['entities_id']) {
 
-         if (!isCommandLine() && !haveAccessToEntity($data['entities_id'])) {
+         if (!isCommandLine() && !Session::haveAccessToEntity($data['entities_id'])) {
             displayRightError();
          }
 
