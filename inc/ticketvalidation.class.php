@@ -142,16 +142,6 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
-   function defineTabs($options=array()) {
-      global $LANG;
-
-      $ong = array();
-      $ong[1] = $LANG['title'][26];
-
-      return $ong;
-   }
-
-
    function prepareInputForAdd($input) {
 
       // Not attached to tickets -> not added
