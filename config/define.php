@@ -255,12 +255,12 @@ $CFG_GLPI["linkuser_types"]               = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["linkgroup_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["linkuser_tech_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkuser_tech_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
-$CFG_GLPI["linkgroup_tech_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
+$CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
-                                                  
+
 $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
