@@ -92,7 +92,7 @@ class Document_Item extends CommonDBRelation{
       $restrict = "`glpi_documents_items`.`items_id` = '".$item->getField('id')."'
                    AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
-      if (getLoginUserID()) {
+      if (Session::getLoginUserID()) {
          $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
       } else {
          // Anonymous access from FAQ
@@ -106,7 +106,7 @@ class Document_Item extends CommonDBRelation{
          $restrict = "`glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."'";
 
-         if (getLoginUserID()) {
+         if (Session::getLoginUserID()) {
             $restrict .= getEntitiesRestrictRequest(" AND ", "glpi_documents_items", '', '', true);
          } else {
             // Anonymous access from FAQ

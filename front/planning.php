@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 if (!isset($_GET["uID"])) {
-   if (($uid=getLoginUserID()) && !haveRight("show_all_planning","1")) {
+   if (($uid=Session::getLoginUserID()) && !haveRight("show_all_planning","1")) {
       $_GET["uID"] = $uid;
    } else {
       $_GET["uID"] = 0;

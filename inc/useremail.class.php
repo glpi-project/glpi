@@ -60,7 +60,7 @@ class UserEmail  extends CommonDBChild {
 
 
    function canCreateItem() {
-      return (haveRight('user','w') || $this->fields['users_id'] == getLoginUserID());
+      return (haveRight('user','w') || $this->fields['users_id'] == Session::getLoginUserID());
    }
 
 
@@ -70,7 +70,7 @@ class UserEmail  extends CommonDBChild {
 
 
    function canViewItem() {
-      return (haveRight('user','r') || $this->fields['users_id'] == getLoginUserID());
+      return (haveRight('user','r') || $this->fields['users_id'] == Session::getLoginUserID());
    }
 
 
@@ -163,10 +163,10 @@ class UserEmail  extends CommonDBChild {
 
       $users_id = $user->getID();
 
-      if (!$user->can($users_id,'r') && $users_id != getLoginUserID()) {
+      if (!$user->can($users_id,'r') && $users_id != Session::getLoginUserID()) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
+      $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
 
       $count = 0;
       /// Display default email
@@ -236,10 +236,10 @@ class UserEmail  extends CommonDBChild {
       global $LANG,$CFG_GLPI;
 
       $users_id = $user->getID();
-      if (!$user->can($users_id,'r') && $users_id != getLoginUserID()) {
+      if (!$user->can($users_id,'r') && $users_id != Session::getLoginUserID()) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || $users_id == getLoginUserID());
+      $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
 
       if ($canedit) {
          echo "&nbsp;";

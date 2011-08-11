@@ -169,7 +169,7 @@ class Central extends CommonGLPI {
       echo "</table></td>";
       echo "<td class='top'><table><tr>";
       echo "<td class='top' width='450px'><br>";
-      Planning::showCentral(getLoginUserID());
+      Planning::showCentral(Session::getLoginUserID());
       echo "</td></tr>";
 
       echo "<tr><td class='top' width='450px'>";

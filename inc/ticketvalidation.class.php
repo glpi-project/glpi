@@ -82,7 +82,7 @@ class TicketValidation  extends CommonDBChild {
    function canUpdateItem() {
 
       if (!haveRight('create_validation', 1)
-          && ($this->fields["users_id_validate"] != getLoginUserID())) {
+          && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
 
@@ -96,7 +96,7 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT `users_id_validate`
                 FROM `glpi_ticketvalidations`
                 WHERE `tickets_id` = '$tickets_id'
-                      AND users_id_validate='".getLoginUserID()."'";
+                      AND users_id_validate='".Session::getLoginUserID()."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
@@ -114,7 +114,7 @@ class TicketValidation  extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
             if (!haveRight('create_validation','1')) {
-              $restrict .= " AND `users_id_validate` = '".getLoginUserID()."' ";
+              $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
             return self::createTabEntry($LANG['validation'][8],
                                         countElementsInTable('glpi_ticketvalidations', $restrict));
@@ -135,7 +135,7 @@ class TicketValidation  extends CommonDBChild {
 
    function post_getEmpty() {
 
-      $this->fields["users_id"] = getLoginUserID();
+      $this->fields["users_id"] = Session::getLoginUserID();
       $this->fields["status"]   = 'waiting';
    }
 
@@ -171,10 +171,10 @@ class TicketValidation  extends CommonDBChild {
 
          $input["users_id"] = 0;
          if (!isset($input['_auto_update'])) {
-            $input["users_id"] = getLoginUserID();
+            $input["users_id"] = Session::getLoginUserID();
          }
 
-         $input["users_id"] = getLoginUserID();
+         $input["users_id"] = Session::getLoginUserID();
          $input["submission_date"] = $_SESSION["glpi_currenttime"];
          $input["status"] = 'waiting';
 
@@ -235,7 +235,7 @@ class TicketValidation  extends CommonDBChild {
       $job = new Ticket();
       $forbid_fields = array();
 
-      if ($this->fields["users_id_validate"] == getLoginUserID()) {
+      if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if ($input["status"] == "rejected"
              && (!isset($input["comment_validation"]) || $input["comment_validation"] == '')) {
             addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
@@ -567,7 +567,7 @@ class TicketValidation  extends CommonDBChild {
                 FROM `".$this->getTable()."`
                 WHERE `tickets_id` = '".$ticket->getField('id')."'";
       if (!$canadd) {
-         $query .= " AND `users_id_validate` = '".getLoginUserID()."' ";
+         $query .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
       }
       $query .= " ORDER BY submission_date DESC";
       $result = $DB->query($query);
@@ -667,10 +667,10 @@ class TicketValidation  extends CommonDBChild {
          return false;
       }
       // No update validation is answer set
-      $validation_admin = ($this->fields["users_id"] == getLoginUserID())
+      $validation_admin = ($this->fields["users_id"] == Session::getLoginUserID())
                           && $this->canCreate()
                           && $this->fields['status'] == 'waiting';
-      $validator = ($this->fields["users_id_validate"] == getLoginUserID());
+      $validator = ($this->fields["users_id_validate"] == Session::getLoginUserID());
 
       $options['colspan'] = 1;
 

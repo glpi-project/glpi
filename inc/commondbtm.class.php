@@ -1889,7 +1889,7 @@ class CommonDBTM extends CommonGLPI {
             }
          }
 
-         if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
+         if ($this->isPrivate() && $this->fields['users_id']===Session::getLoginUserID()) {
             return true;
          }
          return ($this->canCreate() && $this->canCreateItem());
@@ -1906,21 +1906,21 @@ class CommonDBTM extends CommonGLPI {
       switch ($right) {
          case 'r' :
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
+            if ($this->isPrivate() && $this->fields['users_id']===Session::getLoginUserID()) {
                return true;
             }
             return ($this->canView() && $this->canViewItem());
 
          case 'w' :
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
+            if ($this->isPrivate() && $this->fields['users_id']===Session::getLoginUserID()) {
                return true;
             }
             return ($this->canUpdate() && $this->canUpdateItem());
 
          case 'd' :
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
+            if ($this->isPrivate() && $this->fields['users_id']===Session::getLoginUserID()) {
                return true;
             }
             return ($this->canDelete() && $this->canDeleteItem());
@@ -1954,7 +1954,7 @@ class CommonDBTM extends CommonGLPI {
       // Check item exists
       if (!$this->isNewID($ID) && !$this->getFromDB($ID)) {
          // Gestion timeout session
-         if (!getLoginUserID()) {
+         if (!Session::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
@@ -1963,7 +1963,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if (!$this->can($ID,$right,$input)) {
             // Gestion timeout session
-            if (!getLoginUserID()) {
+            if (!Session::getLoginUserID()) {
                Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
                exit ();
             }
@@ -1985,7 +1985,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (!$this->canGlobal($right)) {
          // Gestion timeout session
-         if (!getLoginUserID()) {
+         if (!Session::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
@@ -2713,7 +2713,7 @@ class CommonDBTM extends CommonGLPI {
                      if($fields['action_notify']) {
                         $params = array('message'     => Html::clean($message_text),
                                         'action_type' => $add,
-                                        'action_user' => getUserName(getLoginUserID()),
+                                        'action_user' => getUserName(Session::getLoginUserID()),
                                         'entities_id' => $entities_id,
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],

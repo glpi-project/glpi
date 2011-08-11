@@ -1113,7 +1113,7 @@ class Stat {
    static function showGraph($entrees, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      if ($uid=getLoginUserID(false)) {
+      if ($uid=Session::getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
             $_SESSION['glpigraphtype'] = $CFG_GLPI['default_graphtype'];
          }

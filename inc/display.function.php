@@ -408,7 +408,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
          $opt['field'][1]      = 59; // validation aprobator
          $opt['searchtype'][1] = 'equals';
-         $opt['contains'][1]   = getLoginUserID();
+         $opt['contains'][1]   = Session::getLoginUserID();
          $opt['link'][1]       = 'AND';
 
 
@@ -1219,7 +1219,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    echo "' title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."</a>";
 
    // check user id : header used for display messages when session logout
-   if (getLoginUserID()) {
+   if (Session::getLoginUserID()) {
       echo " (";
       echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
                            $_SESSION["glpifirstname"], 0, 20);
@@ -1531,7 +1531,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
           "onclick=\"completecleandisplay('show_all_menu')\">";
    echo "</li>";
    // check user id : header used for display messages when session logout
-   if (getLoginUserID()) {
+   if (Session::getLoginUserID()) {
       showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
    }
    echo "</ul>";
@@ -1587,7 +1587,7 @@ function displayMessageAfterRedirect() {
 function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO, $reset=false) {
 
    // Do not display of cron jobs messages in user interface
-   if (getLoginUserID() === getLoginUserID(false)) {
+   if (Session::getLoginUserID() === Session::getLoginUserID(false)) {
       if (!empty($msg)) {
 
          if ($reset) {
@@ -1651,7 +1651,7 @@ function helpHeader($title, $url='') {
                                    $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
 
    // check user id : header used for display messages when session logout
-   if (getLoginUserID()) {
+   if (Session::getLoginUserID()) {
       echo "&nbsp;(";
       echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
                            $_SESSION["glpifirstname"], 0, 20);
@@ -1784,7 +1784,7 @@ function helpHeader($title, $url='') {
 
       $opt['field'][1]      = 59; // validation aprobator
       $opt['searchtype'][1] = 'equals';
-      $opt['contains'][1]   = getLoginUserID();
+      $opt['contains'][1]   = Session::getLoginUserID();
       $opt['link'][1]       = 'AND';
 
 
@@ -1815,7 +1815,7 @@ function helpHeader($title, $url='') {
    echo "</a></li>";
 
    // check user id : header used for display messages when session logout
-   if (getLoginUserID()) {
+   if (Session::getLoginUserID()) {
       showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
    }
    echo "</ul></div>";
@@ -2226,12 +2226,12 @@ function printHelpDesk ($ID, $from_helpdesk) {
 
       $opt['field'][1]      = 59; // validation aprobator
       $opt['searchtype'][1] = 'equals';
-      $opt['contains'][1]   = getLoginUserID();
+      $opt['contains'][1]   = Session::getLoginUserID();
       $opt['link'][1]       = 'AND';
 
       $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt, '&amp;');
 
-      if (TicketValidation::getNumberTicketsToValidate(getLoginUserID()) >0) {
+      if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) >0) {
          echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
                 alt=\"".$LANG['validation'][15]."\">".$LANG['validation'][33]."</a><br><br>";
       }
@@ -2320,7 +2320,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
       echo "<td>";
 
-      $_REQUEST['value']            = getLoginUserID();
+      $_REQUEST['value']            = Session::getLoginUserID();
       $_REQUEST['field']            = '_users_id_requester_notif';
       $_REQUEST['use_notification'] = $use_email_notification;
       include (GLPI_ROOT."/ajax/uemailUpdate.php");
@@ -2332,7 +2332,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][24]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      Ticket::dropdownMyDevices(getLoginUserID(), $_SESSION["glpiactive_entity"]);
+      Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
       Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0,
                                  $_SESSION["glpiactive_entity"]);
       echo "</td></tr>";

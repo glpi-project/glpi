@@ -42,7 +42,7 @@ if (isset($_GET["switchto"])) {
    Html::back();
 }
 
-if ($uid=getLoginUserID(false) && isset($_GET["file"])) {
+if ($uid=Session::getLoginUserID(false) && isset($_GET["file"])) {
    list($userID,$filename)=explode("_",$_GET["file"]);
    if ($userID==$uid && file_exists(GLPI_GRAPH_DIR."/".$_GET["file"])) {
       list($fname,$extension)=explode(".",$filename);

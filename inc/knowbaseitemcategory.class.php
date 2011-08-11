@@ -106,7 +106,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             return false;
          }
 
-         if (getLoginUserID()) {
+         if (Session::getLoginUserID()) {
             $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "", "",
                                                     true);
          } else {

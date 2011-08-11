@@ -191,7 +191,7 @@ class Reminder extends CommonDBTM {
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
-      if ($this->fields['users_id']==0 && $uid=getLoginUserID()) {
+      if ($this->fields['users_id']==0 && $uid=Session::getLoginUserID()) {
          $this->fields['users_id'] = $uid;
          $this->updates[]="users_id";
       }
@@ -202,7 +202,7 @@ class Reminder extends CommonDBTM {
       global $LANG;
 
       $this->fields["name"]        = $LANG['reminder'][6];
-      $this->fields["users_id"]    = getLoginUserID();
+      $this->fields["users_id"]    = Session::getLoginUserID();
       $this->fields["is_private"]  = 1;
       $this->fields["entities_id"] = $_SESSION["glpiactive_entity"];
    }
@@ -415,8 +415,8 @@ class Reminder extends CommonDBTM {
       }
 
       // See my private reminder ?
-      if ($who_group=="mine" || $who===getLoginUserID()) {
-         $readpriv = "(is_private=1 AND users_id='".getLoginUserID()."')";
+      if ($who_group=="mine" || $who===Session::getLoginUserID()) {
+         $readpriv = "(is_private=1 AND users_id='".Session::getLoginUserID()."')";
       }
 
       if ($readpub && $readpriv) {
@@ -550,7 +550,7 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       // show reminder that are not planned
-      $users_id = getLoginUserID();
+      $users_id = Session::getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];
 
       $is_helpdesk_visible = '';
@@ -674,7 +674,7 @@ class Reminder extends CommonDBTM {
 
       // show reminder that are not planned
       $planningRight = haveRight("show_planning", "1");
-      $users_id      = getLoginUserID();
+      $users_id      = Session::getLoginUserID();
 
       $is_helpdesk_visible = '';
       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {

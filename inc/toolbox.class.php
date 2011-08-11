@@ -313,8 +313,8 @@ class Toolbox {
       global $CFG_GLPI;
 
       $user = '';
-      if (function_exists('getLoginUserID')) {
-         $user = " [".getLoginUserID().'@'.php_uname('n')."]";
+      if (function_exists('Session::getLoginUserID')) {
+         $user = " [".Session::getLoginUserID().'@'.php_uname('n')."]";
       }
 
       if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {

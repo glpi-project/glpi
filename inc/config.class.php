@@ -691,7 +691,7 @@ class Config extends CommonDBTM {
 
       if (array_key_exists('last_login',$data)) {
          $userpref = true;
-         if ($data["id"] === getLoginUserID()) {
+         if ($data["id"] === Session::getLoginUserID()) {
             $url      = $CFG_GLPI['root_doc']."/front/preference.php";
          } else {
             $url      = $CFG_GLPI['root_doc']."/front/user.form.php";
@@ -941,7 +941,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       $oldlang = $_SESSION['glpilanguage'];
-      loadLanguage('en_GB');
+      Session::loadLanguage('en_GB');
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
@@ -993,7 +993,7 @@ class Config extends CommonDBTM {
          $tmp = new $type();
          $tmp->showSystemInformations($width);
       }
-      loadLanguage($oldlang);
+      Session::loadLanguage($oldlang);
 
 
 
@@ -1135,7 +1135,7 @@ class Config extends CommonDBTM {
       if ($item->getType()=='Preference') {
          $config = new self();
          $user = new User();
-         if ($user->getFromDB(getLoginUserID())) {
+         if ($user->getFromDB(Session::getLoginUserID())) {
             $user->computePreferences();
             $config->showFormUserPrefs($user->fields);
          }

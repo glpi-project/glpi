@@ -39,30 +39,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/**
- * Get the Login User ID or return cron user ID for cron jobs
- *
- * @param $force_human boolean : force human / do not return cron user
- *
- * return false if user is not logged in
- *
- * @return int or string : int for user id, string for cron jobs
-**/
-function getLoginUserID($force_human=true) {
-
-   if (!$force_human) { // Check cron jobs
-      if (isset($_SESSION["glpicronuserrunning"])
-          && (isCommandLine() || strpos($_SERVER['PHP_SELF'],"cron.php"))) {
-
-         return $_SESSION["glpicronuserrunning"];
-      }
-   }
-   if (isset($_SESSION["glpiID"])) {
-      return $_SESSION["glpiID"];
-   }
-   return false;
-}
-
 
 /**
  * Have I the right $right to module $module (conpare to session variable)
@@ -146,7 +122,7 @@ function checkRight($module, $right) {
 
    if (!haveRight($module, $right)) {
       // Gestion timeout session
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -184,7 +160,7 @@ function checkSeveralRightsOr($modules) {
 
    if (!$valid) {
       // Gestion timeout session
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -204,7 +180,7 @@ function checkCentralAccess() {
    if (!isset($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
       // Gestion timeout session
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -224,7 +200,7 @@ function checkHelpdeskAccess() {
    if (!isset($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
       // Gestion timeout session
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -243,7 +219,7 @@ function checkLoginUser() {
 
    if (!isset($_SESSION["glpiname"])) {
       // Gestion timeout session
-      if (!getLoginUserID()) {
+      if (!Session::getLoginUserID()) {
          Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -265,151 +241,6 @@ function checkFaqAccess() {
    }
 }
 
-
-/**
- * Include the good language dict.
- *
- * Get the default language from current user in $_SESSION["glpilanguage"].
- * And load the dict that correspond.
- * @param $forcelang Force to load a specific lang
- *
- * @return nothing (make an include)
-**/
-function loadLanguage($forcelang='') {
-   global $LANG, $CFG_GLPI;
-
-   $file = "";
-
-   if (!isset($_SESSION["glpilanguage"])) {
-      if (isset($CFG_GLPI["language"])) {
-         // Default config in GLPI >= 0.72
-         $_SESSION["glpilanguage"] = $CFG_GLPI["language"];
-
-      } else if (isset($CFG_GLPI["default_language"])) {
-         // Default config in GLPI < 0.72 : keep it for upgrade process
-         $_SESSION["glpilanguage"] = $CFG_GLPI["default_language"];
-      }
-   }
-
-   $trytoload = $_SESSION["glpilanguage"];
-   // Force to load a specific lang
-   if (!empty($forcelang)) {
-      $trytoload = $forcelang;
-   }
-   // If not set try default lang file
-   if (empty($trytoload)) {
-      $trytoload = $CFG_GLPI["language"];
-   }
-
-   if (isset($CFG_GLPI["languages"][$trytoload][1])) {
-      $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
-   }
-
-   if (empty($file) || !is_file(GLPI_ROOT . $file)) {
-      $trytoload = 'en_GB';
-      $file = "/locales/en_GB.php";
-   }
-
-   include (GLPI_ROOT . $file);
-
-   // Load plugin dicts
-   if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
-      if (count($_SESSION['glpi_plugins'])) {
-         foreach ($_SESSION['glpi_plugins'] as $plug) {
-               Plugin::loadLang($plug, $forcelang);
-         }
-      }
-   }
-
-   // Debug display lang element with item
-   if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
-      foreach ($LANG as $module => $tab) {
-         foreach ($tab as $num => $val) {
-            $LANG[$module][$num] = "".$LANG[$module][$num].
-                                   "/<span style='font-size:12px; color:red;'>$module/$num</span>";
-         }
-      }
-   }
-   return $trytoload;
-}
-
-
-/**
- * Set the entities session variable. Load all entities from DB
- *
- * @param $userID : ID of the user
- *
- * @return Nothing
-**/
-function initEntityProfiles($userID) {
-   global $DB;
-
-   $query = "SELECT DISTINCT `glpi_profiles`.*
-             FROM `glpi_profiles_users`
-             INNER JOIN `glpi_profiles`
-                  ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-             WHERE `glpi_profiles_users`.`users_id` =' $userID'
-             ORDER BY `glpi_profiles`.`name`";
-   $result = $DB->query($query);
-
-   $_SESSION['glpiprofiles'] = array();
-   if ($DB->numrows($result)) {
-      while ($data = $DB->fetch_assoc($result)) {
-         $_SESSION['glpiprofiles'][$data['id']]['name'] = $data['name'];
-      }
-      foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-         $query2 = "SELECT `glpi_profiles_users`.`entities_id` AS eID,
-                           `glpi_profiles_users`.`id` AS kID,
-                           `glpi_profiles_users`.`is_recursive`,
-                           `glpi_entities`.*
-                    FROM `glpi_profiles_users`
-                    LEFT JOIN `glpi_entities`
-                             ON (`glpi_profiles_users`.`entities_id` = `glpi_entities`.`id`)
-                    WHERE `glpi_profiles_users`.`profiles_id` = '$key'
-                          AND `glpi_profiles_users`.`users_id` = '$userID'
-                    ORDER BY `glpi_entities`.`completename`";
-         $result2 = $DB->query($query2);
-
-         if ($DB->numrows($result2)) {
-            while ($data = $DB->fetch_array($result2)) {
-               // Do not override existing entity if define as recursive
-               if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
-                  || $data['is_recursive']) {
-                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['id']   = $data['eID'];
-                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['name'] = $data['name'];
-                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['is_recursive']
-                                                                              = $data['is_recursive'];
-               }
-            }
-         }
-      }
-   }
-}
-
-
-/**
- * Load groups where I am in the active entity.
- *
- * @return Nothing
-**/
-function loadGroups() {
-   global $DB;
-
-   $_SESSION["glpigroups"] = array();
-
-   $query_gp = "SELECT `groups_id`
-                FROM `glpi_groups_users`
-                LEFT JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                WHERE `glpi_groups_users`.`users_id`='" . getLoginUserID() . "' " .
-                      getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
-   $result_gp = $DB->query($query_gp);
-   if ($DB->numrows($result_gp)) {
-      while ($data = $DB->fetch_array($result_gp)) {
-         $_SESSION["glpigroups"][] = $data["groups_id"];
-      }
-   }
-}
 
 
 /**

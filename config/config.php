@@ -161,7 +161,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    if ((!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])!=GLPI_VERSION)
        && !isset($_GET["donotcheckversion"])) {
 
-      loadLanguage();
+      Session::loadLanguage();
 
       if (isCommandLine()) {
          echo $LANG['update'][88] . "\n";

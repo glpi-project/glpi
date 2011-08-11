@@ -66,7 +66,7 @@ include_once (GLPI_ROOT . "/config/config.php");
 
 
 // Load Language file
-loadLanguage();
+Session::loadLanguage();
 
 if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
    $SQL_TOTAL_REQUEST=0;
