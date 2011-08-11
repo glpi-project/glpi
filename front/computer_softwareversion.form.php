@@ -37,11 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkRight("software", "w");
 $inst = new Computer_SoftwareVersion();
 
 // From Computer - Software tab (add form or from not installed license)
 if (isset($_REQUEST["install"])) {
-   checkRight("software","w");
    if (isset($_REQUEST["softwareversions_id"]) && isset($_REQUEST["computers_id"])) {
       $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
                        'softwareversions_id' => $_REQUEST["softwareversions_id"]));
@@ -53,8 +53,7 @@ if (isset($_REQUEST["install"])) {
 
 // From Computer - Software tab (installed software)
 } else if (isset($_GET["uninstall"])) {
-   checkRight("software","w");
-   $inst->delete(array('id'=>$_GET["id"]));
+   $inst->delete(array('id' => $_GET["id"]));
 
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][111]);
@@ -62,7 +61,6 @@ if (isset($_REQUEST["install"])) {
 
 // From Computer - Software tab  (installed software)
 } else if (isset($_POST["massuninstall"])) {
-   checkRight("software","w");
    foreach ($_POST as $key => $val) {
       if (preg_match("/softversion_([0-9]+)/",$key,$ereg)) {
          $inst->delete(array('id' => $ereg[1]));
@@ -73,7 +71,6 @@ if (isset($_REQUEST["install"])) {
    Html::back();
 
 } else if (isset($_POST["massinstall"]) && isset($_POST["computers_id"])) {
-   checkRight("software","w");
    foreach ($_POST as $key => $val) {
       if (preg_match("/softversion_([0-9]+)/",$key,$ereg)) {
          if ($ereg[1] > 0) {
@@ -88,8 +85,6 @@ if (isset($_REQUEST["install"])) {
 
 // From installation list on Software form
 } else if (isset($_POST["deleteinstalls"])) {
-   checkRight("software","w");
-
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1) {
          $inst->delete(array('id' => $key));
@@ -100,7 +95,6 @@ if (isset($_REQUEST["install"])) {
    Html::back();
 
 } else if (isset($_POST["moveinstalls"])) {
-   checkRight("software","w");
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1 && $_POST['versionID'] > 0) {
          $inst->upgrade($key, $_POST['versionID']);

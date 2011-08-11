@@ -36,7 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsOr(array("reservation_central"=>"r","reservation_helpdesk"=>"1"));
+Session::checkSeveralRightsOr(array("reservation_central"  => "r",
+                                    "reservation_helpdesk" => "1"));
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);

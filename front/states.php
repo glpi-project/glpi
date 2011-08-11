@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["synthese"])) {
    $_GET["synthese"] = "no";
 }
-checkCentralAccess();
+Session::checkCentralAccess();
 
 commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
 

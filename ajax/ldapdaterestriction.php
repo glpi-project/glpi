@@ -44,6 +44,6 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 AuthLdap::showDateRestrictionForm($_POST);
 ?>

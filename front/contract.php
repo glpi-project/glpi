@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("contract","r");
+Session::checkRight("contract", "r");
 
 commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 Search::show('Contract');
 
 commonFooter();
-
 ?>

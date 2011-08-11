@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("cartridge","r");
+Session::checkRight("cartridge", "r");
 
 commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 

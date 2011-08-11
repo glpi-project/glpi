@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
    header_nocache();
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
     || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {

@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
 Search::show('OcsServer');
 
 commonFooter();
-
 ?>

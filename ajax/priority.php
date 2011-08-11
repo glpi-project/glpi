@@ -40,7 +40,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_POST["urgency"]) && isset($_POST["impact"]) && isset($_POST["priority"])) {
    $priority = Ticket::computePriority($_POST["urgency"], $_POST["impact"]);

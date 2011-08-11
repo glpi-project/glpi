@@ -36,8 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsOr(array('knowbase' => 'r',
-                           'faq'      => 'r'));
+Session::checkSeveralRightsOr(array('knowbase' => 'r',
+                                    'faq'      => 'r'));
 
 if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);

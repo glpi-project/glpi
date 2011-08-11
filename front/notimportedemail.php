@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","r");
+Session::checkRight("config", "r");
 
 commonHeader($LANG['mailgate'][11],$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
 
 Search::show('NotImportedEmail');
 
 commonFooter();
-
 ?>

@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("printer","r");
+Session::checkRight("printer", "r");
 
 commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
 

@@ -40,7 +40,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("logs","r");
+Session::checkRight("logs", "r");
 
 commonHeader($LANG['Menu'][30],$_SERVER['PHP_SELF'],"admin","log");
 

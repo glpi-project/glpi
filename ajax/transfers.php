@@ -38,7 +38,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("transfer","r");
+Session::checkRight("transfer", "r");
 
 if (isset($_POST["id"]) && $_POST["id"]>0) {
    $transfer = new Transfer();

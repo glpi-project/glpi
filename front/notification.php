@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("notification",'r');
+Session::checkRight("notification", 'r');
 
 commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
 

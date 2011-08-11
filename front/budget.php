@@ -37,12 +37,12 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-checkRight("budget","r");
+Session::checkRight("budget", "r");
 
 commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
 Search::show('Budget');
 
 commonFooter();
+
 ?>

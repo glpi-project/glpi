@@ -39,19 +39,19 @@ include (GLPI_ROOT . "/inc/includes.php");
 $crontask = new CronTask();
 
 if (isset($_POST["update"])) {
-   checkRight('config','w');
+   Session::checkRight('config', 'w');
    $crontask->update($_POST);
    Html::back();
 
 } else if (isset($_GET['resetdate']) && isset($_GET["id"])) {
-   checkRight('config','w');
+   Session::checkRight('config', 'w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetDate();
    }
    Html::back();
 
 } else if (isset($_GET['resetstate']) && isset($_GET["id"])) {
-   checkRight('config','w');
+   Session::checkRight('config', 'w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetState();
    }

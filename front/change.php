@@ -37,8 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkSeveralRightsOr(array('show_all_change' => '1',
-                           'show_my_change'  => '1'));
+Session::checkSeveralRightsOr(array('show_all_change' => '1',
+                                    'show_my_change'  => '1'));
 
 commonHeader($LANG['Menu'][8], '', "maintain", "change");
 

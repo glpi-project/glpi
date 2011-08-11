@@ -37,12 +37,12 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET['action']) && $_GET['action'] == 'check_version') {
-   checkRight("check_update", "r");
+   Session::checkRight("check_update", "r");
    Toolbox::checkNewVersionAvailable(0, true);
    Html::back();
 }
 
-checkRight("backup","w");
+Session::checkRight("backup", "w");
 
 // full path
 $path = GLPI_DUMP_DIR ;

@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $group = new Group();
 $group->checkGlobal('w');
-checkRight('user_authtype','w');
+Session::checkRight('user_authtype', 'w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 

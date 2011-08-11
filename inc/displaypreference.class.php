@@ -232,7 +232,7 @@ class DisplayPreference extends CommonDBTM {
       $numrows = $DB->numrows($result);
 
       if ($numrows==0) {
-         checkRight("search_config", "w");
+         Session::checkRight("search_config", "w");
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";

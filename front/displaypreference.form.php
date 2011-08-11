@@ -42,8 +42,8 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
-checkSeveralRightsOr(array("search_config_global" => "w",
-                           "search_config"        => "w"));
+Session::checkSeveralRightsOr(array("search_config_global" => "w",
+                                    "search_config"        => "w"));
 
 $setupdisplay = new DisplayPreference();
 

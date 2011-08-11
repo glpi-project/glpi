@@ -39,7 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 if (isset($_POST["id"]) && $_POST["id"]>0) {
    echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";

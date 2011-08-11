@@ -36,12 +36,12 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+Session::checkCentralAccess();
+Session::checkRight("reservation_central", "w");
 
 $ri = new ReservationItem();
 
 if (isset($_REQUEST["add"])) {
-   checkRight("reservation_central","w");
    if ($newID = $ri->add($_REQUEST)) {
       Event::log($newID, "reservationitem", 4, "inventory",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST["itemtype"]."-".
@@ -50,25 +50,21 @@ if (isset($_REQUEST["add"])) {
    Html::back();
 
 } else if (isset($_REQUEST["delete"])) {
-   checkRight("reservation_central","w");
    $ri->delete($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
    Html::back();
 
 } else if (isset($_REQUEST["update"])) {
-   checkRight("reservation_central","w");
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
    Html::back();
 
 } else {
-   checkRight("reservation_central","w");
    commonHeader($LANG['Menu'][17], $_SERVER['PHP_SELF'], "utils", "reservation");
    $ri->showForm($_GET["id"]);
 }
 
 commonFooter();
-
 ?>

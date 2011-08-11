@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-checkRight("import_externalauth_users", 'w');
+Session::checkRight("import_externalauth_users", 'w');
 
 AuthLdap::manageValuesInSession($_REQUEST);
 

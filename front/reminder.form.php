@@ -40,7 +40,8 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 $remind = new Reminder();
-checkLoginUser();
+Session::checkLoginUser();
+
 if (isset($_POST["add"])) {
    $remind->check(-1,'w',$_POST);
 

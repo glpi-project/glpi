@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
    if ($_GET["display_type"] < 0) {

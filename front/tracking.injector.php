@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (empty($_POST["type"])
     || ($_POST["type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {
-   checkRight("create_ticket","1");
+   Session::checkRight("create_ticket", "1");
 }
 
 $track = new Ticket();

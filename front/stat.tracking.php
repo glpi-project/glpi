@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['Menu'][13],'',"maintain","stat");
 
-checkRight("statistic","1");
+Session::checkRight("statistic", "1");
 
 if (empty($_REQUEST["type"])) {
    $_REQUEST["type"] = "user";

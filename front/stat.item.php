@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['Menu'][13],'',"maintain","stat");
 
-checkRight("statistic","1");
+Session::checkRight("statistic", "1");
 
 if (isset($_GET["date1"])) {
    $_POST["date1"] = $_GET["date1"];

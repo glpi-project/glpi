@@ -31,7 +31,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("reports","r");
+Session::checkRight("reports", "r");
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");

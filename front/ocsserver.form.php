@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("ocsng", "w");
+Session::checkRight("ocsng", "w");
 $ocs = new OcsServer();
 
 if (!isset($_GET["id"])) {

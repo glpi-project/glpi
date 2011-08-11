@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")) {
    header_nocache();
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 // Make a select box
 if (isset($_POST["rubdoc"])) {

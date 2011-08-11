@@ -31,7 +31,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("link","r");
+Session::checkRight("link", "r");
 
 if (isset($_GET["lID"])) {
    $query = "SELECT `glpi_links`.`id`, `glpi_links`.`link`, `glpi_links`.`data`

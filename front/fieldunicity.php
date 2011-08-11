@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight('config','r');
+Session::checkRight('config', 'r');
 commonHeader($LANG['setup'][811], $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
 
 Search::show('FieldUnicity');

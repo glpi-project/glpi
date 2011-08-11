@@ -37,8 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-checkRight("config","r");
+Session::checkRight("config", "r");
 
 commonHeader(AuthLDAP::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
 

@@ -40,7 +40,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownUnicityFields.php")) {
    header_nocache();
 }
 
-checkRight("config", "w");
+Session::checkRight("config", "w");
 
 $field = new FieldUnicity();
 if ($_POST['id'] > 0) {
