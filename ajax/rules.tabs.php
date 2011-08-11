@@ -47,7 +47,7 @@ if ($rulecollection->isRuleEntityAssigned()) {
 
 $rulecollection->title();
 $rulecollection->showEngineSummary();
-$rulecollection->showListRules($_POST['target'], $_REQUEST['glpi_tab'], $_POST);
+$rulecollection->showListRules($_POST['target'], $_POST);
 
 ajaxFooter();
 
