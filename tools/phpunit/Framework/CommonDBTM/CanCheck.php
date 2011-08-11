@@ -60,12 +60,12 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $id[3], "Fail to create Printer 4");
 
       // Super admin
-      changeProfile(4);
+      Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
       $this->assertEquals('w', $_SESSION['glpiactiveprofile']['printer']);
 
       // See all
-      $this->assertTrue(changeActiveEntities("all"));
+      $this->assertTrue(Session::changeActiveEntities("all"));
 
       $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
       $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
@@ -78,7 +78,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertTrue($printer->can($id[3],'w'), "Fail can write Printer 4");
 
       // See only in main entity
-      $this->assertTrue(changeActiveEntities($ent0));
+      $this->assertTrue(Session::changeActiveEntities($ent0));
 
       $this->assertTrue($printer->can($id[0],'r'), "Fail can read Printer 1");
       $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
@@ -91,7 +91,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 1");
 
       // See only in child entity 1 + parent if recursive
-      $this->assertTrue(changeActiveEntities($ent1));
+      $this->assertTrue(Session::changeActiveEntities($ent1));
 
       $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
       $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
@@ -104,7 +104,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($printer->can($id[3],'w'), "Fail can't write Printer 2");
 
       // See only in child entity 2 + parent if recursive
-      $this->assertTrue(changeActiveEntities($ent2));
+      $this->assertTrue(Session::changeActiveEntities($ent2));
 
       $this->assertFalse($printer->can($id[0],'r'), "Fail can't read Printer 1");
       $this->assertTrue($printer->can($id[1],'r'), "Fail can read Printer 2");
@@ -127,12 +127,12 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $ent2 = $this->sharedFixture['entity'][2];
 
       // Super admin
-      changeProfile(4);
+      Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
       $this->assertEquals('w', $_SESSION['glpiactiveprofile']['contact_enterprise']);
 
       // See all
-      $this->assertTrue(changeActiveEntities("all"));
+      $this->assertTrue(Session::changeActiveEntities("all"));
 
       // Create some contacts
       $contact = new Contact();
@@ -260,7 +260,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($rel->can(-1,'w',$input));
 
       // See only in child entity 2 + parent if recursive
-      $this->assertTrue(changeActiveEntities($ent2));
+      $this->assertTrue(Session::changeActiveEntities($ent2));
 
       $this->assertFalse($rel->can($idr[0],'r'));  // root / root
       $this->assertFalse($rel->can($idr[0],'w'));
@@ -329,7 +329,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
 
       $entity = new Entity();
 
-      $this->assertTrue(changeActiveEntities("all"));
+      $this->assertTrue(Session::changeActiveEntities("all"));
 
       $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
       $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
@@ -356,7 +356,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $input=array('entities_id' => -1);
       $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
 
-      $this->assertTrue(changeActiveEntities($ent2,true));
+      $this->assertTrue(Session::changeActiveEntities($ent2,true));
 
       $this->assertTrue($entity->can(0,'r'), "Fail: can't read root entity");
       $this->assertTrue($entity->can($ent0,'r'), "Fail: can't read entity 0");
@@ -385,7 +385,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $input=array('entities_id' => -1);
       $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
 
-      $this->assertTrue(changeActiveEntities($ent2,false));
+      $this->assertTrue(Session::changeActiveEntities($ent2,false));
       $input=array('entities_id' => $ent1);
       $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
