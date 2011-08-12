@@ -45,9 +45,12 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][22];
+      }
       return $LANG['common'][92];
    }
 

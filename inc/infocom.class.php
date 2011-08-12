@@ -57,9 +57,10 @@ class Infocom extends CommonDBChild {
    const ON_ASSET_IMPORT    = 5;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      // Always plural
       return $LANG['financial'][3];
    }
 

@@ -41,9 +41,12 @@ if (!defined('GLPI_ROOT')) {
 class RequestType extends CommonDropdown {
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['dropdown'][6];
+      }
       return $LANG['job'][44];
    }
 

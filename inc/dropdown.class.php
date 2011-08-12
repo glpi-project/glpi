@@ -599,15 +599,15 @@ class Dropdown {
 
       if (is_null($optgroup)) {
          $optgroup =
-            array($LANG['setup'][139] => array('Location'        => $LANG['common'][15],
-                                               'State'           => $LANG['setup'][83],
-                                               'Manufacturer'    => $LANG['common'][5]),
+            array($LANG['setup'][139] => array('Location'        => Location::getTypeName(2),
+                                               'State'           => State::getTypeName(2),
+                                               'Manufacturer'    => Manufacturer::getTypeName(2)),
 
-                  $LANG['title'][24]  => array('ITILCategory'     => $LANG['setup'][79],
-                                               'TaskCategory'     => $LANG['setup'][98],
-                                               'SolutionType'     => $LANG['job'][48],
-                                               'RequestType'      => $LANG['job'][44],
-                                               'SolutionTemplate' => $LANG['jobresolution'][6]),
+                  $LANG['title'][24]  => array('ITILCategory'     => ITILCategory::getTypeName(2),
+                                               'TaskCategory'     => TaskCategory::getTypeName(2),
+                                               'SolutionType'     => SolutionType::getTypeName(2),
+                                               'RequestType'      => RequestType::getTypeName(2),
+                                               'SolutionTemplate' => SolutionTemplate::getTypeName(2)),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
