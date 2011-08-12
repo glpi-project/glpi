@@ -2337,8 +2337,8 @@ $LANG['software'][7]  = "Ajouter une version";
 $LANG['software'][8]  = "Ajouter une licence";
 $LANG['software'][9]  = "Ordinateurs affectés";
 $LANG['software'][10] = "Entité de création des logiciels";
-
 $LANG['software'][11] = "Licences";
+$LANG['software'][12] = "Licence";
 
 $LANG['software'][16] = "logiciel installé";
 $LANG['software'][17] = "logiciels installés";

@@ -50,10 +50,13 @@ class SoftwareVersion extends CommonDBChild {
    public $items_id = 'softwares_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['software'][5];
+      if ($nb>1) {
+         return $LANG['software'][5];
+      }
+      return $LANG['rulesengine'][78];
    }
 
 
@@ -328,6 +331,33 @@ class SoftwareVersion extends CommonDBChild {
 
       }
       echo "</div>";
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Software' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "softwares_id = '".$item->getID()."'"));
+               }
+               return self::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Software') {
+         self::showForSoftware($item);
+      }
+      return true;
    }
 
 }

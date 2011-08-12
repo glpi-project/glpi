@@ -68,13 +68,14 @@ class Software extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType() == 'Computer' && Session::haveRight("software","r")) {
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][4],
-                                        countElementsInTable('glpi_computers_softwareversions',
-                                                             "computers_id = '".$item->getID()."'"));
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               if ($item->isRecursive() && $item->can($item->fields['id'],'w')) {
+                  return $LANG['software'][47];
+               }
+               break;
          }
-         return $LANG['Menu'][4];
       }
       return '';
    }
@@ -82,7 +83,9 @@ class Software extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      Computer_SoftwareVersion::showForComputer($item, $withtemplate);
+      if ($item->getType() == __CLASS__) {
+         $item->showMergeCandidates();
+      }
       return true;
    }
 
@@ -91,27 +94,19 @@ class Software extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
+      $this->addStandardTab('SoftwareVersion', $ong, $options);
+      $this->addStandardTab('SoftwareLicense', $ong, $options);
+      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
+      $this->addStandardTab('Infocom', $ong, $options);
+      $this->addStandardTab('Contract_Item', $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Reservation', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
 
-         $ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
-         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $ong[2] = $LANG['software'][19];
-         }
-
-         $this->addStandardTab('Infocom', $ong, $options);
-         $this->addStandardTab('Contract_Item', $ong, $options);
-         $this->addStandardTab('Document', $ong, $options);
-         $this->addStandardTab('Ticket', $ong, $options);
-         $this->addStandardTab('Link', $ong, $options);
-         $this->addStandardTab('Note', $ong, $options);
-         $this->addStandardTab('Reservation', $ong, $options);
-         $this->addStandardTab('Log', $ong, $options);
-         if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
-            $ong[21] = $LANG['software'][47];
-         }
-      }
       return $ong;
    }
 

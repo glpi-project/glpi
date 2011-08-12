@@ -84,7 +84,7 @@ class Computer extends CommonDBTM {
       $ong = array();
       $this->addStandardTab('DeviceProcessor', $ong, $options); // All devices : use one to define tab
       $this->addStandardTab('ComputerDisk', $ong, $options);
-      $this->addStandardTab('Software', $ong, $options);
+      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
