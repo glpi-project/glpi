@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class PhoneType
 class PhoneType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][504];
+      if ($nb>1) {
+         return $LANG['setup'][504];
+      }
+      return $LANG['dropdown'][13];
    }
 }
 

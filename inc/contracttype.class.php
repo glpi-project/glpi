@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class ContractType
 class ContractType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][85];
+      if ($nb>1) {
+         return $LANG['setup'][85];
+      }
+      return $LANG['financial'][6];
    }
 }
 

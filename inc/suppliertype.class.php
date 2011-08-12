@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class SupplierType
 class SupplierType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][80];
+      if ($nb>1) {
+         return $LANG['setup'][80];
+      }
+      return $LANG['financial'][79];
    }
 }
 

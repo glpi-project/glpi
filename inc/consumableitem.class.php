@@ -47,10 +47,13 @@ class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    protected $forward_entity_to = array('Consumable', 'Infocom');
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['consumables'][12];
+      if ($nb>1) {
+         return $LANG['consumables'][4];
+      }
+      return $LANG['consumables'][3];
    }
 
 
