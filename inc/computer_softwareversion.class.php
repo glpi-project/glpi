@@ -1017,6 +1017,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             break;
 
+         case 'SoftwareVersion' :
+            if (!$withtemplate) {
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = self::countForVersion($item->getID());
+               }
+               return array(1 => SoftwareVersion::getTypeName(1),
+                            2 => self::createTabEntry(self::getTypeName(2), $nb));
+            }
+            break;
+
          case 'Computer' :
             // Installation allowed for template
             if (Session::haveRight("software","r")) {
@@ -1040,6 +1051,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       } else if ($item->getType()=='Computer') {
          self::showForComputer($item, $withtemplate);
+
+      } else if ($item->getType()=='SoftwareVersion') {
+         switch ($tabnum) {
+            case 1 :
+               self::showForVersionByEntity($item);
+               break;
+
+            case 2 :
+               self::showForVersion($item);
+               break;
+         }
       }
       return true;
    }
