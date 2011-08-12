@@ -43,10 +43,8 @@ commonHeader($LANG['search'][0],$_SERVER['PHP_SELF']);
 
 if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];
-   $types = array('Ticket','Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
-                  'Phone', 'Contact', 'Supplier', 'Document');
 
-   foreach ($types as $itemtype) {
+   foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
       $item = new $itemtype();
       if ($item->canView()) {
          $_GET["reset"] = 'reset';
