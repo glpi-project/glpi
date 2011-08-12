@@ -1953,7 +1953,7 @@ class Rule extends CommonDBTM {
                   $input['id'] = $data[$fieldid];
                   $ruleitem->update($input);
                }
-               addMessageAfterRedirect($LANG['rulesengine'][150], true);
+               Session::addMessageAfterRedirect($LANG['rulesengine'][150], true);
             }
          }
       }

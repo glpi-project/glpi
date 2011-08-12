@@ -104,11 +104,11 @@ class Document extends CommonDBTM {
                                      "`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
-               addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
-                                       $this->fields["filepath"]);
+               Session::addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
+                                                $this->fields["filepath"]);
             } else {
-               addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
-                                       $this->fields["filepath"], false, ERROR);
+               Session::addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
+                                                $this->fields["filepath"], false, ERROR);
             }
          }
       }
@@ -215,7 +215,7 @@ class Document extends CommonDBTM {
                        'entities_id'=>$input['entities_id']);
          foreach ($DB->request($this->getTable(), $crit) as $data) {
             $link=$this->getFormURL();
-            addMessageAfterRedirect($LANG['document'][48].
+            Session::addMessageAfterRedirect($LANG['document'][48].
                "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",
                false, ERROR, true);
@@ -934,12 +934,12 @@ class Document extends CommonDBTM {
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
       if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
-         addMessageAfterRedirect($LANG['document'][35], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['document'][35], false, ERROR);
          return false;
       }
 
       if (!is_file($fullpath)) {
-         addMessageAfterRedirect($LANG['document'][38]."&nbsp;: ".$fullpath, false, ERROR);
+         Session::addMessageAfterRedirect($LANG['document'][38]."&nbsp;: ".$fullpath, false, ERROR);
          return false;
       }
       $sha1sum  = sha1_file($fullpath);
@@ -958,11 +958,11 @@ class Document extends CommonDBTM {
                      "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
+            Session::addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
          } else {
-            addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
-                                    " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
-                                    false, ERROR);
+            Session::addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
+                                              " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
+                                             false, ERROR);
          }
       }
 
@@ -978,17 +978,17 @@ class Document extends CommonDBTM {
       if (is_writable(GLPI_DOC_DIR."/_uploads/") && is_writable ($fullpath)) { // Move if allowed
 
          if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
-            addMessageAfterRedirect($LANG['document'][39]);
+            Session::addMessageAfterRedirect($LANG['document'][39]);
          } else {
-            addMessageAfterRedirect($LANG['document'][40],false,ERROR);
+            Session::addMessageAfterRedirect($LANG['document'][40], false, ERROR);
             return false;
          }
 
       } else { // Copy (will overwrite dest file is present)
          if (copy($fullpath, GLPI_DOC_DIR."/".$new_path)) {
-            addMessageAfterRedirect($LANG['document'][41]);
+            Session::addMessageAfterRedirect($LANG['document'][41]);
          } else {
-            addMessageAfterRedirect($LANG['document'][40],false,ERROR);
+            Session::addMessageAfterRedirect($LANG['document'][40], false, ERROR);
             return false;
          }
       }
@@ -1018,11 +1018,11 @@ class Document extends CommonDBTM {
          switch ($FILEDESC['error']) {
             case 1 :
             case 2 :
-               addMessageAfterRedirect($LANG['document'][23],false,ERROR);
+               Session::addMessageAfterRedirect($LANG['document'][23], false, ERROR);
                break;
 
             case 4 :
-//                addMessageAfterRedirect($LANG['document'][28],false,ERROR);
+//                Session::addMessageAfterRedirect($LANG['document'][28],false,ERROR);
                break;
          }
 
@@ -1044,11 +1044,11 @@ class Document extends CommonDBTM {
                      "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
+            Session::addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
          } else {
-            addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
-                                    " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
-                                    false,ERROR);
+            Session::addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
+                                              " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
+                                             false, ERROR);
          }
       }
 
@@ -1059,7 +1059,7 @@ class Document extends CommonDBTM {
 
       // Move uploaded file
       if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR."/".$path)) {
-         addMessageAfterRedirect($LANG['document'][26]);
+         Session::addMessageAfterRedirect($LANG['document'][26]);
          // For display
          $input['filename'] = addslashes($FILEDESC['name']);
          // Storage path
@@ -1068,7 +1068,7 @@ class Document extends CommonDBTM {
          $input['sha1sum']  = $sha1sum;
          return true;
       }
-      addMessageAfterRedirect($LANG['document'][27],false,ERROR);
+      Session::addMessageAfterRedirect($LANG['document'][27], false, ERROR);
       return false;
    }
 
@@ -1092,23 +1092,24 @@ class Document extends CommonDBTM {
             $message .= " <a target='_blank' href='".$dt->getSearchURL()."'>
                          <img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"></a>";
          }
-         addMessageAfterRedirect($message, false, ERROR);
+         Session::addMessageAfterRedirect($message, false, ERROR);
          return '';
       }
 
       if (!is_dir(GLPI_DOC_DIR)) {
-         addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR, false, ERROR);
+         Session::addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR, false, ERROR);
          return '';
       }
       $subdir = $dir.'/'.substr($sha1sum,0,2);
 
       if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
-         addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$subdir);
+         Session::addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$subdir);
       }
 
       if (!is_dir(GLPI_DOC_DIR."/".$subdir)) {
-         addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$subdir." ".
-                                 $LANG['document'][30],false,ERROR);
+         Session::addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$subdir." ".
+                                           $LANG['document'][30],
+                                          false, ERROR);
          return '';
       }
       return $subdir.'/'.substr($sha1sum,2).'.'.$dir;

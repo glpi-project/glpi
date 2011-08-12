@@ -48,7 +48,7 @@ if (isset($_GET['execute'])) {
       $name = CronTask::launch(-CronTask::MODE_INTERNAL,1,$_GET['execute']);
    }
    if ($name) {
-      addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
+      Session::addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
    }
    Html::back();
 }

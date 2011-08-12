@@ -828,7 +828,7 @@ class Toolbox {
          if (!$auto) {
 
             if ($messageafterredirect) {
-               addMessageAfterRedirect($error, true, ERROR);
+               Session::addMessageAfterRedirect($error, true, ERROR);
             } else {
                echo "<div class='center'>$error</div>";
             }
@@ -884,8 +884,8 @@ class Toolbox {
 
             if (!$auto) {
                if ($messageafterredirect) {
-                  addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.
-                                          $LANG['setup'][302]);
+                  Session::addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.
+                                                   $LANG['setup'][302]);
 
                } else {
                   echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
@@ -894,7 +894,7 @@ class Toolbox {
 
             } else {
                if ($messageafterredirect) {
-                  addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
+                  Session::addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
                } else {
                   return $LANG['setup'][301]." ".$latest_version;
                }
@@ -903,14 +903,14 @@ class Toolbox {
          } else {
             if (!$auto) {
                if ($messageafterredirect) {
-                  addMessageAfterRedirect($LANG['setup'][303]);
+                  Session::addMessageAfterRedirect($LANG['setup'][303]);
                } else {
                   echo "<div class='center'>".$LANG['setup'][303]."</div>";
                }
 
             } else {
                if ($messageafterredirect) {
-                  addMessageAfterRedirect($LANG['setup'][303]);
+                  Session::addMessageAfterRedirect($LANG['setup'][303]);
                } else {
                   return $LANG['setup'][303];
                }

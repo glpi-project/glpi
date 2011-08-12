@@ -81,7 +81,7 @@ if ($newID = $track->add($_POST)) {
    } else {
       echo "<div class='center b spaced'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'></div>";
-      addMessageAfterRedirect($LANG['help'][19]);
+      Session::addMessageAfterRedirect($LANG['help'][19]);
       displayMessageAfterRedirect();
    }
 

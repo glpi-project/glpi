@@ -772,7 +772,7 @@ class OcsServer extends CommonDBTM {
                 WHERE `name` = '".$input['name']."';";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         addMessageAfterRedirect($LANG['ocsconfig'][8],false,ERROR);
+         Session::addMessageAfterRedirect($LANG['ocsconfig'][8], false, ERROR);
          return false;
       }
 
@@ -1200,7 +1200,7 @@ class OcsServer extends CommonDBTM {
          }
 
       } else {
-         addMessageAfterRedirect($ocsid . " - " . $LANG['ocsng'][23],false,ERROR);
+         Session::addMessageAfterRedirect($ocsid . " - " . $LANG['ocsng'][23], false, ERROR);
       }
       return false;
    }

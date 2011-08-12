@@ -1194,8 +1194,9 @@ class Contract extends CommonDBTM {
                                                        $entity).":  $message\n");
                   $task->addVolume(1);
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                    $entity).":  $message");
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                             $entity).
+                                                   ":  $message");
                }
 
                $alert = new Alert();
@@ -1213,8 +1214,10 @@ class Contract extends CommonDBTM {
                   $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
                              ":  Send contract alert failed\n");
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                                          ":  Send contract alert failed", false, ERROR);
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                             $entity)
+                                                      .":  Send contract alert failed",
+                                                   false, ERROR);
                }
             }
          }

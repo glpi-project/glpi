@@ -173,7 +173,7 @@ class Computer extends CommonDBTM {
             }
 
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][49], true);
+               Session::addMessageAfterRedirect($LANG['computers'][49], true);
             }
          }
 
@@ -224,7 +224,7 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][50], true);
+               Session::addMessageAfterRedirect($LANG['computers'][50], true);
             }
          }
 
@@ -260,7 +260,7 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][56], true);
+               Session::addMessageAfterRedirect($LANG['computers'][56], true);
             }
          }
 
@@ -300,7 +300,7 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][48], true);
+               Session::addMessageAfterRedirect($LANG['computers'][48], true);
             }
          }
       }

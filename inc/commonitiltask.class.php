@@ -164,7 +164,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          unset($input["plan"]);
 
          if (!$this->test_valid_date($input)) {
-            addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
             return false;
          }
          Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
@@ -238,7 +238,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          unset($input["plan"]);
          if (!$this->test_valid_date($input)) {
-            addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
             return false;
          }
       }

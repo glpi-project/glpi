@@ -468,7 +468,7 @@ class User extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
          return false;
       }
 
@@ -483,7 +483,7 @@ class User extends CommonDBTM {
                unset($input["password2"]);
 
             } else {
-               addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
+               Session::addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
                return false;
             }
          }
@@ -589,7 +589,7 @@ class User extends CommonDBTM {
                unset($input["password2"]);
 
             } else {
-               addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
+               Session::addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
                return false;
             }
          }
@@ -1820,7 +1820,7 @@ class User extends CommonDBTM {
             unset($this->oldvalues['name']);
             /// For displayed message
             $this->fields['name'] = $this->oldvalues['name'];
-            addMessageAfterRedirect($LANG['setup'][614], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['setup'][614], false, ERROR);
          }
       }
 

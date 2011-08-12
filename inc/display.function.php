@@ -1592,48 +1592,6 @@ function displayMessageAfterRedirect() {
 }
 
 
-/**
- * Add a message to be displayed after redirect
- *
- * @param $msg Message to add
- * @param $check_once Check if the message is not already added
- * @param $message_type message type (INFO, ERROR)
- * @param $reset clear previous added message
-**/
-function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO, $reset=false) {
-
-   // Do not display of cron jobs messages in user interface
-   if (Session::getLoginUserID() === Session::getLoginUserID(false)) {
-      if (!empty($msg)) {
-
-         if ($reset) {
-            $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
-         }
-         $toadd = "";
-
-         if ($check_once) {
-            if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false) {
-               $toadd = $msg.'<br>';
-            }
-
-         } else {
-            $toadd = $msg.'<br>';
-         }
-
-         if (!empty($toadd)) {
-            switch ($message_type) {
-               case ERROR :
-                  $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3><span class='red'>$toadd</span></h3>";
-                  break;
-
-               default: // INFO
-                  $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3>$toadd</h3>";
-            }
-         }
-      }
-   }
-}
-
 
 /**
  * Print a nice HTML head for help page

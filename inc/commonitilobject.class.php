@@ -366,8 +366,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          && $input['_itil_requester']['alternative_email']
                          && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
                         $input['_itil_requester']['alternative_email'] = '';
-                        addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                                false, ERROR);
+                        Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                                         false, ERROR);
                      }
                      if ((isset($input['_itil_requester']['alternative_email'])
                           && $input['_itil_requester']['alternative_email'])
@@ -406,8 +406,8 @@ abstract class CommonITILObject extends CommonDBTM {
                          && $input['_itil_observer']['alternative_email']
                          && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
                         $input['_itil_observer']['alternative_email'] = '';
-                        addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                                false, ERROR);
+                        Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                                         false, ERROR);
                      }
                      if ((isset($input['_itil_observer']['alternative_email'])
                           && $input['_itil_observer']['alternative_email'])
@@ -617,7 +617,8 @@ abstract class CommonITILObject extends CommonDBTM {
           && !is_null($this->fields["due_date"])) { // Date set
 
          if ($this->fields["due_date"] < $this->fields["date"]) {
-            addMessageAfterRedirect($LANG['tracking'][3].$this->fields["due_date"], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][3].$this->fields["due_date"],
+                                             false, ERROR);
 
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -637,7 +638,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Invalid dates : no change
          // closedate must be > solvedate
          if ($this->fields["closedate"] < $this->fields["solvedate"]) {
-            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
 
             if (($key=array_search('closedate',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -647,7 +648,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // closedate must be > create date
          if ($this->fields["closedate"]<$this->fields["date"]) {
-            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
@@ -673,7 +674,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Invalid dates : no change
          // solvedate must be > create date
          if ($this->fields["solvedate"] < $this->fields["date"]) {
-            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
 
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -996,7 +997,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else if (!empty($_FILES['filename']['name'])
                     && isset($_FILES['filename']['error'])
                     && $_FILES['filename']['error']) {
-            addMessageAfterRedirect($LANG['document'][46], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['document'][46], false, ERROR);
          }
       }
       unset ($_FILES);

@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
       if ($track->can($_POST["id"],'r')) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
       }
-      addMessageAfterRedirect($LANG['job'][26], true, ERROR);
+      Session::addMessageAfterRedirect($LANG['job'][26], true, ERROR);
       Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
    }
 

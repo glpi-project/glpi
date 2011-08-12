@@ -412,8 +412,8 @@ class ReservationItem extends CommonDBTM {
                $task->log(Dropdown::getDropdownName("glpi_entities",
                                                     $entity).":  $message\n");
             } else {
-               addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                 $entity).":  $message");
+               Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                          $entity).":  $message");
             }
 
             $alert = new Alert();
@@ -430,8 +430,9 @@ class ReservationItem extends CommonDBTM {
                $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
                           ":  Send reservationitem alert failed\n");
             } else {
-               addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                                       ":  Send reservationitem alert failed", false, ERROR);
+               Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
+                                                  ":  Send reservationitem alert failed",
+                                                false, ERROR);
             }
          }
       }

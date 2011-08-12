@@ -1886,10 +1886,10 @@ class AuthLDAP extends CommonDBTM {
                }
             }
          }
-         addMessageAfterRedirect($LANG['login'][15], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['login'][15], false, ERROR);
 
       } else {
-         addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
       }
       return false;
    }
