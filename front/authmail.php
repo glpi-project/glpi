@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
 
-commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
+commonHeader(AuthMail::getTypeName(2), $_SERVER['PHP_SELF'],"config","extauth","imap");
 
 if (Toolbox::canUseImapPop()) {
    Search::show('AuthMail');

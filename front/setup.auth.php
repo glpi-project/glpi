@@ -56,7 +56,7 @@ if (Toolbox::canUseLdap()) {
 echo "</td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseImapPop()) {
-   echo "<a href='authmail.php'>" .$LANG['login'][3] ."</a>";
+   echo "<a href='authmail.php'>" .$LANG['Menu'][10] ."</a>";
 } else {
    echo "<p class='red'>".$LANG['setup'][165] ."</p><p>".$LANG['setup'][166].'</p>';
 }

@@ -70,7 +70,7 @@ if (isset($_POST["update"])) {
    Html::back();
 }
 
-commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'], "config", "extauth", "imap");
+commonHeader(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "extauth", "imap");
 
 $config_mail->showForm($_GET["id"]);
 

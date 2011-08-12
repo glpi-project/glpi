@@ -1339,7 +1339,7 @@ $LANG['Menu'][6]  = "Rapports";
 $LANG['Menu'][7]  = "Problèmes";
 $LANG['Menu'][8]  = "Changements";
 $LANG['Menu'][9]  = "Annuaires LDAP";
-
+$LANG['Menu'][10] = "Serveurs de messagerie";
 $LANG['Menu'][11] = "Préférences";
 $LANG['Menu'][12] = "Maintenance";
 $LANG['Menu'][13] = "Statistiques";
