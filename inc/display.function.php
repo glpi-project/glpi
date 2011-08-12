@@ -147,18 +147,32 @@ function includeCommonHtmlHeader($title='') {
    // Add specific javascript for plugins
    if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
 
-      foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
-         echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'>
+      foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+         if (is_array($files)) {
+            foreach ($files as $file) {
+               echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'>
+                  </script>\n";
+            }
+         } else {
+            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$files'>
                </script>\n";
+         }
       }
    }
 
    // Add specific css for plugins
    if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
 
-      foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
-         echo "<link rel='stylesheet' href='".
-                $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+      foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+         if (is_array($files)) {
+            foreach ($files as $file) {
+               echo "<link rel='stylesheet' href='".
+                     $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+            }
+         } else {
+            echo "<link rel='stylesheet' href='".
+                  $CFG_GLPI["root_doc"]."/plugins/$plugin/$files' type='text/css' media='screen' >\n";
+         }
       }
    }
 
