@@ -174,7 +174,7 @@ class Computer_Item extends CommonDBRelation{
                && $comp->fields['locations_id'] != $item->getField('locations_id')) {
 
                $updates['locations_id'] = addslashes($comp->fields['locations_id']);
-               addMessageAfterRedirect($LANG['computers'][48], true);
+               Session::addMessageAfterRedirect($LANG['computers'][48], true);
             }
             if (($CFG_GLPI["is_user_autoupdate"]
                  && $comp->fields['users_id'] != $item->getField('users_id'))
@@ -187,7 +187,7 @@ class Computer_Item extends CommonDBRelation{
                if ($CFG_GLPI["is_group_autoupdate"]) {
                   $updates['groups_id'] = $comp->fields['groups_id'];
                }
-               addMessageAfterRedirect($LANG['computers'][50],true);
+               Session::addMessageAfterRedirect($LANG['computers'][50],true);
             }
 
             if ($CFG_GLPI["is_contact_autoupdate"]
@@ -196,14 +196,14 @@ class Computer_Item extends CommonDBRelation{
 
                $updates['contact']     = addslashes($comp->fields['contact']);
                $updates['contact_num'] = addslashes($comp->fields['contact_num']);
-               addMessageAfterRedirect($LANG['computers'][49], true);
+               Session::addMessageAfterRedirect($LANG['computers'][49], true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]<0
                 && $comp->fields['states_id'] != $item->getField('states_id')) {
 
                $updates['states_id'] = $comp->fields['states_id'];
-               addMessageAfterRedirect($LANG['computers'][56], true);
+               Session::addMessageAfterRedirect($LANG['computers'][56], true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]>0

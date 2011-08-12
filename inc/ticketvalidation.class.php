@@ -205,9 +205,9 @@ class TicketValidation  extends CommonDBChild {
             $user->getFromDB($this->fields["users_id_validate"]);
             $email = $user->getDefaultEmail();
             if (!empty($email)) {
-               addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+               Session::addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
             } else {
-               addMessageAfterRedirect($LANG['validation'][23],false,ERROR);
+               Session::addMessageAfterRedirect($LANG['validation'][23], false, ERROR);
             }
          }
          // Add log entry in the ticket
@@ -230,7 +230,7 @@ class TicketValidation  extends CommonDBChild {
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if ($input["status"] == "rejected"
              && (!isset($input["comment_validation"]) || $input["comment_validation"] == '')) {
-            addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
+            Session::addMessageAfterRedirect($LANG['validation'][29], false, ERROR);
             return false;
          }
          if ($input["status"] == "waiting") {

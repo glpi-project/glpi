@@ -178,9 +178,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->Body    = $LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
       if (!$mmail->Send()) {
-         addMessageAfterRedirect($LANG['setup'][206], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['setup'][206], false, ERROR);
       } else {
-         addMessageAfterRedirect($LANG['setup'][205]);
+         Session::addMessageAfterRedirect($LANG['setup'][205]);
       }
    }
 
@@ -241,7 +241,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       if (!$mmail->Send()) {
          $senderror = true;
-         addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
+         Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
       } else {
          Toolbox::logInFile("mail",
                             $LANG['tracking'][38]." ".$options['to']." : ".$options['subject']."\n");

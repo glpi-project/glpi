@@ -112,7 +112,7 @@ class Planning {
          }
       }
       if ($planned) {
-         addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message, false, ERROR);
+         Session::addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message, false, ERROR);
       }
       return $planned;
    }

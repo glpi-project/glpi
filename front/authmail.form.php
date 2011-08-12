@@ -63,9 +63,9 @@ if (isset($_POST["update"])) {
 
 } else if (isset($_POST["test"])) {
    if (AuthMail::testAuth($_POST["imap_string"], $_POST["imap_login"], $_POST["imap_password"])) {
-      addMessageAfterRedirect($LANG['login'][22]);
+      Session::addMessageAfterRedirect($LANG['login'][22]);
    } else {
-      addMessageAfterRedirect($LANG['login'][23], false, ERROR);
+      Session::addMessageAfterRedirect($LANG['login'][23], false, ERROR);
    }
    Html::back();
 }

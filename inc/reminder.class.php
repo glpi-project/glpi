@@ -114,7 +114,7 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
          }
       }
 
@@ -128,7 +128,7 @@ class Reminder extends CommonDBTM {
 
          if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
-            addMessageAfterRedirect($LANG['common'][75], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['common'][75], false, ERROR);
          }
       }
 
@@ -163,7 +163,7 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
          }
       }
 
@@ -177,7 +177,7 @@ class Reminder extends CommonDBTM {
 
          if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
             unset($input['is_recursive']);
-            addMessageAfterRedirect($LANG['common'][75], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['common'][75], false, ERROR);
          }
       }
 

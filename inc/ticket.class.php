@@ -520,7 +520,7 @@ class Ticket extends CommonITILObject {
       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
          $title = trim($input['name']);
          if (empty($title)) {
-            addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
             unset($input['name']);
          }
       }
@@ -528,7 +528,7 @@ class Ticket extends CommonITILObject {
       if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
          $content = trim($input['content']);
          if (empty($content)) {
-            addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
             unset($input['content']);
          }
       }
@@ -1002,35 +1002,35 @@ class Ticket extends CommonITILObject {
          $_SESSION["helpdeskSaved"] = $input;
 
          if (!isset($input["urgency"])) {
-            addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
             $mandatory_ok = false;
          }
 
          if ($CFG_GLPI["is_ticket_content_mandatory"]
              && (!isset($input['content']) || empty($input['content']))) {
 
-            addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
             $mandatory_ok = false;
          }
 
          if ($CFG_GLPI["is_ticket_title_mandatory"]
              && (!isset($input['name']) || empty($input['name']))) {
 
-            addMessageAfterRedirect($LANG['help'][40], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['help'][40], false, ERROR);
             $mandatory_ok = false;
          }
 
          if ($CFG_GLPI["is_ticket_category_mandatory"]
              && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
 
-            addMessageAfterRedirect($LANG['help'][41], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['help'][41], false, ERROR);
             $mandatory_ok = false;
          }
 
 //          if (isset($input['use_email_notification']) && $input['use_email_notification']
 //              && (!isset($input['user_email']) || empty($input['user_email']))) {
 //
-//             addMessageAfterRedirect($LANG['help'][16], false, ERROR);
+//             Session::addMessageAfterRedirect($LANG['help'][16], false, ERROR);
 //             $mandatory_ok = false;
 //          }
 
@@ -1355,9 +1355,10 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
-         addMessageAfterRedirect($LANG['help'][18]." (".$LANG['job'][38]."&nbsp;".
-                                 "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-                                 $this->fields['id']."'>".$this->fields['id']."</a>)");
+         Session::addMessageAfterRedirect($LANG['help'][18]." (".$LANG['job'][38]."&nbsp;".
+                                          "<a href='".$CFG_GLPI["root_doc"].
+                                            "/front/ticket.form.php?id=".$this->fields['id']."'>".
+                                          $this->fields['id']."</a>)");
       }
 
    }

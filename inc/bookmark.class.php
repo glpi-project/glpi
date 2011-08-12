@@ -318,7 +318,7 @@ class Bookmark extends CommonDBTM {
 
             // Display message
             if ($partial_load) {
-               addMessageAfterRedirect($LANG['bookmark'][2], false, ERROR);
+               Session::addMessageAfterRedirect($LANG['bookmark'][2], false, ERROR);
             }
             // add reset value
             $query_tab['reset'] = 'reset';

@@ -110,15 +110,18 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       if (empty($source) && !empty($destination)) {
          $ps->fields['netpoints_id'] = $destination;
          $ps->updateInDB($updates);
-         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
+         Session::addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" .
+                                          $LANG['networking'][51]);
 
       } else if (!empty($source) && empty($destination)) {
          $pd->fields['netpoints_id'] = $source;
          $pd->updateInDB($updates);
-         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
+         Session::addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" .
+                                          $LANG['networking'][51]);
 
       } else if ($source != $destination) {
-         addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
+         Session::addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;:&nbsp;" .
+                                          $LANG['networking'][51]);
       }
 
       // Manage VLAN : use networkings one as defaults

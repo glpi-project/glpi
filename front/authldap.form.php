@@ -55,9 +55,9 @@ if (isset($_POST["update"])) {
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
          if (AuthLdap::testLDAPConnection($newID)) {
-            addMessageAfterRedirect($LANG['login'][22]);
+            Session::addMessageAfterRedirect($LANG['login'][22]);
          } else {
-            addMessageAfterRedirect($LANG['login'][23],false,ERROR);
+            Session::addMessageAfterRedirect($LANG['login'][23], false, ERROR);
          }
          Html::redirect($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=".$newID);
       }

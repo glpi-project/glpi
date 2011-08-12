@@ -310,7 +310,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($input["add_reopen"])) {
          if ($input["content"] == '') {
-            addMessageAfterRedirect($LANG['jobresolution'][5],false,ERROR);
+            Session::addMessageAfterRedirect($LANG['jobresolution'][5], false, ERROR);
             return false;
          }
          $input['_reopen'] = 1;

@@ -437,8 +437,9 @@ class CartridgeItem extends CommonDBTM {
                                ."&nbsp;:  $message\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                            ."&nbsp;:  $message");
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                                $entity)
+                                                      ."&nbsp;:  $message");
                   }
 
                   $input["type"]     = Alert::THRESHOLD;
@@ -456,8 +457,10 @@ class CartridgeItem extends CommonDBTM {
                      $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
                                ."&nbsp;: Send cartidge alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                            ."&nbsp;: Send cartidge alert failed", false, ERROR);
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                                $entity)
+                                                      ."&nbsp;: Send cartidge alert failed", false,
+                                                      ERROR);
                   }
                }
             }

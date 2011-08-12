@@ -118,8 +118,8 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
-         addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                 false, ERROR);
+         Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                          false, ERROR);
       }
 
       return $input;
@@ -142,8 +142,8 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
-         addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
-                                 false, ERROR);
+         Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                                          false, ERROR);
       }
 
       return $input;
@@ -368,8 +368,9 @@ class MailCollector  extends CommonDBTM {
                               '>' => '');
                foreach ($rejected as $id => $data) {
                   if ($action == 1) {
-                     addMessageAfterRedirect($LANG['mailgate'][14]."&nbsp;: ".strtr($id,$clean),
-                                             false, ERROR);
+                     Session::addMessageAfterRedirect($LANG['mailgate'][14]."&nbsp;: ".strtr($id,
+                                                                                             $clean),
+                                                      false, ERROR);
                   } else { // Delete data in notimportedemail table
                      $rejectedmail = new NotImportedEmail();
                      $rejectedmail->delete(array('id' => $data['id']));
@@ -503,11 +504,13 @@ class MailCollector  extends CommonDBTM {
             if ($display) {
 
                if ($error==0) {
-                  addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".$this->fetch_emails);
+                  Session::addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".
+                                                   $this->fetch_emails);
                } else {
-                  addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".$this->fetch_emails.
-                                          " ($error ".$LANG['common'][63].")",
-                                          false, ERROR);
+                  Session::addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".
+                                                    $this->fetch_emails." ($error ".
+                                                    $LANG['common'][63].")",
+                                                   false, ERROR);
                }
 
             } else {
@@ -518,7 +521,7 @@ class MailCollector  extends CommonDBTM {
 
          } else {
             if ($display) {
-               addMessageAfterRedirect($LANG['log'][41], false, ERROR);
+               Session::addMessageAfterRedirect($LANG['log'][41], false, ERROR);
             } else {
                return "Could not connect to mailgate server";
             }
@@ -526,8 +529,8 @@ class MailCollector  extends CommonDBTM {
 
       } else {
          if ($display) {
-            addMessageAfterRedirect($LANG['common'][54]."&nbsp;: mailgate ".$mailgateID,
-                                    false, ERROR);
+            Session::addMessageAfterRedirect($LANG['common'][54]."&nbsp;: mailgate ".$mailgateID,
+                                             false, ERROR);
          } else {
             return 'Could find mailgate '.$mailgateID;
          }

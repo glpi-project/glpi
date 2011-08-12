@@ -743,7 +743,7 @@ if (isset($_POST["itemtype"])) {
                Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
             }
       }
-      addMessageAfterRedirect($LANG['common'][23]);
+      Session::addMessageAfterRedirect($LANG['common'][23]);
       Html::redirect($REDIRECT);
 
    } else { //action, itemtype or item not defined

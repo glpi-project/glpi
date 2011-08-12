@@ -115,7 +115,7 @@ class RequestType extends CommonDropdown {
             $DB->query($query);
 
          } else {
-            addMessageAfterRedirect($LANG['setup'][313], true);
+            Session::addMessageAfterRedirect($LANG['setup'][313], true);
          }
       }
 
@@ -128,7 +128,7 @@ class RequestType extends CommonDropdown {
             $DB->query($query);
 
          } else {
-            addMessageAfterRedirect($LANG['setup'][313], true);
+            Session::addMessageAfterRedirect($LANG['setup'][313], true);
          }
       }
    }

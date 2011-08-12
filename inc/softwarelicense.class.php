@@ -369,8 +369,9 @@ class SoftwareLicense extends CommonDBTM {
                   $task->log(Dropdown::getDropdownName("glpi_entities", $entity)." :  $message\n");
                    $task->addVolume(1);
                 } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                    $entity)." :  $message");
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                             $entity).
+                                                    " :  $message");
                }
 
                $input["type"]     = Alert::END;
@@ -388,8 +389,10 @@ class SoftwareLicense extends CommonDBTM {
                   $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
                              " : Send licenses alert failed\n");
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                                          " : Send licenses alert failed",false,ERROR);
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                             $entity).
+                                                      " : Send licenses alert failed",
+                                                   false, ERROR);
                }
             }
          }

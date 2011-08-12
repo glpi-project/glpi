@@ -74,7 +74,7 @@ class CalendarSegment extends CommonDBChild {
       // Check override of segment : do not add
       if (count(self::getSegmentsBetween($input['calendars_id'], $input['day'], $input['begin'],
                                          $input['day'], $input['end'])) > 0 ) {
-         addMessageAfterRedirect($LANG['calendar'][8], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['calendar'][8], false, ERROR);
          return false;
       }
       return $input;

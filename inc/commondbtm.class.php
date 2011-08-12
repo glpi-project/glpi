@@ -803,7 +803,7 @@ class CommonDBTM extends CommonGLPI {
                                                             :$this->getLink());
 
          // Do not display quotes
-         addMessageAfterRedirect($LANG['common'][70]."&nbsp;: ".stripslashes($display));
+         Session::addMessageAfterRedirect($LANG['common'][70]."&nbsp;: ".stripslashes($display));
 
       }
    }
@@ -1014,9 +1014,9 @@ class CommonDBTM extends CommonGLPI {
                                     $this->fields['id'];
          }
 
-         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
-                                 (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                         :$this->getLink()));
+         Session::addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
+                                          (isset($this->input['_no_message_link'])?$this->getNameID()
+                                                                                  :$this->getLink()));
       }
 
    }
@@ -1176,9 +1176,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " .
-                                 (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                         :$this->getLink()));
+         Session::addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " .
+                                          (isset($this->input['_no_message_link'])?$this->getNameID()
+                                                                                  :$this->getLink()));
       }
    }
 
@@ -1205,7 +1205,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][73]);
+         Session::addMessageAfterRedirect($LANG['common'][73]);
       }
    }
 
@@ -1292,9 +1292,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " .
-                                 (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                         :$this->getLink()));
+         Session::addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " .
+                                          (isset($this->input['_no_message_link'])?$this->getNameID()
+                                                                                  :$this->getLink()));
       }
    }
 
@@ -2517,7 +2517,7 @@ class CommonDBTM extends CommonGLPI {
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          $message = $LANG['common'][106].' : '.implode(',',$fails);
-         addMessageAfterRedirect($message, INFO, true);
+         Session::addMessageAfterRedirect($message, INFO, true);
       }
    }
 
@@ -2697,8 +2697,9 @@ class CommonDBTM extends CommonGLPI {
                            } else {
                               $show_other_messages = true;
                            }
-                           addMessageAfterRedirect($message_text, true, $show_other_messages,
-                                                   $show_other_messages);
+                           Session::addMessageAfterRedirect($message_text, true,
+                                                            $show_other_messages,
+                                                            $show_other_messages);
                         }
                         if ($p['add_event_on_duplicate']) {
                            Event::log ((!$add?$this->fields['id']:0), get_class($this), 4,

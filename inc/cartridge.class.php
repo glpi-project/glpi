@@ -161,7 +161,7 @@ class Cartridge extends CommonDBTM {
          }
 
       } else {
-         addMessageAfterRedirect($LANG['cartridges'][34], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['cartridges'][34], false, ERROR);
       }
       return false;
    }
