@@ -3022,21 +3022,6 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
 }
 
 
-/**
- *  Get active Tab for an itemtype
- *
- * @param $itemtype item type
- *
- * @return nothing
-**/
-function getActiveTab($itemtype) {
-
-   if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
-      return $_SESSION['glpi_tabs'][strtolower($itemtype)];
-   }
-   return "";
-}
-
 
 /**
  *  Force active Tab for an itemtype
@@ -3064,7 +3049,7 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
                         $type, $size=950) {
    global $CFG_GLPI;
 
-   $active_tabs = getActiveTab($type);
+   $active_tabs = Session::getActiveTab($type);
 
    if (count($tabs)>0) {
       echo "<script type='text/javascript'>
@@ -3142,7 +3127,7 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
          echo "// force reload
             function reloadTab(add) {
-               var tab = tabpanel.getActiveTab();
+               var tab = tabpanel.Session::getActiveTab();
                var opt = tab.autoLoad;
                if (add) {
                   if (opt.params)
@@ -3661,36 +3646,6 @@ function showToolTip($content, $options=array()) {
    }
 }
 
-
-/**
- * Add confirmation on button or link before action
- *
- * @param $string string to display or array of string for using multilines
- * @param $additionalactions string additional actions to do on success confirmation
- *
- * @return nothing
-**/
-function addConfirmationOnAction($string, $additionalactions='') {
-
-   if (!is_array($string)) {
-      $string = array($string);
-   }
-   $string = Toolbox::addslashes_deep($string);
-
-   if (empty($additionalactions)) {
-      $out = " onclick=\"return window.confirm('";
-   } else {
-      $out = " onclick=\"if (window.confirm('";
-   }
-   $out .= implode('\n',$string);
-   $out .= "')";
-   if (empty($additionalactions)) {
-      $out .= ";\" ";
-   } else {
-      $out .= ") {".$additionalactions."};return true;\" ";
-   }
-   return $out;
-}
 
 
 /**

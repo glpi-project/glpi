@@ -2733,7 +2733,8 @@ class Ticket extends CommonITILObject {
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
                echo "<td><span id='sla_action'>";
-               echo "<a href='#' ".addConfirmationOnAction(array($LANG['sla'][13], $LANG['sla'][14]),
+               echo "<a href='#' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
+                                                                       $LANG['sla'][14]),
                                                           "cleanhide('sla_action');cleandisplay('sla_choice');").
                      "\">".$LANG['sla'][12].'</a>';
                echo "</span>";
@@ -3137,7 +3138,8 @@ class Ticket extends CommonITILObject {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='purge' value='".
-                         $LANG['buttons'][22]."' ".addConfirmationOnAction($LANG['common'][50]).">";
+                         $LANG['buttons'][22]."' ".
+                         Html::addConfirmationOnAction($LANG['common'][50]).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
                          $LANG['buttons'][6]."'></td>";
