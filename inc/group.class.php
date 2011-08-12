@@ -43,9 +43,12 @@ if (!defined('GLPI_ROOT')) {
 class Group extends CommonDBTM {
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][36];
+      }
       return $LANG['common'][35];
    }
 

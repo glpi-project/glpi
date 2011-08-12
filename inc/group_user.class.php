@@ -398,6 +398,32 @@ class Group_User extends CommonDBRelation{
    }
 
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'User' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(Group::getTypeName(2),
+                                              countElementsInTable($this->getTable(),
+                                                                   "users_id = '".$item->getID()."'"));
+               }
+               return Group::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='User') {
+         self::showForUser($item);
+      }
+      return true;
+   }
+
 }
 
 ?>

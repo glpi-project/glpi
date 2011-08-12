@@ -735,6 +735,7 @@ class Profile_User extends CommonDBTM {
                   }
                   return self::createTabEntry($LANG['Menu'][14], $nb);
                }
+               break;
 
             case 'Profile' :
                if (Session::haveRight('user', 'r')) {
@@ -750,6 +751,15 @@ class Profile_User extends CommonDBTM {
                   }
                   return self::createTabEntry($LANG['Menu'][14], $nb);
                }
+               break;
+
+            case 'User' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(),
+                                             "users_id = '".$item->getID()."'");
+               }
+               return self::createTabEntry($LANG['users'][14], $nb);
+
          }
       }
       return '';
@@ -765,6 +775,10 @@ class Profile_User extends CommonDBTM {
 
          case 'Profile' :
             self::showForProfile($item);
+            break;
+
+         case 'User' :
+            self::showForUser($item);
             break;
       }
       return true;

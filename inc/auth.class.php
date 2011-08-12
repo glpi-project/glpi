@@ -946,6 +946,32 @@ class Auth {
     static function isValidLogin($login="") {
        return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
     }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'User' :
+               if (Session::haveRight("user_authtype", "w")) {
+                  return $LANG['ldap'][12];
+               }
+               break;
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='User') {
+         self::showSynchronizationForm($item);
+      }
+      return true;
+   }
+
 }
 
 ?>

@@ -147,6 +147,12 @@ class User extends CommonDBTM {
       global $LANG;
 
       switch ($item->getType()) {
+         case __CLASS__:
+            $ong = array();
+            $ong[1] = $LANG['common'][111]; // owned
+            $ong[2] = $LANG['common'][112]; // managed
+            return $ong;
+
          case 'Group' :
             if (Session::haveRight("user","r")) {
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -169,6 +175,10 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       switch ($item->getType()) {
+         case __CLASS__ :
+            $item->showItems($tabnum==2);
+            return true;
+
          case 'Group' :
             Group_User::showForGroup($item);
             return true;
@@ -187,27 +197,15 @@ class User extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['users'][14]; // principal
-         $ong[4] = $LANG['Menu'][36];
-         if (Session::haveRight('user','w')
-             && $this->currentUserHaveMoreRightThan($this->fields['id'])) {
-            $ong[6] = $LANG['Menu'][11];
-         }
-         $ong[2] = $LANG['common'][111];
-         $ong[3] = $LANG['common'][112];
-
-         $this->addStandardTab('Ticket', $ong, $options);
-         $this->addStandardTab('Document', $ong, $options);
-         $this->addStandardTab('Reservation', $ong, $options);
-
-         if (Session::haveRight("user_authtype", "w")) {
-            $ong[12] = $LANG['ldap'][12];
-         }
-         $this->addStandardTab('Log', $ong, $options);
-      }
+      $this->addStandardTab('Profile_User', $ong, $options);
+      $this->addStandardTab('Group_User', $ong, $options);
+      $this->addStandardTab('Config', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Reservation', $ong, $options);
+      $this->addStandardTab('Auth', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -1246,7 +1244,7 @@ class User extends CommonDBTM {
             }
 
             //Hook to retrieve more informations for ldap
-            $this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+            $this->fields = Plugin::doHookFunction("retrieve_more_data_from_ldap", $this->fields);
          }
          return true;
       }

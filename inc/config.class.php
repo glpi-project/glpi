@@ -1113,6 +1113,13 @@ class Config extends CommonDBTM {
          case 'Preference' :
             return $LANG['setup'][6];
 
+         case 'User' :
+            if (Session::haveRight('user','w')
+                && $item->currentUserHaveMoreRightThan($item->getID())) {
+               return $LANG['Menu'][11];
+            }
+            break;
+
          case __CLASS__ :
             $tabs[1] = $LANG['setup'][70];   // Display
             $tabs[2] = $LANG['setup'][48];   // Prefs
@@ -1139,6 +1146,11 @@ class Config extends CommonDBTM {
             $user->computePreferences();
             $config->showFormUserPrefs($user->fields);
          }
+
+      } else if ($item->getType()=='User') {
+         $config = new self();
+         $item->computePreferences();
+         $config->showFormUserPrefs($item->fields);
 
       } else if($item->getType() == __CLASS__) {
          switch ($tabnum) {
