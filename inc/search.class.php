@@ -1129,7 +1129,8 @@ class Search {
                         echo self::showItem($output_type,
                                             "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;delete=delete' ".
-                                              addConfirmationOnAction(array($LANG['reservation'][38],$LANG['reservation'][39])).
+                                              Html::addConfirmationOnAction(array($LANG['reservation'][38],
+                                                                                  $LANG['reservation'][39])).
                                               " title=\"".$LANG['reservation'][6]."\">".
                                               "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                                 alt='' title=''></a>",

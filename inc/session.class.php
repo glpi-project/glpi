@@ -828,5 +828,22 @@ class Session {
       return false;
    }
 
+
+   /**
+    *  Get active Tab for an itemtype
+    *
+    * @param $itemtype item type
+    *
+    * @return nothing
+   **/
+   static function getActiveTab($itemtype) {
+
+      if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
+         return $_SESSION['glpi_tabs'][strtolower($itemtype)];
+      }
+      return "";
+   }
+
+
 }
 ?>

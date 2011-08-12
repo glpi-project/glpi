@@ -1663,7 +1663,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][22]."\"
-                         class='submit' ".addConfirmationOnAction($LANG['common'][50]).">";
+                         class='submit' ".Html::addConfirmationOnAction($LANG['common'][50]).">";
                } else {
                   echo "<input type='submit' name='delete' value='" . $LANG['buttons'][6] ."'
                          class='submit'>";

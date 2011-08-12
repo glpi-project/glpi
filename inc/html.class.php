@@ -434,5 +434,35 @@ class Html {
    }
 
 
+   /**
+    * Add confirmation on button or link before action
+    *
+    * @param $string string to display or array of string for using multilines
+    * @param $additionalactions string additional actions to do on success confirmation
+    *
+    * @return nothing
+   **/
+   static function addConfirmationOnAction($string, $additionalactions='') {
+
+      if (!is_array($string)) {
+         $string = array($string);
+      }
+      $string = Toolbox::addslashes_deep($string);
+
+      if (empty($additionalactions)) {
+         $out = " onclick=\"return window.confirm('";
+      } else {
+         $out = " onclick=\"if (window.confirm('";
+      }
+      $out .= implode('\n',$string);
+      $out .= "')";
+      if (empty($additionalactions)) {
+         $out .= ";\" ";
+      } else {
+         $out .= ") {".$additionalactions."};return true;\" ";
+      }
+      return $out;
+   }
+
 }
 ?>
