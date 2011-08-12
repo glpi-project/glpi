@@ -836,7 +836,7 @@ class Software extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadrehov'><tr><th>".$LANG['software'][47]."</th></tr>";
       echo "<tr class='tab_bg_2'><td>";
-      createProgressBar($LANG['rulesengine'][90]);
+      Html::createProgressBar($LANG['rulesengine'][90]);
       echo "</td></tr></table></div>\n";
 
       $item = array_keys($item);
@@ -887,7 +887,7 @@ class Software extends CommonDBTM {
             if ($DB->query($sql)) {
                $i++;
             }
-            changeProgressBarPosition($i,$nb+1);
+            Html::changeProgressBarPosition($i, $nb+1);
          }
       }
 
@@ -907,7 +907,7 @@ class Software extends CommonDBTM {
             $soft->putInTrash($old, $LANG['software'][49]);
          }
       }
-      changeProgressBarPosition($i,$nb+1,$LANG['rulesengine'][91]);
+      Html::changeProgressBarPosition($i, $nb+1, $LANG['rulesengine'][91]);
       return $i==($nb+1);
    }
 

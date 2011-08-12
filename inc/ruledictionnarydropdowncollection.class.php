@@ -78,7 +78,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                if (isCommandLine()) {
                   echo "replayRulesOnExistingDB : $i/$nb\r";
                } else {
-                  changeProgressBarPosition($i,$nb,"$i / $nb");
+                  Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
             }
 
@@ -110,7 +110,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       if (isCommandLine()) {
          echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
       } else {
-         changeProgressBarPosition($i,$nb,"$i / $nb");
+         Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }
       return ($i==$nb ? -1 : $i);
    }
@@ -171,7 +171,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                if (isCommandLine()) {
                   echo "replayRulesOnExistingDB : $i/$nb\r";
                } else {
-                  changeProgressBarPosition($i, $nb, "$i / $nb");
+                  Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
             }
 
@@ -264,7 +264,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       if (isCommandLine()) {
          echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
       } else {
-         changeProgressBarPosition($i, $nb, "$i / $nb");
+         Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }
       return ($i==$nb ? -1 : $i);
    }

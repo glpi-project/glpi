@@ -267,8 +267,8 @@ class ComputerDisk extends CommonDBChild {
                if ($data['totalsize']>0) {
                   $percent=round(100*$data['freesize']/$data['totalsize']);
                }
-               displayProgressBar('100', $percent, array('simple'       => true,
-                                                         'forcepadding' => false));
+               Html::displayProgressBar('100', $percent, array('simple'       => true,
+                                                               'forcepadding' => false));
                echo "</td>";
 
                Session::addToNavigateListItems('ComputerDisk',$data['id']);

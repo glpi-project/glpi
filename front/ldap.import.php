@@ -79,7 +79,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          $percent = min(100,round(100*($_SESSION["ldap_process_count"]-$count)/
                                   $_SESSION["ldap_process_count"], 0));
 
-         displayProgressBar(400,$percent);
+         Html::displayProgressBar(400, $percent);
          $key = array_pop($_SESSION["ldap_process"]);
          AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                   'value'  => $key),
@@ -90,7 +90,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
       } else {
          unset($_SESSION["ldap_process"]);
-         displayProgressBar(400,100);
+         Html::displayProgressBar(400, 100);
 
          echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";

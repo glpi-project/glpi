@@ -52,7 +52,7 @@ if (isset($_GET['next'])) {
          $percent = min(100, round(100*($_SESSION["ldap_import_count"]-$count)
                                    /$_SESSION["ldap_import_count"], 0));
 
-         displayProgressBar(400, $percent);
+         Html::displayProgressBar(400, $percent);
          $key = array_pop($_SESSION["ldap_import"]);
 
          if (isset($_SESSION["ldap_import_entities"][$key])) {
@@ -70,7 +70,7 @@ if (isset($_GET['next'])) {
 
       } else {
          unset($_SESSION["ldap_import"]);
-         displayProgressBar(400,100);
+         Html::displayProgressBar(400, 100);
 
          echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
