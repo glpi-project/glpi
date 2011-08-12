@@ -193,7 +193,7 @@ class Auth {
          if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
-            if (doHookFunction("restrict_ldap_auth", $dn)) {
+            if (Plugin::doHookFunction("restrict_ldap_auth", $dn)) {
                return $dn;
             } else {
                $this->addToError($LANG['login'][11]);
@@ -866,81 +866,72 @@ class Auth {
 
    /** Display refresh button in the user page
     *
-    * @param $ID ID of the user
+    * @param $user User
     *
     * @return nothing
     */
-   static function showSynchronizationForm($ID) {
+   static function showSynchronizationForm(User $user) {
       global $LANG, $DB, $CFG_GLPI;
 
       if (Session::haveRight("user", "w")) {
-         //Look it the user's auth method is LDAP
-         $sql = "SELECT `authtype`, `auths_id`
-                 FROM `glpi_users`
-                 WHERE `id` = '$ID'";
-         $result = $DB->query($sql);
+         echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
+         echo "<div class='firstbloc'>";
 
-         if ($DB->numrows($result) == 1) {
-            $data = $DB->fetch_array($result);
-            echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
-            echo "<div class='firstbloc'>";
+         switch($user->getField('authtype')) {
+            case self::LDAP :
+               //Look it the auth server still exists !
+               // <- Bad idea : id not exists unable to change anything
+               $sql = "SELECT `name`
+                       FROM `glpi_authldaps`
+                       WHERE `id` = '" . $user->getField('auths_id') . "'";
+               $result = $DB->query($sql);
+               if ($DB->numrows($result) > 0) {
+                  echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+                  echo "<input type='hidden' name='id' value='".$user->getID()."'>";
+                  echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
+                         $LANG['ldap'][11] . "'>";
+                  echo "</td></tr></table>";
+               }
+               break;
 
-            switch($data["authtype"]) {
-               case self::LDAP :
-                  //Look it the auth server still exists !
-                  // <- Bad idea : id not exists unable to change anything
+            case self::DB_GLPI :
+            case self::MAIL :
+               break;
+
+            case self::CAS :
+            case self::EXTERNAL :
+            case self::X509 :
+               if ($CFG_GLPI['authldaps_id_extra']) {
                   $sql = "SELECT `name`
                           FROM `glpi_authldaps`
-                          WHERE `id` = '" . $data["auths_id"]."'";
+                          WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'";
                   $result = $DB->query($sql);
+
                   if ($DB->numrows($result) > 0) {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                     echo "<input type='hidden' name='id' value='$ID'>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                             $LANG['ldap'][11] . "'>";
                      echo "</td></tr></table>";
                   }
-                  break;
-
-               case self::DB_GLPI :
-               case self::MAIL :
-                  break;
-
-               case self::CAS :
-               case self::EXTERNAL :
-               case self::X509 :
-                  if ($CFG_GLPI['authldaps_id_extra']) {
-                     $sql = "SELECT `name`
-                             FROM `glpi_authldaps`
-                             WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'";
-                     $result = $DB->query($sql);
-
-                     if ($DB->numrows($result) > 0) {
-                        echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                        echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                               $LANG['ldap'][11] . "'>";
-                        echo "</td></tr></table>";
-                     }
-                  }
-                  break;
-            }
-            echo "</div>";
-
-            echo "<div class='spaced'>";
-            echo "<table class='tab_cadre'>";
-            echo "<tr><th>".$LANG['login'][30]."&nbsp:&nbsp;</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='center'>";
-            $rand             = self::dropdown(array('name' => 'authtype'));
-            $paramsmassaction = array('authtype' => '__VALUE__',
-                                      'name'     => 'change_auth_method');
-            Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
-                                          $paramsmassaction);
-            echo "<input type='hidden' name='id' value='" . $ID . "'>";
-            echo "<span id='show_massiveaction_field'></span>";
-            echo "</td></tr></table>";
-            echo "</div></form>";
+               }
+               break;
          }
+         echo "</div>";
+
+         echo "<div class='spaced'>";
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th>".$LANG['login'][30]."&nbsp:&nbsp;</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='center'>";
+         $rand             = self::dropdown(array('name' => 'authtype'));
+         $paramsmassaction = array('authtype' => '__VALUE__',
+                                   'name'     => 'change_auth_method');
+         Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
+                                       $paramsmassaction);
+         echo "<input type='hidden' name='id' value='" . $user->getID() . "'>";
+         echo "<span id='show_massiveaction_field'></span>";
+         echo "</td></tr></table>";
+         echo "</div></form>";
       }
    }
 
