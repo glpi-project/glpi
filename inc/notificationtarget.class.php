@@ -552,7 +552,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->events = $this->getEvents();
       //If plugin adds new events for an already defined type
-      doHook('item_get_events', $this);
+      Plugin::doHook('item_get_events', $this);
 
       return $this->events;
    }
@@ -904,7 +904,7 @@ class NotificationTarget extends CommonDBChild {
                                 'label' => $LANG['setup'][227]));
 
       $this->getDatasForTemplate($event, $options);
-      doHook('item_get_datas', $this);
+      Plugin::doHook('item_get_datas', $this);
 
       return $this->datas;
    }

@@ -117,9 +117,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             // Specific plugin Type case
             $plugdisplay = false;
             if ($plug=isPluginItemType($_POST["itemtype"])) {
-               $plugdisplay = doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
-                                        array('itemtype' => $_POST["itemtype"],
-                                              'options'  => $search));
+               $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                                array('itemtype' => $_POST["itemtype"],
+                                                      'options'  => $search));
             }
             $already_display = false;
 
@@ -249,9 +249,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (($plug=isPluginItemType($_POST["itemtype"]))
                 // Specific for plugin which add link to core object
                 || ($plug=isPluginItemType(getItemTypeForTable($search['table'])))) {
-               $plugdisplay = doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
-                                        array('itemtype' => $_POST["itemtype"],
-                                              'options'  => $search));
+               $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                                array('itemtype' => $_POST["itemtype"],
+                                                      'options'  => $search));
             }
             $already_display = false;
 

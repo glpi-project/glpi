@@ -1475,7 +1475,7 @@ function getDbRelations() {
    include (GLPI_ROOT . "/inc/relation.constant.php");
 
    // Add plugins relations
-   $plug_rel = getPluginsDatabaseRelations();
+   $plug_rel = Plugin::getDatabaseRelations();
    if (count($plug_rel)>0) {
       $RELATION = array_merge_recursive($RELATION,$plug_rel);
    }

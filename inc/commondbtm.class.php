@@ -245,7 +245,7 @@ class CommonDBTM extends CommonGLPI {
       $this->post_getEmpty();
 
       // Call the plugin hook - $this->fields can be altered
-      doHook("item_empty", $this);
+      Plugin::doHook("item_empty", $this);
       return true;
    }
 
@@ -642,7 +642,7 @@ class CommonDBTM extends CommonGLPI {
       $this->input = $input;
 
       // Call the plugin hook - $this->input can be altered
-      doHook("pre_item_add", $this);
+      Plugin::doHook("pre_item_add", $this);
 
       if ($this->input && is_array($this->input)) {
 
@@ -707,7 +707,7 @@ class CommonDBTM extends CommonGLPI {
                   //Check if we have to automatical fill dates
                   Infocom::manageDateOnStatusChange($this);
                }
-               doHook("item_add", $this);
+               Plugin::doHook("item_add", $this);
                return $this->fields['id'];
             }
          }
@@ -854,7 +854,7 @@ class CommonDBTM extends CommonGLPI {
       $this->input = $input;
 
       // Plugin hook - $this->input can be altered
-      doHook("pre_item_update", $this);
+      Plugin::doHook("pre_item_update", $this);
 
       if ($this->input && is_array($this->input)) {
          $this->input = $this->prepareInputForUpdate($this->input);
@@ -915,7 +915,7 @@ class CommonDBTM extends CommonGLPI {
                                         ($this->dohistory && $history ? $this->oldvalues
                                                                       : array()))) {
                      $this->addMessageOnUpdateAction();
-                     doHook("item_update", $this);
+                     Plugin::doHook("item_update", $this);
 
                      // forward entity information if needed
                      if (count($this->forward_entity_to)
@@ -1092,9 +1092,9 @@ class CommonDBTM extends CommonGLPI {
 
       // Purge
       if ($force) {
-         doHook("pre_item_purge", $this);
+         Plugin::doHook("pre_item_purge", $this);
       } else {
-         doHook("pre_item_delete", $this);
+         Plugin::doHook("pre_item_delete", $this);
       }
 
 
@@ -1109,7 +1109,7 @@ class CommonDBTM extends CommonGLPI {
             if ($force) {
                $this->addMessageOnPurgeAction();
                $this->post_purgeItem();
-               doHook("item_purge", $this);
+               Plugin::doHook("item_purge", $this);
 
             } else {
                $this->addMessageOnDeleteAction();
@@ -1123,7 +1123,7 @@ class CommonDBTM extends CommonGLPI {
                }
 
                $this->post_deleteItem();
-               doHook("item_delete",$this);
+               Plugin::doHook("item_delete",$this);
             }
             return true;
          }
@@ -1242,7 +1242,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
-      doHook("pre_item_restore", $this);
+      Plugin::doHook("pre_item_restore", $this);
 
       if ($this->restoreInDB()) {
          $this->addMessageOnRestoreAction();
@@ -1254,7 +1254,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->post_restoreItem();
-         doHook("item_restore", $this);
+         Plugin::doHook("item_restore", $this);
          return true;
       }
 

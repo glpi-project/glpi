@@ -4628,7 +4628,7 @@ class Search {
 
          if ($withplugins) {
             // Search options added by plugins
-            $plugsearch = getPluginSearchOptions($itemtype);
+            $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
                $search[$itemtype] += array('plugins' => $LANG['common'][29]);
                $search[$itemtype] += $plugsearch;
