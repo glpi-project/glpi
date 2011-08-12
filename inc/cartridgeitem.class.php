@@ -48,10 +48,13 @@ class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    protected $forward_entity_to = array('Cartridge', 'Infocom');
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['cartridges'][12];
+      if ($nb>1) {
+         return $LANG['cartridges'][2];
+      }
+      return $LANG['cartridges'][1];
    }
 
 

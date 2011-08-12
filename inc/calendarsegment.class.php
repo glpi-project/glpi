@@ -48,9 +48,12 @@ class CalendarSegment extends CommonDBChild {
    public $items_id = 'calendars_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['calendar'][10];
+      }
       return $LANG['calendar'][5];
    }
 

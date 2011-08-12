@@ -44,9 +44,12 @@ class Calendar extends CommonDropdown {
    var $dohistory = true;
    protected $forward_entity_to = array('CalendarSegment');
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][42];
+      }
       return $LANG['buttons'][15];
    }
 
