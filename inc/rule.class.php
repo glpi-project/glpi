@@ -1991,7 +1991,6 @@ class Rule extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
-
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Entity' :
@@ -2003,7 +2002,7 @@ class Rule extends CommonDBTM {
                }
                return $this->getTypeName(2);
 
-            case 'SLA' :
+            case 'SlaLevel' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['rulesengine'][17],
                                               countElementsInTable('glpi_ruleactions',
@@ -2024,7 +2023,7 @@ class Rule extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Entity') {
+      if ($item->getType() == 'Entity') {
          $collection = new RuleRightCollection();
          if ($collection->canList()) {
             $ldaprule = new RuleRight();
@@ -2042,9 +2041,10 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
-      } else if ($item->getType()=='SLA') {
+      } else if ($item->getType() == 'SlaLevel') {
          $rule = new RuleTicket();
-         $rule->showAndAddRuleForm($item);
+         $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
+         $item->showActionsList($item->getID());
 
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
