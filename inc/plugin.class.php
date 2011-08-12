@@ -897,7 +897,7 @@ class Plugin extends CommonDBTM {
                      'massiveaction_nodelete_types','massiveaction_noupdate_types', 'networkport_types',
                      'notificationtemplates_types', 'planning_types', 'reservation_types',
                      'rulecollections_types', 'systeminformations_types',
-                     'ticket_types', 'unicity_types', 'globalsearch_types') as $att) {
+                     'ticket_types', 'unicity_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
             unset($attrib[$att]);
