@@ -151,7 +151,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                   echo date("H:i:s") . " replayRulesOnExistingDB : $i/$nb (" .
                        round(memory_get_usage() / (1024 * 1024), 2) . " Mo)\n";
                } else {
-                  changeProgressBarPosition($i, $nb, "$i / $nb");
+                  Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
             }
 
@@ -201,7 +201,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          if (isCommandLine()) {
             echo "replayRulesOnExistingDB : $i/$nb               \n";
          } else {
-            changeProgressBarPosition($i, $nb, "$i / $nb");
+            Html::changeProgressBarPosition($i, $nb, "$i / $nb");
          }
 
       } else {

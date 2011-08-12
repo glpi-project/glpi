@@ -53,7 +53,7 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
       $action = OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
       OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'], $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
-      displayProgressBar(400, $percent);
+      Html::displayProgressBar(400, $percent);
 
       Html::redirect($_SERVER['PHP_SELF']);
 

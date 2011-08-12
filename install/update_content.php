@@ -379,7 +379,7 @@ if (!FieldExists($config_table,"utf8_conv")) {
 
 if ($offsettable>=0 && $complete_utf8) {
    if ($percent >= 0) {
-      displayProgressBar(400,$percent);
+      Html::displayProgressBar(400, $percent);
       echo "<div class='bas'></div></div></div></body></html>";
       glpi_flush();
    }

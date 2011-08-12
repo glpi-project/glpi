@@ -116,7 +116,7 @@ if (isset($_GET["action"])) {
    echo "<tr><th><div class='relative'><strong>" .$rulecollection->getTitle(). "</strong>";
    echo " - " .$LANG['rulesengine'][76]. "</th></tr>\n";
    echo "<tr><td class='center'>";
-   createProgressBar($LANG['rulesengine'][90]);
+   Html::createProgressBar($LANG['rulesengine'][90]);
    echo "</td></tr>\n";
    echo "</table>";
 
@@ -139,7 +139,7 @@ if (isset($_GET["action"])) {
       // Work ended
       $end   = explode(" ",microtime());
       $duree = round($end[0]+$end[1]-$start);
-      changeProgressBarMessage($LANG['rulesengine'][91]." (".Html::timestampToString($duree).")");
+      Html::changeProgressBarMessage($LANG['rulesengine'][91]." (".Html::timestampToString($duree).")");
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
 
    } else {

@@ -3123,61 +3123,6 @@ function glpi_flush() {
 
 
 /**
- * Display a simple progress bar
- *
- * @param $width Width of the progress bar
- * @param $percent Percent of the progress bar
- * @param $options array options :
- *            - title : string title to display (default Progesssion)
- *            - simple : display a simple progress bar (no title / only percent)
- *            - forcepadding : boolean force str_pad to force refresh (default true)
- *
- * @return nothing
-**/
-function displayProgressBar($width, $percent, $options=array()) {
-   global $CFG_GLPI, $LANG;
-
-   $param['title']        = $LANG['common'][47];
-   $param['simple']       = false;
-   $param['forcepadding'] = true;
-
-   if (is_array($options) && count($options)) {
-      foreach ($options as $key => $val) {
-         $param[$key] = $val;
-      }
-   }
-
-   $percentwidth = floor($percent*$width/100);
-   $output       = "<div class='center'><table class='tab_cadre' width='".($width+20)."px'>";
-
-   if (!$param['simple']) {
-      $output .= "<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
-   }
-   $output .= "<tr><td>
-               <table><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
-                "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".$percentwidth.
-                "px' height='12'>";
-
-   if ($param['simple']) {
-      $output .= $percent."%";
-   } else {
-      $output .= '&nbsp;';
-   }
-
-   $output .= "</td></tr></table></td>";
-   $output .= "</tr></table>";
-   $output .= "</div>";
-
-   if (!$param['forcepadding']) {
-      echo $output;
-   } else {
-      echo Toolbox::str_pad($output, 4096);
-      glpi_flush();
-   }
-}
-
-
-/**
  * Clean Printing of and array in a table
  *
  * @param $tab the array to display
@@ -3269,64 +3214,6 @@ function showProfileSelecter($target) {
 }
 
 
-/**
- * Create a Dynamic Progress Bar
- *
- * @param $msg initial message (under the bar)
- *
- * @return nothing
-**/
-function createProgressBar ($msg="&nbsp;") {
-
-   echo "<div class='doaction_cadre'>".
-        "<div class='doaction_progress' id='doaction_progress'></div>".
-        "</div><br>";
-
-   echo "<script type='text/javascript'>";
-   echo "var glpi_progressbar=new Ext.ProgressBar({
-      text:\"$msg\",
-      id:'progress_bar',
-      applyTo:'doaction_progress'
-   });";
-   echo "</script>\n";
-}
-
-
-/**
- * Change the Progress Bar Position
- *
- * @param $crt Current Value (less then $max)
- * @param $tot Maximum Value
- * @param $msg message inside the bar (defaut is %)
- *
- * @return nothing
-**/
-function changeProgressBarPosition ($crt, $tot, $msg="") {
-
-   if (!$tot) {
-      $pct = 0;
-
-   } else if ($crt>$tot) {
-      $pct = 1;
-
-   } else {
-      $pct = $crt/$tot;
-   }
-   echo "<script type='text/javascript'>glpi_progressbar.updateProgress(\"$pct\",\"$msg\");</script>\n";
-   glpi_flush();
-}
-
-
-/**
- * Change the Message under the Progress Bar
- *
- * @param $msg message under the bar
- *
- * @return nothing
-**/
-function changeProgressBarMessage($msg="&nbsp;") {
-   echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";
-}
 
 
 /**

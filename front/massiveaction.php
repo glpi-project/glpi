@@ -93,7 +93,7 @@ if (isset($_POST["itemtype"])) {
          $percent = min(100,round(100*($_SESSION['glpi_massiveaction']['item_count']
                                        - count($_SESSION['glpi_massiveaction']['items']))
                                   /$_SESSION['glpi_massiveaction']['item_count'],0));
-         displayProgressBar(400,$percent);
+         Html::displayProgressBar(400, $percent);
       }
    }
 
