@@ -46,10 +46,13 @@ class ComputerVirtualMachine extends CommonDBChild {
    public $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['computers'][57];
+      if ($nb>1) {
+         return $LANG['computers'][57];
+      }
+      return $LANG['computers'][46];
    }
 
 
@@ -71,11 +74,11 @@ class ComputerVirtualMachine extends CommonDBChild {
           && Session::haveRight("computer","r")) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['computers'][57],
+            return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable('glpi_computervirtualmachines',
                                                              "computers_id = '".$item->getID()."'"));
          }
-         return $LANG['computers'][57];
+         return self::getTypeName(2);
       }
       return '';
    }

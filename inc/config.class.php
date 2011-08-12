@@ -47,9 +47,10 @@ class Config extends CommonDBTM {
    public $showdebug              = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      // No plural
       return $LANG['common'][12];
    }
 

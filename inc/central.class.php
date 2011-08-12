@@ -35,9 +35,10 @@ if (!defined('GLPI_ROOT')) {
 // class Central
 class Central extends CommonGLPI {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      // No plural
       return $LANG['common'][56];
    }
 

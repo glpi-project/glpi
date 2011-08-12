@@ -381,6 +381,7 @@ $LANG['computers'][36] = "Type de disque dur";
 $LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
 
+$LANG['computers'][46] = "Machine virtuelle";
 $LANG['computers'][47] = "Pas de périphérique connecté";
 $LANG['computers'][48] = "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $LANG['computers'][49] = "Modification de l'usager. Les éléments connectés ont pris comme usager celui de l'ordinateur.";
@@ -602,6 +603,15 @@ $LANG['document'][45] = "Vous n'avez pas le droit d'accéder à ce fichier";
 $LANG['document'][46] = "Échec dans l'envoi du fichier (sûrement trop volumineux)";
 $LANG['document'][48] = "Un document avec ce fichier est déjà disponible";
 $LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
+
+
+$LANG['dropdown'][1]  = "Lieux";
+$LANG['dropdown'][2]  = "Fabricants";
+$LANG['dropdown'][3]  = "Catégories des tickets";
+$LANG['dropdown'][4]  = "Catégories des tâches";
+$LANG['dropdown'][5]  = "Types de solution";
+$LANG['dropdown'][6]  = "Sources des demandes";
+$LANG['dropdown'][7]  = "Gabarits de solution";
 
 
 $LANG['entity'][0]  = "Entité";

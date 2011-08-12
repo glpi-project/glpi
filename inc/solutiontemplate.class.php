@@ -44,9 +44,12 @@ class SolutionTemplate extends CommonDropdown {
    public $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['dropdown'][7];
+      }
       return $LANG['jobresolution'][6];
    }
 

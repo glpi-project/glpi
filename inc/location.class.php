@@ -72,9 +72,12 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['dropdown'][1];
+      }
       return $LANG['common'][15];
    }
 
