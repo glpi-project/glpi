@@ -41,9 +41,12 @@ class Budget extends CommonDropdown{
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['financial'][110];
+      }
       return $LANG['financial'][87];
    }
 

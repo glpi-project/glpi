@@ -50,9 +50,12 @@ class Cartridge extends CommonDBTM {
    protected $forward_entity_to = array('Infocom');
    var $no_form_page = false;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][21];
+      }
       return $LANG['cartridges'][0];
    }
 

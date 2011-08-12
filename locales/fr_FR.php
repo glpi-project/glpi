@@ -171,6 +171,8 @@ $LANG['calendarM'][11] = "Décembre";
 
 
 $LANG['cartridges'][0]  = "Cartouche";
+$LANG['cartridges'][1]  = "Modèle de cartouche";
+$LANG['cartridges'][2]  = "Modèles de cartouche";
 
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
@@ -2023,7 +2025,7 @@ $LANG['setup'][80]  = "Types de tiers";
 $LANG['setup'][81]  = "Rubriques des documents";
 $LANG['setup'][82]  = "Types de contacts";
 $LANG['setup'][83]  = "Statut des matériels";
-$LANG['setup'][84]  = "Types de cartouches";
+$LANG['setup'][84]  = "Types de cartouche";
 $LANG['setup'][85]  = "Types de contrats";
 $LANG['setup'][86]  = "Types de mémoire";
 $LANG['setup'][87]  = "Catégorie de la base de connaissances";

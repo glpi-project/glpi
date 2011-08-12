@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class CartridgeItemType
 class CartridgeItemType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][84];
+      if ($nb>1) {
+         return $LANG['setup'][84];
+      }
+      return $LANG['cartridges'][12];
    }
 }
 
