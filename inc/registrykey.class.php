@@ -70,10 +70,10 @@ class RegistryKey extends CommonDBTM {
 
    /** Display registry values for a computer
     *
-   * @param $ID integer : computer ID
+   * @param $comp Computer
    *
    */
-   static function showForComputer($ID) {
+   static function showForComputer(Computer $comp) {
       global $DB, $LANG;
 
       if (!Session::haveRight("computer","r")) {
@@ -90,7 +90,7 @@ class RegistryKey extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_registrykeys`
-                WHERE `computers_id` = '$ID'";
+                WHERE `computers_id` = '".$comp->getID()."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)!=0) {
