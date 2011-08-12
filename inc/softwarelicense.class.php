@@ -48,10 +48,13 @@ class SoftwareLicense extends CommonDBTM {
    protected $forward_entity_to = array('Infocom');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['software'][11];
+      if ($nb>1) {
+         return $LANG['software'][11];
+      }
+      return $LANG['software'][12];
    }
 
 
@@ -694,6 +697,32 @@ class SoftwareLicense extends CommonDBTM {
                    'serial'       => $LANG['common'][19],
                    'entities_id'  => $LANG['entity'][0],
                    'softwares_id' => $LANG['help'][31]);
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Software' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              self::countForSoftware($item->getID()));
+               }
+               return self::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Software') {
+         self::showForSoftware($item);
+      }
+      return true;
    }
 
 }

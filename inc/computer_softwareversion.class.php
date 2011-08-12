@@ -46,6 +46,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    public $items_id_2 = 'softwareversions_id';
 
 
+   static function getTypeName($nb=0) {
+      global $LANG;
+
+      if ($nb>1) {
+         return $LANG['software'][19];
+      }
+      return $LANG['software'][44];
+   }
+
+
    function maybeDeleted() {
       // deleted information duplicate from computers
       return false;
@@ -990,6 +1000,48 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          $this->add($data);
       }
+   }
+
+
+  function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case 'Software' :
+            if (!$withtemplate) {
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(self::getTypeName(2),
+                                              self::countForSoftware($item->getID()));
+               }
+               return self::getTypeName(2);
+            }
+            break;
+
+         case 'Computer' :
+            // Installation allowed for template
+            if (Session::haveRight("software","r")) {
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return self::createTabEntry(Software::getTypeName(2),
+                                              countElementsInTable('glpi_computers_softwareversions',
+                                                                   "computers_id = '".$item->getID()."'"));
+               }
+               return Software::getTypeName(2);
+            }
+            break;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Software') {
+         self::showForSoftware($item);
+
+      } else if ($item->getType()=='Computer') {
+         self::showForComputer($item, $withtemplate);
+      }
+      return true;
    }
 
 }
