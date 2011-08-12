@@ -354,6 +354,20 @@ class Ticket extends CommonITILObject {
                                              "`slas_id` = '".$item->getID()."'");
                   break;
 
+               case __CLASS__ :
+                  $ong = array();
+                  $ong[1] = $LANG['job'][47];
+                  $ong[2] = $LANG['jobresolution'][2];
+                  // enquete si statut clos
+                  if ($item->fields['status'] == 'closed') {
+                     $ong[3] = $LANG['satisfaction'][0];
+                  }
+                  if (Session::haveRight('observe_ticket','1')) {
+                     $ong[4] = $LANG['Menu'][13];
+                  }
+                  return $ong;
+                  break;
+
                default :
                   // Direct one
                   $nb = countElementsInTable('glpi_tickets',
@@ -376,6 +390,7 @@ class Ticket extends CommonITILObject {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $LANG;
 
       switch ($item->getType()) {
          case 'Change' :
@@ -384,6 +399,38 @@ class Ticket extends CommonITILObject {
 
          case 'Problem' :
             Problem_Ticket::showForProblem($item);
+            break;
+
+         case __CLASS__ :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showCost();
+                  break;
+
+               case 2 :
+                     if (!isset($_POST['load_kb_sol'])) {
+                        $_POST['load_kb_sol'] = 0;
+                     }
+                     $item->showSolutionForm($_POST['load_kb_sol']);
+                     if ($item->canApprove()) {
+                        $fup = new TicketFollowup();
+                        $fup->showApprobationForm($item);
+                     }
+                  break;
+
+               case 3 :
+                  $satisfaction = new TicketSatisfaction();
+                  if ($item->fields['status'] == 'closed' && $satisfaction->getFromDB($_POST["id"])) {
+                     $satisfaction->showSatisfactionForm($item);
+                  } else {
+                     echo "<p class='center b'>".$LANG['satisfaction'][2]."</p>";
+                  }
+                  break;
+
+               case 4 :
+                  $item->showStats();
+                  break;
+            }
             break;
 
          case 'SLA' :
@@ -398,32 +445,14 @@ class Ticket extends CommonITILObject {
       global $LANG, $CFG_GLPI, $DB;
 
       $ong = array();
-
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $this->addStandardTab('TicketFollowup',$ong, $options);
-         $this->addStandardTab('TicketValidation', $ong, $options);
-         $this->addStandardTab('TicketTask', $ong, $options);
-
-         $ong[3] = $LANG['job'][47];
-         $ong[4] = $LANG['jobresolution'][2];
-         // enquete si statut clos
-         if ($this->fields['status'] == 'closed') {
-            $ong[10] = $LANG['satisfaction'][0];
-         }
-
-         $this->addStandardTab('Document', $ong, $options);
-         $this->addStandardTab('Problem', $ong, $options);
-         $this->addStandardTab('Change', $ong, $options);
-         $this->addStandardTab('Log', $ong, $options);
-
-         if (Session::haveRight('observe_ticket','1')) {
-            $ong[8] = $LANG['Menu'][13];
-         }
-
-      //   $ong['no_all_tab'] = true;
-      }
+      $this->addStandardTab('TicketFollowup',$ong, $options);
+      $this->addStandardTab('TicketValidation', $ong, $options);
+      $this->addStandardTab('TicketTask', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Problem', $ong, $options);
+      $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -2436,7 +2465,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function showCost($target) {
+   function showCost() {
       global $LANG;
 
       $this->check($this->getField('id'), 'r');
