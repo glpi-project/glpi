@@ -104,16 +104,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function adaptTreeFieldsFromUpdateOrAdd($input) {
       $parent = clone $this;
 
+      // Update case input['name'] not set :
+      if (!isset($input['name']) && isset($this->fields['name'])) {
+         $input['name'] = addslashes($this->fields['name']);
+      }
+
       if (isset($input[$this->getForeignKeyField()])
           && $input[$this->getForeignKeyField()]>0
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
 
          $input['level']        = $parent->fields['level']+1;
          // Sometimes (internet address), the complete name may be different ...
-         // Update case input['name'] not set :
-         if (!isset($input['name']) && isset($this->fields['name'])) {
-            $input['name'] = addslashes($this->fields['name']);
-         }
          $input['completename'] = $this->getCompleteNameFromParents($parent->fields['completename'],
                                                                      $input['name']);
       } else {
