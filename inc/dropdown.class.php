@@ -674,7 +674,7 @@ class Dropdown {
 
                  ); //end $opt
 
-         $plugdrop = getPluginsDropdowns();
+         $plugdrop = Plugin::getDropdowns();
 
          if (count($plugdrop)) {
             $optgroup = array_merge($optgroup, $plugdrop);
@@ -1443,7 +1443,7 @@ class Dropdown {
             // Plugin Specific actions
             if (isset($PLUGIN_HOOKS['use_massive_action'])) {
                foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
-                  $actions = doOneHook($plugin,'MassiveActions',$itemtype);
+                  $actions = Plugin::doOneHook($plugin,'MassiveActions',$itemtype);
 
                   if (count($actions)) {
                      foreach ($actions as $key => $val) {

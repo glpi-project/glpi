@@ -115,7 +115,7 @@ class Session {
                self::loadLanguage();
 
                // glpiprofiles -> other available profile with link to the associated entities
-               doHook("init_session");
+               Plugin::doHook("init_session");
 
                self::initEntityProfiles(self::getLoginUserID());
 
@@ -336,7 +336,7 @@ class Session {
             }
          }
          self::loadGroups();
-         doHook("change_entity");
+         Plugin::doHook("change_entity");
          return true;
       }
       return false;
@@ -382,7 +382,7 @@ class Session {
                   self::changeActiveEntities("all");
                }
             }
-            doHook("change_profile");
+            Plugin::doHook("change_profile");
          }
       }
       // Clean specific datas

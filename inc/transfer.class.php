@@ -1074,9 +1074,9 @@ class Transfer extends CommonDBTM {
 
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
-            doHook("item_transfer", array('type'  => $itemtype,
-                                          'id'    => $ID,
-                                          'newID' => $newID));
+            Plugin::doHook("item_transfer", array('type'  => $itemtype,
+                                                  'id'    => $ID,
+                                                  'newID' => $newID));
          }
       }
    }

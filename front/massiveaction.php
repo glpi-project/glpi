@@ -735,12 +735,12 @@ if (isset($_POST["itemtype"])) {
             if ($split[0] == 'plugin' && isset($split[1])) {
                // Normalized name plugin_name_action
                // Allow hook from any plugin on any (core or plugin) type
-               doOneHook($split[1], 'MassiveActionsProcess', $_POST);
+               Plugin::doOneHook($split[1], 'MassiveActionsProcess', $_POST);
 
             } else if ($plug=isPluginItemType($_POST["itemtype"])) {
                // non-normalized name
                // hook from the plugin defining the type
-               doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
+               Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
             }
       }
       addMessageAfterRedirect($LANG['common'][23]);

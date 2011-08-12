@@ -109,14 +109,14 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
       $plugin->init();
    }
    if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-      //doHook("config");
+      //Plugin::doHook("config");
       if (count($_SESSION["glpi_plugins"])) {
          foreach ($_SESSION["glpi_plugins"] as $name) {
             Plugin::load($name);
          }
       }
       // For plugins which require action after all plugin init
-      doHook("post_init");
+      Plugin::doHook("post_init");
    }
 }
 

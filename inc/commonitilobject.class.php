@@ -2213,7 +2213,7 @@ abstract class CommonITILObject extends CommonDBTM {
       //Types of the plugins (keep the plugin hook for right check)
       if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
          foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-            $types = doOneHook($plugin, 'AssignToTicket', $types);
+            $types = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
          }
       }
 
@@ -2250,7 +2250,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $types = array();
          if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
             foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-               $types = doOneHook($plugin, 'AssignToTicket', $types);
+               $types = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
             }
             if (array_key_exists($itemtype,$types)) {
                return true;

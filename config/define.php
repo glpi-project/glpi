@@ -219,6 +219,10 @@ define("ERROR",1);
 //Bookmark types
 define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
+// For plugins
+$PLUGIN_HOOKS     = array();
+$CFG_GLPI_PLUGINS = array();
+
 
 $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',

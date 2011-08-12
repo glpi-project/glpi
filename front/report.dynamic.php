@@ -85,7 +85,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
       default :
          // Plugin case
          if ($plug = isPluginItemType($_GET["item_type"])) {
-            if (doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
+            if (Plugin::doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
                exit();
             }
          }
