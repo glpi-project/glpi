@@ -101,13 +101,10 @@ class SoftwareVersion extends CommonDBChild {
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
-      if ($this->isNewItem()) {
-         $ong['empty'] = $this->getTypeName();
-      } else {
-         $ong[1] = $LANG['title'][26];
-         $ong[2] = $LANG['software'][19];
-         $this->addStandardTab('Log',$ong, $options);
-      }
+      $ong = array();
+      $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
+
       return $ong;
    }
 
