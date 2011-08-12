@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class PrinterType
 class PrinterType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][43];
+      if ($nb>1) {
+         return $LANG['setup'][43];
+      }
+      return $LANG['dropdown'][10];
    }
 }
 

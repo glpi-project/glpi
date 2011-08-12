@@ -421,6 +421,8 @@ $LANG['contract'][1] = "Contrat en préavis depuis le";
 $LANG['consumables'][0]  = "Consommable";
 $LANG['consumables'][1]  = "En stock";
 $LANG['consumables'][2]  = "Référence";
+$LANG['consumables'][3]  = "Modèle de consommable";
+$LANG['consumables'][4]  = "Modèles de consommables";
 
 $LANG['consumables'][7]  = "Pas de consommable trouvé";
 
@@ -612,6 +614,18 @@ $LANG['dropdown'][4]  = "Catégories des tâches";
 $LANG['dropdown'][5]  = "Types de solution";
 $LANG['dropdown'][6]  = "Sources des demandes";
 $LANG['dropdown'][7]  = "Gabarits de solution";
+$LANG['dropdown'][8]  = "Type d'ordinateur";
+$LANG['dropdown'][9]  = "Type de matériel réseau";
+$LANG['dropdown'][10] = "Type d'imprimante";
+$LANG['dropdown'][11] = "Type de moniteur";
+$LANG['dropdown'][12] = "Type de périphérique";
+$LANG['dropdown'][13] = "Type de téléphone";
+$LANG['dropdown'][14] = "Type de licence";
+$LANG['dropdown'][15] = "Type de contact";
+$LANG['dropdown'][16] = "Type d'interface";
+$LANG['dropdown'][17] = "Type de boitier";
+$LANG['dropdown'][18] = "Type d'alimentation téléphone";
+$LANG['dropdown'][19] = "Systèmes de fichiers";
 
 
 $LANG['entity'][0]  = "Entité";
@@ -2035,7 +2049,7 @@ $LANG['setup'][80]  = "Types de tiers";
 $LANG['setup'][81]  = "Rubriques des documents";
 $LANG['setup'][82]  = "Types de contacts";
 $LANG['setup'][83]  = "Statut des matériels";
-$LANG['setup'][84]  = "Types de cartouche";
+$LANG['setup'][84]  = "Types de cartouches";
 $LANG['setup'][85]  = "Types de contrats";
 $LANG['setup'][86]  = "Types de mémoire";
 $LANG['setup'][87]  = "Catégorie de la base de connaissances";
@@ -2044,7 +2058,7 @@ $LANG['setup'][89]  = "Domaine";
 $LANG['setup'][90]  = "VLANs";
 $LANG['setup'][91]  = "Modèles d'ordinateurs";
 $LANG['setup'][92]  = "Types de consommables";
-$LANG['setup'][93]  = "Interfaces (Disque Dur, ...)";
+$LANG['setup'][93]  = "Types d'interfaces (Disque Dur, ...)";
 $LANG['setup'][94]  = "Modèles de moniteurs";
 $LANG['setup'][95]  = "Modèles de matériels réseau";
 $LANG['setup'][96]  = "Modèles d'imprimantes";

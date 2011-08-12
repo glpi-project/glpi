@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class SoftwareLicenseType
 class SoftwareLicenseType extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['software'][30];
+      if ($nb>1) {
+         return $LANG['software'][30];
+      }
+      return $LANG['dropdown'][14];
    }
 }
 
