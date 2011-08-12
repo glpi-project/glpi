@@ -461,6 +461,41 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
    }
 
+
+  function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case 'SoftwareLicense' :
+            if (!$withtemplate) {
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = self::countForLicense($item->getID());
+               }
+               return array(1 => SoftwareLicense::getTypeName(1),
+                            2 => self::createTabEntry(Computer::getTypeName(2), $nb));
+            }
+            break;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='SoftwareLicense') {
+         switch ($tabnum) {
+            case 1 :
+               self::showForLicenseByEntity($item);
+               break;
+
+            case 2 :
+               self::showForLicense($item);
+               break;
+         }
+      }
+      return true;
+   }
 }
 
 ?>
