@@ -358,14 +358,16 @@ class Html {
       return $value;
    }
 
+
    /**
     * Redirection to $_SERVER['HTTP_REFERER'] page
     *
     * @return nothing
    **/
    static function back() {
-      Html::redirect($_SERVER['HTTP_REFERER']);
+      self::redirect($_SERVER['HTTP_REFERER']);
    }
+
 
    /**
     * Redirection hack
@@ -393,6 +395,43 @@ class Html {
    }
 
 
+   /**
+    * Display common message for item not found
+    *
+    * @return Nothing
+   **/
+   static function displayNotFoundError() {
+      global $LANG, $CFG_GLPI, $HEADER_LOADED;
+
+      if (!$HEADER_LOADED) {
+         if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
+            nullHeader($LANG['login'][5]);
+
+         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            commonHeader($LANG['login'][5]);
+
+         } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+            helpHeader($LANG['login'][5]);
+         }
+      }
+      echo "<div class='center'><br><br>";
+      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
+      echo "<strong>" . $LANG['common'][54] . "</strong></div>";
+      nullFooter();
+      exit ();
+   }
+
+
+   /**
+    * Display common message for privileges errors
+    *
+    * @return Nothing (die)
+   **/
+   static function displayRightError() {
+      global $LANG;
+
+      displayErrorAndDie($LANG['common'][83]);
+   }
 
 
 }

@@ -1482,4 +1482,87 @@ function getDbRelations() {
    return $RELATION;
 }
 
+
+/**
+ * Get SQL request to restrict to current entities of the user
+ *
+ * @param $separator : separator in the begin of the request
+ * @param $table : table where apply the limit (if needed, multiple tables queries)
+ * @param $field : field where apply the limit (id != entities_id)
+ * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
+ * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
+ *
+ * @return String : the WHERE clause to restrict
+**/
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',
+                                    $is_recursive=false) {
+
+   $query = $separator ." ( ";
+
+   // !='0' needed because consider as empty
+   if ($value!='0'
+       && empty($value)
+       && isset($_SESSION['glpishowallentities'])
+       && $_SESSION['glpishowallentities']) {
+
+      // Not ADD "AND 1" if not needed
+      if (trim($separator)=="AND") {
+         return "";
+      }
+      return $query." 1 ) ";
+   }
+
+   if (!empty($table)) {
+      $query .= "`$table`.";
+   }
+   if (empty($field)) {
+      if ($table=='glpi_entities') {
+         $field = "id";
+      } else {
+         $field = "entities_id";
+      }
+   }
+
+   $query .= "`$field`";
+
+   if (is_array($value)) {
+      $query .= " IN ('" . implode("','",$value) . "') ";
+   } else {
+      if (strlen($value)==0) {
+         $query .= " IN (".$_SESSION['glpiactiveentities_string'].") ";
+      } else {
+         $query .= " = '$value' ";
+      }
+   }
+
+   if ($is_recursive) {
+      $ancestors = array();
+      if (is_array($value)) {
+         foreach ($value as $val) {
+            $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val),
+                                                  $ancestors));
+         }
+         $ancestors = array_diff($ancestors, $value);
+
+      } else if (strlen($value)==0) {
+         $ancestors = $_SESSION['glpiparententities'];
+
+      } else {
+         $ancestors = getAncestorsOf("glpi_entities", $value);
+      }
+
+      if (count($ancestors)) {
+         if ($table=='glpi_entities') {
+            $query .= " OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
+         } else {
+            $query .= " OR (`$table`.`is_recursive`='1'
+                            AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
+         }
+      }
+   }
+   $query .= " ) ";
+
+   return $query;
+}
+
 ?>

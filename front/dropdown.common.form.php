@@ -38,7 +38,7 @@ if (!($dropdown instanceof CommonDropdown)) {
    displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
-   displayRightError();
+   Html::displayRightError();
 }
 
 

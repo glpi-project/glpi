@@ -1803,7 +1803,7 @@ class AuthLDAP extends CommonDBTM {
 
       //If connection is not successfull on this directory, try replicates (if replicates exists)
       if (!$ds && $ldap_method['id']>0) {
-         foreach (getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
+         foreach (self::getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
             $ds = self::connectToServer($replicate["host"], $replicate["port"],
                                         $ldap_method['rootdn'],
                                         Toolbox::decrypt($ldap_method['rootdn_passwd'], GLPIKEY),
@@ -2643,6 +2643,32 @@ class AuthLDAP extends CommonDBTM {
       return Toolbox::clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
    }
 
+
+   /**
+    * Get all replicate servers for a master one
+    *
+    * @param $master_id : master ldap server ID
+    *
+    * @return array of the replicate servers
+   **/
+   static function getAllReplicateForAMaster($master_id) {
+      global $DB;
+
+      $replicates = array();
+      $query = "SELECT `id`, `host`, `port`
+                FROM `glpi_authldapreplicates`
+                WHERE `authldaps_id` = '$master_id'";
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result)>0) {
+         while ($replicate = $DB->fetch_array($result)) {
+            $replicates[] = array("id"   => $replicate["id"],
+                                  "host" => $replicate["host"],
+                                  "port" => $replicate["port"]);
+         }
+      }
+      return $replicates;
+   }
 
 }
 ?>
