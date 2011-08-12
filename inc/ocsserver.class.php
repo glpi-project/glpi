@@ -5833,7 +5833,7 @@ class OcsServer extends CommonDBTM {
           && $data['entities_id'] != $line_links['entities_id']) {
 
          if (!isCommandLine() && !Session::haveAccessToEntity($data['entities_id'])) {
-            displayRightError();
+            Html::displayRightError();
          }
 
          $transfer = new Transfer();

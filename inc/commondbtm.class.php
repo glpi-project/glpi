@@ -1958,7 +1958,7 @@ class CommonDBTM extends CommonGLPI {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayNotFoundError();
+         Html::displayNotFoundError();
 
       } else {
          if (!$this->can($ID,$right,$input)) {
@@ -1967,7 +1967,7 @@ class CommonDBTM extends CommonGLPI {
                Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
                exit ();
             }
-            displayRightError();
+            Html::displayRightError();
          }
       }
    }
@@ -1989,7 +1989,7 @@ class CommonDBTM extends CommonGLPI {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 

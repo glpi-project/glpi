@@ -580,7 +580,7 @@ class Session {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -594,7 +594,7 @@ class Session {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_public_faq"] == 0 && !self::haveRight("faq", "r")) {
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -614,7 +614,7 @@ class Session {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -633,7 +633,7 @@ class Session {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -655,7 +655,7 @@ class Session {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -693,7 +693,7 @@ class Session {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 

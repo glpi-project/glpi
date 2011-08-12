@@ -43,7 +43,7 @@ if (!($task instanceof CommonITILTask)) {
    displayErrorAndDie('');
 }
 if (!$task->canView()) {
-   displayRightError();
+   Html::displayRightError();
 }
 
 $itemtype = $task->getItilObjectItemType();
