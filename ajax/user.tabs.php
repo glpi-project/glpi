@@ -105,7 +105,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         Auth::showSynchronizationForm($_POST["id"]);
+         Auth::showSynchronizationForm($user);
          break;
 
       default :
