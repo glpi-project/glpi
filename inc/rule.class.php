@@ -2002,7 +2002,7 @@ class Rule extends CommonDBTM {
                }
                return $this->getTypeName(2);
 
-            case 'SlaLevel' :
+            case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['rulesengine'][17],
                                               countElementsInTable('glpi_ruleactions',
@@ -2041,6 +2041,10 @@ class Rule extends CommonDBTM {
             $mailcollector = new RuleMailCollector();
             $mailcollector->showAndAddRuleForm($item);
          }
+      } else if ($item->getType() == 'SLA') {
+         $rule = new RuleTicket();
+         $rule->showAndAddRuleForm($item);
+
       } else if ($item->getType() == 'SlaLevel') {
          $rule = new RuleTicket();
          $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
