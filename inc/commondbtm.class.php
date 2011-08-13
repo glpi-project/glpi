@@ -2504,6 +2504,8 @@ class CommonDBTM extends CommonGLPI {
                      if (!$this->checkSpecificValues($searchOption['datatype'],$value)) {
                         $unset = true;
                      }
+                     // Copy value if check have update it
+                     $this->input[$key] = $value;
                      break;
                 }
             }
