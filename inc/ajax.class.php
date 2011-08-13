@@ -173,14 +173,14 @@ class Ajax {
                 function() {";
                   $condition = '';
                   if ($minsize >= 0) {
-                     $condition = " Ext.get('$toobserve').getValue().length >= $minsize ";
+                     $condition = " Ext.get('$zone').getValue().length >= $minsize ";
                   }
                   if (count($forceloadfor)) {
                      foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                            $condition .= " || ";
                         }
-                        $condition .= "Ext.get('$toobserve').getValue() == '$value'";
+                        $condition .= "Ext.get('$zone').getValue() == '$value'";
                      }
                   }
                   if (!empty($condition)) {
