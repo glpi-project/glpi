@@ -141,7 +141,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $parent = $this->fields[$this->getForeignKeyField()];
       }
 
-      CleanFields($this->getTable(), array('ancestors_cache', 'sons_cache'));
+      $this->recursiveCleanSonsAboveID($parent);
       $tmp  = clone $this;
       $crit = array('FIELDS'                    => 'id',
                     $this->getForeignKeyField() => $this->fields["id"]);
@@ -173,20 +173,36 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB;
       if (($updateName) || ($changeParent)) {
          $currentNode = clone $this;
-         $currentNode->getFromDB($ID);
+
+         if ($currentNode->getFromDB($ID)) {
+            $currentNodeCompleteName = $currentNode->getField("completename");
+            $nextNodeLevel = ($currentNode->getField("level") + 1);
+         } else {
+            $nextNodeLevel = 1;
+         }
+
          $query = "SELECT `id`, `name`
                   FROM `".$this->getTable()."`
                   WHERE `".$this->getForeignKeyField()."` = $ID";
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."` SET ";
             $fieldsToUpdate = array();
-            if ($updateName || $changeParent)
-               $fieldsToUpdate[] = "`completename`='".
-                                    $this->getCompleteNameFromParents($currentNode->getField("completename"),
-                                                                      addslashes($data["name"]))."'";
+
+            if ($updateName || $changeParent) {
+               if (isset($currentNodeCompleteName)) {
+                  $fieldsToUpdate[] = "`completename`='".
+                  $this->getCompleteNameFromParents($currentNodeCompleteName,
+                                 addslashes($data["name"]))."'";
+               } else {
+                  $fieldsToUpdate[] = "`completename`='".addslashes($data["name"])."'";
+               }
+            }
+
             if ($changeParent) {
                // We have to reset the ancestors as only these changes (ie : not the children).
                $fieldsToUpdate[] = "`ancestors_cache`=NULL";
+               // And we must update the level of the current node ...
+               $fieldsToUpdate[] = "`level`='$nextNodeLevel'";
             }
             $query .= implode(', ',$fieldsToUpdate)." WHERE `id`='".$data["id"]."'";
             $DB->query($query);
@@ -214,9 +230,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
    function post_addItem() {
-      CleanFields($this->getTable(), 'sons_cache');
 
       $parent = $this->fields[$this->getForeignKeyField()];
+      $this->recursiveCleanSonsAboveID($parent);
       if ($parent && $this->dohistory) {
          $changes[0] = '0';
          $changes[1] = '';
