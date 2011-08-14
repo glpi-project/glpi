@@ -1674,8 +1674,7 @@ function update0723to078($output='HTML') {
    $itemtype_tables=array("glpi_alerts", "glpi_bookmarks", "glpi_bookmarks_users",
       "glpi_computers_items", "glpi_contracts_items", "glpi_displaypreferences",
       "glpi_documents_items", "glpi_infocoms", "glpi_links_itemtypes",
-      "glpi_networkports", "glpi_reservationitems", "glpi_tickets",
-      );
+      "glpi_networkports", "glpi_reservationitems", "glpi_tickets");
 
    foreach ($itemtype_tables as $table) {
       displayMigrationMessage("078", $LANG['update'][142] . " - $table"); // Updating data
@@ -1688,6 +1687,7 @@ function update0723to078($output='HTML') {
          $query = "UPDATE `$table` SET `itemtype` = '$val' WHERE `itemtype` = '$key'";
          $DB->query($query) or die("0.78 update itemtype of table $table for $val " . $LANG['update'][90] . $DB->error());
       }
+      
    }
 
    if (FieldExists('glpi_logs', 'device_type')) {
@@ -1925,6 +1925,15 @@ function update0723to078($output='HTML') {
    foreach ($subtypes as $old_subtype => $new_subtype) {
       $query = "UPDATE `glpi_rules` SET `sub_type`='$new_subtype' WHERE `sub_type`='$old_subtype'";
       $DB->query($query) or die("0.78 change sub_type $old_subtype in $new_subtype in glpi_rules " . $LANG['update'][90] . $DB->error());
+   }
+
+   $DB->query($query) or die("0.78 update itemtypes in business rules " . $LANG['update'][90] . $DB->error());
+   //Update business rules itemtypes
+   foreach ($typetoname as $key => $val) {
+      if ($key != GENERAL_TYPE) {
+         $query = "UPDATE `glpi_rulecriterias` SET `pattern`='$val' WHERE `pattern`='$key' AND `criteria`='itemtype'";
+         $DB->query($query) or die("0.78 update itemtype for business rules for $val " . $LANG['update'][90] . $DB->error());
+      }
    }
 
    if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
