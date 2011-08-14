@@ -1927,6 +1927,15 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 change sub_type $old_subtype in $new_subtype in glpi_rules " . $LANG['update'][90] . $DB->error());
    }
 
+   $DB->query($query) or die("0.78 update itemtypes in business rules " . $LANG['update'][90] . $DB->error());
+   //Update business rules itemtypes
+   foreach ($typetoname as $key => $val) {
+      if ($key != GENERAL_TYPE) {
+         $query = "UPDATE `glpi_rulecriterias` SET `pattern`='$val' WHERE `pattern`='$key' AND `criteria`='itemtype'";
+         $DB->query($query) or die("0.78 update itemtype for business rules for $val " . $LANG['update'][90] . $DB->error());
+      }
+   }
+
    if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
       $query = "ALTER TABLE `glpi_rulecachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
       $DB->query($query) or die("0.78 alter table glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
