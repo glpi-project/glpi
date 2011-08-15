@@ -223,6 +223,7 @@ $LANG['central'][14] = "Vue groupe";
 $LANG['central'][17] = "Vos tickets rejetés";
 $LANG['central'][18] = "Vos tickets à clore";
 $LANG['central'][19] = "Vos tickets à valider";
+$LANG['central'][20] = "Pour des raisons de sécurité, veuillez changer le mot de passe par défaut pour le(s) utilisateur(s)";
 
 
 $LANG['change'][0] = "Changement";
