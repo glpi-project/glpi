@@ -137,6 +137,24 @@ class Central extends CommonGLPI {
                      || Session::haveRight("show_assign_ticket", "1"));
       echo "<table class='tab_cadre_central'>";
 
+      if (Session::haveRight("config", "w")) {
+         $logins = User::checkDefaultPasswords();
+         $user = new User();
+         if (!empty($logins)) {
+            $accouts = array();
+            $message = $LANG['central'][20].": ";
+            foreach ($logins as $login) {
+               $user->getFromDBbyName($login);
+               $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a> ";
+            } 
+            $message.= implode(",", $accounts);
+            echo "<tr><th colspan='2'><br>";
+            displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
+            echo "</th></tr>";
+            
+         }
+      }
+
       if ($DB->isSlave() && !$DB->first_connection) {
          echo "<tr><th colspan='2'><br>";
          displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
