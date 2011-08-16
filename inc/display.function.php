@@ -154,12 +154,12 @@ function includeCommonHtmlHeader($title='') {
       foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
          if (is_array($files)) {
             foreach ($files as $file) {
-               echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'>
-                  </script>\n";
+               echo "<script type='text/javascript' src='".
+                      $CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
             }
          } else {
-            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$files'>
-               </script>\n";
+            echo "<script type='text/javascript' src='".
+                   $CFG_GLPI["root_doc"]."/plugins/$plugin/$files'></script>\n";
          }
       }
    }
@@ -171,11 +171,11 @@ function includeCommonHtmlHeader($title='') {
          if (is_array($files)) {
             foreach ($files as $file) {
                echo "<link rel='stylesheet' href='".
-                     $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+                     $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen'>\n";
             }
          } else {
             echo "<link rel='stylesheet' href='".
-                  $CFG_GLPI["root_doc"]."/plugins/$plugin/$files' type='text/css' media='screen' >\n";
+                  $CFG_GLPI["root_doc"]."/plugins/$plugin/$files' type='text/css' media='screen'>\n";
          }
       }
    }
@@ -3206,7 +3206,8 @@ function showProfileSelecter($target) {
       echo "</script>";
 
       echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
-             htmlentities($_SESSION["glpiactive_entity_name"])."\" class='entity_select' id='global_entity_select'>".
+             htmlentities($_SESSION["glpiactive_entity_name"]).
+             "\" class='entity_select' id='global_entity_select'>".
              $_SESSION["glpiactive_entity_shortname"]."</a>";
 
       echo "</li>";

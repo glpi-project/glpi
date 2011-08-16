@@ -40,11 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class Vlan
 class Vlan extends CommonDropdown {
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['setup'][90];
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -55,9 +57,11 @@ class Vlan extends CommonDropdown {
                          'list'     => true));
    }
 
+
    function displaySpecificTypeField($ID, $field=array()) {
+
       if ($field['name'] == 'tag') {
-         Dropdown::showInteger('tag',$this->fields['tag'],0,pow(2,12)-1);
+         Dropdown::showInteger('tag', $this->fields['tag'], 0, pow(2,12)-1);
       }
    }
 
@@ -92,5 +96,4 @@ class Vlan extends CommonDropdown {
    }
 
 }
-
 ?>
