@@ -209,7 +209,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                // We have to reset the ancestors as only these changes (ie : not the children).
                $fieldsToUpdate[] = "`ancestors_cache` = NULL";
                // And we must update the level of the current node ...
-               $fieldsToUpdate[] = "`level`='$nextNodeLevel'";
+               $fieldsToUpdate[] = "`level` = '$nextNodeLevel'";
             }
             $query .= implode(', ',$fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
             $DB->query($query);

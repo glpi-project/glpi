@@ -100,7 +100,7 @@ if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,fal
    // Check OCS connections
    $query = "SELECT `id`, `name`
              FROM `glpi_ocsservers`
-             WHERE `is_active`='1'";
+             WHERE `is_active` = '1'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)) {
@@ -135,15 +135,14 @@ if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,fal
       foreach ($ldap_methods as $method) {
          if ($method['is_active']) {
             echo " ".$method['name'];
-   
-            if (AuthLdap::tryToConnectToServer($method, $method["rootdn"],
-                                               Toolbox::decrypt($method["rootdn_passwd"],GLPIKEY))) {
+            if (AuthLDAP::tryToConnectToServer($method, $method["rootdn"],
+                                               Toolbox::decrypt($method["rootdn_passwd"],
+                                               GLPIKEY))) {
                echo "_OK";
             } else {
                echo "_PROBLEM";
                $ok = false;
             }
-   
             echo "\n";
          }
       }

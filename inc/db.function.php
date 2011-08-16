@@ -1357,11 +1357,13 @@ function formatOutputWebLink($link) {
 
 
 /**
+ * NOT USED
 * Clean fields if needed
 *
 * @param $table table name name
 * @param $fields fields to set NULL : may be a string or an array (sons_cache, ancestors_cache, ...)
 **/
+/*
 function CleanFields($table,$fields) {
    global $DB;
 
@@ -1381,7 +1383,7 @@ function CleanFields($table,$fields) {
       $DB->query($query);
    }
 }
-
+*/
 
 /**
  * Add dates for request
