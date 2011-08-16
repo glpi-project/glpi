@@ -142,16 +142,16 @@ class Central extends CommonGLPI {
          $user = new User();
          if (!empty($logins)) {
             $accouts = array();
-            $message = $LANG['central'][20].": ";
+            $message = $LANG['central'][1]." : ";
             foreach ($logins as $login) {
                $user->getFromDBbyName($login);
                $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a> ";
-            } 
+            }
             $message.= implode(",", $accounts);
             echo "<tr><th colspan='2'><br>";
             displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
             echo "</th></tr>";
-            
+
          }
       }
 

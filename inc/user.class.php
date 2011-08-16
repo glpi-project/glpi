@@ -2960,19 +2960,25 @@ class User extends CommonDBTM {
       return false;
    }
 
+
    static function checkDefaultPasswords() {
-      $passwords = array('glpi' => 'glpi', 'tech' => 'tech', 'normal' => 'normal',
+
+      $passwords = array('glpi'      => 'glpi',
+                         'tech'      => 'tech',
+                         'normal'    => 'normal',
                          'post-only' => 'postonly');
       $default_password_set = array();
       foreach ($passwords as $login => $password) {
-         if (countElementsInTable("glpi_users", "`name`='$login' " .
-                                                "AND (`password`=SHA1('$password') " .
-                                                   "OR `password`=MD5('$password')) AND `is_active`='1'")) {
+         if (countElementsInTable("glpi_users",
+                                  "`name`='$login' " .
+                                       "AND (`password` = SHA1('$password') " .
+                                             "OR `password` = MD5('$password'))
+                                        AND `is_active` = '1'")) {
             $default_password_set[] = $login;
          }
       }
       return $default_password_set;
    }
-}
 
+}
 ?>

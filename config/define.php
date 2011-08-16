@@ -314,9 +314,9 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportComputerCollection'
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ProblemTask', 'Reminder', 'TicketTask');
 
-$CFG_GLPI["globalsearch_types"]                 = array('Ticket','Computer', 'Monitor', 'Software', 
-                                                   'NetworkEquipment', 'Peripheral', 'Printer',
-                                                   'Phone', 'Contact', 'Supplier', 'Document');
+$CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
+                                                  'NetworkEquipment', 'Peripheral', 'Phone',
+                                                  'Printer', 'Software', 'Supplier', 'Ticket');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
