@@ -259,7 +259,7 @@ class RuleImportComputer extends Rule {
                   if (!isset($input[$criterion]) || $input[$criterion] == '') {
                      $continue = false;
                   } else  {
-                  $complex_criterias[] = $crit;
+                     $complex_criterias[] = $crit;
                   }
                }
             }

@@ -2302,15 +2302,16 @@ class Search {
                }
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT
-                                 ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                                 INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                        "` $add_minus) $interval) SEPARATOR '$$$$')
-                              AS ".$NAME."_$num, ";
+                  return " GROUP_CONCAT(DISTINCT ADDDATE(`$table$addtable`.`".
+                                                            $searchopt[$ID]["datafields"][1]."`,
+                                                         INTERVAL (`$table$addtable`.`".
+                                                                     $searchopt[$ID]["datafields"][2].
+                                                                     "` $add_minus) $interval)
+                                         SEPARATOR '$$$$') AS ".$NAME."_$num, ";
                }
                return "ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
-                                 INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                        "` $add_minus) $interval) AS ".$NAME."_$num, ";
+                               INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
+                                          "` $add_minus) $interval) AS ".$NAME."_$num, ";
 
             case "itemlink" :
                if ($meta

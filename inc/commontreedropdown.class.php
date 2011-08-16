@@ -101,6 +101,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
      return addslashes($parentCompleteName). " > ".$thisName;
    }
 
+
    function adaptTreeFieldsFromUpdateOrAdd($input) {
       $parent = clone $this;
 
@@ -115,16 +116,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
          $input['level']        = $parent->fields['level']+1;
          // Sometimes (internet address), the complete name may be different ...
-         $input['completename'] = $this->getCompleteNameFromParents($parent->fields['completename'],
-                                                                     $input['name']);
+         $input['completename'] = self::getCompleteNameFromParents($parent->fields['completename'],
+                                                                   $input['name']);
       } else {
          $input[$this->getForeignKeyField()] = 0;
-         $input['level']        = 1;
-         $input['completename'] = $input['name'];
+         $input['level']                     = 1;
+         $input['completename']              = $input['name'];
       }
 
       return $input;
    }
+
 
    function prepareInputForAdd($input) {
      return $this->adaptTreeFieldsFromUpdateOrAdd($input);
@@ -154,7 +156,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return true;
    }
 
+
    function prepareInputForUpdate($input) {
+
       // Can't move a parent under a child
       if (isset($input[$this->getForeignKeyField()])
           && in_array($input[$this->getForeignKeyField()],
@@ -169,30 +173,33 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return $input;
    }
 
+
    function regenerateTreeUnderID($ID, $updateName, $changeParent) {
       global $DB;
+
       if (($updateName) || ($changeParent)) {
          $currentNode = clone $this;
 
          if ($currentNode->getFromDB($ID)) {
             $currentNodeCompleteName = $currentNode->getField("completename");
-            $nextNodeLevel = ($currentNode->getField("level") + 1);
+            $nextNodeLevel           = ($currentNode->getField("level") + 1);
          } else {
             $nextNodeLevel = 1;
          }
 
          $query = "SELECT `id`, `name`
-                  FROM `".$this->getTable()."`
-                  WHERE `".$this->getForeignKeyField()."` = $ID";
+                   FROM `".$this->getTable()."`
+                   WHERE `".$this->getForeignKeyField()."` = '$ID'";
          foreach ($DB->request($query) as $data) {
-            $query = "UPDATE `".$this->getTable()."` SET ";
+            $query = "UPDATE `".$this->getTable()."`
+                      SET ";
             $fieldsToUpdate = array();
 
             if ($updateName || $changeParent) {
                if (isset($currentNodeCompleteName)) {
                   $fieldsToUpdate[] = "`completename`='".
-                  $this->getCompleteNameFromParents($currentNodeCompleteName,
-                                 addslashes($data["name"]))."'";
+                  self::getCompleteNameFromParents($currentNodeCompleteName,
+                                                   addslashes($data["name"]))."'";
                } else {
                   $fieldsToUpdate[] = "`completename`='".addslashes($data["name"])."'";
                }
@@ -200,23 +207,25 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
             if ($changeParent) {
                // We have to reset the ancestors as only these changes (ie : not the children).
-               $fieldsToUpdate[] = "`ancestors_cache`=NULL";
+               $fieldsToUpdate[] = "`ancestors_cache` = NULL";
                // And we must update the level of the current node ...
                $fieldsToUpdate[] = "`level`='$nextNodeLevel'";
             }
-            $query .= implode(', ',$fieldsToUpdate)." WHERE `id`='".$data["id"]."'";
+            $query .= implode(', ',$fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
             $DB->query($query);
             $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
          }
       }
    }
 
+
    function recursiveCleanSonsAboveID($ID) {
       global $DB;
+
       if ($ID > 0) {
          $query = "UPDATE `".$this->getTable()."`
-                     SET `sons_cache` = NULL
-                     WHERE `id`='$ID'";
+                    SET `sons_cache` = NULL
+                    WHERE `id` = '$ID'";
          $DB->query($query);
 
          $currentNode = clone $this;
@@ -228,6 +237,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
       }
    }
+
 
    function post_addItem() {
 
@@ -249,8 +259,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $this->recursiveCleanSonsAboveID($ID);
 
       if ($changeParent) {
-         $oldParentID = $this->oldvalues[$this->getForeignKeyField()];
-         $newParentID = $this->fields[$this->getForeignKeyField()];
+         $oldParentID     = $this->oldvalues[$this->getForeignKeyField()];
+         $newParentID     = $this->fields[$this->getForeignKeyField()];
          $oldParentNameID = '';
          $newParentNameID = '';
 
@@ -264,7 +274,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                $changes[0] = '0';
                $changes[1] = addslashes($this->getNameID());
                $changes[2] = '';
-               Log::history($oldParentID, $this->getType(), $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+               Log::history($oldParentID, $this->getType(), $changes, $this->getType(),
+                            HISTORY_DELETE_SUBITEM);
             }
          }
 
@@ -276,7 +287,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                $changes[0] = '0';
                $changes[1] = '';
                $changes[2] = addslashes($this->getNameID());
-               Log::history($newParentID, $this->getType(), $changes, $this->getType(), HISTORY_ADD_SUBITEM);
+               Log::history($newParentID, $this->getType(), $changes, $this->getType(),
+                            HISTORY_ADD_SUBITEM);
             }
          }
 
@@ -289,6 +301,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       }
    }
+
 
    function post_deleteFromDB() {
 

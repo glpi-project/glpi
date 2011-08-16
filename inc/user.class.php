@@ -2420,14 +2420,14 @@ class User extends CommonDBTM {
       $ID = $this->getField('id');
 
       if ($tech) {
-         $type_user = $CFG_GLPI['linkuser_tech_types'];
-         $type_group = $CFG_GLPI['linkgroup_tech_types'];
-         $field_user = 'users_id_tech';
+         $type_user   = $CFG_GLPI['linkuser_tech_types'];
+         $type_group  = $CFG_GLPI['linkgroup_tech_types'];
+         $field_user  = 'users_id_tech';
          $field_group = 'groups_id_tech';
       } else {
-         $type_user = $CFG_GLPI['linkuser_types'];
-         $type_group = $CFG_GLPI['linkgroup_types'];
-         $field_user = 'users_id';
+         $type_user   = $CFG_GLPI['linkuser_types'];
+         $type_group  = $CFG_GLPI['linkgroup_types'];
+         $field_user  = 'users_id';
          $field_group = 'groups_id';
       }
 
@@ -2961,7 +2961,7 @@ class User extends CommonDBTM {
    }
 
    static function checkDefaultPasswords() {
-      $passwords = array('glpi' => 'glpi', 'tech' => 'tech', 'normal' => 'normal', 
+      $passwords = array('glpi' => 'glpi', 'tech' => 'tech', 'normal' => 'normal',
                          'post-only' => 'postonly');
       $default_password_set = array();
       foreach ($passwords as $login => $password) {
