@@ -56,7 +56,7 @@ function includeCommonHtmlHeader($title='') {
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
    // Send extra expires header
-   header_nocache();
+   Html::header_nocache();
 
    // Start the page
    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
@@ -1325,28 +1325,6 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
 
 /**
- * Set page not to use the cache
-**/
-function header_nocache() {
-
-   header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-   header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
-}
-
-
-/**
- * Flush the current displayed items (do not works really fine)
-**/
-function glpi_flush() {
-
-   flush();
-   if (function_exists("ob_flush") && ob_get_length () !== FALSE) {
-      ob_flush();
-   }
-}
-
-
-/**
  * Clean Printing of and array in a table
  *
  * @param $tab the array to display
@@ -1438,64 +1416,6 @@ function showProfileSelecter($target) {
    }
 }
 
-
-
-
-/**
- * show arrow for massives actions : opening
- *
- * @param $formname string
- * @param $fixed boolean - used tab_cadre_fixe in both tables
- * @param $width only for dictionnary
-**/
-function openArrowMassive($formname, $fixed=false, $width='80%') {
-   global $CFG_GLPI, $LANG;
-
-   if ($fixed) {
-      echo "<table class='tab_glpi' width='950px'>";
-   } else {
-      echo "<table class='tab_glpi' width='80%'>";
-   }
-
-   echo "<tr><td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''></td>";
-   echo "<td class='center'>";
-   echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
-          href='#'>".$LANG['buttons'][18]."</a></td>";
-   echo "<td>/</td><td class='center'>";
-   echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
-          href='#'>".$LANG['buttons'][19]."</a></td>";
-   echo "<td class='left' width='".$width."'>";
-}
-/**
- * DO NOT USE THIS FUNCTION use closeArrowMassives
- * show arrow for massives actions : closing
- *
- * @param $name string name of submit button, none if empty
- * @param $label string label of submit button
-**/
-function closeArrowMassive($name='', $label='') {
-
-   closeArrowMassives(array($name => $label));
-
-}
-
-/**
- * show arrow for massives actions : closing
- *
- * @param $actions array of action : $name -> $label
-**/
-function closeArrowMassives($actions) {
-
-   if (count($actions)) {
-      foreach($actions as $name => $label) {
-         if (!empty($name)) {
-            echo "<input type='submit' name='$name' value=\"$label\" class='submit'>&nbsp;";
-         }
-      }
-   }
-   echo "</td></tr>";
-   echo "</table>";
-}
 
 
 /**

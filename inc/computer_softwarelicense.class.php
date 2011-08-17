@@ -366,7 +366,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo "</table>\n";
 
             if ($canedit) {
-               openArrowMassive("softinstall".$rand."",true);
+               Html::openArrowMassives("softinstall".$rand."",true);
                Dropdown::show('SoftwareLicense',
                               array('condition' => "`glpi_softwarelicenses`.`softwares_id`
                                                       = '".$license->fields['softwares_id']."'",
@@ -374,7 +374,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";
-               closeArrowMassive('delete', $LANG['buttons'][6]);
+               Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
 
                echo "</form>";
             }

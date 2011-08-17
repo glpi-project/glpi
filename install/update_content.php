@@ -381,7 +381,7 @@ if ($offsettable>=0 && $complete_utf8) {
    if ($percent >= 0) {
       Html::displayProgressBar(400, $percent);
       echo "<div class='bas'></div></div></div></body></html>";
-      glpi_flush();
+      Html::glpi_flush();
    }
 
    if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8)) {
@@ -391,7 +391,7 @@ if ($offsettable>=0 && $complete_utf8) {
       echo "<script language='javascript' type='text/javascript'>
              window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
              "$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
-      glpi_flush();
+      Html::glpi_flush();
       exit;
    }
 

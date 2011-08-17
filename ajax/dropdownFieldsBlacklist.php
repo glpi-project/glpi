@@ -37,7 +37,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownFieldsBlacklist.php")) {
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
+   Html::header_nocache();
 }
 
 Session::checkRight("config", "w");

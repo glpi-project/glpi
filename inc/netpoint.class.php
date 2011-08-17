@@ -330,10 +330,10 @@ class Netpoint extends CommonDropdown {
          echo "</table>\n";
 
          if ($canedit) {
-            openArrowMassive("massiveaction_form", true);
+            Html::openArrowMassives("massiveaction_form", true);
             echo "<input type='hidden' name='itemtype' value='Netpoint'>";
             echo "<input type='hidden' name='action' value='delete'>";
-            closeArrowMassive('massiveaction', $LANG['buttons'][6]);
+            Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
 
             echo "</form>\n";
          }

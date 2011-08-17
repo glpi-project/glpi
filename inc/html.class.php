@@ -521,7 +521,7 @@ class Html {
        }
        echo "<script type='text/javascript'>glpi_progressbar.updateProgress(\"$pct\",\"$msg\");".
             "</script>\n";
-       glpi_flush();
+       self::glpi_flush();
     }
 
 
@@ -575,7 +575,7 @@ class Html {
           echo $output;
        } else {
           echo Toolbox::str_pad($output, 4096);
-          glpi_flush();
+          self::glpi_flush();
        }
     }
 
@@ -2279,7 +2279,7 @@ class Html {
       header("Content-Type: text/html; charset=UTF-8");
 
       // Send extra expires header if configured
-      header_nocache();
+      self::header_nocache();
 
       if (isCommandLine()) {
          return true;
@@ -2356,6 +2356,74 @@ class Html {
 
       // Print foot
       echo "</body></html>";
+   }
+
+
+   /**
+    * Flush the current displayed items (do not works really fine)
+   **/
+   static function glpi_flush() {
+
+      flush();
+      if (function_exists("ob_flush") && ob_get_length () !== FALSE) {
+         ob_flush();
+      }
+   }
+
+
+   /**
+    * Set page not to use the cache
+   **/
+   static function header_nocache() {
+
+      header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+      header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
+   }
+
+
+   /**
+    * show arrow for massives actions : opening
+    *
+    * @param $formname string
+    * @param $fixed boolean - used tab_cadre_fixe in both tables
+    * @param $width only for dictionnary
+   **/
+   static function openArrowMassives($formname, $fixed=false, $width='80%') {
+      global $CFG_GLPI, $LANG;
+
+      if ($fixed) {
+         echo "<table class='tab_glpi' width='950px'>";
+      } else {
+         echo "<table class='tab_glpi' width='80%'>";
+      }
+
+      echo "<tr><td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''></td>";
+      echo "<td class='center'>";
+      echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
+             href='#'>".$LANG['buttons'][18]."</a></td>";
+      echo "<td>/</td><td class='center'>";
+      echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
+             href='#'>".$LANG['buttons'][19]."</a></td>";
+      echo "<td class='left' width='".$width."'>";
+   }
+
+
+   /**
+    * show arrow for massives actions : closing
+    *
+    * @param $actions array of action : $name -> $label
+   **/
+   static function closeArrowMassives($actions) {
+
+      if (count($actions)) {
+         foreach($actions as $name => $label) {
+            if (!empty($name)) {
+               echo "<input type='submit' name='$name' value=\"$label\" class='submit'>&nbsp;";
+            }
+         }
+      }
+      echo "</td></tr>";
+      echo "</table>";
    }
 
 

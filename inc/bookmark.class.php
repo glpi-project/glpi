@@ -537,8 +537,8 @@ class Bookmark extends CommonDBTM {
             }
             echo "</table></div>";
 
-            openArrowMassive("form_load_bookmark$rand");
-            closeArrowMassive('delete_several', $LANG['buttons'][6]);
+            Html::openArrowMassives("form_load_bookmark$rand");
+            Html::closeArrowMassives(array('delete_several' => $LANG['buttons'][6]));
 
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";

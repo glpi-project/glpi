@@ -886,8 +886,8 @@ class Document extends CommonDBTM {
          echo "</td></tr>";
          echo "</table>";
 
-         openArrowMassive("document_form$rand", true);
-         closeArrowMassive('deletedocumentitem', $LANG['buttons'][6]);
+         Html::openArrowMassives("document_form$rand", true);
+         Html::closeArrowMassives(array('deletedocumentitem' => $LANG['buttons'][6]));
 
       } else {
          echo "</table>";

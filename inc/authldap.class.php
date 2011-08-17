@@ -396,8 +396,8 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "</table>";
 
-         openArrowMassive("ldap_replicates_form", true);
-         closeArrowMassive('delete_replicate', $LANG['buttons'][6]);
+         Html::openArrowMassives("ldap_replicates_form", true);
+         Html::closeArrowMassives(array('delete_replicate' => $LANG['buttons'][6]));
 
          echo "</div></form>";
       }
@@ -989,7 +989,6 @@ class AuthLDAP extends CommonDBTM {
       if (is_array($ldap_users)) {
          $numrows     = count($ldap_users);
          $action      = "toprocess";
-         $form_action = "process_ok";
 
          if ($numrows > 0) {
             if ($limitexceeded) {
@@ -1069,10 +1068,15 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "</table>";
 
-            openArrowMassive("ldap_form", true);
-            closeArrowMassive($form_action,
-                              ($_SESSION['ldap_import']['mode']?$LANG['ldap'][15]
-                                                               :$LANG['buttons'][37]));
+            Html::openArrowMassives("ldap_form", true);
+            $form_action = "process_ok";
+            $textbutton  = '';
+            if ($_SESSION['ldap_import']['mode']) {
+               $textbutton = $LANG['ldap'][15];
+            } else {
+               $textbutton = $LANG['buttons'][37];
+            }
+            Html::closeArrowMassives(array($form_action => $textbutton));
             echo "</form>";
 
             printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');

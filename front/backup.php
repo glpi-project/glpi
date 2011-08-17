@@ -259,7 +259,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
          echo $LANG['backup'][22]." ".Html::formatNumber($offset, false, 0)."<br>";
          return false;
       }
-      glpi_flush();
+      Html::glpi_flush();
    }
 
    $formattedQuery = "";
@@ -464,7 +464,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
                   "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
                      "$fichier\";</script></div>";
-            glpi_flush();
+            Html::glpi_flush();
             exit;
          }
       }
@@ -529,7 +529,7 @@ if (isset($_GET["file"])
                "window.location=\"backup.php?file=".
                 $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
                 "</script></div>";
-         glpi_flush();
+         Html::glpi_flush();
          exit;
       }
 

@@ -142,8 +142,8 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("calendarholiday_form$rand",true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("calendarholiday_form$rand",true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
       echo "</form>";
    }
