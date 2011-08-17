@@ -60,7 +60,7 @@ $rule->checkGlobal('r');
 $test_rule_output = null;
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
+   Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rules_id);
@@ -87,7 +87,6 @@ if (isset($_POST["test_rule"])) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonFooter();
+   Html::footer();
 }
-
 ?>

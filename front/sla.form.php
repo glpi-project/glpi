@@ -66,10 +66,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][43], $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header($LANG['Menu'][43], $_SERVER['PHP_SELF'], "config", "sla");
 
    $sla->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

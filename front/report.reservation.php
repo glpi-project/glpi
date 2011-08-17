@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = 0;
@@ -59,6 +59,5 @@ echo "</table></form>";
 if ($_GET["id"] > 0) {
    Reservation::showForUser($_GET["id"]);
 }
-commonFooter();
-
+Html::footer();
 ?>

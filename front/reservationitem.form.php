@@ -62,9 +62,9 @@ if (isset($_REQUEST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][17], $_SERVER['PHP_SELF'], "utils", "reservation");
+   Html::header($LANG['Menu'][17], $_SERVER['PHP_SELF'], "utils", "reservation");
    $ri->showForm($_GET["id"]);
 }
 
-commonFooter();
+Html::footer();
 ?>

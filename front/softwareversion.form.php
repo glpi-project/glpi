@@ -73,9 +73,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
+   Html::header($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
    $version->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

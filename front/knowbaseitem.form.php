@@ -61,7 +61,7 @@ if ($_GET["id"] == "new") {
    // on affiche le formulaire de saisie de l'item
    $kb->check(-1,'w');
 
-   commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
    $available_options = array('tickets_id');
    $options           = array();
    foreach ($available_options as $key) {
@@ -70,7 +70,7 @@ if ($_GET["id"] == "new") {
       }
    }
    $kb->showForm("",$options);
-   commonFooter();
+   Html::footer();
 
 } else if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
@@ -92,9 +92,9 @@ if ($_GET["id"] == "new") {
    // modifier un item dans la base de connaissance
    $kb->check($_GET["id"],'r');
 
-   commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
    $kb->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["delete"],"yes") == 0) {
    // effacer un item dans la base de connaissances
@@ -124,11 +124,10 @@ if ($_GET["id"] == "new") {
    // Affiche un item de la base de connaissances
    $kb->check($_GET["id"],'r');
 
-   commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
    $kb->showFull(true);
 
-   commonFooter();
+   Html::footer();
 }
-
 ?>

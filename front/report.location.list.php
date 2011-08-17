@@ -34,7 +34,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("reports", "r");
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
-   commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+   Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
    // Titre
    $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
@@ -167,10 +167,9 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       }
       echo "</table></div><br><hr><br>";
    }
-   commonFooter();
+   Html::footer();
 
 } else  {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
-
 ?>

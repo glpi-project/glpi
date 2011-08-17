@@ -55,5 +55,5 @@ if ($_POST["id"]>0 && $validation->getFromDB($_POST["id"])) {
    }
 }
 
-ajaxFooter();
+Html::ajaxFooter();
 ?>

@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-commonHeader($LANG['mailgate'][11],$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
+Html::header($LANG['mailgate'][11],$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
 
 Search::show('NotImportedEmail');
 
-commonFooter();
+Html::footer();
 ?>

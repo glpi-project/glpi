@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
+Html::header($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
 
 $transfer = new Transfer();
 
@@ -52,14 +52,14 @@ if (isset($_POST['transfer'])) {
       unset($_SESSION['glpitransfer_list']);
       echo "<strong>".$LANG['common'][23]."</strong><br>";
       echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
-      commonFooter();
+      Html::footer();
       exit();
    }
 } else if (isset($_GET['clear'])) {
    unset($_SESSION['glpitransfer_list']);
    echo "<strong>".$LANG['common'][23]."</strong><br>";
    echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
-   commonFooter();
+   Html::footer();
    exit();
 }
 
@@ -67,7 +67,7 @@ unset($_SESSION['glpimassiveactionselected']);
 
 $transfer->showTransferList();
 
-commonFooter();
+Html::footer();
 /*
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
 $options['keep_networklink']=0;

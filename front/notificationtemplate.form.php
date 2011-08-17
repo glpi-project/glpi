@@ -83,10 +83,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing",
+   Html::header($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing",
                 "notificationtemplate");
    $notificationtemplate->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

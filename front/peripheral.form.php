@@ -99,9 +99,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_GET["id"]);
 
 } else {
-   commonHeader($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
+   Html::header($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
    $peripheral->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

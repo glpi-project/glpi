@@ -62,7 +62,7 @@ if (isset($_GET["add"])) {
 } else {
    Session::checkRight("infocom", "r");
 
-   popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
+   Html::popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 
    if (isset($_GET["id"])) {
       $ic->getFromDB($_GET["id"]);
@@ -84,7 +84,6 @@ if (isset($_GET["add"])) {
    }
    Infocom::showForItem($item, $withtemplate);
 
-   popFooter();
+   Html::popFooter();
 }
-
 ?>

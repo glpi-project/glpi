@@ -66,18 +66,17 @@ if (isset($_POST["add"])) {
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpHeader($LANG['title'][40],'',$_SESSION["glpiname"]);
+      Html::helpHeader($LANG['title'][40],'',$_SESSION["glpiname"]);
    } else {
-      commonHeader($LANG['title'][40],'',"utils","reminder");
+      Html::header($LANG['title'][40],'',"utils","reminder");
    }
 
    $remind->showForm($_GET["id"]);
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpFooter();
+      Html::helpFooter();
    } else {
-      commonFooter();
+      Html::footer();
    }
 }
-
 ?>

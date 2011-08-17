@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("ocsng", "w");
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "link");
+Html::header($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "link");
 
 $CFG_GLPI["use_ajax"] = 1;
 
@@ -104,6 +104,5 @@ if (!isset($_POST["import_ok"])) {
    Html::redirect($_SERVER['PHP_SELF']);
 }
 
-commonFooter();
-
+Html::footer();
 ?>

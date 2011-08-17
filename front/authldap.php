@@ -39,10 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-commonHeader(AuthLDAP::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
+Html::header(AuthLDAP::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'extauth', 'ldap');
 
 Search::show('AuthLDAP');
 
-commonFooter();
-
+Html::footer();
 ?>

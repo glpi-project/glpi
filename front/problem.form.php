@@ -100,9 +100,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else {
-   commonHeader($LANG['Menu'][7], $_SERVER['PHP_SELF'], "maintain", "problem");
+   Html::header($LANG['Menu'][7], $_SERVER['PHP_SELF'], "maintain", "problem");
    $problem->showForm($_GET["id"], $_GET);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

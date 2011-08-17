@@ -38,12 +38,12 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("user", "r");
 
-commonHeader($LANG['Menu'][14],'',"admin","user");
+Html::header($LANG['Menu'][14],'',"admin","user");
 
 $user=new User();
 $user->title();
 
 Search::show('User');
 
-commonFooter();
+Html::footer();
 ?>

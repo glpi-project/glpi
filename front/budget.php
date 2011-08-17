@@ -39,10 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("budget", "r");
 
-commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
+Html::header($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
 
 Search::show('Budget');
 
-commonFooter();
-
+Html::footer();
 ?>

@@ -62,6 +62,5 @@ if ($_POST["id"]<0) {
    }
 }
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

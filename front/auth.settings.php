@@ -41,9 +41,8 @@ Session::checkRight("config", "w");
 
 $config = new Config();
 
-commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","settings");
+Html::header($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","settings");
 $config->showFormAuthentication();
 
-commonFooter();
-
+Html::footer();
 ?>

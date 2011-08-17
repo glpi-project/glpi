@@ -76,9 +76,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
+   Html::header($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
    $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

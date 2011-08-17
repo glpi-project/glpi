@@ -38,9 +38,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("notification", 'r');
 
-commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
+Html::header($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
 
 Search::show('Notification');
 
-commonFooter();
+Html::footer();
 ?>

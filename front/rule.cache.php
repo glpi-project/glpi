@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
+   Html::header($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
 }
 
 if (isset($_GET["sub_type"])) {
@@ -58,7 +58,6 @@ if (isset($_GET["sub_type"])) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonFooter();
+   Html::footer();
 }
-
 ?>

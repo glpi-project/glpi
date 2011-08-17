@@ -49,7 +49,7 @@ function registerPluginType($name) {
 
 $plugin = new Plugin();
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
+Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
 
 if (isset($_GET['action']) && isset($_GET['id'])) {
    if (method_exists($plugin,$_GET['action'])) {
@@ -62,6 +62,5 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
 $plugin->listPlugins();
 
-commonFooter();
-
+Html::footer();
 ?>

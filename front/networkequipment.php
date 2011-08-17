@@ -38,9 +38,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("networking", "r");
 
-commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
+Html::header($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
 Search::show('NetworkEquipment');
 
-commonFooter();
+Html::footer();
 ?>

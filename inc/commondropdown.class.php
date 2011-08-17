@@ -109,7 +109,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function displayHeader () {
-      commonHeader($this->getTypeName(2), '', $this->first_level_menu, $this->second_level_menu,
+      Html::header($this->getTypeName(2), '', $this->first_level_menu, $this->second_level_menu,
                    $this->getType());
    }
 

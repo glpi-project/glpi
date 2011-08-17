@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
 
-commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
+Html::header($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
 
 if (!Toolbox::canUseImapPop()) {
    echo "<div class='center'>";
@@ -48,13 +48,13 @@ if (!Toolbox::canUseImapPop()) {
    echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
    echo "<tr class='tab_bg_2'><td class='center red'>" . $LANG['setup'][165] . "</td></tr></table>";
    echo "</div>";
-   commonFooter();
+   Html::footer();
    exit();
 
 } else {
    $mailcollector = new MailCollector();
    $mailcollector->title();
    Search::show('MailCollector');
-   commonFooter();
+   Html::footer();
 }
 ?>

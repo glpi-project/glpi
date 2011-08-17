@@ -84,7 +84,7 @@ if (isset($_POST["itemtype"])) {
          }
    }
 
-   commonHeader($LANG['title'][42], $_SERVER['PHP_SELF']);
+   Html::header($LANG['title'][42], $_SERVER['PHP_SELF']);
 
    if (isset($_GET['multiple_actions'])) {
       if (isset($_SESSION['glpi_massiveaction'])
@@ -753,7 +753,6 @@ if (isset($_POST["itemtype"])) {
       displayBackLink();
    }
 
-   commonFooter();
+   Html::footer();
 } // itemtype defined
-
 ?>

@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('rule_dictionnary_dropdown' => 'r',
                                     'rule_dictionnary_software' => 'r'));
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
+Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th colspan='4'>" . $LANG['rulesengine'][77] . "</th></tr>";
@@ -110,6 +110,5 @@ if (Session::haveRight("rule_dictionnary_dropdown","r")) {
 echo "</table></td></tr>";
 
 echo "</table></div>";
-commonFooter();
-
+Html::footer();
 ?>

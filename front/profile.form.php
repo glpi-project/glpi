@@ -64,10 +64,9 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
+Html::header($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
 $prof->showForm($_GET["id"]);
 
-commonFooter();
-
+Html::footer();
 ?>

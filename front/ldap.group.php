@@ -40,7 +40,7 @@ $group = new Group();
 $group->checkGlobal('w');
 Session::checkRight('user_authtype', 'w');
 
-commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
+Html::header($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 
 if (isset($_SESSION["ldap_import"])) {
    unset($_SESSION["ldap_import"]);
@@ -72,6 +72,5 @@ echo "<tr class='tab_bg_1'><td class='center b'><a href=\"ldap.group.import.php?
       $LANG['ldap'][24]."</a></td></tr>";
 echo "</table></div>";
 
-commonFooter();
-
+Html::footer();
 ?>

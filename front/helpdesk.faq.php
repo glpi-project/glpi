@@ -50,7 +50,7 @@ $name = "";
 Session:: checkFaqAccess();
 
 if (Session::getLoginUserID()) {
-   helpHeader($LANG['Menu'][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   Html::helpHeader($LANG['Menu'][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
@@ -79,6 +79,5 @@ if (isset($_GET["id"])) {
    }
 }
 
-helpFooter();
-
+Html::helpFooter();
 ?>

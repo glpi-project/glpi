@@ -45,7 +45,7 @@ Session::setPath();
 Session::start();
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   nullHeader("DB Error",$CFG_GLPI["root_doc"]);
+   Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
 
    if (!isCommandLine()) {
       echo "<div class='center'>";
@@ -60,7 +60,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo "config_db.php file is missing.\n";
       echo "Please restart the install process.\n";
    }
-   nullFooter();
+   Html::nullFooter();
    die();
 
 } else {
@@ -167,7 +167,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          echo $LANG['update'][88] . "\n";
 
       } else {
-         nullHeader("UPDATE NEEDED",$CFG_GLPI["root_doc"]);
+         Html::nullHeader("UPDATE NEEDED",$CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
          echo "<table class='tab_check'>";
          $error = Toolbox::commonCheckForUseGLPI();
@@ -193,7 +193,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          }
 
          echo "</div>";
-         nullFooter();
+         Html::nullFooter();
       }
       exit();
    }

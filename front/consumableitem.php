@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("consumable", "r");
 
-commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+Html::header($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
 if (isset($_GET["synthese"])) {
    Consumable::showSummary();
@@ -48,5 +48,5 @@ if (isset($_GET["synthese"])) {
    Search::show('ConsumableItem');
 }
 
-commonFooter();
+Html::footer();
 ?>

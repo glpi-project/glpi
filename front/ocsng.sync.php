@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("ocsng", "w");
 
-commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "sync");
+Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "sync");
 
 $display_list = true;
 
@@ -92,6 +92,5 @@ if (!isset($_POST["update_ok"])) {
    Html::redirect($_SERVER['PHP_SELF']);
 }
 
-commonFooter();
-
+Html::footer();
 ?>

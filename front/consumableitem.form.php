@@ -89,9 +89,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+   Html::header($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
    $constype->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

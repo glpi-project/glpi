@@ -73,9 +73,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config", "mailcollector");
+   Html::header($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config", "mailcollector");
    $mailgate->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

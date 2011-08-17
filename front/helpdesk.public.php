@@ -83,7 +83,7 @@ if (!Session::haveRight('create_ticket',1)) {
 
 Session::checkHelpdeskAccess();
 
-helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+Html::helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 if (isset($_GET['create_ticket'])) {
    printHelpDesk(Session::getLoginUserID(),1);
@@ -137,6 +137,5 @@ if (isset($_GET['create_ticket'])) {
 
 }
 
-helpFooter();
-
+Html::helpFooter();
 ?>

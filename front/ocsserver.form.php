@@ -44,7 +44,7 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
+Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
 //Delete template or server
 if (isset($_POST["delete"])) {
@@ -70,6 +70,6 @@ if (isset($_POST["delete"])) {
 } else {
    $ocs->showForm($_GET["id"]);
 }
-commonFooter();
 
+Html::footer();
 ?>

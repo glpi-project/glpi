@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
                'Software');
@@ -184,6 +184,5 @@ if (isset($query) && count($query)) {
    }
 }
 
-commonFooter();
-
+Html::footer();
 ?>

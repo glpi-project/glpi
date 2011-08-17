@@ -175,9 +175,9 @@ if (isset($_POST["add"])) {
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpHeader($LANG['Menu'][5],'',$_SESSION["glpiname"]);
+      Html::helpHeader($LANG['Menu'][5],'',$_SESSION["glpiname"]);
    } else {
-      commonHeader($LANG['Menu'][5],'',"maintain","ticket");
+      Html::header($LANG['Menu'][5],'',"maintain","ticket");
    }
 
    $available_options = array('load_kb_sol');
@@ -191,7 +191,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    $track->showForm($_GET["id"],$options);
 
 } else {
-   commonHeader($LANG['job'][13],'',"maintain","ticket");
+   Html::header($LANG['job'][13],'',"maintain","ticket");
 
    $users_id_requester = Session::getLoginUserID();
    // No default requester if own ticket right = tech and update_ticket right to update requester
@@ -258,10 +258,8 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpFooter();
+   Html::helpFooter();
 } else {
-   commonFooter();
+   Html::footer();
 }
-
-
 ?>

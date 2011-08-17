@@ -41,9 +41,9 @@ Session::checkRight("reservation_helpdesk", "1");
 $rr = new Reservation();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   Html::helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {
-   commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
+   Html::header($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }
 
 if (isset($_POST["update"])) {
@@ -139,9 +139,8 @@ if (isset($_POST["update"])) {
 }
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpFooter();
+   Html::helpFooter();
 } else {
-   commonFooter();
+   Html::footer();
 }
-
 ?>

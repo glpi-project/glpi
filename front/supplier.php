@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("contact_enterprise", "r");
 
-commonHeader($LANG['Menu'][23],'',"financial","supplier");
+Html::header($LANG['Menu'][23],'',"financial","supplier");
 
 Search::show('Supplier');
 
-commonFooter();
+Html::footer();
 ?>

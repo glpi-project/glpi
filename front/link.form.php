@@ -64,10 +64,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
+   Html::header($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
    $link->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

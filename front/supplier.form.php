@@ -86,11 +86,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][23],'',"financial","supplier");
-
+   Html::header($LANG['Menu'][23],'',"financial","supplier");
    $ent->showForm($_GET["id"]);
-
-   commonFooter();
+   Html::footer();
 }
-
 ?>

@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("phone", "r");
 
-commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
+Html::header($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
 Search::show('Phone');
 
-commonFooter();
+Html::footer();
 ?>

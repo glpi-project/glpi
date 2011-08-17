@@ -125,9 +125,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
+   Html::header($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
    $group->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

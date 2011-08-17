@@ -113,9 +113,8 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
+   Html::header($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
    $contact->showForm($_GET["id"],'');
-   commonFooter();
+   Html::footer();
 }
-
 ?>

@@ -134,9 +134,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
+   Html::header($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
    $doc->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

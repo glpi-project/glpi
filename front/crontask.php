@@ -52,7 +52,7 @@ if (isset($_GET['execute'])) {
    }
    Html::back();
 }
-commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
+Html::header($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
@@ -65,6 +65,5 @@ if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
 
 Search::show('CronTask');
 
-commonFooter();
-
+Html::footer();
 ?>

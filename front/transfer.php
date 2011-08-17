@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("transfer", "r");
 
-commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
+Html::header($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
 
 Search::show('Transfer');
 
-commonFooter();
+Html::footer();
 ?>

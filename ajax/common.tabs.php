@@ -69,6 +69,5 @@ if (($item instanceof CommonDBTM)
 
 CommonGLPI::displayStandardTab($item, $_REQUEST['glpi_tab'],$_REQUEST["withtemplate"]);
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

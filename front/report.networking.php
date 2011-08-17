@@ -36,7 +36,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 # Titre
 
@@ -78,6 +78,5 @@ if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "</table></form>";
 }
 
-commonFooter();
-
+Html::footer();
 ?>

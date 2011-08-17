@@ -96,9 +96,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
 } else {
-   commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
+   Html::header($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
    $print->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

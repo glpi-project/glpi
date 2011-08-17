@@ -48,5 +48,5 @@ if (isset($_POST["sub_type"])) {
 
 Session::checkRight("config", "r");
 NotificationTemplateTranslation::showAvailableTags($sub_type);
-ajaxFooter();
+Html::ajaxFooter();
 ?>

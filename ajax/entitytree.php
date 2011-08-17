@@ -48,6 +48,5 @@ if (!isset($_GET['target'])) {
 
 Entity::showSelector($_GET['target'], "activeentity");
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

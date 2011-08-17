@@ -91,13 +91,13 @@ if (isset($_POST["add"])) {
 } else {
    /// TODO To manage using dropdown.common.form
    if (isset($_GET['popup'])) {
-      popHeader($LANG['financial'][87],$_SERVER['PHP_SELF']);
+      Html::popHeader($LANG['financial'][87],$_SERVER['PHP_SELF']);
       if (isset($_GET["rand"])) {
          $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
       }
 
    } else {
-      commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
+      Html::header($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
    }
    $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
 
@@ -105,10 +105,9 @@ if (isset($_POST["add"])) {
       echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
       echo "</div>";
 
-      popFooter();
+      Html::popFooter();
    } else {
-      commonFooter();
+      Html::footer();
    }
 }
-
 ?>

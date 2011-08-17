@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
+   Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 Session::checkSeveralRightsOr(array("search_config_global" => "w",
@@ -89,7 +89,6 @@ if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonFooter();
+   Html::footer();
 }
-
 ?>

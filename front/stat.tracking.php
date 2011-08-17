@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],'',"maintain","stat");
+Html::header($LANG['Menu'][13],'',"maintain","stat");
 
 Session::checkRight("statistic", "1");
 
@@ -201,6 +201,5 @@ if (!$_REQUEST['showgraph']) {
 
 }
 
-commonFooter();
-
+Html::footer();
 ?>
