@@ -353,8 +353,8 @@ class CalendarSegment extends CommonDBChild {
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("calendarsegment_form$rand", true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("calendarsegment_form$rand", true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
       echo "</form>";
    }

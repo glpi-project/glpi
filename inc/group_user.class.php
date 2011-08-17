@@ -191,8 +191,8 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit) {
          if (count($used)) {
-            openArrowMassive("groupuser_form$rand", true);
-            closeArrowMassive('deletegroup', $LANG['buttons'][6]);
+            Html::openArrowMassives("groupuser_form$rand", true);
+            Html::closeArrowMassives(array('deletegroup' => $LANG['buttons'][6]));
          }
          echo "</form>";
       }
@@ -335,14 +335,14 @@ class Group_User extends CommonDBRelation{
             echo "</table>";
 
             if ($canedit && $i) {
-               openArrowMassive("groupuser_form$rand-$is_manager", true);
+               Html::openArrowMassives("groupuser_form$rand-$is_manager", true);
                $actions = array('deleteuser' => $LANG['buttons'][6]);
                if ($is_manager) {
                   $actions['unset_manager'] = $LANG['users'][20];
                } else {
                   $actions['set_manager'] = $LANG['users'][19];
                }
-               closeArrowMassives($actions);
+               Html::closeArrowMassives($actions);
             }
             echo "</div>";
          }

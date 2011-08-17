@@ -548,8 +548,8 @@ class DisplayPreference extends CommonDBTM {
             echo "</tr>";
          }
          echo "</table>";
-         openArrowMassive('formprefs', true);
-         closeArrowMassive('delete_for_user', $LANG['buttons'][6]);
+         Html::openArrowMassives('formprefs', true);
+         Html::closeArrowMassives(array('delete_for_user' => $LANG['buttons'][6]));
          echo "</form>";
 
       } else {

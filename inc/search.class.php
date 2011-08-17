@@ -1283,9 +1283,10 @@ class Search {
             // Delete selected item
             if ($output_type==HTML_OUTPUT) {
                if ($isadmin) {
-                  openArrowMassive("massiveaction_form");
+                  Html::openArrowMassives("massiveaction_form");
                   Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
-                  closeArrowMassive();
+                  $options = array();
+                  Html::closeArrowMassives($options);
 
                   // End form for delete item
                   echo "</form>\n";

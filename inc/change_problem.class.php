@@ -144,8 +144,8 @@ class Change_Problem extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("changeproblem_form$rand", true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("changeproblem_form$rand", true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
       echo "</form>";
    }
@@ -220,8 +220,8 @@ class Change_Problem extends CommonDBRelation{
       echo "</table></div>";
 
       if ($canedit) {
-         openArrowMassive("changeproblem_form$rand", true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("changeproblem_form$rand", true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
       echo "</form>";
    }

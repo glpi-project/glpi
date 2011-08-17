@@ -196,8 +196,8 @@ class Profile_User extends CommonDBTM {
       echo "</table>";
 
       if ($canedit) {
-         openArrowMassive("entityuser_form$rand",true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("entityuser_form$rand",true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
       echo "</form></div>";
    }
@@ -340,8 +340,8 @@ class Profile_User extends CommonDBTM {
       echo "</table>";
 
       if ($canedit) {
-         openArrowMassive("entityuser_form$rand", true);
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::openArrowMassives("entityuser_form$rand", true);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
          echo "</form>";
       }
       echo "</div>";
@@ -415,11 +415,11 @@ class Profile_User extends CommonDBTM {
                      echo "</table>";
 
                      if ($canedit_entity) {
-                        openArrowMassive("profileuser_form".$rand."_$temp", true);
+                        Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value='".
                               $LANG['buttons'][20]."' class='submit'>&nbsp;";
-                        closeArrowMassive('delete', $LANG['buttons'][6]);
+                        Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
                      }
                      echo "</div></form></td></tr>\n";
                   }
@@ -497,11 +497,11 @@ class Profile_User extends CommonDBTM {
             if ($i!=0) {
                echo "</table>\n";
                if ($canedit_entity) {
-                  openArrowMassive("profileuser_form".$rand."_$temp", true);
+                  Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                   Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
                   echo "&nbsp;<input type='submit' name='moveentity' value='".
                                $LANG['buttons'][20]."' class='submit'>&nbsp;";
-                  closeArrowMassive('delete', $LANG['buttons'][6]);
+                  Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
                }
                echo "</div></form></td></tr>\n";
             }

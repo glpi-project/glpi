@@ -476,19 +476,18 @@ class Group extends CommonDBTM {
       echo "</table>";
 
       if ($nb) {
-         openArrowMassive("group_form_$field", true);
+         Html::openArrowMassives("group_form_$field", true);
          echo $LANG['common'][35]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
          Dropdown::show('Group', array('entity'    => $this->fields["entities_id"],
                                        'used'      => array($this->fields["id"]),
                                        'condition' => ($tech ? '`is_assign`' : '`is_itemgroup`')));
          echo "&nbsp;";
-         closeArrowMassive('changegroup', $LANG['buttons'][20]);
+         Html::closeArrowMassives(array('changegroup' => $LANG['buttons'][20]));
       }
 
       echo "</form></div>";
    }
 
 }
-
 ?>

@@ -424,12 +424,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "</table>\n";
 
             if ($canedit) {
-               openArrowMassive("softinstall".$rand."",true);
+               Html::openArrowMassives("softinstall".$rand."",true);
                SoftwareVersion::dropdown(array('name'         => 'versionID',
                                                'softwares_id' => $softwares_id));
                echo "&nbsp;<input type='submit' name='moveinstalls' value='".
                      $LANG['buttons'][20]."' class='submit'>&nbsp;";
-               closeArrowMassive('deleteinstalls', $LANG['buttons'][6]);
+               Html::closeArrowMassives(array('deleteinstalls' => $LANG['buttons'][6]));
 
                echo "</form>";
             }
@@ -659,12 +659,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</table>";
 
          if ($canedit) {
-            openArrowMassive("lic_form$cat$rand", true);
+            Html::openArrowMassives("lic_form$cat$rand", true);
 
             if (isset($cat)) {
-               closeArrowMassive('massuninstall', $LANG['buttons'][5]);
+               Html::closeArrowMassives(array('massuninstall' => $LANG['buttons'][5]));
             } else {
-               closeArrowMassive('massinstall', $LANG['buttons'][4]);
+               Html::closeArrowMassives(array('massinstall' => $LANG['buttons'][4]));
             }
 
          }

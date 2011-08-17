@@ -651,10 +651,11 @@ class SoftwareLicense extends CommonDBTM {
             echo "</table>\n";
 
             if ($canedit) {
-               openArrowMassive("massiveactionlicense_form$rand", true);
+               Html::openArrowMassives("massiveactionlicense_form$rand", true);
                Dropdown::showForMassiveAction('SoftwareLicense', 0,
                                               array('softwares_id' => $softwares_id));
-               closeArrowMassive();
+               $options = array();
+               Html::closeArrowMassives($options);
 
                echo "</form>";
             }

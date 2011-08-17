@@ -38,7 +38,7 @@ $AJAX_INCLUDE = 1;
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 Session::checkLoginUser();
 
@@ -58,5 +58,4 @@ if (isset($_POST['value']) && $_POST['value'] > 0) {
 } else {
       echo "<textarea id='solution' name='solution' rows='12' cols='80'></textarea>";
 }
-
 ?>

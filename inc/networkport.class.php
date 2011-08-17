@@ -398,9 +398,10 @@ class NetworkPort extends CommonDBChild {
             echo "</table>\n";
 
             if ($canedit && $withtemplate != 2) {
-               openArrowMassive("networking_ports$rand", true);
+               Html::openArrowMassives("networking_ports$rand", true);
                Dropdown::showForMassiveAction('NetworkPort');
-               closeArrowMassive();
+               $actions = array();
+               Html::closeArrowMassives($actions);
             }
 
             if ($canedit && $withtemplate != 2) {

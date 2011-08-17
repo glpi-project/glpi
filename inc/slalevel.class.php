@@ -164,8 +164,8 @@ class SlaLevel extends RuleTicket {
                echo "</td></tr>";
             }
 
-            openArrowMassive("slalevel_form$rand",true);
-            closeArrowMassive('delete', $LANG['buttons'][6]);
+            Html::openArrowMassives("slalevel_form$rand",true);
+            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
 
             echo "</table></div>";
          }

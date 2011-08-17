@@ -447,9 +447,9 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb>0) {
-         openArrowMassive("actionsform", true);
+         Html::openArrowMassives("actionsform", true);
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         closeArrowMassive('delete_action', $LANG['buttons'][6]);
+         Html::closeArrowMassives(array('delete_action' => $LANG['buttons'][6]));
       }
       if ($canedit) {
          echo "</form>";
@@ -576,9 +576,9 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $maxsize>0) {
-         openArrowMassive("criteriasform", true);
+         Html::openArrowMassives("criteriasform", true);
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         closeArrowMassive('delete_criteria', $LANG['buttons'][6]);
+         Html::closeArrowMassives(array('delete_criteria' => $LANG['buttons'][6]));
       }
       echo "</form></div>\n";
    }
@@ -1849,9 +1849,9 @@ class Rule extends CommonDBTM {
          echo "</table>\n";
 
          if ($canedit) {
-            openArrowMassive($formname, true);
+            Html::openArrowMassives($formname, true);
             echo "<input type='hidden' name='action' value='delete'>";
-            closeArrowMassive('massiveaction', $LANG['buttons'][6]);
+            Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
             echo "</form>";
          }
       }

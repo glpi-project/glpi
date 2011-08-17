@@ -919,9 +919,9 @@ class Contract extends CommonDBTM {
          }
          echo "</table>";
 
-         openArrowMassive("contract_form$rand", true);
+         Html::openArrowMassives("contract_form$rand", true);
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
-         closeArrowMassive('deleteitem', $LANG['buttons'][6]);
+         Html::closeArrowMassives(array('deleteitem' => $LANG['buttons'][6]));
 
       } else {
          echo "</table>";

@@ -38,7 +38,7 @@ if (strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")) {
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
+   Html::header_nocache();
 }
 
 if (!defined('GLPI_ROOT')) {
@@ -53,5 +53,4 @@ if (isset($_POST["sub_type"])) {
    $rule      = new $type();
    $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition']);
 }
-
 ?>

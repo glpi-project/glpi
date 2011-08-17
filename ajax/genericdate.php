@@ -39,7 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 Session::checkLoginUser();
 

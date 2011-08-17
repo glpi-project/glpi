@@ -224,9 +224,9 @@ class Item_Problem extends CommonDBRelation{
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
 
-         openArrowMassive("itemproblem_form$rand", true);
+         Html::openArrowMassives("itemproblem_form$rand", true);
          echo "<input type='hidden' name='problems_id' value='$instID'>";
-         closeArrowMassive('delete', $LANG['buttons'][6]);
+         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
 
       } else {
          echo "</table>";
