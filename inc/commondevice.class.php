@@ -114,11 +114,14 @@ abstract class CommonDevice extends CommonDropdown {
                                  Dropdown::getDeviceItemTypes(), $this->getSearchUrl());
    }
 
+
    function displayHeader () {
       Html::header($this->getTypeName(),'',"config","device",get_class($this));
    }
 
+
    function getName($with_comment=0) {
+
       $toadd="";
       if ($with_comment) {
          $toadd="&nbsp;".$this->getComments();
@@ -130,23 +133,26 @@ abstract class CommonDevice extends CommonDropdown {
       return NOT_AVAILABLE;
    }
 
+
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       return false;
    }
+
 
    /**
     * Return the specifities localized name for the Device
     *
     * @return string
-    */
+   **/
    static function getSpecifityLabel() {
       return array();
    }
+
 
    function cleanDBonPurge() {
 
@@ -154,13 +160,14 @@ abstract class CommonDevice extends CommonDropdown {
       $compdev->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
+
    /**
     * Import a device is not exists
     *
     * @param $input of data
     *
     * @return interger ID of existing or new Device
-    */
+   **/
    function import($input) {
       global $DB;
 
@@ -178,6 +185,6 @@ abstract class CommonDevice extends CommonDropdown {
       }
       return $this->add($input);
    }
-}
 
+}
 ?>
