@@ -711,6 +711,7 @@ class MailCollector  extends CommonDBTM {
    function textCleaner($text) {
 
       $text = str_replace("=20", "\n", $text);
+      $text =  clean_cross_side_scripting_deep($text);
       return $text;
    }
 
