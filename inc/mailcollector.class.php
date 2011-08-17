@@ -625,6 +625,9 @@ class MailCollector  extends CommonDBTM {
             $first_comment  = true;
             $to_keep        = array();
 
+            // Move requester to author of followup :
+            $tkt['users_id'] = $tkt['_users_id_requester'];
+
             foreach ($content as $ID => $val) {
                if (isset($val[0])&&$val[0]=='>') {
                   // Delete line at the top of the first comment
