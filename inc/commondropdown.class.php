@@ -134,9 +134,9 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation
-         autocompletionTextField($this, "designation");
+         Html::autocompletionTextField($this, "designation");
       } else {
-         autocompletionTextField($this, "name");
+         Html::autocompletionTextField($this, "name");
       }
       echo "</td>";
 
@@ -170,7 +170,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'text' :
-               autocompletionTextField($this, $field['name']);
+               Html::autocompletionTextField($this, $field['name']);
                break;
 
             case 'textarea' :

@@ -243,7 +243,7 @@ class Phone extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -290,22 +290,22 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "contact_num");
+      Html::autocompletionTextField($this, "contact_num");
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"serial");
+      Html::autocompletionTextField($this,"serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td><td>";
-      autocompletionTextField($this, "contact");
+      Html::autocompletionTextField($this, "contact");
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -340,7 +340,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"brand");
+      Html::autocompletionTextField($this,"brand");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -352,12 +352,12 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "firmware");
+      Html::autocompletionTextField($this, "firmware");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][40]."&nbsp;:</td><td>";
-      autocompletionTextField($this, "number_line");
+      Html::autocompletionTextField($this, "number_line");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

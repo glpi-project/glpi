@@ -159,7 +159,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
@@ -170,7 +170,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "ref");
+      Html::autocompletionTextField($this, "ref");
       echo "</td>";
       echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
       echo "<td>";

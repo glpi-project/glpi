@@ -76,7 +76,7 @@ if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype
 if ($newID = $track->add($_POST)) {
    if (isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
       echo "<div class='center'>".$LANG['help'][18]."<br><br>";
-      displayBackLink();
+      Html::displayBackLink();
       echo "</div>";
    } else {
       echo "<div class='center b spaced'>";
@@ -89,7 +89,7 @@ if ($newID = $track->add($_POST)) {
    echo "<div class='center'>";
    echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br></div>";
    Html::displayMessageAfterRedirect();
-   displayBackLink();
+   Html::displayBackLink();
 }
 
 Html::nullFooter();

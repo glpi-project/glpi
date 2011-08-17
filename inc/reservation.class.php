@@ -368,7 +368,7 @@ class Reservation extends CommonDBChild {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center b'>".$LANG['reservation'][2]."</td></tr>";
             echo "<tr class='tab_bg_1'><td class='center b'>";
-            displayBackLink();
+            Html::displayBackLink();
             echo "</td></tr>";
             echo "</table>";
             echo "</div>";

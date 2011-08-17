@@ -595,7 +595,7 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
          echo "<td>";
-         autocompletionTextField($this,"logical_number", array('size' => 5));
+         Html::autocompletionTextField($this,"logical_number", array('size' => 5));
          echo "</td></tr>\n";
 
       } else {
@@ -612,7 +612,7 @@ class NetworkPort extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
@@ -620,7 +620,7 @@ class NetworkPort extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
-      autocompletionTextField($this, "ip");
+      Html::autocompletionTextField($this, "ip");
       echo "</td></tr>\n";
 
       // Show device MAC adresses
@@ -648,19 +648,19 @@ class NetworkPort extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
-      autocompletionTextField($this, "mac");
+      Html::autocompletionTextField($this, "mac");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . "&nbsp;:</td>\n<td>";
-      autocompletionTextField($this, "netmask");
+      Html::autocompletionTextField($this, "netmask");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][59] . "&nbsp;:</td>\n<td>";
-      autocompletionTextField($this, "gateway");
+      Html::autocompletionTextField($this, "gateway");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][61] . "&nbsp;:</td>\n<td>";
-      autocompletionTextField($this, "subnet");
+      Html::autocompletionTextField($this, "subnet");
       echo "</td></tr>\n";
 
       if (!$options['several']) {

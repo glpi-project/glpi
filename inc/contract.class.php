@@ -154,7 +154,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
       Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
@@ -163,7 +163,7 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][4]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "num");
+      Html::autocompletionTextField($this, "num");
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -186,7 +186,7 @@ class Contract extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>".$LANG['financial'][13]."&nbsp;:</td><td>";
-      autocompletionTextField($this, "accounting_number");
+      Html::autocompletionTextField($this, "accounting_number");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

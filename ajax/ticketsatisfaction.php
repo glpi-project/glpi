@@ -87,12 +87,11 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
 
          echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['common'][94] . "&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($entity, "inquest_URL");
+         Html::autocompletionTextField($entity, "inquest_URL");
          echo "</td></tr>";
       }
 
       echo "</table>";
    }
 }
-
 ?>

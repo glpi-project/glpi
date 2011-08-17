@@ -56,7 +56,7 @@ if (!isset($_POST["clean_ok"])) {
    if (count($_POST['toclean']) >0) {
       OcsServer::cleanLinksFromList($_SESSION["ocsservers_id"], $_POST['toclean']);
       echo "<div class='center b'>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";
-      displayBackLink();
+      Html::displayBackLink();
       echo "</div>";
    }
 }

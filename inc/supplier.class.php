@@ -132,7 +132,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
       echo "<td>";
@@ -142,7 +142,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "phonenumber");
+      Html::autocompletionTextField($this, "phonenumber");
       echo "</td>";
       echo "<td rowspan='8' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='8'>";
@@ -152,19 +152,19 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "fax");
+      Html::autocompletionTextField($this, "fax");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "website");
+      Html::autocompletionTextField($this, "website");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "email");
+      Html::autocompletionTextField($this, "email");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -176,21 +176,21 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "postcode", array('size' => 10));
+      Html::autocompletionTextField($this, "postcode", array('size' => 10));
       echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField($this, "town", array('size' => 23));
+      Html::autocompletionTextField($this, "town", array('size' => 23));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "state");
+      Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "country");
+      Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
       $this->showFormButtons($options);

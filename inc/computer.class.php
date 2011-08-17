@@ -512,7 +512,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -560,23 +560,23 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;: </td>";
       echo "<td >";
-      autocompletionTextField($this,'contact_num');
+      Html::autocompletionTextField($this,'contact_num');
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this,'serial');
+      Html::autocompletionTextField($this,'serial');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,'contact');
+      Html::autocompletionTextField($this,'contact');
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -633,19 +633,19 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this, 'os_licenseid');
+      Html::autocompletionTextField($this, 'os_licenseid');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this, 'os_license_number');
+      Html::autocompletionTextField($this, 'os_license_number');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
       echo "<td >";
-      autocompletionTextField($this, 'uuid');
+      Html::autocompletionTextField($this, 'uuid');
       echo "</td></tr>\n";
 
       // Get OCS Datas :

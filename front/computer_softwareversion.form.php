@@ -104,5 +104,5 @@ if (isset($_REQUEST["install"])) {
    }
    Html::back();
 }
-displayErrorAndDie('Lost');
+Html::displayErrorAndDie('Lost');
 ?>

@@ -750,7 +750,7 @@ if (isset($_POST["itemtype"])) {
       echo "<div class='center'>".
            "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>";
       echo "<b>".$LANG['common'][24]."</b></div>";
-      displayBackLink();
+      Html::displayBackLink();
    }
 
    Html::footer();

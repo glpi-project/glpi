@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkCentralAccess();
 
 if (!($task instanceof CommonITILTask)) {
-   displayErrorAndDie('');
+   Html::displayErrorAndDie('');
 }
 if (!$task->canView()) {
    Html::displayRightError();
@@ -75,6 +75,5 @@ if (isset($_POST["add"])) {
 
 }
 
-displayErrorAndDie('Lost');
-
+Html::displayErrorAndDie('Lost');
 ?>

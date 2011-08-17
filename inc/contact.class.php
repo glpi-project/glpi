@@ -159,7 +159,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][48]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
       echo "<td class='center middle' rowspan='7'>";
@@ -169,37 +169,37 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][43]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "firstname");
+      Html::autocompletionTextField($this, "firstname");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;: </td>";
       echo "<td>";
-      autocompletionTextField($this, "phone");
+      Html::autocompletionTextField($this, "phone");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]." 2&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "phone2");
+      Html::autocompletionTextField($this, "phone2");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][42]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "mobile");
+      Html::autocompletionTextField($this, "mobile");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "fax");
+      Html::autocompletionTextField($this, "fax");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "email");
+      Html::autocompletionTextField($this, "email");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

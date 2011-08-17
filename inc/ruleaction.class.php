@@ -230,7 +230,7 @@ class RuleAction extends CommonDBChild {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            autocompletionTextField($this, "value");
+            Html::autocompletionTextField($this, "value");
             break;
 
          default :
@@ -315,11 +315,10 @@ class RuleAction extends CommonDBChild {
             }
 
             if (!$display) {
-               autocompletionTextField($this, "value");
+               Html::autocompletionTextField($this, "value");
             }
       }
    }
 
 }
-
 ?>

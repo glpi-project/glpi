@@ -136,7 +136,7 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
 
       echo "<td rowspan='6' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";

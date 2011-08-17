@@ -234,11 +234,11 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($this, "description");
+      Html::autocompletionTextField($this, "description");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -1456,9 +1456,9 @@ class Rule extends CommonDBTM {
 
       if (!$display) {
          $rc = new $this->rulecriteriaclass();
-         autocompletionTextField($rc, "pattern", array('name'  => $name,
-                                                       'value' => $value,
-                                                       'size'  => 70));
+         Html::autocompletionTextField($rc, "pattern", array('name'  => $name,
+                                                             'value' => $value,
+                                                             'size'  => 70));
       }
    }
 
@@ -1770,11 +1770,11 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='2'>" . $this->getTitle() . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16] . "&nbsp;:&nbsp;";
-      autocompletionTextField($this, "name", array('value' => '',
-                                                   'size'  => 33));
+      Html::autocompletionTextField($this, "name", array('value' => '',
+                                                         'size'  => 33));
       echo "&nbsp;&nbsp;&nbsp;".$LANG['joblist'][6] . "&nbsp;:&nbsp;";
-      autocompletionTextField($this, "description", array('value' => '',
-                                                          'size'  => 33));
+      Html::autocompletionTextField($this, "description", array('value' => '',
+                                                                'size'  => 33));
       echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
       $this->dropdownRulesMatch("match", self::AND_MATCHING);
       echo "</td><td class='tab_bg_2 center'>";
