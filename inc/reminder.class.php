@@ -240,10 +240,11 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this, "name", array('size'   => 80,
-                                                      'entity' => -1,
-                                                      'user'   => $this->fields["users_id"],
-                                                      'option' => $onfocus));
+         Html::autocompletionTextField($this, "name",
+                                       array('size'   => 80,
+                                             'entity' => -1,
+                                             'user'   => $this->fields["users_id"],
+                                             'option' => $onfocus));
       } else {
          echo $this->fields['name'];
       }

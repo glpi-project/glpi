@@ -74,6 +74,5 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 
-displayErrorAndDie('Lost');
-
+Html::displayErrorAndDie('Lost');
 ?>

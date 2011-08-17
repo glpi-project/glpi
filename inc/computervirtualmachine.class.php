@@ -164,7 +164,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td><td>".$LANG['computers'][62]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineType',
@@ -185,18 +185,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "uuid");
+      Html::autocompletionTextField($this, "uuid");
       echo "</td>";
 
       echo "<td>".$LANG['computers'][61]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "vcpu");
+      Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][24]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "ram");
+      Html::autocompletionTextField($this, "ram");
       echo "</td>";
 
       echo "<td>".$LANG['computers'][64]."&nbsp;:</td>";

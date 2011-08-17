@@ -163,7 +163,7 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"name");
+      Html::autocompletionTextField($this,"name");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][5] . "&nbsp;:</td><td>";

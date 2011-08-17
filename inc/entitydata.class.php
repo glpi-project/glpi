@@ -202,7 +202,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "phonenumber");
+      Html::autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
       echo "<td rowspan='7'>".$LANG['financial'][44]."&nbsp;:&nbsp;</td>";
       echo "<td rowspan='7'>";
@@ -212,38 +212,38 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "fax");
+      Html::autocompletionTextField($entdata, "fax");
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][45]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "website");
+      Html::autocompletionTextField($entdata, "website");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "email");
+      Html::autocompletionTextField($entdata, "email");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata,"postcode", array('size' => 7));
+      Html::autocompletionTextField($entdata,"postcode", array('size' => 7));
       echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField($entdata, "town", array('size' => 27));
+      Html::autocompletionTextField($entdata, "town", array('size' => 27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][102]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "state");
+      Html::autocompletionTextField($entdata, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][103]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "country");
+      Html::autocompletionTextField($entdata, "country");
       echo "</td></tr>";
 
       if ($canedit) {
@@ -305,21 +305,21 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['entity'][13]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "tag", array('size' => 100));
+      Html::autocompletionTextField($entdata, "tag", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
+         Html::autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['entity'][27]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "mail_domain", array('size' => 100));
+      Html::autocompletionTextField($entdata, "mail_domain", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
@@ -336,7 +336,7 @@ class EntityData extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][25]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
+         Html::autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
          echo "</td></tr>";
       }
 
@@ -532,25 +532,25 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][203]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entitynotification, "admin_email");
+      Html::autocompletionTextField($entitynotification, "admin_email");
       echo "</td>";
       echo "<td>" . $LANG['setup'][208] . "</td><td>";
-      autocompletionTextField($entitynotification, "admin_email_name");
+      Html::autocompletionTextField($entitynotification, "admin_email_name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][207]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entitynotification, "admin_reply");
+      Html::autocompletionTextField($entitynotification, "admin_reply");
       echo "</td>";
       echo "<td>" . $LANG['setup'][209] . "</td><td>";
-      autocompletionTextField($entitynotification, "admin_reply_name");
+      Html::autocompletionTextField($entitynotification, "admin_reply_name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['mailing'][2]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entitynotification, "notification_subject_tag");
+      Html::autocompletionTextField($entitynotification, "notification_subject_tag");
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";

@@ -49,6 +49,5 @@ if (isset($_POST["update"])) {
 
 }
 
-displayErrorAndDie('Lost');
-
+Html::displayErrorAndDie('Lost');
 ?>

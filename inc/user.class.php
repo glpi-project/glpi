@@ -1485,7 +1485,7 @@ class User extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
-      autocompletionTextField($this,"realname");
+      Html::autocompletionTextField($this,"realname");
       echo "</td>";
 
        //do some rights verification
@@ -1505,7 +1505,7 @@ class User extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "firstname");
+      Html::autocompletionTextField($this, "firstname");
       echo "</td>";
      //Authentications informations : auth method used and server used
       //don't display is creation of a new user'
@@ -1528,7 +1528,7 @@ class User extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "mobile");
+      Html::autocompletionTextField($this, "mobile");
       echo "</td>";
       echo "<td>".$LANG['common'][60]."&nbsp;:</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
@@ -1546,7 +1546,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "phone");
+      Html::autocompletionTextField($this, "phone");
       echo "</td>";
       echo "<td rowspan='5' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
       echo "<td class='center middle' rowspan='5'>";
@@ -1554,11 +1554,11 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
-      autocompletionTextField($this, "phone2");
+      Html::autocompletionTextField($this, "phone2");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][17] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "registration_number");
+      Html::autocompletionTextField($this, "registration_number");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
@@ -1675,7 +1675,7 @@ class User extends CommonDBTM {
 
             echo $this->fields["realname"];
          } else {
-            autocompletionTextField($this, "realname");
+            Html::autocompletionTextField($this, "realname");
          }
          echo "</td>";
 
@@ -1695,7 +1695,7 @@ class User extends CommonDBTM {
 
             echo $this->fields["firstname"];
          } else {
-            autocompletionTextField($this, "firstname");
+            Html::autocompletionTextField($this, "firstname");
          }
          echo "</td>";
 
@@ -1728,7 +1728,7 @@ class User extends CommonDBTM {
          if ($extauth && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
          } else {
-            autocompletionTextField($this, "mobile");
+            Html::autocompletionTextField($this, "mobile");
          }
          echo "</td>";
 
@@ -1751,7 +1751,7 @@ class User extends CommonDBTM {
          if ($extauth && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
             echo $this->fields["phone"];
          } else {
-            autocompletionTextField($this, "phone");
+            Html::autocompletionTextField($this, "phone");
          }
          echo "</td>";
 
@@ -1770,7 +1770,7 @@ class User extends CommonDBTM {
          if ($extauth && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
          } else {
-            autocompletionTextField($this, "phone2");
+            Html::autocompletionTextField($this, "phone2");
          }
          echo "</td>";
 

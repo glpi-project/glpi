@@ -344,7 +344,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
@@ -391,23 +391,23 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "contact_num");
+      Html::autocompletionTextField($this, "contact_num");
       echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "serial");
+      Html::autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "contact");
+      Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -459,13 +459,13 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "memory_size");
+      Html::autocompletionTextField($this, "memory_size");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this, "init_pages_counter");
+      Html::autocompletionTextField($this, "init_pages_counter");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

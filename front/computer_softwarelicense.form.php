@@ -74,5 +74,5 @@ if (isset($_REQUEST["add"])) {
 
    Html::back();
 }
-displayErrorAndDie('Lost');
+Html::displayErrorAndDie('Lost');
 ?>

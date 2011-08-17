@@ -147,9 +147,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                if ($newtype != $_POST["itemtype"]) {
                   $item = new $newtype();
                }
-               autocompletionTextField($item, $search["field"],
-                                       array('name'   => $search["linkfield"],
-                                             'entity' => $_SESSION["glpiactive_entity"]));
+               Html::autocompletionTextField($item, $search["field"],
+                                             array('name'   => $search["linkfield"],
+                                                   'entity' => $_SESSION["glpiactive_entity"]));
             }
       }
 
@@ -193,8 +193,8 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   if ($newtype != $_POST["itemtype"]) {
                      $item = new $newtype();
                   }
-                  autocompletionTextField($item, $search["field"],
-                                          array('entity' => $_SESSION["glpiactive_entity"]));
+                  Html::autocompletionTextField($item, $search["field"],
+                                                array('entity' => $_SESSION["glpiactive_entity"]));
             }
             break;
 

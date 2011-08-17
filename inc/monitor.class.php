@@ -227,7 +227,7 @@ class Monitor extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, "name", array('value' => $objectName));
+      Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -274,23 +274,23 @@ class Monitor extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "contact_num");
+      Html::autocompletionTextField($this, "contact_num");
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "serial");
+      Html::autocompletionTextField($this, "serial");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "contact");
+      Html::autocompletionTextField($this, "contact");
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-      autocompletionTextField($this, "otherserial", array('value' => $objectName));
+      Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -325,7 +325,7 @@ class Monitor extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['monitors'][21]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "size");
+      Html::autocompletionTextField($this, "size");
       echo "\"</td>";
       echo "</tr>";
 

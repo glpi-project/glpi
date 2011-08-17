@@ -161,16 +161,16 @@ class ComputerDisk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td><td>".$LANG['computers'][6]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "device");
+      Html::autocompletionTextField($this, "device");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][5]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "mountpoint");
+      Html::autocompletionTextField($this, "mountpoint");
       echo "</td><td>".$LANG['computers'][4]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('FileSystem', array('value' => $this->fields["filesystems_id"]));
@@ -179,12 +179,12 @@ class ComputerDisk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][3]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "totalsize");
+      Html::autocompletionTextField($this, "totalsize");
       echo "&nbsp;".$LANG['common'][82]."</td>";
 
       echo "<td>".$LANG['computers'][2]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this, "freesize");
+      Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".$LANG['common'][82]."</td></tr>";
 
       $this->showFormButtons($options);

@@ -80,6 +80,5 @@ if (isset($_POST["add"])) {
 }
 
 
-displayErrorAndDie("lost");
-
+Html::displayErrorAndDie("lost");
 ?>

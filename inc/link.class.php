@@ -130,12 +130,12 @@ class Link extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td colspan='3'>";
-      autocompletionTextField($this, "name", array('size' => 84));
+      Html::autocompletionTextField($this, "name", array('size' => 84));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['links'][1]."&nbsp;:</td>";
       echo "<td colspan='2'>";
-      autocompletionTextField($this, "link", array('size' => 84));
+      Html::autocompletionTextField($this, "link", array('size' => 84));
       echo "</td><td width='1'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['links'][9]."&nbsp;:</td>";

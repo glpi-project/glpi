@@ -35,7 +35,7 @@
 
 
 if (!($dropdown instanceof CommonDropdown)) {
-   displayErrorAndDie('');
+   Html::displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
    Html::displayRightError();
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
       call_user_func(array(&$dropdown, $_POST["_method"]), $_POST);
       Html::back();
    } else {
-      displayErrorAndDie($LANG['common'][24]);
+      Html::displayErrorAndDie($LANG['common'][24]);
    }
 
 } else if (isset($_GET['popup'])) {

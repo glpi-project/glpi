@@ -2387,7 +2387,7 @@ class OcsServer extends CommonDBTM {
 
       } else {
          echo "<div class='center'><strong>" . $LANG['ocsng'][61] . "</strong></div>";
-         displayBackLink();
+         Html::displayBackLink();
       }
       echo "</div>";
    }

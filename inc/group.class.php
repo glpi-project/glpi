@@ -191,7 +191,7 @@ class Group extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      autocompletionTextField($this, "name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='5' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
       echo "<td class='middle' rowspan='5'>";
@@ -382,13 +382,13 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][260]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($this, "ldap_field");
+         Html::autocompletionTextField($this, "ldap_field");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][601]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($this, "ldap_value");
+         Html::autocompletionTextField($this, "ldap_value");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -398,7 +398,7 @@ class Group extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['setup'][261]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($this, "ldap_group_dn");
+         Html::autocompletionTextField($this, "ldap_group_dn");
          echo "</td></tr>";
       }
 

@@ -213,7 +213,7 @@ class SlaLevel extends RuleTicket {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"name");
+      Html::autocompletionTextField($this,"name");
       echo "</td>";
       echo "<td>".$LANG['common'][60]."&nbsp;:</td>";
       echo "<td>";

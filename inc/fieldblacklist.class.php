@@ -257,7 +257,7 @@ class Fieldblacklist extends CommonDropdown {
                case 'text' :
                case 'string' :
                default :
-                  autocompletionTextField($this, 'value', array('value' => $value));
+                  Html::autocompletionTextField($this, 'value', array('value' => $value));
                   break;
 
                case 'bool':

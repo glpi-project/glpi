@@ -902,7 +902,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][18]."&nbsp;:</td>";
             echo "<td >";
-            autocompletionTextField($ic, "order_number", array('option' => $option));
+            Html::autocompletionTextField($ic, "order_number", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][28]."&nbsp;:</td><td>";
             Html::showDateFormItem("order_date", $ic->fields["order_date"], true, $editcalendar);
@@ -913,7 +913,7 @@ class Infocom extends CommonDBChild {
             echo "<td>";
             $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2),
                                    'Infocom', $item->getEntityID());
-            autocompletionTextField($ic, "immo_number", array('value'  => $objectName,
+            Html::autocompletionTextField($ic, "immo_number", array('value'  => $objectName,
                                                               'option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][14]."&nbsp;:</td><td>";
@@ -923,7 +923,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][82]."&nbsp;:</td>";
             echo "<td>";
-            autocompletionTextField($ic, "bill", array('option' => $option));
+            Html::autocompletionTextField($ic, "bill", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][27]."&nbsp;:</td><td>";
             Html::showDateFormItem("delivery_date", $ic->fields["delivery_date"], true,
@@ -932,7 +932,7 @@ class Infocom extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][19]."&nbsp;:</td><td>";
-            autocompletionTextField($ic, "delivery_number", array('option' => $option));
+            Html::autocompletionTextField($ic, "delivery_number", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][76]."&nbsp;:</td><td>";
             Html::showDateFormItem("use_date",$ic->fields["use_date"], true, $editcalendar);
@@ -987,8 +987,8 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][77]."&nbsp;:</td>";
             echo "<td>";
-            autocompletionTextField($ic, "sink_coeff", array('size'   => 14,
-                                                             'option' => $option));
+            Html::autocompletionTextField($ic, "sink_coeff", array('size'   => 14,
+                                                                   'option' => $option));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1043,7 +1043,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][16]."&nbsp;:</td>";
             echo "<td >";
-            autocompletionTextField($ic, "warranty_info", array('option' => $option));
+            Html::autocompletionTextField($ic, "warranty_info", array('option' => $option));
             echo "</td>";
 
             if ($CFG_GLPI['use_mailing']) {

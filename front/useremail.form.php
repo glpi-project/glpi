@@ -57,6 +57,5 @@ if (isset($_REQUEST["delete"])) {
 
 }
 
-displayErrorAndDie('Lost');
-
+Html::displayErrorAndDie('Lost');
 ?>
