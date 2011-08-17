@@ -1397,7 +1397,8 @@ class User extends CommonDBTM {
             $buttons["ldap.php"] = $LANG['setup'][3];
          }
       }
-      displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title, $buttons);
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title,
+                         $buttons);
    }
 
 
@@ -2302,9 +2303,10 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
-         showToolTip($user["comment"], array('contentid' => "comment_".$p['name'].$p['rand'],
-                                             'link'      => $user["link"],
-                                             'linkid'    => "comment_link_".$p["name"].$p['rand']));
+         Html::showToolTip($user["comment"],
+                           array('contentid' => "comment_".$p['name'].$p['rand'],
+                                 'link'      => $user["link"],
+                                 'linkid'    => "comment_link_".$p["name"].$p['rand']));
       }
 
       if (Session::haveRight('import_externalauth_users','w')
@@ -2774,7 +2776,7 @@ class User extends CommonDBTM {
                  $this->update($input2);
                } else {
                   // Force display on error
-                  displayMessageAfterRedirect();
+                  Html::displayMessageAfterRedirect();
                }
 
             } else {

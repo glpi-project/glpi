@@ -58,12 +58,12 @@ if (!empty($_REQUEST["date1"])
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
-showDateFormItem("date1", $_REQUEST["date1"]);
+Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' value=\"". $LANG['buttons'][7] ."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
-showDateFormItem("date2",$_REQUEST["date2"]);
+Html::showDateFormItem("date2",$_REQUEST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";
 

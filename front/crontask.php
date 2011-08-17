@@ -56,11 +56,11 @@ Html::header($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
-   displayTitle(GLPI_ROOT.'/pics/warning.png', $LANG['crontask'][41],
-                $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
-                array($_SERVER['PHP_SELF']."?execute=1" => $LANG['buttons'][57]));
+   Html::displayTitle(GLPI_ROOT.'/pics/warning.png', $LANG['crontask'][41],
+                      $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
+                      array($_SERVER['PHP_SELF']."?execute=1" => $LANG['buttons'][57]));
 } else {
-   displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
+   Html::displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
 }
 
 Search::show('CronTask');

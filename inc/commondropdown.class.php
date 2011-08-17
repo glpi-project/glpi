@@ -150,7 +150,7 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>".$field['label'];
          if (isset($field['comment']) && !empty($field['comment'])) {
             echo "&nbsp;";
-            showToolTip($field['comment']);
+            Html::showToolTip($field['comment']);
          }
          echo "&nbsp;:</td><td>";
          switch ($field['type']) {
@@ -206,11 +206,11 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'date' :
-               showDateFormItem($field['name'], $this->fields[$field['name']]);
+               Html::showDateFormItem($field['name'], $this->fields[$field['name']]);
                break;
 
             case 'datetime' :
-               showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
+               Html::showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
                break;
 
             case 'password':

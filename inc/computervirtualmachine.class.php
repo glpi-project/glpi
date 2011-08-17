@@ -211,7 +211,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
             $tooltip.= "<br>".$computer->fields['serial'];
             $tooltip.= "<br>".$computer->fields['comment'];
-            $url .= "&nbsp; ".showToolTip($tooltip, array('display' => false));
+            $url .= "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
          } else {
             $url = $this->fields['name'];
          }
@@ -270,7 +270,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
                   $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: <br>".$computer->fields['serial'];
                   $tooltip.= "<br>".$computer->fields['comment'];
-                  echo "&nbsp; ".showToolTip($tooltip, array('display' => false));
+                  echo "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
 
                } else {
                   echo $computer->fields['name'];
@@ -366,7 +366,7 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
                   $tooltip.= "<br>".$computer->fields['serial'];
                   $tooltip.= "<br>".$computer->fields['comment'];
-                  $url .= "&nbsp; ".showToolTip($tooltip, array('display' => false));
+                  $url .= "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
                } else {
                   $url = $computer->fields['name'];
                }

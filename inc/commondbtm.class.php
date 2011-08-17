@@ -1823,7 +1823,7 @@ class CommonDBTM extends CommonGLPI {
                      $comment = $LANG['common'][85];
                   }
                   echo "&nbsp;";
-                  showToolTip($comment);
+                  Html::showToolTip($comment);
                } else {
                   echo Dropdown::getYesNo($this->fields["is_recursive"]);
                }
@@ -2274,7 +2274,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!empty($comment)) {
-         return showToolTip($comment, array('display' => false));
+         return Html::showToolTip($comment, array('display' => false));
       }
 
       return $comment;

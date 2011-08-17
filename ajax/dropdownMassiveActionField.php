@@ -126,12 +126,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
-                     showDateFormItem($search["field"]);
+                     Html::showDateFormItem($search["field"]);
                      $already_display = true;
                      break;
 
                   case "datetime" :
-                     showDateTimeFormItem($search["field"]);
+                     Html::showDateTimeFormItem($search["field"]);
                      $already_display = true;
                      break;
 
@@ -170,7 +170,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                case "order_date" :
                case "inventory_date" :
                case "warranty_date" :
-                  showDateFormItem($search["field"]);
+                  Html::showDateFormItem($search["field"]);
                   echo "&nbsp;&nbsp;";
                   break;
 
@@ -258,12 +258,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
-                     showDateFormItem($search["field"]);
+                     Html::showDateFormItem($search["field"]);
                      $already_display = true;
                      break;
 
                   case "datetime" :
-                     showDateTimeFormItem($search["field"]);
+                     Html::showDateTimeFormItem($search["field"]);
                      $already_display = true;
                      break;
 

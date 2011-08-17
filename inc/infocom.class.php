@@ -905,7 +905,7 @@ class Infocom extends CommonDBChild {
             autocompletionTextField($ic, "order_number", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][28]."&nbsp;:</td><td>";
-            showDateFormItem("order_date", $ic->fields["order_date"], true, $editcalendar);
+            Html::showDateFormItem("order_date", $ic->fields["order_date"], true, $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -917,7 +917,7 @@ class Infocom extends CommonDBChild {
                                                               'option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][14]."&nbsp;:</td><td>";
-            showDateFormItem("buy_date", $ic->fields["buy_date"], true, $editcalendar);
+            Html::showDateFormItem("buy_date", $ic->fields["buy_date"], true, $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -926,7 +926,8 @@ class Infocom extends CommonDBChild {
             autocompletionTextField($ic, "bill", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][27]."&nbsp;:</td><td>";
-            showDateFormItem("delivery_date", $ic->fields["delivery_date"], true, $editcalendar);
+            Html::showDateFormItem("delivery_date", $ic->fields["delivery_date"], true,
+                                   $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -934,7 +935,7 @@ class Infocom extends CommonDBChild {
             autocompletionTextField($ic, "delivery_number", array('option' => $option));
             echo "</td>";
             echo "<td>".$LANG['financial'][76]."&nbsp;:</td><td>";
-            showDateFormItem("use_date",$ic->fields["use_date"], true, $editcalendar);
+            Html::showDateFormItem("use_date",$ic->fields["use_date"], true, $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -943,7 +944,8 @@ class Infocom extends CommonDBChild {
                   Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
             echo "<td>".$LANG['financial'][114]."&nbsp;:</td><td>";
-            showDateFormItem("inventory_date",$ic->fields["inventory_date"], true, $editcalendar);
+            Html::showDateFormItem("inventory_date",$ic->fields["inventory_date"], true,
+                                   $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1013,7 +1015,8 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".$LANG['financial'][7]."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][29]."&nbsp;:</td><td>";
-            showDateFormItem("warranty_date", $ic->fields["warranty_date"], true, $editcalendar);
+            Html::showDateFormItem("warranty_date", $ic->fields["warranty_date"], true,
+                                   $editcalendar);
             echo "</td>";
 
             echo "<td>".$LANG['financial'][15]."&nbsp;:</td><td>";

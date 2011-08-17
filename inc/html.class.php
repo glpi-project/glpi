@@ -435,6 +435,63 @@ class Html {
 
 
    /**
+    * Display a div containing a message set in session in the previous page
+   **/
+   static function displayMessageAfterRedirect() {
+
+      // Affichage du message apres redirection
+      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
+          && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+
+         echo "<div class='box' style='margin-bottom:20px;'>";
+         echo "<div class='box-tleft'><div class='box-tright'><div class='box-tcenter'>";
+         echo "</div></div></div>";
+         echo "<div class='box-mleft'><div class='box-mright'><div class='box-mcenter'>";
+         echo $_SESSION["MESSAGE_AFTER_REDIRECT"];
+         echo "</div></div></div>";
+         echo "<div class='box-bleft'><div class='box-bright'><div class='box-bcenter'>";
+         echo "</div></div></div>";
+         echo "</div>";
+      }
+
+      // Clean message
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+   }
+
+
+   /**
+    * Common Title Function
+    *
+    * @param $ref_pic_link Path to the image to display
+    * @param $ref_pic_text Alt text of the icon
+    * @param $ref_title Title to display
+    * @param $ref_btts Extra items to display array(link=>text...)
+    *
+    * @return nothing
+   **/
+   static function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
+
+      echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
+
+      if ($ref_pic_link!="") {
+         echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\">
+               </td>";
+      }
+
+      if ($ref_title!="") {
+         echo "<td><span class='icon_consol b'>".$ref_title."</span></td>";
+      }
+
+      if (is_array($ref_btts) && count($ref_btts)) {
+         foreach ($ref_btts as $key => $val) {
+            echo "<td><a class='icon_consol_hov' href='".$key."'>".$val."</a></td>";
+         }
+      }
+      echo "</tr></table></div>";
+   }
+
+
+   /**
     * Add confirmation on button or link before action
     *
     * @param $string string to display or array of string for using multilines
@@ -558,8 +615,8 @@ class Html {
        }
        $output .= "<tr><td>
                    <table><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
-                    "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".$percentwidth.
-                    "px' height='12'>";
+                    "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".
+                    $percentwidth." px' height='12'>";
 
        if ($param['simple']) {
           $output .= $percent."%";
@@ -660,10 +717,11 @@ class Html {
 
 
       if (Session::haveRight("networking","r")) {
-         $menu['inventory']['content']['networking']['title']           = $LANG['Menu'][1];
-         $menu['inventory']['content']['networking']['shortcut']        = 'n';
-         $menu['inventory']['content']['networking']['page']            = '/front/networkequipment.php';
-         $menu['inventory']['content']['networking']['links']['search'] = '/front/networkequipment.php';
+         $menu['inventory']['content']['networking']['title']     = $LANG['Menu'][1];
+         $menu['inventory']['content']['networking']['shortcut']  = 'n';
+         $menu['inventory']['content']['networking']['page']      = '/front/networkequipment.php';
+         $menu['inventory']['content']['networking']['links']['search']
+                                                                  = '/front/networkequipment.php';
 
          if (Session::haveRight("networking","w")) {
             $menu['inventory']['content']['networking']['links']['add']
@@ -708,22 +766,25 @@ class Html {
 
 
       if (Session::haveRight("cartridge","r")) {
-         $menu['inventory']['content']['cartridge']['title']           = $LANG['Menu'][21];
-         $menu['inventory']['content']['cartridge']['shortcut']        = 'c';
-         $menu['inventory']['content']['cartridge']['page']            = '/front/cartridgeitem.php';
-         $menu['inventory']['content']['cartridge']['links']['search'] = '/front/cartridgeitem.php';
+         $menu['inventory']['content']['cartridge']['title']      = $LANG['Menu'][21];
+         $menu['inventory']['content']['cartridge']['shortcut']   = 'c';
+         $menu['inventory']['content']['cartridge']['page']       = '/front/cartridgeitem.php';
+         $menu['inventory']['content']['cartridge']['links']['search']
+                                                                  = '/front/cartridgeitem.php';
 
          if (Session::haveRight("cartridge","w")) {
-            $menu['inventory']['content']['cartridge']['links']['add'] = '/front/cartridgeitem.form.php';
+            $menu['inventory']['content']['cartridge']['links']['add']
+                                                                  = '/front/cartridgeitem.form.php';
          }
       }
 
 
       if (Session::haveRight("consumable","r")) {
-         $menu['inventory']['content']['consumable']['title']           = $LANG['Menu'][32];
-         $menu['inventory']['content']['consumable']['shortcut']        = 'g';
-         $menu['inventory']['content']['consumable']['page']            = '/front/consumableitem.php';
-         $menu['inventory']['content']['consumable']['links']['search'] = '/front/consumableitem.php';
+         $menu['inventory']['content']['consumable']['title']     = $LANG['Menu'][32];
+         $menu['inventory']['content']['consumable']['shortcut']  = 'g';
+         $menu['inventory']['content']['consumable']['page']      = '/front/consumableitem.php';
+         $menu['inventory']['content']['consumable']['links']['search']
+                                                                  = '/front/consumableitem.php';
 
          if (Session::haveRight("consumable","w")) {
             $menu['inventory']['content']['consumable']['links']['add']
@@ -790,8 +851,9 @@ class Html {
             $opt['link'][1]       = 'AND';
 
 
-            $pic_validate = "<img title=\"".$LANG['validation'][15]."\" alt=\"".$LANG['validation'][15].
-                              "\" src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+            $pic_validate = "<img title=\"".$LANG['validation'][15]."\" alt=\"".
+                              $LANG['validation'][15]."\" src='".
+                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
 
             $menu['maintain']['content']['ticket']['links'][$pic_validate]
                               = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
@@ -823,10 +885,11 @@ class Html {
       }
 
       if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
-         $menu['maintain']['content']['planning']['title']           = Toolbox::ucfirst($LANG['log'][16]);
-         $menu['maintain']['content']['planning']['shortcut']        = 'l';
-         $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
-         $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
+         $menu['maintain']['content']['planning']['title']     = Toolbox::ucfirst($LANG['log'][16]);
+         $menu['maintain']['content']['planning']['shortcut']  = 'l';
+         $menu['maintain']['content']['planning']['page']      = '/front/planning.php';
+         $menu['maintain']['content']['planning']['links']['search']
+                                                               = '/front/planning.php';
       }
 
       if (Session::haveRight("statistic","1")) {
@@ -1090,12 +1153,12 @@ class Html {
                   $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['title']
                                  = $rulecollection->getRuleClass()->getTitle();
                   $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['page']
-                                 = Toolbox::getItemTypeSearchURL($ruleclassname,false);
+                                 = Toolbox::getItemTypeSearchURL($ruleclassname, false);
                   $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['search']
-                                 = Toolbox::getItemTypeSearchURL($ruleclassname,false);
+                                 = Toolbox::getItemTypeSearchURL($ruleclassname, false);
                   if ($rulecollection->canCreate()) {
                      $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['add']
-                                    = Toolbox::getItemTypeFormURL($ruleclassname,false);
+                                    = Toolbox::getItemTypeFormURL($ruleclassname, false);
                   }
                }
             }
@@ -1583,8 +1646,8 @@ class Html {
 
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".$LANG['central'][5]."\"></a>";
-      echo "</div>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".$LANG['central'][5]."\">";
+      echo "</a></div>";
 
       /// Prefs / Logout link
       echo "<div id='c_preference' >";
@@ -1718,8 +1781,8 @@ class Html {
       echo "<ul>";
 
       // Display item
-      echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".$LANG['central'][5]."\">".
-                 $LANG['central'][5]."</a> ></li>";
+      echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".
+                 $LANG['central'][5]."\">".$LANG['central'][5]."</a> ></li>";
 
       if (isset($menu[$sector])) {
          $link = "/front/central.php";
@@ -1746,7 +1809,8 @@ class Html {
             echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
                        ($with_option?"":"class='here'")." title=\"".
                        $menu[$sector]['content'][$item]['title']."\" >".
-                       $menu[$sector]['content'][$item]['title']."</a>".(!$with_option?"":" > ")."</li>";
+                       $menu[$sector]['content'][$item]['title']."</a>".(!$with_option?"":" > ").
+                 "</li>";
          }
 
          if ($with_option) {
@@ -1754,7 +1818,8 @@ class Html {
                        $menu[$sector]['content'][$item]['options'][$option]['page'].
                        "' class='here' title=\"".
                        $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
-            echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'], 17);
+            echo self::resume_name($menu[$sector]['content'][$item]['options'][$option]['title'],
+                                   17);
             echo "</a></li>";
          }
 
@@ -1912,7 +1977,7 @@ class Html {
       echo "</li>";
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
-         showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
+         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
       }
       echo "</ul>";
       echo "</div>";
@@ -1929,7 +1994,7 @@ class Html {
 
       // call static function callcron() every 5min
       CronTask::callCron();
-      displayMessageAfterRedirect();
+      self::displayMessageAfterRedirect();
    }
 
 
@@ -1960,8 +2025,9 @@ class Html {
 
       if (!empty($CFG_GLPI["founded_new_version"])) {
          echo "<td class='copyright'>".$LANG['setup'][301].
-               "<a href='http://www.glpi-project.org' target='_blank' title=\"".$LANG['setup'][302]."\"> ".
-                  preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a></td>";
+               "<a href='http://www.glpi-project.org' target='_blank' title=\"".
+                 $LANG['setup'][302]."\"> ".
+                preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a></td>";
       }
       echo "<td class='right'>";
       echo "<a href='http://glpi-project.org/'>";
@@ -2004,6 +2070,73 @@ class Html {
          displayDebugInfos(false);
          echo "</div></div>";
       }
+   }
+
+
+   /**
+    * Print a simple HTML head with links
+    *
+    * @param $title title of the page
+    * @param $links links to display
+   **/
+   static function simpleHeader($title, $links=array()) {
+      global $CFG_GLPI, $LANG, $HEADER_LOADED;
+
+      // Print a nice HTML-head for help page
+      if ($HEADER_LOADED) {
+         return;
+      }
+      $HEADER_LOADED = true;
+
+      includeCommonHtmlHeader($title);
+
+      // Body
+      echo "<body>";
+
+      // Main Headline
+      echo "<div id='header'>";
+      echo "<div id='c_logo'>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title=\"".
+             $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
+
+      // Les préférences + lien déconnexion
+      echo "<div id='c_preference'>";
+      echo "<div class='sep'></div>";
+      echo "</div>";
+
+      //-- Le moteur de recherche --
+      echo "<div id='c_recherche'>";
+      echo "<div class='sep'></div>";
+      echo "</div>";
+
+      //-- Le menu principal --
+      echo "<div id='c_menu'>";
+      echo "<ul id='menu'>";
+
+      // Build the navigation-elements
+      if (count($links)) {
+         $i = 1;
+
+         foreach ($links as $name => $link) {
+            echo "<li id='menu$i'>";
+            echo "<a href='$link' title=\"".$name."\" class='itemP'>".$name."</a>";
+            echo "</li>";
+            $i++;
+         }
+      }
+      echo "</ul></div>";
+      // End navigation bar
+      // End headline
+      ///Le sous menu contextuel 1
+      echo "<div id='c_ssmenu1'></div>";
+
+      //  Le fil d ariane
+      echo "<div id='c_ssmenu2'></div>";
+      echo "</div>"; // fin header
+      echo "<div id='page'>";
+
+      // call static function callcron() every 5min
+      CronTask::callCron();
    }
 
 
@@ -2078,8 +2211,8 @@ class Html {
       //  Create ticket
       if (Session::haveRight("create_ticket","1")) {
          echo "<li id='menu2'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' title=\"".
-                $LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' ".
+                "title=\"".$LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
          echo "</li>";
       }
 
@@ -2178,7 +2311,8 @@ class Html {
          $opt['link'][1]       = 'AND';
 
 
-         $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,'&amp;');
+         $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
+                         Toolbox::append_params($opt,'&amp;');
          $pic_validate = "<a href='$url_validate'><img title=\"".$LANG['validation'][15]."\" alt=\"".
                            $LANG['validation'][15]."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
@@ -2206,7 +2340,7 @@ class Html {
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
-         showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+         self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
       }
       echo "</ul></div>";
 
@@ -2215,7 +2349,7 @@ class Html {
 
       // call static function callcron() every 5min
       CronTask::callCron();
-      displayMessageAfterRedirect();
+      self::displayMessageAfterRedirect();
    }
 
 
@@ -2339,7 +2473,7 @@ class Html {
 
       includeCommonHtmlHeader($title); // Body
       echo "<body>";
-      displayMessageAfterRedirect();
+      self::displayMessageAfterRedirect();
    }
 
 
@@ -2424,6 +2558,376 @@ class Html {
       }
       echo "</td></tr>";
       echo "</table>";
+   }
+
+
+   /**
+    * Display Date form with calendar
+    *
+    * @param $element name of the element
+    * @param $value default value to display
+    * @param $maybeempty may be empty ?
+    * @param $can_edit could not modify element
+    * @param $minDate minimum allowed date
+    * @param $maxDate maximum allowed date
+    * @param $displayYear should we set/diplay the year?
+    *
+    * @return rand value used
+   **/
+   static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
+                                    $minDate='', $maxDate='', $displayYear=true) {
+      global $CFG_GLPI;
+
+      $rand = mt_rand();
+      echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
+
+      $output  = "<script type='text/javascript'>\n";
+      $output .= "Ext.onReady(function() {
+         var md$rand = new Ext.ux.form.XDateField({
+            name: '$element'
+            ,value: '".Html::convDate($value)."'
+            ,applyTo: 'showdate$rand'
+            ,id: 'date$rand'
+            ,submitFormat:'Y-m-d'
+            ,startDay: 1";
+
+      switch ($_SESSION['glpidate_format']) {
+         case 1 :
+            $displayYear ? $format='d-m-Y' : $format='d-m';
+            break;
+
+         case 2 :
+            $displayYear ? $format='m-d-Y' : $format='m-d';
+            break;
+
+         default :
+            $displayYear ? $format='Y-m-d' : $format='m-d';
+      }
+      $output .= ",format: '".$format."'";
+
+      if ($maybeempty) {
+         $output .= ",allowBlank: true";
+      } else {
+         $output .= ",allowBlank: false";
+      }
+
+      if (!$can_edit) {
+         $output .= ",disabled: true";
+      }
+
+      if (!empty($minDate)) {
+         $output .= ",minValue: '".self::convDate($minDate)."'";
+      }
+
+      if (!empty($maxDate)) {
+         $output .= ",maxValue: '".self::convDate($maxDate)."'";
+      }
+
+      $output .= " });
+      });";
+      $output .= "</script>\n";
+      echo $output;
+      return $rand;
+   }
+
+
+   /**
+    * Display DateTime form with calendar
+    *
+    * @param $element name of the element
+    * @param $value default value to display
+    * @param $time_step step for time in minute (-1 use default config)
+    * @param $maybeempty may be empty ?
+    * @param $can_edit could not modify element
+    * @param $minDate minimum allowed date
+    * @param $maxDate maximum allowed date
+    * @param $minTime minimum allowed time
+    * @param $maxTime maximum allowed time
+    *
+    * @return rand value used
+   **/
+   static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
+                                        $can_edit=true, $minDate='', $maxDate='', $minTime='',
+                                        $maxTime='') {
+      global $CFG_GLPI;
+
+      if ($time_step<0) {
+         $time_step = $CFG_GLPI['time_step'];
+      }
+
+
+      $rand = mt_rand();
+      echo "<input type='hidden' id='showdate$rand' value=''>";
+
+      $minHour   = 0;
+      $maxHour   = 23;
+      $minMinute = 0;
+      $maxMinute = 59;
+
+      $output     = "";
+      $date_value = '';
+      $hour_value = '';
+
+      if (!empty($value)) {
+         list($date_value, $hour_value) = explode(' ', $value);
+      }
+      if (!empty($minTime)) {
+         list($minHour, $minMinute, $minSec) = explode(':', $minTime);
+         $minMinute = 0;
+
+         // Check time in interval
+         if (!empty($hour_value) && $hour_value<$minTime) {
+            $hour_value = $minTime;
+         }
+      }
+
+      if (!empty($maxTime)) {
+         list($maxHour, $maxMinute, $maxSec) = explode(':', $maxTime);
+         $maxMinute = 59;
+
+         // Check time in interval
+         if (!empty($hour_value) && $hour_value>$maxTime) {
+            $hour_value =$maxTime;
+         }
+      }
+
+      // reconstruct value to be valid
+      if (!empty($date_value)) {
+         $value = $date_value.' '.$hour_value;
+      }
+
+      $output .= "<script type='text/javascript'>";
+      $output .= "Ext.onReady(function() {
+         var md$rand = new Ext.ux.form.DateTime({
+            hiddenName: '$element'
+            ,id: 'date$rand'
+            ,value: '$value'
+            ,hiddenFormat:'Y-m-d H:i:s'
+            ,applyTo: 'showdate$rand'
+            ,timeFormat:'H:i'
+            ,timeWidth: 55
+            ,dateWidth: 90
+            ,startDay: 1";
+
+      $empty = "";
+      if ($maybeempty) {
+         $empty = "allowBlank: true";
+      } else {
+         $empty = "allowBlank: false";
+      }
+      $output .= ",$empty";
+      $output .= ",timeConfig: {
+         altFormats:'H:i:s',increment: $time_step,$empty";
+
+      if (!empty($minTime) && $minTime!='00:00:00') {
+         $output .= ",minValue: '".$minTime."'";
+      }
+      if (!empty($maxTime) && $maxTime!='24:00:00') {
+         $output .= ",maxValue: '".$maxTime."'";
+      }
+
+      $output .= "}";
+
+      switch ($_SESSION['glpidate_format']) {
+         case 1 :
+            $output .= ",dateFormat: 'd-m-Y',dateConfig: {
+               altFormats:'d-m-Y|d-n-Y',$empty";
+            break;
+
+         case 2 :
+            $output .= ",dateFormat: 'm-d-Y',dateConfig: {
+               altFormats:'m-d-Y|n-d-Y',$empty";
+            break;
+
+         default :
+            $output .= ",dateFormat: 'Y-m-d',dateConfig: {
+               altFormats:'Y-m-d|Y-n-d',$empty";
+      }
+
+      if (!empty($minDate)) {
+         $output .= ",minValue: '".Html::convDate($minDate)."'";
+      }
+      if (!empty($maxDate)) {
+         $output .= ",maxValue: '".Html::convDate($maxDate)."'";
+      }
+      $output .= "}";
+
+      if (!$can_edit) {
+         $output .= ",disabled: true";
+      }
+      $output .= " });
+      });";
+      $output .= "</script>\n";
+
+      echo $output;
+      return $rand;
+   }
+
+
+   /**
+    * Print the form used to select profile if several are available
+    *
+    * @param $target target of the form
+    *
+    * @return nothing
+   **/
+   static function showProfileSelecter($target) {
+      global $CFG_GLPI, $LANG;
+
+      if (count($_SESSION["glpiprofiles"])>1) {
+         echo '<li><form name="form" method="post" action="'.$target.'">';
+         echo '<select name="newprofile" onChange="submit()">';
+
+         foreach ($_SESSION["glpiprofiles"] as $key => $val) {
+            echo '<option value="'.$key.'" '.
+                   ($_SESSION["glpiactiveprofile"]["id"]==$key?'selected':'').'>'.$val['name'].
+                 '</option>';
+         }
+         echo '</select></form></li>';
+      }
+
+      if (Session::isMultiEntitiesMode()) {
+         echo "<li>";
+
+         echo "<script type='text/javascript'>";
+         echo "cleanhide('modal_entity_content');";
+         echo "var entity_window=new Ext.Window({
+            layout:'fit',
+            width:800,
+            height:400,
+            closeAction:'hide',
+            modal: true,
+            autoScroll: true,
+            title: \"".$LANG['entity'][10]."\",
+            autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
+         });";
+         echo "</script>";
+
+         echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
+                htmlentities($_SESSION["glpiactive_entity_name"]).
+                "\" class='entity_select' id='global_entity_select'>".
+                $_SESSION["glpiactive_entity_shortname"]."</a>";
+
+         echo "</li>";
+      }
+   }
+
+
+   /**
+    * Show a tooltip on an item
+    *
+    * @param $content string data to put in the tooltip
+    * @param $options array possible options
+    * Parameters which could be used in options array :
+    *   - applyto : string / id of the item to apply tooltip (default empty).
+    *                  If not set display an icon
+    *   - title : string / title to display (default empty)
+    *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
+    *   - link : string / link to put on displayed image if contentid is empty
+    *   - linkid : string / html id to put to the link link (used for ajax)
+    *   - linktarget : string / target for the link
+    *   - popup : string / popup action : link not needed to use it
+    *   - img : string / url of a specific img to use
+    *   - display : boolean / display the item : false return the datas
+    *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
+    *
+    * @return nothing (print out an HTML div)
+   **/
+   static function showToolTip($content, $options=array()) {
+      global $CFG_GLPI;
+
+      $param['applyto']    = '';
+      $param['title']      = '';
+      $param['contentid']  = '';
+      $param['link']       = '';
+      $param['linkid']     = '';
+      $param['linktarget'] = '';
+      $param['img']        = $CFG_GLPI["root_doc"]."/pics/aide.png";
+      $param['popup']      = '';
+      $param['ajax']       = '';
+      $param['display']    = true;
+      $param['autoclose']  = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      // No empty content to have a clean display
+      if (empty($content)) {
+         $content = "&nbsp;";
+      }
+      $rand = mt_rand();
+      $out  = '';
+
+      // Force link for popup
+      if (!empty($param['popup'])) {
+         $param['link'] = '#';
+      }
+
+      if (empty($param['applyto'])) {
+         if (!empty($param['link'])) {
+            $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'";
+
+            if (!empty($param['linktarget'])) {
+               $out .= " target='".$param['linktarget']."' ";
+            }
+            $out .= " href='".$param['link']."'";
+
+            if (!empty($param['popup'])) {
+               $out .= " onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+                                                     "/front/popup.php?popup=".$param['popup']."', ".
+                                                     "'glpibookmarks', 'height=400, width=600, ".
+                                                     "top=100, left=100, scrollbars=yes' ); ".
+                       "w.focus();\" ";
+            }
+            $out .= '>';
+         }
+         $out .= "<img id='tooltip$rand' alt='' src='".$param['img']."'>";
+
+         if (!empty($param['link'])) {
+            $out .= "</a>";
+         }
+         $param['applyto'] = "tooltip$rand";
+      }
+
+      if (empty($param['contentid'])) {
+         $param['contentid'] = "content".$param['applyto'];
+      }
+
+      $out .= "<span id='".$param['contentid']."' class='x-hidden'>$content</span>";
+
+      $out .= "<script type='text/javascript' >\n";
+
+      $out .= "new Ext.ToolTip({
+               target: '".$param['applyto']."',
+               anchor: 'left',
+               autoShow: true,
+               ";
+
+      if ($param['autoclose']) {
+         $out .= "autoHide: true,
+
+                  dismissDelay: 0";
+      } else {
+         $out .= "autoHide: false,
+                  closable: true,
+                  autoScroll: true";
+      }
+
+      if (!empty($param['title'])) {
+         $out .= ",title: \"".$param['title']."\"";
+      }
+      $out .= ",contentEl: '".$param['contentid']."'";
+      $out .= "});";
+      $out .= "</script>";
+
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 

@@ -3597,9 +3597,9 @@ class Search {
                      if ($itemtype=='Ticket') {
                         $userdata = getUserName($split[$k],2);
                         $out .= $userdata['name']."&nbsp;".
-                                showToolTip($userdata["comment"],
-                                            array('link'    => $userdata["link"],
-                                                  'display' => false));
+                                Html::showToolTip($userdata["comment"],
+                                                  array('link'    => $userdata["link"],
+                                                        'display' => false));
 
                      } else {
                         $out .= getUserName($split[$k],1);
@@ -3628,9 +3628,9 @@ class Search {
                $toadd = '';
                if ($itemtype=='Ticket' && $data[$NAME.$num."_3"]>0) {
                   $userdata = getUserName($data[$NAME.$num."_3"],2);
-                  $toadd = "&nbsp;".showToolTip($userdata["comment"],
-                                                array('link'    => $userdata["link"],
-                                                      'display' => false));
+                  $toadd = "&nbsp;".Html::showToolTip($userdata["comment"],
+                                                      array('link'    => $userdata["link"],
+                                                            'display' => false));
                }
                return formatUserName($data[$NAME.$num."_3"], $data[$NAME.$num],
                                      $data[$NAME.$num."_2"], $data[$NAME.$num."_4"],1).$toadd;
@@ -4004,9 +4004,9 @@ class Search {
             }
             $out .= "</a>";
 
-            $out.= showToolTip(nl2br($data[$NAME.$num."_3"]),
-                               array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
-                                     'display' => false));
+            $out.= Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
+                                     array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
+                                           'display' => false));
             return $out;
 
          case "glpi_tickets.due_date" :
@@ -4933,8 +4933,8 @@ class Search {
                }
                $rand=mt_rand();
                $out .= "...&nbsp;";
-               $out .= showToolTip($value,array('display'   => false,
-                                                'autoclose' => false));
+               $out .= Html::showToolTip($value,array('display'   => false,
+                                                      'autoclose' => false));
 
             } else {*/
             $out .= $value;

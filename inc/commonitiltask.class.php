@@ -662,7 +662,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $content .= $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]).
                     "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"].
                     "</div>";
-         showToolTip($content,array('applyto' => "content_tracking_".$val["id"].$rand));
+         Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }
    }
 

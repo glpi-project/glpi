@@ -149,7 +149,7 @@ class Central extends CommonGLPI {
             }
             $message.= implode(",", $accounts);
             echo "<tr><th colspan='2'><br>";
-            displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
+            Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
             echo "</th></tr>";
 
          }
@@ -157,7 +157,7 @@ class Central extends CommonGLPI {
 
       if ($DB->isSlave() && !$DB->first_connection) {
          echo "<tr><th colspan='2'><br>";
-         displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
+         Html::displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
          echo "</th></tr>";
       }
       echo "<tr><td class='top'><table>";

@@ -323,7 +323,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
-      showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
+      Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
       echo "</td><td> " . $LANG['setup'][275] . "&nbsp;:</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
                                       $CFG_GLPI["printers_management_restrict"]);

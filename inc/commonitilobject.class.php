@@ -1627,9 +1627,9 @@ abstract class CommonITILObject extends CommonDBTM {
             }
 
             if ($showuserlink) {
-               echo $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
-                                                           array('link'    => $userdata["link"],
-                                                                 'display' => false));
+               echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"],
+                                                                 array('link'    => $userdata["link"],
+                                                                       'display' => false));
             } else {
                echo $userdata;
             }
@@ -1654,7 +1654,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    || $d['users_id'] == Session::getLoginUserID()) {
                   $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
                                'popup' => 'edit_user_notification&amp;id='.$d['id']);
-                  showToolTip($text, $opt);
+                  Html::showToolTip($text, $opt);
                }
             }
 

@@ -59,11 +59,11 @@ if (!empty($_POST["date1"])
 echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
-showDateFormItem("date1", $_POST["date1"]);
+Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' name='submit' value=\"".$LANG['buttons'][7]."\"></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:&nbsp;</td><td>";
-showDateFormItem("date2" ,$_POST["date2"]);
+Html::showDateFormItem("date2" ,$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 

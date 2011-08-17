@@ -635,11 +635,11 @@ class Reservation extends CommonDBChild {
          echo "</td></tr>\n";
       }
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:</td><td>";
-      showDateTimeFormItem("begin", $resa->fields["begin"], -1, false);
+      Html::showDateTimeFormItem("begin", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
-      showDateTimeFormItem("end", $resa->fields["end"], -1, false);
+      Html::showDateTimeFormItem("end", $resa->fields["end"], -1, false);
       Alert::displayLastAlert('Reservation', $ID);
       echo "</td></tr>\n";
 
@@ -807,9 +807,9 @@ class Reservation extends CommonDBChild {
                   $modif = "<a id='content_".$ID.$rand."'
                              href='reservation.form.php?id=".$row['id']."'>";
                   $modif_end = "</a>";
-                  $modif_end .= showToolTip($row["comment"],
-                                            array('applyto' => "content_".$ID.$rand,
-                                                  'display' => false));
+                  $modif_end .= Html::showToolTip($row["comment"],
+                                                  array('applyto' => "content_".$ID.$rand,
+                                                        'display' => false));
                }
 
                echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><strong>".

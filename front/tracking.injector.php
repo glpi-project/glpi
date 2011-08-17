@@ -82,13 +82,13 @@ if ($newID = $track->add($_POST)) {
       echo "<div class='center b spaced'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'></div>";
       Session::addMessageAfterRedirect($LANG['help'][19]);
-      displayMessageAfterRedirect();
+      Html::displayMessageAfterRedirect();
    }
 
 } else {
    echo "<div class='center'>";
    echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br></div>";
-   displayMessageAfterRedirect();
+   Html::displayMessageAfterRedirect();
    displayBackLink();
 }
 
