@@ -54,7 +54,7 @@ if (Session::getLoginUserID()) {
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
-   simpleHeader($LANG['Menu'][20],array($LANG['Menu'][20] => $_SERVER['PHP_SELF']));
+   Html::simpleHeader($LANG['Menu'][20],array($LANG['Menu'][20] => $_SERVER['PHP_SELF']));
 }
 
 if (!isset($_GET["contains"])) {

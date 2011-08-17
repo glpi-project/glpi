@@ -280,12 +280,12 @@ $target = preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 echo "<form method='post' name='form' action='$target'><div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
-showDateFormItem("date1", $_POST["date1"]);
+Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' value=\"".$LANG['buttons'][7]."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
-showDateFormItem("date2", $_POST["date2"]);
+Html::showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";
 

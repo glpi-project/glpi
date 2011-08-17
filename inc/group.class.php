@@ -270,7 +270,8 @@ class Group extends CommonDBTM {
          $title = $LANG['Menu'][36];
       }
 
-      displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", $LANG['Menu'][36], $title, $buttons);
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", $LANG['Menu'][36], $title,
+                         $buttons);
    }
 
 

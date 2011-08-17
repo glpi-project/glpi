@@ -2655,7 +2655,7 @@ class Ticket extends CommonITILObject {
          $date = date("Y-m-d H:i:s");
       }
       if ($canupdate) {
-         showDateTimeFormItem("date", $date, 1, false);
+         Html::showDateTimeFormItem("date", $date, 1, false);
       } else {
          echo Html::convDateTime($date);
       }
@@ -2722,7 +2722,7 @@ class Ticket extends CommonITILObject {
             if (Session::haveRight('config', 'r')) {
             }
             $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
-            showToolTip($commentsla,$slaoptions);
+            Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
                     $LANG['buttons'][6]."'>";
@@ -2730,7 +2730,7 @@ class Ticket extends CommonITILObject {
             echo "</span>";
          } else {
             echo "<table><tr><td>";
-            showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
+            Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
                echo "<td><span id='sla_action'>";
@@ -2753,7 +2753,7 @@ class Ticket extends CommonITILObject {
          if ($this->fields["due_date"]=='NULL') {
             $this->fields["due_date"]='';
          }
-         showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
+         Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo "</td><td>";
          echo $LANG['choice'][2]." ".$LANG['sla'][1]."&nbsp;: ";
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
@@ -2769,7 +2769,8 @@ class Ticket extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false, $canupdate);
+               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
+                                          $canupdate);
                echo "</td></tr>";
                break;
 
@@ -2777,7 +2778,8 @@ class Ticket extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false, $canupdate);
+               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
+                                          $canupdate);
                echo "</td></tr>";
                break;
          }
@@ -4011,8 +4013,9 @@ class Ticket extends CommonITILObject {
             foreach ($job->users[parent::REQUESTER] as $k => $d) {
                $userdata    = getUserName($k,2);
                $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
-               $fourth_col .= showToolTip($userdata["comment"], array('link'    => $userdata["link"],
-                                                                      'display' => false));
+               $fourth_col .= Html::showToolTip($userdata["comment"],
+                                                array('link'    => $userdata["link"],
+                                                      'display' => false));
                $fourth_col .= "<br>";
             }
          }
@@ -4033,8 +4036,9 @@ class Ticket extends CommonITILObject {
             foreach ($job->users[parent::ASSIGN] as $k => $d) {
                $userdata = getUserName($k, 2);
                $fifth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
-               $fifth_col .= showToolTip($userdata["comment"], array('link'    => $userdata["link"],
-                                                                     'display' => false));
+               $fifth_col .= Html::showToolTip($userdata["comment"],
+                                               array('link'    => $userdata["link"],
+                                                     'display' => false));
                $fifth_col .= "<br>";
             }
          }
@@ -4107,10 +4111,10 @@ class Ticket extends CommonITILObject {
          }
 
          if ($output_type == HTML_OUTPUT) {
-            $eigth_column .= "&nbsp;".showToolTip($job->fields['content'],
-                                                  array('display' => false,
-                                                        'applyto' => "ticket".$job->fields["id"].
-                                                                     $rand));
+            $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
+                                                        array('display' => false,
+                                                              'applyto' => "ticket".
+                                                                           $job->fields["id"]. $rand));
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
@@ -4150,7 +4154,7 @@ class Ticket extends CommonITILObject {
                   $userdata = getUserName($d["users_id"],2);
                   echo "<strong>".$userdata['name']."</strong>&nbsp;";
                   if ($viewusers) {
-                     showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+                     Html::showToolTip($userdata["comment"], array('link' => $userdata["link"]));
                   }
                } else {
                   echo $d['alternative_email']."&nbsp;";
@@ -4193,7 +4197,8 @@ class Ticket extends CommonITILObject {
          echo "<strong>".$job->fields["name"]."</strong></a>&nbsp;";
          echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
               ")&nbsp;";
-         showToolTip($job->fields['content'], array('applyto' => 'ticket'.$job->fields["id"].$rand));
+         Html::showToolTip($job->fields['content'],
+                           array('applyto' => 'ticket'.$job->fields["id"].$rand));
 
          echo "</td>";
 

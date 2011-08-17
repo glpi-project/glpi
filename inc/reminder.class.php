@@ -298,9 +298,10 @@ class Reminder extends CommonDBTM {
       echo "<td>";
       echo '<table><tr><td>';
       echo $LANG['pager'][2].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true, $canedit);
+      Html::showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true,
+                                 $canedit);
       echo '</td><td>'.$LANG['pager'][1].'&nbsp;:&nbsp;</td><td>';
-      showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true, $canedit);
+      Html::showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true, $canedit);
       echo '</td></tr></table>';
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
@@ -536,8 +537,8 @@ class Reminder extends CommonDBTM {
          echo $val["text"];
 
       } else {
-         showToolTip("<strong>".Planning::getState($val["state"])."</strong><br>".$val["text"],
-                     array('applyto' => "reminder_".$val["reminders_id"].$rand));
+         Html::showToolTip("<strong>".Planning::getState($val["state"])."</strong><br>".$val["text"],
+                           array('applyto' => "reminder_".$val["reminders_id"].$rand));
       }
       echo "";
    }
@@ -641,7 +642,8 @@ class Reminder extends CommonDBTM {
             echo "<a id='content_reminder_".$data["id"].$rand."'
                   href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".
                   $data["name"]."</a>&nbsp;";
-            showToolTip($data["text"], array('applyto' => "content_reminder_".$data["id"].$rand));
+            Html::showToolTip($data["text"],
+                              array('applyto' => "content_reminder_".$data["id"].$rand));
 
             if ($data["is_planned"]) {
                $tab      = explode(" ",$data["begin"]);

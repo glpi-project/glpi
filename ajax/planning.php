@@ -76,8 +76,8 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
 }
 
 echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
-$rand_begin = showDateTimeFormItem("plan[begin]", $begin, -1, false, true, '', '',
-                                   $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
+$rand_begin = Html::showDateTimeFormItem("plan[begin]", $begin, -1, false, true, '', '',
+                                         $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:&nbsp;</td><td>";

@@ -785,7 +785,7 @@ class Change extends CommonITILObject {
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      showDateTimeFormItem("date", $date, 1, false);
+      Html::showDateTimeFormItem("date", $date, 1, false);
 
       echo "</td></tr>";
       if ($ID) {
@@ -820,7 +820,7 @@ class Change extends CommonITILObject {
       if ($this->fields["due_date"]=='NULL') {
          $this->fields["due_date"] = '';
       }
-      showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
+      Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
       echo "</td></tr>";
 
       if ($ID) {
@@ -829,7 +829,7 @@ class Change extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
+               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
                echo "</td></tr>";
                break;
 
@@ -837,7 +837,7 @@ class Change extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
                echo "</td></tr>";
                break;
          }

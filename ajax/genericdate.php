@@ -46,13 +46,12 @@ Session::checkLoginUser();
 if (isset($_POST['value']) && strcmp($_POST['value'],'0')==0) {
 
    if ($_POST['withtime']) {
-      showDateTimeFormItem($_POST['name'], $_POST['specificvalue']);
+      Html::showDateTimeFormItem($_POST['name'], $_POST['specificvalue']);
    } else {
-      showDateFormItem($_POST['name'], $_POST['specificvalue']);
+      Html::showDateFormItem($_POST['name'], $_POST['specificvalue']);
    }
 
 } else {
    echo "<input type='hidden' name='".$_POST['name']."' value='".$_POST['value']."'>";
 }
-
 ?>

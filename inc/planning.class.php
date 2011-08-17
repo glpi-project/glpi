@@ -220,7 +220,7 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
-      showDateFormItem("date", $date, false);
+      Html::showDateFormItem("date", $date, false);
       echo "</td>\n";
 
       echo "<td><select name='type'>";

@@ -173,7 +173,7 @@ class Contract extends CommonDBTM {
             "' size='14'></td>";
       echo "<td>".$LANG['search'][8]."&nbsp;:</td>";
       echo "<td>";
-      showDateFormItem("begin_date", $this->fields["begin_date"]);
+      Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

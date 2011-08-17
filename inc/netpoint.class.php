@@ -168,7 +168,7 @@ class Netpoint extends CommonDropdown {
 
       // Display comment
       if ($display_comment) {
-         showToolTip($comment);
+         Html::showToolTip($comment);
 
          $item = new Netpoint();
          if ($item->canCreate()) {

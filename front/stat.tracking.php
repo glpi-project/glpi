@@ -105,7 +105,7 @@ echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
 echo "<select name='type'>".$INSELECT."</select></td>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
-showDateFormItem("date1", $_REQUEST["date1"]);
+Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
@@ -113,7 +113,7 @@ echo "<input type='submit' class='button' name='submit' value=\"". $LANG['button
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
-showDateFormItem("date2", $_REQUEST["date2"]);
+Html::showDateFormItem("date2", $_REQUEST["date2"]);
 echo "</td><td class='center'>";
 Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";

@@ -793,9 +793,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
          $link      = $link_item."?id=".$licdata['id'];
-         showToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>". $LANG['common'][19].
-                        "&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
-                      array('link' => $link));
+         Html::showToolTip($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
+                              $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".
+                              $licdata['comment'],
+                           array('link' => $link));
          echo "<br>";
       }
 
@@ -863,9 +864,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
-      showToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>". $LANG['common'][19].
-                     "&nbsp;: ".$data['serial']."<br>".$data['comment'],
-                   array('link' => $link));
+      Html::showToolTip($LANG['common'][16]."&nbsp;: ".$data['name']."<br>". $LANG['common'][19].
+                           "&nbsp;: ".$data['serial']."<br>".$data['comment'],
+                        array('link' => $link));
       echo "</td></tr>\n";
    }
 

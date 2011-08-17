@@ -371,7 +371,7 @@ class NetworkPort extends CommonDBChild {
                   echo "</a>";
                }
                echo "</strong>";
-               showToolTip($netport->fields['comment']);
+               Html::showToolTip($netport->fields['comment']);
                echo "</td>\n";
                echo "<td>" . $netport->fields["name"] . "</td>\n";
                echo "<td>".Dropdown::getDropdownName("glpi_netpoints",
@@ -449,7 +449,7 @@ class NetworkPort extends CommonDBChild {
                if ($device2->can($device2->fields["id"], 'r')) {
                   echo $netport->getLink();
                   echo "</strong>\n";
-                  showToolTip($netport->fields['comment']);
+                  Html::showToolTip($netport->fields['comment']);
                   echo "&nbsp;".$LANG['networking'][25] . " <strong>";
                   echo $device2->getLink();
                   echo "</strong>";
