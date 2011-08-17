@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
+Html::header($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
 
 if (!isset($_POST["clean_ok"])) {
    Session::checkRight("clean_ocsng", "r");
@@ -61,6 +61,5 @@ if (!isset($_POST["clean_ok"])) {
    }
 }
 
-commonFooter();
-
+Html::footer();
 ?>

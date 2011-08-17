@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
+Html::header($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
@@ -502,6 +502,5 @@ Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
 
 
 echo "</form>";
-commonFooter();
-
+Html::footer();
 ?>

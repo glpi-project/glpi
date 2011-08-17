@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
+Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 
 echo "<div align='center'>";
 
@@ -46,6 +46,5 @@ Dropdown::showItemTypeMenu($LANG['setup'][0], $optgroup);
 Dropdown::showItemTypeList($optgroup);
 
 echo "</div>";
-commonFooter();
-
+Html::footer();
 ?>

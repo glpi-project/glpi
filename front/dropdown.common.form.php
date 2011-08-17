@@ -67,10 +67,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
    if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
-      commonHeader($dropdown->getTypeName(), $_SERVER['PHP_SELF'], "config",
+      Html::header($dropdown->getTypeName(), $_SERVER['PHP_SELF'], "config",
                    $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
-      commonFooter();
+      Html::footer();
    } else {
       $dropdown->delete($_POST, 1);
       $dropdown->refreshParentInfos();
@@ -107,14 +107,14 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_GET['popup'])) {
-   popHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF']);
+   Html::popHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
    $dropdown->showForm($_GET["id"]);
    echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
    echo "</div>";
-   popFooter();
+   Html::popFooter();
 
 } else {
    $dropdown->displayHeader();
@@ -123,7 +123,6 @@ if (isset($_POST["add"])) {
       $options = array();
    }
    $dropdown->showForm($_GET["id"],$options);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

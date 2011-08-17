@@ -39,7 +39,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
-commonHeader($LANG['search'][0],$_SERVER['PHP_SELF']);
+Html::header($LANG['search'][0],$_SERVER['PHP_SELF']);
 
 if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];
@@ -72,6 +72,5 @@ if (isset($_GET["globalsearch"])) {
    }
 }
 
-commonFooter();
-
+Html::footer();
 ?>

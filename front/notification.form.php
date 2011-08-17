@@ -66,9 +66,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
+   Html::header($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
    $notification->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

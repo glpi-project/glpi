@@ -206,10 +206,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {//print computer informations
-   commonHeader($LANG['Menu'][0], $_SERVER['PHP_SELF'], "inventory", "computer");
+   Html::header($LANG['Menu'][0], $_SERVER['PHP_SELF'], "inventory", "computer");
    //show computer form to add
    $computer->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

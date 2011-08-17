@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],'',"maintain","stat");
+Html::header($LANG['Menu'][13],'',"maintain","stat");
 
 Session::checkRight("statistic", "1");
 
@@ -79,6 +79,5 @@ echo "</table></form></div>";
 
 Stat::showItems($_SERVER['PHP_SELF'],$_POST["date1"],$_POST["date2"],$_GET['start']);
 
-commonFooter();
-
+Html::footer();
 ?>

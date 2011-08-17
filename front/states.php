@@ -41,7 +41,7 @@ if (!isset($_GET["synthese"])) {
 }
 Session::checkCentralAccess();
 
-commonHeader($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
+Html::header($LANG['title'][9],$_SERVER['PHP_SELF'],"inventory","state");
 
 if ($_GET["synthese"] == "yes") {
    State::showSummary($_SERVER['PHP_SELF']);
@@ -50,6 +50,5 @@ if ($_GET["synthese"] == "yes") {
    Search::show('States');
 }
 
-commonFooter();
-
+Html::footer();
 ?>

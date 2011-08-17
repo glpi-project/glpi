@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["mergesoftware"])) {
-   popHeader($LANG['Menu'][4]);
+   Html::popHeader($LANG['Menu'][4]);
 
    if (isset($_POST["id"])
        && isset($_POST["item"])
@@ -104,9 +104,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
+   Html::header($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
    $soft->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

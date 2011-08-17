@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
+Html::header($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
 Reminder::showList();
 
@@ -47,5 +47,5 @@ if (Session::haveRight("reminder_public","r")) {
    Reminder::showList(false,true);
 }
 
-commonFooter();
+Html::footer();
 ?>

@@ -43,7 +43,7 @@ if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 // Search a solution
 if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {
@@ -73,6 +73,5 @@ if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
    KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php", $faq) ;
 }
 
-commonFooter();
-
+Html::footer();
 ?>

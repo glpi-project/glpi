@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("logs", "r");
 
-commonHeader($LANG['Menu'][30],$_SERVER['PHP_SELF'],"admin","log");
+Html::header($LANG['Menu'][30],$_SERVER['PHP_SELF'],"admin","log");
 
 // Show last events
 if (isset($_GET["order"])) {
@@ -54,6 +54,5 @@ if (isset($_GET["order"])) {
    Event::showList($_SERVER['PHP_SELF']);
 }
 
-commonFooter();
-
+Html::footer();
 ?>

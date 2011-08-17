@@ -57,8 +57,7 @@ if (!empty($_POST["update"])) {
    }
 }
 
-commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
+Html::header($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
 $config->showForm(1);
-commonFooter();
-
+Html::footer();
 ?>

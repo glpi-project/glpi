@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin", "rule", -1);
+Html::header($LANG['common'][12], $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
@@ -66,5 +66,5 @@ if (Session::haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
 
 echo "</table>";
 
-commonFooter();
+Html::footer();
 ?>

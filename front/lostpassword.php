@@ -64,7 +64,7 @@ if (isset($_REQUEST['password_forget_token'])) {
       User::showPasswordForgetRequestForm();
    }
 }
-nullFooter();
-exit();
 
+Html::nullFooter();
+exit();
 ?>

@@ -67,10 +67,9 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-commonHeader($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
+Html::header($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
 
 $transfer->showForm($_GET["id"], array('target' => $transfer->getFormURL()));
 
-commonFooter();
-
+Html::footer();
 ?>

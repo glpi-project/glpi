@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6], $_SERVER['PHP_SELF'], "utils", "report");
+Html::header($LANG['Menu'][6], $_SERVER['PHP_SELF'], "utils", "report");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $year = date("Y")-1;
@@ -277,5 +277,5 @@ if (count($valeurgraphtot)>0) {
                    array('title' => $LANG['financial'][21]));
 }
 
-commonFooter();
+Html::footer();
 ?>

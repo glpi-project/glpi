@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("import_externalauth_users", 'w');
 
-commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
+Html::header($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
 if (isset($_SESSION["ldap_sortorder"])) {
    unset($_SESSION["ldap_sortorder"]);
@@ -56,6 +56,5 @@ echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?mode=0&
 
 echo "</table></div>";
 
-commonFooter();
-
+Html::footer();
 ?>

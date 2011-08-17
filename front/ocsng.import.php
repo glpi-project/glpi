@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("ocsng", "w");
 
-commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "import");
+Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "import");
 
 $display_list = true;
 //First time this screen is displayed : set the import mode to 'basic'
@@ -131,6 +131,5 @@ if (!isset($_POST["import_ok"])) {
    Html::redirect($_SERVER['PHP_SELF']);
 }
 
-commonFooter();
-
+Html::footer();
 ?>

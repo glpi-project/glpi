@@ -46,6 +46,5 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

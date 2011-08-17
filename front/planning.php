@@ -77,7 +77,7 @@ if (isset($_GET['genical'])) {
       }
    }
 } else {
-   commonHeader(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
+   Html::header(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
 
    Session::checkSeveralRightsOr(array('show_all_planning' => '1',
                                        'show_planning'     => '1'));
@@ -94,7 +94,6 @@ if (isset($_GET['genical'])) {
 
    Planning::show($_GET['uID'], $_GET['gID'], $_GET["date"], $_GET["type"]);
 
-   commonFooter();
+   Html::footer();
 }
-
 ?>

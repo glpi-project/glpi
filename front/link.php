@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("link", "r");
 
-commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
+Html::header($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
 Search::show('Link');
 
-commonFooter();
+Html::footer();
 ?>

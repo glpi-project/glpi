@@ -51,10 +51,9 @@ if (!isset($_GET["id"])) {
    $_GET["id"]="";
 }
 
-commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
+Html::header($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
 
 showOtherAuthList($_SERVER['PHP_SELF']);
 
-commonFooter();
-
+Html::footer();
 ?>

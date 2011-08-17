@@ -49,6 +49,5 @@ $rulecollection->title();
 $rulecollection->showEngineSummary();
 $rulecollection->showListRules($_POST['target'], $_POST);
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

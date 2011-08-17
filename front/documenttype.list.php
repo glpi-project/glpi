@@ -34,11 +34,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkLoginUser();
 
-popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
+Html::popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 
 Search::manageGetValues('DocumentType');
 Search::showList('DocumentType',$_GET);
 
-popFooter();
-
+Html::popFooter();
 ?>

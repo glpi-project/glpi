@@ -46,6 +46,5 @@ if (isset($_POST["id"]) && $_POST["id"]>0) {
                        array('target' => $CFG_GLPI["root_doc"]."/front/transfer.action.php"));
 }
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

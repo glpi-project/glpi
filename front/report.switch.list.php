@@ -38,7 +38,7 @@ Session::checkRight("reports", "r");
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
-   commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+   Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
    $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
    echo "<div class='center'><h2>".$LANG['reports'][49]." $name </h2></div><br>";
@@ -139,10 +139,9 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
       }
       echo "</table><br><hr><br>";
    }
-   commonFooter();
+   Html::footer();
 
 } else  {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }
-
 ?>

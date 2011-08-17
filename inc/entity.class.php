@@ -129,7 +129,7 @@ class Entity extends CommonTreeDropdown {
 
 
    function displayHeader () {
-      commonHeader($this->getTypeName(), '', "admin", "entity");
+      Html::header($this->getTypeName(), '', "admin", "entity");
    }
 
 

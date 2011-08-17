@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 # Titre
@@ -77,6 +77,5 @@ echo "<input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'></t
 
 echo "</table></form>";
 
-commonFooter();
-
+Html::footer();
 ?>

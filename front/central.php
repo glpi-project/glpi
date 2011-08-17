@@ -64,7 +64,7 @@ if (isset($_GET["active_entity"])) {
    }
 }
 
-commonHeader($LANG['common'][56],$_SERVER['PHP_SELF']);
+Html::header($LANG['common'][56],$_SERVER['PHP_SELF']);
 
 // Redirect management
 if (isset($_GET["redirect"])) {
@@ -74,6 +74,5 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->show();
 
-commonFooter();
-
+Html::footer();
 ?>

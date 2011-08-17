@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['mailing'][113], $_SERVER['PHP_SELF'], "config", "mailing",
+   Html::header($LANG['mailing'][113], $_SERVER['PHP_SELF'], "config", "mailing",
                 "notificationtemplate");
 
    if ($_GET["id"] == '') {
@@ -76,7 +76,6 @@ if (isset($_POST["add"])) {
       $options = array();
    }
    $language->showForm($_GET["id"], $options);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

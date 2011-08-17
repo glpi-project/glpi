@@ -49,9 +49,9 @@ if (!empty($_POST["test_smtp_send"])) {
    Html::back();
 }
 
-commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");
+Html::header($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");
 
 $notificationmail->showForm(1);
 
-commonFooter();
+Html::footer();
 ?>

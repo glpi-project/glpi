@@ -102,10 +102,9 @@ if (isset($_POST["update"])) {
    Html::back();
 
  } else {//print computer informations
-   commonHeader($LANG['sla'][6], $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header($LANG['sla'][6], $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
    $item->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
-
 ?>

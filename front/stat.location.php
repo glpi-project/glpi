@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],'',"maintain","stat");
+Html::header($LANG['Menu'][13],'',"maintain","stat");
 
 Session::checkRight("statistic", "1");
 
@@ -111,7 +111,7 @@ echo "</table></form>";
 
 if (empty($_REQUEST["dropdown"]) || !class_exists($_REQUEST["dropdown"])) {
    // Do nothing
-   commonFooter();
+   Html::footer();
    exit();
 }
 $item = new $_REQUEST["dropdown"]();
@@ -210,9 +210,7 @@ if (!$_REQUEST['showgraph']) {
                             'type'      => 'pie'));
    }
 
-
 }
 
-commonFooter();
-
+Html::footer();
 ?>

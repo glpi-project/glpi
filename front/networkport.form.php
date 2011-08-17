@@ -220,10 +220,10 @@ if (isset($_POST["add"])) {
       $_GET["several"] = "";
    }
    Session::checkRight("networking", "w");
-   commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory");
+   Html::header($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory");
 
 //   NetworkPort::showNetportForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
    $np->showForm($_GET["id"], $_GET);
-   commonFooter();
+   Html::footer();
 }
 ?>

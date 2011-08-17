@@ -90,9 +90,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
+   Html::header($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
    $netdevice->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

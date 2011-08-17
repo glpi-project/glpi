@@ -38,8 +38,8 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight('config', 'r');
-commonHeader($LANG['setup'][811], $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
+Html::header($LANG['setup'][811], $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
 
 Search::show('FieldUnicity');
-commonFooter();
+Html::footer();
 ?>

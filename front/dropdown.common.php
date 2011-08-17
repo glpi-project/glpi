@@ -46,5 +46,5 @@ $dropdown->title();
 
 Search::show(get_class($dropdown));
 
-commonFooter();
+Html::footer();
 ?>

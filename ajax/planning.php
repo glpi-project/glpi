@@ -128,6 +128,5 @@ if ($default_delay==0) {
 echo "</td></tr>\n";
 echo "</table>\n";
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

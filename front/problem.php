@@ -40,10 +40,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('show_all_problem' => '1',
                                     'show_my_problem'  => '1'));
 
-commonHeader($LANG['Menu'][7], '', "maintain", "problem");
+Html::header($LANG['Menu'][7], '', "maintain", "problem");
 
 Search::show('Problem');
 
-commonFooter();
-
+Html::footer();
 ?>

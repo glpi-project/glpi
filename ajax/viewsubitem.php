@@ -61,6 +61,5 @@ if (isset($_POST[$parent->getForeignKeyField()])
    echo $LANG['login'][5];
 }
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

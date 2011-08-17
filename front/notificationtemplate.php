@@ -37,9 +37,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notificationtemplate");
+Html::header($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notificationtemplate");
 
 Search::show('NotificationTemplate');
 
-commonFooter();
+Html::footer();
 ?>

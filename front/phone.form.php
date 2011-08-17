@@ -95,9 +95,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 
 } else {
-   commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
+   Html::header($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
    $phone->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-   commonFooter();
+   Html::footer();
 }
-
 ?>

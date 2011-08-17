@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("sla", "r");
 
-commonHeader($LANG['Menu'][43],$_SERVER['PHP_SELF'],"config","sla");
+Html::header($LANG['Menu'][43],$_SERVER['PHP_SELF'],"config","sla");
 
 Search::show('SLA');
 
-commonFooter();
+Html::footer();
 ?>

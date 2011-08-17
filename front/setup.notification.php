@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('notification' => 'r',
                                     'config'       => 'w'));
 
-commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing",-1);
+Html::header($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing",-1);
 
 if (isset($_GET['activate'])) {
    $config = new Config();
@@ -83,5 +83,5 @@ if (!$CFG_GLPI['use_mailing']) {
    }
 }
 
-commonFooter();
+Html::footer();
 ?>

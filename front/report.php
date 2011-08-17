@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>".$LANG['reports'][0]."&nbsp;:</th></tr>";
@@ -104,6 +104,5 @@ foreach ($names as $key => $val) {
 
 echo "</table></div>";
 
-commonFooter();
-
+Html::footer();
 ?>

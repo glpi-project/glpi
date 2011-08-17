@@ -43,6 +43,5 @@ header_nocache();
 Session::checkRight("update_ticket", "1");
 Ticket::dropdownMyDevices($_POST["userID"], $_POST["entity_restrict"]);
 
-ajaxFooter();
-
+Html::ajaxFooter();
 ?>

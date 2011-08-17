@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("profile", "r");
 
-commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
+Html::header($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
 Search::show('Profile');
 
-commonFooter();
+Html::footer();
 ?>

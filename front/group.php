@@ -39,12 +39,12 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("group", "r");
 
-commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
+Html::header($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
 
 $group = new Group();
 $group->title();
 
 Search::show('Group');
 
-commonFooter();
+Html::footer();
 ?>

@@ -42,13 +42,13 @@ $user = new User();
 
 // Manage lost password
 if (isset($_GET['lostpassword'])) {
-   nullHeader();
+   Html::nullHeader();
    if (isset($_GET['password_forget_token'])) {
       User::showPasswordForgetChangeForm($_GET['password_forget_token']);
    } else {
       User::showPasswordForgetRequestForm();
    }
-   nullFooter();
+   Html::nullFooter();
    exit();
 }
 
@@ -63,19 +63,18 @@ if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      commonHeader($LANG['title'][13], $_SERVER['PHP_SELF'],'preference');
+      Html::header($LANG['title'][13], $_SERVER['PHP_SELF'],'preference');
    } else {
-      helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+      Html::helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
    }
 
    $pref = new Preference();
    $pref->show();
 
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      commonFooter();
+      Html::footer();
    } else {
-      helpFooter();
+      Html::helpFooter();
    }
 }
-
 ?>

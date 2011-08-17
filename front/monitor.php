@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("monitor", "r");
 
-commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
+Html::header($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
 Search::show('Monitor');
 
-commonFooter();
+Html::footer();
 ?>

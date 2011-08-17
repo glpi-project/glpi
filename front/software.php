@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("software", "r");
 
-commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
+Html::header($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 
 Search::show('Software');
 
-commonFooter();
+Html::footer();
 ?>
