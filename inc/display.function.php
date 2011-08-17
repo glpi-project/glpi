@@ -691,16 +691,6 @@ function showGenericDateTimeSearch($element, $value='', $with_time=false, $with_
 
 
 
-/**
- *  Force active Tab for an itemtype
- *
- * @param $itemtype :item type
- * @param $tab : ID of the tab
-**/
-function setActiveTab($itemtype, $tab) {
-   $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
-}
-
 
 /**
  *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
@@ -790,7 +780,7 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
                tabpanel.body=Ext.get('$tabdivcontent_id');
                // See before
                tabpanel.body.update('');
-               tabpanel.setActiveTab('$default_tab');";
+               tabpanel.Session::setActiveTab('$default_tab');";
          echo "}";
 
          echo "// force reload
@@ -843,34 +833,5 @@ function printCleanArray($tab, $pad=0) {
 
 
 
-
-
-/**
- * Init the Editor System to a textarea
- *
- * @param $name name of the html textarea where to used
- *
- * @return nothing
-**/
-function initEditorSystem($name) {
-   global $CFG_GLPI;
-
-   echo "<script language='javascript' type='text/javascript'>";
-   echo "tinyMCE.init({
-      language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-      mode : 'exact',
-      elements: '$name',
-      plugins : 'table,directionality,searchreplace',
-      theme : 'advanced',
-      entity_encoding : 'numeric', ";
-      // directionality + search replace plugin
-   echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-   echo "theme_advanced_toolbar_location : 'top',
-      theme_advanced_toolbar_align : 'left',
-      theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-      theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-      theme_advanced_buttons3 : ''});";
-   echo "</script>";
-}
 
 ?>

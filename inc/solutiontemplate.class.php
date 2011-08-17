@@ -85,7 +85,7 @@ class SolutionTemplate extends CommonDropdown {
             echo "&nbsp;</td></tr>";
             // And a new line to have a complete display
             echo "<tr class='center'><td colspan='5'>";
-            initEditorSystem($field['name']);
+            Html::initEditorSystem($field['name']);
             echo "<textarea name='".$field['name']."' rows='3'>".$this->fields[$field['name']].
                  "</textarea>";
             break;
@@ -94,5 +94,4 @@ class SolutionTemplate extends CommonDropdown {
 
 
 }
-
 ?>

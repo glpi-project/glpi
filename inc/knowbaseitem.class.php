@@ -189,7 +189,7 @@ class KnowbaseItem extends CommonDBTM {
             }
          }
          echo "<div id='contenukb'>";
-         initEditorSystem('answer');
+         Html::initEditorSystem('answer');
 
          echo "<form method='post' id='form_kb' name='form_kb' action=\"".$this->getFormUrl()."\">";
 

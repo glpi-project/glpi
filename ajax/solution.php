@@ -42,7 +42,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-initEditorSystem("solution");
+Html::initEditorSystem("solution");
 
 if (isset($_POST['value']) && $_POST['value'] > 0) {
    $template = new SolutionTemplate();

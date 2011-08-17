@@ -2127,7 +2127,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
 
       if ($canedit) {
-         initEditorSystem("solution");
+         Html::initEditorSystem("solution");
 
          echo "<div id='solution$rand_text'>";
          echo "<textarea id='solution' name='solution' rows='12' cols='80'>".
