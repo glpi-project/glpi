@@ -887,5 +887,15 @@ class Session {
       }
    }
 
+
+   /**
+    *  Force active Tab for an itemtype
+    *
+    * @param $itemtype :item type
+    * @param $tab : ID of the tab
+   **/
+   static function setActiveTab($itemtype, $tab) {
+      $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
+   }
 }
 ?>

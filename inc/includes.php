@@ -128,12 +128,12 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 if (isset($_REQUEST['forcetab'])) {
    if (preg_match('/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
       $itemtype=$matches[1];
-      setActiveTab($matches[1],$_REQUEST['forcetab']);
+      Session::setActiveTab($matches[1],$_REQUEST['forcetab']);
    }
 }
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-   setActiveTab($_REQUEST['itemtype'],$_REQUEST['glpi_tab']);
+   Session::setActiveTab($_REQUEST['itemtype'],$_REQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {

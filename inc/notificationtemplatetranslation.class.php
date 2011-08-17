@@ -107,7 +107,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
 
-      initEditorSystem('content_html');
+      Html::initEditorSystem('content_html');
 
       $this->showTabs($options);
       $this->showFormHeader($options);
