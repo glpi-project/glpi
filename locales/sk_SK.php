@@ -307,7 +307,7 @@ $LANG['common'][103]="Účastníci";
 $LANG['common'][104]="Dohľad"; 
 $LANG['common'][105]="Upozornenie"; 
 $LANG['common'][106]="Minimálne jedno pole má nesprávnu hodnotu"; 
-$LANG['common'][107]="Average"; 
+$LANG['common'][107]="Priemer"; 
 
 $LANG['computers'][0]="Jednotka"; 
 $LANG['computers'][1]="Voľné %"; 
@@ -1924,7 +1924,7 @@ $LANG['setup'][807]="Podriadená databáza je nesynchronizovaná. Rozdiel je v:"
 $LANG['setup'][808]="Podriadená databáza mimo synchronizácie!"; 
 $LANG['setup'][809]="MySQL replika: iba čítať"; 
 $LANG['setup'][810]="Rozsynchronizácia MySQL replikácie"; 
-$LANG['setup'][811]="Jedinečnosť"; 
+$LANG['setup'][811]="Jedinečnosť polí"; 
 $LANG['setup'][813]="Nemožný zápis pre"; 
 $LANG['setup'][815]="Jedinečný(é) záznam(y)"; 
 $LANG['setup'][817]="It's mandatory to select a type and at least one field"; 
