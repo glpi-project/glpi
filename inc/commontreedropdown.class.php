@@ -159,15 +159,21 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
 
-      // Can't move a parent under a child
-      if (isset($input[$this->getForeignKeyField()])
-          && in_array($input[$this->getForeignKeyField()],
-                      getSonsOf($this->getTable(), $input['id']))) {
+      if (isset($input[$this->getForeignKeyField()])) {
+         // Can't move a parent under a child
+         if (in_array($input[$this->getForeignKeyField()],
+               getSonsOf($this->getTable(), $input['id']))) {
          return false;
-      }
-      if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
-         // Only the parents changes, so we must update theses, but not the sons !
+         }
+         // Parent changes => clear ancestors and update its level and completename
+         if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
          $input["ancestors_cache"] = NULL;
+         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+         }
+      }
+
+      // Name changes => update its completename (and its level : side effect ...)
+      if ((isset($input['name'])) && ($input['name'] != $this->fields['name'])) {
          return $this->adaptTreeFieldsFromUpdateOrAdd($input);
       }
       return $input;
