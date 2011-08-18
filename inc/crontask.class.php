@@ -967,7 +967,7 @@ class CronTask extends CommonDBTM{
       }
 
       // Display the pager
-      printAjaxPager($LANG['crontask'][47], $start, $number);
+      Html::printAjaxPager($LANG['crontask'][47], $start, $number);
 
       $query = "SELECT *
                 FROM `glpi_crontasklogs`

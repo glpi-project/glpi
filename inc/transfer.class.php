@@ -182,7 +182,7 @@ class Transfer extends CommonDBTM {
          // Simulate transfers To know which items need to be transfer
          $this->simulateTransfer($items);
 
-         //printCleanArray($this->needtobe_transfer);
+         //Html::printCleanArray($this->needtobe_transfer);
 
          // Software first (to avoid copy during computer transfer)
          $this->inittype = 'Software';

@@ -290,7 +290,7 @@ class Netpoint extends CommonDropdown {
          echo "<tr><th colspan>".$LANG['networking'][51]." - ".$LANG['search'][15]."</th></tr>";
          echo "</table>\n";
       } else {
-         printAjaxPager($item->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
+         Html::printAjaxPager($item->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
 
          if ($canedit) {
             echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action='".

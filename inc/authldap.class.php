@@ -999,7 +999,7 @@ class AuthLDAP extends CommonDBTM {
                echo "</th></tr></table><br>";
             }
 
-            printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
+            Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
 
             // delete end
             array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
@@ -1079,7 +1079,7 @@ class AuthLDAP extends CommonDBTM {
             Html::closeArrowMassives(array($form_action => $textbutton));
             echo "</form>";
 
-            printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
+            Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
          } else {
             echo "<div class='center b'>".($_SESSION['ldap_import']['mode']?$LANG['ldap'][43]
                                                                            :$LANG['ldap'][3])."</div>";
@@ -1296,7 +1296,7 @@ class AuthLDAP extends CommonDBTM {
          $colspan = (Session::isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             $parameters = "check=$check";
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
             // delete end
             array_splice($ldap_groups, $start + $_SESSION['glpilist_limit']);
@@ -1361,7 +1361,7 @@ class AuthLDAP extends CommonDBTM {
                    $LANG['buttons'][37] . "'>";
             echo "</td></tr>";
             echo "</table></form></div>";
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
             echo "<div class='center b'>" . $LANG['ldap'][25] . "</div>";

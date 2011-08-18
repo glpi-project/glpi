@@ -139,10 +139,10 @@ if (!($item instanceof CommonDevice)) {
                    'start'    => $_REQUEST["start"]);
 }
 
-printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
-           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".
-               $_REQUEST["dropdown"],
-           'Stat', $params);
+Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
+                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".
+                     $_REQUEST["dropdown"],
+                 'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
    Stat::show($type, $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val,

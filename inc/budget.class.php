@@ -291,7 +291,7 @@ class Budget extends CommonDropdown{
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>";
-      printPagerForm();
+      Html::printPagerForm();
       echo "</th><th colspan='4'>";
       if ($DB->numrows($result)==0) {
          echo $LANG['document'][13];

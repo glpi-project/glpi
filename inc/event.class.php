@@ -331,7 +331,7 @@ class Event extends CommonDBTM {
 
       echo "<div class='center'>";
       $parameters = "sort=$sort&amp;order=$order";
-      printPager($start, $numrows, $target, $parameters);
+      Html::printPager($start, $numrows, $target, $parameters);
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";

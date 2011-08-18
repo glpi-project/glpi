@@ -125,10 +125,10 @@ $params = array('type'  => $_REQUEST["type"],
                 'date2' => $_REQUEST["date2"],
                 'start' => $_REQUEST["start"]);
 
-printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
-           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
-               $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
-           'Stat', $params);
+Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
+                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
+                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
+                 'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
    Stat::show($_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val);
