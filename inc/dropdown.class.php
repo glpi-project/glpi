@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
 
 class Dropdown {
 
+   //Empty value displayed in a dropdown
+   const EMPTY_VALUE = '-----';
 
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
@@ -97,7 +99,7 @@ class Dropdown {
          }
       }
 
-      $name         = DROPDOWN_EMPTY_VALUE;
+      $name         = self::EMPTY_VALUE;
       $comment      = "";
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
 
@@ -387,7 +389,7 @@ class Dropdown {
    static function dropdownTypes($name, $value=0, $types=array(), $used=array()) {
       global $CFG_GLPI;
 
-      $options = array('' => DROPDOWN_EMPTY_VALUE);
+      $options = array('' => self::EMPTY_VALUE);
 
       if (count($types)) {
          foreach ($types as $type) {
@@ -461,7 +463,7 @@ class Dropdown {
             closedir($dh);
             sort($files);
             echo "<select name='$myname'>";
-            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
+            echo "<option value=''>".self::EMPTY_VALUE."</option>";
 
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
@@ -798,7 +800,7 @@ class Dropdown {
          if (isset($options['emptylabel'])) {
             $values[''] = $options['emptylabel'];
          } else {
-            $values[''] = DROPDOWN_EMPTY_VALUE;
+            $values[''] = self::EMPTY_VALUE;
          }
       }
 
@@ -907,7 +909,7 @@ class Dropdown {
 
       if (count($options)) {
          echo "<select name='itemtype' id='itemtype$rand'>";
-         echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
+         echo "<option value='0'>".self::EMPTY_VALUE."</option>\n";
 
          foreach ($options as $key => $val) {
             echo "<option value='".$key."'>".$val."</option>";
@@ -1227,7 +1229,7 @@ class Dropdown {
       if ($itemtype=='NetworkPort') {
          echo "<select name='massiveaction' id='massiveaction'>";
 
-         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
          echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
          echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
@@ -1250,7 +1252,7 @@ class Dropdown {
          $isadmin = $item->canUpdate();
 
          echo "<select name='massiveaction' id='massiveaction'>";
-         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
              && (($isadmin && $itemtype != 'Ticket')
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())

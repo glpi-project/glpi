@@ -535,8 +535,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td>";
       echo "<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
-             DROPDOWN_EMPTY_VALUE;
-      echo "</option>\n";
+             Dropdown::EMPTY_VALUE."</option>\n";
       echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
              ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".
              $LANG['tracking'][1]."</option>\n";
@@ -872,7 +871,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td>";
       echo "\n<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
-             DROPDOWN_EMPTY_VALUE."</option>\n";
+             Dropdown::EMPTY_VALUE."</option>\n";
       echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".
             $LANG['tracking'][1]."</option>\n";
@@ -1815,7 +1814,7 @@ class Profile extends CommonDBTM {
          }
       }
 
-      $profiles[0] = DROPDOWN_EMPTY_VALUE;
+      $profiles[0] = Dropdown::EMPTY_VALUE;
 
       $query = "SELECT *
                 FROM `glpi_profiles` ".

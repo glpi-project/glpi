@@ -92,8 +92,6 @@ define("DAY_TIMESTAMP",86400);
 define("WEEK_TIMESTAMP",604800);
 define("MONTH_TIMESTAMP",2592000);
 
-//Empty value displayed in a dropdown
-define("DROPDOWN_EMPTY_VALUE","-----");
 
 // ITEMS TYPE
 /// Temporary definition for test

@@ -72,7 +72,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
 
    echo "<br>";
    echo "<select name='".$_POST['myname']."[".$_POST["current"]."]' size='1'>";
-   echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+   echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_array($result)) {

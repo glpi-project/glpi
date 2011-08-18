@@ -64,7 +64,7 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
                                     $paramstrackingdt);
 
    echo "<span id='results_ID$rand'>";
-   echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
+   echo "<select name='id'><option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
    echo "</span>\n";
 
 }

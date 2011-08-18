@@ -156,7 +156,7 @@ class Fieldblacklist extends CommonDropdown {
 
       } else {
          //Add criteria : display dropdown
-         $options[0] = DROPDOWN_EMPTY_VALUE;
+         $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if (class_exists($itemtype)) {
                $item = new $itemtype();
