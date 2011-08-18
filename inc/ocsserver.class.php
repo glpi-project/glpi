@@ -53,7 +53,7 @@ class OcsServer extends CommonDBTM {
    // not used const POWER_DEVICE=12;
 
    const OCS_VERSION_LIMIT    = 4020;
-   const OCS1_3_VERSION_LIMIT = 5000;
+   const OCS1_3_VERSION_LIMIT = 5004;
    const OCS2_VERSION_LIMIT   = 6000;
 
    // Class constants - import_ management
@@ -1986,8 +1986,9 @@ class OcsServer extends CommonDBTM {
             $compupdate["comment"] .= "Swap: " . $line["SWAP"];
          }
 
-         if ($options['cfg_ocs']["import_general_uuid"]
-             && !in_array("uuid", $options['computers_updates'])) {
+         if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT 
+            && $options['cfg_ocs']["import_general_uuid"]
+               && !in_array("uuid", $options['computers_updates'])) {
             $compupdate["uuid"] = $line["UUID"];
          }
 
