@@ -972,6 +972,99 @@ class Auth {
       return true;
    }
 
-}
+   /**
+    * Form for configuration authentification
+   **/
+   static function showOtherAuthList() {
+      global $DB, $LANG, $CFG_GLPI;
 
+      if (!Session::haveRight("config", "w")) {
+         return false;
+      }
+
+      echo "<form name=cas action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
+      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      // CAS config
+      echo "<tr><th colspan='2'>" . $LANG['setup'][177];
+      if (!empty($CFG_GLPI["cas_host"])) {
+         echo " - ".$LANG['setup'][192];
+      }
+      echo "</th></tr>\n";
+
+      if (function_exists('curl_init')
+          && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem")))) {
+
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][174] . "</td>";
+         echo "<td><input type='text' name='cas_host' value=\"".$CFG_GLPI["cas_host"]."\"></td></tr>\n";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][175] . "</td>";
+         echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][176] . "</td>";
+         echo "<td><input type='text' name='cas_uri' value=\"".$CFG_GLPI["cas_uri"]."\"></td></tr>\n";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][182] . "</td>";
+         echo "<td><input type='text' name='cas_logout' value=\"".$CFG_GLPI["cas_logout"]."\"></td>".
+              "</tr>\n";
+      } else {
+         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
+         echo "<p class='red'>" . $LANG['setup'][178] . "</p>";
+         echo "<p>" . $LANG['setup'][179] . "</p></td></tr>\n";
+      }
+      // X509 config
+      echo "<tr><th colspan='2'>" . $LANG['setup'][190];
+      if (!empty($CFG_GLPI["x509_email_field"])) {
+         echo " - ".$LANG['setup'][192];
+      }
+      echo "</th></tr>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][191] . "</td>";
+      echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
+      echo "</td></tr>\n";
+
+      // Autres config
+      echo "<tr><th colspan='2'>" . $LANG['login'][19];
+      if (!empty($CFG_GLPI["existing_auth_server_field"])) {
+         echo " - ".$LANG['setup'][192];
+      }
+      echo "</th></tr>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][193] . "</td>";
+      echo "<td><select name='existing_auth_server_field'>";
+      echo "<option value=''>&nbsp;</option>\n";
+      echo "<option value='HTTP_AUTH_USER' " .
+             ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">".
+             "HTTP_AUTH_USER</option>\n";
+      echo "<option value='REMOTE_USER' " .
+             ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">".
+             "REMOTE_USER</option>\n";
+      echo "<option value='PHP_AUTH_USER' " .
+             ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">".
+             "PHP_AUTH_USER</option>\n";
+      echo "<option value='USERNAME' " .
+             ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">".
+             "USERNAME</option>\n";
+      echo "<option value='REDIRECT_REMOTE_USER' " .
+             ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") .">".
+             "REDIRECT_REMOTE_USER</option>\n";
+      echo "</select>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][199] . "</td><td>";
+      Dropdown::showYesNo('existing_auth_server_field_clean_domain',
+                          $CFG_GLPI['existing_auth_server_field_clean_domain']);
+      echo "</td></tr>\n";
+
+      echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
+      Dropdown::show('AuthLDAP', array('name'   => 'authldaps_id_extra',
+                                       'value'  => $CFG_GLPI["authldaps_id_extra"]));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
+      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][7]."\" >";
+      echo "</td></tr>";
+
+      echo "</table></div></form>\n";
+   }
+
+}
 ?>
