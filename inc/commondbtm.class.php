@@ -2828,6 +2828,74 @@ class CommonDBTM extends CommonGLPI {
       }
       return -1;
    }
-}
 
+
+   static function listTemplates($itemtype, $target, $add = 0) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+
+      $item = new $itemtype;
+
+      if (!$item->maybeTemplate()) {
+         return false;
+      }
+
+      //Check is user have minimum right r
+      if (!$item->canView() && !$item->canCreate()) {
+         return false;
+      }
+
+      $query = "SELECT * FROM `".$item->getTable()."`
+                WHERE `is_template` = '1' ";
+      if ($item->isEntityAssign()) {
+         $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
+                  $_SESSION['glpiactive_entity'], $item->maybeRecursive());
+      }
+      $query .= " ORDER by `template_name`";
+
+      if ($result = $DB->query($query)) {
+         echo "<div class='center'><table class='tab_cadre' width='50%'>";
+         if ($add) {
+            echo "<tr><th>" . $LANG['common'][7] . " - ".$item->getTypeName()." :</th></tr>";
+            echo "<tr><td class='tab_bg_1 center'>";
+            echo "<a href=\"$target?id=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" .
+                   $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
+            echo "</tr>";
+         } else {
+            echo "<tr><th colspan='2'>" . $LANG['common'][14] . " - ".$item->getTypeName()." : ".
+                 "</th></tr>";
+         }
+
+         while ($data = $DB->fetch_array($result)) {
+            $templname = $data["template_name"];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
+               $templname.= "(".$data["id"].")";
+            }
+            echo "<tr><td class='tab_bg_1 center'>";
+            if ($item->canCreate() && !$add) {
+               echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
+               echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+               echo "<td class='tab_bg_2 center b'>";
+               echo "<a href=\"$target?id=" . $data["id"]."&amp;purge=purge&amp;withtemplate=1\">".
+                      $LANG['buttons'][6] . "</a></td>";
+            } else {
+               echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">";
+               echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+            }
+            echo "</tr>";
+         }
+
+         if ($item->canCreate() && !$add) {
+            echo "<tr><td colspan='2' class='tab_bg_2 center b'>";
+            echo "<a href=\"$target?withtemplate=1\">" . $LANG['common'][9] . "</a>";
+            echo "</td></tr>";
+         }
+         echo "</table></div>\n";
+      }
+   }
+
+}
 ?>
