@@ -65,7 +65,7 @@ class AuthMail extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["connect_string"] = constructMailServerConfig($input);
+         $input["connect_string"] = Toolbox::constructMailServerConfig($input);
       }
       return $input;
    }
@@ -74,7 +74,7 @@ class AuthMail extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["connect_string"] = constructMailServerConfig($input);
+         $input["connect_string"] = Toolbox::constructMailServerConfig($input);
       }
       return $input;
    }
@@ -184,7 +184,7 @@ class AuthMail extends CommonDBTM {
          echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
          echo "</td></tr>";
 
-         showMailServerConfig($this->fields["connect_string"]);
+         Toolbox::showMailServerConfig($this->fields["connect_string"]);
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td>";
