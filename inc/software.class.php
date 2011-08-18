@@ -568,7 +568,7 @@ class Software extends CommonDBTM {
                       'myname'          => $myname,
                       'entity_restrict' => $entity_restrict);
 
-      $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option>
+      $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE." </option>
                   </select>";
       Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftware.php", $params, $default, $rand);
 
@@ -602,7 +602,7 @@ class Software extends CommonDBTM {
                       'myname'          => $myname,
                       'entity_restrict' => $entity_restrict);
 
-      $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option>
+      $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE." </option>
                   </select>";
       Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftwareLicense.php", $params, $default, $rand);
 

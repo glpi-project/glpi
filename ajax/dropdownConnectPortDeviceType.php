@@ -61,7 +61,7 @@ if (class_exists($_POST["itemtype"])) {
                                                       'itemtype' => $_POST['itemtype'],
                                                       'myname'   => $_POST['myname'])));
 
-   $default = "<select name='item$rand'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>\n";
+   $default = "<select name='item$rand'><option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
    Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $paramsconnectpdt, $default, $rand);
 
    echo "<span id='results_item_$rand'>";

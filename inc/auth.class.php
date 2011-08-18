@@ -626,7 +626,7 @@ class Auth {
          }
       }
 
-      $methods[0] = DROPDOWN_EMPTY_VALUE;
+      $methods[0]             = Dropdown::EMPTY_VALUE;
       $methods[self::DB_GLPI] = $LANG['login'][32];
 
       $sql = "SELECT count(*) AS cpt

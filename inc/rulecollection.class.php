@@ -418,7 +418,7 @@ class RuleCollection extends CommonDBTM {
          Html::openArrowMassives("ruleactions_form", true);
 
          echo "<select name='massiveaction' id='massiveaction'>";
-         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
 
          if ($this->orderby=="ranking") {

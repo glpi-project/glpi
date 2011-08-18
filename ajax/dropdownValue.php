@@ -78,7 +78,7 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
 }
 
 if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
-   $_POST['emptylabel'] = DROPDOWN_EMPTY_VALUE;
+   $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
 if (!isset($_POST['display_rootentity'])) {

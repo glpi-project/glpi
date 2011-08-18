@@ -1591,7 +1591,7 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  $LANG['profiles'][13] . "&nbsp;: </td><td>";
 
-            $options[0] = DROPDOWN_EMPTY_VALUE;
+            $options[0] = Dropdown::EMPTY_VALUE;
             $options += Dropdown::getDropdownArrayNames('glpi_profiles',
                                                 Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
@@ -1735,7 +1735,7 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
 
-            $options = array(0 => DROPDOWN_EMPTY_VALUE);
+            $options = array(0 => Dropdown::EMPTY_VALUE);
             $options += Dropdown::getDropdownArrayNames('glpi_profiles',
                                                 Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
@@ -2290,7 +2290,7 @@ class User extends CommonDBTM {
          if ($p['all']) {
             $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
          } else {
-            $default.= "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>\n";
+            $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
          }
       }
 

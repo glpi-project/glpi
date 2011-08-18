@@ -483,7 +483,7 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>".$LANG['ocsconfig'][20]."</td>";
       echo "<td>";
-      $actions[0] = DROPDOWN_EMPTY_VALUE;
+      $actions[0] = Dropdown::EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
       foreach (getAllDatasFromTable('glpi_states') as $state) {
          $actions['STATE_'.$state['id']] = $LANG['setup'][819].' '.$state['name'];

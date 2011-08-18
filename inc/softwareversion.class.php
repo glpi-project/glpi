@@ -245,7 +245,7 @@ class SoftwareVersion extends CommonDBChild {
                       'myname'       => $p['name'],
                       'value'        => $p['value']);
 
-      $default = "<select name='".$p['name']."'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>
+      $default = "<select name='".$p['name']."'><option value='0'>".Dropdown::EMPTY_VALUE."</option>
                   </select>";
       Ajax::dropdown(false,"/ajax/dropdownInstallVersion.php", $params, $default, $rand);
 

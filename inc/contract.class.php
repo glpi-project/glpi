@@ -192,7 +192,7 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][69]."&nbsp;:</td><td>";
       Dropdown::showInteger("periodicity", $this->fields["periodicity"], 12, 60, 12,
-                            array(0 => DROPDOWN_EMPTY_VALUE,
+                            array(0 => Dropdown::EMPTY_VALUE,
                                   1 => "1",
                                   2 => "2",
                                   3 => "3",
@@ -214,7 +214,7 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showInteger("billing", $this->fields["billing"], 12, 60, 12,
-                            array(0 => DROPDOWN_EMPTY_VALUE,
+                            array(0 => Dropdown::EMPTY_VALUE,
                                   1 => "1",
                                   2 => "2",
                                   3 => "3",
@@ -1295,7 +1295,7 @@ class Contract extends CommonDBTM {
          }
          echo "<option selected value='".$p['value']."'>".$output."</option>";
       } else {
-         echo "<option value='-1'>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value='-1'>".Dropdown::EMPTY_VALUE."</option>";
       }
       $prev = -1;
       while ($data=$DB->fetch_array($result)) {
@@ -1400,7 +1400,7 @@ class Contract extends CommonDBTM {
    static function dropdownAlert($myname, $value) {
       global $LANG;
 
-      $tmp[0]                     = DROPDOWN_EMPTY_VALUE;
+      $tmp[0]                     = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)]    = $LANG['buttons'][32];
       $tmp[pow(2, Alert::NOTICE)] = $LANG['financial'][10];
       $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))]

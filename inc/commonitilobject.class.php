@@ -1688,7 +1688,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     $inobject=true) {
       global $LANG, $CFG_GLPI;
 
-      $types = array(''      => DROPDOWN_EMPTY_VALUE,
+      $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => $LANG['common'][34],
                      'group' => $LANG['common'][35]);
 

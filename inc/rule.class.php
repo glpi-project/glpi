@@ -1186,7 +1186,7 @@ class Rule extends CommonDBTM {
          if ($criteria->fields['condition'] != self::PATTERN_FIND) {
             echo "<td class='b'>".Dropdown::getYesNo($criteria_result["result"])."</td></tr>\n";
          } else {
-            echo "<td class='b'>".DROPDOWN_EMPTY_VALUE."</td></tr>\n";
+            echo "<td class='b'>".Dropdown::EMPTY_VALUE."</td></tr>\n";
          }
       }
       echo "</table></div>";
@@ -1701,7 +1701,7 @@ class Rule extends CommonDBTM {
                       'entity_restrict' => $p['entity_restrict']);
 
       $default  = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
-      $default .= "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
+      $default .= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
       Ajax::dropdown($use_ajax, "/ajax/dropdownRules.php", $params, $default, $rand);
 
       return $rand;

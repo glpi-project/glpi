@@ -511,7 +511,7 @@ class Infocom extends CommonDBChild {
       global $LANG;
 
       echo "<select name='$name'>";
-      echo "<option value='0'".($value==0?" selected ":"")." >".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0'".($value==0?" selected ":"")." >".Dropdown::EMPTY_VALUE."</option>";
       echo "<option value=\"".pow(2,Alert::END)."\" ".($value==pow(2,Alert::END)?" selected ":"")." >".
              $LANG['financial'][80]." </option>";
       echo "</select>";
@@ -528,7 +528,7 @@ class Infocom extends CommonDBChild {
       global $LANG;
 
       echo "<select name='$name'>";
-      echo "<option value='0' ".($value==0?" selected ":"").">".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0' ".($value==0?" selected ":"").">".Dropdown::EMPTY_VALUE."</option>";
       echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][47]."</option>";
       echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][48]."</option>";
       echo "</select>";
