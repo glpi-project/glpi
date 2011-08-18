@@ -114,7 +114,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["host"] = constructMailServerConfig($input);
+         $input["host"] = Toolbox::constructMailServerConfig($input);
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
@@ -138,7 +138,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {
-         $input["host"] = constructMailServerConfig($input);
+         $input["host"] = Toolbox::constructMailServerConfig($input);
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
@@ -221,7 +221,7 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
-      showMailServerConfig($this->fields["host"]);
+      Toolbox::showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."&nbsp;:</td><td>";
       Html::autocompletionTextField($this, "login");
