@@ -1215,7 +1215,7 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['rulesengine'][85]."</td>";
          echo "<td>";
-         printCleanArray($this->regex_results[0]);
+         Html::printCleanArray($this->regex_results[0]);
          echo "</td></tr>\n";
       }
       echo "</tr>\n";

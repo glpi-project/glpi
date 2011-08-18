@@ -673,8 +673,9 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             if ($output_type==HTML_OUTPUT) {
-               printPager($params['start'], $numrows, Toolbox::getItemTypeSearchURL('KnowbaseItem'),
-                          $parameters, 'KnowbaseItem');
+               Html::printPager($params['start'], $numrows,
+                                Toolbox::getItemTypeSearchURL('KnowbaseItem'),
+                                $parameters, 'KnowbaseItem');
             }
 
             $nbcols = 1;
@@ -758,8 +759,9 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo "<br>";
             if ($output_type==HTML_OUTPUT) {
-               printPager($params['start'], $numrows, Toolbox::getItemTypeSearchURL('KnowbaseItem'),
-                          $parameters, 'KnowbaseItem');
+               Html::printPager($params['start'], $numrows,
+                                Toolbox::getItemTypeSearchURL('KnowbaseItem'),
+                                $parameters, 'KnowbaseItem');
             }
 
          } else {

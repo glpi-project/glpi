@@ -303,7 +303,7 @@ class Log extends CommonDBTM {
       }
 
       // Display the pager
-      printAjaxPager($LANG['title'][38],$start,$number);
+      Html::printAjaxPager($LANG['title'][38],$start,$number);
 
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixe'>";

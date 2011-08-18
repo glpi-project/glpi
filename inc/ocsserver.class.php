@@ -2228,7 +2228,7 @@ class OcsServer extends CommonDBTM {
     *
     * @param $ocsservers_id int : id of ocs server in GLPI
     * @param $check string : parameter for HTML input checkbox
-    * @param $start int : parameter for printPager method
+    * @param $start int : parameter for Html::printPager method
     *
     * @return nothing
    **/
@@ -2323,7 +2323,7 @@ class OcsServer extends CommonDBTM {
       $target = $CFG_GLPI['root_doc'].'/front/ocsng.clean.php';
       if (($numrows = count($already_linked)) > 0) {
          $parameters = "check=$check";
-         printPager($start, $numrows, $target, $parameters);
+         Html::printPager($start, $numrows, $target, $parameters);
 
          // delete end
          array_splice($already_linked, $start + $_SESSION['glpilist_limit']);
@@ -2383,7 +2383,7 @@ class OcsServer extends CommonDBTM {
          }
          echo "</td></tr>";
          echo "</table></form>\n";
-         printPager($start, $numrows, $target, $parameters);
+         Html::printPager($start, $numrows, $target, $parameters);
 
       } else {
          echo "<div class='center'><strong>" . $LANG['ocsng'][61] . "</strong></div>";
@@ -2504,7 +2504,7 @@ class OcsServer extends CommonDBTM {
          $target = $CFG_GLPI['root_doc'].'/front/ocsng.sync.php';
          if (($numrows = count($already_linked)) > 0) {
             $parameters = "check=$check";
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
             // delete end
             array_splice($already_linked, $start + $_SESSION['glpilist_limit']);
@@ -2555,7 +2555,7 @@ class OcsServer extends CommonDBTM {
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                    $LANG['buttons'][19] . "</a></td></tr>\n";
             echo "</table></form>\n";
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
             echo "<br><strong>" . $LANG['ocsng'][11] . "</strong>";
@@ -2759,7 +2759,7 @@ class OcsServer extends CommonDBTM {
 
          if (($numrows = count($hardware)) > 0) {
             $parameters = "check=$check";
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
             // delete end
             array_splice($hardware, $start + $_SESSION['glpilist_limit']);
@@ -2912,7 +2912,7 @@ class OcsServer extends CommonDBTM {
                       $LANG['buttons'][19] . "</a>\n";
             }
 
-            printPager($start, $numrows, $target, $parameters);
+            Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
          echo "<table class='tab_cadre_fixe'>";

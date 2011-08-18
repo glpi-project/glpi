@@ -261,7 +261,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Display the pager
-      printAjaxPager($LANG['software'][19],$start,$number);
+      Html::printAjaxPager($LANG['software'][19],$start,$number);
 
       $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,

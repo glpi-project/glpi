@@ -524,7 +524,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       // Display the pager
-      printAjaxPager($LANG['software'][11], $start, $number);
+      Html::printAjaxPager($LANG['software'][11], $start, $number);
 
       $rand = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,

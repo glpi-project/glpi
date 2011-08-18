@@ -243,7 +243,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
 
       // Display the pager
-      printAjaxPager($LANG['software'][9], $start, $number);
+      Html::printAjaxPager($LANG['software'][9], $start, $number);
 
       $query = "SELECT `glpi_computers_softwarelicenses`.*,
                        `glpi_computers`.`name` AS compname,

@@ -1405,9 +1405,10 @@ class Stat {
 
       if ($numrows>0) {
          if ($output_type==HTML_OUTPUT) {
-            printPager($start, $numrows, $target,
-                       "date1=".$date1."&amp;date2=".$date2."&amp;type=hardwares&amp;start=$start",
-                       'Stat');
+            Html::printPager($start, $numrows, $target,
+                             "date1=".$date1."&amp;date2=".$date2.
+                                 "&amp;type=hardwares&amp;start=$start",
+                             'Stat');
             echo "<div class='center'>";
          }
 

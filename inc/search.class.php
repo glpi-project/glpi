@@ -816,7 +816,7 @@ class Search {
                      }
                   }
                }
-               printPager($p['start'], $numrows, $target, $parameters, $itemtype);
+               Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype);
             }
 
             // Form to massive actions
@@ -1295,7 +1295,7 @@ class Search {
                }
             }
             if ($output_type==HTML_OUTPUT) { // In case of HTML display
-               printPager($p['start'], $numrows, $target, $parameters);
+               Html::printPager($p['start'], $numrows, $target, $parameters);
             }
          } else {
             echo self::showError($output_type);
@@ -3166,7 +3166,7 @@ class Search {
       }
       if (!empty($linkfield)) {
          $before = '';
-//          printCleanArray($joinparams);
+//          Html::printCleanArray($joinparams);
          if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
 
             if (isset($joinparams['beforejoin']['table'])) {
@@ -4440,7 +4440,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype] = 0;
          }
       }
-//       printCleanArray($_GET);
+//       Html::printCleanArray($_GET);
    }
 
 
@@ -5185,7 +5185,7 @@ class Search {
    static function computeComplexJoinID($joinparams) {
 
       $complexjoin = '';
-//      printCleanArray($joinparams);
+//      Html::printCleanArray($joinparams);
       if (isset($joinparams['condition'])) {
          $complexjoin .= $joinparams['condition'];
       }

@@ -2867,7 +2867,7 @@ class User extends CommonDBTM {
             $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
                                           array('*', 'createTimeStamp', 'modifyTimestamp'));
             if (is_array($info)) {
-               printCleanArray($info);
+               Html::printCleanArray($info);
             } else {
                echo $LANG['stats'][2];
             }
