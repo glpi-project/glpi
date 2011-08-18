@@ -492,6 +492,67 @@ class Html {
 
 
    /**
+    * Display Debug Informations
+    *
+    * @param $with_session with session information
+   **/
+   static function displayDebugInfos($with_session=true) {
+      global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
+
+      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
+         echo "<div id='debug'>";
+         echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
+
+         if ($CFG_GLPI["debug_sql"]) {
+            echo "<h2>SQL REQUEST : ";
+            echo $SQL_TOTAL_REQUEST." Queries ";
+            echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
+
+            echo "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
+            echo "<th>Errors</th></tr>";
+
+            foreach ($DEBUG_SQL['queries'] as $num => $query) {
+               echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+               echo str_ireplace("ORDER BY","<br>ORDER BY",
+                           str_ireplace("SORT","<br>SORT",
+                                 str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+                                       str_ireplace("INNER JOIN","<br>INNER JOIN",
+                                             str_ireplace("WHERE","<br>WHERE",
+                                                   str_ireplace("FROM","<br>FROM",
+                                                         str_ireplace("UNION","<br>UNION<br>",
+                                                               str_replace(">","&gt;",
+                                                                   str_replace("<","&lt;",$query)))))))));
+               echo "</td><td>";
+               echo $DEBUG_SQL['times'][$num];
+               echo "</td><td>";
+               if (isset($DEBUG_SQL['errors'][$num])) {
+                  echo $DEBUG_SQL['errors'][$num];
+               } else {
+                  echo "&nbsp;";
+               }
+               echo "</td></tr>";
+            }
+            echo "</table>";
+         }
+
+         if ($CFG_GLPI["debug_vars"]) {
+            echo "<h2>AUTOLOAD</h2>";
+            echo "<p>" . implode(', ', $DEBUG_AUTOLOAD) . "</p>";
+            echo "<h2>POST VARIABLE</h2>";
+            self::printCleanArray($_POST);
+            echo "<h2>GET VARIABLE</h2>";
+            self::printCleanArray($_GET);
+            if ($with_session) {
+               echo "<h2>SESSION VARIABLE</h2>";
+               self::printCleanArray($_SESSION);
+            }
+         }
+         echo "</div>";
+      }
+   }
+
+
+   /**
     * Display a Link to the last page using http_referer if available else use history.back
    **/
    static function displayBackLink() {
@@ -2232,7 +2293,7 @@ class Html {
          echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
          echo "</div>";
       }
-      displayDebugInfos();
+      self::displayDebugInfos();
       echo "</body></html>";
 
       if (!$keepDB) {
@@ -2252,7 +2313,7 @@ class Html {
          echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
                 AJAX DEBUG</a></div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
-         displayDebugInfos(false);
+         self::displayDebugInfos(false);
          echo "</div></div>";
       }
    }
@@ -2570,7 +2631,7 @@ class Html {
          echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
          echo "</div>";
       }
-      displayDebugInfos();
+      self::displayDebugInfos();
       echo "</body></html>";
       closeDBConnections();
    }
@@ -2945,6 +3006,138 @@ class Html {
       $output .= "</script>\n";
 
       echo $output;
+      return $rand;
+   }
+
+
+   /**
+    * Show generic date search
+    *
+    * @param $element name of the html element
+    * @param $value default value
+    * @param $with_time display with time selection ?
+    * @param $with_future display with future date selection ?
+    *
+    * @return rand value of dropdown
+   **/
+   static function showGenericDateTimeSearch($element, $value='', $with_time=false,
+                                             $with_future=false) {
+      global $LANG, $CFG_GLPI;
+
+      $rand = mt_rand();
+
+      // Validate value
+      if ($value!='NOW'
+          && !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)
+          && !strstr($value,'HOUR')
+          && !strstr($value,'DAY')
+          && !strstr($value,'WEEK')
+          && !strstr($value,'MONTH')
+          && !strstr($value,'YEAR')) {
+
+         $value = "";
+      }
+
+      if (empty($value)) {
+         $value = 'NOW';
+      }
+      $specific_value = date("Y-m-d H:i:s");
+
+      if (preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)) {
+         $specific_value = $value;
+         $value          = 0;
+      }
+      echo "<table><tr><td>";
+      echo "<select id='genericdate$element$rand' name='_select_$element'>";
+
+      $val = 'NOW';
+      echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][16]."</option>";
+      echo "<option value='0' ".($value===0?'selected':'').">".$LANG['calendar'][17]."</option>";
+
+      if ($with_time) {
+         for ($i=1 ; $i<=24 ; $i++) {
+            $val = '-'.$i.'HOUR';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "- $i ".$LANG['gmt'][1]."</option>";
+         }
+      }
+
+      for ($i=1 ; $i<=7 ; $i++) {
+         $val = '-'.$i.'DAY';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "- $i ".$LANG['calendar'][12]."</option>";
+      }
+
+      for ($i=1 ; $i<=10 ; $i++) {
+         $val = '-'.$i.'WEEK';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "- $i ".$LANG['calendar'][13]."</option>";
+      }
+
+      for ($i=1 ; $i<=12 ; $i++) {
+         $val = '-'.$i.'MONTH';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "- $i ".$LANG['calendar'][14]."</option>";
+      }
+
+      for ($i=1 ; $i<=10 ; $i++) {
+         $val = '-'.$i.'YEAR';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "- $i ".$LANG['calendar'][15]."</option>";
+      }
+
+      if ($with_future) {
+         if ($with_time) {
+            for ($i=1 ; $i<=24 ; $i++) {
+               $val = $i.'HOUR';
+               echo "<option value='$val' ".($value===$val?'selected':'').">";
+               echo "+ $i ".$LANG['gmt'][1]."</option>";
+            }
+         }
+
+         for ($i=1 ; $i<=7 ; $i++) {
+            $val = $i.'DAY';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "+ $i ".$LANG['calendar'][12]."</option>";
+         }
+
+         for ($i=1 ; $i<=10 ; $i++) {
+            $val = $i.'WEEK';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "+ $i ".$LANG['calendar'][13]."</option>";
+         }
+
+         for ($i=1 ; $i<=12 ; $i++) {
+            $val = $i.'MONTH';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "+ $i ".$LANG['calendar'][14]."</option>";
+         }
+
+         for ($i=1 ; $i<=10 ; $i++) {
+            $val = $i.'YEAR';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "+ $i ".$LANG['calendar'][15]."</option>";
+         }
+      }
+
+      echo "</select>";
+
+      echo "</td><td>";
+      echo "<div id='displaygenericdate$element$rand'></div>";
+
+      $params = array('value'          => '__VALUE__',
+                       'name'          => $element,
+                       'withtime'      => $with_time,
+                       'specificvalue' => $specific_value);
+
+      Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
+
+      $params['value'] = $value;
+      Ajax::updateItem("displaygenericdate$element$rand", $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                     $params);
+
+      echo "</td></tr></table>";
       return $rand;
    }
 

@@ -184,7 +184,7 @@ if ($rulecollection->showChildrensTab()) {
 
 
 echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$rulecollection->getRuleClassName());
+Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $rulecollection->getRuleClassName());
 echo "<div id='tabcontent'>&nbsp;</div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 Html::footer();

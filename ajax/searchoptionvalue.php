@@ -235,16 +235,16 @@ if (isset($_REQUEST['searchtype'])) {
 
                   case "date" :
                   case "date_delay" :
-                     showGenericDateTimeSearch($inputname, $_REQUEST['value'], false,
-                                               (isset($searchopt['maybefuture'])
-                                                && $searchopt['maybefuture']));
+                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'], false,
+                                                     (isset($searchopt['maybefuture'])
+                                                       && $searchopt['maybefuture']));
                      $display = true;
                      break;
 
                   case "datetime" :
-                     showGenericDateTimeSearch($inputname, $_REQUEST['value'], true,
-                                               (isset($searchopt['maybefuture'])
-                                                      && $searchopt['maybefuture']));
+                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'], true,
+                                                     (isset($searchopt['maybefuture'])
+                                                       && $searchopt['maybefuture']));
                      $display = true;
                      break;
                }

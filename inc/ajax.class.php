@@ -79,6 +79,114 @@ class Ajax {
 
 
    /**
+    *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
+    *
+    * @param $tabdiv_id ID of the div containing the tabs
+    * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
+    * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
+    * @param $type for active tab
+    * @param $size width of tabs panel
+    *
+    * @return nothing
+   **/
+   static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
+                              $type, $size=950) {
+      global $CFG_GLPI;
+
+      $active_tabs = Session::getActiveTab($type);
+
+      if (count($tabs)>0) {
+         echo "<script type='text/javascript'>
+
+               var tabpanel = new Ext.TabPanel({
+               applyTo: '$tabdiv_id',
+               width:$size,
+               enableTabScroll: true,
+               resizeTabs: false,
+               collapsed: true,
+               plain: true,
+               plugins: [{
+                   ptype: 'tabscrollermenu',
+                   maxText  : 50,
+                   pageSize : 30
+               }],
+               items: [";
+               $first = true;
+               $default_tab = $active_tabs;
+
+               if (!isset($tabs[$active_tabs])) {
+                  $default_tab = key($tabs);
+               }
+
+               foreach ($tabs as $key => $val) {
+                  if ($first) {
+                     $first = false;
+                  } else {
+                     echo ",";
+                  }
+
+                  echo "{
+                     title: \"".$val['title']."\",
+                     id: '$key',";
+                  if (!empty($key) && $key != 'empty') {
+                     echo "autoLoad: {url: '".$val['url']."',
+                           scripts: true,
+                           nocache: true";
+                           if (isset($val['params'])) {
+                              echo ", params: '".$val['params']."'";
+                           }
+                     echo "},";
+                  }
+
+                  echo "  listeners:{ // Force glpi_tab storage
+                          beforeshow : function(panel) {
+                           /* clean content because append data instead of replace it : no more problem */
+                           /* Problem with IE6... But clean data for tabpanel before show. Do it on load default tab ?*/
+                           /*tabpanel.body.update('');*/
+                           /* update active tab*/
+                           Ext.Ajax.request({
+                              url : '".$CFG_GLPI['root_doc'].
+                                     "/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=".
+                                     urlencode($key)."',
+                              success: function(objServerResponse) {
+                              //alert(objServerResponse.responseText);
+                           }
+                           });
+                        }
+                     }";
+                  echo "}";
+               } // Foreach tabs
+            echo "]});";
+
+            echo "/// Define view point";
+            echo "tabpanel.expand();";
+
+            echo "// force first load
+               function loadDefaultTab() {
+                  tabpanel.body=Ext.get('$tabdivcontent_id');
+                  // See before
+                  tabpanel.body.update('');
+                  tabpanel.Session::setActiveTab('$default_tab');";
+            echo "}";
+
+            echo "// force reload
+               function reloadTab(add) {
+                  var tab = tabpanel.Session::getActiveTab();
+                  var opt = tab.autoLoad;
+                  if (add) {
+                     if (opt.params)
+                        opt.params = opt.params + '&' + add;
+                     else
+                        opt.params = add;
+                  }
+                  tab.getUpdater().update(opt);";
+            echo "}";
+         echo "</script>";
+      }
+   }
+
+
+   /**
     * Javascript code for update an item when another item changed
     *
     * @param $toobserve id (or array of id) of the select to observe
