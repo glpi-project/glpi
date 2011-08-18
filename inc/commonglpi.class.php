@@ -503,7 +503,7 @@ class CommonGLPI {
                                           "&glpi_tab=-1&id=$ID$extraparam");
          }
 
-         createAjaxTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
       }
    }
 

@@ -116,9 +116,8 @@ if ($_GET["action"] == "edit") {
                        'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=Bookmark");
    }
    echo "<div id='tabspanel' class='center-h'></div>";
-   createAjaxTabs('tabspanel', 'tabcontent', $tabs, 'Bookmark', Bookmark::WIDTH);
+   Ajax::createTabs('tabspanel', 'tabcontent', $tabs, 'Bookmark', Bookmark::WIDTH);
    echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
-
 ?>

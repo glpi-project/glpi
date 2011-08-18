@@ -83,7 +83,7 @@ if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
                                 "display&displaytype=".$_REQUEST["itemtype"]);
 
    echo "<div id='tabspanel' class='center-h'></div>";
-   createAjaxTabs('tabspanel','tabcontent',$tabs,'DisplayPreference');
+   Ajax::createTabs('tabspanel', 'tabcontent', $tabs, 'DisplayPreference');
    echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
