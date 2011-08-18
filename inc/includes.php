@@ -50,7 +50,6 @@ $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/db.function.php");
-include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
 
 // Standard includes

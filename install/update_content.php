@@ -41,7 +41,6 @@ $CFG_GLPI['root_doc'] = '..';
 
 include_once (GLPI_ROOT . "/config/define.php");
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
-include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
