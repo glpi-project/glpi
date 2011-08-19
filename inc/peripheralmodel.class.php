@@ -42,10 +42,13 @@ class PeripheralModel extends CommonDropdown {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][97];
+      if ($nb>1) {
+         return $LANG['setup'][97];
+      }
+      return $LANG['dropdown'][24];
    }
 }
 

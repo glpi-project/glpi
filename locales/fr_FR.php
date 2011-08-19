@@ -403,6 +403,9 @@ $LANG['computers'][63] = "Etat de la machine virtuelle";
 $LANG['computers'][64] = "Machine";
 $LANG['computers'][65] = "Liste des machines hôtes";
 $LANG['computers'][66] = "Liste des machines virtuelles";
+$LANG['computers'][67] = "Systèmes de virtualisation";
+$LANG['computers'][68] = "Modèles de virtualisation";
+$LANG['computers'][69] = "Etats des machines virtuelles";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
@@ -627,6 +630,12 @@ $LANG['dropdown'][16] = "Type d'interface";
 $LANG['dropdown'][17] = "Type de boitier";
 $LANG['dropdown'][18] = "Type d'alimentation téléphone";
 $LANG['dropdown'][19] = "Systèmes de fichiers";
+$LANG['dropdown'][20] = "Modèle d'ordinateur";
+$LANG['dropdown'][21] = "Modèle de matériel réseau";
+$LANG['dropdown'][22] = "Modèle d'imprimante";
+$LANG['dropdown'][23] = "Modèle de moniteur";
+$LANG['dropdown'][24] = "Modèle de périphérique";
+$LANG['dropdown'][25] = "Modèle de téléphone";
 
 
 $LANG['entity'][0]  = "Entité";

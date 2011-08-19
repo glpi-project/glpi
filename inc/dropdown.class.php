@@ -629,17 +629,17 @@ class Dropdown {
                                                'PhonePowerSupply'     => PhonePowerSupply::getTypeName(2),
                                                'Filesystem'           => Filesystem::getTypeName(2)),
 
-                  $LANG['common'][22] => array('ComputerModel'         => $LANG['setup'][91],
-                                               'NetworkEquipmentModel' => $LANG['setup'][95],
-                                               'PrinterModel'          => $LANG['setup'][96],
-                                               'MonitorModel'          => $LANG['setup'][94],
-                                               'PeripheralModel'       => $LANG['setup'][97],
-                                               'PhoneModel'            => $LANG['setup'][503]),
+                  $LANG['common'][22] => array('ComputerModel'         => ComputerModel::getTypeName(2),
+                                               'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(2),
+                                               'PrinterModel'          => PrinterModel::getTypeName(2),
+                                               'MonitorModel'          => MonitorModel::getTypeName(2),
+                                               'PeripheralModel'       => PeripheralModel::getTypeName(2),
+                                               'PhoneModel'            => PhoneModel::getTypeName(2)),
 
                   $LANG['computers'][57]
-                                      => array('VirtualMachineType'   => $LANG['computers'][62],
-                                               'VirtualMachineSystem' => $LANG['computers'][60],
-                                               'VirtualMachineState'  => $LANG['computers'][63]),
+                                      => array('VirtualMachineType'   => VirtualMachineType::getTypeName(2),
+                                               'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
+                                               'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
 
                   $LANG['Menu'][26]   => array('DocumentCategory' => $LANG['setup'][81],
                                                'DocumentType'     => $LANG['document'][7]),

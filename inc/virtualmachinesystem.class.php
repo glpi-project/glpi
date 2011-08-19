@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class Filesystem
 class VirtualMachineSystem extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['computers'][68];
+      }
       return $LANG['computers'][60];
    }
 
