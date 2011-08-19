@@ -136,7 +136,7 @@ class Computer_Device extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = addslashes($dev->getName());
       Log::history($this->fields['computers_id'], 'Computer', $changes, get_class($dev),
-                   HISTORY_ADD_DEVICE);
+                   Log::HISTORY_ADD_DEVICE);
    }
 
 
@@ -155,7 +155,7 @@ class Computer_Device extends CommonDBTM {
       $changes[1] = addslashes($dev->getName());
       $changes[2] = '';
       Log::history($this->fields['computers_id'], 'Computer', $changes, get_class($dev),
-                   HISTORY_DELETE_DEVICE);
+                   Log::HISTORY_DELETE_DEVICE);
    }
 
 
@@ -172,7 +172,7 @@ class Computer_Device extends CommonDBTM {
       $changes[2] = $this->fields['specificity'];
       // history log
       Log::history($this->fields['computers_id'], 'Computer', $changes, $this->input['_itemtype'],
-                   HISTORY_UPDATE_DEVICE);
+                   Log::HISTORY_UPDATE_DEVICE);
    }
 
 

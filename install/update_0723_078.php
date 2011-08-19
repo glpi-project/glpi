@@ -2757,9 +2757,10 @@ function update0723to078($output='HTML') {
          $query = "UPDATE `glpi_logs`
                    SET `itemtype_link` = '$val'
                    WHERE `device_internal_type` = '$key'
-                        AND `linked_action` IN (".HISTORY_ADD_RELATION.", ".HISTORY_DEL_RELATION.",
-                                                ".HISTORY_DISCONNECT_DEVICE.",
-                                                ".HISTORY_CONNECT_DEVICE.")";
+                        AND `linked_action` IN (".Log::HISTORY_ADD_RELATION.",
+                                                ".Log::ISTORY_DEL_RELATION.",
+                                                ".Log::HISTORY_DISCONNECT_DEVICE.",
+                                                ".Log::HISTORY_CONNECT_DEVICE.")";
          $DB->query($query)
          or die("0.78 update itemtype of table glpi_logs for $val " . $LANG['update'][90] .
                 $DB->error());
@@ -2769,8 +2770,9 @@ function update0723to078($output='HTML') {
          $query = "UPDATE `glpi_logs`
                    SET `itemtype_link` = '$val'
                    WHERE `device_internal_type` = '$key'
-                         AND `linked_action` IN (".HISTORY_ADD_DEVICE.", ".HISTORY_UPDATE_DEVICE.",
-                                                 ".HISTORY_DELETE_DEVICE.")";
+                         AND `linked_action` IN (".Log::HISTORY_ADD_DEVICE.",
+                                                 ".Log::HISTORY_UPDATE_DEVICE.",
+                                                 ".Log::HISTORY_DELETE_DEVICE.")";
          $DB->query($query)
          or die("0.78 update itemtype of table glpi_logs for $val ".$LANG['update'][90].$DB->error());
       }

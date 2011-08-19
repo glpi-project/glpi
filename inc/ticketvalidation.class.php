@@ -216,7 +216,7 @@ class TicketValidation  extends CommonDBChild {
          $changes[2] = addslashes($LANG['validation'][13]." ".
                                   getUserName($this->fields["users_id_validate"]));
          Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                      HISTORY_LOG_SIMPLE_MESSAGE);
+                      Log::HISTORY_LOG_SIMPLE_MESSAGE);
       }
    }
 
@@ -289,7 +289,7 @@ class TicketValidation  extends CommonDBChild {
 
          }
          Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
-                      HISTORY_LOG_SIMPLE_MESSAGE);
+                      Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
          // Set global validation to accepted to define one
          if ($job->fields['global_validation'] == 'waiting'
@@ -313,7 +313,7 @@ class TicketValidation  extends CommonDBChild {
       $changes[2] = addslashes($LANG['validation'][30]." ".
                     getUserName($this->fields["users_id_validate"]));
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                   HISTORY_LOG_SIMPLE_MESSAGE);
+                   Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
 

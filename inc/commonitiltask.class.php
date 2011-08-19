@@ -134,7 +134,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
-                   $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+                   $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
       $options = array('task_id' => $this->fields["id"]);
       NotificationEvent::raiseEvent('delete_task', $item, $options);
@@ -215,7 +215,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
          Log::history($this->getField($item->getForeignKeyField()), $itemtype, $changes,
-                      $this->getType(), HISTORY_UPDATE_SUBITEM);
+                      $this->getType(), Log::HISTORY_UPDATE_SUBITEM);
       }
    }
 
@@ -318,7 +318,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $changes[2] = $this->fields['id'];
       Log::history($this->getField($this->input["_job"]->getForeignKeyField()),
                    $this->input["_job"]->getTYpe(), $changes, $this->getType(),
-                   HISTORY_ADD_SUBITEM);
+                   Log::HISTORY_ADD_SUBITEM);
    }
 
 

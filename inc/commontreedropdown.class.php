@@ -253,7 +253,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $changes[0] = '0';
          $changes[1] = '';
          $changes[2] = addslashes($this->getNameID());
-         Log::history($parent, $this->getType(), $changes, $this->getType(), HISTORY_ADD_SUBITEM);
+         Log::history($parent, $this->getType(), $changes, $this->getType(),
+                      Log::HISTORY_ADD_SUBITEM);
       }
    }
 
@@ -281,7 +282,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                $changes[1] = addslashes($this->getNameID());
                $changes[2] = '';
                Log::history($oldParentID, $this->getType(), $changes, $this->getType(),
-                            HISTORY_DELETE_SUBITEM);
+                            Log::HISTORY_DELETE_SUBITEM);
             }
          }
 
@@ -294,7 +295,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                $changes[1] = '';
                $changes[2] = addslashes($this->getNameID());
                Log::history($newParentID, $this->getType(), $changes, $this->getType(),
-                            HISTORY_ADD_SUBITEM);
+                            Log::HISTORY_ADD_SUBITEM);
             }
          }
 
@@ -302,7 +303,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $changes[0] = '0';
             $changes[1] = $oldParentNameID;
             $changes[2] = $newParentNameID;
-            Log::history($ID, $this->getType(), $changes, $this->getType(), HISTORY_UPDATE_SUBITEM);
+            Log::history($ID, $this->getType(), $changes, $this->getType(),
+                         Log::HISTORY_UPDATE_SUBITEM);
          }
 
       }
@@ -316,7 +318,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $changes[0] = '0';
          $changes[1] = addslashes($this->getNameID());
          $changes[2] = '';
-         Log::history($parent, $this->getType(), $changes, $this->getType(), HISTORY_DELETE_SUBITEM);
+         Log::history($parent, $this->getType(), $changes, $this->getType(),
+                      Log::HISTORY_DELETE_SUBITEM);
       }
    }
 

@@ -1086,7 +1086,7 @@ class OcsServer extends CommonDBTM {
             $changes[1] = $data["ocsid"];
             //New ocsid
             $changes[2] = $ocsid;
-            Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IDCHANGED);
+            Log::history($computers_id, 'Computer', $changes, 0, Log::HISTORY_OCS_IDCHANGED);
          }
       }
 
@@ -1192,7 +1192,7 @@ class OcsServer extends CommonDBTM {
                $changes[0] = '0';
                $changes[1] = "";
                $changes[2] = $ocsid;
-               Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_LINK);
+               Log::history($computers_id, 'Computer', $changes, 0, Log::HISTORY_OCS_LINK);
             }
 
             self::updateComputer($idlink, $ocsservers_id, 0);
@@ -1373,7 +1373,7 @@ class OcsServer extends CommonDBTM {
                            //New ocsid
                            $changes[2] = $data["ID"];
                            Log::history($DB->result($res_id, 0, "computers_id"), 'Computer',
-                                        $changes, 0, HISTORY_OCS_IDCHANGED);
+                                        $changes, 0, Log::HISTORY_OCS_IDCHANGED);
                         }
                      }
                   }
@@ -1605,7 +1605,7 @@ class OcsServer extends CommonDBTM {
                $changes[0] = '0';
                $changes[1] = "";
                $changes[2] = $ocsid;
-               Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IMPORT);
+               Log::history($computers_id, 'Computer', $changes, 0, Log::HISTORY_OCS_IMPORT);
 
                if ($idlink = self::ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
                   self::updateComputer($idlink, $ocsservers_id, 0);
@@ -1986,7 +1986,7 @@ class OcsServer extends CommonDBTM {
             $compupdate["comment"] .= "Swap: " . $line["SWAP"];
          }
 
-         if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT 
+         if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT
             && $options['cfg_ocs']["import_general_uuid"]
                && !in_array("uuid", $options['computers_updates'])) {
             $compupdate["uuid"] = $line["UUID"];
@@ -2436,7 +2436,8 @@ class OcsServer extends CommonDBTM {
                $changes[0] = '0';
                $changes[1] = $data["ocsid"];
                $changes[2] = "";
-               Log::history($data["computers_id"], 'Computer', $changes, 0, HISTORY_OCS_DELETE);
+               Log::history($data["computers_id"], 'Computer', $changes, 0,
+                            Log::HISTORY_OCS_DELETE);
 
                $query = "DELETE
                          FROM `glpi_ocslinks`
@@ -5882,7 +5883,7 @@ class OcsServer extends CommonDBTM {
             $changes[1] = $line_links["tag"];
             $changes[2] = $data_ocs["TAG"];
 
-            Log::history($line_links["id"], 'Ocslink', $changes, 0, HISTORY_OCS_LINK);
+            Log::history($line_links["id"], 'Ocslink', $changes, 0, Log::HISTORY_OCS_LINK);
             return $data_ocs["TAG"];
          }
       }

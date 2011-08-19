@@ -221,7 +221,7 @@ class TicketFollowup  extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                   HISTORY_DELETE_SUBITEM);
+                   Log::HISTORY_DELETE_SUBITEM);
 
       $options = array('followup_id' => $this->fields["id"]);
       NotificationEvent::raiseEvent('delete_followup', $job, $options);
@@ -260,7 +260,7 @@ class TicketFollowup  extends CommonDBTM {
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
          Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                      HISTORY_UPDATE_SUBITEM);
+                      Log::HISTORY_UPDATE_SUBITEM);
       }
    }
 
@@ -377,7 +377,7 @@ class TicketFollowup  extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
-                   HISTORY_ADD_SUBITEM);
+                   Log::HISTORY_ADD_SUBITEM);
    }
 
 
