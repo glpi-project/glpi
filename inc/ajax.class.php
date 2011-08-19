@@ -166,7 +166,7 @@ class Ajax {
                   tabpanel.body=Ext.get('$tabdivcontent_id');
                   // See before
                   tabpanel.body.update('');
-                  tabpanel.Session::setActiveTab('$default_tab');";
+                  tabpanel.setActiveTab('$default_tab');";
             echo "}";
 
             echo "// force reload
