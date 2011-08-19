@@ -2379,16 +2379,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Add div to display form's tabs
-   **/
-   function addDivForTabs() {
-
-      echo "<div id='tabcontent'>&nbsp;</div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-   }
-
-
-   /**
     * Return a search option by looking for a value of a specific field and maybe a specific table
     *
     * @param field the field in which looking for the value (for exampe : table, name, etc)
