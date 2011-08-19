@@ -1966,7 +1966,8 @@ class OcsServer extends CommonDBTM {
                       FROM `glpi_users`
                       WHERE `name` = '" . $line["USERID"] . "';";
             $result = $DB->query($query);
-            if ($DB->numrows($result) == 1 && !in_array("users_id", $options['computers_updates'])) {
+            if ($DB->numrows($result) == 1
+                && !in_array("users_id", $options['computers_updates'])) {
                $compupdate["users_id"] = $DB->result($result, 0, 0);
             }
          }
@@ -1987,12 +1988,13 @@ class OcsServer extends CommonDBTM {
          }
 
          if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT
-            && $options['cfg_ocs']["import_general_uuid"]
-               && !in_array("uuid", $options['computers_updates'])) {
+             && $options['cfg_ocs']["import_general_uuid"]
+             && !in_array("uuid", $options['computers_updates'])) {
             $compupdate["uuid"] = $line["UUID"];
          }
 
-         return array('logHistory'=>$logHistory,'fields'=>$compupdate);
+         return array('logHistory' => $logHistory,
+                      'fields'     => $compupdate);
       }
    }
 
