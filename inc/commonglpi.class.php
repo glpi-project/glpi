@@ -538,12 +538,20 @@ class CommonGLPI {
    }
 
 
-   function show() {
-
-      $this->showTabs(0);
+   /**
+    * Add div to display form's tabs
+   **/
+   function addDivForTabs() {
 
       echo "<div id='tabcontent'>&nbsp;</div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   }
+
+
+   function show() {
+
+      $this->showTabs();
+      $this->addDivForTabs();
    }
 
 
