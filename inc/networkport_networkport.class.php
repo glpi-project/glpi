@@ -203,7 +203,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          }
 
          Log::history($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
-                      $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+                      $pd->fields["itemtype"], Log::HISTORY_CONNECT_DEVICE);
       }
 
       if ($desthistory) {
@@ -218,7 +218,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          }
 
          Log::history($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
-                      $ps->fields["itemtype"], HISTORY_CONNECT_DEVICE);
+                      $ps->fields["itemtype"], Log::HISTORY_CONNECT_DEVICE);
       }
    }
 
@@ -291,7 +291,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                $changes[1] = $changes[1] . " > #" . $np2->fields["name"];
             }
             Log::history($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
-                         $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+                         $np2->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
          }
 
          $name      = NOT_AVAILABLE;
@@ -317,7 +317,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                $changes[1] = $changes[1] . " > #" . $np1->fields["name"];
             }
             Log::history($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
-                         $np1->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
+                         $np1->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
          }
       }
 

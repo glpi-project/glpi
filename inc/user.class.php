@@ -2660,7 +2660,7 @@ class User extends CommonDBTM {
       $changes[0] = '0';
       $changes[1] = '';
       $changes[2] = addslashes($LANG['ldap'][48]);
-      Log::history($users_id,'User',$changes,0,HISTORY_LOG_SIMPLE_MESSAGE);
+      Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
 

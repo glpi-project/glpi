@@ -683,7 +683,7 @@ class CommonDBTM extends CommonGLPI {
                   $changes[1] = $changes[2] = "";
 
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
-                               HISTORY_CREATE_ITEM);
+                               Log::HISTORY_CREATE_ITEM);
                }
 
                 // Auto create infocoms
@@ -1119,7 +1119,7 @@ class CommonDBTM extends CommonGLPI {
                   $changes[1] = $changes[2] = "";
 
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
-                               HISTORY_DELETE_ITEM);
+                               Log::HISTORY_DELETE_ITEM);
                }
 
                $this->post_deleteItem();
@@ -1250,7 +1250,8 @@ class CommonDBTM extends CommonGLPI {
          if ($this->dohistory && $history) {
             $changes[0] = 0;
             $changes[1] = $changes[2] = "";
-            Log::history($this->input["id"], $this->getType(), $changes, 0, HISTORY_RESTORE_ITEM);
+            Log::history($this->input["id"], $this->getType(), $changes, 0,
+                         Log::HISTORY_RESTORE_ITEM);
          }
 
          $this->post_restoreItem();

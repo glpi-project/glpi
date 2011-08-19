@@ -902,7 +902,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
          // Log on Computer history
          Log::history($this->fields['computers_id'], 'Computer', $changes, 0,
-                      HISTORY_INSTALL_SOFTWARE);
+                      Log::HISTORY_INSTALL_SOFTWARE);
       }
       $comp = new Computer();
       if ($comp->getFromDB($this->fields['computers_id'])) {
@@ -911,7 +911,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $changes[2] = addslashes($comp->fields["name"]);
          // Log on SoftwareVersion history
          Log::history($this->fields['softwareversions_id'], 'SoftwareVersion', $changes, 0,
-                      HISTORY_INSTALL_SOFTWARE);
+                      Log::HISTORY_INSTALL_SOFTWARE);
       }
    }
 
@@ -947,7 +947,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $changes[2] = "";
          // Log on Computer history
          Log::history($this->fields['computers_id'], 'Computer', $changes, 0,
-                      HISTORY_UNINSTALL_SOFTWARE);
+                      Log::HISTORY_UNINSTALL_SOFTWARE);
       }
       $comp = new Computer();
       if ($comp->getFromDB($this->fields['computers_id'])) {
@@ -956,7 +956,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $changes[2] = "";
          // Log on SoftwareVersion history
          Log::history($this->fields['softwareversions_id'], 'SoftwareVersion', $changes, 0,
-                      HISTORY_UNINSTALL_SOFTWARE);
+                      Log::HISTORY_UNINSTALL_SOFTWARE);
       }
    }
 

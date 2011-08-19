@@ -703,7 +703,7 @@ class Profile_User extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = addslashes($this->getName());
       Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   HISTORY_ADD_SUBITEM);
+                   Log::HISTORY_ADD_SUBITEM);
    }
 
 
@@ -716,7 +716,7 @@ class Profile_User extends CommonDBTM {
       $changes[1] = addslashes($this->getName());
       $changes[2] = '';
       Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                   HISTORY_DELETE_SUBITEM);
+                   Log::HISTORY_DELETE_SUBITEM);
    }
 
 

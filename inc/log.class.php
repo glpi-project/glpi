@@ -41,6 +41,27 @@ if (!defined('GLPI_ROOT')) {
 // Log class
 class Log extends CommonDBTM {
 
+   const HISTORY_ADD_DEVICE         = 1;
+   const HISTORY_UPDATE_DEVICE      = 2;
+   const HISTORY_DELETE_DEVICE      = 3;
+   const HISTORY_INSTALL_SOFTWARE   = 4;
+   const HISTORY_UNINSTALL_SOFTWARE = 5;
+   const HISTORY_DISCONNECT_DEVICE  = 6;
+   const HISTORY_CONNECT_DEVICE     = 7;
+   const HISTORY_OCS_IMPORT         = 8;
+   const HISTORY_OCS_DELETE         = 9;
+   const HISTORY_OCS_IDCHANGED      = 10;
+   const HISTORY_OCS_LINK           = 11;
+   const HISTORY_LOG_SIMPLE_MESSAGE = 12;
+   const HISTORY_DELETE_ITEM        = 13;
+   const HISTORY_RESTORE_ITEM       = 14;
+   const HISTORY_ADD_RELATION       = 15;
+   const HISTORY_DEL_RELATION       = 16;
+   const HISTORY_ADD_SUBITEM        = 17;
+   const HISTORY_UPDATE_SUBITEM     = 18;
+   const HISTORY_DELETE_SUBITEM     = 19;
+   const HISTORY_CREATE_ITEM        = 20;
+
 
    static function getTypeName() {
       global $LANG;
@@ -370,19 +391,19 @@ class Log extends CommonDBTM {
          if ($data["linked_action"]) {
             // Yes it is an internal device
             switch ($data["linked_action"]) {
-               case HISTORY_CREATE_ITEM :
+               case self::HISTORY_CREATE_ITEM :
                   $tmp['change'] = $LANG['log'][20];
                   break;
 
-               case HISTORY_DELETE_ITEM :
+               case self::HISTORY_DELETE_ITEM :
                   $tmp['change'] = $LANG['log'][22];
                   break;
 
-               case HISTORY_RESTORE_ITEM :
+               case self::HISTORY_RESTORE_ITEM :
                   $tmp['change'] = $LANG['log'][23];
                   break;
 
-               case HISTORY_ADD_DEVICE :
+               case self::HISTORY_ADD_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -391,7 +412,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['devices'][25]." : "."\"". $data["new_value"]."\"";
                   break;
 
-               case HISTORY_UPDATE_DEVICE :
+               case self::HISTORY_UPDATE_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   $change = '';
                   if (class_exists($data["itemtype_link"])) {
@@ -403,7 +424,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] .= $data[ "old_value"]." --> "."\"". $data[ "new_value"]."\"";
                   break;
 
-               case HISTORY_DELETE_DEVICE :
+               case self::HISTORY_DELETE_DEVICE :
                   $tmp['field']=NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -412,17 +433,17 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['devices'][26]." : "."\"". $data["old_value"]."\"";
                   break;
 
-               case HISTORY_INSTALL_SOFTWARE :
+               case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = $LANG['help'][31];
                   $tmp['change'] = $LANG['software'][44]." : "."\"".$data["new_value"]."\"";
                   break;
 
-               case HISTORY_UNINSTALL_SOFTWARE :
+               case self::HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']  = $LANG['help'][31];
                   $tmp['change'] = $LANG['software'][45]." : "."\"". $data["old_value"]."\"";
                   break;
 
-               case HISTORY_DISCONNECT_DEVICE :
+               case self::HISTORY_DISCONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -431,7 +452,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][26]." : "."\"". $data["old_value"]."\"";
                   break;
 
-               case HISTORY_CONNECT_DEVICE :
+               case self::HISTORY_CONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -440,7 +461,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][27]." : "."\"". $data["new_value"]."\"";
                   break;
 
-               case HISTORY_OCS_IMPORT :
+               case self::HISTORY_OCS_IMPORT :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]." :";
@@ -450,7 +471,7 @@ class Log extends CommonDBTM {
                   }
                   break;
 
-               case HISTORY_OCS_DELETE :
+               case self::HISTORY_OCS_DELETE :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  ="";
                      $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]." :";
@@ -460,7 +481,7 @@ class Log extends CommonDBTM {
                   }
                   break;
 
-               case HISTORY_OCS_LINK :
+               case self::HISTORY_OCS_LINK :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field'] = NOT_AVAILABLE;
                      if (class_exists($data["itemtype_link"])) {
@@ -475,7 +496,7 @@ class Log extends CommonDBTM {
                   }
                   break;
 
-               case HISTORY_OCS_IDCHANGED :
+               case self::HISTORY_OCS_IDCHANGED :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][48]." "." : "."\"".
@@ -486,12 +507,12 @@ class Log extends CommonDBTM {
                   }
                   break;
 
-               case HISTORY_LOG_SIMPLE_MESSAGE :
+               case self::HISTORY_LOG_SIMPLE_MESSAGE :
                   $tmp['field']  = "";
                   $tmp['change'] = $data["new_value"];
                   break;
 
-               case HISTORY_ADD_RELATION :
+               case self::HISTORY_ADD_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -500,7 +521,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][32]." : "."\"". $data["new_value"]."\"";
                   break;
 
-               case HISTORY_DEL_RELATION :
+               case self::HISTORY_DEL_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -509,7 +530,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][33]." : "."\"". $data["old_value"]."\"";
                   break;
 
-               case HISTORY_ADD_SUBITEM :
+               case self::HISTORY_ADD_SUBITEM :
                   $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -518,7 +539,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][98]." : ".$tmp['field']." (".$data["new_value"].")";
                   break;
 
-               case HISTORY_UPDATE_SUBITEM :
+               case self::HISTORY_UPDATE_SUBITEM :
                   $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();
@@ -527,7 +548,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][99]." : ".$tmp['field']." (".$data["new_value"].")";
                   break;
 
-               case HISTORY_DELETE_SUBITEM :
+               case self::HISTORY_DELETE_SUBITEM :
                   $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
                      $item         = new $data["itemtype_link"]();

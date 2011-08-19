@@ -306,8 +306,8 @@ function update0713to072() {
         							$DB->query("UPDATE glpi_history "
         								." SET   FK_glpi_device=".$vers_ID.",       device_type=". SOFTWAREVERSION_TYPE
         								." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
-        								."  AND ((linked_action=".HISTORY_INSTALL_SOFTWARE."   AND RIGHT(new_value,$findlen)='$findstr')"
-        								."    OR (linked_action=".HISTORY_UNINSTALL_SOFTWARE." AND RIGHT(old_value,$findlen)='$findstr'))");
+        								."  AND ((linked_action=".Log::HISTORY_INSTALL_SOFTWARE."   AND RIGHT(new_value,$findlen)='$findstr')"
+        								."    OR (linked_action=".Log::HISTORY_UNINSTALL_SOFTWARE." AND RIGHT(old_value,$findlen)='$findstr'))");
         						}
         						$DB->free_result($result_searchvers);
         					}
@@ -385,7 +385,7 @@ function update0713to072() {
 			// Clean History for this software (old versions no more installed)
 			$DB->query("DELETE FROM glpi_history "
 				." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
-				."  AND (linked_action=".HISTORY_INSTALL_SOFTWARE." OR linked_action=".HISTORY_UNINSTALL_SOFTWARE.")");
+				."  AND (linked_action=".Log::HISTORY_INSTALL_SOFTWARE." OR linked_action=".Log::HISTORY_UNINSTALL_SOFTWARE.")");
 		  } // Each Software
 		}
 		$query="DROP TABLE `glpi_licenses`";
