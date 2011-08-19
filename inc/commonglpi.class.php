@@ -471,7 +471,7 @@ class CommonGLPI {
       }
 
       $class = $this->getType();
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
           && ($ID > 0 || $this->showdebug)
           && (method_exists($class, 'showDebug')
               || in_array($class, $CFG_GLPI["infocom_types"])
