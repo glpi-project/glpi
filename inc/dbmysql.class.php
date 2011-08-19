@@ -167,7 +167,8 @@ class DBmysql {
    function query($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+          && $CFG_GLPI["debug_sql"]) {
          $SQL_TOTAL_REQUEST++;
          $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
          $TIMER = new Timer();
@@ -199,13 +200,15 @@ class DBmysql {
             $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
             Toolbox::logInFile("sql-errors", $error."\n");
 
-            if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+                && $CFG_GLPI["debug_sql"]) {
                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
             }
          }
       }
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE && $CFG_GLPI["debug_sql"]) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+          && $CFG_GLPI["debug_sql"]) {
          $TIME                                   = $TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
       }

@@ -35,6 +35,11 @@ if (!defined('GLPI_ROOT')) {
 // class Session
 class Session {
 
+   // GLPI MODE
+   const NORMAL_MODE       = 0;
+   const TRANSLATION_MODE  = 1;
+   const DEBUG_MODE        = 2;
+
 
    /**
     * Destroy the current session
@@ -76,7 +81,7 @@ class Session {
          $_SESSION = $save;
 
          // Normal mode for this request
-         $_SESSION["glpi_use_mode"] = NORMAL_MODE;
+         $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
          // Check ID exists and load complete user from DB (plugins...)
          if (isset($auth->user->fields['id'])
              && $auth->user->getFromDB($auth->user->fields['id'])) {
@@ -528,7 +533,7 @@ class Session {
       }
 
       // Debug display lang element with item
-      if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
+      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
          foreach ($LANG as $module => $tab) {
             foreach ($tab as $num => $val) {
                $LANG[$module][$num] = "".$LANG[$module][$num].

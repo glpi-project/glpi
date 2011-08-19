@@ -91,7 +91,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          }
       }
 
-      if ($_SESSION['glpi_use_mode'] == DEBUG_MODE) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          $this->do_debug = 3;
       }
    }

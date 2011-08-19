@@ -145,10 +145,6 @@ if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
 }
 
 
-// GLPI MODE
-define("NORMAL_MODE",0);
-define("TRANSLATION_MODE",1);
-define("DEBUG_MODE",2);
 
 //Management modes
 define("MANAGEMENT_UNITARY",0);

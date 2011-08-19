@@ -81,7 +81,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Default Use mode
    if (!isset($_SESSION['glpi_use_mode'])) {
-      $_SESSION['glpi_use_mode'] = NORMAL_MODE;
+      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
    }
 
    $config_object = new Config();
@@ -133,7 +133,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
    // If debug mode activated : display some informations
-   if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+   if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
       // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
       ini_set('display_errors','On');
       // Recommended development settings

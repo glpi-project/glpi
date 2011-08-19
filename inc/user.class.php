@@ -1776,9 +1776,9 @@ class User extends CommonDBTM {
 
         if (Session::haveRight("config", "w")) {
             echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td>";
-            $modes[NORMAL_MODE]      = $LANG['setup'][135];
-            $modes[TRANSLATION_MODE] = $LANG['setup'][136];
-            $modes[DEBUG_MODE]       = $LANG['setup'][137];
+            $modes[Session::NORMAL_MODE]      = $LANG['setup'][135];
+            $modes[Session::TRANSLATION_MODE] = $LANG['setup'][136];
+            $modes[Session::DEBUG_MODE]       = $LANG['setup'][137];
             Dropdown::showFromArray('use_mode', $modes, array('value' => $this->fields["use_mode"]));
          } else {
             echo "<td colspan='2'>&nbsp;";

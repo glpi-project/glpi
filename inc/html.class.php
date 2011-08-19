@@ -499,7 +499,7 @@ class Html {
    static function displayDebugInfos($with_session=true) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug'>";
          echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
 
@@ -785,7 +785,7 @@ class Html {
       echo "<script type=\"text/javascript\" src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
       } else {
@@ -2282,13 +2282,13 @@ class Html {
       echo "</a></td>";
       echo "</tr></table></div>";
 
-      if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE) { // debug mode traduction
+      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
          echo "<div id='debug-float'>";
          echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
          echo "</div>";
       }
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug-float'>";
          echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
          echo "</div>";
@@ -2307,7 +2307,7 @@ class Html {
    **/
    static function ajaxFooter() {
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
          echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\">
@@ -2620,13 +2620,13 @@ class Html {
              " by the INDEPNET Development Team.</span>";
       echo "</a></td></tr></table></div>";
 
-      if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE) { // debug mode traduction
+      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
          echo "<div id='debug-float'>";
          echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
          echo "</div>";
       }
 
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug-float'>";
          echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
          echo "</div>";
