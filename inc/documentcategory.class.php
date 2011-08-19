@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class DocumentCategory
 class DocumentCategory extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][81];
+      if ($nb>1) {
+         return $LANG['setup'][81];
+      }
+      return $LANG['dropdown'][26];
    }
 }
 

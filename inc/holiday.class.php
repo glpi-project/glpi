@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class Holiday
 class Holiday extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['calendar'][11];
+      if ($nb>1) {
+         return $LANG['calendar'][11];
+      }
+      return $LANG['calendar'][4];
    }
 
 

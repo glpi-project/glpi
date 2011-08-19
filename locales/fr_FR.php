@@ -123,7 +123,7 @@ $LANG['calendar'][0]  = "AAAA-MM-JJ";
 $LANG['calendar'][1]  = "JJ-MM-AAAA";
 $LANG['calendar'][2]  = "MM-JJ-AAAA";
 $LANG['calendar'][3]  = "Récurrent";
-
+$LANG['calendar'][4]  = "Période de fermeture";
 $LANG['calendar'][5]  = "Plage horaire";
 $LANG['calendar'][6]  = "Ajouter une plage horaire";
 $LANG['calendar'][7]  = "Jour";
@@ -568,7 +568,7 @@ $LANG['document'][4]  = "Type MIME";
 $LANG['document'][5]  = "Associer un document existant";
 $LANG['document'][6]  = "Ajouter un nouveau fichier";
 $LANG['document'][7]  = "Type de document";
-
+$LANG['document'][8]  = "Types de documents";
 $LANG['document'][9]  = "Extension";
 $LANG['document'][10] = "Icône";
 $LANG['document'][11] = "Téléchargement autorisé";
@@ -636,6 +636,8 @@ $LANG['dropdown'][22] = "Modèle d'imprimante";
 $LANG['dropdown'][23] = "Modèle de moniteur";
 $LANG['dropdown'][24] = "Modèle de périphérique";
 $LANG['dropdown'][25] = "Modèle de téléphone";
+$LANG['dropdown'][26] = "Rubrique de document";
+$LANG['dropdown'][27] = "Catégories de la base de connaissances";
 
 
 $LANG['entity'][0]  = "Entité";

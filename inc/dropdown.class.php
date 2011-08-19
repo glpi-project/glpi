@@ -641,14 +641,14 @@ class Dropdown {
                                                'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
                                                'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
 
-                  $LANG['Menu'][26]   => array('DocumentCategory' => $LANG['setup'][81],
-                                               'DocumentType'     => $LANG['document'][7]),
+                  $LANG['Menu'][26]   => array('DocumentCategory' => DocumentCategory::getTypeName(2),
+                                               'DocumentType'     => DocumentType::getTypeName(2)),
 
-                  $LANG['Menu'][18]   => array('KnowbaseItemCategory' => $LANG['setup'][87]),
+                  $LANG['Menu'][18]   => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
 
 
-                  $LANG['Menu'][42]   => array('Calendar' => $LANG['Menu'][42],
-                                               'Holiday'  => $LANG['calendar'][11]),
+                  $LANG['Menu'][42]   => array('Calendar' => Calendar::getTypeName(2),
+                                               'Holiday'  => Holiday::getTypeName(2)),
 
 
                   $LANG['setup'][145] => array('OperatingSystem'        => $LANG['setup'][5],
