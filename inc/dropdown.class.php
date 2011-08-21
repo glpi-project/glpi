@@ -573,18 +573,18 @@ class Dropdown {
 
       if (is_null($optgroup)) {
          $optgroup = array(Toolbox::ucfirst($LANG['log'][18])
-                                              => array('DeviceMotherboard' => $LANG['devices'][5],
-                                                       'DeviceProcessor'   => $LANG['devices'][4],
-                                                       'DeviceNetworkCard' => $LANG['devices'][3],
-                                                       'DeviceMemory'      => $LANG['devices'][6],
-                                                       'DeviceHardDrive'   => $LANG['devices'][1],
-                                                       'DeviceDrive'       => $LANG['devices'][19],
-                                                       'DeviceControl'     => $LANG['devices'][20],
-                                                       'DeviceGraphicCard' => $LANG['devices'][2],
-                                                       'DeviceSoundCard'   => $LANG['devices'][7],
-                                                       'DeviceCase'        => $LANG['devices'][22],
-                                                       'DevicePowerSupply' => $LANG['devices'][23],
-                                                       'DevicePci'         => $LANG['devices'][21]));
+                                  => array('DeviceMotherboard' => DeviceMotherboard::getTypeName(2),
+                                           'DeviceProcessor'   => DeviceProcessor::getTypeName(2),
+                                           'DeviceNetworkCard' => DeviceNetworkCard::getTypeName(2),
+                                           'DeviceMemory'      => DeviceMemory::getTypeName(2),
+                                           'DeviceHardDrive'   => DeviceHardDrive::getTypeName(2),
+                                           'DeviceDrive'       => DeviceDrive::getTypeName(2),
+                                           'DeviceControl'     => DeviceControl::getTypeName(2),
+                                           'DeviceGraphicCard' => DeviceGraphicCard::getTypeName(2),
+                                           'DeviceSoundCard'   => DeviceSoundCard::getTypeName(2),
+                                           'DeviceCase'        => DeviceCase::getTypeName(2),
+                                           'DevicePowerSupply' => DevicePowerSupply::getTypeName(2),
+                                           'DevicePci'         => DevicePci::getTypeName(2)));
       }
       return $optgroup;
    }

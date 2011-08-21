@@ -518,7 +518,17 @@ $LANG['devices'][4]  = "Processeur";
 $LANG['devices'][5]  = "Carte mère";
 $LANG['devices'][6]  = "Mémoire";
 $LANG['devices'][7]  = "Carte son";
-
+$LANG['devices'][8]  = "Cartes mères";
+$LANG['devices'][9]  = "Processeurs";
+$LANG['devices'][10] = "Cartes réseau";
+$LANG['devices'][11] = "Mémoires";
+$LANG['devices'][12] = "Disques durs";
+$LANG['devices'][13] = "Cartes graphiques";
+$LANG['devices'][14] = "Cartes son";
+$LANG['devices'][15] = "Boîtier";
+$LANG['devices'][16] = "Alimentations";
+$LANG['devices'][17] = "Contrôleur";
+$LANG['devices'][18] = "Lecteur";
 $LANG['devices'][19] = "Lecteurs";
 $LANG['devices'][20] = "Contrôleurs";
 $LANG['devices'][21] = "Autres composants";
@@ -527,6 +537,7 @@ $LANG['devices'][23] = "Alimentation";
 $LANG['devices'][24] = "par défaut";
 $LANG['devices'][25] = "Ajout d'un composant";
 $LANG['devices'][26] = "Suppression d'un composant";
+$LANG['devices'][27] = "Autre composant";
 
 
 $LANG['device_case'][0] = "Format";

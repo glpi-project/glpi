@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceSoundCard
 class DeviceSoundCard extends CommonDevice {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['devices'][14];
+      }
       return $LANG['devices'][7];
    }
 
