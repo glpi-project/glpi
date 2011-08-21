@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceDrive
 class DeviceDrive extends CommonDevice {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['devices'][19];
+      if ($nb>1) {
+         return $LANG['devices'][19];
+      }
+      return $LANG['devices'][18];
    }
 
 

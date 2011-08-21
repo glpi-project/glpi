@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceCase
 class DeviceCase extends CommonDevice {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['devices'][22];
+      if ($nb>1) {
+         return $LANG['devices'][22];
+      }
+      return $LANG['devices'][15];
    }
 
 

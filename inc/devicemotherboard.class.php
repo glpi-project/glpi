@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceMotherboard
 class DeviceMotherboard extends CommonDevice {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['devices'][8];
+      }
       return $LANG['devices'][5];
    }
 
