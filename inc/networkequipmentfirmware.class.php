@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class NetworkEquipmentFirmware
 class NetworkEquipmentFirmware extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['dropdown'][33];
+      }
       return $LANG['setup'][71];
    }
 }

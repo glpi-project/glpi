@@ -368,7 +368,7 @@ $LANG['computers'][5]  = "Point de montage";
 $LANG['computers'][6]  = "Partition";
 $LANG['computers'][7]  = "Ajouter un volume";
 $LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation";
+$LANG['computers'][9]  = "Système d'exploitation"; // Duplicate with setup/5
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
 
@@ -638,6 +638,13 @@ $LANG['dropdown'][24] = "Modèle de périphérique";
 $LANG['dropdown'][25] = "Modèle de téléphone";
 $LANG['dropdown'][26] = "Rubrique de document";
 $LANG['dropdown'][27] = "Catégories de la base de connaissances";
+$LANG['dropdown'][28] = "Systèmes d'exploitation";
+$LANG['dropdown'][29] = "Versions des systèmes d'exploitation";
+$LANG['dropdown'][30] = "Service packs";
+$LANG['dropdown'][31] = "Sources de mise à jour";
+$LANG['dropdown'][32] = "Interfaces réseau";
+$LANG['dropdown'][33] = "Firmwares";
+$LANG['dropdown'][34] = "Domaines";
 
 
 $LANG['entity'][0]  = "Entité";
@@ -1453,7 +1460,8 @@ $LANG['networking'][46] = "Ajouter plusieurs ports...";
 
 $LANG['networking'][48] = "A";
 
-$LANG['networking'][51] = "Prise réseau";
+$LANG['networking'][51] = "Prise réseau"; // Duplicate of setup/73
+$LANG['networking'][52] = "Prises réseau";
 
 $LANG['networking'][55] = "Associer un VLAN";
 $LANG['networking'][56] = "VLAN";
@@ -1947,6 +1955,7 @@ $LANG['rulesengine'][133] = "Entité depuis domaine";
 $LANG['rulesengine'][134] = "Refuser courriel (pas de réponse par courriel)";
 $LANG['rulesengine'][135] = "Refuser courriel (avec réponse par courriel)";
 
+$LANG['rulesengine'][137] = "Critère LDAP";
 $LANG['rulesengine'][138] = "Critères LDAP";
 
 $LANG['rulesengine'][140] = "Ajout d'un critère";
@@ -2347,6 +2356,7 @@ $LANG['setup'][825] = "Action voulue";
 $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
 $LANG['setup'][828] = "Valeur ignorée pour l'unicité";
+$LANG['setup'][829] = "Valeurs ignorées pour l'unicité";
 
 $LANG['sla'][1]  = "SLA";
 $LANG['sla'][2]  = "Temps maximum de résolution";
@@ -2402,6 +2412,7 @@ $LANG['softwarecategories'][2] = "Logiciels sans catégorie";
 $LANG['softwarecategories'][3] = "Déplier les logiciels sans catégorie";
 $LANG['softwarecategories'][4] = "Déplier les logiciels appartenant à une catégorie";
 $LANG['softwarecategories'][5] = "Catégorie de logiciels";
+$LANG['softwarecategories'][6] = "Catégories des logiciels";
 
 
 $LANG['state'][0] = "Statut";
@@ -2563,6 +2574,8 @@ $LANG['users'][18] = "générée le";
 $LANG['users'][19] = "Ajouter aux superviseurs";
 $LANG['users'][20] = "Supprimer des superviseurs";
 $LANG['users'][21] = "Définir comme courriel par défaut";
+$LANG['users'][22] = "Titres des utilisateurs";
+$LANG['users'][23] = "Catégories des utilisateurs";
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";

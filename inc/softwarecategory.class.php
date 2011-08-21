@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class SoftwareCategory
 class SoftwareCategory extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['softwarecategories'][6];
+      }
       return $LANG['softwarecategories'][5];
    }
 

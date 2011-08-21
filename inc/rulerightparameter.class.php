@@ -89,10 +89,13 @@ class RuleRightParameter extends CommonDropdown {
    }
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['rulesengine'][138];
+      if ($nb>1) {
+         return $LANG['rulesengine'][138];
+      }
+      return $LANG['rulesengine'][137];
    }
 
 }

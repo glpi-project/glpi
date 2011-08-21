@@ -41,10 +41,13 @@ if (!defined('GLPI_ROOT')) {
 class Vlan extends CommonDropdown {
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][90];
+      if ($nb>1) {
+         return $LANG['setup'][90];
+      }
+      return $LANG['networking'][56];
    }
 
 
@@ -53,7 +56,7 @@ class Vlan extends CommonDropdown {
 
       return array(array('name'     => 'tag',
                          'label'    => $LANG['common'][114],
-                         'datatype' => 'number',
+                         'type'     => 'number',
                          'list'     => true));
    }
 

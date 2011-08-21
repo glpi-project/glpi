@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class UserTitle
 class UserTitle extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['users'][22];
+      }
       return $LANG['users'][1];
    }
 }

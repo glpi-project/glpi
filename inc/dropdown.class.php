@@ -651,28 +651,28 @@ class Dropdown {
                                                'Holiday'  => Holiday::getTypeName(2)),
 
 
-                  $LANG['setup'][145] => array('OperatingSystem'        => $LANG['setup'][5],
-                                               'OperatingSystemVersion' => $LANG['computers'][52],
+                  $LANG['setup'][145] => array('OperatingSystem'        => OperatingSystem::getTypeName(2),
+                                               'OperatingSystemVersion' => OperatingSystemVersion::getTypeName(2),
                                                'OperatingSystemServicePack'
-                                                                        => $LANG['computers'][53],
-                                               'AutoUpdateSystem'       => $LANG['computers'][51]),
+                                                                        => OperatingSystemServicePack::getTypeName(2),
+                                               'AutoUpdateSystem'       => AutoUpdateSystem::getTypeName(2)),
 
-                  $LANG['setup'][88]  => array('NetworkInterface'         => $LANG['setup'][9],
-                                               'NetworkEquipmentFirmware' => $LANG['setup'][71],
-                                               'Netpoint'                 => $LANG['setup'][73],
-                                               'Domain'                   => $LANG['setup'][89],
-                                               'Network'                  => $LANG['setup'][88],
-                                               'Vlan'                     => $LANG['setup'][90]),
+                  $LANG['setup'][88]  => array('NetworkInterface'         => NetworkInterface::getTypeName(2),
+                                               'NetworkEquipmentFirmware' => NetworkEquipmentFirmware::getTypeName(2),
+                                               'Netpoint'                 => Netpoint::getTypeName(2),
+                                               'Domain'                   => Domain::getTypeName(2),
+                                               'Network'                  => Network::getTypeName(2),
+                                               'Vlan'                     => Vlan::getTypeName(2)),
 
-                  $LANG['Menu'][4]    => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
+                  $LANG['Menu'][4]    => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
 
-                  $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
-                                               'UserCategory'  => $LANG['users'][2]),
+                  $LANG['common'][34] => array('UserTitle'     => UserTitle::getTypeName(2),
+                                               'UserCategory'  => UserCategory::getTypeName(2)),
 
                   $LANG['rulesengine'][19]
-                                      => array('RuleRightParameter' => $LANG['rulesengine'][138]),
+                                      => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
 
-                  $LANG['setup'][811] => array('Fieldblacklist' => $LANG['setup'][828])
+                  $LANG['setup'][811] => array('Fieldblacklist' => Fieldblacklist::getTypeName(2))
 
                  ); //end $opt
 
