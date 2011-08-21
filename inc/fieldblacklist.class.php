@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Class Fieldblacklist
 class Fieldblacklist extends CommonDropdown {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['setup'][829];
+      }
       return $LANG['setup'][828];
    }
 

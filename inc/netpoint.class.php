@@ -53,10 +53,13 @@ class Netpoint extends CommonDropdown {
                          'list'  => true));
    }
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['setup'][73];
+      if ($nb>1) {
+         return $LANG['networking'][52];
+      }
+      return $LANG['networking'][51];
    }
 
    function canCreate() {
