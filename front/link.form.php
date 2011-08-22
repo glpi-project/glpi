@@ -41,6 +41,8 @@ if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
+checkRight("link", "r");
+
 $link = new Link();
 
 if (isset($_POST["add"])) {

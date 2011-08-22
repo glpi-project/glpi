@@ -33,16 +33,17 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+checkCentralAccess();
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$link = new Link;
-$link_itemtype = new Link_ItemType;
+$link          = new Link();
+$link_itemtype = new Link_ItemType();
 
 if (isset($_POST["add"])) {
    $link->check($_GET["id"],'w');

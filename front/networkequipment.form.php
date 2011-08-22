@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("networking", "r");
+
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }

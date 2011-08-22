@@ -31,6 +31,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 NotificationTarget::updateTargets($_POST);
 glpi_header($_SERVER['HTTP_REFERER']);
 ?>

@@ -33,15 +33,16 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+checkRight("group", "r");
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$group = new Group;
+$group     = new Group();
 $groupuser = new Group_User();
 
 if (isset($_POST["add"])) {
