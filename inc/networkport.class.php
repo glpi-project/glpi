@@ -450,7 +450,7 @@ class NetworkPort extends CommonDBChild {
                   echo $netport->getLink();
                   echo "</strong>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".$LANG['networking'][25] . " <strong>";
+                  echo "&nbsp;".Toolbox::ucfirst($LANG['pager'][3]) . " <strong>";
                   echo $device2->getLink();
                   echo "</strong>";
 
@@ -480,7 +480,7 @@ class NetworkPort extends CommonDBChild {
                   } else {
                      echo $LANG['common'][0];
                   }
-                  echo "</strong> " . $LANG['networking'][25] . " <strong>";
+                  echo "</strong> " . Toolbox::ucfirst($LANG['pager'][3]) . " <strong>";
                   echo $device2->getName();
                   echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities",
                                                                    $device2->getEntityID()) .")";

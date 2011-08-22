@@ -161,7 +161,7 @@ class Cartridge extends CommonDBTM {
          }
 
       } else {
-         Session::addMessageAfterRedirect($LANG['cartridges'][34], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['cartridges'][20], false, ERROR);
       }
       return false;
    }
@@ -237,7 +237,7 @@ class Cartridge extends CommonDBTM {
             if ($unused>1) {
                $out .= $LANG['cartridges'][13];
             } else {
-               $out .= $LANG['cartridges'][20];
+               $out .= $LANG['cartridges'][12];
             }
             $out .= "&nbsp;:&nbsp;$unused</span>";
             $out .= "<br>";
@@ -245,14 +245,14 @@ class Cartridge extends CommonDBTM {
             if ($used>1) {
                $out .= $LANG['cartridges'][14];
             } else {
-               $out .= $LANG['cartridges'][21];
+               $out .= $LANG['cartridges'][15];
             }
             $out .= "&nbsp;:&nbsp;$used</span>";
             $out .= "<span class='very_small_space'>";
             if ($old>1) {
-               $out .= $LANG['cartridges'][15];
+               $out .= $LANG['cartridges'][17];
             } else {
-               $out .= $LANG['cartridges'][22];
+               $out .= $LANG['cartridges'][18];
             }
             $out .= "&nbsp;:&nbsp;$old</span></div>";
 
@@ -261,19 +261,19 @@ class Cartridge extends CommonDBTM {
             if ($unused>1) {
                $out .= $LANG['cartridges'][13];
             } else {
-               $out .= $LANG['cartridges'][20];
+               $out .= $LANG['cartridges'][12];
             }
             $out .= " : $unused   ";
             if ($used>1) {
                $out .= $LANG['cartridges'][14];
             } else {
-               $out .= $LANG['cartridges'][21];
+               $out .= $LANG['cartridges'][15];
             }
             $out .= " : $used   ";
             if ($old>1) {
-               $out .= $LANG['cartridges'][15];
+               $out .= $LANG['cartridges'][17];
             } else {
-               $out .= $LANG['cartridges'][22];
+               $out .= $LANG['cartridges'][18];
             }
             $out .= " : $old ";
          }
@@ -385,12 +385,12 @@ class Cartridge extends CommonDBTM {
       global $LANG;
 
       if (is_null($date_use) || empty($date_use)) {
-         return $LANG['cartridges'][20];
+         return $LANG['cartridges'][12];
       }
       if (is_null($date_out) || empty($date_out)) {
-         return $LANG['cartridges'][21];
+         return $LANG['cartridges'][15];
       }
-      return $LANG['cartridges'][22];
+      return $LANG['cartridges'][18];
    }
 
 
@@ -426,13 +426,13 @@ class Cartridge extends CommonDBTM {
             echo "<tr><th colspan='7'>".self::getCount($tID,-1)."</th>";
             echo "<th colspan='2'>&nbsp;</th></tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."</th>";
+            echo "<tr><th colspan='8'>".$LANG['cartridges'][19]."</th>";
             echo "<th colspan='2'>&nbsp;</th></tr>";
          }
          $i = 0;
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-         echo "<th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
+         echo "<th>".$LANG['cartridges'][5]."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<th>".Toolbox::ucfirst($LANG['pager'][3])."</th><th>".$LANG['search'][9]."</th>";
 
          if ($show_old) {
             echo "<th>".$LANG['cartridges'][39]."</th>";
@@ -557,12 +557,12 @@ class Cartridge extends CommonDBTM {
                 $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
+            echo "<td class='center'>".$LANG['cartridges'][21]."&nbsp;:<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
             echo "<td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41]."&nbsp;:<br>";
+            echo "<td class='center'>".$LANG['cartridges'][22]."&nbsp;:<br>";
             echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42]."&nbsp;:<br>";
+            echo "<td class='center'>".$LANG['cartridges'][23]."&nbsp;:<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='3'>&nbsp;</td></tr>";
          }
@@ -596,7 +596,7 @@ class Cartridge extends CommonDBTM {
          echo "<span class='small_space'>";
          Dropdown::showInteger('to_add',1,1,100);
          echo "</span>&nbsp;";
-         echo $LANG['cartridges'][16]."</td></tr>";
+         echo $LANG['cartridges'][3]."</td></tr>";
          echo "</table></form></div>";
       }
    }
@@ -645,12 +645,12 @@ class Cartridge extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ($old==0) {
-         echo "<tr><th colspan='5'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='5'>".$LANG['cartridges'][16]."&nbsp;:</th></tr>";
       } else {
-         echo "<tr><th colspan='7'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='7'>".$LANG['cartridges'][19]."&nbsp;:</th></tr>";
       }
-      echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][12]."</th>";
-      echo "<th>".$LANG['cartridges'][24]."</th>";
+      echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][11]."</th>";
+      echo "<th>".$LANG['cartridges'][5]."</th>";
       echo "<th>".$LANG['consumables'][26]."</th>";
       if ($old!=0) {
          echo "<th>".$LANG['search'][9]."</th><th>".$LANG['cartridges'][39]."</th>";
@@ -719,7 +719,7 @@ class Cartridge extends CommonDBTM {
             if (is_null($date_out)) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
+                      "&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][6]."</a>";
             } else {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
@@ -746,11 +746,11 @@ class Cartridge extends CommonDBTM {
                $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
+            echo "<td class='center'>".$LANG['cartridges'][21]."&nbsp;:<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41].":<br>";
+            echo "<td class='center'>".$LANG['cartridges'][22].":<br>";
             echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42].":<br>";
+            echo "<td class='center'>".$LANG['cartridges'][23].":<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td>&nbsp;</td></tr>";
          }

@@ -46,8 +46,7 @@ class CartridgeItemType extends CommonDropdown {
       if ($nb>1) {
          return $LANG['setup'][84];
       }
-      return $LANG['cartridges'][12];
+      return $LANG['cartridges'][11];
    }
 }
-
 ?>
