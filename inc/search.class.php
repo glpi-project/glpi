@@ -2818,6 +2818,13 @@ class Search {
                if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
+               break;
+
+            case "itemlink" :
+               if (in_array($searchtype, array('equals', 'notequals'))) {
+                  return " $link (`$table`.`id`".$SEARCH.') ';
+               }
+               break;
 
             case "datetime" :
             case "date" :
