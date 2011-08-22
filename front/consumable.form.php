@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("consumable", "r");
+
 if (!isset($_GET["tID"])) {
    $_GET["tID"] = "";
 }

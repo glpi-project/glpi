@@ -31,6 +31,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 $item = new CalendarSegment();
 
 

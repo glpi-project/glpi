@@ -37,12 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("document","r");
+checkRight("document", "r");
 
 commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
 
 Search::show('Document');
 
 commonFooter();
-
 ?>

@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 $csl = new Computer_SoftwareLicense();
 
 if (isset($_REQUEST["add"])) {

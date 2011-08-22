@@ -33,9 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+checkCentralAccess();
 
 $compdev = new Computer_Device();
 

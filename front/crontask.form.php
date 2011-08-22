@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("config", "w");
+
 $crontask = new CronTask();
 
 if (isset($_POST["update"])) {

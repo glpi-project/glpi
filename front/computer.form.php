@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("computer","r");
+checkRight("computer", "r");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
