@@ -2426,7 +2426,6 @@ class Search {
       $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
-
       $inittable = $table;
       $addtable  = '';
       if ($table != getTableForItemType($itemtype)
@@ -2780,6 +2779,13 @@ class Search {
                if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
+               break;
+
+            case "itemlink" :
+               if (in_array($searchtype, array('equals', 'notequals'))) {
+                  return " $link (`$table`.`id`".$SEARCH.') ';
+               }
+               break;
 
             case "datetime" :
             case "date" :
@@ -2911,7 +2917,6 @@ class Search {
 
       // Default case
       if (in_array($searchtype, array('equals', 'notequals'))) {
-
          if ($table != getTableForItemType($itemtype) || $itemtype == 'States') {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
@@ -4428,7 +4433,7 @@ class Search {
       if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
-   
+
             $todel = array_merge($todel, array_keys($itemstodel));
          }
          if (!$CFG_GLPI['use_ocs_mode']) {
