@@ -835,7 +835,7 @@ class Config extends CommonDBTM {
 
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['softwarecategories'][5] ."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['softwarecategories'][0] ."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $LANG['softwarecategories'][4]."&nbsp;:</td><td>";
@@ -952,7 +952,7 @@ class Config extends CommonDBTM {
       echo "<tr><th>" . $LANG['common'][52] . "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-      echo wordwrap($LANG['setup'][5]."&nbsp;: ".php_uname()."\n", $width, "\n\t");
+      echo wordwrap($LANG['computers'][9]."&nbsp;: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");

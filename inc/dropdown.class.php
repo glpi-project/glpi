@@ -636,7 +636,7 @@ class Dropdown {
                                                'PeripheralModel'       => PeripheralModel::getTypeName(2),
                                                'PhoneModel'            => PhoneModel::getTypeName(2)),
 
-                  $LANG['computers'][57]
+                  $LANG['computers'][45]
                                       => array('VirtualMachineType'   => VirtualMachineType::getTypeName(2),
                                                'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
                                                'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
