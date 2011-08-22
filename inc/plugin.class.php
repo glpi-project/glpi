@@ -398,7 +398,7 @@ class Plugin extends CommonDBTM {
                         $do_install = $function();
                      }
                      if ($plug['state']==self::NOTUPDATED) {
-                        $msg = $LANG['buttons'][58];
+                        $msg = $LANG['buttons'][54];
                      } else {
                         $msg = $LANG['buttons'][4];
                      }
@@ -474,7 +474,7 @@ class Plugin extends CommonDBTM {
                default :
                   echo "<td colspan='2'>";
                   echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
-                         $LANG['buttons'][53]."</a>";
+                         $LANG['buttons'][36]."</a>";
                   echo "</td>";
                   break;
             }

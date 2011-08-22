@@ -256,7 +256,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
-         echo $LANG['backup'][22]." ".Html::formatNumber($offset, false, 0)."<br>";
+         echo $LANG['backup'][8]." ".Html::formatNumber($offset, false, 0)."<br>";
          return false;
       }
       Html::glpi_flush();
@@ -290,7 +290,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    }
 
    if ($DB->error) {
-      echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+      echo "<hr>".$LANG['backup'][9]." [$formattedQuery]<br>".$DB->error()."<hr>";
    }
 
    fclose($fileHandle);
@@ -381,7 +381,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    }
 
    if ($DB->error()) {
-      echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+      echo "<hr>".$LANG['backup'][9]." [$formattedQuery]<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;
    fclose($fileHandle);
@@ -397,7 +397,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $filename  = $path . "/glpi-".GLPI_VERSION."-$time_file.$filetype";
 
    if (!isset($_GET["duree"]) && is_file($filename)) {
-      echo "<div class='center'>".$LANG['backup'][21]."</div>";
+      echo "<div class='center'>".$LANG['backup'][7]."</div>";
 
    } else {
       init_time(); //initialise le temps
@@ -459,7 +459,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
             echo "<div class='center spaced'>".
                  "<a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
                     "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
-                    $LANG['backup'][24]."</a>";
+                    $LANG['backup'][10]."</a>";
             echo "<script language='javascript' type='text/javascript'>".
                   "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
@@ -524,7 +524,7 @@ if (isset($_GET["file"])
       if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
          echo "<div class='center'>".
               "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
-                    "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][24]."</a>";
+                    "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][10]."</a>";
          echo "<script language='javascript' type='text/javascript'>".
                "window.location=\"backup.php?file=".
                 $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
@@ -563,11 +563,11 @@ echo "<div class='center'><table class='tab_glpi'><tr><td>".
      "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".$LANG['common'][28]."\">".
      "</td>";
 echo "<td><a class='icon_consol b'
-           href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
+           href=\"javascript:confirmAction('".addslashes($LANG['backup'][6])."',
                                            'backup.php?dump=dump')\">".$LANG['backup'][0].
      "</a>&nbsp;</td>";
 echo "<td><a class='icon_consol b'
-           href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
+           href=\"javascript:confirmAction('".addslashes($LANG['backup'][6])."',
                                            'backup.php?xmlnow=xmlnow')\">".$LANG['backup'][1].
       "</a>&nbsp;</td>";
 
@@ -580,7 +580,7 @@ echo "</tr></table>";
 <table class='tab_cadre' cellpadding="5">
 <tr class='center'>
 <th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
-<th><u><i><?php echo $LANG['backup'][11]; ?></i></u></th>
+<th><u><i><?php echo $LANG['backup'][2]; ?></i></u></th>
 <th><u><i><?php echo $LANG['common'][27]; ?></i></u></th>
 <th colspan='3'>&nbsp;</th>
 </tr>
@@ -605,14 +605,14 @@ if (count($files)) {
            "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;".
-           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][5])."',
                                                'backup.php?delfile=$file')\">".$LANG['buttons'][6].
            "</a>&nbsp;</td>".
            "<td>&nbsp;".
-           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][16])."',
+           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][4])."',
                                                'backup.php?file=$file&amp;donotcheckversion=1')\">".
            $LANG['buttons'][21]."</a>&nbsp;</td>".
-           "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
+           "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][3]."</a>".
            "</td></tr>";
    }
 }
@@ -641,11 +641,11 @@ if (count($files)) {
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;".
-             "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+             "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][5])."',
                                                  'backup.php?delfile=$file')\">".$LANG['buttons'][6].
              "</a>&nbsp;</td>".
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
-            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
+            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][3]."</a>".
             "</td></tr>";
    }
 }

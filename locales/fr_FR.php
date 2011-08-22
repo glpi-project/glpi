@@ -33,19 +33,15 @@ $LANG = array();
 
 $LANG['backup'][0]  = "Sauvegarde SQL";
 $LANG['backup'][1]  = "Sauvegarde XML";
-
-$LANG['backup'][11] = "Taille";
-
-$LANG['backup'][13] = "Voir/Télécharger";
-
-$LANG['backup'][16] = "Remplacer la base de données actuelle par le fichier de sauvegarde ?";
-$LANG['backup'][17] = "Supprimer le fichier ?";
-$LANG['backup'][18] = "Sauvegarder la base de données ?";
-
-$LANG['backup'][21] = "Le fichier existe déjà";
-$LANG['backup'][22] = "Impossible de trouver l'octet";
-$LANG['backup'][23] = "Erreur MySQL à partir de";
-$LANG['backup'][24] = "Redirection automatique, sinon cliquez";
+$LANG['backup'][2] = "Taille";
+$LANG['backup'][3] = "Voir/Télécharger";
+$LANG['backup'][4] = "Remplacer la base de données actuelle par le fichier de sauvegarde ?";
+$LANG['backup'][5] = "Supprimer le fichier ?";
+$LANG['backup'][6] = "Sauvegarder la base de données ?";
+$LANG['backup'][7] = "Le fichier existe déjà";
+$LANG['backup'][8] = "Impossible de trouver l'octet";
+$LANG['backup'][9] = "Erreur MySQL à partir de";
+$LANG['backup'][10] = "Redirection automatique, sinon cliquez";
 
 
 $LANG['bookmark'][1] = "marque-page";
@@ -57,7 +53,7 @@ $LANG['bookmark'][6] = "Vue par défaut";
 
 
 $LANG['buttons'][0]  = "Rechercher";
-
+$LANG['buttons'][1] = "Enregistrer";
 $LANG['buttons'][2]  = "Valider";
 $LANG['buttons'][3]  = "Associer";
 $LANG['buttons'][4]  = "Installer";
@@ -92,7 +88,7 @@ $LANG['buttons'][32] = "Fin";
 $LANG['buttons'][33] = "Début";
 $LANG['buttons'][34] = "Annuler";
 $LANG['buttons'][35] = "Supprimer toutes les répétitions";
-
+$LANG['buttons'][36] = "Nettoyer";
 $LANG['buttons'][37] = "Importer";
 $LANG['buttons'][38] = "Déverrouiller";
 $LANG['buttons'][39] = "Remplacer";
@@ -102,21 +98,18 @@ $LANG['buttons'][42] = "Désactiver";
 $LANG['buttons'][43] = "Naviguer";
 $LANG['buttons'][44] = "Page courante en CSV";
 $LANG['buttons'][45] = "Toutes les pages en CSV";
-
+$LANG['buttons'][46] = "Dupliquer";
+$LANG['buttons'][47] = "Charger";
 $LANG['buttons'][48] = "Transférer";
 $LANG['buttons'][49] = "Conserver";
 $LANG['buttons'][50] = "Tester";
-$LANG['buttons'][51] = "Enregistrer";
-$LANG['buttons'][52] = "Charger";
-$LANG['buttons'][53] = "Nettoyer";
-$LANG['buttons'][54] = "Dupliquer";
+$LANG['buttons'][51] = "Regénérer";
+$LANG['buttons'][52] = "Fermer la fenêtre";
+$LANG['buttons'][53] = "Dissocier";
+$LANG['buttons'][54] = "Mettre à jour";
 $LANG['buttons'][55] = "Premier";
 $LANG['buttons'][56] = "Dernier";
 $LANG['buttons'][57] = "Exécuter";
-$LANG['buttons'][58] = "Mettre à jour";
-$LANG['buttons'][59] = "Dissocier";
-$LANG['buttons'][60] = "Fermer la fenêtre";
-$LANG['buttons'][61] = "Regénérer";
 
 
 $LANG['calendar'][0]  = "AAAA-MM-JJ";
@@ -173,37 +166,27 @@ $LANG['calendarM'][11] = "Décembre";
 $LANG['cartridges'][0]  = "Cartouche";
 $LANG['cartridges'][1]  = "Modèle de cartouche";
 $LANG['cartridges'][2]  = "Modèles de cartouche";
-
+$LANG['cartridges'][3]  = "Cartouche(s)";
+$LANG['cartridges'][4]  = "Ruban";
+$LANG['cartridges'][5]  = "Date ajout";
+$LANG['cartridges'][6]  = "Fin de vie";
+$LANG['cartridges'][7]  = "Modèles d'imprimantes compatibles";
+$LANG['cartridges'][8]  = "Jet d'encre";
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
-$LANG['cartridges'][11] = "Jet d'encre";
-$LANG['cartridges'][12] = "Type de cartouche";
+$LANG['cartridges'][11] = "Type de cartouche";
+$LANG['cartridges'][12] = "Neuve";
 $LANG['cartridges'][13] = "Neuves";
 $LANG['cartridges'][14] = "Utilisées";
-$LANG['cartridges'][15] = "Usagées";
-$LANG['cartridges'][16] = "Cartouche(s)";
-
-$LANG['cartridges'][20] ="Neuve";
-$LANG['cartridges'][21] ="Utilisée";
-$LANG['cartridges'][22] ="Usagée";
-
-$LANG['cartridges'][24] = "Date ajout";
-
-$LANG['cartridges'][27] = "Sur";
-
-$LANG['cartridges'][29] = "Fin de vie";
-
-$LANG['cartridges'][32] = "Modèles d'imprimantes compatibles";
-$LANG['cartridges'][33] = "Cartouches utilisées";
-$LANG['cartridges'][34] = "Pas de cartouche libre";
-$LANG['cartridges'][35] = "Cartouches usagées";
-
-$LANG['cartridges'][37] = "Ruban";
-
-$LANG['cartridges'][39] = "Compteur imprimante";
-$LANG['cartridges'][40] = "En stock en moyenne";
-$LANG['cartridges'][41] = "Utilisation moyenne";
-$LANG['cartridges'][42] = "Pages imprimées en moyenne";
+$LANG['cartridges'][15] = "Utilisée";
+$LANG['cartridges'][16] = "Cartouches utilisées";
+$LANG['cartridges'][17] = "Usagées";
+$LANG['cartridges'][18] = "Usagée";
+$LANG['cartridges'][19] = "Cartouches usagées";
+$LANG['cartridges'][20] = "Pas de cartouche libre";
+$LANG['cartridges'][21] = "En stock en moyenne";
+$LANG['cartridges'][22] = "Utilisation moyenne";
+$LANG['cartridges'][23] = "Pages imprimées en moyenne";
 
 
 $LANG['central'][1]  = "Pour des raisons de sécurité, veuillez changer le mot de passe par défaut pour le(s) utilisateur(s)";
@@ -1461,8 +1444,6 @@ $LANG['networking'][19] = "Ajouter un port...";
 
 $LANG['networking'][21] = "Numéro de port";
 
-$LANG['networking'][25]="sur";
-
 $LANG['networking'][44]="Le port";
 
 $LANG['networking'][46] = "Ajouter plusieurs ports...";
@@ -2586,6 +2567,7 @@ $LANG['users'][20] = "Supprimer des superviseurs";
 $LANG['users'][21] = "Définir comme courriel par défaut";
 $LANG['users'][22] = "Titres des utilisateurs";
 $LANG['users'][23] = "Catégories des utilisateurs";
+
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";

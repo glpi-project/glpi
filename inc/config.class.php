@@ -857,7 +857,7 @@ class Config extends CommonDBTM {
          }
 
          echo "</td><td colspan='3'>";
-         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][61];
+         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][51];
          echo "</td></tr>";
       }
 

@@ -1369,7 +1369,7 @@ class Dropdown {
                   break;
 
                case 'Calendar' :
-                  echo "<option value='duplicate'>".$LANG['buttons'][54]."</option>";
+                  echo "<option value='duplicate'>".$LANG['buttons'][46]."</option>";
                   break;
 
                case 'Contact' :

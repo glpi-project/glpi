@@ -2359,7 +2359,7 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value=\"".
-                   $LANG['buttons'][53]."\">";
+                   $LANG['buttons'][36]."\">";
          }
          echo "</td></tr>\n";
 
@@ -2382,7 +2382,7 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value=\"".
-                   $LANG['buttons'][53]."\">";
+                   $LANG['buttons'][36]."\">";
          }
          echo "</td></tr>";
          echo "</table></form>\n";
