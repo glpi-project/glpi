@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("phone", "r");
+
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }

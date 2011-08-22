@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("contact_enterprise", "r");
+
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }

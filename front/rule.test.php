@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
+checkCentralAccess();
+
 if (isset($_POST["sub_type"])) {
    $sub_type = $_POST["sub_type"];
 } else if (isset($_GET["sub_type"])) {

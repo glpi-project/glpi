@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 if (isset($_GET["id"])) {
    $generic_rule = new Rule;
    $generic_rule->getFromDB($_GET["id"]);

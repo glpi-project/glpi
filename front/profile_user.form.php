@@ -31,6 +31,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 $profile = new Profile();
 $right = new Profile_User();
 $user = new User();

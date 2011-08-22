@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
+checkCentralAccess();
+
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
 }
