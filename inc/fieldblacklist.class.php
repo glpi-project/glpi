@@ -44,9 +44,9 @@ class Fieldblacklist extends CommonDropdown {
       global $LANG;
 
       if ($nb>1) {
-         return $LANG['setup'][829];
+         return $LANG['setup'][710];
       }
-      return $LANG['setup'][828];
+      return $LANG['setup'][709];
    }
 
 

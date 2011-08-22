@@ -46,8 +46,7 @@ class OperatingSystemServicePack extends CommonDropdown {
       if ($nb>1) {
          return $LANG['dropdown'][30];
       }
-      return $LANG['computers'][53];
+      return $LANG['computers'][16];
    }
 }
-
 ?>

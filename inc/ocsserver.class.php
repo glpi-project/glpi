@@ -281,7 +281,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_ip", $this->fields["import_ip"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][58] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][13] . " </td>\n<td>";
       Dropdown::showYesNo("import_general_uuid", $this->fields["import_general_uuid"]);
       echo "</td></tr>\n";
 
@@ -471,7 +471,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       if ($this->fields['ocs_version'] > self::OCS1_3_VERSION_LIMIT) {
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][57] . " </td>\n<td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][45] . " </td>\n<td>";
          Dropdown::showYesNo("import_vms", $this->fields["import_vms"]);
          echo "</td></tr>\n";
       }
@@ -2951,8 +2951,8 @@ class OcsServer extends CommonDBTM {
                    "domains_id"                     => $LANG['setup'][89],
                    "networks_id"                    => $LANG['setup'][88],
                    "operatingsystems_id"            => $LANG['computers'][9],
-                   "operatingsystemservicepacks_id" => $LANG['computers'][53],
-                   "operatingsystemversions_id"     => $LANG['computers'][52],
+                   "operatingsystemservicepacks_id" => $LANG['computers'][16],
+                   "operatingsystemversions_id"     => $LANG['computers'][15],
                    "os_license_number"              => $LANG['computers'][10],
                    "os_licenseid"                   => $LANG['computers'][11],
                    "users_id"                       => $LANG['common'][34],

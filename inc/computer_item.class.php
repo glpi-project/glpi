@@ -203,7 +203,7 @@ class Computer_Item extends CommonDBRelation{
                 && $comp->fields['states_id'] != $item->getField('states_id')) {
 
                $updates['states_id'] = $comp->fields['states_id'];
-               Session::addMessageAfterRedirect($LANG['computers'][56], true);
+               Session::addMessageAfterRedirect($LANG['computers'][53], true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]>0
@@ -460,7 +460,7 @@ class Computer_Item extends CommonDBRelation{
                      break;
 
                   case 'Phone' :
-                     echo $LANG['computers'][54];
+                     echo $LANG['computers'][52];
                      break;
                }
                echo "<br>";

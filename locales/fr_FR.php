@@ -368,44 +368,42 @@ $LANG['computers'][5]  = "Point de montage";
 $LANG['computers'][6]  = "Partition";
 $LANG['computers'][7]  = "Ajouter un volume";
 $LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation"; // Duplicate with setup/5
+$LANG['computers'][9]  = "Système d'exploitation";
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
-
+$LANG['computers'][12] = "Nombre de processeurs";
+$LANG['computers'][13] = "UUID";
 $LANG['computers'][14] = "Inséré";
+$LANG['computers'][15] = "Version du système d'exploitation";
+$LANG['computers'][16] = "Service pack";
 
 $LANG['computers'][23] = "Type de mémoire";
 $LANG['computers'][24] = "Mémoire (Mio)";
 $LANG['computers'][25] = "Taille du disque dur";
 
+$LANG['computers'][31] = "Ajouter une machine virtuelle";
+$LANG['computers'][32] = "Aucune machine virtuelle associée à l'ordinateur";
+$LANG['computers'][33] = "Machine";
+$LANG['computers'][34] = "Liste des machines virtuelles";
+$LANG['computers'][35] = "Liste des machines hôtes";
 $LANG['computers'][36] = "Type de disque dur";
 $LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
-
+$LANG['computers'][39] = "Systèmes de virtualisation";
+$LANG['computers'][40] = "Système de virtualisation";
+$LANG['computers'][41] = "Modèles de virtualisation";
+$LANG['computers'][42] = "Modèle de virtualisation";
+$LANG['computers'][43] = "Etats des machines virtuelles";
+$LANG['computers'][44] = "Etat de la machine virtuelle";
+$LANG['computers'][45] = "Machines virtuelles";
 $LANG['computers'][46] = "Machine virtuelle";
 $LANG['computers'][47] = "Pas de périphérique connecté";
 $LANG['computers'][48] = "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $LANG['computers'][49] = "Modification de l'usager. Les éléments connectés ont pris comme usager celui de l'ordinateur.";
 $LANG['computers'][50] = "Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur.";
 $LANG['computers'][51] = "Source de mise à jour";
-$LANG['computers'][52] = "Version du système d'exploitation";
-$LANG['computers'][53] = "Service pack";
-$LANG['computers'][54] = "Pas de téléphone connecté";
-$LANG['computers'][55] = "Ajouter une machine virtuelle";
-$LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
-$LANG['computers'][57] = "Machines virtuelles";
-$LANG['computers'][58] = "UUID";
-$LANG['computers'][59] = "Aucune machine virtuelle associée à l'ordinateur";
-$LANG['computers'][60] = "Modèle de virtualisation";
-$LANG['computers'][61] = "Nombre de processeurs";
-$LANG['computers'][62] = "Système de virtualisation";
-$LANG['computers'][63] = "Etat de la machine virtuelle";
-$LANG['computers'][64] = "Machine";
-$LANG['computers'][65] = "Liste des machines hôtes";
-$LANG['computers'][66] = "Liste des machines virtuelles";
-$LANG['computers'][67] = "Systèmes de virtualisation";
-$LANG['computers'][68] = "Modèles de virtualisation";
-$LANG['computers'][69] = "Etats des machines virtuelles";
+$LANG['computers'][52] = "Pas de téléphone connecté";
+$LANG['computers'][53] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
@@ -1471,7 +1469,7 @@ $LANG['networking'][46] = "Ajouter plusieurs ports...";
 
 $LANG['networking'][48] = "A";
 
-$LANG['networking'][51] = "Prise réseau"; // Duplicate of setup/73
+$LANG['networking'][51] = "Prise réseau";
 $LANG['networking'][52] = "Prises réseau";
 
 $LANG['networking'][55] = "Associer un VLAN";
@@ -2029,7 +2027,7 @@ $LANG['setup'][1]   = "Voir les comptes dans les onglets";
 $LANG['setup'][2]   = "Ajouter utilisateur...";
 $LANG['setup'][3]   = "Liaison annuaire LDAP";
 $LANG['setup'][4]   = "Types d'ordinateurs";
-$LANG['setup'][5]   = "Système d'exploitation";
+
 $LANG['setup'][6]   = "Personnalisation";
 $LANG['setup'][7]   = "Délimiteur CSV";
 $LANG['setup'][8]   = "Activer les informations financières et administratives par défaut";
@@ -2071,7 +2069,6 @@ $LANG['setup'][69]  = "Types de périphériques";
 $LANG['setup'][70]  = "Configuration générale";
 $LANG['setup'][71]  = "Firmware";
 
-$LANG['setup'][73]  = "Prise réseau";
 $LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il possède des sous-éléments";
 $LANG['setup'][75]  = "Comme enfant de";
 $LANG['setup'][76]  = "Enfants de";
@@ -2332,6 +2329,8 @@ $LANG['setup'][705] = "Notification";
 
 $LANG['setup'][707] = "Alertes sur les réservations";
 $LANG['setup'][708] = "Alertes sur les tickets non résolus depuis";
+$LANG['setup'][709] = "Valeur ignorée pour l'unicité";
+$LANG['setup'][710] = "Valeurs ignorées pour l'unicité";
 
 $LANG['setup'][720] = "Informations système";
 $LANG['setup'][721] = "Informations sur le système, l'installation et la configuration";
@@ -2366,8 +2365,7 @@ $LANG['setup'][824] = "Auteur de l'action";
 $LANG['setup'][825] = "Action voulue";
 $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
-$LANG['setup'][828] = "Valeur ignorée pour l'unicité";
-$LANG['setup'][829] = "Valeurs ignorées pour l'unicité";
+
 
 $LANG['sla'][1]  = "SLA";
 $LANG['sla'][2]  = "Temps maximum de résolution";
@@ -2419,11 +2417,12 @@ $LANG['software'][48] = "Regrouper";
 $LANG['software'][49] = "Logiciel mis dans la corbeille après regroupement";
 
 
+$LANG['softwarecategories'][0] = "Catégorie de logiciels";
+$LANG['softwarecategories'][1] = "Catégories des logiciels";
 $LANG['softwarecategories'][2] = "Logiciels sans catégorie";
 $LANG['softwarecategories'][3] = "Déplier les logiciels sans catégorie";
 $LANG['softwarecategories'][4] = "Déplier les logiciels appartenant à une catégorie";
-$LANG['softwarecategories'][5] = "Catégorie de logiciels";
-$LANG['softwarecategories'][6] = "Catégories des logiciels";
+
 
 
 $LANG['state'][0] = "Statut";

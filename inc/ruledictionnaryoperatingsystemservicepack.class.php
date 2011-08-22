@@ -49,7 +49,7 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = $LANG['computers'][53];
+      $criterias['name']['name']  = $LANG['computers'][16];
       $criterias['name']['table'] = 'glpi_operatingsystemservicepacks';
 
       return $criterias;
@@ -60,7 +60,7 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
       global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['computers'][53];
+      $actions['name']['name']          = $LANG['computers'][16];
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;
