@@ -294,7 +294,7 @@ class Problem extends CommonITILObject {
          if (isset($this->input["status"])
              && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="solved") {
+             && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
          }
@@ -302,7 +302,7 @@ class Problem extends CommonITILObject {
          if (isset($this->input["status"])
              && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="closed") {
+             && in_array($this->input["status"], $this->getClosedStatusArray())) {
 
             $mailtype = "closed";
          }
@@ -823,6 +823,7 @@ class Problem extends CommonITILObject {
                break;
 
             case 'solved' :
+            case 'observe' :
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
                echo "<td>";

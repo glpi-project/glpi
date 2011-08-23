@@ -876,6 +876,7 @@ class Change extends CommonITILObject {
                break;
 
             case 'solved' :
+            case 'observe' :
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
                echo "<td>";
