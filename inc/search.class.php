@@ -2726,39 +2726,57 @@ class Search {
          case "glpi_problems.status" :
          case "glpi_changes.status" :
 
-            $tocheck = array('new'           => array('new', 'evaluation', 'approbation'),
-                             'notold'        => array('new', 'plan', 'assign', 'waiting',
-                                                      'accepted', 'observe', 'evaluation',
-                                                      'approbation', 'test', 'qualification',
-                                                      'applied'),
-                             'notclosed'     => array('new', 'plan', 'assign', 'waiting',
-                                                      'accepted', 'observe', 'evaluation',
-                                                      'approbation', 'test', 'qualification',
-                                                      'applied', 'solved'),
-                             'old'           => array('solved', 'closed', 'abandonned'),
-                             'process'       => array('plan', 'assign', 'accepted', 'observe',
-                                                      'test', 'qualification', 'applied'),
-                             'waiting'       => array('waiting'),
-                             'solved'        => array('solved'),
-                             'closed'        => array('closed'),
-                             'assign'        => array('assign'),
-                             'plan'          => array('plan'),
-                             'evaluation'    => array('evaluation'),
-                             'approbation'   => array('approbation'),
-                             'observe'       => array('observe'),
-                             'accepted'      => array('accepted'),
-                             'test'          => array('test'),
-                             'qualification' => array('qualification'),
-                             'applied'       => array('applied'),
-                            );
-            if (isset($tocheck[$val])) {
-               if ($nott) {
-                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck[$val])."')";
-               }
-               return $link." `$table`.`$field` IN ('".implode("','",$tocheck[$val])."')";
-            }
             if ($val=='all') {
                return "";
+            }
+
+            $tocheck = array();
+            
+            switch ($val) {
+               case 'process' :
+                  $tocheck = $itemtype::getProcessStatusArray();
+                  break;
+
+               case 'notclosed' :
+                  $tocheck = $itemtype::getAllStatusArray();
+                  foreach ($itemtype::getClosedStatusArray() as $status) {
+                     if (isset($tocheck[$status])) {
+                        unset($tocheck[$status]);
+                     }
+                  }
+                  $tocheck = array_keys($tocheck);
+                  break;
+
+               case 'old' :
+                  $tocheck = array_merge($itemtype::getSolvedStatusArray(), $itemtype::getClosedStatusArray());
+                  break;
+
+               case 'notold' :
+                  $tocheck = $itemtype::getAllStatusArray();
+                  foreach ($itemtype::getSolvedStatusArray() as $status) {
+                     if (isset($tocheck[$status])) {
+                        unset($tocheck[$status]);
+                     }
+                  }
+                  foreach ($itemtype::getClosedStatusArray() as $status) {
+                     if (isset($tocheck[$status])) {
+                        unset($tocheck[$status]);
+                     }
+                  }
+                  $tocheck = array_keys($tocheck);
+                  break;
+
+            }
+
+            if (count($tocheck) == 0) {
+               $tocheck = array($val);
+            }
+
+            if (count($tocheck)) {
+               if ($nott) {
+                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+               }
+               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
             }
             break;
 
