@@ -35,6 +35,8 @@
 
 $ticket_user = new Ticket_User();
 
+Session ::checkLoginUser();
+
 if (isset($_REQUEST["update"])) {
    $ticket_user->check($_REQUEST["id"], 'w');
 

@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkLoginUser();
+
 $email = new UserEmail();
 
 if (isset($_REQUEST["delete"])) {

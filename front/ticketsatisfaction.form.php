@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkLoginUser();
+
 $inquest = new TicketSatisfaction();
 
 if (isset($_POST["update"])) {
@@ -46,7 +48,6 @@ if (isset($_POST["update"])) {
    Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
    Html::back();
-
 }
 
 Html::displayErrorAndDie('Lost');

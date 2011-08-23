@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkCentralAccess();
+
 Html::header($LANG['common'][12], $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
 echo "<table class='tab_cadre'>";

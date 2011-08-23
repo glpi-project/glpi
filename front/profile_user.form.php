@@ -31,9 +31,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkCentralAccess();
+
 $profile = new Profile();
-$right = new Profile_User();
-$user = new User();
+$right   = new Profile_User();
+$user    = new User();
 
 if (isset($_POST["add"])) {
 
