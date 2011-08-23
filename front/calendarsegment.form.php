@@ -31,8 +31,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$item = new CalendarSegment();
+Session::checkCentralAccess();
 
+$item = new CalendarSegment();
 
 if (isset($_POST["add"])) {
 

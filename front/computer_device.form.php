@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkCentralAccess();
+
 $compdev = new Computer_Device();
 
 if (isset($_POST["add"])) {

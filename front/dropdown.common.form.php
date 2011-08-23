@@ -38,6 +38,11 @@ if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
+      // Gestion timeout session
+   if (!Session::getLoginUserID()) {
+      Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+      exit();
+   }
    Html::displayRightError();
 }
 

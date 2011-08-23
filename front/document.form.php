@@ -33,15 +33,16 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+Session::checkRight("document", "r");
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }
 
-$doc = new Document();
+$doc          = new Document();
 $documentitem = new Document_Item();
 
 if (isset($_POST["add"])) {
