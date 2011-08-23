@@ -652,6 +652,14 @@ function update0801to083() {
 
    $migration->displayMessage($LANG['update'][141] . ' - Add various fields'); // Updating schema
 
+   $migration->addField("glpi_states", 'states_id', "integer");
+   $migration->addField("glpi_states", 'completename', "text");
+   $migration->addField("glpi_states", 'level', "integer");
+   $migration->addField("glpi_states", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_states", 'sons_cache', "longtext");
+   $migration->migrationOneTable('glpi_states');
+   $migration->addKey("glpi_states", array('states_id','name'),'unicity');
+
    $migration->changeField("glpi_authldaps", 'group_condition', 'group_condition', "text");
 
    $migration->dropKey("glpi_groups", 'ldap_value');

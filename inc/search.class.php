@@ -4558,7 +4558,7 @@ class Search {
             $search['States'][2]['searchtype'] = 'contains';
 
             $search['States'][31]['table']     = 'glpi_states';
-            $search['States'][31]['field']     = 'name';
+            $search['States'][31]['field']     = 'completename';
             $search['States'][31]['name']      = $LANG['state'][0];
 
             $search['States'] += Location::getSearchOptionsToAdd();

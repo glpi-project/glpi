@@ -207,7 +207,7 @@ class SoftwareVersion extends CommonDBChild {
       $tab[16]['datatype'] = 'text';
 
       $tab[31]['table'] = 'glpi_states';
-      $tab[31]['field'] = 'name';
+      $tab[31]['field'] = 'completename';
       $tab[31]['name']  = $LANG['state'][0];
 
       return $tab;
