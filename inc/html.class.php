@@ -1631,7 +1631,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['os_sp']['title']
-                           = $LANG['computers'][16];
+                           = $LANG['computers'][53];
             $menu['admin']['content']['dictionnary']['options']['os_sp']['page']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
             $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']
@@ -1644,7 +1644,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['os_version']['title']
-                           = $LANG['computers'][15];
+                           = $LANG['computers'][52];
             $menu['admin']['content']['dictionnary']['options']['os_version']['page']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
             $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']
@@ -2212,8 +2212,8 @@ class Html {
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=500, width=".
              (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][47]." ".
-             $LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][47]." ".$LANG['bookmark'][1]."\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][52]." ".
+             $LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\">";
       echo "</a></li>";
 
       /// MENU ALL
@@ -2580,8 +2580,8 @@ class Html {
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, ".
              "top=100, left=100, scrollbars=yes' );w.focus();\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][47]." ".
-             $LANG['bookmark'][1]."\" alt=\"".$LANG['buttons'][47]." ".$LANG['bookmark'][1]."\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][52]." ".
+             $LANG['bookmark'][1]."\" alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\">";
       echo "</a></li>";
 
       // check user id : header used for display messages when session logout

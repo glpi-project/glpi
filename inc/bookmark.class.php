@@ -477,7 +477,7 @@ class Bookmark extends CommonDBTM {
 
          echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
          echo "<tr>";
-         echo "<th class='center' colspan='3'>".$LANG['buttons'][47]." ".$LANG['bookmark'][1]."</th>";
+         echo "<th class='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
          echo "<th width='20px'>&nbsp;</th>";
          echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
@@ -562,8 +562,8 @@ class Bookmark extends CommonDBTM {
               rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
               (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".$LANG['buttons'][1]." ".$LANG['bookmark'][1]."\"
-             alt=\"".$LANG['buttons'][1]." ".$LANG['bookmark'][1]."\" class='calendrier'>";
+             title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"
+             alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" class='calendrier'>";
       echo "</a>";
    }
 

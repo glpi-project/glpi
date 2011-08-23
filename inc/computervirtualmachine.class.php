@@ -50,7 +50,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       global $LANG;
 
       if ($nb>1) {
-         return $LANG['computers'][45];
+         return $LANG['computers'][57];
       }
       return $LANG['computers'][46];
    }
@@ -165,30 +165,30 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
-      echo "</td><td>".$LANG['computers'][40]."&nbsp;:</td>";
+      echo "</td><td>".$LANG['computers'][62]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineType',
                      array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][42]."&nbsp;:</td>";
+      echo "<td>".$LANG['computers'][60]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineSystem',
                      array('value' => $this->fields['virtualmachinesystems_id']));
-      echo "</td><td>".$LANG['computers'][44]."&nbsp;:</td>";
+      echo "</td><td>".$LANG['computers'][63]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineState',
                      array('value' => $this->fields['virtualmachinestates_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][13]."&nbsp;:</td>";
+      echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "uuid");
       echo "</td>";
 
-      echo "<td>".$LANG['computers'][12]."&nbsp;:</td>";
+      echo "<td>".$LANG['computers'][61]."&nbsp;:</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
@@ -199,7 +199,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       Html::autocompletionTextField($this, "ram");
       echo "</td>";
 
-      echo "<td>".$LANG['computers'][33]."&nbsp;:</td>";
+      echo "<td>".$LANG['computers'][64]."&nbsp;:</td>";
       echo "<td>";
       if ($link_computer = self::findVirtualMachine($this->fields)) {
          $computer = new Computer();
@@ -253,7 +253,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='2'>".$LANG['computers'][35]."</th></tr>";
+            echo "<tr><th colspan='2'>".$LANG['computers'][65]."</th></tr>";
 
             echo "<tr><th>".$LANG['common'][16]."</th>";
             echo "<th>".$LANG['entity'][0]."</th>";
@@ -318,18 +318,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
 
       if (empty($virtualmachines)) {
-         echo "<tr><th>".$LANG['computers'][32]."</th></tr>";
+         echo "<tr><th>".$LANG['computers'][59]."</th></tr>";
       } else {
-         echo "<tr><th colspan='9'>".$LANG['computers'][34]."</th></tr>";
+         echo "<tr><th colspan='9'>".$LANG['computers'][66]."</th></tr>";
 
          echo "<tr><th>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['computers'][40]."</th>";
-         echo "<th>".$LANG['computers'][42]."</th>";
-         echo "<th>".$LANG['computers'][44]."</th>";
-         echo "<th>".$LANG['computers'][13]."</th>";
-         echo "<th>".$LANG['computers'][12]."</th>";
+         echo "<th>".$LANG['computers'][62]."</th>";
+         echo "<th>".$LANG['computers'][60]."</th>";
+         echo "<th>".$LANG['computers'][63]."</th>";
+         echo "<th>".$LANG['computers'][58]."</th>";
+         echo "<th>".$LANG['computers'][61]."</th>";
          echo "<th>".$LANG['computers'][24]."</th>";
-         echo "<th>".$LANG['computers'][33]."</th>";
+         echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
 
          Session::initNavigateListItems('ComputerVirtualMachine',
@@ -382,7 +382,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><th colspan='8'>";
          echo "<a href='computervirtualmachine.form.php?computers_id=$ID'>".
-                $LANG['computers'][31]."</a></th></tr>";
+                $LANG['computers'][55]."</a></th></tr>";
       }
 
       echo "</table>";

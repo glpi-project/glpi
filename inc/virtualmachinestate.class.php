@@ -44,10 +44,11 @@ class VirtualMachineState extends CommonDropdown {
       global $LANG;
 
       if ($nb>1) {
-         return $LANG['computers'][43];
+         return $LANG['computers'][69];
       }
-      return $LANG['computers'][44];
+      return $LANG['computers'][63];
    }
 
 }
+
 ?>

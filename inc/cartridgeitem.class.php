@@ -544,7 +544,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='3'>".$LANG['cartridges'][7]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
       $used = array();

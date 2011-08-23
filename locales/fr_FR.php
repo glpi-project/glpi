@@ -33,15 +33,19 @@ $LANG = array();
 
 $LANG['backup'][0]  = "Sauvegarde SQL";
 $LANG['backup'][1]  = "Sauvegarde XML";
-$LANG['backup'][2] = "Taille";
-$LANG['backup'][3] = "Voir/Télécharger";
-$LANG['backup'][4] = "Remplacer la base de données actuelle par le fichier de sauvegarde ?";
-$LANG['backup'][5] = "Supprimer le fichier ?";
-$LANG['backup'][6] = "Sauvegarder la base de données ?";
-$LANG['backup'][7] = "Le fichier existe déjà";
-$LANG['backup'][8] = "Impossible de trouver l'octet";
-$LANG['backup'][9] = "Erreur MySQL à partir de";
-$LANG['backup'][10] = "Redirection automatique, sinon cliquez";
+
+$LANG['backup'][11] = "Taille";
+
+$LANG['backup'][13] = "Voir/Télécharger";
+
+$LANG['backup'][16] = "Remplacer la base de données actuelle par le fichier de sauvegarde ?";
+$LANG['backup'][17] = "Supprimer le fichier ?";
+$LANG['backup'][18] = "Sauvegarder la base de données ?";
+
+$LANG['backup'][21] = "Le fichier existe déjà";
+$LANG['backup'][22] = "Impossible de trouver l'octet";
+$LANG['backup'][23] = "Erreur MySQL à partir de";
+$LANG['backup'][24] = "Redirection automatique, sinon cliquez";
 
 
 $LANG['bookmark'][1] = "marque-page";
@@ -53,7 +57,7 @@ $LANG['bookmark'][6] = "Vue par défaut";
 
 
 $LANG['buttons'][0]  = "Rechercher";
-$LANG['buttons'][1] = "Enregistrer";
+
 $LANG['buttons'][2]  = "Valider";
 $LANG['buttons'][3]  = "Associer";
 $LANG['buttons'][4]  = "Installer";
@@ -88,7 +92,7 @@ $LANG['buttons'][32] = "Fin";
 $LANG['buttons'][33] = "Début";
 $LANG['buttons'][34] = "Annuler";
 $LANG['buttons'][35] = "Supprimer toutes les répétitions";
-$LANG['buttons'][36] = "Nettoyer";
+
 $LANG['buttons'][37] = "Importer";
 $LANG['buttons'][38] = "Déverrouiller";
 $LANG['buttons'][39] = "Remplacer";
@@ -98,18 +102,21 @@ $LANG['buttons'][42] = "Désactiver";
 $LANG['buttons'][43] = "Naviguer";
 $LANG['buttons'][44] = "Page courante en CSV";
 $LANG['buttons'][45] = "Toutes les pages en CSV";
-$LANG['buttons'][46] = "Dupliquer";
-$LANG['buttons'][47] = "Charger";
+
 $LANG['buttons'][48] = "Transférer";
 $LANG['buttons'][49] = "Conserver";
 $LANG['buttons'][50] = "Tester";
-$LANG['buttons'][51] = "Regénérer";
-$LANG['buttons'][52] = "Fermer la fenêtre";
-$LANG['buttons'][53] = "Dissocier";
-$LANG['buttons'][54] = "Mettre à jour";
+$LANG['buttons'][51] = "Enregistrer";
+$LANG['buttons'][52] = "Charger";
+$LANG['buttons'][53] = "Nettoyer";
+$LANG['buttons'][54] = "Dupliquer";
 $LANG['buttons'][55] = "Premier";
 $LANG['buttons'][56] = "Dernier";
 $LANG['buttons'][57] = "Exécuter";
+$LANG['buttons'][58] = "Mettre à jour";
+$LANG['buttons'][59] = "Dissocier";
+$LANG['buttons'][60] = "Fermer la fenêtre";
+$LANG['buttons'][61] = "Regénérer";
 
 
 $LANG['calendar'][0]  = "AAAA-MM-JJ";
@@ -166,27 +173,37 @@ $LANG['calendarM'][11] = "Décembre";
 $LANG['cartridges'][0]  = "Cartouche";
 $LANG['cartridges'][1]  = "Modèle de cartouche";
 $LANG['cartridges'][2]  = "Modèles de cartouche";
-$LANG['cartridges'][3]  = "Cartouche(s)";
-$LANG['cartridges'][4]  = "Ruban";
-$LANG['cartridges'][5]  = "Date ajout";
-$LANG['cartridges'][6]  = "Fin de vie";
-$LANG['cartridges'][7]  = "Modèles d'imprimantes compatibles";
-$LANG['cartridges'][8]  = "Jet d'encre";
+
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
-$LANG['cartridges'][11] = "Type de cartouche";
-$LANG['cartridges'][12] = "Neuve";
+$LANG['cartridges'][11] = "Jet d'encre";
+$LANG['cartridges'][12] = "Type de cartouche";
 $LANG['cartridges'][13] = "Neuves";
 $LANG['cartridges'][14] = "Utilisées";
-$LANG['cartridges'][15] = "Utilisée";
-$LANG['cartridges'][16] = "Cartouches utilisées";
-$LANG['cartridges'][17] = "Usagées";
-$LANG['cartridges'][18] = "Usagée";
-$LANG['cartridges'][19] = "Cartouches usagées";
-$LANG['cartridges'][20] = "Pas de cartouche libre";
-$LANG['cartridges'][21] = "En stock en moyenne";
-$LANG['cartridges'][22] = "Utilisation moyenne";
-$LANG['cartridges'][23] = "Pages imprimées en moyenne";
+$LANG['cartridges'][15] = "Usagées";
+$LANG['cartridges'][16] = "Cartouche(s)";
+
+$LANG['cartridges'][20] ="Neuve";
+$LANG['cartridges'][21] ="Utilisée";
+$LANG['cartridges'][22] ="Usagée";
+
+$LANG['cartridges'][24] = "Date ajout";
+
+$LANG['cartridges'][27] = "Sur";
+
+$LANG['cartridges'][29] = "Fin de vie";
+
+$LANG['cartridges'][32] = "Modèles d'imprimantes compatibles";
+$LANG['cartridges'][33] = "Cartouches utilisées";
+$LANG['cartridges'][34] = "Pas de cartouche libre";
+$LANG['cartridges'][35] = "Cartouches usagées";
+
+$LANG['cartridges'][37] = "Ruban";
+
+$LANG['cartridges'][39] = "Compteur imprimante";
+$LANG['cartridges'][40] = "En stock en moyenne";
+$LANG['cartridges'][41] = "Utilisation moyenne";
+$LANG['cartridges'][42] = "Pages imprimées en moyenne";
 
 
 $LANG['central'][1]  = "Pour des raisons de sécurité, veuillez changer le mot de passe par défaut pour le(s) utilisateur(s)";
@@ -351,42 +368,44 @@ $LANG['computers'][5]  = "Point de montage";
 $LANG['computers'][6]  = "Partition";
 $LANG['computers'][7]  = "Ajouter un volume";
 $LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation";
+$LANG['computers'][9]  = "Système d'exploitation"; // Duplicate with setup/5
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
-$LANG['computers'][12] = "Nombre de processeurs";
-$LANG['computers'][13] = "UUID";
+
 $LANG['computers'][14] = "Inséré";
-$LANG['computers'][15] = "Version du système d'exploitation";
-$LANG['computers'][16] = "Service pack";
 
 $LANG['computers'][23] = "Type de mémoire";
 $LANG['computers'][24] = "Mémoire (Mio)";
 $LANG['computers'][25] = "Taille du disque dur";
 
-$LANG['computers'][31] = "Ajouter une machine virtuelle";
-$LANG['computers'][32] = "Aucune machine virtuelle associée à l'ordinateur";
-$LANG['computers'][33] = "Machine";
-$LANG['computers'][34] = "Liste des machines virtuelles";
-$LANG['computers'][35] = "Liste des machines hôtes";
 $LANG['computers'][36] = "Type de disque dur";
 $LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
-$LANG['computers'][39] = "Systèmes de virtualisation";
-$LANG['computers'][40] = "Système de virtualisation";
-$LANG['computers'][41] = "Modèles de virtualisation";
-$LANG['computers'][42] = "Modèle de virtualisation";
-$LANG['computers'][43] = "Etats des machines virtuelles";
-$LANG['computers'][44] = "Etat de la machine virtuelle";
-$LANG['computers'][45] = "Machines virtuelles";
+
 $LANG['computers'][46] = "Machine virtuelle";
 $LANG['computers'][47] = "Pas de périphérique connecté";
 $LANG['computers'][48] = "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $LANG['computers'][49] = "Modification de l'usager. Les éléments connectés ont pris comme usager celui de l'ordinateur.";
 $LANG['computers'][50] = "Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur.";
 $LANG['computers'][51] = "Source de mise à jour";
-$LANG['computers'][52] = "Pas de téléphone connecté";
-$LANG['computers'][53] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
+$LANG['computers'][52] = "Version du système d'exploitation";
+$LANG['computers'][53] = "Service pack";
+$LANG['computers'][54] = "Pas de téléphone connecté";
+$LANG['computers'][55] = "Ajouter une machine virtuelle";
+$LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
+$LANG['computers'][57] = "Machines virtuelles";
+$LANG['computers'][58] = "UUID";
+$LANG['computers'][59] = "Aucune machine virtuelle associée à l'ordinateur";
+$LANG['computers'][60] = "Modèle de virtualisation";
+$LANG['computers'][61] = "Nombre de processeurs";
+$LANG['computers'][62] = "Système de virtualisation";
+$LANG['computers'][63] = "Etat de la machine virtuelle";
+$LANG['computers'][64] = "Machine";
+$LANG['computers'][65] = "Liste des machines hôtes";
+$LANG['computers'][66] = "Liste des machines virtuelles";
+$LANG['computers'][67] = "Systèmes de virtualisation";
+$LANG['computers'][68] = "Modèles de virtualisation";
+$LANG['computers'][69] = "Etats des machines virtuelles";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
@@ -1444,13 +1463,15 @@ $LANG['networking'][19] = "Ajouter un port...";
 
 $LANG['networking'][21] = "Numéro de port";
 
+$LANG['networking'][25]="sur";
+
 $LANG['networking'][44]="Le port";
 
 $LANG['networking'][46] = "Ajouter plusieurs ports...";
 
 $LANG['networking'][48] = "A";
 
-$LANG['networking'][51] = "Prise réseau";
+$LANG['networking'][51] = "Prise réseau"; // Duplicate of setup/73
 $LANG['networking'][52] = "Prises réseau";
 
 $LANG['networking'][55] = "Associer un VLAN";
@@ -2008,7 +2029,7 @@ $LANG['setup'][1]   = "Voir les comptes dans les onglets";
 $LANG['setup'][2]   = "Ajouter utilisateur...";
 $LANG['setup'][3]   = "Liaison annuaire LDAP";
 $LANG['setup'][4]   = "Types d'ordinateurs";
-
+$LANG['setup'][5]   = "Système d'exploitation";
 $LANG['setup'][6]   = "Personnalisation";
 $LANG['setup'][7]   = "Délimiteur CSV";
 $LANG['setup'][8]   = "Activer les informations financières et administratives par défaut";
@@ -2050,6 +2071,7 @@ $LANG['setup'][69]  = "Types de périphériques";
 $LANG['setup'][70]  = "Configuration générale";
 $LANG['setup'][71]  = "Firmware";
 
+$LANG['setup'][73]  = "Prise réseau";
 $LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il possède des sous-éléments";
 $LANG['setup'][75]  = "Comme enfant de";
 $LANG['setup'][76]  = "Enfants de";
@@ -2310,8 +2332,6 @@ $LANG['setup'][705] = "Notification";
 
 $LANG['setup'][707] = "Alertes sur les réservations";
 $LANG['setup'][708] = "Alertes sur les tickets non résolus depuis";
-$LANG['setup'][709] = "Valeur ignorée pour l'unicité";
-$LANG['setup'][710] = "Valeurs ignorées pour l'unicité";
 
 $LANG['setup'][720] = "Informations système";
 $LANG['setup'][721] = "Informations sur le système, l'installation et la configuration";
@@ -2346,7 +2366,8 @@ $LANG['setup'][824] = "Auteur de l'action";
 $LANG['setup'][825] = "Action voulue";
 $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
-
+$LANG['setup'][828] = "Valeur ignorée pour l'unicité";
+$LANG['setup'][829] = "Valeurs ignorées pour l'unicité";
 
 $LANG['sla'][1]  = "SLA";
 $LANG['sla'][2]  = "Temps maximum de résolution";
@@ -2398,12 +2419,11 @@ $LANG['software'][48] = "Regrouper";
 $LANG['software'][49] = "Logiciel mis dans la corbeille après regroupement";
 
 
-$LANG['softwarecategories'][0] = "Catégorie de logiciels";
-$LANG['softwarecategories'][1] = "Catégories des logiciels";
 $LANG['softwarecategories'][2] = "Logiciels sans catégorie";
 $LANG['softwarecategories'][3] = "Déplier les logiciels sans catégorie";
 $LANG['softwarecategories'][4] = "Déplier les logiciels appartenant à une catégorie";
-
+$LANG['softwarecategories'][5] = "Catégorie de logiciels";
+$LANG['softwarecategories'][6] = "Catégories des logiciels";
 
 
 $LANG['state'][0] = "Statut";
@@ -2567,7 +2587,6 @@ $LANG['users'][20] = "Supprimer des superviseurs";
 $LANG['users'][21] = "Définir comme courriel par défaut";
 $LANG['users'][22] = "Titres des utilisateurs";
 $LANG['users'][23] = "Catégories des utilisateurs";
-
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";

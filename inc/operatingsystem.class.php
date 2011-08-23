@@ -46,7 +46,8 @@ class OperatingSystem extends CommonDropdown {
       if ($nb>1) {
          return $LANG['dropdown'][28];
       }
-      return $LANG['computers'][9];
+      return $LANG['setup'][5];
    }
 }
+
 ?>
