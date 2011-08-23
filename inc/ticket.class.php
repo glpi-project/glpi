@@ -1631,6 +1631,12 @@ class Ticket extends CommonITILObject {
       $tab[18]['maybefuture']   = true;
       $tab[18]['massiveaction'] = false;
 
+      $tab[82]['table']         = $this->getTable();
+      $tab[82]['field']         = 'is_late';
+      $tab[82]['name']          = $LANG['job'][17];
+      $tab[82]['datatype']      = 'bool';
+      $tab[82]['massiveaction'] = false;
+
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'solvedate';
       $tab[17]['name']          = $LANG['reports'][64];
