@@ -2576,6 +2576,188 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * Print the helpdesk form
+    *
+    * @param $ID int : ID of the user who want to display the Helpdesk
+    * @param $from_helpdesk int : is display from the helpdesk.php ?
+    *
+    * @return nothing (print the helpdesk)
+   **/
+   static function showFormHelpdesk($ID, $from_helpdesk) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      if (!Session::haveRight("create_ticket","1")) {
+         return false;
+      }
+
+      if (Session::haveRight('validate_ticket',1)) {
+         $opt = array();
+         $opt['reset']         = 'reset';
+         $opt['field'][0]      = 55; // validation status
+         $opt['searchtype'][0] = 'equals';
+         $opt['contains'][0]   = 'waiting';
+         $opt['link'][0]       = 'AND';
+
+         $opt['field'][1]      = 59; // validation aprobator
+         $opt['searchtype'][1] = 'equals';
+         $opt['contains'][1]   = Session::getLoginUserID();
+         $opt['link'][1]       = 'AND';
+
+         $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,
+                                                                                           '&amp;');
+
+         if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) >0) {
+            echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
+                   alt=\"".$LANG['validation'][15]."\">".$LANG['validation'][33]."</a><br><br>";
+         }
+      }
+
+      $query = "SELECT `realname`, `firstname`, `name`
+                FROM `glpi_users`
+                WHERE `id` = '$ID'";
+      $result = $DB->query($query);
+
+      $email  = UserEmail::getDefaultForUser($ID);
+
+      // Get saved data from a back system
+      $use_email_notification = 1;
+      if ($email=="") {
+         $use_email_notification = 0;
+      }
+      $itemtype            = 0;
+      $items_id            = "";
+      $content             = "";
+      $title               = "";
+      $itilcategories_id   = 0;
+      $urgency             = 3;
+      $type                = 0;
+
+      if (isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif'])
+          && isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification'])) {
+         $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification']);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["email"])) {
+         $email = stripslashes($_SESSION["helpdeskSaved"]["user_email"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["itemtype"])) {
+         $itemtype = stripslashes($_SESSION["helpdeskSaved"]["itemtype"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["items_id"])) {
+         $items_id = stripslashes($_SESSION["helpdeskSaved"]["items_id"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["content"])) {
+         $content = self::cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["name"])) {
+         $title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["itilcategories_id"])) {
+         $itilcategories_id = stripslashes($_SESSION["helpdeskSaved"]["itilcategories_id"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["type"])) {
+         $type = stripslashes($_SESSION["helpdeskSaved"]["type"]);
+      }
+      if (isset($_SESSION["helpdeskSaved"]["urgency"])) {
+         $urgency = stripslashes($_SESSION["helpdeskSaved"]["urgency"]);
+      }
+
+      unset($_SESSION["helpdeskSaved"]);
+
+      echo "<form method='post' name='helpdeskform' action='".
+             $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
+      echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
+      echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk')."'>";
+
+      if ($CFG_GLPI['urgency_mask']==(1<<3)) {
+         // Dont show dropdown if only 1 value enabled
+         echo "<input type='hidden' name='urgency' value='3'>";
+      }
+      echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='2'>".$LANG['job'][11]."&nbsp;:&nbsp;";
+      if (Session::isMultiEntitiesMode()) {
+
+         echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
+      }
+      echo "</th></tr>";
+
+      if ($CFG_GLPI['urgency_mask']!=(1<<3)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['joblist'][29]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+         Ticket::dropdownUrgency("urgency", $urgency);
+         echo "</td></tr>";
+      }
+
+      if (NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+
+         $_REQUEST['value']            = Session::getLoginUserID();
+         $_REQUEST['field']            = '_users_id_requester_notif';
+         $_REQUEST['use_notification'] = $use_email_notification;
+         include (GLPI_ROOT."/ajax/uemailUpdate.php");
+
+         echo "</td></tr>";
+      }
+
+      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['help'][24]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+         Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
+         Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0,
+                                    $_SESSION["glpiactive_entity"]);
+         echo "</td></tr>";
+      }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][17]."&nbsp;:&nbsp;</td><td>";
+      Ticket::dropdownType('type',$type);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;</td><td>";
+      Dropdown::show('ITILCategory', array('value'     => $itilcategories_id,
+                                             'condition' => '`is_helpdeskvisible`=1'));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
+      echo "<td><input type='text' maxlength='250' size='80' name='name' value='$title'></td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
+      echo "<td><textarea name='content' cols='80' rows='14'>$content</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
+             $LANG['central'][7]."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
+             "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+
+      echo "&nbsp;";
+      Ticket::showDocumentAddButton(60);
+
+      echo "</td>";
+      echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
+
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' class='center'>";
+      echo "<input type='submit' value=\"".$LANG['help'][14]."\" class='submit'>";
+      echo "</td></tr>";
+
+      echo "</table></div></form>";
+   }
+
+
+
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
 
