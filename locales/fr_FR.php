@@ -985,7 +985,7 @@ $LANG['job'][17] = "En retard";
 $LANG['job'][18] = "Demandeurs";
 $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
-
+$LANG['job'][21] = "Nombre déjà en cours";
 $LANG['job'][22] = "Minute(s)";
 $LANG['job'][23] = "Rechercher une solution";
 $LANG['job'][24] = "Utiliser comme solution";

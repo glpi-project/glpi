@@ -287,7 +287,6 @@ abstract class CommonITILObject extends CommonDBTM {
       return 0;
    }
 
-
    /**
     * Get Default actor when creating the object
     *
@@ -303,6 +302,27 @@ abstract class CommonITILObject extends CommonDBTM {
       return "all";
    }
 
+   /**
+    * Count active ITIL Objects requested by a user
+    *
+    * @param $users_id integer ID of the User
+    *
+    * @return boolean
+   **/
+   function countActiveObjectsForUser ($users_id) {
+      $linkclass = new $this->userlinkclass();
+      $itemtable = $this->getTable();
+      $itemfk    = $this->getForeignKeyField();
+      $linktable = $linkclass->getTable();
+
+      /// TODO review on status management
+
+      return countElementsInTable(array($itemtable,$linktable),
+               "`$linktable`.`$itemfk` = `$itemtable`.`id`
+               AND `$linktable`.`users_id` = '$users_id'
+               AND `$linktable`.`type` = '".self::REQUESTER."'
+               AND `$itemtable`.`status` NOT IN ('solved', 'closed')");
+   }
 
    function cleanDBonPurge() {
 
@@ -514,7 +534,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->updates[]           = 'status';
          }
 
-         // SPecial case for Ticket : use autoclose
+         // Special case for Ticket : use autoclose
          if ($this->getType() == 'Ticket') {
             $entitydata = new EntityData();
             if ($entitydata->getFromDB($this->fields['entities_id'])) {
@@ -1775,9 +1795,10 @@ abstract class CommonITILObject extends CommonDBTM {
                       'rand'        => $rand,
                       'ldap_import' => true);
 
-      if ($this->userentity_oncreate && $type==self::REQUESTER) {
+      if ($this->userentity_oncreate && $type == self::REQUESTER) {
          $params['on_change'] = 'submit()';
       }
+
 
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment = array('value' => '__VALUE__',
@@ -1795,6 +1816,25 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       //List all users in the active entities
       User::dropdown($params);
+
+      // display opened tickets for user 
+      if ($this->getType() == 'Ticket' && $type == self::REQUESTER) {
+
+         $options2['field'][0]      = 4; // users_id
+         $options2['searchtype'][0] = 'equals';
+         $options2['contains'][0]   = $options["_users_id_".$typename];
+         $options2['link'][0]       = 'AND';
+
+         $options2['field'][1]      = 12; // status
+         $options2['searchtype'][1] = 'equals';
+         $options2['contains'][1]   = 'notold';
+         $options2['link'][1]       = 'AND';
+
+         $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+
+         echo "&nbsp;<a href='$url' title=\"".$LANG['job'][21]."\" target='_blank'>(".
+            $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
+      }
 
       if ($CFG_GLPI['use_mailing']) {
          echo "<div id='notif_".$typename."_$rand'>";
