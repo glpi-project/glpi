@@ -587,7 +587,7 @@ class Change extends CommonITILObject {
 
    /**
     * get the change status list
-    *
+    * To be overridden by class
     * @param $withmetaforsearch boolean
     *
     * @return an array
@@ -610,9 +610,8 @@ class Change extends CommonITILObject {
 //                   'plan'        => $LANG['joblist'][19],
                    'test'          => $LANG['change'][10],
                    'qualification' => $LANG['change'][11],
-                   'applied'       => $LANG['change'][12],
+                   'solved'        => $LANG['change'][12], // applied
                    'observe'       => $LANG['problem'][2], // review
-                   'solved'        => $LANG['joblist'][32], 
                    'closed'        => $LANG['joblist'][33],
                    'abandoned'     => $LANG['change'][13],
    );
@@ -627,6 +626,42 @@ class Change extends CommonITILObject {
       return $tab;
    }
 
+
+   /**
+    * Get the ITIL object closed status list
+    * To be overridden by class
+    * @return an array
+   **/
+   static function getClosedStatusArray() {
+      // To be overridden by class
+      $tab = array('closed', 'abandoned');
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object solved status list
+    * To be overridden by class
+    * @return an array
+   **/
+   static function getSolvedStatusArray() {
+      // To be overridden by class
+      $tab = array('solved', 'observe');
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object solved status list
+    * To be overridden by class
+    * @return an array
+   **/
+   static function getProcessStatusArray() {
+      // To be overridden by class
+      $tab = array('test', 'qualification', 'accepted');
+
+      return $tab;
+   }
 
    /**
     * Get change status Name

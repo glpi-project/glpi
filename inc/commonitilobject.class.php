@@ -1301,6 +1301,42 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Get the ITIL object closed status list
+    *
+    * @return an array
+   **/
+   static function getClosedStatus () {
+      // To be overridden by class
+      $tab = array();
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object solved status list
+    *
+    * @return an array
+   **/
+   static function getSolvedStatus () {
+      // To be overridden by class
+      $tab = array();
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object process status list
+    *
+    * @return an array
+   **/
+   static function getProcessStatus () {
+      // To be overridden by class
+      $tab = array();
+
+      return $tab;
+   }
+
 
    /**
     * check is the user can change from / to a status

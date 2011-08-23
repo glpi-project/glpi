@@ -572,8 +572,8 @@ class Problem extends CommonITILObject {
                    'assign'   => $LANG['joblist'][18],
                    'plan'     => $LANG['joblist'][19],
                    'waiting'  => $LANG['joblist'][26],
-                   'observe'  => $LANG['problem'][2],
                    'solved'   => $LANG['joblist'][32],
+                   'observe'  => $LANG['problem'][2],
                    'closed'   => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
@@ -586,6 +586,41 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
+   /**
+    * Get the ITIL object closed status list
+    *
+    * @return an array
+   **/
+   static function getClosedStatusArray() {
+      // To be overridden by class
+      $tab = array('closed');
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object solved status list
+    *
+    * @return an array
+   **/
+   static function getSolvedStatusArray() {
+      // To be overridden by class
+      $tab = array('solved', 'observe');
+
+      return $tab;
+   }
+
+   /**
+    * Get the ITIL object solved status list
+    *
+    * @return an array
+   **/
+   static function getProcessStatusArray() {
+      // To be overridden by class
+      $tab = array('assign', 'plan', 'accepted');
+
+      return $tab;
+   }
 
    /**
     * Get problem status Name
