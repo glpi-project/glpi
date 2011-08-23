@@ -611,7 +611,7 @@ class Change extends CommonITILObject {
                    'test'          => $LANG['change'][10],
                    'qualification' => $LANG['change'][11],
                    'solved'        => $LANG['change'][12], // applied
-                   'observe'       => $LANG['problem'][2], // review
+                   'observe'       => $LANG['change'][14], // review
                    'closed'        => $LANG['joblist'][33],
 //                   'abandoned'     => $LANG['change'][13], // managed using trash ?
    );
