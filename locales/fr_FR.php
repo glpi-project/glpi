@@ -368,7 +368,7 @@ $LANG['computers'][5]  = "Point de montage";
 $LANG['computers'][6]  = "Partition";
 $LANG['computers'][7]  = "Ajouter un volume";
 $LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation"; // Duplicate with setup/5
+$LANG['computers'][9]  = "Système d'exploitation"; 
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
 
@@ -1471,7 +1471,7 @@ $LANG['networking'][46] = "Ajouter plusieurs ports...";
 
 $LANG['networking'][48] = "A";
 
-$LANG['networking'][51] = "Prise réseau"; // Duplicate of setup/73
+$LANG['networking'][51] = "Prise réseau"; 
 $LANG['networking'][52] = "Prises réseau";
 
 $LANG['networking'][55] = "Associer un VLAN";
@@ -2029,7 +2029,6 @@ $LANG['setup'][1]   = "Voir les comptes dans les onglets";
 $LANG['setup'][2]   = "Ajouter utilisateur...";
 $LANG['setup'][3]   = "Liaison annuaire LDAP";
 $LANG['setup'][4]   = "Types d'ordinateurs";
-$LANG['setup'][5]   = "Système d'exploitation";
 $LANG['setup'][6]   = "Personnalisation";
 $LANG['setup'][7]   = "Délimiteur CSV";
 $LANG['setup'][8]   = "Activer les informations financières et administratives par défaut";
@@ -2071,7 +2070,6 @@ $LANG['setup'][69]  = "Types de périphériques";
 $LANG['setup'][70]  = "Configuration générale";
 $LANG['setup'][71]  = "Firmware";
 
-$LANG['setup'][73]  = "Prise réseau";
 $LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il possède des sous-éléments";
 $LANG['setup'][75]  = "Comme enfant de";
 $LANG['setup'][76]  = "Enfants de";
