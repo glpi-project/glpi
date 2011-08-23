@@ -33,12 +33,13 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session ::checkLoginUser();
+
 if (isset($_GET["switchto"])) {
-   $_SESSION['glpigraphtype']=$_GET["switchto"];
+   $_SESSION['glpigraphtype'] = $_GET["switchto"];
    Html::back();
 }
 

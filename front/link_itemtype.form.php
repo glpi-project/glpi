@@ -37,11 +37,13 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkCentralAccess();
+
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$link = new Link();
+$link          = new Link();
 $link_itemtype = new Link_ItemType();
 
 if (isset($_POST["add"])) {
