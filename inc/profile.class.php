@@ -794,7 +794,10 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>".$LANG['job'][28]."&nbsp;:</td><td>";
+      self::dropdownNoneReadWrite("templateticket", $this->fields["templateticket"], 1, 1, 1);
+      echo "</td>";
+
       echo "<td>".$LANG['profiles'][4]."&nbsp;:</td><td>";
       Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
       echo "</td>";
@@ -1309,6 +1312,11 @@ class Profile extends CommonDBTM {
       $tab[3]['datatype']      = 'bool';
       $tab[3]['massiveaction'] = false;
 
+      $tab[118]['table']    = $this->getTable();
+      $tab[118]['field']    = 'create_ticket_on_login';
+      $tab[118]['name']     = $LANG['profiles'][3];
+      $tab[118]['datatype'] = 'bool';
+
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
       $tab[16]['name']     = $LANG['common'][25];
@@ -1586,6 +1594,11 @@ class Profile extends CommonDBTM {
       $tab[102]['name']     = $LANG['profiles'][5];
       $tab[102]['datatype'] = 'bool';
 
+      $tab[103]['table']    = $this->getTable();
+      $tab[103]['field']    = 'templateticket';
+      $tab[103]['name']     = $LANG['job'][28];
+      $tab[103]['datatype'] = 'right';
+
       $tab[65]['table']    = $this->getTable();
       $tab[65]['field']    = 'delete_ticket';
       $tab[65]['name']     = $LANG['profiles'][14];
@@ -1740,12 +1753,42 @@ class Profile extends CommonDBTM {
       $tab[110]['datatype']      = 'text';
       $tab[110]['massiveaction'] = false;
 
+      $tab[112]['table']    = $this->getTable();
+      $tab[112]['field']    = 'show_my_problem';
+      $tab[112]['name']     = $LANG['profiles'][53];
+      $tab[112]['datatype'] = 'bool';
+
+      $tab[113]['table']    = $this->getTable();
+      $tab[113]['field']    = 'show_all_problem';
+      $tab[113]['name']     = $LANG['profiles'][25];
+      $tab[113]['datatype'] = 'bool';
+
+      $tab[114]['table']    = $this->getTable();
+      $tab[114]['field']    = 'edit_all_problem';
+      $tab[114]['name']     = $LANG['profiles'][52];
+      $tab[114]['datatype'] = 'bool';
+
       $tab[111]['table']         = $this->getTable();
       $tab[111]['field']         = 'change_status';
       $tab[111]['name']          = $LANG['setup'][618];
       $tab[111]['nosearch']      = true;
       $tab[111]['datatype']      = 'text';
       $tab[111]['massiveaction'] = false;
+
+      $tab[115]['table']    = $this->getTable();
+      $tab[115]['field']    = 'show_my_change';
+      $tab[115]['name']     = $LANG['profiles'][57];
+      $tab[115]['datatype'] = 'bool';
+
+      $tab[116]['table']    = $this->getTable();
+      $tab[116]['field']    = 'show_all_change';
+      $tab[116]['name']     = $LANG['profiles'][55];
+      $tab[116]['datatype'] = 'bool';
+
+      $tab[117]['table']    = $this->getTable();
+      $tab[117]['field']    = 'edit_all_change';
+      $tab[117]['name']     = $LANG['profiles'][56];
+      $tab[117]['datatype'] = 'bool';
 
       $tab['other'] = $LANG['common'][62];
 
