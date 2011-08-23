@@ -226,15 +226,20 @@ $LANG['central'][18] = "Vos tickets à clore";
 $LANG['central'][19] = "Vos tickets à valider";
 
 
-$LANG['change'][0] = "Changement";
-$LANG['change'][1] = "Créer un changement à partir de ce ticket";
-$LANG['change'][2] = "Créer un changement à partir de ce problème";
-$LANG['change'][3] = "Liste de contrôles";
-$LANG['change'][4] = "Plan de déploiement";
-$LANG['change'][5] = "Plan de repli";
-$LANG['change'][6] = "Liste de vérifications";
-$LANG['change'][7] = "Plans";
-$LANG['change'][8] = "Évaluation";
+$LANG['change'][0]  = "Changement";
+$LANG['change'][1]  = "Créer un changement à partir de ce ticket";
+$LANG['change'][2]  = "Créer un changement à partir de ce problème";
+$LANG['change'][3]  = "Liste de contrôles";
+$LANG['change'][4]  = "Plan de déploiement";
+$LANG['change'][5]  = "Plan de repli";
+$LANG['change'][6]  = "Liste de vérifications";
+$LANG['change'][7]  = "Plans";
+$LANG['change'][8]  = "Évaluation";
+$LANG['change'][9]  = "Approbation";
+$LANG['change'][10] = "Test";
+$LANG['change'][11] = "Qualification";
+$LANG['change'][12] = "Appliqué";
+$LANG['change'][13] = "Abandonné";
 
 
 $LANG['choice'][0] = "Non";

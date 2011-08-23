@@ -601,14 +601,21 @@ class Change extends CommonITILObject {
       /// TODO define standard function to check solved / closed status
 
       // To be overridden by class
-      $tab = array('new'      => $LANG['joblist'][9],
-                   'accepted' => $LANG['problem'][1],
-                   'assign'   => $LANG['joblist'][18],
-                   'plan'     => $LANG['joblist'][19],
-                   'waiting'  => $LANG['joblist'][26],
-                   'observe'  => $LANG['problem'][2],
-                   'solved'   => $LANG['joblist'][32],
-                   'closed'   => $LANG['joblist'][33]);
+      $tab = array('new'           => $LANG['joblist'][9],
+                   'evaluation'    => $LANG['change'][8],
+                   'approbation'   => $LANG['change'][9],
+                   'accepted'      => $LANG['problem'][1],
+                   'waiting'       => $LANG['joblist'][26],
+//                   'assign'      => $LANG['joblist'][18],
+//                   'plan'        => $LANG['joblist'][19],
+                   'test'          => $LANG['change'][10],
+                   'qualification' => $LANG['change'][11],
+                   'applied'       => $LANG['change'][12],
+                   'observe'       => $LANG['problem'][2], // review
+                   'solved'        => $LANG['joblist'][32], 
+                   'closed'        => $LANG['joblist'][33],
+                   'abandoned'     => $LANG['change'][13],
+   );
 
       if ($withmetaforsearch) {
          $tab['notold']    = $LANG['joblist'][34];
