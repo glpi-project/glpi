@@ -33,9 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+checkLoginUser();
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 
@@ -47,5 +48,4 @@ Dropdown::showItemTypeList($optgroup);
 
 echo "</div>";
 commonFooter();
-
 ?>
