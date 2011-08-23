@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Alert";
 $LANG['common'][106]="At least one field has an incorrect value"; 
 $LANG['common'][107]="Average"; 
 
-$LANG['computers'][0]="Volume"; 
+$LANG['computers'][0]="Volume"; // Singular
 $LANG['computers'][1]="Free percentage"; 
 $LANG['computers'][2]="Free size"; 
 $LANG['computers'][3]="Global size"; 
-$LANG['computers'][4]="File system"; 
-$LANG['computers'][5]="Mount point"; 
-$LANG['computers'][6]="Partition"; 
+$LANG['computers'][4]="File system"; // Singular
+$LANG['computers'][5]="Mount point"; // Singular
+$LANG['computers'][6]="Partition"; // Singular
 $LANG['computers'][7]="Add a volume"; 
-$LANG['computers'][8]="Volumes"; 
-$LANG['computers'][9]="Operating system"; 
+$LANG['computers'][8]="Volumes"; // Plural
+$LANG['computers'][9]="Operating system"; // Singular
 $LANG['computers'][10]="Serial of the operating system"; 
 $LANG['computers'][11]="Product ID of the operating system"; 
 $LANG['computers'][14]="Inserted"; 

@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Aviso";
 $LANG['common'][106]="Pelo menos um campo tem valor incorrecto"; 
 $LANG['common'][107]="Média"; 
 
-$LANG['computers'][0]="Volume"; 
+$LANG['computers'][0]="Volume"; // Singular
 $LANG['computers'][1]="Percentagem livre"; 
 $LANG['computers'][2]="Espaço livre"; 
 $LANG['computers'][3]="Tamanho global"; 
-$LANG['computers'][4]="Sistema de Arquivo"; 
-$LANG['computers'][5]="Ponto de montagem"; 
-$LANG['computers'][6]="Partição"; 
+$LANG['computers'][4]="Sistema de Arquivo"; // Singular
+$LANG['computers'][5]="Ponto de montagem"; // Singular
+$LANG['computers'][6]="Partição"; // Singular
 $LANG['computers'][7]="Adicionar volume"; 
-$LANG['computers'][8]="Volumes"; 
-$LANG['computers'][9]="Sistema Operativo"; 
+$LANG['computers'][8]="Volumes"; // Plural
+$LANG['computers'][9]="Sistema Operativo"; // Singular
 $LANG['computers'][10]="Número de série SO"; 
 $LANG['computers'][11]="Identificação do SO"; 
 $LANG['computers'][14]="Incluído"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Perfil em utilização pelo utilizador";
 $LANG['rulesengine'][147]="utilizador utiliza um único perfil"; 
 $LANG['rulesengine'][148]="Domínio do email conhecido"; 
 $LANG['rulesengine'][149]="Grupo importado da directoria LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="já está presente no GLPI"; 
 $LANG['rulesengine'][152]="Máquina para importar"; 
 $LANG['rulesengine'][154]="é vazio"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Alta Importância(não usado)";
 $LANG['setup'][105]="3- Importante (logins com sucesso)"; 
 $LANG['setup'][106]="4- Noticias (Adicionados, Excluídos, tracking)"; 
 $LANG['setup'][107]="5- Completo (Tudo)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Por quanto tempo os registos são mantidos na base de dados (em dias, 0 para infinito)"; 
 $LANG['setup'][110]="Mostrar o número de senhas ao autenticar-se"; 
 $LANG['setup'][111]="Numero de elementos a serem impressos por página"; 

@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Σε επιφυλακή";
 $LANG['common'][106]="Τουλάχιστον ένα πεδίο έχει εσφαλμένη τιμή"; 
 $LANG['common'][107]="Μέσος όρος"; 
 
-$LANG['computers'][0]="Τόμος"; 
+$LANG['computers'][0]="Τόμος"; // Singular
 $LANG['computers'][1]="Ελεύθερο ποσοστό"; 
 $LANG['computers'][2]="Ελεύθερος χώρος"; 
 $LANG['computers'][3]="Συνολικό μέγεθος"; 
-$LANG['computers'][4]="Σύστημα αρχείων"; 
-$LANG['computers'][5]="Σημείο σύνδεσης"; 
-$LANG['computers'][6]="Τομέας"; 
+$LANG['computers'][4]="Σύστημα αρχείων"; // Singular
+$LANG['computers'][5]="Σημείο σύνδεσης"; // Singular
+$LANG['computers'][6]="Τομέας"; // Singular
 $LANG['computers'][7]="Προσθήκη τόμου"; 
-$LANG['computers'][8]="Τόμοι"; 
-$LANG['computers'][9]="Λειτουργικό σύστημα"; 
+$LANG['computers'][8]="Τόμοι"; // Plural
+$LANG['computers'][9]="Λειτουργικό σύστημα"; // Singular
 $LANG['computers'][10]="Σειριακός αριθμός λειτουργικού συστήματος"; 
 $LANG['computers'][11]="ID Προϊόντος λειτουργικού συστήματος"; 
 $LANG['computers'][14]="Καταχωρήθη"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Χρήστης χαρακτηρισμένος με α
 $LANG['rulesengine'][147]="Χρήστης χαρακτηρισμένος με μοναδικό προφίλ"; 
 $LANG['rulesengine'][148]="Άγνωστο domain ηλεκτρονικής αλληλογραφίας"; 
 $LANG['rulesengine'][149]="Εισηγμένη ομάδα από κατάλογο LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="υπάρχει ήδη στο GLPI"; 
 $LANG['rulesengine'][152]="Υπολογιστής προς εισαγωγή"; 
 $LANG['rulesengine'][154]="είναι άδειο"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Αυστηρό (μη χρησιμοποιημένο)";
 $LANG['setup'][105]="3- Σημαντικό (Επιτυχημένες είσοδοι)"; 
 $LANG['setup'][106]="4- Ειδοποιήσεις (προσθέστε, διαγράψτε, παρακολουθείστε)"; 
 $LANG['setup'][107]="5- Πλήρης (Όλα)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Πόσο διατηρούνται τα αρχεία καταγραφής στη βάση δεδομένων(σε μέρες, 0 για άπειρο)"; 
 $LANG['setup'][110]="Δείξε τα νέα αιτήματα στην κεντρική σελίδα"; 
 $LANG['setup'][111]="Μέγιστος αριθμός αποτελεσμάτων που θα εμφανιστούν ανά σελίδα"; 
@@ -1949,7 +1949,7 @@ $LANG['sla'][6]="Επίπεδο κλιμάκωσης";
 $LANG['sla'][7]="Ακυρώστε το SLA"; 
 $LANG['sla'][8]="Επόμενη κλιμάκωση"; 
 $LANG['sla'][9]="Αυτόματες υπενθυμίσεις SLA"; 
-$LANG['sla'][10]="24/7"; 
+$LANG['sla'][10]="24/7"; // en_GB string to be translated
 
 $LANG['software'][1]="Έκδοση αγοράς"; 
 $LANG['software'][2]="Έκδοση σε χρήση"; 
@@ -2013,7 +2013,7 @@ $LANG['stats'][44]="Όνομα Προμηθευτή";
 $LANG['stats'][45]="Ανά Υλικό"; 
 $LANG['stats'][47]="Ανά αίτημα(τα)"; 
 $LANG['stats'][48]="(Έχουν ανατεθεί)"; 
-$LANG['stats'][49]="(tasks)"; 
+$LANG['stats'][49]="(tasks)"; // en_GB string to be translated
 
 $LANG['title'][5]="Γνωσιακή Βάση"; 
 $LANG['title'][6]="Δικτυακός εξοπλισμός"; 
@@ -2038,8 +2038,8 @@ $LANG['tracking'][1]="Οι συσκευές μου";
 $LANG['tracking'][2]="Ή πλήρης αναζήτηση"; 
 $LANG['tracking'][3]="Άκυρη ημερομηνία.Η ενημέρωση ακυρώθηκε."; 
 $LANG['tracking'][4]="Δεν υπάρχει βαθμός αναγκαιότητας στο αίτημά σας, παρακαλώ διορθώστε."; 
-$LANG['tracking'][6]="The ticket's title is required: update not done"; 
-$LANG['tracking'][7]="The ticket's description is required: update not done"; 
+$LANG['tracking'][6]="The ticket's title is required: update not done"; // en_GB string to be translated
+$LANG['tracking'][7]="The ticket's description is required: update not done"; // en_GB string to be translated
 $LANG['tracking'][8]="Καμία περιγραφή για το αίτημά σας, παρακαλώ ξαναδοκιμάστε."; 
 $LANG['tracking'][9]="Προεπιλογή για αιτήματα"; 
 $LANG['tracking'][10]="Προεπιλογή για παραλήπτες αλληλογραφίας"; 

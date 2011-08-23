@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Riasztás";
 $LANG['common'][106]="Legalább egy mezőben érvénytelen érték"; 
 $LANG['common'][107]="Átlag"; 
 
-$LANG['computers'][0]="Kötet"; 
+$LANG['computers'][0]="Kötet"; // Singular
 $LANG['computers'][1]="Szabad hely százaléka"; 
 $LANG['computers'][2]="Szabad terület"; 
 $LANG['computers'][3]="Teljes méret"; 
-$LANG['computers'][4]="Fájlrendszerek"; 
-$LANG['computers'][5]="Csatolási pont"; 
-$LANG['computers'][6]="Fizikai útvonal"; 
+$LANG['computers'][4]="Fájlrendszerek"; // Singular
+$LANG['computers'][5]="Csatolási pont"; // Singular
+$LANG['computers'][6]="Fizikai útvonal"; // Singular
 $LANG['computers'][7]="Új kötet"; 
-$LANG['computers'][8]="Kötetek"; 
-$LANG['computers'][9]="Operációs rendszer"; 
+$LANG['computers'][8]="Kötetek"; // Plural
+$LANG['computers'][9]="Operációs rendszer"; // Singular
 $LANG['computers'][10]="OP.rsz. szériaszám"; 
 $LANG['computers'][11]="OP.rsz termékkód"; 
 $LANG['computers'][14]="Hozzáadva"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Súlyos (nem használt)";
 $LANG['setup'][105]="3- Fontos (sikeres belépések)"; 
 $LANG['setup'][106]="4- Jelentős (hozzáadás, törlés, követés)"; 
 $LANG['setup'][107]="5- Teljes"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Naplók megőrzése (napokban, 0=végtelen)"; 
 $LANG['setup'][110]="Mutassa az új bejelentéseket bejelentkezéskor"; 
 $LANG['setup'][111]="Keresési eredmények egy oldalon"; 

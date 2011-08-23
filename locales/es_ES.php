@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Alerta";
 $LANG['common'][106]="Al menos un campo tiene un valor incorrecto"; 
 $LANG['common'][107]="Promedio"; 
 
-$LANG['computers'][0]="Volumen"; 
+$LANG['computers'][0]="Volumen"; // Singular
 $LANG['computers'][1]="Porcentaje libre"; 
 $LANG['computers'][2]="Tamaño libre"; 
 $LANG['computers'][3]="Tamaño global"; 
-$LANG['computers'][4]="Sistema de ficheros"; 
-$LANG['computers'][5]="Partición"; 
-$LANG['computers'][6]="Punto de montaje"; 
+$LANG['computers'][4]="Sistema de ficheros"; // Singular
+$LANG['computers'][5]="Partición"; // Singular
+$LANG['computers'][6]="Punto de montaje"; // Singular
 $LANG['computers'][7]="Añadir un volumen"; 
-$LANG['computers'][8]="Volúmenes"; 
-$LANG['computers'][9]="S.O."; 
+$LANG['computers'][8]="Volúmenes"; // Plural
+$LANG['computers'][9]="S.O."; // Singular
 $LANG['computers'][10]="Número de serie del S.O."; 
 $LANG['computers'][11]="Id. de producto del S.O."; 
 $LANG['computers'][14]="Añadido"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Con el perfil del usuario";
 $LANG['rulesengine'][147]="Usuario con un único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico conocido"; 
 $LANG['rulesengine'][149]="Grupo importado de un directorio LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="ya está presente en GLPI"; 
 $LANG['rulesengine'][152]="Ordenador a importar"; 
 $LANG['rulesengine'][154]="está vacío"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Severo (No utilizado)";
 $LANG['setup'][105]="3- Importante (Autenticaciones correctas)"; 
 $LANG['setup'][106]="4- Avisos (Creación, borrado, seguimiento)"; 
 $LANG['setup'][107]="5- Completo (Todo)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Tiempo de conservación de los registros de los sistemas, en días (0=infinit"; 
 $LANG['setup'][110]="Mostrar las incidencias nuevas al entrar en el sistema"; 
 $LANG['setup'][111]="Cantidad de elementos a mostrar por página"; 
@@ -2013,7 +2013,7 @@ $LANG['stats'][44]="Nombre del proveedor";
 $LANG['stats'][45]="Por material"; 
 $LANG['stats'][47]="Por incidencias"; 
 $LANG['stats'][48]="(asignado)"; 
-$LANG['stats'][49]="(tasks)"; 
+$LANG['stats'][49]="(tasks)"; // en_GB string to be translated
 
 $LANG['title'][5]="Base de conocimiento"; 
 $LANG['title'][6]="Electrónica de red"; 

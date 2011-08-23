@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Alerta";
 $LANG['common'][106]="Pelo menos um campo possui valor incorreto"; 
 $LANG['common'][107]="Média"; 
 
-$LANG['computers'][0]="Volume"; 
+$LANG['computers'][0]="Volume"; // Singular
 $LANG['computers'][1]="Percentual livre"; 
 $LANG['computers'][2]="Espaço livre"; 
 $LANG['computers'][3]="Tamanho total"; 
-$LANG['computers'][4]="Sistema de arquivo"; 
-$LANG['computers'][5]="Ponto de montagem"; 
-$LANG['computers'][6]="Partição"; 
+$LANG['computers'][4]="Sistema de arquivo"; // Singular
+$LANG['computers'][5]="Ponto de montagem"; // Singular
+$LANG['computers'][6]="Partição"; // Singular
 $LANG['computers'][7]="Adicionar um volume"; 
-$LANG['computers'][8]="Volumes"; 
-$LANG['computers'][9]="Sistema operacional"; 
+$LANG['computers'][8]="Volumes"; // Plural
+$LANG['computers'][9]="Sistema operacional"; // Singular
 $LANG['computers'][10]="Serial do sistema operacional"; 
 $LANG['computers'][11]="ID do sistema operacional"; 
 $LANG['computers'][14]="Incluído"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Usuário com o perfil";
 $LANG['rulesengine'][147]="Usuário com perfil único"; 
 $LANG['rulesengine'][148]="Domínio de e-mail conhecido"; 
 $LANG['rulesengine'][149]="Grupo importado de um diretório LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="já existe no GLPI"; 
 $LANG['rulesengine'][152]="Computador para importar"; 
 $LANG['rulesengine'][154]="é vazio"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Alta Importância (Não usado)";
 $LANG['setup'][105]="3- Importante (Logins com sucesso)"; 
 $LANG['setup'][106]="4- Noticias (Adicionados, Excluídos, tracking)"; 
 $LANG['setup'][107]="5- Completo (Tudo)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Por quanto tempo os logs serão mantidos no banco de dados (em dias, 0 sem limite de tempo)"; 
 $LANG['setup'][110]="Mostrar chamados novos na página inicial"; 
 $LANG['setup'][111]="Número de resultados da pesquisa a serem exibidos por página"; 
@@ -2038,8 +2038,8 @@ $LANG['tracking'][1]="Meus periféricos";
 $LANG['tracking'][2]="Ou complete a busca"; 
 $LANG['tracking'][3]="Datas inválidas. Atualização cancelada"; 
 $LANG['tracking'][4]="Não existe urgência em seu chamado, por favor, corrija."; 
-$LANG['tracking'][6]="The ticket's title is required: update not done"; 
-$LANG['tracking'][7]="The ticket's description is required: update not done"; 
+$LANG['tracking'][6]="The ticket's title is required: update not done"; // en_GB string to be translated
+$LANG['tracking'][7]="The ticket's description is required: update not done"; // en_GB string to be translated
 $LANG['tracking'][8]="Sem descrição para o seu chamado, por favor, tente novamente"; 
 $LANG['tracking'][9]="Padrão para ocorrências"; 
 $LANG['tracking'][10]="Padrão de recebimento de e-mails"; 

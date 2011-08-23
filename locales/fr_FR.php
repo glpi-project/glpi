@@ -337,16 +337,16 @@ $LANG['common'][106] = "Au moins un champ a une valeur incorrecte";
 $LANG['common'][107] = "Moyenne";
 
 
-$LANG['computers'][0]  = "Volume";
+$LANG['computers'][0]  = "Volume"; // Singular
 $LANG['computers'][1]  = "Pourcentage libre";
 $LANG['computers'][2]  = "Taille libre";
 $LANG['computers'][3]  = "Taille totale";
-$LANG['computers'][4]  = "Système de fichiers";
-$LANG['computers'][5]  = "Point de montage";
-$LANG['computers'][6]  = "Partition";
+$LANG['computers'][4]  = "Système de fichiers"; // Singular
+$LANG['computers'][5]  = "Point de montage"; // Singular
+$LANG['computers'][6]  = "Partition"; // Singular
 $LANG['computers'][7]  = "Ajouter un volume";
-$LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation";
+$LANG['computers'][8]  = "Volumes"; // Plural
+$LANG['computers'][9]  = "Système d'exploitation"; // Singular
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
 

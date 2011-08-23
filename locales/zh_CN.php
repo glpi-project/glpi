@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="告警";
 $LANG['common'][106]="至少有一个字段的值是错误的"; 
 $LANG['common'][107]="平均"; 
 
-$LANG['computers'][0]="卷"; 
+$LANG['computers'][0]="卷"; // Singular
 $LANG['computers'][1]="剩余百分比"; 
 $LANG['computers'][2]="剩余容量"; 
 $LANG['computers'][3]="总容量"; 
-$LANG['computers'][4]="文件系统"; 
-$LANG['computers'][5]="挂载点"; 
-$LANG['computers'][6]="分区"; 
+$LANG['computers'][4]="文件系统"; // Singular
+$LANG['computers'][5]="挂载点"; // Singular
+$LANG['computers'][6]="分区"; // Singular
 $LANG['computers'][7]="添加卷"; 
-$LANG['computers'][8]="卷"; 
-$LANG['computers'][9]="操作系统"; 
+$LANG['computers'][8]="卷"; // Plural
+$LANG['computers'][9]="操作系统"; // Singular
 $LANG['computers'][10]="操作系统序列号"; 
 $LANG['computers'][11]="操作系统产品ID"; 
 $LANG['computers'][14]="插入的"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="用户文件特性";
 $LANG['rulesengine'][147]="用户具有一个配置文件"; 
 $LANG['rulesengine'][148]="已知邮件域"; 
 $LANG['rulesengine'][149]="从LDAP目录导入组"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="已在GLPI中存在"; 
 $LANG['rulesengine'][152]="计算机导入"; 
 $LANG['rulesengine'][154]="为空"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2 -服务器(没使用的)";
 $LANG['setup'][105]="3 -重要(成功登录)"; 
 $LANG['setup'][106]="4 -通知(添加，删除，跟踪)"; 
 $LANG['setup'][107]="5 -完成(所有)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="日志保留在数据库的时长(天数，0为无限)"; 
 $LANG['setup'][110]="在首页显示新票单"; 
 $LANG['setup'][111]="一页上显示的搜索结果最大数"; 

@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="警報";
 $LANG['common'][106]="至少有一個欄位有一個不正確的值"; 
 $LANG['common'][107]="平均"; 
 
-$LANG['computers'][0]="儲存裝置"; 
+$LANG['computers'][0]="儲存裝置"; // Singular
 $LANG['computers'][1]="磁碟可用空間 %"; 
 $LANG['computers'][2]="可用容量"; 
 $LANG['computers'][3]="全部容量"; 
-$LANG['computers'][4]="檔案系統"; 
-$LANG['computers'][5]="掛載點"; 
-$LANG['computers'][6]="分割"; 
+$LANG['computers'][4]="檔案系統"; // Singular
+$LANG['computers'][5]="掛載點"; // Singular
+$LANG['computers'][6]="分割"; // Singular
 $LANG['computers'][7]="新增儲存裝置"; 
-$LANG['computers'][8]="儲存裝置"; 
-$LANG['computers'][9]="作業系統"; 
+$LANG['computers'][8]="儲存裝置"; // Plural
+$LANG['computers'][9]="作業系統"; // Singular
 $LANG['computers'][10]="作業系統的序號"; 
 $LANG['computers'][11]="作業系統的產品 ID"; 
 $LANG['computers'][14]="插入"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="使用者特色配置文件";
 $LANG['rulesengine'][147]="使用者具有一個配置文件"; 
 $LANG['rulesengine'][148]="郵件的domain已知"; 
 $LANG['rulesengine'][149]="從 LDAP目錄導入群組"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="已存在於 GLPI"; 
 $LANG['rulesengine'][152]="導入的電腦"; 
 $LANG['rulesengine'][154]="是空的"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2 -嚴重(未使用)";
 $LANG['setup'][105]="3- 重要 (成功登入)"; 
 $LANG['setup'][106]="4 -通知(新增，刪除，追蹤)"; 
 $LANG['setup'][107]="5 -完成(所有)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="資料庫保留LOG的期限 (天, 0 無限制)"; 
 $LANG['setup'][110]="在首頁顯示新問題單"; 
 $LANG['setup'][111]="每頁需列印項目的數量"; 

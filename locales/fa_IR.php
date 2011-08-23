@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="اعلان خطر";
 $LANG['common'][106]="حداقل یک جزء دارای مقدار نامعتبر است."; 
 $LANG['common'][107]="میانگین"; 
 
-$LANG['computers'][0]="برچسب"; 
+$LANG['computers'][0]="برچسب"; // Singular
 $LANG['computers'][1]="درصد آزاد"; 
 $LANG['computers'][2]="اندازه آزاد"; 
 $LANG['computers'][3]="اندازه سراسری"; 
-$LANG['computers'][4]="فایل سیستم"; 
-$LANG['computers'][5]="نقطه سوارکردن"; 
-$LANG['computers'][6]="قسمت"; 
+$LANG['computers'][4]="فایل سیستم"; // Singular
+$LANG['computers'][5]="نقطه سوارکردن"; // Singular
+$LANG['computers'][6]="قسمت"; // Singular
 $LANG['computers'][7]="افزودن برچسب"; 
-$LANG['computers'][8]="برچسب ها"; 
-$LANG['computers'][9]="سامانه عامل"; 
+$LANG['computers'][8]="برچسب ها"; // Plural
+$LANG['computers'][9]="سامانه عامل"; // Singular
 $LANG['computers'][10]="سریال سامانه عامل"; 
 $LANG['computers'][11]="شناسه محصول سامانه عامل"; 
 $LANG['computers'][14]="درج شده"; 

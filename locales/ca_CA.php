@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software  Foundation, Inc.,
+ along with GLPI; if not, write to the Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  -------------------------------------------------------------------------
  */
@@ -309,16 +309,16 @@ $LANG['common'][105]="Alerta";
 $LANG['common'][106]="Al menys un camp té un valor incorrecte"; 
 $LANG['common'][107]="Mitjana"; 
 
-$LANG['computers'][0]="Volum"; 
+$LANG['computers'][0]="Volum"; // Singular
 $LANG['computers'][1]="Percentatge lliure"; 
 $LANG['computers'][2]="Grandària lliure"; 
 $LANG['computers'][3]="Grandària global"; 
-$LANG['computers'][4]="Sistema d'arxius"; 
-$LANG['computers'][5]="Partició"; 
-$LANG['computers'][6]="Punt de muntatge"; 
+$LANG['computers'][4]="Sistema d'arxius"; // Singular
+$LANG['computers'][5]="Partició"; // Singular
+$LANG['computers'][6]="Punt de muntatge"; // Singular
 $LANG['computers'][7]="Afegint un volumen"; 
-$LANG['computers'][8]="Volums"; 
-$LANG['computers'][9]="S.O."; 
+$LANG['computers'][8]="Volums"; // Plural
+$LANG['computers'][9]="S.O."; // Singular
 $LANG['computers'][10]="Número de serie del S.O."; 
 $LANG['computers'][11]="Id. de producte del S.O."; 
 $LANG['computers'][14]="Afegit"; 
@@ -346,7 +346,7 @@ $LANG['computers'][61]="Nombre de processadors";
 $LANG['computers'][62]="Sistema de virtualització"; 
 $LANG['computers'][63]="Estat de la màquina virtual"; 
 $LANG['computers'][64]="Màquina"; 
-$LANG['computers'][65]="List of host machines"; 
+$LANG['computers'][65]="List of host machines"; // en_GB string to be translated
 $LANG['computers'][66]="Llistat de les màquines virtuals"; 
 
 $LANG['connect'][0]="Connexions directes"; 
@@ -530,14 +530,14 @@ $LANG['entity'][16]="Filtro de cerca (si fos necessari)";
 $LANG['entity'][17]="Configuració pel tancament administratiu"; 
 $LANG['entity'][18]="Tancament administratiu dels incidents després de resolts"; 
 $LANG['entity'][19]="Configuració de l'enquesta de satisfacció"; 
-$LANG['entity'][20]="Create survey after"; 
-$LANG['entity'][21]="Rate to trigger survey"; 
-$LANG['entity'][22]="For tickets closed after"; 
-$LANG['entity'][23]="Values for the generic rules for assignment to entities"; 
+$LANG['entity'][20]="Create survey after"; // en_GB string to be translated
+$LANG['entity'][21]="Rate to trigger survey"; // en_GB string to be translated
+$LANG['entity'][22]="For tickets closed after"; // en_GB string to be translated
+$LANG['entity'][23]="Values for the generic rules for assignment to entities"; // en_GB string to be translated
 $LANG['entity'][24]="Valors utilitzats en la interfície de recerca dels usuaris d'un directori LDAP"; 
 $LANG['entity'][25]="Filtre LDAP associat a l'entitat (si fos necessari)"; 
 $LANG['entity'][26]="Aquests paràmetres s'utilitzen com a accions en les regles genèriques per a l'assignació a les entitats"; 
-$LANG['entity'][27]="Mail domain surrogate entity"; 
+$LANG['entity'][27]="Mail domain surrogate entity"; // en_GB string to be translated
 $LANG['entity'][28]="Tipus per defecte per a les incidències"; 
 
 $LANG['event'][0]="Item (ID)"; 
@@ -642,9 +642,9 @@ $LANG['financial'][107]="Renovació";
 $LANG['financial'][108]="Total gastat al pressupost"; 
 $LANG['financial'][109]="Total restant del pressupost"; 
 $LANG['financial'][110]="Pressupostos"; 
-$LANG['financial'][111]="Autofill dates"; 
-$LANG['financial'][112]="Fill when shifting to state"; 
-$LANG['financial'][113]="No autofill"; 
+$LANG['financial'][111]="Autofill dates"; // en_GB string to be translated
+$LANG['financial'][112]="Fill when shifting to state"; // en_GB string to be translated
+$LANG['financial'][113]="No autofill"; // en_GB string to be translated
 $LANG['financial'][114]="Data de l'últim inventari físic"; 
 
 $LANG['gmt'][0]="GMT"; 
@@ -833,7 +833,7 @@ $LANG['job'][52]="Actualitzar una tasca";
 $LANG['job'][53]="Supressió d'una tasca"; 
 $LANG['job'][54]="Sense una resposta l'incident s'eliminarà després de"; 
 $LANG['job'][55]="Incidències enllaçades"; 
-$LANG['job'][56]="Link tickets"; 
+$LANG['job'][56]="Link tickets"; // en_GB string to be translated
 
 $LANG['joblist'][0]="Estat"; 
 $LANG['joblist'][1]="Solament els meus"; 
@@ -1592,7 +1592,7 @@ $LANG['rulesengine'][112]="Drets i assignació d'entitats";
 $LANG['rulesengine'][120]="El motor es para quan es verifiqui una de les regles."; 
 $LANG['rulesengine'][121]="El motor executa totes les regles."; 
 $LANG['rulesengine'][122]="El motor passa el resultat d'una regla a les següents."; 
-$LANG['rulesengine'][129]="Entity from mail domain"; 
+$LANG['rulesengine'][129]="Entity from mail domain"; // en_GB string to be translated
 $LANG['rulesengine'][130]="Entitat des de LDAP"; 
 $LANG['rulesengine'][131]="Entitat des de TAG"; 
 $LANG['rulesengine'][132]="Ignorar la importació"; 
@@ -1608,7 +1608,7 @@ $LANG['rulesengine'][146]="Amb el perfil de l'usuari";
 $LANG['rulesengine'][147]="Usuari amb un únic perfil"; 
 $LANG['rulesengine'][148]="Domini correu electrònic conegut"; 
 $LANG['rulesengine'][149]="Grup importat d'un directori LDAP"; 
-$LANG['rulesengine'][150]="Rules using the object have been disabled."; 
+$LANG['rulesengine'][150]="Rules using the object have been disabled."; // en_GB string to be translated
 $LANG['rulesengine'][151]="ja està present en GLPI"; 
 $LANG['rulesengine'][152]="Ordinador a importar"; 
 $LANG['rulesengine'][154]="està buit"; 
@@ -1618,7 +1618,7 @@ $LANG['satisfaction'][0]="Satisfacció";
 $LANG['satisfaction'][1]="Satisfacció sobre la resolució de la incidència"; 
 $LANG['satisfaction'][2]="No hi ha enquesta generada"; 
 $LANG['satisfaction'][3]="Enquesta de satisfacció"; 
-$LANG['satisfaction'][4]="Response date to the satisfaction survey"; 
+$LANG['satisfaction'][4]="Response date to the satisfaction survey"; // en_GB string to be translated
 $LANG['satisfaction'][6]="Data de creació de l'enquesta de satisfacció"; 
 $LANG['satisfaction'][7]="Grau de satisfacció"; 
 $LANG['satisfaction'][8]="Comentari a l'enquesta de satisfacció"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Sever (No utilitzat)";
 $LANG['setup'][105]="3- Important (Autenticacions correctes)"; 
 $LANG['setup'][106]="4- Avisos (Creació, esborrat, seguiments)"; 
 $LANG['setup'][107]="5- Complet (Tot)"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; 
+$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
 $LANG['setup'][109]="Temps de conservació dels registres dels sistemes, en dies (0=infinit)"; 
 $LANG['setup'][110]="Mostrar les incidències noves a l'entrar al sistema"; 
 $LANG['setup'][111]="Quantitat d'elements a mostrar per pàgina"; 
@@ -2038,8 +2038,8 @@ $LANG['tracking'][1]="Els meus materials";
 $LANG['tracking'][2]="O cerca completa"; 
 $LANG['tracking'][3]="Dades invàlides. Actualització cancel·lada"; 
 $LANG['tracking'][4]="La seva petició no té urgència, mirar de corregir"; 
-$LANG['tracking'][6]="The ticket's title is required: update not done"; 
-$LANG['tracking'][7]="The ticket's description is required: update not done"; 
+$LANG['tracking'][6]="The ticket's title is required: update not done"; // en_GB string to be translated
+$LANG['tracking'][7]="The ticket's description is required: update not done"; // en_GB string to be translated
 $LANG['tracking'][8]="La teva incidència no té descripció. Si us plau, completa-la."; 
 $LANG['tracking'][9]="Origen per defecte per a helpdesk"; 
 $LANG['tracking'][10]="Origen per defecte pels recol·lectors"; 
