@@ -653,12 +653,6 @@ class User extends CommonDBTM {
             }
          }
       }
-      if (isset($input['_add_email']) && !empty($input['_add_email'])) {
-         $email = new UserEmail();
-         $email->add(array('users_id' => $input['id'],
-                           'email'    => $input['_add_email']));
-         Event::log($input['id'], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][37]);
-      }
       return $input;
    }
 
