@@ -2071,6 +2071,13 @@ class Search {
             return " `$table$addtable`.`$field` AS ".$NAME."_$num,
                      `$table$addtable`.`status` AS ".$NAME."_".$num."_2, ";
 
+         case "glpi_tickets.is_late" :
+            return " IF (`$table$addtable`.`due_date` IS NOT NULL
+                        AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
+                              OR (`$table$addtable`.`solvedate` IS NULL
+                                    AND `$table$addtable`.`due_date` < NOW())) ,1,0)
+                     AS ".$NAME."_$num, ";
+
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
             if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
@@ -2786,6 +2793,12 @@ class Search {
 
          case "glpi_ticketsatisfactions.type" :
             return $link." `$table`.`$field` = '$val' ";
+
+         case "glpi_tickets.is_late" :
+            return " $link IF (`$table$addtable`.`due_date` IS NOT NULL
+                        AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
+                              OR (`$table$addtable`.`solvedate` IS NULL
+                                    AND `$table$addtable`.`due_date` < NOW())) ,1,0) $SEARCH ";
 
       }
 
