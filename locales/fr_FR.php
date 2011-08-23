@@ -240,6 +240,7 @@ $LANG['change'][10] = "Test";
 $LANG['change'][11] = "Qualification";
 $LANG['change'][12] = "Appliqué";
 $LANG['change'][13] = "Abandonné";
+$LANG['change'][14] = "Revue";
 
 
 $LANG['choice'][0] = "Non";
