@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkRight("contract", "r");
+
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
 }

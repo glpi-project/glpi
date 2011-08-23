@@ -31,6 +31,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkLoginUser();
+
 $item = new Change_Item();
 
 if (isset($_POST["add"])) {
