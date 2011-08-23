@@ -46,7 +46,7 @@ class OperatingSystemVersion extends CommonDropdown {
       if ($nb>1) {
          return $LANG['dropdown'][29];
       }
-      return $LANG['computers'][15];
+      return $LANG['computers'][52];
    }
 }
 
