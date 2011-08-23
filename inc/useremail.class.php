@@ -177,22 +177,15 @@ class UserEmail  extends CommonDBChild {
             echo '<br>';
          }
          $count++;
-         echo "<strong>".$data['email']."</strong>";
+         echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
+                      value='".$data['id']."' checked ".($canedit?'':'disabled').">&nbsp;";
+         echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
+                  value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
 
-         if ($canedit) {
-            // Can edit if not dynamic
-            if (!$data['is_dynamic']) {
-               echo "<a href='".$CFG_GLPI['root_doc'].
-                     "/front/useremail.form.php?delete=delete&amp;id=".$data['id']."'>";
-               echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
-                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'>";
-               echo "</a>";
-            }
-         }
       }
 
       // Display others email
@@ -202,34 +195,27 @@ class UserEmail  extends CommonDBChild {
             echo '<br>';
          }
          $count++;
-         echo $data['email'];
+
+         echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
+                      value='".$data['id']."' ".($canedit?'':'disabled').">&nbsp;";
+         echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
+                     value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
 
-         if ($canedit) {
-            // Can edit if not dynamic
-            if (!$data['is_dynamic']) {
-               echo "<a href='".$CFG_GLPI['root_doc'].
-                     "/front/useremail.form.php?delete=delete&amp;id=".$data['id']."'>";
-               echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
-                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'>";
-               echo "</a>";
-            }
-
-            echo "<a href='".$CFG_GLPI['root_doc'].
-                  "/front/useremail.form.php?update=update&amp;id=".$data['id']."&amp;is_default=1'>";
-            echo "<img title=\"".$LANG['users'][21]."\" alt=\"".$LANG['users'][21]."\"
-                     src='".$CFG_GLPI["root_doc"]."/pics/deplier_up.png'>";
-            echo "</a>";
-         }
       }
       if ($canedit) {
-         echo "<div style='display:none' id='emailadd$users_id'>";
-         echo "<input type='text' name='_add_email' value='' size='40'>\n";
+         echo "<div id='emailadd$users_id'>";
+         // No email display field
+         if ($count == 0) {
+            echo "<input type='text' size='40' name='_useremails[-100]'>";
+         }
          echo "</div>";
+
       }
+
    }
 
 
@@ -243,10 +229,14 @@ class UserEmail  extends CommonDBChild {
       $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
 
       if ($canedit) {
-         echo "&nbsp;";
-         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                onClick=\"Ext.get('emailadd$users_id').setDisplayed('block')\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+
+         echo "&nbsp;<script type='text/javascript'>var nbemails=1; </script>";
+         echo "<span id='addemailbutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
+               $LANG['buttons'][8]."\" onClick=\"
+                              var row = Ext.get('emailadd$users_id');
+                              row.createChild('<input type=\'text\' size=\'40\' name=\'_useremails[-'+nbemails+']\'><br>');
+                              nbemails++;\"
+               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
       }
    }
 
@@ -272,12 +262,20 @@ class UserEmail  extends CommonDBChild {
       global $DB;
 
       // if default is set : unsed others for the users
-      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+      if (in_array('is_default',$this->updates) && $this->input["is_default"] == 1) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'";
          $DB->query($query);
+      }
+
+      if (count($this->updates)) {
+         $changes[0] = '0';
+         $changes[1] = "";
+         $changes[2] = addslashes($this->fields['email']);
+         Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
+                     Log::HISTORY_UPDATE_SUBITEM);
       }
    }
 
@@ -285,7 +283,7 @@ class UserEmail  extends CommonDBChild {
    function post_addItem() {
       global $DB;
 
-      // if default is set : unsed others for the users
+      // if default is set : unset others for the users
       if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
@@ -293,8 +291,34 @@ class UserEmail  extends CommonDBChild {
                          AND `users_id` = '".$this->fields['users_id']."'";
          $DB->query($query);
       }
+
+      $changes[0] = '0';
+      $changes[1] = "";
+      $changes[2] = addslashes($this->fields['email']);
+      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
+                   Log::HISTORY_ADD_SUBITEM);
+
    }
 
+   function post_deleteFromDB() {
+      global $DB;
+      // if default is set : set default to another one
+      if ($this->fields["is_default"] == 1) {
+         $query = "UPDATE ". $this->getTable()."
+                   SET `is_default` = '1'
+                   WHERE `id` <> '".$this->fields['id']."'
+                         AND `users_id` = '".$this->fields['users_id']."'
+                   LIMIT 1";
+         $DB->query($query);
+      }
+
+      $changes[0] = '0';
+      $changes[1] = "";
+      $changes[2] = addslashes($this->fields['email']);
+      Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
+                   Log::HISTORY_DELETE_SUBITEM);
+
+   }
 }
 
 ?>
