@@ -33,9 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+Session::checkRight("group", "r");
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";

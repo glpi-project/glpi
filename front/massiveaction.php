@@ -36,6 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkCentralAccess();
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
