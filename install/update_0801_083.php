@@ -346,7 +346,7 @@ function update0801to083() {
    }
 
    if (!TableExists('glpi_changes_problems')) {
-      $query = "CREATE TABLE glpi_changes_problems (
+      $query = "CREATE TABLE `glpi_changes_problems` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
                   `problems_id` int(11) NOT NULL DEFAULT '0',
@@ -756,12 +756,12 @@ function update0801to083() {
 
 
    $migration->changeField("glpi_users", 'token','password_forget_token',
-                           "char(40) NULL DEFAULT ''");
+                           "char(40) NULL DEFAULT NULL");
 
    $migration->changeField("glpi_users", 'tokendate','password_forget_token_date',
                            "datetime");
 
-   $migration->addField("glpi_users", "personal_token", "varchar(255) NULL DEFAULT ''");
+   $migration->addField("glpi_users", "personal_token", "varchar(255) NULL DEFAULT NULL");
 
    $migration->addField("glpi_users", "personal_token_date", "datetime");
 
@@ -788,12 +788,12 @@ function update0801to083() {
 
    // Several email per users
    if (!TableExists('glpi_useremails')) {
-      $query = "CREATE TABLE glpi_useremails (
+      $query = "CREATE TABLE `glpi_useremails` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `is_default` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `email` varchar( 255 ) NULL DEFAULT '',
+                  `email` varchar( 255 ) NULL DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`users_id`,`email`),
                   KEY `email` (`email`),
@@ -988,6 +988,71 @@ function update0801to083() {
          }
       }
    }
+
+
+   $migration->displayMessage($LANG['update'][142] . ' - Ticket templates');
+
+   if (!TableExists('glpi_tickettemplates')) {
+      $query = "CREATE TABLE `glpi_tickettemplates` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar( 255 ) NULL DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `comment` TEXT DEFAULT NULL,
+                  `is_helpdeskvisible` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `is_default` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `is_default` (`is_default`),
+                  KEY `is_helpdeskvisible` (`is_helpdeskvisible`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_tickettemplates ". $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_tickettemplatehiddenfields')) {
+      $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `unicity` (`tickettemplates_id`,`num`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_tickettemplatehiddenfields ". $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_tickettemplatepredefinesfields')) {
+      $query = "CREATE TABLE `glpi_tickettemplatepredefinesfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  `name` TEXT DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `unicity` (`tickettemplates_id`,`num`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_tickettemplatepredefinesfields ". $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_tickettemplatemandatoryfields')) {
+      $query = "CREATE TABLE `glpi_tickettemplatemandatoryfields` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `num` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `unicity` (`tickettemplates_id`,`num`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_tickettemplatemandatoryfields ". $LANG['update'][90] . $DB->error());
+   }
+   /// TODO create default empty template : migrate global config to default template : mandatory fields
 
 
    $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');
