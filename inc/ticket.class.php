@@ -949,8 +949,8 @@ class Ticket extends CommonITILObject {
          // Setting a solution type means the ticket is solved
          if ((in_array("solutiontypes_id",$this->updates)
                || in_array("solution",$this->updates))
-               && ($this->fields["status"] == "solved"
-                  || $this->fields["status"] == "closed")) { // auto close case
+               && (in_array($this->input["status"], $this->getSolvedStatusArray())
+                  || in_array($this->input["status"], $this->getClosedStatusArray()))) { // auto close case
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
@@ -970,7 +970,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["status"])
              && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="solved") {
+             && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
          }
@@ -978,7 +978,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["status"])
              && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="closed") {
+             && in_array($this->input["status"], $this->getClosedStatusArray())) {
 
             $mailtype = "closed";
          }
