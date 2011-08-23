@@ -171,7 +171,7 @@ class Ajax {
 
             echo "// force reload
                function reloadTab(add) {
-                  var tab = tabpanel.Session::getActiveTab();
+                  var tab = tabpanel.getActiveTab();
                   var opt = tab.autoLoad;
                   if (add) {
                      if (opt.params)
