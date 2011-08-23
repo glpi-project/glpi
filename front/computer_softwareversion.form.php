@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+Session::checkRight("software", "w");
 
 $inst = new Computer_SoftwareVersion();
 
