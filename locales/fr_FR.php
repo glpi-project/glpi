@@ -234,6 +234,7 @@ $LANG['change'][4] = "Plan de déploiement";
 $LANG['change'][5] = "Plan de repli";
 $LANG['change'][6] = "Liste de vérifications";
 $LANG['change'][7] = "Plans";
+$LANG['change'][8] = "Évaluation";
 
 
 $LANG['choice'][0] = "Non";
@@ -399,13 +400,13 @@ $LANG['computers'][59] = "Aucune machine virtuelle associée à l'ordinateur";
 $LANG['computers'][60] = "Modèle de virtualisation";
 $LANG['computers'][61] = "Nombre de processeurs";
 $LANG['computers'][62] = "Système de virtualisation";
-$LANG['computers'][63] = "Etat de la machine virtuelle";
+$LANG['computers'][63] = "État de la machine virtuelle";
 $LANG['computers'][64] = "Machine";
 $LANG['computers'][65] = "Liste des machines hôtes";
 $LANG['computers'][66] = "Liste des machines virtuelles";
 $LANG['computers'][67] = "Systèmes de virtualisation";
 $LANG['computers'][68] = "Modèles de virtualisation";
-$LANG['computers'][69] = "Etats des machines virtuelles";
+$LANG['computers'][69] = "États des machines virtuelles";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
@@ -2389,7 +2390,7 @@ $LANG['software'][2]  = "Version d'utilisation";
 $LANG['software'][3]  = "Licences affectées et non installées";
 $LANG['software'][4]  = "Illimité";
 $LANG['software'][5]  = "Versions";
-$LANG['software'][6]  = "Editeur";
+$LANG['software'][6]  = "Éditeur";
 $LANG['software'][7]  = "Ajouter une version";
 $LANG['software'][8]  = "Ajouter une licence";
 $LANG['software'][9]  = "Ordinateurs affectés";
