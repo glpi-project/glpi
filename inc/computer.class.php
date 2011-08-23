@@ -777,7 +777,7 @@ class Computer extends CommonDBTM {
       $tab[40]['name']  = $LANG['common'][22];
 
       $tab[31]['table'] = 'glpi_states';
-      $tab[31]['field'] = 'name';
+      $tab[31]['field'] = 'completename';
       $tab[31]['name']  = $LANG['state'][0];
 
       $tab[45]['table'] = 'glpi_operatingsystems';
