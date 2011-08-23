@@ -613,7 +613,7 @@ class Change extends CommonITILObject {
                    'solved'        => $LANG['change'][12], // applied
                    'observe'       => $LANG['problem'][2], // review
                    'closed'        => $LANG['joblist'][33],
-                   'abandoned'     => $LANG['change'][13],
+//                   'abandoned'     => $LANG['change'][13], // managed using trash ?
    );
 
       if ($withmetaforsearch) {
@@ -634,7 +634,7 @@ class Change extends CommonITILObject {
    **/
    static function getClosedStatusArray() {
       // To be overridden by class
-      $tab = array('closed', 'abandoned');
+      $tab = array('closed'/*, 'abandoned'*/);
 
       return $tab;
    }

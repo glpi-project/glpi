@@ -312,6 +312,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function countActiveObjectsForUser ($users_id) {
       $linkclass = new $this->userlinkclass();
       $itemtable = $this->getTable();
+      $itemtype = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
@@ -321,7 +322,9 @@ abstract class CommonITILObject extends CommonDBTM {
                "`$linktable`.`$itemfk` = `$itemtable`.`id`
                AND `$linktable`.`users_id` = '$users_id'
                AND `$linktable`.`type` = '".self::REQUESTER."'
-               AND `$itemtable`.`status` NOT IN ('solved', 'closed')");
+               AND `$itemtable`.`status` NOT IN ('".
+                  implode("','",array_merge($itemtype::getSolvedStatusArray(),
+                                            $itemtype::getClosedStatusArray()))."')");
    }
 
    function cleanDBonPurge() {
@@ -497,11 +500,13 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
-      if (isset($input["status"]) && $input["status"]!='solved' && $input["status"]!='closed') {
+      if (isset($input["status"])
+            && !in_array($input["status"],array_merge($this->getSolvedStatusArray(),
+                                                      $this->getClosedStatusArray()))) {
          $input['solvedate'] = 'NULL';
       }
 
-      if (isset($input["status"]) && $input["status"]!='closed') {
+      if (isset($input["status"]) && in_array($input["status"],$this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
 
@@ -592,8 +597,9 @@ abstract class CommonITILObject extends CommonDBTM {
              && $this->input["suppliers_id_assign"] == 0
              && $this->countUsers(self::ASSIGN) == 0
              && $this->countGroups(self::ASSIGN) == 0
-             && $this->fields['status'] != 'closed'
-             && $this->fields['status'] != 'solved') {
+             && !in_array($this->fields['status'],array_merge($this->getSolvedStatusArray(),
+                                                              $this->getClosedStatusArray()))
+            ) {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
@@ -602,7 +608,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->fields['status'] = 'new';
          }
 
-         if (in_array("status",$this->updates) && $this->input["status"]=="solved") {
+         if (in_array("status",$this->updates)
+               && in_array($this->input["status"], $this->getSolvedStatusArray())) {
             $this->updates[]              = "solvedate";
             $this->oldvalues['solvedate'] = $this->fields["solvedate"];
             $this->fields["solvedate"]    = $_SESSION["glpi_currenttime"];
@@ -612,7 +619,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
 
-         if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
+         if (in_array("status",$this->updates)
+               && in_array($this->input["status"], $this->getClosedStatusArray())) {
             $this->updates[]              = "closedate";
             $this->oldvalues['closedate'] = $this->fields["closedate"];
             $this->fields["closedate"]    = $_SESSION["glpi_currenttime"];
@@ -652,7 +660,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Status close : check dates
-      if ($this->fields["status"]=="closed"
+      if (in_array($this->fields["status"], $this->getClosedStatusArray())
           && (in_array("date",$this->updates) || in_array("closedate",$this->updates))) {
 
          // Invalid dates : no change
@@ -686,9 +694,8 @@ abstract class CommonITILObject extends CommonDBTM {
          unset($this->oldvalues['status']);
       }
 
-      /// TODO : store solved status ? for change status not available : use review instead for changes
       // Status solved : check dates
-      if ($this->fields["status"]=="solved"
+      if (in_array($this->fields["status"], $this->getSolvedStatusArray())
           && (in_array("date",$this->updates) || in_array("solvedate",$this->updates))) {
 
          // Invalid dates : no change
@@ -752,7 +759,8 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
 
-      if (isset($input["status"]) && $input["status"]=="solved") {
+      if (isset($input["status"])
+            && in_array($this->fields["status"], $this->getSolvedStatusArray())) {
          if (isset($input["date"])) {
             $input["solvedate"] = $input["date"];
          } else {
@@ -760,7 +768,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input["status"]) && $input["status"]=="closed") {
+      if (isset($input["status"])
+            && in_array($this->fields["status"], $this->getClosedStatusArray())) {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];
          } else {
@@ -1854,7 +1863,8 @@ abstract class CommonITILObject extends CommonDBTM {
       User::dropdown($params);
 
       // display opened tickets for user 
-      if ($this->getType() == 'Ticket' && $type == self::REQUESTER) {
+      if ($this->getType() == 'Ticket' && $type == self::REQUESTER
+         && $options["_users_id_".$typename] > 0) {
 
          $options2['field'][0]      = 4; // users_id
          $options2['searchtype'][0] = 'equals';
