@@ -521,6 +521,17 @@ class User extends CommonDBTM {
    function post_addItem() {
       global $LANG;
 
+      // add emails
+      if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
+         $useremail = new UserEmail();
+         foreach ($this->input['_useremails'] as $id => $email) {
+            
+            $email = trim($email);
+            $useremail->add(array('email' => $email, 'users_id' => $this->getID()));
+         }
+      }
+
+
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $rulesplayed = $this->applyRightRules();
@@ -550,15 +561,6 @@ class User extends CommonDBTM {
             $right->add($affectation);
          }
       }
-
-      if (isset($this->input['_add_email']) && !empty($this->input['_add_email'])) {
-         $email = new UserEmail();
-         $email->add(array('users_id' => $this->fields["id"],
-                           'email'    => $this->input['_add_email']));
-         Event::log($this->fields["id"], "users", 4, "setup",
-                    $_SESSION["glpiname"]." ".$LANG['log'][37]);
-      }
-
    }
 
 
@@ -662,6 +664,31 @@ class User extends CommonDBTM {
 
 
    function post_updateItem($history=1) {
+      // Update emails
+      if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
+         $useremail = new UserEmail();
+         foreach ($this->input['_useremails'] as $id => $email) {
+            
+            $email = trim($email);
+            // existing email
+            if ($id > 0) {
+               $params = array('id' => $id);
+               // empty email : delete
+               if (strlen($email) == 0) {
+                  $useremail->delete($params);
+               } else { // Update email
+                  $params['email'] = $email;
+                  if ($this->input['_default_email'] == $id) {
+                     $params['is_default'] = 1;
+                  }
+                  $useremail->update($params);
+               }
+            } else { // New email
+               $useremail->add(array('email' => $email, 'users_id' => $this->getID()));
+            }
+         }
+      }
+
 
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
@@ -1535,12 +1562,12 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;:";
+      echo "<td class='top'>" . $LANG['setup'][14] . "&nbsp;:";
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
-
       UserEmail::showForUser($this);
       echo "</td>";
+
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
       Dropdown::show('UserCategory', array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
@@ -1708,7 +1735,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:";
+         echo "<tr class='tab_bg_1'><td class='top'>" . $LANG['setup'][14] . "&nbsp;:";
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);

@@ -2582,7 +2582,7 @@ $LANG['users'][17] = "Matricule";
 $LANG['users'][18] = "générée le";
 $LANG['users'][19] = "Ajouter aux superviseurs";
 $LANG['users'][20] = "Supprimer des superviseurs";
-$LANG['users'][21] = "Définir comme courriel par défaut";
+$LANG['users'][21] = "Courriel par défaut";
 $LANG['users'][22] = "Titres des utilisateurs";
 $LANG['users'][23] = "Catégories des utilisateurs";
 
