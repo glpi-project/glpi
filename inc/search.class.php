@@ -2725,28 +2725,37 @@ class Search {
          case "glpi_tickets.status" :
          case "glpi_problems.status" :
          case "glpi_changes.status" :
-            $tocheck = array('new'       => array('new'),
-                             'notold'    => array('new', 'plan', 'assign', 'waiting'),
-                             'notclosed' => array('new', 'plan', 'assign', 'waiting', 'solved'),
-                             'old'       => array('solved', 'closed'),
-                             'process'   => array('plan', 'assign'),
-                             'waiting'   => array('waiting'),
-                             'solved'    => array('solved'),
-                             'closed'    => array('closed'),
-                             'assign'    => array('assign'),
-                             'plan'      => array('plan'),);
+
+            $tocheck = array('new'           => array('new', 'evaluation', 'approbation'),
+                             'notold'        => array('new', 'plan', 'assign', 'waiting',
+                                                      'accepted', 'observe', 'evaluation',
+                                                      'approbation', 'test', 'qualification',
+                                                      'applied'),
+                             'notclosed'     => array('new', 'plan', 'assign', 'waiting',
+                                                      'accepted', 'observe', 'evaluation',
+                                                      'approbation', 'test', 'qualification',
+                                                      'applied', 'solved'),
+                             'old'           => array('solved', 'closed', 'abandonned'),
+                             'process'       => array('plan', 'assign', 'accepted', 'observe',
+                                                      'test', 'qualification', 'applied'),
+                             'waiting'       => array('waiting'),
+                             'solved'        => array('solved'),
+                             'closed'        => array('closed'),
+                             'assign'        => array('assign'),
+                             'plan'          => array('plan'),
+                             'evaluation'    => array('evaluation'),
+                             'approbation'   => array('approbation'),
+                             'observe'       => array('observe'),
+                             'accepted'      => array('accepted'),
+                             'test'          => array('test'),
+                             'qualification' => array('qualification'),
+                             'applied'       => array('applied'),
+                            );
             if (isset($tocheck[$val])) {
-               foreach ($tocheck[$val] as $key=>$nval) {
-                  if ($nott) {
-                     $tocheck[$val][$key] = " `$table`.`$field` <> '$nval' ";
-                  } else {
-                     $tocheck[$val][$key] = " `$table`.`$field` = '$nval' ";
-                  }
-               }
                if ($nott) {
-                  return $link.'('.implode(' AND ',$tocheck[$val]).')';
+                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck[$val])."')";
                }
-               return $link.'('.implode(' OR ',$tocheck[$val]).')';
+               return $link." `$table`.`$field` IN ('".implode("','",$tocheck[$val])."')";
             }
             if ($val=='all') {
                return "";
