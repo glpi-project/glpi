@@ -2363,7 +2363,7 @@ $LANG['setup'][815] = "Champ(s) unique(s)";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 $LANG['setup'][819] = "Passage à l'état ";
-
+$LANG['setup'][820] = "Élement dans la corbeille";
 $LANG['setup'][821] = "Enregistrement en base refusé";
 $LANG['setup'][822] = "Envoyer une notification";
 $LANG['setup'][823] = "Enregistrement effectué mais doublon sur ";

@@ -2590,6 +2590,11 @@ class CommonDBTM extends CommonGLPI {
                $doubles_text[] =  $value.": ".$field_value;
             }
          }
+         // Add information on item in trash
+         if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
+            $doubles_text[] = $LANG['setup'][820];
+         }
+
          $message_text .= "<br>[".implode(', ',$doubles_text)."]";
       }
       return $message_text;
