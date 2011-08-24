@@ -323,8 +323,8 @@ abstract class CommonITILObject extends CommonDBTM {
                AND `$linktable`.`users_id` = '$users_id'
                AND `$linktable`.`type` = '".self::REQUESTER."'
                AND `$itemtable`.`status` NOT IN ('".
-                  implode("','",array_merge(constant($itemtype.'::getSolvedStatusArray()'),
-                                            constant($itemtype.'::getClosedStatusArray()')))."')");
+                  implode("','",array_merge($his->getSolvedStatusArray(),
+                                            $this->getClosedStatusArray()))."')");
    }
 
    function cleanDBonPurge() {
