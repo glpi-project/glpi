@@ -132,7 +132,7 @@ $LANG['calendar'][10] = "Plages horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
 $LANG['calendar'][12] = "jour(s)";
 $LANG['calendar'][13] = "semaine(s)";
-$LANG['calendar'][14] = "mois";  // doit rester pour les langues etrangeres (correspond à mois(s)
+$LANG['calendar'][14] = "mois";  // singular (plural) like month(s)
 $LANG['calendar'][15] = "année(s)";
 $LANG['calendar'][16] = "Maintenant";
 $LANG['calendar'][17] = "Spécifier une date";
@@ -1292,7 +1292,7 @@ $LANG['login'][32] = "Authentification sur la base GLPI";
 $LANG['login'][33] = "Authentification sur le serveur de messagerie";
 
 
-$LANG['mailgate'][0]  = "Collecteur Courriel";
+$LANG['mailgate'][0]  = "Collecteur courriels";
 $LANG['mailgate'][1]  = "Courriels rejetés";
 $LANG['mailgate'][2]  = "Récupérer maintenant";
 $LANG['mailgate'][3]  = "Nombre de messages disponibles et récupérés";
@@ -1385,6 +1385,7 @@ $LANG['mailing'][139] = "Libellé";
 $LANG['mailing'][140] = "Balise";
 $LANG['mailing'][141] = "Suivis";
 $LANG['mailing'][142] = "Tâches";
+
 $LANG['mailing'][144] = "Historique";
 $LANG['mailing'][145] = "Liste de valeurs";
 $LANG['mailing'][146] = "Valeur unique";
@@ -2596,13 +2597,13 @@ $LANG['users'][23] = "Catégories des utilisateurs";
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";
-$LANG['validation'][2]  = "Etat";
+$LANG['validation'][2]  = "État";
 $LANG['validation'][3]  = "Date de la demande";
 $LANG['validation'][4]  = "Date de la validation";
 $LANG['validation'][5]  = "Commentaire de la demande";
 $LANG['validation'][6]  = "Commentaire de la validation";
 $LANG['validation'][7]  = "Validation(s) pour le ticket";
-$LANG['validation'][8]  = "Validations"; // Duplicate with mailing/143
+$LANG['validation'][8]  = "Validations";
 $LANG['validation'][9]  = "En attente de validation";
 $LANG['validation'][10] = "Refusée";
 $LANG['validation'][11] = "Acceptée";
