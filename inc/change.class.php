@@ -629,6 +629,8 @@ class Change extends CommonITILObject {
 
    /**
     * Get the ITIL object closed status list
+    *
+    * @since version 0.83
     * To be overridden by class
     * @return an array
    **/
@@ -639,8 +641,11 @@ class Change extends CommonITILObject {
       return $tab;
    }
 
+
    /**
-    * Get the ITIL object solved status list
+    * Get the ITIL object solved or observe status list
+    *
+    * @since version 0.83
     * To be overridden by class
     * @return an array
    **/
@@ -652,7 +657,8 @@ class Change extends CommonITILObject {
    }
 
    /**
-    * Get the ITIL object solved status list
+    * Get the ITIL object test, qualification or accepted status list
+    * @since version 0.83
     * To be overridden by class
     * @return an array
    **/
@@ -665,6 +671,8 @@ class Change extends CommonITILObject {
 
    /**
     * Get change status Name
+    *
+    * @since version 0.83
     *
     * @param $value status ID
    **/

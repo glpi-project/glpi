@@ -2045,17 +2045,24 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object closed status list
     *
+    * @since version 0.83
+    *
     * @return an array
+    *
    **/
    static function getClosedStatusArray() {
       return array('closed');
    }
 
+
    /**
     * Get the ITIL object solved status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -2063,8 +2070,11 @@ class Ticket extends CommonITILObject {
       return array('solved');
    }
 
+
    /**
-    * Get the ITIL object solved status list
+    * Get the ITIL object assign or plan status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -2072,13 +2082,16 @@ class Ticket extends CommonITILObject {
       return array('assign', 'plan');
    }
 
+
    /**
     * Get ticket status Name
+    *
+    * @since version 0.83
     *
     * @param $value status ID
    **/
    static function getStatus($value) {
-      return parent::getGenericStatus('Ticket',$value);
+      return parent::getGenericStatus('Ticket', $value);
    }
 
 
