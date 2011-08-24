@@ -55,7 +55,7 @@ function update0801to083() {
                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
                           'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
                           'glpi_tickettemplatemandatoryfields',
-                          'glpi_tickettemplatepredefinesfields');
+                          'glpi_tickettemplatepredefinedfields');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -764,7 +764,7 @@ function update0801to083() {
    $migration->changeField("glpi_users", 'tokendate','password_forget_token_date',
                            "datetime");
 
-   $migration->addField("glpi_users", "personal_token", "varchar(255) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "personal_token", 'string');
 
    $migration->addField("glpi_users", "personal_token_date", "datetime");
 
@@ -1017,12 +1017,12 @@ function update0801to083() {
       $DB->query($query)
       or die("0.83 add table glpi_tickettemplates ". $LANG['update'][90] . $DB->error());
 
-      $query = "INSERT INTO `glpi_tickettemplates` (`name`,`is_recursive`,`is_helpdeskvisible`,`is_default`)
-                           VALUES ('Default',1,1,1)";
+      $query = "INSERT INTO `glpi_tickettemplates`
+                       (`name`, `is_recursive`, `is_helpdeskvisible`, `is_default`)
+                VALUES ('Default', 1, 1, 1)";
       $DB->query($query)
       or die("0.83 add default ticket template " . $LANG['update'][90] . $DB->error());
       $default_template = $DB->insert_id();
-
    }
 
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
@@ -1038,8 +1038,8 @@ function update0801to083() {
       or die("0.83 add table glpi_tickettemplatehiddenfields ". $LANG['update'][90] . $DB->error());
    }
 
-   if (!TableExists('glpi_tickettemplatepredefinesfields')) {
-      $query = "CREATE TABLE `glpi_tickettemplatepredefinesfields` (
+   if (!TableExists('glpi_tickettemplatepredefinedfields')) {
+      $query = "CREATE TABLE `glpi_tickettemplatepredefinedfields` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
                   `num` int(11) NOT NULL DEFAULT '0',
@@ -1049,7 +1049,7 @@ function update0801to083() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query)
-      or die("0.83 add table glpi_tickettemplatepredefinesfields ". $LANG['update'][90] . $DB->error());
+      or die("0.83 add table glpi_tickettemplatepredefinedfields ".$LANG['update'][90].$DB->error());
    }
 
    if (!TableExists('glpi_tickettemplatemandatoryfields')) {
@@ -1062,31 +1062,34 @@ function update0801to083() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query)
-      or die("0.83 add table glpi_tickettemplatemandatoryfields ". $LANG['update'][90] . $DB->error());
+      or die("0.83 add table glpi_tickettemplatemandatoryfields ".$LANG['update'][90].$DB->error());
 
       /// Add mandatory fields to default template
       if ($default_template > 0) {
          foreach ($DB->request('glpi_configs') as $data) {
             if ($data['is_ticket_title_mandatory']) {
-               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields` (`tickettemplates_id`,`num`)
-                                    VALUES ('$default_template',1)";
+               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
+                                (`tickettemplates_id`, `num`)
+                         VALUES ('$default_template', 1)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
-                     $LANG['update'][90] . $DB->error());
+                      $LANG['update'][90] . $DB->error());
             }
             if ($data['is_ticket_content_mandatory']) {
-               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields` (`tickettemplates_id`,`num`)
-                                    VALUES ('$default_template',21)";
+               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
+                                (`tickettemplates_id`, `num`)
+                         VALUES ('$default_template', 21)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
-                     $LANG['update'][90] . $DB->error());
+                      $LANG['update'][90] . $DB->error());
             }
             if ($data['is_ticket_category_mandatory']) {
-               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields` (`tickettemplates_id`,`num`)
-                                    VALUES ('$default_template',7)";
+               $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
+                                (`tickettemplates_id`, `num`)
+                         VALUES ('$default_template', 7)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
-                     $LANG['update'][90] . $DB->error());
+                      $LANG['update'][90] . $DB->error());
             }
          }
       }
