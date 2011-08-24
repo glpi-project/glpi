@@ -525,9 +525,9 @@ class User extends CommonDBTM {
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
          $useremail = new UserEmail();
          foreach ($this->input['_useremails'] as $id => $email) {
-            
             $email = trim($email);
-            $useremail->add(array('email' => $email, 'users_id' => $this->getID()));
+            $useremail->add(array('email'    => $email,
+                                  'users_id' => $this->getID()));
          }
       }
 
@@ -658,18 +658,21 @@ class User extends CommonDBTM {
 
 
    function post_updateItem($history=1) {
+
       // Update emails
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
          $useremail = new UserEmail();
          foreach ($this->input['_useremails'] as $id => $email) {
-            
             $email = trim($email);
+
             // existing email
             if ($id > 0) {
                $params = array('id' => $id);
+
                // empty email : delete
                if (strlen($email) == 0) {
                   $useremail->delete($params);
+
                } else { // Update email
                   $params['email'] = $email;
                   if ($this->input['_default_email'] == $id) {
@@ -677,12 +680,13 @@ class User extends CommonDBTM {
                   }
                   $useremail->update($params);
                }
+
             } else { // New email
-               $useremail->add(array('email' => $email, 'users_id' => $this->getID()));
+               $useremail->add(array('email'    => $email,
+                                     'users_id' => $this->getID()));
             }
          }
       }
-
 
       $this->syncLdapGroups();
       $this->syncDynamicEmails();

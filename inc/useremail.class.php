@@ -178,14 +178,13 @@ class UserEmail  extends CommonDBChild {
          }
          $count++;
          echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
-                      value='".$data['id']."' checked ".($canedit?'':'disabled').">&nbsp;";
+                value='".$data['id']."' checked ".($canedit?'':'disabled').">&nbsp;";
          echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                  value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
+                value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
-
       }
 
       // Display others email
@@ -197,15 +196,16 @@ class UserEmail  extends CommonDBChild {
          $count++;
 
          echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
-                      value='".$data['id']."' ".($canedit?'':'disabled').">&nbsp;";
+                value='".$data['id']."' ".($canedit?'':'disabled').">&nbsp;";
          echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                     value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
+                value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
 
       }
+
       if ($canedit) {
          echo "<div id='emailadd$users_id'>";
          // No email display field
@@ -213,7 +213,6 @@ class UserEmail  extends CommonDBChild {
             echo "<input type='text' size='40' name='_useremails[-100]'>";
          }
          echo "</div>";
-
       }
 
    }
@@ -232,10 +231,11 @@ class UserEmail  extends CommonDBChild {
 
          echo "&nbsp;<script type='text/javascript'>var nbemails=1; </script>";
          echo "<span id='addemailbutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
-               $LANG['buttons'][8]."\" onClick=\"
-                              var row = Ext.get('emailadd$users_id');
-                              row.createChild('<input type=\'text\' size=\'40\' name=\'_useremails[-'+nbemails+']\'><br>');
-                              nbemails++;\"
+               $LANG['buttons'][8].
+               "\" onClick=\"var row = Ext.get('emailadd$users_id');
+                             row.createChild('<input type=\'text\' size=\'40\' ".
+                                               "name=\'_useremails[-'+nbemails+']\'><br>');
+                             nbemails++;\"
                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
       }
    }
@@ -275,7 +275,7 @@ class UserEmail  extends CommonDBChild {
          $changes[1] = "";
          $changes[2] = addslashes($this->fields['email']);
          Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
-                     Log::HISTORY_UPDATE_SUBITEM);
+                      Log::HISTORY_UPDATE_SUBITEM);
       }
    }
 
@@ -300,11 +300,13 @@ class UserEmail  extends CommonDBChild {
 
    }
 
+
    function post_deleteFromDB() {
       global $DB;
+
       // if default is set : set default to another one
       if ($this->fields["is_default"] == 1) {
-         $query = "UPDATE ". $this->getTable()."
+         $query = "UPDATE `". $this->getTable()."`
                    SET `is_default` = '1'
                    WHERE `id` <> '".$this->fields['id']."'
                          AND `users_id` = '".$this->fields['users_id']."'
@@ -317,8 +319,7 @@ class UserEmail  extends CommonDBChild {
       $changes[2] = addslashes($this->fields['email']);
       Log::history($this->fields['users_id'], 'User', $changes, get_class($this),
                    Log::HISTORY_DELETE_SUBITEM);
-
    }
-}
 
+}
 ?>

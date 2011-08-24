@@ -124,7 +124,7 @@ class State extends CommonTreeDropdown {
             if (class_exists($itemtype)) {
                $item = new $itemtype();
                echo "<th>".$item->getTypeName()."</th>";
-               $total[$itemtype]=0;
+               $total[$itemtype] = 0;
             } else {
                unset($state_type[$key]);
             }
@@ -146,7 +146,7 @@ class State extends CommonTreeDropdown {
             if (isset($states[0][$itemtype])) {
                echo $states[0][$itemtype];
                $total[$itemtype] += $states[0][$itemtype];
-               $tot += $states[0][$itemtype];
+               $tot              += $states[0][$itemtype];
             } else {
                echo "&nbsp;";
             }
@@ -199,5 +199,4 @@ class State extends CommonTreeDropdown {
       Rule::cleanForItemCriteria($this);
    }
 }
-
 ?>

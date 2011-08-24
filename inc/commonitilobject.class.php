@@ -287,6 +287,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return 0;
    }
 
+
    /**
     * Get Default actor when creating the object
     *
@@ -302,6 +303,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return "all";
    }
 
+
    /**
     * Count active ITIL Objects requested by a user
     *
@@ -310,22 +312,26 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return boolean
    **/
    function countActiveObjectsForUser ($users_id) {
+
       $linkclass = new $this->userlinkclass();
       $itemtable = $this->getTable();
-      $itemtype = $this->getType();
+      $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
 
       /// TODO review on status management
 
       return countElementsInTable(array($itemtable,$linktable),
-               "`$linktable`.`$itemfk` = `$itemtable`.`id`
-               AND `$linktable`.`users_id` = '$users_id'
-               AND `$linktable`.`type` = '".self::REQUESTER."'
-               AND `$itemtable`.`status` NOT IN ('".
-                  implode("','",array_merge($his->getSolvedStatusArray(),
-                                            $this->getClosedStatusArray()))."')");
+                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                    AND `$linktable`.`users_id` = '$users_id'
+                                    AND `$linktable`.`type` = '".self::REQUESTER."'
+                                    AND `$itemtable`.`status`
+                                       NOT IN ('".implode("', '",
+                                                          array_merge($his->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')");
    }
+
 
    function cleanDBonPurge() {
 
@@ -1863,8 +1869,9 @@ abstract class CommonITILObject extends CommonDBTM {
       User::dropdown($params);
 
       // display opened tickets for user
-      if ($this->getType() == 'Ticket' && $type == self::REQUESTER
-         && $options["_users_id_".$typename] > 0) {
+      if ($this->getType() == 'Ticket'
+          && $type == self::REQUESTER
+          && $options["_users_id_".$typename] > 0) {
 
          $options2['field'][0]      = 4; // users_id
          $options2['searchtype'][0] = 'equals';
