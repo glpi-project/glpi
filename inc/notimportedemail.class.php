@@ -53,9 +53,12 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['mailgate'][1];
+      }
       return $LANG['mailgate'][10];
    }
 

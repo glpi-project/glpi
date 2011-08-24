@@ -96,9 +96,12 @@ class OcsServer extends CommonDBTM {
    const LINK_RESULT_NO_IMPORT = 1;
    const LINK_RESULT_LINK      = 2;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['ocsng'][28];
+      }
       return $LANG['ocsng'][29];
    }
 

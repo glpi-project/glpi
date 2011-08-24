@@ -38,6 +38,7 @@ class Preference extends CommonGLPI {
    static function getTypeName() {
       global $LANG;
 
+      // Always plural
       return $LANG['Menu'][11];
    }
 

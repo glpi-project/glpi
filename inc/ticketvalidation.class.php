@@ -46,9 +46,12 @@ class TicketValidation  extends CommonDBChild {
    public $items_id = 'tickets_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['validation'][8];
+      }
       return $LANG['validation'][0];
    }
 

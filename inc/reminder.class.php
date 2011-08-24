@@ -41,9 +41,12 @@ if (!defined('GLPI_ROOT')) {
 /// Reminder class
 class Reminder extends CommonDBTM {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['title'][37];
+      }
       return $LANG['title'][36];
    }
 

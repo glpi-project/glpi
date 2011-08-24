@@ -45,10 +45,13 @@ class Reservation extends CommonDBChild {
    public $items_id = 'reservationitems_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['Menu'][17];
+      if ($nb>1) {
+         return $LANG['Menu'][17];
+      }
+      return $LANG['log'][42];
    }
 
 

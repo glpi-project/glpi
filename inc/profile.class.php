@@ -66,10 +66,13 @@ class Profile extends CommonDBTM {
    var $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['Menu'][35];
+      if ($nb>1) {
+         return $LANG['Menu'][35];
+      }
+      return $LANG['profiles'][22];
    }
 
 

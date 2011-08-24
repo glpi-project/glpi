@@ -47,9 +47,12 @@ class User extends CommonDBTM {
    public $history_blacklist = array('date_mod', 'date_sync', 'last_login');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][14];
+      }
       return $LANG['common'][34];
    }
 
@@ -1560,7 +1563,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='top'>" . $LANG['setup'][14] . "&nbsp;:";
+      echo "<td class='top'>" . $LANG['setup'][15] . "&nbsp;:";
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
       UserEmail::showForUser($this);
@@ -1733,7 +1736,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='top'>" . $LANG['setup'][14] . "&nbsp;:";
+         echo "<tr class='tab_bg_1'><td class='top'>" . $LANG['setup'][15] . "&nbsp;:";
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);
