@@ -507,8 +507,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (isset($input["status"])
-            && !in_array($input["status"],array_merge($this->getSolvedStatusArray(),
-                                                      $this->getClosedStatusArray()))) {
+          && !in_array($input["status"],array_merge($this->getSolvedStatusArray(),
+                                                    $this->getClosedStatusArray()))) {
          $input['solvedate'] = 'NULL';
       }
 
@@ -614,8 +614,8 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->fields['status'] = 'new';
          }
 
-         if (in_array("status",$this->updates)
-               && in_array($this->input["status"], $this->getSolvedStatusArray())) {
+         if (in_array("status",$this->updates) && in_array($this->input["status"],
+                                                           $this->getSolvedStatusArray())) {
             $this->updates[]              = "solvedate";
             $this->oldvalues['solvedate'] = $this->fields["solvedate"];
             $this->fields["solvedate"]    = $_SESSION["glpi_currenttime"];
@@ -625,8 +625,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
 
-         if (in_array("status",$this->updates)
-               && in_array($this->input["status"], $this->getClosedStatusArray())) {
+         if (in_array("status",$this->updates) && in_array($this->input["status"],
+                                                           $this->getClosedStatusArray())) {
             $this->updates[]              = "closedate";
             $this->oldvalues['closedate'] = $this->fields["closedate"];
             $this->fields["closedate"]    = $_SESSION["glpi_currenttime"];
@@ -765,8 +765,8 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
 
-      if (isset($input["status"])
-            && in_array($this->fields["status"], $this->getSolvedStatusArray())) {
+      if (isset($input["status"]) && in_array($this->fields["status"],
+                                              $this->getSolvedStatusArray())) {
          if (isset($input["date"])) {
             $input["solvedate"] = $input["date"];
          } else {
@@ -774,8 +774,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input["status"])
-            && in_array($this->fields["status"], $this->getClosedStatusArray())) {
+      if (isset($input["status"]) && in_array($this->fields["status"],
+                                              $this->getClosedStatusArray())) {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];
          } else {
@@ -1316,8 +1316,11 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object closed status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -1328,8 +1331,11 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object solved status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -1340,8 +1346,11 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object process status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/

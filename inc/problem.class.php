@@ -586,8 +586,11 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
+
    /**
     * Get the ITIL object closed status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -598,8 +601,11 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
+
    /**
-    * Get the ITIL object solved status list
+    * Get the ITIL object solved or observe status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -610,8 +616,11 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
+
    /**
-    * Get the ITIL object solved status list
+    * Get the ITIL object assign, plan or accepted status list
+    *
+    * @since version 0.83
     *
     * @return an array
    **/
@@ -622,8 +631,11 @@ class Problem extends CommonITILObject {
       return $tab;
    }
 
+
    /**
     * Get problem status Name
+    *
+    * @since version 0.83
     *
     * @param $value status ID
    **/
