@@ -56,10 +56,13 @@ class CronTask extends CommonDBTM{
    /**
     * Name of the type
    **/
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['crontask'][0];
+      if ($nb>1) {
+         return $LANG['crontask'][0];
+      }
+      return $LANG['log'][59];
    }
 
 

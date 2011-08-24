@@ -48,9 +48,12 @@ class Document extends CommonDBTM {
    protected $forward_entity_to = array('Document_Item');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][27];
+      }
       return $LANG['document'][18];
    }
 
