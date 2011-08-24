@@ -46,9 +46,12 @@ class UserEmail  extends CommonDBChild {
    public $items_id = 'users_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['setup'][15];
+      }
       return $LANG['mailing'][118];
    }
 

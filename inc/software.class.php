@@ -48,9 +48,12 @@ class Software extends CommonDBTM {
    protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][4];
+      }
       return $LANG['help'][31];
    }
 

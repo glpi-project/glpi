@@ -46,9 +46,12 @@ class NetworkPort extends CommonDBChild {
    public $dohistory = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['networking'][6];
+      }
       return $LANG['networking'][4];
    }
 

@@ -118,10 +118,13 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['mailing'][113];
+      if ($nb>1) {
+         return $LANG['mailing'][121];
+      }
+      return $LANG['mailing'][131];
    }
 
 

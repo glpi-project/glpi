@@ -40,10 +40,13 @@ if (!defined('GLPI_ROOT')) {
 /// Reservation item class
 class ReservationItem extends CommonDBTM {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['Menu'][17];
+      if ($nb>1) {
+         return $LANG['reservation'][10];
+      }
+      return $LANG['reservation'][1];
    }
 
 

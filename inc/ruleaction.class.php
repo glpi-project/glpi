@@ -53,10 +53,13 @@ class RuleAction extends CommonDBChild {
     *
     * @return Title of the rule
    **/
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['rulesengine'][7];
+      if ($nb>1) {
+         return $LANG['rulesengine'][7];
+      }
+      return $LANG['rulesengine'][30];
    }
 
 

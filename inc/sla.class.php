@@ -46,9 +46,10 @@ class SLA extends CommonDBTM {
    protected $forward_entity_to = array('SLALevel');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      // Acronymous, no plural
       return $LANG['sla'][1];
    }
 

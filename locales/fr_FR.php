@@ -375,7 +375,7 @@ $LANG['computers'][5]  = "Point de montage";
 $LANG['computers'][6]  = "Partition";
 $LANG['computers'][7]  = "Ajouter un volume";
 $LANG['computers'][8]  = "Volumes";
-$LANG['computers'][9]  = "Système d'exploitation"; 
+$LANG['computers'][9]  = "Système d'exploitation";
 $LANG['computers'][10] = "Numéro de série du système d'exploitation";
 $LANG['computers'][11] = "Product ID du système d'exploitation";
 
@@ -848,7 +848,7 @@ $LANG['help'][27] = "Imprimante";
 $LANG['help'][28] = "Moniteur";
 $LANG['help'][29] = "Périphérique";
 $LANG['help'][30] = "Général";
-$LANG['help'][31] = "Logiciel";
+$LANG['help'][31] = "Logiciel"; // Singular
 
 $LANG['help'][35] = "Téléphone";
 
@@ -1293,7 +1293,7 @@ $LANG['login'][33] = "Authentification sur le serveur de messagerie";
 
 
 $LANG['mailgate'][0]  = "Collecteur Courriel";
-
+$LANG['mailgate'][1]  = "Courriels rejetés";
 $LANG['mailgate'][2]  = "Récupérer maintenant";
 $LANG['mailgate'][3]  = "Nombre de messages disponibles et récupérés";
 $LANG['mailgate'][4]  = "Extension mbstring indisponible. Attention aux jeux de caractères utilisés.";
@@ -1385,7 +1385,6 @@ $LANG['mailing'][139] = "Libellé";
 $LANG['mailing'][140] = "Balise";
 $LANG['mailing'][141] = "Suivis";
 $LANG['mailing'][142] = "Tâches";
-$LANG['mailing'][143] = "Validations";
 $LANG['mailing'][144] = "Historique";
 $LANG['mailing'][145] = "Liste de valeurs";
 $LANG['mailing'][146] = "Valeur unique";
@@ -1396,7 +1395,7 @@ $LANG['Menu'][0]  = "Ordinateurs";
 $LANG['Menu'][1]  = "Réseaux";
 $LANG['Menu'][2]  = "Imprimantes";
 $LANG['Menu'][3]  = "Moniteurs";
-$LANG['Menu'][4]  = "Logiciels";
+$LANG['Menu'][4]  = "Logiciels"; // Plural
 $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
 $LANG['Menu'][7]  = "Problèmes";
@@ -1478,7 +1477,7 @@ $LANG['networking'][46] = "Ajouter plusieurs ports...";
 
 $LANG['networking'][48] = "A";
 
-$LANG['networking'][51] = "Prise réseau"; 
+$LANG['networking'][51] = "Prise réseau";
 $LANG['networking'][52] = "Prises réseau";
 
 $LANG['networking'][55] = "Associer un VLAN";
@@ -1565,7 +1564,7 @@ $LANG['ocsng'][23] = "Importation impossible, ordinateur de destination de GLPI 
 
 $LANG['ocsng'][26] = "Choix d'un serveur OCSNG";
 $LANG['ocsng'][27] = "Aucun serveur OCSNG n'est défini";
-
+$LANG['ocsng'][28] = "Serveurs OCSNG";
 $LANG['ocsng'][29] = "Serveur OCSNG";
 $LANG['ocsng'][30] = "Moniteur(s) verrouillé(s)";
 
@@ -1831,6 +1830,7 @@ $LANG['reservation'][6]  = "Interdire les réservations";
 $LANG['reservation'][7]  = "Autoriser les réservations";
 $LANG['reservation'][8]  = "Réserver";
 $LANG['reservation'][9]  = "Réserver un matériel";
+$LANG['reservation'][10] = "Matériels réservables";
 
 $LANG['reservation'][16] = "Jusqu'à";
 $LANG['reservation'][17] = "Dès";
@@ -2044,6 +2044,7 @@ $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 $LANG['setup'][11]  = "Rafraichissement automatique de la liste des tickets";
 
 $LANG['setup'][14]  = "Adresse de messagerie";
+$LANG['setup'][15]  = "Adresses de messagerie";
 
 $LANG['setup'][18]  = "Identifiant";
 $LANG['setup'][19]  = "Mot de passe";
@@ -2601,7 +2602,7 @@ $LANG['validation'][4]  = "Date de la validation";
 $LANG['validation'][5]  = "Commentaire de la demande";
 $LANG['validation'][6]  = "Commentaire de la validation";
 $LANG['validation'][7]  = "Validation(s) pour le ticket";
-$LANG['validation'][8]  = "Validations";
+$LANG['validation'][8]  = "Validations"; // Duplicate with mailing/143
 $LANG['validation'][9]  = "En attente de validation";
 $LANG['validation'][10] = "Refusée";
 $LANG['validation'][11] = "Acceptée";
