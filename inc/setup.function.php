@@ -171,6 +171,10 @@ function showOtherAuthList($target) {
    echo "<option value='REDIRECT_REMOTE_USER' " .
           ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") .">".
           "REDIRECT_REMOTE_USER</option>\n";
+   //For apache mod_proxy
+   echo "<option value='HTTP_REMOTE_USER' " .
+          ($CFG_GLPI["existing_auth_server_field"]=="HTTP_REMOTE_USER" ? " selected " : "") .">".
+          "HTTP_REMOTE_USER</option>\n";
    echo "</select>";
    echo "</td></tr>\n";
 
