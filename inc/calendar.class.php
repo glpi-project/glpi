@@ -177,6 +177,9 @@ class Calendar extends CommonDropdown {
       $timeend    = strtotime($end);
       $datestart  = date('Y-m-d',$timestart);
       $dateend    = date('Y-m-d',$timeend);
+      // Need to finish at the closing day : set hour to midnight
+      $timerealend = strtotime($dateend.' 24:00:00');
+
       $activetime = 0;
 
       if ($force_work_in_days) {
@@ -185,7 +188,7 @@ class Calendar extends CommonDropdown {
       } else {
          $cache_duration = $this->getDurationsCache();
 
-         for ($actualtime=$timestart ; $actualtime<=$timeend ; $actualtime+=DAY_TIMESTAMP) {
+         for ($actualtime=$timestart ; $actualtime<=$timerealend ; $actualtime+=DAY_TIMESTAMP) {
             $actualdate = date('Y-m-d',$actualtime);
 
             if (!$this->isHoliday($actualdate)) {
