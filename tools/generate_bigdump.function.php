@@ -837,7 +837,7 @@ function generateGlobalDropdowns() {
          $val = "Etat $i";
       }
       $query = "INSERT INTO `glpi_states`
-                VALUES (NULL, '$val', 'comment $val',0,'',1,'','')";
+                VALUES (NULL, '$val', 'comment $val', 0, '', 1, '', '')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
    regenerateTreeCompleteName("glpi_states");

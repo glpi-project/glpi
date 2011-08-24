@@ -2072,10 +2072,11 @@ class Search {
                      `$table$addtable`.`status` AS ".$NAME."_".$num."_2, ";
 
          case "glpi_tickets.is_late" :
-            return " IF (`$table$addtable`.`due_date` IS NOT NULL
+            return " IF(`$table$addtable`.`due_date` IS NOT NULL
                         AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
-                              OR (`$table$addtable`.`solvedate` IS NULL
-                                    AND `$table$addtable`.`due_date` < NOW())) ,1,0)
+                             OR (`$table$addtable`.`solvedate` IS NULL
+                                 AND `$table$addtable`.`due_date` < NOW())) ,
+                        1, 0)
                      AS ".$NAME."_$num, ";
 
          case "glpi_contacts.completename" :
@@ -2730,17 +2731,17 @@ class Search {
                return "";
             }
 
-            $tocheck  = array();
-            $itemtype = new $itemtype();
+            $tocheck = array();
+            $item    = new $itemtype();
 
             switch ($val) {
                case 'process' :
-                  $tocheck = $itemtype->getProcessStatusArray();
+                  $tocheck = $item->getProcessStatusArray();
                   break;
 
                case 'notclosed' :
-                  $tocheck = $itemtype->getAllStatusArray();
-                  foreach ($itemtype->getClosedStatusArray() as $status) {
+                  $tocheck = $item->getAllStatusArray();
+                  foreach ($item->getClosedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
@@ -2749,18 +2750,18 @@ class Search {
                   break;
 
                case 'old' :
-                  $tocheck = array_merge($itemtype->getSolvedStatusArray(),
-                                         $itemtype->getClosedStatusArray());
+                  $tocheck = array_merge($item->getSolvedStatusArray(),
+                                         $item->getClosedStatusArray());
                   break;
 
                case 'notold' :
-                  $tocheck = $itemtype->getAllStatusArray();
-                  foreach ($itemtype->getSolvedStatusArray() as $status) {
+                  $tocheck = $item->getAllStatusArray();
+                  foreach ($item->getSolvedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
                   }
-                  foreach ($itemtype->getClosedStatusArray() as $status) {
+                  foreach ($item->getClosedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
@@ -2824,10 +2825,11 @@ class Search {
             return $link." `$table`.`$field` = '$val' ";
 
          case "glpi_tickets.is_late" :
-            return " $link IF (`$table$addtable`.`due_date` IS NOT NULL
-                        AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
-                              OR (`$table$addtable`.`solvedate` IS NULL
-                                    AND `$table$addtable`.`due_date` < NOW())) ,1,0) $SEARCH ";
+            return " $link IF(`$table$addtable`.`due_date` IS NOT NULL
+                              AND (`$table$addtable`.`solvedate` > `$table$addtable`.`due_date`
+                                   OR (`$table$addtable`.`solvedate` IS NULL
+                                       AND `$table$addtable`.`due_date` < NOW())) ,
+                           1, 0) $SEARCH ";
 
       }
 
