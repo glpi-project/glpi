@@ -323,8 +323,8 @@ abstract class CommonITILObject extends CommonDBTM {
                AND `$linktable`.`users_id` = '$users_id'
                AND `$linktable`.`type` = '".self::REQUESTER."'
                AND `$itemtable`.`status` NOT IN ('".
-                  implode("','",array_merge($itemtype::getSolvedStatusArray(),
-                                            $itemtype::getClosedStatusArray()))."')");
+                  implode("','",array_merge(constant($itemtype.'::getSolvedStatusArray()'),
+                                            constant($itemtype.'::getClosedStatusArray()')))."')");
    }
 
    function cleanDBonPurge() {
@@ -1862,7 +1862,7 @@ abstract class CommonITILObject extends CommonDBTM {
       //List all users in the active entities
       User::dropdown($params);
 
-      // display opened tickets for user 
+      // display opened tickets for user
       if ($this->getType() == 'Ticket' && $type == self::REQUESTER
          && $options["_users_id_".$typename] > 0) {
 
