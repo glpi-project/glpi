@@ -4773,8 +4773,8 @@ INSERT INTO `glpi_tickettemplatemandatoryfields` VALUES ('1','1','21');
 
 ### Dump table glpi_tickettemplatepredefinesfields
 
-DROP TABLE IF EXISTS `glpi_tickettemplatepredefinesfields`;
-CREATE TABLE `glpi_tickettemplatepredefinesfields` (
+DROP TABLE IF EXISTS `glpi_tickettemplatepredefinedfields`;
+CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
   `num` int(11) NOT NULL DEFAULT '0',
