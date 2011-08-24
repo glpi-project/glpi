@@ -208,8 +208,10 @@ class Calendar extends CommonDropdown {
 
       $timestart  = strtotime($start);
       $timeend    = strtotime($end);
+      
       $datestart  = date('Y-m-d',$timestart);
       $dateend    = date('Y-m-d',$timeend);
+      $timerealend = strtotime($dateend.' 24:00:00');
       $activetime = 0;
 
       if ($force_work_in_days) {
@@ -217,10 +219,9 @@ class Calendar extends CommonDropdown {
 
       } else {
          $cache_duration = importArrayFromDB($this->fields['cache_duration']);
-
-         for ($actualtime=$timestart ; $actualtime<=$timeend ; $actualtime+=DAY_TIMESTAMP) {
+	
+         for ($actualtime=$timestart ; $actualtime<=$timerealend ; $actualtime+=DAY_TIMESTAMP) {
             $actualdate = date('Y-m-d',$actualtime);
-
             if (!$this->isHoliday($actualdate)) {
                $beginhour    = '00:00:00';
                $endhour      = '24:00:00';
