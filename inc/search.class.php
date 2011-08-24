@@ -2730,16 +2730,17 @@ class Search {
                return "";
             }
 
-            $tocheck = array();
+            $tocheck  = array();
+            $itemtype = new $itemtype();
 
             switch ($val) {
                case 'process' :
-                  $tocheck = constant($itemtype.'::getProcessStatusArray()');
+                  $tocheck = $itemtype->getProcessStatusArray();
                   break;
 
                case 'notclosed' :
-                  $tocheck = constant($itemtype.'::getAllStatusArray()');
-                  foreach (constant($itemtype.'::getClosedStatusArray()') as $status) {
+                  $tocheck = $itemtype->getAllStatusArray();
+                  foreach ($itemtype->getClosedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
@@ -2748,18 +2749,18 @@ class Search {
                   break;
 
                case 'old' :
-                  $tocheck = array_merge(constant($itemtype.'::getSolvedStatusArray()'),
-                                         constant($itemtype.'::getClosedStatusArray()'));
+                  $tocheck = array_merge($itemtype->getSolvedStatusArray(),
+                                         $itemtype->getClosedStatusArray());
                   break;
 
                case 'notold' :
-                  $tocheck = constant($itemtype.'::getAllStatusArray()');
-                  foreach (constant($itemtype.'::getSolvedStatusArray()') as $status) {
+                  $tocheck = $itemtype->getAllStatusArray();
+                  foreach ($itemtype->getSolvedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
                   }
-                  foreach (constant($itemtype.'::getClosedStatusArray()') as $status) {
+                  foreach ($itemtype->getClosedStatusArray() as $status) {
                      if (isset($tocheck[$status])) {
                         unset($tocheck[$status]);
                      }
