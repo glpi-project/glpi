@@ -50,9 +50,12 @@ class Consumable extends CommonDBTM {
    var $no_form_page = false;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>0) {
+         return $LANG['Menu'][32];
+      }
       return $LANG['consumables'][0];
    }
 
