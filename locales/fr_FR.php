@@ -758,7 +758,7 @@ $LANG['help'][27] = "Imprimante";
 $LANG['help'][28] = "Moniteur";
 $LANG['help'][29] = "Périphérique";
 $LANG['help'][30] = "Général";
-$LANG['help'][31] = "Logiciel";
+$LANG['help'][31] = "Logiciel"; // Singular
 
 $LANG['help'][35] = "Téléphone";
 
@@ -1298,7 +1298,7 @@ $LANG['Menu'][0]  = "Ordinateurs";
 $LANG['Menu'][1]  = "Réseaux";
 $LANG['Menu'][2]  = "Imprimantes";
 $LANG['Menu'][3]  = "Moniteurs";
-$LANG['Menu'][4]  = "Logiciels";
+$LANG['Menu'][4]  = "Logiciels"; // Plural
 $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
 
