@@ -177,8 +177,9 @@ class Calendar extends CommonDropdown {
       $timeend    = strtotime($end);
       $datestart  = date('Y-m-d',$timestart);
       $dateend    = date('Y-m-d',$timeend);
-      // Need to finish at the closing day : set hour to midnight
-      $timerealend = strtotime($dateend.' 24:00:00');
+      // Need to finish at the closing day : set hour to midnight :  
+      /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+      $timerealend = strtotime($dateend.' 23:59:59');
 
       $activetime = 0;
 
@@ -193,7 +194,8 @@ class Calendar extends CommonDropdown {
 
             if (!$this->isHoliday($actualdate)) {
                $beginhour    = '00:00:00';
-               $endhour      = '24:00:00';
+               /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+               $endhour      = '23:59:59';
                $dayofweek    = self::getDayNumberInWeek($actualtime);
                $timeoftheday = 0;
 
@@ -301,7 +303,8 @@ class Calendar extends CommonDropdown {
                if (!$this->isHoliday($actualdate)) {
                   $dayofweek = self::getDayNumberInWeek($actualtime);
                   $beginhour = '00:00:00';
-                  $endhour   = '24:00:00';
+                  /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+                  $endhour   = '23:59:59';
 
                   if ($actualdate==$datestart) { // First day cannot use cache
                      $beginhour    = date('H:i:s',$timestart);
@@ -319,7 +322,8 @@ class Calendar extends CommonDropdown {
 
                   } else { // End of the delay in the day : get hours with this delay
                      $beginhour = '00:00:00';
-                     $endhour   = '24:00:00';
+                     /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+                     $endhour   = '23:59:59';
 
                      if ($actualdate==$datestart) {
                         $beginhour = date('H:i:s',$timestart);
@@ -375,8 +379,9 @@ class Calendar extends CommonDropdown {
 
       $results = array();
       for ($i=0 ; $i<7 ; $i++) {
+         /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
          $results[$i] = CalendarSegment::getActiveTimeBetween($this->fields['id'], $i, '00:00:00',
-                                                              '24:00:00');
+                                                              '23:59:59');
       }
       return $results;
    }
