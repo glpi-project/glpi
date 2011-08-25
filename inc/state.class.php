@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class State
-class State extends CommonTreeDropdown {
+class State extends CommonDBTM {
 
    static function getTypeName($nb=0) {
       global $LANG;
