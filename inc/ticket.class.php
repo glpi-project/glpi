@@ -1173,6 +1173,7 @@ class Ticket extends CommonDBTM {
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
+      /// TODO : need to do more checks. REQUESTER can update item if not followup or task have been added : see updateDateMod function
       if ($this->canUpdateItem() && $this->fields['takeintoaccount_delay_stat']==0) {
          $this->updates[] = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
