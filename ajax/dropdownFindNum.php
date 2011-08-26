@@ -104,7 +104,7 @@ $query = "SELECT *
           $LIMIT";
 $result = $DB->query($query);
 
-echo "<select name='".$_POST['myname']."' size='1'>";
+echo "<select id='dropdown_find_num' name='".$_POST['myname']."' size='1'>";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
    echo "<option value='0'>--".$LANG['common'][11]."--</option>";
@@ -137,5 +137,15 @@ if ($DB->numrows($result)) {
 }
 
 echo "</select>";
+
+
+// Auto update summary of active or just solved tickets
+$params = array('items_id'      => '__VALUE__',
+                'itemtype'          => $_POST['itemtype']);
+
+Ajax::updateItemOnSelectEvent("dropdown_find_num","item_ticket_selection_information",
+                              $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
+                              $params);
+
 
 ?>

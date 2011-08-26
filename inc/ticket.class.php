@@ -1418,6 +1418,85 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * Get active or solved tickets for an hardware last X days
+    *
+    * @param $itemtype string Item type
+    * @param $items_id integer ID of the Item
+    * @param $days integer day number
+    *
+    * @return integer
+   **/
+   function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days) {
+      global $DB;
+      $result = array();
+
+
+      $query = "SELECT *
+                  FROM `".$this->getTable()."`
+                  WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
+                        AND `".$this->getTable()."`.`items_id` = '$items_id'
+                        AND (`".$this->getTable()."`.`status`
+                                       NOT IN ('".implode("', '",
+                                                          array_merge($this->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')
+                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL 
+                                  AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW())
+                            )";
+
+      foreach ($DB->request($query) as $tick) {
+         $result[$tick['id']] = $tick['name'];
+      }
+
+      return $result;
+   }
+
+
+   /**
+    * Count active tickets for an hardware
+    *
+    * @param $itemtype string Item type
+    * @param $items_id integer ID of the Item
+    *
+    * @return integer
+   **/
+   function countActiveTicketsForItem ($itemtype, $items_id) {
+
+      return countElementsInTable($this->getTable(),
+                                  "`".$this->getTable()."`.`itemtype` = '$itemtype'
+                                    AND `".$this->getTable()."`.`items_id` = '$items_id'
+                                    AND `".$this->getTable()."`.`status`
+                                       NOT IN ('".implode("', '",
+                                                          array_merge($this->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')");
+   }
+
+   /**
+    * Count solved tickets for an hardware last X days
+    *
+    * @param $itemtype string Item type
+    * @param $items_id integer ID of the Item
+    * @param $days integer day number
+    *
+    * @return integer
+   **/
+   function countSolvedTicketsForItemLastDays ($itemtype, $items_id,$days) {
+
+      return countElementsInTable($this->getTable(),
+                                  "`".$this->getTable()."`.`itemtype` = '$itemtype'
+                                    AND `".$this->getTable()."`.`items_id` = '$items_id'
+                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL 
+                                    AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()
+                                    AND `".$this->getTable()."`.`status`
+                                       IN ('".implode("', '",
+                                                          array_merge($this->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')");
+   }
+
+
+   /**
     * Update date mod of the ticket
     *
     * @param $ID ID of the ticket
@@ -2437,6 +2516,15 @@ class Ticket extends CommonITILObject {
          echo $LANG['tracking'][1]."&nbsp;:&nbsp;<select id='my_items' name='_my_items'>";
          echo "<option value=''>--- ";
          echo $LANG['help'][30]." ---</option>$my_devices</select></div>";
+
+
+         // Auto update summary of active or just solved tickets
+         $params = array('my_items'      => '__VALUE__');
+
+         Ajax::updateItemOnSelectEvent("my_items","item_ticket_selection_information",
+                                       $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
+                                       $params);
+
       }
    }
 
@@ -2757,6 +2845,8 @@ class Ticket extends CommonITILObject {
          Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
          Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0,
                                     $_SESSION["glpiactive_entity"]);
+         echo "<span id='item_ticket_selection_information'></span>";
+
          echo "</td></tr>";
       }
 
@@ -3122,6 +3212,7 @@ class Ticket extends CommonITILObject {
          }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
+         echo "<span id='item_ticket_selection_information'></span>";
 
       } else {
          if ($ID && $this->fields['itemtype'] && class_exists($this->fields['itemtype'])) {
