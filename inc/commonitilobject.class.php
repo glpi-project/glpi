@@ -309,7 +309,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $users_id integer ID of the User
     *
-    * @return boolean
+    * @return integer
    **/
    function countActiveObjectsForUser ($users_id) {
 
@@ -318,8 +318,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $itemtype  = $this->getType();
       $itemfk    = $this->getForeignKeyField();
       $linktable = $linkclass->getTable();
-
-      /// TODO review on status management
 
       return countElementsInTable(array($itemtable,$linktable),
                                   "`$linktable`.`$itemfk` = `$itemtable`.`id`
