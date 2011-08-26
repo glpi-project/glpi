@@ -150,6 +150,11 @@ class SoftwareLicense extends CommonDBTM {
          $this->check(-1,'w');
          $this->fields['softwares_id'] = $softwares_id;
          $this->fields['number']       = 1;
+         $soft = new Software();
+         if ($soft->getFromDB($softwares_id)
+             && in_array($_SESSION['glpiactive_entity'], getAncestorsOf('glpi_entities', $soft->getEntityID()))) {
+            $options['entities_id'] = $soft->getEntityID();
+         }
       }
 
       $this->showTabs($options);
