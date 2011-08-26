@@ -156,7 +156,7 @@ class SoftwareLicense extends CommonDBTM {
          $soft = new Software();
          if ($soft->getFromDB($softwares_id)
              && in_array($_SESSION['glpiactive_entity'], getAncestorsOf('glpi_entities', $soft->getEntityID()))) {
-            $this->fields['entities_id'] = $soft->getEntityID();
+            $options['entities_id'] = $soft->getEntityID();
          }
       }
 
