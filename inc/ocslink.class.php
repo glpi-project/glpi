@@ -40,9 +40,12 @@ if (!defined('GLPI_ROOT')) {
 // CLASSES Ocslink
 class Ocslink extends CommonDBTM {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['ocsng'][53];
+      }
       return $LANG['ocsng'][58];
    }
 
