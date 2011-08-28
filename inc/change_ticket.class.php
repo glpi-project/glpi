@@ -49,9 +49,12 @@ class Change_Ticket extends CommonDBRelation{
    var $checks_only_for_itemtype1 = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['setup'][624].' '.$LANG['change'][0].'-'.$LANG['job'][38];
+      }
       return $LANG['setup'][620].' '.$LANG['change'][0].'-'.$LANG['job'][38];
    }
 

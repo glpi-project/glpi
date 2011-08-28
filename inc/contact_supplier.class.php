@@ -47,9 +47,12 @@ class Contact_Supplier extends CommonDBRelation{
    public $items_id_2 = 'suppliers_id';
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['setup'][624].' '.$LANG['common'][92].'-'.$LANG['financial'][26];
+      }
       return $LANG['setup'][620].' '.$LANG['common'][92].'-'.$LANG['financial'][26];
    }
 

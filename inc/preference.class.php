@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 // class Preference for the current connected User
 class Preference extends CommonGLPI {
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       // Always plural

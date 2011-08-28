@@ -1351,6 +1351,7 @@ $LANG['mailing'][100] = "Pas de catégorie attribuée";
 
 $LANG['mailing'][104] = "Durée de l'intervention";
 
+$LANG['mailing'][108] = "Événements";
 $LANG['mailing'][109] = "Traductions";
 $LANG['mailing'][110] = "Adresse invalide";
 $LANG['mailing'][111] = "Adresse de courriel";
@@ -1589,7 +1590,7 @@ $LANG['ocsng'][49] = "Agent";
 $LANG['ocsng'][50] = "IP(s) verrouillée(s)";
 
 $LANG['ocsng'][52]="Logiciel(s) verrouillé(s)";
-
+$LANG['ocsng'][53] = "Liaisons OCSNG";
 $LANG['ocsng'][54] = "Logiciel mis dans la corbeille par la synchro OCSNG";
 $LANG['ocsng'][55] = "Volume(s) verrouillé(s)";
 $LANG['ocsng'][56] = "Composant(s) verrouillé(s)";
@@ -2324,6 +2325,7 @@ $LANG['setup'][620] = "Liaison";
 $LANG['setup'][621] = "Filtre de recherche des entités";
 $LANG['setup'][622] = "Attribut représentant l'entité";
 $LANG['setup'][623] = "Importation des entités depuis un annuaire LDAP";
+$LANG['setup'][624] = "Liaisons";
 
 $LANG['setup'][650] = "PHP";
 $LANG['setup'][651] = "SMTP";
