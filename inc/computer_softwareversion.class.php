@@ -552,9 +552,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr><th colspan='5'>";
 
       if ($DB->numrows($result)==1) {
-         echo $LANG['software'][16];
+         echo ucfirst($LANG['software'][16]);
       } else {
-         echo $LANG['software'][17];
+         echo ucfirst($LANG['software'][17]);
       }
       echo "</th></tr>";
 
