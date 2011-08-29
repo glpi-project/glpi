@@ -1956,9 +1956,9 @@ function manageRedirect($where) {
                      break;
 
                   // Use for compatibility with old name
+                  // no break
                   case "tracking" :
                      $data[0] = "ticket";
-                     break;
 
                   default :
                      if (!empty($data[0] )&& $data[1]>0) {
