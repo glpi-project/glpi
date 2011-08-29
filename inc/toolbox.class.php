@@ -1420,6 +1420,7 @@ class Toolbox {
                      // Use for compatibility with old name
                      case "tracking" :
                         $data[0] = "ticket";
+                        break;
 
                      default :
                         if (!empty($data[0] )&& $data[1]>0) {
