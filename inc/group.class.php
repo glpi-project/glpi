@@ -91,6 +91,10 @@ class Group extends CommonDBTM {
             $ong[3] = $LANG['setup'][3];
          }
 
+         if (haveRight("show_all_ticket","1")) {
+            $ong[4] = $LANG['title'][28];
+         }
+
       } else { // New item
          $ong[1] = $LANG['title'][26];
       }

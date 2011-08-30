@@ -65,6 +65,10 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
          $group->showLDAPForm($_POST['target'], $_POST["id"]);
          break;
 
+      case 4 :
+         Ticket::showListForItem('Computer', $_POST["id"]);
+         break;
+
       default :
          if (!Plugin::displayAction($group,$_REQUEST['glpi_tab'])) {
             Group_User::showForGroup($_POST['target'], $group);
