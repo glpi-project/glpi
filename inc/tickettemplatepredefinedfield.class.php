@@ -159,7 +159,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                }
                echo "<td>".$fields[$data['num']]."</td>";
                
-               echo "<td>".$ticket->getValueToDisplay($data['num'],$data['value'])."</td>";
+               echo "<td>".$ticket->getValueToDisplay($searchOption[$data['num']], $data['value'])."</td>";
 
                $used[$data['num']] = $data['num'];
             }

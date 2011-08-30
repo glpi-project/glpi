@@ -2880,12 +2880,12 @@ class CommonDBTM extends CommonGLPI {
          $searchopt = Search::getOptions($this->getType());
 
          // Get if id of search option is passed
-         if (is_numeric($field_id_search_option)) {
-            if (isset($searchopt[$field_id_search_option])) {
-               $options = $searchopt[$field_id_search_option];
+         if (is_numeric($field_id_or_search_options)) {
+            if (isset($searchopt[$field_id_or_search_options])) {
+               $options = $searchopt[$field_id_or_search_options];
             }
          } else { // Get if field name is passed
-            $options = $this->getSearchOptionByField('field',$field_id_search_option,$this->getTable());
+            $options = $this->getSearchOptionByField('field',$field_id_or_search_options,$this->getTable());
          }
       }
 
