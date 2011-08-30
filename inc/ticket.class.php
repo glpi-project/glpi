@@ -3466,7 +3466,7 @@ class Ticket extends CommonITILObject {
          echo "<td width='50%'>";
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
-            Ticket_Ticket::dropdownLinks('_link[link]');
+            Ticket_Ticket::dropdownLinks('_link[link]', (isset($options["_link"])?$options["_link"]['link']:''));
             echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]'
@@ -3474,6 +3474,10 @@ class Ticket extends CommonITILObject {
                          size='10'>\n";
             echo "&nbsp;";
             echo "</div>";
+
+            if (isset($options["_link"]) && !empty($options["_link"]['tickets_id_2'])) {
+               echo "<script language='javascript'>Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block');</script>";
+            }
          }
 
          Ticket_Ticket::displayLinkedTicketsTo($ID);
