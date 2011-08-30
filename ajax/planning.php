@@ -82,34 +82,12 @@ echo "</td></tr>\n";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:&nbsp;</td><td>";
 
-$values = array(0                    => $LANG['search'][12],
-                15*MINUTE_TIMESTAMP  => '0'.$LANG['gmt'][2].'15',
-                30*MINUTE_TIMESTAMP  => '0'.$LANG['gmt'][2].'30',
-                45*MINUTE_TIMESTAMP  => '0'.$LANG['gmt'][2].'45',
-                60*MINUTE_TIMESTAMP  => '1'.$LANG['gmt'][2].'00',
-                90*MINUTE_TIMESTAMP  => '1'.$LANG['gmt'][2].'30',
-                120*MINUTE_TIMESTAMP => '2'.$LANG['gmt'][2].'00',
-                150*MINUTE_TIMESTAMP => '2'.$LANG['gmt'][2].'30',
-                180*MINUTE_TIMESTAMP => '3'.$LANG['gmt'][2].'00',
-                210*MINUTE_TIMESTAMP => '3'.$LANG['gmt'][2].'30',
-                4*HOUR_TIMESTAMP     => '4'.$LANG['gmt'][2].'00',
-                5*HOUR_TIMESTAMP     => '5'.$LANG['gmt'][2].'00',
-                6*HOUR_TIMESTAMP     => '6'.$LANG['gmt'][2].'00',
-                7*HOUR_TIMESTAMP     => '7'.$LANG['gmt'][2].'00',
-                8*HOUR_TIMESTAMP     => '8'.$LANG['gmt'][2].'00');
+$default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
 
-$default_delay   = 0;
-$begin_timestamp = strtotime($begin);
-$end_timestamp   = strtotime($end);
-
-// Floor with MINUTE_TIMESTAMP for rounded purpose
-$computed_delay = floor(($end_timestamp-$begin_timestamp)/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
-
-if (isset($values[$computed_delay])) {
-   $default_delay = $computed_delay;
-}
-$rand = Dropdown::showFromArray("plan[_duration]", $values, array('value' => $default_delay));
-
+$rand = Dropdown::showTimeStamp("plan[_duration]",array('min'   => 0,
+                                                'max'   => 8*HOUR_TIMESTAMP,
+                                                'value' => $default_delay,
+                                                'emptylabel' => $LANG['search'][12]));
 echo "<br><div id='date_end$rand'></div>";
 
 $params = array('duration'     => '__VALUE__',

@@ -953,7 +953,7 @@ class Dropdown {
     * @param $step step used
     * @param $toadd values to add at the beginning
     * @param $options additionnal options :
-    *    - suffix : suffix toi display
+    *    - suffix : suffix to display
    **/
    static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
                                $options = array()) {
@@ -980,6 +980,52 @@ class Dropdown {
 
    }
 
+   /**
+    * Dropdown integers
+    *
+    * @param $myname select name
+    * @param $options array of options
+    *    - value : default value
+    *    - min : min value : default 0
+    *    - max : max value : default DAY_TIMESTAMP
+    *    - value : default value 
+   **/
+   static function showTimeStamp($myname, $options = array()) {
+      global $LANG;
+
+      $params['value']       = 0;
+      $params['min']         = 0;
+      $params['max']         = DAY_TIMESTAMP;
+      $params['withseconds'] = false;
+      $params['emptylabel']  = self::EMPTY_VALUE;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      // Manage min :
+      $params['min'] = floor($params['min']/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+
+      if ($params['min'] == 0) {
+         $params['min'] = 15 * MINUTE_TIMESTAMP;
+      }
+
+      $params['max'] = max($params['value'], $params['max']);
+
+      // Floor with MINUTE_TIMESTAMP for rounded purpose
+      $params['value'] = floor(($params['value'])/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+
+      $values = array(0                    => $params['emptylabel']);
+      for ($i = $params['min'] ; $i <= $params['max']; $i+=15*MINUTE_TIMESTAMP) {
+         $hour = floor($i/HOUR_TIMESTAMP);
+         $minute = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
+         $values[$i] = $hour.$LANG['gmt'][2].($minute==0?'00':$minute);
+      }
+
+      return Dropdown::showFromArray("$myname", $values, array('value' => $params['value']));
+   }
 
    /**
     * Private / Public switch for items which may be assign to a user and/or an entity

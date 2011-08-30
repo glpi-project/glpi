@@ -1201,14 +1201,6 @@ class Ticket extends CommonITILObject {
          $input["status"] = "assign";
       }
 
-      if (isset($input["hour"]) && isset($input["minute"])) {
-         $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-         $input["_hour"]      = $input["hour"];
-         $input["_minute"]    = $input["minute"];
-         unset($input["hour"]);
-         unset($input["minute"]);
-      }
-
       // Set begin waiting time if status is waiting
       if (isset($input["status"]) && $input["status"]=="waiting") {
          $input['begin_waiting_date'] = $input['date'];
@@ -1283,10 +1275,8 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($this->input["plan"])
-          || (isset($this->input["_hour"])
-              && isset($this->input["_minute"])
-              && isset($this->input["realtime"])
-              && $this->input["realtime"]>0)) {
+          || (isset($this->input["actiontime"])
+              && $this->input["actiontime"]>0)) {
 
          $task = new TicketTask();
          $type = "new";
@@ -1294,13 +1284,9 @@ class Ticket extends CommonITILObject {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
-                        "tickets_id" => $this->fields['id']);
-         if (isset($this->input["_hour"])) {
-            $toadd["hour"] = $this->input["_hour"];
-         }
-         if (isset($this->input["_minute"])) {
-            $toadd["minute"] = $this->input["_minute"];
-         }
+                        "tickets_id" => $this->fields['id'],
+                        "actiontime" => $this->input["actiontime"]);
+
          if (isset($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
@@ -3334,10 +3320,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
          echo "<td colspan='3'>";
-         Dropdown::showInteger('hour',$options['hour'],0,100);
-         echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."&nbsp;&nbsp;";
-         Dropdown::showInteger('minute',$options['minute'],0,59);
-         echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
+         Dropdown::showTimeStamp('actiontime');
          echo "</td>";
          echo "</tr>";
       }
