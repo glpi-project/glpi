@@ -76,6 +76,47 @@ class TicketTemplate extends CommonDBTM {
       return true;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
+
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'is_helpdeskvisible';
+      $tab[2]['name']          = $LANG['tracking'][39];
+      $tab[2]['datatype']      = 'bool';
+
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'is_default';
+      $tab[3]['name']          = $LANG['job'][28];
+      $tab[3]['datatype']      = 'bool';
+      $tab[3]['massiveaction'] = false;
+
+      $tab[16]['table']     = $this->getTable();
+      $tab[16]['field']     = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
+
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
+
+      return $tab;
+   }
 
    /**
     * Print the version form
