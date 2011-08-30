@@ -2891,8 +2891,8 @@ class CommonDBTM extends CommonGLPI {
          if (isset($options['datatype'])) {
 
             $unit = '';
-            if (isset($searchopt[$ID]['unit'])) {
-               $unit = $searchopt[$ID]['unit'];
+            if (isset($options['unit'])) {
+               $unit = $options['unit'];
             }
 
             switch ($options['datatype']) {
@@ -2954,7 +2954,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
-               return "&nbsp;"
+               return "&nbsp;";
                break;
 
 
