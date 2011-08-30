@@ -1495,6 +1495,26 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
+   function getSpecificValueToDisplay($searchopt, $value) {
+      if (count($searchopt)) {
+         if ($searchopt['table'] == $this->getTable()) {
+            switch ($searchopt['field']) {
+               case 'urgency':
+                  return self::getUrgencyName($value);
+                  break;
+
+               case 'impact':
+                  return self::getImpactName($value);
+                  break;
+
+               case 'priority':
+                  return self::getPriorityName($value);
+                  break;
+            }
+         }
+      }
+   }
+
    function getSearchOptionsActors () {
       global $LANG;
 
@@ -1504,6 +1524,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[4]['table']         = 'glpi_users';
       $tab[4]['field']         = 'name';
+      $tab[4]['datatype']      = 'dropdown';
       $tab[4]['name']          = $LANG['job'][4];
       $tab[4]['forcegroupby']  = true;
       $tab[4]['massiveaction'] = false;
@@ -1516,6 +1537,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'name';
+      $tab[71]['datatype']      = 'dropdown';
       $tab[71]['name']          = $LANG['common'][35];
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
@@ -1528,6 +1550,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[22]['table']     = 'glpi_users';
       $tab[22]['field']     = 'name';
+      $tab[22]['datatype']      = 'dropdown';
       $tab[22]['linkfield'] = 'users_id_recipient';
       $tab[22]['name']      = $LANG['common'][37];
 
@@ -1535,6 +1558,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[66]['table']         = 'glpi_users';
       $tab[66]['field']         = 'name';
+      $tab[66]['datatype']      = 'dropdown';
       $tab[66]['name']          = $LANG['common'][104]." - ".$LANG['common'][34];
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
@@ -1547,6 +1571,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'name';
+      $tab[65]['datatype']      = 'dropdown';
       $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
       $tab[65]['forcegroupby']  = true;
       $tab[65]['massiveaction'] = false;
@@ -1561,6 +1586,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[5]['table']         = 'glpi_users';
       $tab[5]['field']         = 'name';
+      $tab[5]['datatype']      = 'dropdown';
       $tab[5]['name']          = $LANG['job'][5]." - ".$LANG['job'][6];
       $tab[5]['forcegroupby']  = true;
       $tab[5]['massiveaction'] = false;
@@ -1574,11 +1600,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[6]['table']     = 'glpi_suppliers';
       $tab[6]['field']     = 'name';
+      $tab[6]['datatype']  = 'dropdown';
       $tab[6]['linkfield'] = 'suppliers_id_assign';
       $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
 
       $tab[8]['table']         = 'glpi_groups';
       $tab[8]['field']         = 'name';
+      $tab[8]['datatype']      = 'dropdown';
       $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['massiveaction'] = false;
@@ -2366,6 +2394,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return false;
    }
+
 
 
 }
