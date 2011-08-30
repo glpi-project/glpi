@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {//print computer informations
-   Html::header($LANG['job'][59], $_SERVER['PHP_SELF'], "maintain","ticket",'template');
+   Html::header($LANG['job'][59], $_SERVER['PHP_SELF'], "maintain","tickettemplate");
 
    $tt->showForm($_GET["id"]);
    Html::footer();

@@ -154,6 +154,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
          if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+            echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
+            echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'  => $used));
             echo "&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td></tr>";

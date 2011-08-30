@@ -78,7 +78,26 @@ class TicketTemplate extends CommonDBTM {
                                                    'glpi_tickets')        => 'content',
                    $ticket->getSearchOptionIDByField('field', 'completename',
                                                    'glpi_itilcategories') => 'itilcategories_id',
+                   $ticket->getSearchOptionIDByField('field', 'status',
+                                                   'glpi_tickets') => 'status',
+                   $ticket->getSearchOptionIDByField('field', 'type',
+                                                   'glpi_tickets') => 'type',
+                   $ticket->getSearchOptionIDByField('field', 'urgency',
+                                                   'glpi_tickets') => 'urgency',
+                   $ticket->getSearchOptionIDByField('field', 'impact',
+                                                   'glpi_tickets') => 'impact',
+                   $ticket->getSearchOptionIDByField('field', 'priority',
+                                                   'glpi_tickets') => 'priority',
+                   $ticket->getSearchOptionIDByField('field', 'name',
+                                                   'glpi_requesttypes') => 'requesttypes_id',
          );
+
+     /// TODO ADD : SLA / due _date ?
+     /// TODO ADD : actors
+     /// TODO ADD : validation_request
+     /// TODO ADD : hour / minute
+     /// TODO ADD : item linked
+     /// TODO ADD : linked tickets ?
    }
 
    function getAllowedFieldsNames() {

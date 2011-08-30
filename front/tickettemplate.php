@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("computer", "r");
 
-Html::header($LANG['job'][59],$_SERVER['PHP_SELF'],"maintain","ticket",'template');
+Html::header($LANG['job'][59],$_SERVER['PHP_SELF'],"maintain","tickettemplate");
 
 Search::show('TicketTemplate');
 
