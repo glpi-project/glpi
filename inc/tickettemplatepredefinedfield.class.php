@@ -100,46 +100,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return true;
    }
 
-   /**
-    * Print values for specific items
-    *
-    * @param $value value to display
-    * @param $searchopt array searchopt def
-    *
-    * @return Nothing (call to classes members)
-   **/
-   static function displayValue ($value, $searchopt) {
-      /// TODO use standard display function to manage it : see ticket 2662
-      if ($searchopt['table'] == 'glpi_tickets') {
-         switch($searchopt['field']) {
-            case 'status':
-               return Ticket::getStatus($value);
-               break;
-
-            case 'type':
-               return Ticket::getTicketTypeName($value);
-               break;
-
-            case 'urgency':
-               return Ticket::getUrgencyName($value);
-               break;
-
-            case 'impact':
-               return Ticket::getImpactName($value);
-               break;
-
-            case 'priority':
-               return Ticket::getPriorityName($value);
-               break;
-
-            default:
-               return nl2br($value);
-         }
-      } else {
-         return Dropdown::getDropdownName($searchopt['table'],$value);
-      }
-      return '';
-   }
 
    /**
     * Print the predefined fields
@@ -161,6 +121,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $canedit = $tt->can($ID, "w");
       $fields = $tt->getAllowedFieldsNames();
       $searchOption = Search::getOptions('Ticket');
+      $ticket = new Ticket();
 
       $rand = mt_rand();
       echo "<form name='tickettemplatepredefinedfields_form$rand'
@@ -198,7 +159,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                }
                echo "<td>".$fields[$data['num']]."</td>";
                
-               echo "<td>".self::displayValue($data['value'], $searchOption[$data['num']])."</td>";
+               echo "<td>".$ticket->getValueToDisplay($data['num'],$data['value'])."</td>";
 
                $used[$data['num']] = $data['num'];
             }
@@ -218,7 +179,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used'  => $used, 'toadd'));
 
             $paramsmassaction = array('id_field'  => '__VALUE__',
-                                     'itemtype'   => 'Ticket');
+                                      'itemtype'  => 'Ticket');
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",

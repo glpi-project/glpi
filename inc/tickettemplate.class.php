@@ -90,10 +90,18 @@ class TicketTemplate extends CommonDBTM {
                                                    'glpi_tickets') => 'priority',
                    $ticket->getSearchOptionIDByField('field', 'name',
                                                    'glpi_requesttypes') => 'requesttypes_id',
+                   4 => '_users_id_requester',
+                   71 => '_groups_id_requester',
+                   5 => '_users_id_assign',
+                   8 => '_groups_id_assign',
+                   66 => '_users_id_observer',
+                   65 => '_groups_id_observer',
+                   $ticket->getSearchOptionIDByField('field', 'name',
+                                                   'glpi_suppliers') => 'suppliers_id_assign',
+
          );
 
      /// TODO ADD : SLA / due _date ?
-     /// TODO ADD : actors
      /// TODO ADD : validation_request
      /// TODO ADD : hour / minute
      /// TODO ADD : item linked

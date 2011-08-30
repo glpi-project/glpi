@@ -449,8 +449,8 @@ class Ticket extends CommonITILObject {
             }
             break;
 
-         case 'SLA' :
          case 'Group' :
+         case 'SLA' :
          default :
             self::showListForItem($item);
       }
@@ -1462,7 +1462,7 @@ class Ticket extends CommonITILObject {
                                                           array_merge($this->getSolvedStatusArray(),
                                                                       $this->getClosedStatusArray())
                                                           )."')
-                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL
+                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL 
                                   AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW())
                             )";
 
@@ -1508,7 +1508,7 @@ class Ticket extends CommonITILObject {
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
                                     AND `".$this->getTable()."`.`items_id` = '$items_id'
-                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL
+                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL 
                                     AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()
                                     AND `".$this->getTable()."`.`status`
                                        IN ('".implode("', '",
@@ -1674,6 +1674,7 @@ class Ticket extends CommonITILObject {
       $tab[1]['field']         = 'name';
       $tab[1]['name']          = $LANG['common'][57];
       $tab[1]['searchtype']    = 'contains';
+      $tab[1]['datatype']      = 'string';
       $tab[1]['forcegroupby']  = true;
       $tab[1]['massiveaction'] = false;
 
@@ -1687,6 +1688,7 @@ class Ticket extends CommonITILObject {
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
+      $tab[2]['datatype']      = 'number';
 
       $tab[12]['table']      = $this->getTable();
       $tab[12]['field']      = 'status';
@@ -1750,9 +1752,11 @@ class Ticket extends CommonITILObject {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table'] = 'glpi_itilcategories';
-      $tab[7]['field'] = 'completename';
-      $tab[7]['name']  = $LANG['common'][36];
+      $tab[7]['table']    = 'glpi_itilcategories';
+      $tab[7]['field']    = 'completename';
+      $tab[7]['name']     = $LANG['common'][36];
+      $tab[7]['datatype'] = 'dropdown';
+
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'items_id';
@@ -1761,14 +1765,17 @@ class Ticket extends CommonITILObject {
       $tab[13]['nosort']        = true;
       $tab[13]['massiveaction'] = false;
 
-      $tab[9]['table'] = 'glpi_requesttypes';
-      $tab[9]['field'] = 'name';
-      $tab[9]['name']  = $LANG['job'][44];
+      $tab[9]['table']    = 'glpi_requesttypes';
+      $tab[9]['field']    = 'name';
+      $tab[9]['name']     = $LANG['job'][44];
+      $tab[9]['datatype'] = 'dropdown';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
+      $tab[80]['datatype']      = 'dropdown';
+
 
       $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'actiontime';
@@ -2061,6 +2068,35 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
+   function getSpecificValueToDisplay($searchopt, $value) {
+      if (count($searchopt)) {
+         if ($searchopt['table'] == $this->getTable()) {
+            switch ($searchopt['field']) {
+               case 'status':
+                  return self::getStatus($value);
+                  break;
+
+               case 'type':
+                  return self::getTicketTypeName($value);
+                  break;
+
+               case 'urgency':
+                  return self::getUrgencyName($value);
+                  break;
+
+               case 'impact':
+                  return self::getImpactName($value);
+                  break;
+
+               case 'priority':
+                  return self::getPriorityName($value);
+                  break;
+               default :
+                  return parent::getSpecificValueToDisplay($searchopt, $value);
+            }
+         }
+      }
+   }
 
 
    /**

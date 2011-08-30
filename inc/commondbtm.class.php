@@ -2851,6 +2851,94 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   /**
+    * display a specific field value
+    *
+    * @param $searchopt array search option array
+    * @param $field_id_search_option integer.string id of the search option field or field name
+    *
+    * @return return the string to display
+   **/
+   function getSpecificValueToDisplay($searchopt, $value) {
+      return '';
+   }
+
+   /**
+    * display a field using standard system
+    *
+    * @param $value mixed value t display
+    * @param $field_id_search_option integer.string id of the search option field or field name
+    *
+    * @return return the string to display
+   **/
+   function getValueToDisplay($field_id_search_option, $value) {
+      $searchopt = Search::getOptions($this->getType());
+      $options = array();
+
+      // Get if id of search option is passed
+      if (is_numeric($field_id_search_option)) {
+         if (isset($searchopt[$field_id_search_option])) {
+            $options = $searchopt[$field_id_search_option];
+         }
+      } else { // Get if field name is passed
+         $options = $this->getSearchOptionByField('field',$field_id_search_option,$this->getTable());
+      }
+
+      if (count($options)) {
+         // Get specific values
+         $specific = $this->getSpecificValueToDisplay($options,$value);
+         if (!empty($specific)) {
+            return $specific;
+         }
+
+         if (isset($options['datatype'])) {
+            switch ($options['datatype']) {
+               case "number" :
+                  return Html::formatNumber($value, false,0);
+
+               case "string" :
+                  return $value;
+
+               case "text" :
+                  $text = nl2br($value);
+                  if (isset($options['htmltext']) && $options['htmltext']) {
+                     $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
+                  }
+                  return $text;
+
+               case "bool" :
+                  return Dropdown::getYesNo($value);
+
+               case "date" :
+               case "date_delay" :
+                  return Html::convDate($value);
+
+               case "datetime" :
+                  return Html::convDateTime($value);
+
+               case "timestamp" :
+                  $withseconds = false;
+                  if (isset($options['withseconds'])) {
+                     $withseconds = $options['withseconds'];
+                  }
+                  return Html::timestampToString($value,$withseconds);
+
+               case "email" :
+                  return "<a href='mailto:$value'>$value</a>";
+
+               case "dropdown" :
+                  if ($options['table'] == 'glpi_users') {
+                     return getUserName($value);
+                  }
+                  return Dropdown::getDropdownName($options['table'],$value);
+
+
+            }
+         }
+      }
+      return $value;
+   }
+
    static function listTemplates($itemtype, $target, $add = 0) {
       global $DB, $CFG_GLPI, $LANG;
 
