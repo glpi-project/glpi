@@ -1212,12 +1212,12 @@ $LANG['log'][52]  = "suppression d'un champ caché";
 $LANG['log'][55]  = "Connexion";
 $LANG['log'][56]  = "ajout d'un champ obligatoire";
 $LANG['log'][57]  = "suppression d'un champ obligatoire";
-
+$LANG['log'][58]  = "ajout d'un champ prédéfini";
 $LANG['log'][59]  = "Action automatique";
 $LANG['log'][60]  = "passage en gestion unitaire de l'élément";
 $LANG['log'][61]  = "ajout utilisateur à l'entité";
 $LANG['log'][62]  = "suppression utilisateur à l'entité";
-
+$LANG['log'][63]  = "suppression d'un champ prédéfini";
 $LANG['log'][64]  = "modification du champ";
 $LANG['log'][65]  = "règle";
 $LANG['log'][66]  = "Sécurité";

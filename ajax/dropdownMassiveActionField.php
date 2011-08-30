@@ -70,7 +70,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
-            Dropdown::showInteger($search["field"], 0, 0, 120);
+            Dropdown::showInteger($search["linkfield"], 0, 0, 120);
             echo " ".$LANG['financial'][57];
             break;
 
@@ -126,12 +126,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
-                     Html::showDateFormItem($search["field"]);
+                     Html::showDateFormItem($search["linkfield"]);
                      $already_display = true;
                      break;
 
                   case "datetime" :
-                     Html::showDateTimeFormItem($search["field"]);
+                     Html::showDateTimeFormItem($search["linkfield"]);
                      $already_display = true;
                      break;
 
@@ -139,6 +139,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      Dropdown::showYesNo($search["linkfield"]);
                      $already_display = true;
                      break;
+
+                  case "text" :
+                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
+                     $already_display = true;
+                     break;
+
+
                }
             }
 
@@ -147,7 +154,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                if ($newtype != $_POST["itemtype"]) {
                   $item = new $newtype();
                }
-               Html::autocompletionTextField($item, $search["field"],
+               Html::autocompletionTextField($item, $search["linkfield"],
                                              array('name'   => $search["linkfield"],
                                                    'entity' => $_SESSION["glpiactive_entity"]));
             }
@@ -258,17 +265,22 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
-                     Html::showDateFormItem($search["field"]);
+                     Html::showDateFormItem($search["linkfield"]);
                      $already_display = true;
                      break;
 
                   case "datetime" :
-                     Html::showDateTimeFormItem($search["field"]);
+                     Html::showDateTimeFormItem($search["linkfield"]);
                      $already_display = true;
                      break;
 
                   case "bool" :
                      Dropdown::showYesNo($search["linkfield"]);
+                     $already_display = true;
+                     break;
+
+                  case "text" :
+                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
                      $already_display = true;
                      break;
                }
