@@ -70,12 +70,14 @@ class TicketTemplate extends CommonDBTM {
 
    function getAllowedFields() {
       $ticket = new Ticket();
+
+      // SearchOption ID => name used for options 
       return array($ticket->getSearchOptionIDByField('field', 'name',
                                                    'glpi_tickets')        => 'name',
                    $ticket->getSearchOptionIDByField('field', 'content',
                                                    'glpi_tickets')        => 'content',
                    $ticket->getSearchOptionIDByField('field', 'completename',
-                                                   'glpi_itilcategories') => 'itilcategory',
+                                                   'glpi_itilcategories') => 'itilcategories_id',
          );
    }
 
