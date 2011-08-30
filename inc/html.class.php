@@ -1083,6 +1083,15 @@ class Html {
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
+         if (Session::haveRight("tickettemplate","r")) {
+            $menu['maintain']['content']['ticket']['links']['template']
+                              = '/front/tickettemplate.php';
+            $menu['maintain']['content']['ticket']['options']['template']['title'] = $LANG['job'][59];
+            $menu['maintain']['content']['ticket']['options']['template']['page'] = '/front/tickettemplate.php';
+
+         }
+
+
          if (Session::haveRight('validate_ticket',1)) {
             $opt = array();
             $opt['reset']         = 'reset';
