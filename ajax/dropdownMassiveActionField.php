@@ -55,11 +55,14 @@ if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
 
 if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
+   if (!isset($search[$_POST["id_field"]])) {
+      exit();
+   }
+
    $search = $search[$_POST["id_field"]];
 
    $FIELDNAME_PRINTED = false;
-
-   echo '&nbsp;';
+   $USE_TABLE = false;
 
    if ($search["table"]==getTableForItemType($_POST["itemtype"])) { // field type
       switch ($search["table"].".".$search["linkfield"]) {
@@ -126,13 +129,19 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
+                     echo "<table><tr><td>";
                      Html::showDateFormItem($search["linkfield"]);
+                     echo "</td>";
+                     $USE_TABLE = true;
                      $already_display = true;
                      break;
 
                   case "datetime" :
+                     echo "<table><tr><td>";
                      Html::showDateTimeFormItem($search["linkfield"]);
+                     echo "</td>";
                      $already_display = true;
+                     $USE_TABLE = true;
                      break;
 
                   case "bool" :
@@ -177,8 +186,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                case "order_date" :
                case "inventory_date" :
                case "warranty_date" :
+                  echo "<table><tr><td>";
                   Html::showDateFormItem($search["field"]);
-                  echo "&nbsp;&nbsp;";
+                  echo "</td>";
+                  $USE_TABLE = true;
                   break;
 
                case "sink_type" :
@@ -265,13 +276,19 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
+                     echo "<table><tr><td>";
                      Html::showDateFormItem($search["linkfield"]);
+                     echo "</td>";
+                     $USE_TABLE = true;
                      $already_display = true;
                      break;
 
                   case "datetime" :
+                     echo "<table><tr><td>";
                      Html::showDateTimeFormItem($search["linkfield"]);
+                     echo "</td>";
                      $already_display = true;
+                     $USE_TABLE = true;
                      break;
 
                   case "bool" :
@@ -296,6 +313,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
       }
    }
 
+   if ($USE_TABLE) {
+      echo "<td>";
+   }
+
    if (!$FIELDNAME_PRINTED) {
       if (empty($search["linkfield"])) {
          echo "<input type='hidden' name='field' value='".$search["field"]."'>";
@@ -306,6 +327,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
    echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                 $LANG['buttons'][2]."'>";
+   if ($USE_TABLE) {
+      echo "</td></tr></table>";
+   }
+
 }
 
 ?>
