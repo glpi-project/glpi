@@ -2867,23 +2867,26 @@ class CommonDBTM extends CommonGLPI {
     * display a field using standard system
     *
     * @param $value mixed value t display
-    * @param $field_id_search_option integer.string id of the search option field or field name
+    * @param $field_id_or_search_options integer/string/array id of the search option field or field name or search option array
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_search_option, $value) {
+   function getValueToDisplay($field_id_or_search_options, $value) {
       global $LANG, $CFG_GLPI;
-
-      $searchopt = Search::getOptions($this->getType());
       $options = array();
+      if (is_array($field_id_or_search_options)) {
+         $options = $field_id_or_search_options;
+      } else {
+         $searchopt = Search::getOptions($this->getType());
 
-      // Get if id of search option is passed
-      if (is_numeric($field_id_search_option)) {
-         if (isset($searchopt[$field_id_search_option])) {
-            $options = $searchopt[$field_id_search_option];
+         // Get if id of search option is passed
+         if (is_numeric($field_id_search_option)) {
+            if (isset($searchopt[$field_id_search_option])) {
+               $options = $searchopt[$field_id_search_option];
+            }
+         } else { // Get if field name is passed
+            $options = $this->getSearchOptionByField('field',$field_id_search_option,$this->getTable());
          }
-      } else { // Get if field name is passed
-         $options = $this->getSearchOptionByField('field',$field_id_search_option,$this->getTable());
       }
 
       if (count($options)) {
