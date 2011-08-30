@@ -999,7 +999,7 @@ $LANG['job'][24] = "Utiliser comme solution";
 $LANG['job'][25] = "Enregistrer et ajouter à la base de connaissances";
 $LANG['job'][26] = "Vous avez été redirigé car vous n'avez plus accès à ce ticket";
 $LANG['job'][27] = "Ajouter un acteur";
-$LANG['job'][28] = "Gabarits de tickets";
+$LANG['job'][28] = "Gabarit par défaut";
 $LANG['job'][29] = "Ajouter un nouveau suivi";
 $LANG['job'][30] = "Ajouter une nouvelle tâche";
 $LANG['job'][31] = "Durée";
@@ -1029,7 +1029,8 @@ $LANG['job'][54] = "Sans réponse de votre part, le ticket sera clos automatique
 $LANG['job'][55] = "Tickets liés";
 $LANG['job'][56] = "Lier des tickets";
 $LANG['job'][57] = "Tickets dupliqués";
-
+$LANG['job'][58] = "Gabarit de tickets";
+$LANG['job'][59] = "Gabarits de tickets";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";

@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
                                           'helpdesk_item_type', 'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
                                           'show_group_hardware', 'show_group_ticket',
-                                          'validate_ticket');
+                                          'tickettemplate', 'validate_ticket');
 
 
    /// Common fields used for all profiles type
@@ -797,8 +797,8 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][28]."&nbsp;:</td><td>";
-      self::dropdownNoneReadWrite("templateticket", $this->fields["templateticket"], 1, 1, 1);
+      echo "<td>".$LANG['job'][59]."&nbsp;:</td><td>";
+      self::dropdownNoneReadWrite("tickettemplate", $this->fields["tickettemplate"], 1, 1, 1);
       echo "</td>";
 
       echo "<td>".$LANG['profiles'][4]."&nbsp;:</td><td>";
@@ -1598,7 +1598,7 @@ class Profile extends CommonDBTM {
       $tab[102]['datatype'] = 'bool';
 
       $tab[103]['table']    = $this->getTable();
-      $tab[103]['field']    = 'templateticket';
+      $tab[103]['field']    = 'tickettemplate';
       $tab[103]['name']     = $LANG['job'][28];
       $tab[103]['datatype'] = 'right';
 

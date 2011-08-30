@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
    $change->check(-1, 'w', $_POST);
 
    $newID = $change->add($_POST);
-   Event::log($newID, "change", 4, "tracking",
+   Event::log($newID, "change", 4, "maintain",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    Html::back();
 
@@ -55,21 +55,21 @@ if (isset($_POST["add"])) {
    $change->check($_POST["id"], 'w');
 
    $change->delete($_POST);
-   Event::log($_POST["id"], "change", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    $change->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $change->check($_POST["id"], 'w');
 
    $change->restore($_POST);
-   Event::log($_POST["id"], "change", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    $change->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $change->check($_REQUEST["id"], 'w');
    $change->delete($_REQUEST,1);
 
-   Event::log($_REQUEST["id"], "change", 4, "tracking",
+   Event::log($_REQUEST["id"], "change", 4, "maintain",
               $_SESSION["glpiname"]." ".$LANG['log'][24]);
    $change->redirectToList();
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    $change->check($_POST["id"], 'w');
 
    $change->update($_POST);
-   Event::log($_POST["id"], "change", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    Html::back();
 
@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
    $change_user->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4,
-              "tracking", $_SESSION["glpiname"]." ".$LANG['log'][122]);
+              "maintain", $_SESSION["glpiname"]." ".$LANG['log'][122]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
    $group_ticket->check($_REQUEST['id'], 'w');
    $group_ticket->delete($_REQUEST);
 
-   Event::log($_REQUEST['changes_id'], "change", 4, "tracking",
+   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
               $_SESSION["glpiname"]." ".$LANG['log'][122]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 

@@ -1097,7 +1097,7 @@ function update0803to083() {
          }
       }
    }
-   $migration->addField('glpi_profiles', 'templateticket', "char", array('update' => '`sla`'));
+   $migration->addField('glpi_profiles', 'tickettemplate', "char", array('update' => '`sla`'));
 
    $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');
 
