@@ -354,20 +354,6 @@ class Ticket extends CommonITILObject {
                                              "`slas_id` = '".$item->getID()."'");
                   break;
 
-               case __CLASS__ :
-                  $ong = array();
-                  $ong[1] = $LANG['job'][47];
-                  $ong[2] = $LANG['jobresolution'][2];
-                  // enquete si statut clos
-                  if ($item->fields['status'] == 'closed') {
-                     $ong[3] = $LANG['satisfaction'][0];
-                  }
-                  if (Session::haveRight('observe_ticket','1')) {
-                     $ong[4] = $LANG['Menu'][13];
-                  }
-                  return $ong;
-                  break;
-
                default :
                   // Direct one
                   $nb = countElementsInTable('glpi_tickets',
@@ -381,9 +367,28 @@ class Ticket extends CommonITILObject {
                   break;
             }
 
-            return self::createTabEntry($LANG['title'][28], $nb);
+            // Not for Ticket class
+            if ($item->getType() != __CLASS__) {
+                  return self::createTabEntry($LANG['title'][28], $nb);
+            }
          }
-         return $LANG['title'][28];
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong = array();
+               $ong[1] = $LANG['job'][47];
+               $ong[2] = $LANG['jobresolution'][2];
+               // enquete si statut clos
+               if ($item->fields['status'] == 'closed') {
+                  $ong[3] = $LANG['satisfaction'][0];
+               }
+               if (Session::haveRight('observe_ticket','1')) {
+                  $ong[4] = $LANG['Menu'][13];
+               }
+               return $ong;
+
+            default :
+               return $LANG['title'][28];
+         }
       }
       return '';
    }
