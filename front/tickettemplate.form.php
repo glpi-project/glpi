@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $tt->check($_POST['id'], 'd');
    $ok = $tt->delete($_POST);
    if ($ok) {
-      Event::log($_POST["id"], "tickettemplates", 4, "maintain",
+      Event::log($_POST["id"], "tickettemplate", 4, "maintain",
                  $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$tt->getField('name'));
    }
    $tt->redirectToList();
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_REQUEST["purge"])) {
    $tt->check($_REQUEST['id'], 'd');
    if ($tt->delete($_REQUEST,1)) {
-      Event::log($_REQUEST["id"], "tickettemplates", 4, "maintain",
+      Event::log($_REQUEST["id"], "tickettemplate", 4, "maintain",
                  $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$tt->getField('name'));
    }
    $tt->redirectToList();
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $tt->check($_POST['id'], 'w');
    $tt->update($_POST);
-   Event::log($_POST["id"], "tickettemplates", 4, "maintain",
+   Event::log($_POST["id"], "tickettemplate", 4, "maintain",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
    Html::back();
 

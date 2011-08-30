@@ -68,15 +68,26 @@ class TicketTemplate extends CommonDBTM {
    }
 
 
-   function allowedFields() {
+   function getAllowedFields() {
       $ticket = new Ticket();
-      return array($ticket->getSearchOptionByField('field', 'name',
+      return array($ticket->getSearchOptionIDByField('field', 'name',
                                                    'glpi_tickets')        => 'name',
-                   $ticket->getSearchOptionByField('field', 'content',
+                   $ticket->getSearchOptionIDByField('field', 'content',
                                                    'glpi_tickets')        => 'content',
-                   $ticket->getSearchOptionByField('field', 'name',
+                   $ticket->getSearchOptionIDByField('field', 'completename',
                                                    'glpi_itilcategories') => 'itilcategory',
          );
+   }
+
+   function getAllowedFieldsNames() {
+      $searchOption = Search::getOptions('Ticket');
+      $tab = $this->getAllowedFields();
+      foreach ($tab as $ID => $shortname) {
+         if (isset($searchOption[$ID]['name'])) {
+            $tab[$ID] = $searchOption[$ID]['name'];
+         }
+      }
+      return $tab;
    }
 
    function defineTabs($options=array()) {
@@ -88,6 +99,7 @@ class TicketTemplate extends CommonDBTM {
       $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
       $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
       $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

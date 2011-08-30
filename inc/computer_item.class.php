@@ -426,7 +426,7 @@ class Computer_Item extends CommonDBRelation{
                   $connID = $DB->result($data['result'], $i, "id");
 
                   $item->getFromDB($tID);
-                  $used[] = $tID;
+                  $used[$tID] = $tID;
 
                   echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
                   echo "<td class='center'><strong>".$item->getLink()."</strong>";
@@ -550,7 +550,7 @@ class Computer_Item extends CommonDBRelation{
             } else {
                echo "&nbsp;";
             }
-            $used[] = $compid;
+            $used[$compid] = $compid;
          }
 
       } else {

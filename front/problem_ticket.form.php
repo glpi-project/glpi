@@ -39,7 +39,7 @@ if (isset($_POST["add"])) {
    $item->check(-1, 'w', $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["problems_id"], "problem", 4, "tracking",
+      Event::log($_POST["problems_id"], "problem", 4, "maintain",
                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    Html::back();
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
             }
          }
       }
-      Event::log($_POST["problems_id"], "problem", 4, "tracking",
+      Event::log($_POST["problems_id"], "problem", 4, "maintain",
                  $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    Html::back();

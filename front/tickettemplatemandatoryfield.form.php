@@ -31,15 +31,16 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkLoginUser();
+Session ::checkRight('tickettemplate','w');
 
-$item = new Change_Ticket();
+$item = new TicketTemplateMandatoryField();
+
 if (isset($_POST["add"])) {
    $item->check(-1, 'w', $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["changes_id"], "change", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][32]);
+      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
+                 $_SESSION["glpiname"]." ".$LANG['log'][56]);
    }
    Html::back();
 
@@ -53,8 +54,8 @@ if (isset($_POST["add"])) {
             }
          }
       }
-      Event::log($_POST["changes_id"], "change", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
+                 $_SESSION["glpiname"]." ".$LANG['log'][57]);
    }
    Html::back();
 

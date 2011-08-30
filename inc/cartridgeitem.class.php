@@ -558,7 +558,7 @@ class CartridgeItem extends CommonDBTM {
          echo "<a href='".$CFG_GLPI['root_doc'].
                 "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
          echo "<strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
-         $used[] = $pmid;
+         $used[$pmid] = $pmid;
          $i++;
       }
       if (Session::haveRight("cartridge", "w")) {
