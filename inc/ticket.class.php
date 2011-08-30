@@ -820,7 +820,12 @@ class Ticket extends CommonITILObject {
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
-      if ($this->canUpdateItem() && $this->fields['takeintoaccount_delay_stat']==0) {
+      if ($this->fields['takeintoaccount_delay_stat']==0
+             && (Session::haveRight("global_add_tasks", "1")
+                 || Session::haveRight("global_add_followups", "1")
+                 || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
+                 || (isset($_SESSION["glpigroups"])
+                     && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
