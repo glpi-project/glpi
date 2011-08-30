@@ -43,6 +43,10 @@ class TicketTemplate extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   protected $forward_entity_to = array('TicketTemplateMandatoryField',
+                                        'TicketTemplatePredefinedField',
+                                        'TicketTemplateHiddenField');
+
 
    static function getTypeName($nb=0) {
       global $LANG;
@@ -64,71 +68,30 @@ class TicketTemplate extends CommonDBTM {
    }
 
 
+   function allowedFields() {
+      $ticket = new Ticket();
+      return array($ticket->getSearchOptionByField('field', 'name',
+                                                   'glpi_tickets')        => 'name',
+                   $ticket->getSearchOptionByField('field', 'content',
+                                                   'glpi_tickets')        => 'content',
+                   $ticket->getSearchOptionByField('field', 'name',
+                                                   'glpi_itilcategories') => 'itilcategory',
+         );
+   }
+
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ong = array();
 
       $ong['empty'] = $this->getTypeName(1);
-      $this->addStandardTab(__CLASS__, $ong, $options); // ticket templates ones
+      $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
+      $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
+      $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
 
       return $ong;
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
-      if (Session::haveRight("tickettemplate","r")) {
-         $nb = 0;
-         switch ($item->getType()) {
-            case __CLASS__ :
-               $ong = array();
-
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_tickettemplatemandatoryfields',
-                                          "`tickettemplates_id` = '".$item->getID()."'");
-               }
-               $ong[1] = self::createTabEntry($LANG['job'][62], $nb);
-
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_tickettemplatepredefinedfields',
-                                          "`tickettemplates_id` = '".$item->getID()."'");
-               }
-               $ong[2] = self::createTabEntry($LANG['job'][61], $nb);
-
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_tickettemplatehiddenfields',
-                                          "`tickettemplates_id` = '".$item->getID()."'");
-               }
-               $ong[3] = self::createTabEntry($LANG['job'][60], $nb);
-               return $ong;
-               break;
-         }
-      }
-      return '';
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      switch ($item->getType()) {
-         case __CLASS__ :
-            switch ($tabnum) {
-               case 1 :
-                  break;
-
-               case 2 :
-                  break;
-
-               case 3 :
-                  break;
-
-               case 4 :
-                  break;
-            }
-            break;
-      }
-      return true;
-   }
 
    function getSearchOptions() {
       global $LANG;
