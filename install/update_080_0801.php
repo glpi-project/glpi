@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------
 
 /**
- * Update from 0.802 to 0.80.1
+ * Update from 0.80 to 0.80.1
  *
  * @param $output string for format
  *       HTML (default) for standard upgrade
