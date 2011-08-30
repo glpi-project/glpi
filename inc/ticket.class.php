@@ -5290,6 +5290,15 @@ class Ticket extends CommonDBTM {
          $options['contains'][0]   = $items_id;
          $options['link'][0]       = 'AND';
 
+      } else if ($itemtype == 'Group') {
+         $restrict                 = "(`glpi_groups_tickets`.`groups_id` = '".$item->getID()."'
+                                        AND `glpi_groups_tickets`.`type` = ".Ticket::REQUESTER.")";
+         $order                    = '`glpi_tickets`.`date_mod` DESC';
+         $options['field'][0]      = 71;
+         $options['searchtype'][0] = 'equals';
+         $options['contains'][0]   = $item->getID();
+         $options['link'][0]       = 'AND';
+
       } else {
          $restrict                 = "(`items_id` = '$items_id' AND `itemtype` = '$itemtype')";
          $order                    = '`glpi_tickets`.`date_mod` DESC';
