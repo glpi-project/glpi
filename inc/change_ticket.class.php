@@ -112,7 +112,7 @@ class Change_Ticket extends CommonDBRelation{
                                         $LANG['change'][0] ." = ". $change->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            $used[$data['id'] = $data['id'];
+            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
