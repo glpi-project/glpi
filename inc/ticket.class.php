@@ -334,10 +334,12 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable('glpi_changes_tickets',
                                              "`changes_id` = '".$item->getID()."'");
                   break;
+
                case 'Problem' :
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              "`problems_id` = '".$item->getID()."'");
                   break;
+
                case 'User' :
                   $nb = countElementsInTable('glpi_tickets_users',
                                              "`users_id` = '".$item->getID()."'
@@ -356,7 +358,8 @@ class Ticket extends CommonITILObject {
 
                case 'Group' :
                   $nb = countElementsInTable('glpi_groups_tickets',
-                                             "`groups_id` = '".$item->getID()."'");
+                                             "`groups_id` = '".$item->getID()."'
+                                               AND `type` = ".Ticket::REQUESTER);
                   break;
 
                default :
@@ -4103,20 +4106,10 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Group' :
-            $restrict                 = "(`glpi_groups_tickets`.`groups_id` = '".$item->getID()."')";
+            $restrict                 = "(`glpi_groups_tickets`.`groups_id` = '".$item->getID()."'
+                                          AND `glpi_groups_tickets`.`type` = ".Ticket::REQUESTER.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
-
             $options['field'][0]      = 71;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
-
-            $options['field'][0]      = 65;
-            $options['searchtype'][0] = 'equals';
-            $options['contains'][0]   = $item->getID();
-            $options['link'][0]       = 'AND';
-
-            $options['field'][0]      = 8;
             $options['searchtype'][0] = 'equals';
             $options['contains'][0]   = $item->getID();
             $options['link'][0]       = 'AND';
