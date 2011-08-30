@@ -1043,7 +1043,7 @@ $LANG['joblist'][1]  = "Seulement les miens";
 $LANG['joblist'][2]  = "Priorité";
 $LANG['joblist'][3]  = "Personnel + groupe(s)";
 $LANG['joblist'][4]  = "Attribué";
-
+$LANG['joblist'][5]  = "Tickets créés";
 $LANG['joblist'][6]  = "Description";
 $LANG['joblist'][7]  = "Nouveau ticket pour cet élément...";
 $LANG['joblist'][8]  = "Pas de ticket trouvé.";
