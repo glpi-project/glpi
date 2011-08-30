@@ -1031,6 +1031,9 @@ $LANG['job'][56] = "Lier des tickets";
 $LANG['job'][57] = "Tickets dupliqués";
 $LANG['job'][58] = "Gabarit de tickets";
 $LANG['job'][59] = "Gabarits de tickets";
+$LANG['job'][60] = "Champs cachés";
+$LANG['job'][61] = "Champs prédéfinis";
+$LANG['job'][62] = "Champs obligatoires";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";
