@@ -234,10 +234,10 @@ class Change extends CommonITILObject {
 
       // show related tickets and changes
       $ong['empty'] = $this->getTypeName(1);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('ChangeTask', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('ChangeTask', $ong, $options);
-      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
       /// TODO add stats
