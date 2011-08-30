@@ -432,6 +432,7 @@ CREATE TABLE `glpi_changes_users` (
 DROP TABLE IF EXISTS `glpi_changetasks`;
 CREATE TABLE `glpi_changetasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `changes_id` int(11) NOT NULL DEFAULT '0',
   `changetasks_id` int(11) NOT NULL DEFAULT '0',
   `is_blocked` tinyint(1) NOT NULL DEFAULT '0',
@@ -447,6 +448,7 @@ CREATE TABLE `glpi_changetasks` (
   `content` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `name` (`name`),
   KEY `changes_id` (`changes_id`),
   KEY `changetasks_id` (`changetasks_id`),
   KEY `is_blocked` (`is_blocked`),
