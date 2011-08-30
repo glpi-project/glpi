@@ -1026,6 +1026,8 @@ function update0803to083() {
       $DB->query($query)
       or die("0.83 add default ticket template " . $LANG['update'][90] . $DB->error());
       $default_template = $DB->insert_id();
+
+      $ADDTODISPLAYPREF['TicketTemplate'] = array(2,3);
    }
 
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
