@@ -2212,6 +2212,13 @@ class CommonDBTM extends CommonGLPI {
                      $this->getField('otherserial')."<br>";
       }
 
+      if ($this->isField('states_id')) {
+         $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
+         if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
+            $comment .= "<strong>".$LANG['state'][0]."&nbsp;: </strong>$tmp<br>";
+         }
+      }
+
       if ($this->isField('locations_id')) {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
