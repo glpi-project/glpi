@@ -146,12 +146,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
-      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+//      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
       if (isset($input['update']) && $uid=Session::getLoginUserID()) { // Change from task form
          $input["users_id"] = $uid;
       }
-
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
@@ -258,18 +257,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input["users_id"] = $uid;
       }
 
-      if (!isset($input["hour"])) {
-         $input["hour"] = 0;
-      }
-      if (!isset($input["minute"])) {
-         $input["minute"] = 0;
-      }
-      if ($input["hour"]>0 || $input["minute"]>0) {
-         $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-      }
-
-      unset($input["minute"]);
-      unset($input["hour"]);
       $input["date"] = $_SESSION["glpi_currenttime"];
 
       return $input;
@@ -403,9 +390,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[5]['name']  = $LANG['financial'][43];
 
       $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'realtime';
+      $tab[6]['field']         = 'actiontime';
       $tab[6]['name']          = $LANG['job'][20];
-      $tab[6]['datatype']      = 'realtime';
+      $tab[6]['datatype']      = 'actiontime';
       $tab[6]['massiveaction'] = false;
 
       return $tab;
@@ -839,14 +826,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
 
-      $units = Toolbox::getTimestampTimeUnits($this->fields["actiontime"]);
+      Dropdown::showTimeStamp("actiontime",array('min'   => 0,
+                                                'max'   => 8*HOUR_TIMESTAMP,
+                                                'value' => $this->fields["actiontime"],
+                                                'emptylabel' => $LANG['search'][12]));
 
-      $hour   = $units['hour']+24*$units['day'];
-      $minute = $units['minute'];
-      Dropdown::showInteger('hour', $hour, 0, 100, 1, array($hour));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."&nbsp;&nbsp;";
-      Dropdown::showInteger('minute', $minute, 0, 59);
-      echo "&nbsp;".$LANG['job'][22];
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
