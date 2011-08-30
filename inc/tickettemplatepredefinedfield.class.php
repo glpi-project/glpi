@@ -169,7 +169,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          }
 
          if ($canedit) {
-            echo "<tr class='tab_bg_2'><td class='center top' colspan='3'>";
+            echo "<tr class='tab_bg_2'><td class='right top'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
@@ -177,7 +177,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $display_fields += $fields;
             
             $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used'  => $used, 'toadd'));
-
+            echo "</td><td colspan='2'  class='left top'>";
             $paramsmassaction = array('id_field'  => '__VALUE__',
                                       'itemtype'  => 'Ticket');
 

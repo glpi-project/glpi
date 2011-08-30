@@ -347,7 +347,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
                                        $paramsmassaction);
 
-         echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+         echo "&nbsp;<span id='show_massiveaction_field'>&nbsp;</span>\n";
          break;
 
       default :

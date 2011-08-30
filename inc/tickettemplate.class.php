@@ -92,6 +92,10 @@ class TicketTemplate extends CommonDBTM {
                                                    'glpi_tickets') => 'priority',
                    $ticket->getSearchOptionIDByField('field', 'name',
                                                    'glpi_requesttypes') => 'requesttypes_id',
+                   $ticket->getSearchOptionIDByField('field', 'name',
+                                                   'glpi_slas') => 'slas_id',
+                   $ticket->getSearchOptionIDByField('field', 'due_date',
+                                                   'glpi_tickets') => 'due_date',
                    4  => '_users_id_requester',
                    71 => '_groups_id_requester',
                    5  => '_users_id_assign',
@@ -103,11 +107,11 @@ class TicketTemplate extends CommonDBTM {
 
          );
 
-     /// TODO ADD : SLA / due _date ?
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : hour / minute : review display : one field actiontime
      /// TODO ADD : item linked : itemtype / items_id
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
+
    }
 
    function getAllowedFieldsNames() {
