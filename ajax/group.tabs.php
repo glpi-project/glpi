@@ -66,7 +66,7 @@ if ($_POST["id"]>0 && $group->can($_POST["id"],'r')) {
          break;
 
       case 4 :
-         Ticket::showListForItem('Computer', $_POST["id"]);
+         Ticket::showListForItem('Group', $_POST["id"]);
          break;
 
       default :
