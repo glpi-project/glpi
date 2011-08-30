@@ -328,7 +328,8 @@ class Ticket extends CommonITILObject {
 
       if (Session::haveRight("show_all_ticket","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = 0;
+            $nb    = 0;
+            $title = $LANG['title'][28];
             switch ($item->getType()) {
                case 'Change' :
                   $nb = countElementsInTable('glpi_changes_tickets',
@@ -344,6 +345,7 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable('glpi_tickets_users',
                                              "`users_id` = '".$item->getID()."'
                                                 AND `type` = ".Ticket::REQUESTER);
+                  $title = $LANG['joblist'][5];
                   break;
 
                case 'Supplier' :
@@ -360,6 +362,7 @@ class Ticket extends CommonITILObject {
                   $nb = countElementsInTable('glpi_groups_tickets',
                                              "`groups_id` = '".$item->getID()."'
                                                AND `type` = ".Ticket::REQUESTER);
+                  $title = $LANG['joblist'][5];
                   break;
 
                default :
@@ -377,7 +380,7 @@ class Ticket extends CommonITILObject {
 
             // Not for Ticket class
             if ($item->getType() != __CLASS__) {
-                  return self::createTabEntry($LANG['title'][28], $nb);
+                  return self::createTabEntry($title, $nb);
             }
          }
          switch ($item->getType()) {

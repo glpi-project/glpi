@@ -159,7 +159,9 @@ class Group extends CommonDBTM {
          $this->addStandardTab('NotificationTarget', $ong, $options);
       }
       $this->addStandardTab('Group', $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
+      if ($this->fields['is_requester']) {
+         $this->addStandardTab('Ticket', $ong, $options);
+      }
 
       return $ong;
    }
