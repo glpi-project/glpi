@@ -354,6 +354,11 @@ class Ticket extends CommonITILObject {
                                              "`slas_id` = '".$item->getID()."'");
                   break;
 
+               case 'Group' :
+                  $nb = countElementsInTable('glpi_groups_tickets',
+                                             "`groups_id` = '".$item->getID()."'");
+                  break;
+
                default :
                   // Direct one
                   $nb = countElementsInTable('glpi_tickets',
@@ -439,6 +444,7 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLA' :
+         case 'Group' :
          default :
             self::showListForItem($item);
       }
@@ -1450,7 +1456,7 @@ class Ticket extends CommonITILObject {
                                                           array_merge($this->getSolvedStatusArray(),
                                                                       $this->getClosedStatusArray())
                                                           )."')
-                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL 
+                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL
                                   AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW())
                             )";
 
@@ -1496,7 +1502,7 @@ class Ticket extends CommonITILObject {
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
                                     AND `".$this->getTable()."`.`items_id` = '$items_id'
-                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL 
+                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL
                                     AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()
                                     AND `".$this->getTable()."`.`status`
                                        IN ('".implode("', '",
@@ -4091,6 +4097,26 @@ class Ticket extends CommonITILObject {
             $restrict                 = "(`suppliers_id_assign` = '".$item->getID()."')";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
             $options['field'][0]      = 6;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         case 'Group' :
+            $restrict                 = "(`glpi_groups_tickets`.`groups_id` = '".$item->getID()."')";
+            $order                    = '`glpi_tickets`.`date_mod` DESC';
+
+            $options['field'][0]      = 71;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+
+            $options['field'][0]      = 65;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+
+            $options['field'][0]      = 8;
             $options['searchtype'][0] = 'equals';
             $options['contains'][0]   = $item->getID();
             $options['link'][0]       = 'AND';
