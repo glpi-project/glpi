@@ -1034,8 +1034,12 @@ function update0803to083() {
       $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `num` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
@@ -1047,9 +1051,13 @@ function update0803to083() {
       $query = "CREATE TABLE `glpi_tickettemplatepredefinedfields` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `num` int(11) NOT NULL DEFAULT '0',
                   `name` TEXT DEFAULT NULL,
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
@@ -1061,8 +1069,12 @@ function update0803to083() {
       $query = "CREATE TABLE `glpi_tickettemplatemandatoryfields` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `num` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
