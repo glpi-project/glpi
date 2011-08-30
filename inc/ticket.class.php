@@ -2068,33 +2068,18 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-   function getSpecificValueToDisplay($searchopt, $value) {
-      if (count($searchopt)) {
-         if ($searchopt['table'] == $this->getTable()) {
-            switch ($searchopt['field']) {
-               case 'status':
-                  return self::getStatus($value);
-                  break;
+   static function getSpecificValueToDisplay($field, $value) {
+      switch ($field) {
+         case 'status':
+            return self::getStatus($value);
+            break;
 
-               case 'type':
-                  return self::getTicketTypeName($value);
-                  break;
+         case 'type':
+            return self::getTicketTypeName($value);
+            break;
 
-               case 'urgency':
-                  return self::getUrgencyName($value);
-                  break;
-
-               case 'impact':
-                  return self::getImpactName($value);
-                  break;
-
-               case 'priority':
-                  return self::getPriorityName($value);
-                  break;
-               default :
-                  return parent::getSpecificValueToDisplay($searchopt, $value);
-            }
-         }
+         default :
+            return parent::getSpecificValueToDisplay($field, $value);
       }
    }
 

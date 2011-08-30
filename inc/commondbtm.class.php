@@ -2854,12 +2854,12 @@ class CommonDBTM extends CommonGLPI {
    /**
     * display a specific field value
     *
-    * @param $searchopt array search option array
+    * @param $field string field to display
     * @param $field_id_search_option integer.string id of the search option field or field name
     *
     * @return return the string to display
    **/
-   function getSpecificValueToDisplay($searchopt, $value) {
+   static function getSpecificValueToDisplay($field, $value) {
       return '';
    }
 
@@ -2885,11 +2885,6 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (count($options)) {
-         // Get specific values
-         $specific = $this->getSpecificValueToDisplay($options,$value);
-         if (!empty($specific)) {
-            return $specific;
-         }
 
          if (isset($options['datatype'])) {
             switch ($options['datatype']) {
@@ -2931,10 +2926,16 @@ class CommonDBTM extends CommonGLPI {
                      return getUserName($value);
                   }
                   return Dropdown::getDropdownName($options['table'],$value);
-
-
             }
          }
+         // Get specific display if available
+         $itemtype = getItemTypeForTable($options['table']);
+         $item = new $itemtype();
+         $specific = $item->getSpecificValueToDisplay($options['field'],$value);
+         if (!empty($specific)) {
+            return $specific;
+         }
+
       }
       return $value;
    }

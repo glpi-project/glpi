@@ -1495,24 +1495,21 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   function getSpecificValueToDisplay($searchopt, $value) {
-      if (count($searchopt)) {
-         if ($searchopt['table'] == $this->getTable()) {
-            switch ($searchopt['field']) {
-               case 'urgency':
-                  return self::getUrgencyName($value);
-                  break;
+   static function getSpecificValueToDisplay($field, $value) {
+      switch ($field) {
+         case 'urgency':
+            return self::getUrgencyName($value);
+            break;
 
-               case 'impact':
-                  return self::getImpactName($value);
-                  break;
+         case 'impact':
+            return self::getImpactName($value);
+            break;
 
-               case 'priority':
-                  return self::getPriorityName($value);
-                  break;
-            }
-         }
+         case 'priority':
+            return self::getPriorityName($value);
+            break;
       }
+      return '';
    }
 
    function getSearchOptionsActors () {
