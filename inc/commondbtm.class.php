@@ -2872,6 +2872,8 @@ class CommonDBTM extends CommonGLPI {
     * @return return the string to display
    **/
    function getValueToDisplay($field_id_search_option, $value) {
+      global $LANG, $CFG_GLPI;
+
       $searchopt = Search::getOptions($this->getType());
       $options = array();
 
@@ -2887,12 +2889,26 @@ class CommonDBTM extends CommonGLPI {
       if (count($options)) {
 
          if (isset($options['datatype'])) {
+
+            $unit = '';
+            if (isset($searchopt[$ID]['unit'])) {
+               $unit = $searchopt[$ID]['unit'];
+            }
+
             switch ($options['datatype']) {
                case "number" :
-                  return Html::formatNumber($value, false,0);
+                  return str_replace(' ', '&nbsp;', Html::formatNumber($value, false, 0)).
+                      $unit;
+                  break;
+
+               case "decimal" :
+                  return str_replace(' ', '&nbsp;', Html::formatNumber($value)).$unit;
+                  break;
+
 
                case "string" :
                   return $value;
+                  break;
 
                case "text" :
                   $text = nl2br($value);
@@ -2900,16 +2916,20 @@ class CommonDBTM extends CommonGLPI {
                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
                   }
                   return $text;
+                  break;
 
                case "bool" :
                   return Dropdown::getYesNo($value);
+                  break;
 
                case "date" :
                case "date_delay" :
                   return Html::convDate($value);
+                  break;
 
                case "datetime" :
                   return Html::convDateTime($value);
+                  break;
 
                case "timestamp" :
                   $withseconds = false;
@@ -2917,15 +2937,52 @@ class CommonDBTM extends CommonGLPI {
                      $withseconds = $options['withseconds'];
                   }
                   return Html::timestampToString($value,$withseconds);
+                  break;
 
                case "email" :
                   return "<a href='mailto:$value'>$value</a>";
+                  break;
+
+            case "weblink" :
+               $orig_link = trim($value);
+               if (!empty($orig_link)) {
+                  // strip begin of link
+                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
+                  $link = preg_replace('/\/$/', '', $link);
+                  if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
+                     $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+                  }
+                  return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
+               }
+               return "&nbsp;"
+               break;
+
 
                case "dropdown" :
                   if ($options['table'] == 'glpi_users') {
                      return getUserName($value);
                   }
                   return Dropdown::getDropdownName($options['table'],$value);
+                  break;
+
+               case "right" :
+                  return Profile::getRightValue($value);
+                  break;
+
+               case "itemtypename" :
+                  if (class_exists($value)) {
+                     $obj = new $value();
+                     return $obj->getTypeName();
+                  }
+                  break;
+
+               case "language":
+                  if (isset($CFG_GLPI['languages'][$value])) {
+                     return $CFG_GLPI['languages'][$value][0];
+                  }
+                  return $LANG['setup'][46];
+                  break;
+
             }
          }
          // Get specific display if available
