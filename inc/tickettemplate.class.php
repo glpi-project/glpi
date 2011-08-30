@@ -105,7 +105,7 @@ class TicketTemplate extends CommonDBTM {
 
      /// TODO ADD : SLA / due _date ?
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
-     /// TODO ADD : hour / minute : review display 
+     /// TODO ADD : hour / minute : review display : one field actiontime
      /// TODO ADD : item linked : itemtype / items_id
      /// TODO ADD : linked tickets ?
    }
