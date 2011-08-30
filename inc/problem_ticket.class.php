@@ -113,7 +113,7 @@ class Problem_Ticket extends CommonDBRelation{
                                         $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            $used[] = $data['id'];
+            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -197,7 +197,7 @@ class Problem_Ticket extends CommonDBRelation{
          Session::initNavigateListItems('Problem', $LANG['job'][38] ." = ". $ticket->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            $used[] = $data['id'];
+            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";

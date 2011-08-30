@@ -2396,10 +2396,12 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getSearchOptionByField($field, $value, $table='') {
 
-      foreach (Search::getOptions(get_class($this)) as $searchOption) {
+      foreach (Search::getOptions(get_class($this)) as $id => $searchOption) {
          if ((isset($searchOption['linkfield']) && $searchOption['linkfield'] == $value)
              || (isset($searchOption[$field]) && $searchOption[$field] == $value)) {
             if (($table == '') || ($table != '' && $searchOption['table'] == $table)) {
+               // Set ID ;
+               $searchOption['id'] = $id;
                return $searchOption;
             }
          }
@@ -2407,6 +2409,22 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+   /**
+    * Return a search option ID by looking for a value of a specific field and maybe a specific table
+    *
+    * @param field the field in which looking for the value (for example : table, name, etc)
+    * @param value the value to look for in the field
+    * @param table the table
+    *
+    * @return then search option id, or -1 if not found
+   **/
+   function getSearchOptionIDByField($field, $value, $table='') {
+      $tab = $this->getSearchOptionByField($field, $value, $table);
+      if (isset($tab['id'])) {
+         return $tab['id'];
+      }
+      return -1;
+   }
 
    /**
     * Check float and decimal values

@@ -89,7 +89,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
    /**
-    * Print the mandatory fields
+    * Print the hidden fields
     *
     * @param $tt Ticket Template
     * @param $withtemplate=''  boolean : Template or basic item.
@@ -98,6 +98,75 @@ class TicketTemplateHiddenField extends CommonDBChild {
    **/
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
 
+      global $DB, $LANG;
+
+      $ID = $tt->fields['id'];
+
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+         return false;
+      }
+
+      $canedit = $tt->can($ID, "w");
+      $fields = $tt->getAllowedFieldsNames();
+
+
+      $rand = mt_rand();
+      echo "<form name='tickettemplatehiddenfields_form$rand'
+                  id='tickettemplatehiddenfields_form$rand' method='post' action='";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+      echo "<div class='center'>";
+
+      $query = "SELECT `glpi_tickettemplatehiddenfields`.*
+                FROM `glpi_tickettemplatehiddenfields`
+                WHERE (`tickettemplates_id` = '$ID')";
+
+      if ($result=$DB->query($query)) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>";
+         if ($DB->numrows($result)==1) {
+            echo $LANG['job'][63];
+         } else {
+            echo $LANG['job'][60];
+         }
+         echo "</th></tr>";
+         $used = array();
+         if ($DB->numrows($result)) {
+            echo "<tr><th>&nbsp;</th>";
+            echo "<th>".$LANG['common'][16]."</th>";
+            echo "</tr>";
+
+            while ($data=$DB->fetch_assoc($result)) {
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
+               echo "<td>".$fields[$data['num']]."</td>";
+               $used[$data['num']] = $data['num'];
+            }
+
+         } else {
+            echo "<tr><th colspan='2'>".$LANG['search'][15]."</th></tr>";
+         }
+
+         if ($canedit) {
+            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
+            echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
+            Dropdown::showFromArray('num', $fields, array('used'  => $used));
+            echo "&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "</td></tr>";
+         }
+         echo "</table></div>";
+
+         if ($canedit) {
+            Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
+            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         }
+         echo "</form>";
+
+      }
    }
 }
 

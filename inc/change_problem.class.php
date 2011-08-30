@@ -114,7 +114,7 @@ class Change_Problem extends CommonDBRelation{
                                         $LANG['problem'][0] ." = ". $problem->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            $used[] = $data['id'];
+            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -194,7 +194,7 @@ class Change_Problem extends CommonDBRelation{
                                         $LANG['change'][0] ." = ". $change->fields["name"]);
 
          while ($data = $DB->fetch_array($result)) {
-            $used[] = $data['id'];
+            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";

@@ -1207,8 +1207,11 @@ $LANG['log'][46]  = "Échouée";
 $LANG['log'][48]  = "ajout utilisateur au groupe";
 $LANG['log'][49]  = "suppression utilisateur au groupe";
 $LANG['log'][50]  = "modification utilisateur au groupe";
-
+$LANG['log'][51]  = "ajout d'un champ caché";
+$LANG['log'][52]  = "suppression d'un champ caché";
 $LANG['log'][55]  = "Connexion";
+$LANG['log'][56]  = "ajout d'un champ obligatoire";
+$LANG['log'][57]  = "suppression d'un champ obligatoire";
 
 $LANG['log'][59]  = "Action automatique";
 $LANG['log'][60]  = "passage en gestion unitaire de l'élément";
@@ -1263,6 +1266,7 @@ $LANG['log'][118] = "dissociation d'une license et d'ordinateurs";
 $LANG['log'][120] = "suppression d'un lien entre tickets";
 $LANG['log'][122] = "suppression d'un acteur au ticket";
 $LANG['log'][123] = "tentative d'ajout d'un élément qui existe déjà";
+
 
 
 $LANG['login'][0]  = "Dernière connexion";

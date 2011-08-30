@@ -119,7 +119,7 @@ class Calendar_Holiday extends CommonDBRelation {
                echo "&nbsp;";
             }
             echo "</td>";
-            $used[] = $data['id'];
+            $used[$data['id']] = $data['id'];
             echo "<td><a href='".Toolbox::getItemTypeFormURL('Holiday')."?id=".$data['id']."'>".
                       $data["name"]."</a></td>";
             echo "<td>".Html::convDate($data["begin_date"])."</td>";

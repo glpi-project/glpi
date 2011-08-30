@@ -1054,7 +1054,7 @@ function update0803to083() {
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `num` int(11) NOT NULL DEFAULT '0',
-                  `name` TEXT DEFAULT NULL,
+                  `value` TEXT DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),

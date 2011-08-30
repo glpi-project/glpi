@@ -142,7 +142,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       if ($DB->numrows($result) > 0) {
          echo "\n<table>";
          while ($line = $DB->fetch_array($result)) {
-            $used[]=$line["vlans_id"];
+            $used[$line["vlans_id"]] = $line["vlans_id"];
             echo "<tr><td>" . Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
             echo "</td>\n<td>";
             if ($canedit) {
