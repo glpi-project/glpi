@@ -1669,8 +1669,8 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["plan"])
           || (isset($this->input["_hour"])
               && isset($this->input["_minute"])
-              && isset($this->input["realtime"])
-              && $this->input["realtime"]>0)) {
+              && isset($this->input["actiontime"])
+              && $this->input["actiontime"]>0)) {
 
          $task = new TicketTask();
          $type = "new";

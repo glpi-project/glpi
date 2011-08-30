@@ -680,9 +680,9 @@ class TicketTask  extends CommonDBTM {
       $tab[5]['name']  = $LANG['financial'][43];
 
       $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'realtime';
+      $tab[6]['field']         = 'actiontime';
       $tab[6]['name']          = $LANG['job'][20];
-      $tab[6]['datatype']      = 'realtime';
+      $tab[6]['datatype']      = 'actiontime';
       $tab[6]['massiveaction'] = false;
 
       return $tab;
