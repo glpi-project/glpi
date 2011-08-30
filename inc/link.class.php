@@ -235,37 +235,33 @@ class Link extends CommonDBTM {
          }
       }
       $ipmac = array();
-      $i = 0;
 
       if ($noip || (!strstr($link,"[IP]") && !strstr($link,"[MAC]"))) {
          return array($link);
 
       } else { // Return sevral links id several IP / MAC
          $links = array();
-         $query2 = "SELECT `ip`, `mac`, `logical_number`
+         $query2 = "SELECT `id`, `ip`, `mac`, `logical_number`
                     FROM `glpi_networkports`
                     WHERE `items_id` = '".$item->fields['id']."'
                           AND `itemtype` = '".get_class($item)."'
                     ORDER BY `logical_number`";
          $result2 = $DB->query($query2);
 
+         if (get_class($item)=='NetworkEquipment') {
+            $ipmac[0]['ip']     = $item->getField('ip');
+            $ipmac[0]['mac']    = $item->getField('mac');
+            $ipmac[0]['number'] = '';
+         }
          if ($DB->numrows($result2)>0) {
             while ($data2=$DB->fetch_array($result2)) {
-               $ipmac[$i]['ip']     = $data2["ip"];
-               $ipmac[$i]['mac']    = $data2["mac"];
-               $ipmac[$i]['number'] = $data2["logical_number"];
-               $i++;
+               $ipmac[$data2['id']]['ip']     = $data2["ip"];
+               $ipmac[$data2['id']]['mac']    = $data2["mac"];
+               $ipmac[$data2['id']]['number'] = $data2["logical_number"];
             }
          }
 
          // Add IP/MAC internal switch
-         if (get_class($item)=='NetworkEquipment') {
-            $tmplink = $link;
-            $tmplink = str_replace("[IP]", $item->getField('ip'), $tmplink);
-            $tmplink = str_replace("[MAC]", $item->getField('mac'), $tmplink);
-
-            $links["$name - $tmplink"] = $tmplink;
-         }
          if (count($ipmac)>0) {
             foreach ($ipmac as $key => $val) {
                $tmplink = $link;
@@ -286,7 +282,7 @@ class Link extends CommonDBTM {
                }
 
                if ($disp) {
-                  $links["$name #" .$val['number']." - $tmplink"] = $tmplink;
+                  $links[$key] = $tmplink;
                }
             }
          }
@@ -346,31 +342,36 @@ class Link extends CommonDBTM {
             }
             $file = trim($data["data"]);
 
-            $tosend = false;
             if (empty($file)) {
-               $link = $data["link"];
-            } else {
-               $link = $data['name'];
-               $tosend = true;
-            }
-
-            $contents = self::generateLinkContents($link, $item, $name);
-            if (count($contents)) {
-               foreach ($contents as $title => $link) {
-                  $current_name = $name;
-                  if (!empty($title)) {
-                     $current_name = $title;
-                  }
-                  $clean_name = self::generateLinkContents($current_name, $item, $name, true);
-
+               // Generate links
+               $links = self::generateLinkContents($data['link'], $item, $name);
+               $i=1;
+               foreach ($links as $key => $link) {
+                  echo "<tr class='tab_bg_2'>";
                   $url = $link;
-                  if ($tosend) {
-                     $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
-                            "&amp;itemtype=$itemtype&amp;id=$ID";
+                  echo "<td class='center'><a href='$url' target='_blank'>$name #$i : $link</a>";
+                  echo "</td></tr>";
+                  $i++;
+               }
+            } else {
+               // Generate files
+               $files = self::generateLinkContents($data['link'], $item, $name);
+               $links = self::generateLinkContents($data['data'], $item, $name);
+               $i=1;
+               foreach ($links as $key => $link) {
+                  if (isset($files[$key])) {
+                     // a different name for each file, ex name = foo-[IP].txt
+                     $file = $files[$key];
+                  } else {
+                     // same name for all files, ex name = foo.txt
+                     $file = reset($files);
                   }
                   echo "<tr class='tab_bg_2'>";
-                  echo "<td class='center'><a href='$url' target='_blank'>".$clean_name[0]."</a>";
+                  $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
+                         "&amp;itemtype=$itemtype&amp;id=$ID&amp;rank=$key";
+                  echo "<td class='center'><a href='$url' target='_blank'>$name #$i : $file</a>";
                   echo "</td></tr>";
+                  $i++;
                }
             }
          }

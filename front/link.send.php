@@ -47,10 +47,22 @@ if (isset($_GET["lID"])) {
       if (class_exists($_GET["itemtype"])) {
          $item = new $_GET["itemtype"]();
          if ($item->getFromDB($_GET["id"])) {
-            $content_filename = Link::generateLinkContents($link,$item);
-            $content_data = Link::generateLinkContents($file,$item);
+            $content_filename = Link::generateLinkContents($link, $item);
+            $content_data     = Link::generateLinkContents($file, $item);
 
-            header("Content-disposition: filename=\"".$content_filename[0]."\"");
+            if (isset($_GET['rank']) && isset($content_filename[$_GET['rank']])) {
+               $filename = $content_filename[$_GET['rank']];
+            } else {
+               // first one (the same for all IP)
+               $filename = reset($content_filename);
+            }
+            if (isset($_GET['rank']) && isset($content_data[$_GET['rank']])) {
+               $data = $content_data[$_GET['rank']];
+            } else {
+               // first one (probably missing arg)
+               $data = reset($content_data);
+            }
+            header("Content-disposition: filename=\"$filename\"");
             $mime = "application/scriptfile";
 
             header("Content-type: ".$mime);
@@ -62,8 +74,8 @@ if (isset($_GET["lID"])) {
             if ($mc) {
                @set_magic_quotes_runtime(0);
             }
-            // May have several values due to network datas : use only first one
-            echo current($content_data);
+
+            echo $data;
 
             if ($mc) {
                @set_magic_quotes_runtime($mc);
