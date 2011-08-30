@@ -35,11 +35,11 @@
 // ----------------------------------------------------------------------
 
 /**
- * Update from 0.80.1 to 0.83
+ * Update from 0.80.3 to 0.83
  *
  * @return bool for success (will die for most error)
 **/
-function update0801to083() {
+function update0803to083() {
    global $DB, $LANG, $migration;
 
    $updateresult     = true;
