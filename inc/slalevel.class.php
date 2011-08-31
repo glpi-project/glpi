@@ -274,10 +274,10 @@ class SlaLevel extends RuleTicket {
             }
          }
          for ($i=1 ; $i<30 ; $i++) {
-            if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
+            if (!in_array($i*DAY_TIMESTAMP,$p['used'])) {
                $possible_values[$i*DAY_TIMESTAMP]='+ '.$i." ".$LANG['stats'][31];
             }
-            if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
+            if (!in_array(-$i*DAY_TIMESTAMP,$p['used'])) {
                if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
                   $possible_values[-$i*DAY_TIMESTAMP]='- '.$i." ".$LANG['stats'][31];
                }
