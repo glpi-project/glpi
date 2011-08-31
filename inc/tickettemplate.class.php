@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Ticket Template class
+/// since version 0.83
 class TicketTemplate extends CommonDBTM {
    /// TODO : manage hidden fields for predefined values for post-only
 
@@ -45,9 +46,9 @@ class TicketTemplate extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   protected $forward_entity_to = array('TicketTemplateMandatoryField',
-                                        'TicketTemplatePredefinedField',
-                                        'TicketTemplateHiddenField');
+   protected $forward_entity_to = array('TicketTemplateHiddenField',
+                                        'TicketTemplateMandatoryField',
+                                        'TicketTemplatePredefinedField');
 
 
    static function getTypeName($nb=0) {
@@ -73,29 +74,29 @@ class TicketTemplate extends CommonDBTM {
    function getAllowedFields() {
       $ticket = new Ticket();
 
-      // SearchOption ID => name used for options 
+      // SearchOption ID => name used for options
       return array($ticket->getSearchOptionIDByField('field', 'name',
-                                                   'glpi_tickets')        => 'name',
+                                                     'glpi_tickets')        => 'name',
                    $ticket->getSearchOptionIDByField('field', 'content',
-                                                   'glpi_tickets')        => 'content',
+                                                     'glpi_tickets')        => 'content',
                    $ticket->getSearchOptionIDByField('field', 'completename',
-                                                   'glpi_itilcategories') => 'itilcategories_id',
+                                                     'glpi_itilcategories') => 'itilcategories_id',
                    $ticket->getSearchOptionIDByField('field', 'status',
-                                                   'glpi_tickets') => 'status',
+                                                     'glpi_tickets')        => 'status',
                    $ticket->getSearchOptionIDByField('field', 'type',
-                                                   'glpi_tickets') => 'type',
+                                                     'glpi_tickets')        => 'type',
                    $ticket->getSearchOptionIDByField('field', 'urgency',
-                                                   'glpi_tickets') => 'urgency',
+                                                     'glpi_tickets')        => 'urgency',
                    $ticket->getSearchOptionIDByField('field', 'impact',
-                                                   'glpi_tickets') => 'impact',
+                                                     'glpi_tickets')        => 'impact',
                    $ticket->getSearchOptionIDByField('field', 'priority',
-                                                   'glpi_tickets') => 'priority',
+                                                     'glpi_tickets')        => 'priority',
                    $ticket->getSearchOptionIDByField('field', 'name',
-                                                   'glpi_requesttypes') => 'requesttypes_id',
+                                                     'glpi_requesttypes')   => 'requesttypes_id',
                    $ticket->getSearchOptionIDByField('field', 'name',
-                                                   'glpi_slas') => 'slas_id',
+                                                     'glpi_slas')           => 'slas_id',
                    $ticket->getSearchOptionIDByField('field', 'due_date',
-                                                   'glpi_tickets') => 'due_date',
+                                                     'glpi_tickets')        => 'due_date',
                    4  => '_users_id_requester',
                    71 => '_groups_id_requester',
                    5  => '_users_id_assign',
@@ -103,8 +104,7 @@ class TicketTemplate extends CommonDBTM {
                    66 => '_users_id_observer',
                    65 => '_groups_id_observer',
                    $ticket->getSearchOptionIDByField('field', 'name',
-                                                   'glpi_suppliers') => 'suppliers_id_assign',
-
+                                                     'glpi_suppliers')      => 'suppliers_id_assign',
          );
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
@@ -114,9 +114,11 @@ class TicketTemplate extends CommonDBTM {
 
    }
 
+
    function getAllowedFieldsNames() {
+
       $searchOption = Search::getOptions('Ticket');
-      $tab = $this->getAllowedFields();
+      $tab          = $this->getAllowedFields();
       foreach ($tab as $ID => $shortname) {
          if (isset($searchOption[$ID]['name'])) {
             $tab[$ID] = $searchOption[$ID]['name'];
@@ -124,6 +126,7 @@ class TicketTemplate extends CommonDBTM {
       }
       return $tab;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
@@ -182,8 +185,11 @@ class TicketTemplate extends CommonDBTM {
       return $tab;
    }
 
+
    /**
     * Print the version form
+    *
+    * @since 0.83
     *
     * @param $ID integer ID of the item
     * @param $options array
@@ -206,19 +212,18 @@ class TicketTemplate extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][16]."&nbsp;: </td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td><td rowspan='3' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td  rowspan='3' >";
+      echo "<td rowspan='3' >";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['tracking'][39]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showYesNo("is_helpdeskvisible",$this->fields["is_helpdeskvisible"]);
+      Dropdown::showYesNo("is_helpdeskvisible", $this->fields["is_helpdeskvisible"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -237,6 +242,8 @@ class TicketTemplate extends CommonDBTM {
 
    /**
     * Print the computers disks
+    *
+    * @since version 0.83
     *
     * @param $comp Computer
     * @param $withtemplate=''  boolean : Template or basic item.
@@ -329,5 +336,4 @@ class TicketTemplate extends CommonDBTM {
    }
 
 }
-
 ?>

@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {
    $AJAX_INCLUDE = 1;
@@ -53,28 +52,25 @@ if (isset($_REQUEST["my_items"]) && !empty($_REQUEST["my_items"])) {
    }
 }
 
-
 if (isset($_REQUEST['itemtype']) && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
-
    // Security
    if (!class_exists($_REQUEST['itemtype']) ) {
       exit();
    }
 
-   $days = 3;
+   $days   = 3;
    $ticket = new Ticket();
-   $data = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_REQUEST['itemtype'],
-                                                            $_REQUEST['items_id'],
-                                                            $days);
+   $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_REQUEST['itemtype'],
+                                                              $_REQUEST['items_id'], $days);
 
    echo count($data).'&nbsp;'.$LANG['job'][36];
    if (count($data)) {
       $content = '';
       foreach ($data as $title) {
-         $content.= $title.'<br>';
+         $content .= $title.'<br>';
       }
       echo '&nbsp;';
       Html::showToolTip($content);
-   }  
+   }
 }
 ?>

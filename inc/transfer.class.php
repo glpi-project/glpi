@@ -1530,7 +1530,7 @@ class Transfer extends CommonDBTM {
                                       'number' => ($license->getField('number')-1)));
             } else if ($license->getField('number') == 1) {
                // Drop license
-               $license->delete(array('id'     => $license->getID()));
+               $license->delete(array('id' => $license->getID()));
             }
 
             // Create new license : need to transfer softwre and versions before

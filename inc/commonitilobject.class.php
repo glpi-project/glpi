@@ -307,6 +307,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Count active ITIL Objects requested by a user
     *
+    * @since version 0.83
+    *
     * @param $users_id integer ID of the User
     *
     * @return integer
@@ -694,6 +696,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (($key=array_search('status',$this->updates)) !== false
           && $this->oldvalues['status'] == $this->fields['status']) {
+
          unset($this->updates[$key]);
          unset($this->oldvalues['status']);
       }
@@ -1918,7 +1921,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
          echo "&nbsp;<a href='$url' title=\"".$LANG['job'][21]."\" target='_blank'>(".
-            $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
+               $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
       }
 
       if ($CFG_GLPI['use_mailing']) {
