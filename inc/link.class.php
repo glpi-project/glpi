@@ -187,12 +187,10 @@ class Link extends CommonDBTM {
    *
    * @param $link string : original string content
    * @param $item CommonDBTM : item used to make replacements
-   * @param $name string : name used for multi link generation
-   * @param $noip boolean : true to not evaluate IP/MAC
    *
    * @return array of link contents (may have several when item have several IP / MAC cases)
    */
-   static function generateLinkContents($link, CommonDBTM $item, $name='', $noip=false) {
+   static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
 
       if (strstr($link,"[ID]")) {
@@ -259,7 +257,7 @@ class Link extends CommonDBTM {
       }
       $ipmac = array();
 
-      if ($noip || (!strstr($link,"[IP]") && !strstr($link,"[MAC]"))) {
+      if (!strstr($link,"[IP]") && !strstr($link,"[MAC]")) {
          return array($link);
 
       } else { // Return sevral links id several IP / MAC
@@ -361,7 +359,7 @@ class Link extends CommonDBTM {
 
             if (empty($file)) {
                // Generate links
-               $links = self::generateLinkContents($data['link'], $item, $name);
+               $links = self::generateLinkContents($data['link'], $item);
                $i=1;
                foreach ($links as $key => $link) {
                   echo "<tr class='tab_bg_2'>";
@@ -372,8 +370,8 @@ class Link extends CommonDBTM {
                }
             } else {
                // Generate files
-               $files = self::generateLinkContents($data['link'], $item, $name);
-               $links = self::generateLinkContents($data['data'], $item, $name);
+               $files = self::generateLinkContents($data['link'], $item);
+               $links = self::generateLinkContents($data['data'], $item);
                $i=1;
                foreach ($links as $key => $link) {
                   if (isset($files[$key])) {
