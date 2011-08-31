@@ -837,12 +837,12 @@ class Ticket extends CommonITILObject {
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
-      if ($this->fields['takeintoaccount_delay_stat']==0
-             && (Session::haveRight("global_add_tasks", "1")
-                 || Session::haveRight("global_add_followups", "1")
-                 || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
-                 || (isset($_SESSION["glpigroups"])
-                     && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
+      if ($this->fields['takeintoaccount_delay_stat'] == 0
+          && (Session::haveRight("global_add_tasks", "1")
+              || Session::haveRight("global_add_followups", "1")
+              || ($this->isUser(parent::ASSIGN, Session::getLoginUserID()))
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -1428,6 +1428,8 @@ class Ticket extends CommonITILObject {
    /**
     * Get active or solved tickets for an hardware last X days
     *
+    * @since version 0.83
+    *
     * @param $itemtype string Item type
     * @param $items_id integer ID of the Item
     * @param $days integer day number
@@ -1436,21 +1438,20 @@ class Ticket extends CommonITILObject {
    **/
    function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days) {
       global $DB;
+
       $result = array();
 
-
       $query = "SELECT *
-                  FROM `".$this->getTable()."`
-                  WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
-                        AND `".$this->getTable()."`.`items_id` = '$items_id'
-                        AND (`".$this->getTable()."`.`status`
-                                       NOT IN ('".implode("', '",
-                                                          array_merge($this->getSolvedStatusArray(),
-                                                                      $this->getClosedStatusArray())
-                                                          )."')
-                              OR (`".$this->getTable()."`.`solvedate` IS NOT NULL 
-                                  AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW())
-                            )";
+                FROM `".$this->getTable()."`
+                WHERE `".$this->getTable()."`.`itemtype` = '$itemtype'
+                      AND `".$this->getTable()."`.`items_id` = '$items_id'
+                      AND (`".$this->getTable()."`.`status`
+                              NOT IN ('".implode("', '", array_merge($this->getSolvedStatusArray(),
+                                                                     $this->getClosedStatusArray())
+                                                )."')
+                            OR (`".$this->getTable()."`.`solvedate` IS NOT NULL
+                                AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY)
+                                            > NOW()))";
 
       foreach ($DB->request($query) as $tick) {
          $result[$tick['id']] = $tick['name'];
@@ -1462,6 +1463,8 @@ class Ticket extends CommonITILObject {
 
    /**
     * Count active tickets for an hardware
+    *
+    * @since version 0.83
     *
     * @param $itemtype string Item type
     * @param $items_id integer ID of the Item
@@ -1480,8 +1483,11 @@ class Ticket extends CommonITILObject {
                                                           )."')");
    }
 
+
    /**
     * Count solved tickets for an hardware last X days
+    *
+    * @since version 0.83
     *
     * @param $itemtype string Item type
     * @param $items_id integer ID of the Item
@@ -1494,13 +1500,14 @@ class Ticket extends CommonITILObject {
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
                                     AND `".$this->getTable()."`.`items_id` = '$items_id'
-                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL 
-                                    AND ADDDATE(`".$this->getTable()."`.`solvedate`, INTERVAL $days DAY) > NOW()
+                                    AND `".$this->getTable()."`.`solvedate` IS NOT NULL
+                                    AND ADDDATE(`".$this->getTable()."`.`solvedate`,
+                                                INTERVAL $days DAY) > NOW()
                                     AND `".$this->getTable()."`.`status`
-                                       IN ('".implode("', '",
-                                                          array_merge($this->getSolvedStatusArray(),
-                                                                      $this->getClosedStatusArray())
-                                                          )."')");
+                                          IN ('".implode("', '",
+                                                         array_merge($this->getSolvedStatusArray(),
+                                                                     $this->getClosedStatusArray())
+                                                         )."')");
    }
 
 
@@ -2548,7 +2555,7 @@ class Ticket extends CommonITILObject {
 
 
          // Auto update summary of active or just solved tickets
-         $params = array('my_items'      => '__VALUE__');
+         $params = array('my_items' => '__VALUE__');
 
          Ajax::updateItemOnSelectEvent("my_items","item_ticket_selection_information",
                                        $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",

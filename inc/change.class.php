@@ -651,7 +651,7 @@ class Change extends CommonITILObject {
    **/
    static function getSolvedStatusArray() {
       // To be overridden by class
-      $tab = array('solved', 'observe');
+      $tab = array('observe', 'solved');
 
       return $tab;
    }
@@ -664,7 +664,7 @@ class Change extends CommonITILObject {
    **/
    static function getProcessStatusArray() {
       // To be overridden by class
-      $tab = array('test', 'qualification', 'accepted');
+      $tab = array('accepted', 'qualification', 'test');
 
       return $tab;
    }

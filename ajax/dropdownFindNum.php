@@ -67,6 +67,7 @@ if ($item->isEntityAssign()) {
 if ($item->maybeDeleted()) {
    $where .= " AND `is_deleted` = '0' ";
 }
+
 if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
@@ -140,12 +141,10 @@ echo "</select>";
 
 
 // Auto update summary of active or just solved tickets
-$params = array('items_id'      => '__VALUE__',
-                'itemtype'          => $_POST['itemtype']);
+$params = array('items_id' => '__VALUE__',
+                'itemtype' => $_POST['itemtype']);
 
 Ajax::updateItemOnSelectEvent("dropdown_find_num","item_ticket_selection_information",
                               $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                               $params);
-
-
 ?>
