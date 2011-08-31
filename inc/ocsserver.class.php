@@ -1019,7 +1019,8 @@ class OcsServer extends CommonDBTM {
 
       // Already link - check if the OCS computer already exists
       if ($numrows > 0) {
-         $ocs_link_exists = false;
+         $ocs_link_exists = true;
+
          $data = $DB->fetch_assoc($result);
          $query = "SELECT *
                    FROM `hardware`
@@ -1027,20 +1028,22 @@ class OcsServer extends CommonDBTM {
          $result_ocs = $DBocs->query($query);
          // Not found
          if ($DBocs->numrows($result_ocs)==0) {
-            $ocs_id_change = true;
             $idlink = $data["id"];
             $query = "UPDATE `glpi_ocslinks`
                       SET `ocsid` = '$ocsid'
                       WHERE `id` = '" . $data["id"] . "'";
-            $DB->query($query);
 
-            //Add history to indicates that the ocsid changed
-            $changes[0] = '0';
-            //Old ocsid
-            $changes[1] = $data["ocsid"];
-            //New ocsid
-            $changes[2] = $ocsid;
-            Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IDCHANGED);
+            if ($DB->query($query)) {
+               $ocs_id_change = true;
+
+               //Add history to indicates that the ocsid changed
+               $changes[0] = '0';
+               //Old ocsid
+               $changes[1] = $data["ocsid"];
+               //New ocsid
+               $changes[2] = $ocsid;
+               Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IDCHANGED);
+            }
          }
       }
 
@@ -1941,7 +1944,7 @@ class OcsServer extends CommonDBTM {
             $compupdate["comment"] .= "Swap: " . $line["SWAP"];
          }
 
-         if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT 
+         if ($options['cfg_ocs']['ocs_version'] >= self::OCS1_3_VERSION_LIMIT
                && $options['cfg_ocs']["import_general_uuid"]
                   && !in_array("uuid", $options['computers_updates'])) {
             //In case of OCS < 1.03, UUID is ignored, since it doesn't exists in ocs database
