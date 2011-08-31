@@ -1864,6 +1864,8 @@ function update0723to078($output='HTML') {
    }
 
    //// Upgrade rules datas
+   $changes= array();
+
    // For Rule::RULE_AFFECT_RIGHTS
    $changes[1]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
                         'recursive'=>'is_recursive','active'=>'is_active');
