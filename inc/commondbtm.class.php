@@ -2412,6 +2412,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Return a search option ID by looking for a value of a specific field and maybe a specific table
     *
+    * @since version 0.83
+    *
     * @param field the field in which looking for the value (for example : table, name, etc)
     * @param value the value to look for in the field
     * @param table the table
@@ -2419,12 +2421,14 @@ class CommonDBTM extends CommonGLPI {
     * @return then search option id, or -1 if not found
    **/
    function getSearchOptionIDByField($field, $value, $table='') {
+
       $tab = $this->getSearchOptionByField($field, $value, $table);
       if (isset($tab['id'])) {
          return $tab['id'];
       }
       return -1;
    }
+
 
    /**
     * Check float and decimal values
@@ -2854,8 +2858,10 @@ class CommonDBTM extends CommonGLPI {
    /**
     * display a specific field value
     *
+    * @since version 0.83
+    *
     * @param $field string field to display
-    * @param $field_id_search_option integer.string id of the search option field or field name
+    * @param $value integer.string id of the search option field or field name
     *
     * @return return the string to display
    **/
@@ -2863,16 +2869,22 @@ class CommonDBTM extends CommonGLPI {
       return '';
    }
 
+
    /**
     * display a field using standard system
     *
+    * @since version 0.83
+    *
+    * @param $field_id_or_search_options integer/string/array id of the search option field
+    *                                                            or field name
+    *                                                            or search option array
     * @param $value mixed value t display
-    * @param $field_id_or_search_options integer/string/array id of the search option field or field name or search option array
     *
     * @return return the string to display
    **/
    function getValueToDisplay($field_id_or_search_options, $value) {
       global $LANG, $CFG_GLPI;
+
       $options = array();
       if (is_array($field_id_or_search_options)) {
          $options = $field_id_or_search_options;
@@ -2885,14 +2897,13 @@ class CommonDBTM extends CommonGLPI {
                $options = $searchopt[$field_id_or_search_options];
             }
          } else { // Get if field name is passed
-            $options = $this->getSearchOptionByField('field',$field_id_or_search_options,$this->getTable());
+            $options = $this->getSearchOptionByField('field', $field_id_or_search_options,
+                                                     $this->getTable());
          }
       }
 
       if (count($options)) {
-
          if (isset($options['datatype'])) {
-
             $unit = '';
             if (isset($options['unit'])) {
                $unit = $options['unit'];
@@ -2900,18 +2911,14 @@ class CommonDBTM extends CommonGLPI {
 
             switch ($options['datatype']) {
                case "number" :
-                  return str_replace(' ', '&nbsp;', Html::formatNumber($value, false, 0)).
-                      $unit;
-                  break;
+                  return str_replace(' ', '&nbsp;', Html::formatNumber($value, false, 0)). $unit;
 
                case "decimal" :
                   return str_replace(' ', '&nbsp;', Html::formatNumber($value)).$unit;
-                  break;
 
 
                case "string" :
                   return $value;
-                  break;
 
                case "text" :
                   $text = nl2br($value);
@@ -2919,20 +2926,16 @@ class CommonDBTM extends CommonGLPI {
                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
                   }
                   return $text;
-                  break;
 
                case "bool" :
                   return Dropdown::getYesNo($value);
-                  break;
 
                case "date" :
                case "date_delay" :
                   return Html::convDate($value);
-                  break;
 
                case "datetime" :
                   return Html::convDateTime($value);
-                  break;
 
                case "timestamp" :
                   $withseconds = false;
@@ -2940,11 +2943,9 @@ class CommonDBTM extends CommonGLPI {
                      $withseconds = $options['withseconds'];
                   }
                   return Html::timestampToString($value,$withseconds);
-                  break;
 
                case "email" :
                   return "<a href='mailto:$value'>$value</a>";
-                  break;
 
             case "weblink" :
                $orig_link = trim($value);
@@ -2958,19 +2959,15 @@ class CommonDBTM extends CommonGLPI {
                   return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
                return "&nbsp;";
-               break;
-
 
                case "dropdown" :
                   if ($options['table'] == 'glpi_users') {
                      return getUserName($value);
                   }
                   return Dropdown::getDropdownName($options['table'],$value);
-                  break;
 
                case "right" :
                   return Profile::getRightValue($value);
-                  break;
 
                case "itemtypename" :
                   if (class_exists($value)) {
@@ -2984,14 +2981,13 @@ class CommonDBTM extends CommonGLPI {
                      return $CFG_GLPI['languages'][$value][0];
                   }
                   return $LANG['setup'][46];
-                  break;
 
             }
          }
          // Get specific display if available
          $itemtype = getItemTypeForTable($options['table']);
-         $item = new $itemtype();
-         $specific = $item->getSpecificValueToDisplay($options['field'],$value);
+         $item     = new $itemtype();
+         $specific = $item->getSpecificValueToDisplay($options['field'], $value);
          if (!empty($specific)) {
             return $specific;
          }
@@ -2999,6 +2995,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return $value;
    }
+
 
    static function listTemplates($itemtype, $target, $add = 0) {
       global $DB, $CFG_GLPI, $LANG;

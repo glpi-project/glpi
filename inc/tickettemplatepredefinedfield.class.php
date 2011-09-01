@@ -66,6 +66,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return Session::haveRight('tickettemplate', 'r');
    }
 
+
    function prepareInputForAdd($input) {
 
       // Use massiveaction system to manage add system.

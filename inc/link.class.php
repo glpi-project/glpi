@@ -269,7 +269,7 @@ class Link extends CommonDBTM {
                     ORDER BY `logical_number`";
          $result2 = $DB->query($query2);
 
-         if (get_class($item)=='NetworkEquipment') {
+         if (get_class($item) == 'NetworkEquipment') {
             $ipmac[0]['ip']     = $item->getField('ip');
             $ipmac[0]['mac']    = $item->getField('mac');
             $ipmac[0]['number'] = '';
@@ -285,7 +285,7 @@ class Link extends CommonDBTM {
          if (count($ipmac)>0) {
             foreach ($ipmac as $key => $val) {
                $tmplink = $link;
-               $disp = 1;
+               $disp    = 1;
                if (strstr($link,"[IP]")) {
                   if (empty($val['ip'])) {
                      $disp = 0;
@@ -360,7 +360,7 @@ class Link extends CommonDBTM {
             if (empty($file)) {
                // Generate links
                $links = self::generateLinkContents($data['link'], $item);
-               $i=1;
+               $i     = 1;
                foreach ($links as $key => $link) {
                   echo "<tr class='tab_bg_2'>";
                   $url = $link;
@@ -372,7 +372,7 @@ class Link extends CommonDBTM {
                // Generate files
                $files = self::generateLinkContents($data['link'], $item);
                $links = self::generateLinkContents($data['data'], $item);
-               $i=1;
+               $i     = 1;
                foreach ($links as $key => $link) {
                   if (isset($files[$key])) {
                      // a different name for each file, ex name = foo-[IP].txt
@@ -400,5 +400,4 @@ class Link extends CommonDBTM {
       }
    }
 }
-
 ?>

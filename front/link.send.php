@@ -56,6 +56,7 @@ if (isset($_GET["lID"])) {
                // first one (the same for all IP)
                $filename = reset($content_filename);
             }
+
             if (isset($_GET['rank']) && isset($content_data[$_GET['rank']])) {
                $data = $content_data[$_GET['rank']];
             } else {
