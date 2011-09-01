@@ -145,9 +145,9 @@ class Central extends CommonGLPI {
             $message = $LANG['central'][1]." : ";
             foreach ($logins as $login) {
                $user->getFromDBbyName($login);
-               $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a> ";
+               $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a>";
             }
-            $message.= implode(",", $accounts);
+            $message.= implode(" ", $accounts);
             echo "<tr><th colspan='2'><br>";
             Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
             echo "</th></tr>";
