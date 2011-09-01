@@ -83,7 +83,7 @@ class Dropdown {
       $params['displaywith'] = array();
       //Parameters about choice 0
       //Empty choice's label
-      $params['emptylabel'] = '';
+      $params['emptylabel'] = DROPDOWN_EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
 
@@ -93,17 +93,13 @@ class Dropdown {
          }
       }
 
-      $name         = DROPDOWN_EMPTY_VALUE;
+      $name         = $params['emptylabel'];
       $comment      = "";
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
 
       // Check default value for dropdown : need to be a numeric
       if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
-         if ($item->getType('Entity')) {
-            $params['value'] = -1;
-         } else {
-            $params['value'] = 0;
-         }
+         $params['value'] = 0;
       }
 
       if ($params['value'] > 0

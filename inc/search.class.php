@@ -2516,7 +2516,7 @@ class Search {
 
          case "equals" :
             if ($nott) {
-               $SEARCH = " <> '$val'";
+               $SEARCH = " <> '$val' ";
             } else {
                $SEARCH = " = '$val'";
             }
@@ -2569,21 +2569,21 @@ class Search {
                                       `$table`.`$name2`) $SEARCH".
                             makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
 
-         case "glpi_groups.name" :
-            $linkfield = "";
-            // $val could be 0 or -1 for dropdown
-            if (in_array($searchtype, array('equals', 'notequals'))) {
-               if (($val <= 0 && $searchtype == 'equals' && !$nott)
-                   || ($val <= 0 && $searchtype == 'notequals' && $nott)) {
-                  return " $link (`$table`.`id` IS NULL) ";
-               }
-               if ($val <= 0) {
-                  return " $link (`$table`.`id` IS NOT NULL) ";
-               }
-               return " $link (`$table`.`id`".$SEARCH.') ';
-
-            }
-            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+//          case "glpi_groups.name" :
+//             $linkfield = "";
+//             // $val could be 0 or -1 for dropdown
+//             if (in_array($searchtype, array('equals', 'notequals'))) {
+//                if (($val <= 0 && $searchtype == 'equals' && !$nott)
+//                    || ($val <= 0 && $searchtype == 'notequals' && $nott)) {
+//                   return " $link (`$table`.`id` IS NULL) ";
+//                }
+//                if ($val <= 0) {
+//                   return " $link (`$table`.`id` IS NOT NULL) ";
+//                }
+//                return " $link (`$table`.`id`".$SEARCH.') ';
+// 
+//             }
+//             return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
@@ -2933,10 +2933,12 @@ class Search {
          if ($searchtype=='notequals') {
             $nott = !$nott;
          }
-         // Add NULL if $val = 0 and not negative search
-         if ((!$nott && $val==0)) {
+         // Add NULL if $val = 0 and not negative search or 
+         // Or negative search on real value
+         if ((!$nott && $val==0) || ($nott && $val != 0)) {
             $out .= " OR `$table`.`id` IS NULL";
          }
+
          $out .= ')';
          return $out;
       }
