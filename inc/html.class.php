@@ -1083,27 +1083,6 @@ class Html {
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
-         if (Session::haveRight("tickettemplate","r")) {
-            $menu['maintain']['content']['ticket']['links']['template']
-                                                                     = '/front/tickettemplate.php';
-            $menu['maintain']['content']['ticket']['options']['template']['title']
-                                                                     = $LANG['job'][59];
-            $menu['maintain']['content']['ticket']['options']['template']['page']
-                                                                     = '/front/tickettemplate.php';
-
-            $menu['maintain']['content']['tickettemplate']['title']     = $LANG['job'][59];
-            $menu['maintain']['content']['tickettemplate']['shortcut']  = 'g';
-            $menu['maintain']['content']['tickettemplate']['page']      = '/front/tickettemplate.php';
-            $menu['maintain']['content']['tickettemplate']['links']['search']
-                                                                        = '/front/tickettemplate.php';
-            $menu['maintain']['content']['tickettemplate']['links']['search']
-                                                                        = '/front/tickettemplate.php';
-
-            if (Session::haveRight("tickettemplate","w")) {
-               $menu['maintain']['content']['tickettemplate']['links']['add'] = '/front/tickettemplate.form.php';
-            }
-         }
-
 
          if (Session::haveRight('validate_ticket',1)) {
             $opt = array();

@@ -167,11 +167,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             }
 
          } else {
-            echo "<tr><th colspan='2'>".$LANG['search'][15]."</th></tr>";
+            echo "<tr><th colspan='3'>".$LANG['search'][15]."</th></tr>";
          }
 
          if ($canedit) {
-            echo "<tr class='tab_bg_2'><td class='right top'>";
+            echo "<tr class='tab_bg_2'><td class='right top' width='30%'>";
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";

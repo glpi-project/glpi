@@ -606,10 +606,12 @@ class Dropdown {
                                                'Manufacturer'    => Manufacturer::getTypeName(2)),
 
                   $LANG['title'][24]  => array('ITILCategory'     => ITILCategory::getTypeName(2),
+                                               'TicketTemplate'   => TicketTemplate::getTypeName(2),
                                                'TaskCategory'     => TaskCategory::getTypeName(2),
                                                'SolutionType'     => SolutionType::getTypeName(2),
                                                'RequestType'      => RequestType::getTypeName(2),
-                                               'SolutionTemplate' => SolutionTemplate::getTypeName(2)),
+                                               'SolutionTemplate' => SolutionTemplate::getTypeName(2),
+),
 
                   $LANG['setup'][140] => array('ComputerType'         => ComputerType::getTypeName(2),
                                                'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(2),

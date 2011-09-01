@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Ticket Template class
 /// since version 0.83
-class TicketTemplate extends CommonDBTM {
+class TicketTemplate extends CommonDropdown {
    /// TODO : manage hidden fields for predefined values : display value for predefined and hidden fields
    /// Only hidden fields for post-only
    /// TODO add preview of template
@@ -71,6 +71,7 @@ class TicketTemplate extends CommonDBTM {
    function canView() {
       return Session::haveRight('tickettemplate', 'r');
    }
+
 
 
    function getAllowedFields() {
@@ -145,18 +146,28 @@ class TicketTemplate extends CommonDBTM {
    }
 
 
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'is_helpdeskvisible',
+                         'label' => $LANG['tracking'][39],
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'is_default',
+                         'label' => $LANG['job'][28],
+                         'type'  => 'bool',
+                         'list'  => true));
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
    function getSearchOptions() {
       global $LANG;
 
-      $tab = array();
-      $tab['common'] = $LANG['common'][32];
-
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab = parent::getSearchOptions();
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'is_helpdeskvisible';
@@ -169,77 +180,10 @@ class TicketTemplate extends CommonDBTM {
       $tab[3]['datatype']      = 'bool';
       $tab[3]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
-
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
-
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }
 
-
-   /**
-    * Print the version form
-    *
-    * @since 0.83
-    *
-    * @param $ID integer ID of the item
-    * @param $options array
-    *     - target for the Form
-    *     - computers_id ID of the computer for add process
-    *
-    * @return true if displayed  false if item not found or not right to display
-   **/
-   function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
-      $this->showTabs($options);
-      $this->showFormHeader($options);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;: </td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "name");
-      echo "</td><td rowspan='3' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='3' >";
-      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['tracking'][39]."&nbsp;:</td>";
-      echo "<td>";
-      Dropdown::showYesNo("is_helpdeskvisible", $this->fields["is_helpdeskvisible"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][28]."&nbsp;:</td>";
-      echo "<td>";
-      Dropdown::showYesNo("is_default",$this->fields["is_default"]);
-      echo "</td></tr>";
-
-      $this->showFormButtons($options);
-      $this->addDivForTabs();
-
-      return true;
-
-   }
 
 
    /**
