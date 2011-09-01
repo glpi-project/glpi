@@ -301,25 +301,23 @@ class RuleImportComputer extends Rule {
          switch ($criteria->fields['criteria']) {
             case 'IPADDRESS' :
                if (count($input["IPADDRESS"])) {
-                  $needport = true;
-                  $sql_where .= " AND `glpi_networkports`.`ip` IN ";
-                  for ($i=0 ; $i<count($input["IPADDRESS"]) ; $i++) {
-                     $sql_where .= ($i>0 ? ',"' : '("').$input["IPADDRESS"][$i].'"';
-                  }
-                  $sql_where .= ")";
+                  $needport   = true;
+                  $sql_where .= " AND `glpi_networkports`.`ip` IN ('";
+                  $sql_where .= implode("','", $input["IPADDRESS"]);
+                  $sql_where .= "')";
                } else {
-                  $sql_where =  "AND 0 ";
+                  $sql_where =  " AND 0 ";
                }
                break;
 
             case 'MACADDRESS' :
                if (count($input["MACADDRESS"])) {
-                  $needport = true;
+                  $needport   = true;
                   $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
                   $sql_where .= implode("','",$input['MACADDRESS']);
                   $sql_where .= "')";
                } else {
-                  $sql_where =  "AND 0 ";
+                  $sql_where =  " AND 0 ";
                }
                break;
 
