@@ -706,6 +706,11 @@ class Document extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'sha1sum';
+      $tab[20]['name']          = $LANG['document'][1];
+      $tab[20]['massiveaction'] = false;
+
       $tab[72]['table']         = 'glpi_documents_items';
       $tab[72]['field']         = 'count';
       $tab[72]['name']          = $LANG['document'][19]." (".$LANG['tracking'][29].")";
