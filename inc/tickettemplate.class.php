@@ -40,7 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Ticket Template class
 /// since version 0.83
 class TicketTemplate extends CommonDBTM {
-   /// TODO : manage hidden fields for predefined values for post-only
+   /// TODO : manage hidden fields for predefined values : display value for predefined and hidden fields
+   /// Only hidden fields for post-only
 
 
    // From CommonDBTM
