@@ -305,9 +305,9 @@ class RuleImportComputer extends Rule {
                break;
 
             case 'MACADDRESS' :
-               $sql_where .= " AND `glpi_networkports`.`mac` IN (";
-               $sql_where .= implode(',',$input['MACADDRESS']);
-               $sql_where .= ")";
+               $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
+               $sql_where .= implode("','",$input['MACADDRESS']);
+               $sql_where .= "')";
                break;
 
             case 'name' :
