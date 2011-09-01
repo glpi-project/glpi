@@ -2614,13 +2614,13 @@ class Search {
                                       `$table`.`$name2`) $SEARCH".
                             self::makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
 
-         case "glpi_groups.name" :
-            $linkfield = "";
-            if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table`.`id`".$SEARCH.
-                               ($val==0?" OR `$table`.`id` IS NULL":'').') ';
-            }
-            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+//          case "glpi_groups.name" :
+//             $linkfield = "";
+//             if (in_array($searchtype, array('equals', 'notequals'))) {
+//                return " $link (`$table`.`id`".$SEARCH.
+//                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
+//             }
+//             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
@@ -3010,7 +3010,8 @@ class Search {
             $nott = !$nott;
          }
          // Add NULL if $val = 0 and not negative search
-         if ((!$nott && $val==0)) {
+         // Or negative search on real value
+         if ((!$nott && $val==0) || ($nott && $val != 0)) {
             $out .= " OR `$table`.`id` IS NULL";
          }
          $out .= ')';
