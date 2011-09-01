@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Hidden fields for ticket template class
+/// since version 0.83
 class TicketTemplateHiddenField extends CommonDBChild {
 
    // From CommonDBChild
@@ -74,7 +75,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['job'][60],
                                         countElementsInTable($this->getTable(),
-                                                             "`tickettemplates_id` = '".$item->getID()."'"));
+                                                             "`tickettemplates_id`
+                                                               = '".$item->getID()."'"));
          }
          return $LANG['job'][60];
       }
@@ -88,8 +90,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Print the hidden fields
+    *
+    * @since version 0.83
     *
     * @param $tt Ticket Template
     * @param $withtemplate=''  boolean : Template or basic item.
@@ -107,10 +112,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
       }
 
       $canedit = $tt->can($ID, "w");
-      $fields = $tt->getAllowedFieldsNames();
-
-
-      $rand = mt_rand();
+      $fields  = $tt->getAllowedFieldsNames();
+      $rand    = mt_rand();
       echo "<form name='tickettemplatehiddenfields_form$rand'
                   id='tickettemplatehiddenfields_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -124,11 +127,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
-         if ($DB->numrows($result)==1) {
-            echo $LANG['job'][63];
-         } else {
-            echo $LANG['job'][60];
-         }
+         echo self::getTypeName($DB->numrows($result));
          echo "</th></tr>";
          $used = array();
          if ($DB->numrows($result)) {
@@ -157,7 +156,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'  => $used));
-            echo "&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8].
+                         "\" class='submit'>";
             echo "</td></tr>";
          }
          echo "</table></div>";
@@ -171,5 +171,4 @@ class TicketTemplateHiddenField extends CommonDBChild {
       }
    }
 }
-
 ?>
