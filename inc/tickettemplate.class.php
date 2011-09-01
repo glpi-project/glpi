@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 class TicketTemplate extends CommonDBTM {
    /// TODO : manage hidden fields for predefined values : display value for predefined and hidden fields
    /// Only hidden fields for post-only
-
+   /// TODO ad preview of template
 
    // From CommonDBTM
    public $dohistory = true;
