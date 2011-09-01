@@ -294,20 +294,28 @@ class RuleImportComputer extends Rule {
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
             case 'IPADDRESS' :
-               $sql_from .= " LEFT JOIN `glpi_networkports`
-                                 ON (`glpi_computers`.`id` = `glpi_networkports`.`items_id`
-                                     AND `glpi_networkports`.`itemtype` = 'Computer') ";
-               $sql_where .= " AND `glpi_networkports`.`ip` IN ";
-               for ($i=0 ; $i<count($input["IPADDRESS"]) ; $i++) {
-                  $sql_where .= ($i>0 ? ',"' : '("').$input["IPADDRESS"][$i].'"';
+               if (count($input["IPADDRESS"])) {
+                  $sql_from .= " LEFT JOIN `glpi_networkports`
+                                    ON (`glpi_computers`.`id` = `glpi_networkports`.`items_id`
+                                        AND `glpi_networkports`.`itemtype` = 'Computer') ";
+                  $sql_where .= " AND `glpi_networkports`.`ip` IN ";
+                  for ($i=0 ; $i<count($input["IPADDRESS"]) ; $i++) {
+                     $sql_where .= ($i>0 ? ',"' : '("').$input["IPADDRESS"][$i].'"';
+                  }
+                  $sql_where .= ")";
+               } else {
+                  $sql_where =  "AND 0 ";
                }
-               $sql_where .= ")";
                break;
 
             case 'MACADDRESS' :
-               $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
-               $sql_where .= implode("','",$input['MACADDRESS']);
-               $sql_where .= "')";
+               if (count($input["MACADDRESS"])) {
+                  $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
+                  $sql_where .= implode("','",$input['MACADDRESS']);
+                  $sql_where .= "')";
+               } else {
+                  $sql_where =  "AND 0 ";
+               }
                break;
 
             case 'name' :
