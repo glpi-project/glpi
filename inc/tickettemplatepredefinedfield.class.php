@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Predefined fields for ticket template class
+/// since version 0.83
 class TicketTemplatePredefinedField extends CommonDBChild {
 
    // From CommonDBChild
@@ -66,8 +67,9 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
+
       // Use massiveaction system to manage add system.
-      // Need to update data : value not set but 
+      // Need to update data : value not set but
       if (!isset($input['value'])) {
          if (isset($input['field']) && isset($input[$input['field']])) {
             $input['value'] = $input[$input['field']];
@@ -78,6 +80,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return $input;
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
@@ -86,7 +89,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['job'][61],
                                         countElementsInTable($this->getTable(),
-                                                             "`tickettemplates_id` = '".$item->getID()."'"));
+                                                             "`tickettemplates_id`
+                                                               = '".$item->getID()."'"));
          }
          return $LANG['job'][61];
       }
@@ -104,6 +108,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    /**
     * Print the predefined fields
     *
+    * @since version 0.83
+    *
     * @param $tt Ticket Template
     * @param $withtemplate=''  boolean : Template or basic item.
     *
@@ -118,12 +124,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          return false;
       }
 
-      $canedit = $tt->can($ID, "w");
-      $fields = $tt->getAllowedFieldsNames();
-      $searchOption = Search::getOptions('Ticket');
-      $ticket = new Ticket();
-
-      $rand = mt_rand();
+      $canedit       = $tt->can($ID, "w");
+      $fields        = $tt->getAllowedFieldsNames();
+      $searchOption  = Search::getOptions('Ticket');
+      $ticket        = new Ticket();
+      $rand          = mt_rand();
       echo "<form name='tickettemplatepredefinedfields_form$rand'
                   id='tickettemplatepredefinedfields_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -137,11 +142,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";
-         if ($DB->numrows($result)==1) {
-            echo $LANG['job'][64];
-         } else {
-            echo $LANG['job'][61];
-         }
+         echo self::getTypeName($DB->numrows($result));
          echo "</th></tr>";
          $used = array();
          if ($DB->numrows($result)) {
@@ -158,9 +159,9 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                   echo "<td>&nbsp;</td>";
                }
                echo "<td>".$fields[$data['num']]."</td>";
-               
-               echo "<td>".$ticket->getValueToDisplay($searchOption[$data['num']], $data['value'])."</td>";
 
+               echo "<td>".$ticket->getValueToDisplay($searchOption[$data['num']], $data['value']).
+                    "</td>";
                $used[$data['num']] = $data['num'];
             }
 
@@ -175,9 +176,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields += $fields;
-            
-            $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used'  => $used, 'toadd'));
-            echo "</td><td colspan='2'  class='left top'>";
+
+            $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
+                                                                             'toadd'));
+            echo "</td><td colspan='2' class='top'>";
             $paramsmassaction = array('id_field'  => '__VALUE__',
                                       'itemtype'  => 'Ticket');
 
@@ -199,5 +201,4 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       }
    }
 }
-
 ?>
