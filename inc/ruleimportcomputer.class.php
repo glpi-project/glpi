@@ -287,9 +287,14 @@ class RuleImportComputer extends Rule {
          $where_entity = $input['entities_id'];
       }
 
-      $sql_where = " `glpi_computers`.`entities_id` IN ($where_entity)
+      // Search computer, in entity, not already linked
+      $sql_where = "`glpi_ocslinks`.`computers_id` IS NULL
+                    AND `glpi_computers`.`entities_id` IN ($where_entity)
                     AND `glpi_computers`.`is_template` = '0' ";
-      $sql_from = "`glpi_computers`";
+
+      $sql_from = "`glpi_computers`
+                   LEFT JOIN `glpi_ocslinks`
+                          ON (`glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`)";
 
       $needport = false;
       foreach ($complex_criterias as $criteria) {
