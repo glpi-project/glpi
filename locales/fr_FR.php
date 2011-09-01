@@ -1031,10 +1031,10 @@ $LANG['job'][56] = "Lier des tickets";
 $LANG['job'][57] = "Tickets dupliqués";
 $LANG['job'][58] = "Gabarit de tickets";
 $LANG['job'][59] = "Gabarits de tickets";
-$LANG['job'][60] = "Champs cachés";
+$LANG['job'][60] = "Champs masqués";
 $LANG['job'][61] = "Champs prédéfinis";
 $LANG['job'][62] = "Champs obligatoires";
-$LANG['job'][63] = "Champ caché";
+$LANG['job'][63] = "Champ masqué";
 $LANG['job'][64] = "Champ prédéfini";
 $LANG['job'][65] = "Champ obligatoire";
 
