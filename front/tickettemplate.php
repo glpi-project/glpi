@@ -36,11 +36,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkRight("computer", "r");
-
-Html::header($LANG['job'][59], $_SERVER['PHP_SELF'], "maintain", "tickettemplate");
-
-Search::show('TicketTemplate');
-
-Html::footer();
+$dropdown = new TicketTemplate();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>
