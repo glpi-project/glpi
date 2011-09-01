@@ -2981,7 +2981,14 @@ class Ticket extends CommonITILObject {
 
       // Optional line
       $ismultientities = Session::isMultiEntitiesMode();
-      echo '<tr><th colspan="4">';
+      echo "<tr>";
+      if (!$ID) {
+         echo "<th colspan='2'>";
+         echo "Choix template/categorie";
+         echo "</th><th colspan='2'>";
+      } else {
+         echo "</th><th colspan='4'>";
+      }
 
       if ($ID) {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
@@ -2997,7 +3004,7 @@ class Ticket extends CommonITILObject {
             echo $LANG['job'][13];
          }
       }
-      echo '</th></tr>';
+      echo "</th></tr>";
       echo "<tr>";
       echo "<th class='left' colspan='2'>";
 
