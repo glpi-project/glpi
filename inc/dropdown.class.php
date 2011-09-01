@@ -983,12 +983,14 @@ class Dropdown {
    /**
     * Dropdown integers
     *
+    * @since version 0.83
+    *
     * @param $myname select name
     * @param $options array of options
     *    - value : default value
     *    - min : min value : default 0
     *    - max : max value : default DAY_TIMESTAMP
-    *    - value : default value 
+    *    - value : default value
    **/
    static function showTimeStamp($myname, $options = array()) {
       global $LANG;
@@ -1017,15 +1019,16 @@ class Dropdown {
       // Floor with MINUTE_TIMESTAMP for rounded purpose
       $params['value'] = floor(($params['value'])/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
 
-      $values = array(0                    => $params['emptylabel']);
+      $values = array(0  => $params['emptylabel']);
       for ($i = $params['min'] ; $i <= $params['max']; $i+=15*MINUTE_TIMESTAMP) {
-         $hour = floor($i/HOUR_TIMESTAMP);
-         $minute = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
+         $hour       = floor($i/HOUR_TIMESTAMP);
+         $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
          $values[$i] = $hour.$LANG['gmt'][2].($minute==0?'00':$minute);
       }
 
       return Dropdown::showFromArray("$myname", $values, array('value' => $params['value']));
    }
+
 
    /**
     * Private / Public switch for items which may be assign to a user and/or an entity

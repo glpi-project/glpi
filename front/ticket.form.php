@@ -54,9 +54,7 @@ if (isset($_POST["add"])) {
          $_POST["items_id"] = $splitter[1];
       }
    }
-
    $track->add($_POST);
-
    Html::back();
 
 } else if (isset($_POST['update'])) {
@@ -69,7 +67,6 @@ if (isset($_POST["add"])) {
          $_POST["items_id"] = $splitter[1];
       }
    }
-
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
@@ -187,7 +184,6 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
          $options[$key] = $_GET[$key];
       }
    }
-
    $track->showForm($_GET["id"],$options);
 
 } else {
@@ -209,7 +205,8 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    '_users_id_observer'        => 0,
                    '_users_id_observer_notif'  => array('use_notification' => 1),
                    '_groups_id_observer'       => 0,
-                   '_link'                     => array('tickets_id_2' => '', 'link' => ''),
+                   '_link'                     => array('tickets_id_2' => '',
+                                                        'link'         => ''),
                    'suppliers_id_assign'       => 0,
                    'name'                      => '',
                    'content'                   => '',

@@ -1498,22 +1498,32 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
+   /**
+    * display a value according to a field
+    *
+    * @since version 0.83
+    *
+    * @param $field name of the field
+    * @param $value value to display
+    *
+    * @return a string
+   **/
+
    static function getSpecificValueToDisplay($field, $value) {
+
       switch ($field) {
          case 'urgency':
             return self::getUrgencyName($value);
-            break;
 
          case 'impact':
             return self::getImpactName($value);
-            break;
 
          case 'priority':
             return self::getPriorityName($value);
-            break;
       }
       return '';
    }
+
 
    function getSearchOptionsActors () {
       global $LANG;

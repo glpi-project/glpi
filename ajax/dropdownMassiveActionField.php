@@ -52,17 +52,14 @@ if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
    $item->checkGlobal("w");
 }
 
-
 if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
    if (!isset($search[$_POST["id_field"]])) {
       exit();
    }
-
-   $search = $search[$_POST["id_field"]];
-
+   $search            = $search[$_POST["id_field"]];
    $FIELDNAME_PRINTED = false;
-   $USE_TABLE = false;
+   $USE_TABLE         = false;
 
    if ($search["table"]==getTableForItemType($_POST["itemtype"])) { // field type
       switch ($search["table"].".".$search["linkfield"]) {
@@ -132,7 +129,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      echo "<table><tr><td>";
                      Html::showDateFormItem($search["linkfield"]);
                      echo "</td>";
-                     $USE_TABLE = true;
+                     $USE_TABLE       = true;
                      $already_display = true;
                      break;
 
@@ -141,7 +138,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      Html::showDateTimeFormItem($search["linkfield"]);
                      echo "</td>";
                      $already_display = true;
-                     $USE_TABLE = true;
+                     $USE_TABLE       = true;
                      break;
 
                   case "bool" :
@@ -153,8 +150,6 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
                      $already_display = true;
                      break;
-
-
                }
             }
 
@@ -279,7 +274,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      echo "<table><tr><td>";
                      Html::showDateFormItem($search["linkfield"]);
                      echo "</td>";
-                     $USE_TABLE = true;
+                     $USE_TABLE       = true;
                      $already_display = true;
                      break;
 
@@ -332,5 +327,4 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    }
 
 }
-
 ?>
