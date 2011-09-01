@@ -114,8 +114,8 @@ class Document extends CommonDBTM {
    static function addTab(CommonDBTM $item, &$tab) {
       global $LANG;
       $tab[5] = $LANG['Menu'][27];
-      /// TODO first try for 
-/*    
+      /// TODO first try for
+/*
       if (haveRight("document","r")) {
          $nb     = Document_Item::countForItem($item);
          $tab[5] = $LANG['Menu'][27]." ($nb)";
@@ -676,6 +676,11 @@ class Document extends CommonDBTM {
       $tab[19]['name']          = $LANG['common'][26];
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
+
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'sha1sum';
+      $tab[20]['name']          = $LANG['document'][1];
+      $tab[20]['massiveaction'] = false;
 
       $tab[72]['table']         = 'glpi_documents_items';
       $tab[72]['field']         = 'count';
