@@ -981,7 +981,7 @@ class Html {
 
       if (Session::haveRight("peripheral","r")) {
          $menu['inventory']['content']['peripheral']['title']           = $LANG['Menu'][16];
-         $menu['inventory']['content']['peripheral']['shortcut']        = 'n';
+         $menu['inventory']['content']['peripheral']['shortcut']        = 'h';
          $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
          $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
 
@@ -1013,7 +1013,7 @@ class Html {
 
       if (Session::haveRight("cartridge","r")) {
          $menu['inventory']['content']['cartridge']['title']      = $LANG['Menu'][21];
-         $menu['inventory']['content']['cartridge']['shortcut']   = 'c';
+         $menu['inventory']['content']['cartridge']['shortcut']   = 'i';
          $menu['inventory']['content']['cartridge']['page']       = '/front/cartridgeitem.php';
          $menu['inventory']['content']['cartridge']['links']['search']
                                                                   = '/front/cartridgeitem.php';
@@ -1092,7 +1092,7 @@ class Html {
                                                                      = '/front/tickettemplate.php';
 
             $menu['maintain']['content']['tickettemplate']['title']     = $LANG['job'][59];
-            $menu['maintain']['content']['tickettemplate']['shortcut']  = 't';
+            $menu['maintain']['content']['tickettemplate']['shortcut']  = 'g';
             $menu['maintain']['content']['tickettemplate']['page']      = '/front/tickettemplate.php';
             $menu['maintain']['content']['tickettemplate']['links']['search']
                                                                         = '/front/tickettemplate.php';
@@ -1162,7 +1162,7 @@ class Html {
 
       if (Session::haveRight("statistic","1")) {
          $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
-         $menu['maintain']['content']['stat']['shortcut'] = '1';
+         $menu['maintain']['content']['stat']['shortcut'] = 's';
          $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
       }
 
@@ -1175,7 +1175,7 @@ class Html {
          $menu['financial']['default'] = '/front/budget.php';
 
          $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
-         $menu['financial']['content']['budget']['shortcut']        = 'n';
+         $menu['financial']['content']['budget']['shortcut']        = 'b';
          $menu['financial']['content']['budget']['page']            = '/front/budget.php';
          $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';
 
@@ -1454,7 +1454,7 @@ class Html {
           || Session::haveRight("rule_dictionnary_printer","r")) {
 
          $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
-         $menu['admin']['content']['dictionnary']['shortcut'] = 'r';
+         $menu['admin']['content']['dictionnary']['shortcut'] = 'd';
          $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
          if ($sector=='admin' && $item == 'dictionnary') {
@@ -1989,7 +1989,7 @@ class Html {
                if (isset($val['page'])&&isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
-                  if (isset($data['shortcut'])&&!empty($data['shortcut'])) {
+                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
                   }
                   echo ">".$val['title']."</a></li>\n";
