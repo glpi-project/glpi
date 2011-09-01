@@ -99,7 +99,11 @@ class Dropdown {
 
       // Check default value for dropdown : need to be a numeric
       if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
-         $params['value'] = -1;
+         if ($item->getType('Entity')) {
+            $params['value'] = -1;
+         } else {
+            $params['value'] = 0;
+         }
       }
 
       if ($params['value'] > 0
