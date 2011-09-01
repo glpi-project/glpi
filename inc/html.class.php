@@ -1060,7 +1060,7 @@ class Html {
 
       if ($showstate) {
          $menu['inventory']['content']['state']['title']            = $LANG['Menu'][28];
-         $menu['inventory']['content']['state']['shortcut']         = 'n';
+         $menu['inventory']['content']['state']['shortcut']         = 'u';
          $menu['inventory']['content']['state']['page']             = '/front/states.php';
          $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';
          $menu['inventory']['content']['state']['links']['summary'] = '/front/states.php?synthese=yes';
@@ -1162,7 +1162,7 @@ class Html {
 
       if (Session::haveRight("statistic","1")) {
          $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
-         $menu['maintain']['content']['stat']['shortcut'] = 's';
+         $menu['maintain']['content']['stat']['shortcut'] = 'u';
          $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
       }
 
@@ -1986,7 +1986,7 @@ class Html {
 
             // list menu item
             foreach ($data['content'] as $key => $val) {
-               if (isset($val['page'])&&isset($val['title'])) {
+               if (isset($val['page'])&& isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
                   if (isset($data['shortcut']) && !empty($data['shortcut'])) {
@@ -2030,8 +2030,10 @@ class Html {
 
                   if (isset($val['shortcut'])&&!empty($val['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
+                     echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
+                  } else {
+                     echo ">".$val['title']."</a></li>\n";
                   }
-                  echo ">".$val['title']."</a></li>\n";
                }
             }
 

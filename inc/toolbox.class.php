@@ -44,13 +44,36 @@ class Toolbox {
     * @param $str string to change
     *
     * @return string changed
-    */
+   **/
    static function ucfirst($str) {
 
       // for foreign language
       $str[0] = mb_strtoupper($str[0], 'UTF-8');
       return $str;
     }
+
+
+   /**
+    * to underline shortcut letter
+    *
+    * @since version 0.83
+    *
+    * @param $str string from dico
+    * @param $shortcut letter of shortcut
+    *
+    * @return string
+   **/
+
+   static function shortcut($str, $shortcut) {
+
+      $pos = self::strpos(self::strtolower($str), $shortcut);
+      if ($pos !== false) {
+         return self::substr($str, 0, $pos).
+                "<u>". self::substr($str, $pos,1)."</u>".
+                self::substr($str, $pos+1);
+      }
+      return $str;
+   }
 
 
    /**
