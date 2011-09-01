@@ -2571,9 +2571,13 @@ class Search {
 
          case "glpi_groups.name" :
             $linkfield = "";
+            // $val could be 0 or -1 in dropdown
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table`.`id`".$SEARCH.
-                               ($val==0?" OR `$table`.`id` IS NULL":'').') ';
+               if (($searchtype == 'equals' && $val <= 0)
+                   || ($searchtype == 'notequals' && $val > 0)) {
+                  $SEARCH .= "OR `$table`.`id` IS NULL";
+               }
+               return " $link (`$table`.`id`".$SEARCH.') ';
             }
             return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
