@@ -231,7 +231,7 @@ if ($item instanceof CommonTreeDropdown) {
                     || (is_array($_POST["entity_restrict"])
                         && in_array(0, $_POST["entity_restrict"])))) {
 
-               echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
+               echo "<option class='tree' value='0'>".$LANG['entity'][2]."</option>";
 
                // Entity=0 already add above
                if ($_POST['value']==0 && !$_POST['display_rootentity']) {
