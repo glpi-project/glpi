@@ -178,7 +178,7 @@ function get_content($DB, $table,$from,$limit) {
                          LIMIT ".intval($from).",".intval($limit));
    if ($result) {
       $num_fields = $DB->num_fields($result);
-      if (get_magic_quotes_runtime()) {
+      if (Toolbox::get_magic_quotes_runtime()) {
          $gmqr = true;
       }
 
@@ -275,7 +275,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
       // do not strip comments due to problems when # in begin of a data line
       $formattedQuery .= $buffer;
-      if (get_magic_quotes_runtime()) {
+      if (Toolbox::get_magic_quotes_runtime()) {
          $formattedQuery = stripslashes($formattedQuery);
       }
 

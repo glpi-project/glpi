@@ -227,9 +227,9 @@ class DBmysql {
    **/
    function result($result, $i, $field) {
 
-      $value = get_magic_quotes_runtime()?Toolbox::stripslashes_deep(mysql_result($result, $i,
-                                                                                  $field))
-                                         :mysql_result($result, $i, $field);
+      $value = Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep(mysql_result($result, $i, $field))
+                  : mysql_result($result, $i, $field);
       return $value;
    }
 
@@ -255,8 +255,9 @@ class DBmysql {
    **/
    function fetch_array($result) {
 
-      $value = get_magic_quotes_runtime()?Toolbox::stripslashes_deep(mysql_fetch_array($result))
-                                         :mysql_fetch_array($result);
+      $value = Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep(mysql_fetch_array($result))
+                  : mysql_fetch_array($result);
       return $value;
    }
 
@@ -270,8 +271,9 @@ class DBmysql {
    **/
    function fetch_row($result) {
 
-      $value = get_magic_quotes_runtime()?Toolbox::stripslashes_deep(mysql_fetch_row($result))
-                                         :mysql_fetch_row($result);
+      $value = Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep(mysql_fetch_row($result))
+                  : mysql_fetch_row($result);
       return $value;
    }
 
@@ -285,8 +287,9 @@ class DBmysql {
    **/
    function fetch_assoc($result) {
 
-      $value = get_magic_quotes_runtime()?Toolbox::stripslashes_deep(mysql_fetch_assoc($result))
-                                         :mysql_fetch_assoc($result);
+      $value = Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep(mysql_fetch_assoc($result))
+                  : mysql_fetch_assoc($result);
       return $value;
    }
 
@@ -477,7 +480,7 @@ class DBmysql {
          $formattedQuery .= $buffer;
          if (substr(rtrim($formattedQuery),-1) == ";") {
 
-            if (get_magic_quotes_runtime()) {
+            if (Toolbox::get_magic_quotes_runtime()) {
                $formattedQuerytorun = stripslashes($formattedQuery);
             } else {
                $formattedQuerytorun = $formattedQuery;
