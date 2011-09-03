@@ -5727,7 +5727,6 @@ class OcsServer extends CommonDBTM {
                $task->log($LANG['help'][25] . " : " . $data["DEVICEID"] . " (" . $data["ID"] . ")\n");
                self::processComputer($data["ID"], $ocsservers_id, 0);
             }
-            $task->setVolume($nbcomp);
          } else {
             return 0;
          }
