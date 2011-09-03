@@ -5282,7 +5282,7 @@ class Search {
    **/
    static function csv_clean($value) {
 
-      if (get_magic_quotes_runtime()) {
+      if (Toolbox::get_magic_quotes_runtime()) {
          $value = stripslashes($value);
       }
 
@@ -5302,7 +5302,7 @@ class Search {
    **/
    static function sylk_clean($value) {
 
-      if (get_magic_quotes_runtime()) {
+      if (Toolbox::get_magic_quotes_runtime()) {
          $value = stripslashes($value);
       }
 

@@ -37,6 +37,40 @@ class Toolbox {
 
 
    /**
+    * Wrapper for get_magic_quotes_runtime
+    *
+    * @since version 0.83
+    *
+    * @return boolean
+    */
+   static function get_magic_quotes_runtime() {
+
+      // Deprecated function(8192): Function get_magic_quotes_runtime() is deprecated
+      if (PHP_VERSION_ID < 50400) {
+         return get_magic_quotes_runtime();
+      }
+      return 0;
+   }
+
+
+   /**
+    * Wrapper for get_magic_quotes_gpc
+    *
+    * @since version 0.83
+    *
+    * @return boolean
+    */
+   static function get_magic_quotes_gpc() {
+
+      // Deprecated function(8192): Function get_magic_quotes_gpc() is deprecated
+      if (PHP_VERSION_ID < 50400) {
+         return get_magic_quotes_gpc();
+      }
+      return 0;
+   }
+
+
+   /**
     * Convert first caracter in upper
     *
     * @since version 0.83
