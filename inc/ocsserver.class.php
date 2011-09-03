@@ -5607,7 +5607,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function cronOcsng($task) {
-      global $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI, $LANG;
 
       //Get a randon server id
       $ocsservers_id = self::getRandomServerID();
@@ -5652,12 +5652,13 @@ class OcsServer extends CommonDBTM {
 
          $result_ocs = $DBocs->query($query_ocs);
          $nbcomp = $DBocs->numrows($result_ocs);
+         $task->setVolume(0);
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
-               $task->log("Update computer " . $data["ID"] . "\n");
+               $task->addVolume(1);
+               $task->log($LANG['help'][25] . " : " . $data["DEVICEID"] . " (" . $data["ID"] . ")\n");
                self::processComputer($data["ID"], $ocsservers_id);
             }
-            $task->setVolume($nbcomp);
          } else {
             return 0;
          }

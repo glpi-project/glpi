@@ -75,14 +75,17 @@ class RuleImportComputerCollection extends RuleCollection {
                 WHERE `HARDWARE_ID` = '".$input['ocsid']."'";
       $result = $DBocs->query($query);
 
+      $ipbacklist  = array('', '127.0.0.1', '0.0.0.0');
+      $macbacklist = array('');
+
       foreach ($DBocs->request($query) as $data) {
          if (isset($data['IPSUBNET'])) {
             $input['IPSUBNET'][] = $data['IPSUBNET'];
          }
-         if (isset($data['MACADDR'])) {
+         if (isset($data['MACADDR']) && !in_array($data['MACADDR'], $macbacklist)) {
             $input['MACADDRESS'][] = $data['MACADDR'];
          }
-         if (isset($data['IPADDRESS'])) {
+         if (isset($data['IPADDRESS']) && !in_array($data['IPADDRESS'], $ipbacklist)) {
             $input['IPADDRESS'][] = $data['IPADDRESS'];
          }
       }

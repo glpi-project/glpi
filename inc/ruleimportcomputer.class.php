@@ -257,7 +257,7 @@ class RuleImportComputer extends Rule {
                // is a real complex criteria
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
                   if (!isset($input[$criterion]) || $input[$criterion] == '') {
-                     $continue = false;   
+                     $continue = false;
                   } else  {
                   $complex_criterias[] = $crit;
                   }
@@ -287,27 +287,37 @@ class RuleImportComputer extends Rule {
          $where_entity = $input['entities_id'];
       }
 
-      $sql_where = " `glpi_computers`.`entities_id` IN ($where_entity)
+      $sql_where = "`glpi_ocslinks`.`computers_id` IS NULL
+                    AND `glpi_computers`.`entities_id` IN ($where_entity)
                     AND `glpi_computers`.`is_template` = '0' ";
-      $sql_from = "`glpi_computers`";
 
+      $sql_from = "`glpi_computers`
+                   LEFT JOIN `glpi_ocslinks`
+                          ON (`glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`)";
+
+      $needport = false;
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
             case 'IPADDRESS' :
-               $sql_from .= " LEFT JOIN `glpi_networkports`
-                                 ON (`glpi_computers`.`id` = `glpi_networkports`.`items_id`
-                                     AND `glpi_networkports`.`itemtype` = 'Computer') ";
-               $sql_where .= " AND `glpi_networkports`.`ip` IN ";
-               for ($i=0 ; $i<count($input["IPADDRESS"]) ; $i++) {
-                  $sql_where .= ($i>0 ? ',"' : '("').$input["IPADDRESS"][$i].'"';
+               if (count($input["IPADDRESS"])) {
+                  $needport   = true;
+                  $sql_where .= " AND `glpi_networkports`.`ip` IN ('";
+                  $sql_where .= implode("','", $input["IPADDRESS"]);
+                  $sql_where .= "')";
+               } else {
+                  $sql_where =  " AND 0 ";
                }
-               $sql_where .= ")";
                break;
 
             case 'MACADDRESS' :
-               $sql_where .= " AND `glpi_networkports`.`mac` IN (";
-               $sql_where .= implode(',',$input['MACADDRESS']);
-               $sql_where .= ")";
+               if (count($input["MACADDRESS"])) {
+                  $needport   = true;
+                  $sql_where .= " AND `glpi_networkports`.`mac` IN ('";
+                  $sql_where .= implode("','",$input['MACADDRESS']);
+                  $sql_where .= "')";
+               } else {
+                  $sql_where =  " AND 0 ";
+               }
                break;
 
             case 'name' :
@@ -335,6 +345,11 @@ class RuleImportComputer extends Rule {
          }
       }
 
+      if ($needport) {
+         $sql_from .= " LEFT JOIN `glpi_networkports`
+                           ON (`glpi_computers`.`id` = `glpi_networkports`.`items_id`
+                               AND `glpi_networkports`.`itemtype` = 'Computer') ";
+      }
       $sql_glpi = "SELECT `glpi_computers`.`id`
                    FROM $sql_from
                    WHERE $sql_where
