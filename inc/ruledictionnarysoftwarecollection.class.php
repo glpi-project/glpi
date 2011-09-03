@@ -166,7 +166,6 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $res_rule = Toolbox::addslashes_deep($res_rule);
 
             ///TODO Walid : verify my correction for parentheses
-            //If the software's name or version has changed
             if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
                 || (isset($res_rule["version"]) && $res_rule["version"] != '')
                 || (isset($res_rule['new_entities_id'])
@@ -291,7 +290,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             //Entity has changed, and new entity is a parent of the current one
             || ((!isset($res_rule["name"])
                  && isset($res_rule['new_entities_id']))
-                  && in_array($res_rule['new_entities_id'], getSonsOf($entity)))) {
+                  && in_array($res_rule['new_entities_id'], getAncestorsOf($entity)))) {
 
          if (isset($res_rule["name"])) {
             $new_name = $res_rule["name"];
