@@ -290,7 +290,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             //Entity has changed, and new entity is a parent of the current one
             || ((!isset($res_rule["name"])
                  && isset($res_rule['new_entities_id']))
-                  && in_array($res_rule['new_entities_id'], getAncestorsOf($entity)))) {
+                  && in_array($res_rule['new_entities_id'], getAncestorsOf('glpi_entities', 
+                                                                           $entity)))) {
 
          if (isset($res_rule["name"])) {
             $new_name = $res_rule["name"];
