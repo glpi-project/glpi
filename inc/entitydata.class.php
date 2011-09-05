@@ -131,8 +131,11 @@ class EntityData extends CommonDBChild {
 
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       }
-      return $this->checkRightDatas($input);
 
+      if (is_numeric(getLoginUserID(false))) { // Cron need to update max_closedate
+         return $this->checkRightDatas($input);
+      }
+      return $input;
    }
 
 
