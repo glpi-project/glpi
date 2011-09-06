@@ -189,68 +189,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 } else {
    Html::header($LANG['job'][13],'',"maintain","ticket");
 
-   $users_id_requester = Session::getLoginUserID();
-   // No default requester if own ticket right = tech and update_ticket right to update requester
-   if (Session::haveRight('own_ticket',1) && Session::haveRight('update_ticket',1)) {
-      $users_id_requester = 0;
-   }
-
-   // Set default value...
-   $values = array('_users_id_requester'       => $users_id_requester,
-                   '_users_id_requester_notif' => array('use_notification' => 1),
-                   '_groups_id_requester'      => 0,
-                   '_users_id_assign'          => 0,
-                   '_users_id_assign_notif'    => array('use_notification' => 1),
-                   '_groups_id_assign'         => 0,
-                   '_users_id_observer'        => 0,
-                   '_users_id_observer_notif'  => array('use_notification' => 1),
-                   '_groups_id_observer'       => 0,
-                   '_link'                     => array('tickets_id_2' => '',
-                                                        'link'         => ''),
-                   'suppliers_id_assign'       => 0,
-                   'name'                      => '',
-                   'content'                   => '',
-                   'itilcategories_id'         => 0,
-                   'urgency'                   => 3,
-                   'impact'                    => 3,
-                   'priority'                  => Ticket::computePriority(3,3),
-                   'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
-                   'hour'                      => 0,
-                   'minute'                    => 0,
-                   'date'                      => $_SESSION["glpi_currenttime"],
-                   'entities_id'               => $_SESSION["glpiactive_entity"],
-                   'status'                    => 'new',
-                   'followup'                  => array(),
-                   'itemtype'                  => '',
-                   'items_id'                  => 0,
-                   'plan'                      => array(),
-                   'global_validation'         => 'none',
-                   'due_date'                  => '',
-                   'slas_id'                   => 0,
-                   '_add_validation'           => 0,
-                   'type'                      => -1);
-
-   // Restore saved value or override with page parameter
-   foreach ($values as $name => $value) {
-      if (isset($_REQUEST[$name])) {
-         $values[$name] = $_REQUEST[$name];
-      } else if (isset($_SESSION["helpdeskSaved"][$name])) {
-         $values[$name] = $_SESSION["helpdeskSaved"]["$name"];
-      }
-   }
-
-   // Clean text fields
-   $values['name']    = stripslashes($values['name']);
-   $values['content'] = Html::cleanPostForTextArea($values['content']);
-
-   if (isset($_SESSION["helpdeskSaved"])) {
-      unset($_SESSION["helpdeskSaved"]);
-   }
-   if ($values['type']<=0) {
-      $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id']);
-   }
-
-   $track->showForm(0, $values);
+   $track->showForm(0, $_REQUEST);
 }
 
 
