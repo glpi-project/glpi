@@ -1876,7 +1876,10 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
-      echo self::getActorIcon('user', $type)."&nbsp;";
+      echo self::getActorIcon('user', $type);
+      echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
+      echo "&nbsp;";
+
 
       $right = $this->getDefaultActorRightSearch($type);
 
@@ -1912,6 +1915,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       //List all users in the active entities
       User::dropdown($params);
+
 
       // display opened tickets for user
       if ($this->getType() == 'Ticket'
@@ -2059,11 +2063,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
+         echo self::getActorIcon('group', self::REQUESTER);
+         echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
+         echo "&nbsp;";
+
          Dropdown::show('Group', array('name'      => '_groups_id_requester',
                                        'value'     => $options["_groups_id_requester"],
                                        'entity'    => $this->fields["entities_id"],
                                        'condition' => '`is_requester`'));
+
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
@@ -2087,7 +2095,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
+         echo self::getActorIcon('group', self::OBSERVER);
+         echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
+         echo "&nbsp;";
+
          Dropdown::show('Group', array('name'      => '_groups_id_observer',
                                        'value'     => $options["_groups_id_observer"],
                                        'entity'    => $this->fields["entities_id"],
@@ -2124,7 +2135,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // Assign Groups
       if (!$ID) {
          if ($this->canAssign()) {
-            echo self::getActorIcon('group', self::ASSIGN)."&nbsp;";
+            echo self::getActorIcon('group', self::ASSIGN);
+            echo $options['_tickettemplate']->getMandatoryMark('_groups_id_assign');
+            echo "&nbsp;";
+
             Dropdown::show('Group', array('name'      => '_groups_id_assign',
                                           'value'     => $options["_groups_id_assign"],
                                           'entity'    => $this->fields["entities_id"],
@@ -2140,7 +2154,10 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($this->fields["suppliers_id_assign"] > 0 || !$ID) {
 
          if ($this->canAssign()) {
-            echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
+            echo self::getActorIcon('supplier', self::ASSIGN);
+            echo $options['_tickettemplate']->getMandatoryMark('suppliers_id_assign');
+            echo "&nbsp;";
+
             Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
                                              'value'  => $this->fields["suppliers_id_assign"],
                                              'entity' => $this->fields["entities_id"]));

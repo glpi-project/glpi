@@ -150,7 +150,6 @@ class TicketTemplate extends CommonDropdown {
 
    }
 
-
    function getAllowedFieldsNames() {
 
       $searchOption = Search::getOptions('Ticket');
@@ -193,6 +192,11 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
+   function getMandatoryMark($field) {
+      if (isset($this->mandatory[$field])) {
+         return "<span class='red'>*</span>";
+      }
+   }
 
    /**
     * Print the computers disks
