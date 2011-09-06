@@ -94,10 +94,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
     * Get hidden fields for a template
     *
     * @param $ID the template ID
+    * @param $withtypandcategory bool with type and category
     *
     * @return an array of hidden fields
    **/
-   function getHiddenFields($ID) {
+   function getHiddenFields($ID, $withtypandcategory) {
       global $DB;
 
       $sql = "SELECT *
@@ -107,11 +108,13 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields();
+      $allowed_fields = $tt->getAllowedFields($withtypandcategory);
 
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $fields[$allowed_fields[$rule['num']]] = $rule['num'];
+         if (isset($allowed_fields[$rule['num']])) {
+            $fields[$allowed_fields[$rule['num']]] = $rule['num'];
+         }
       }
       return $fields;
    }

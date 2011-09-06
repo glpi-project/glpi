@@ -109,10 +109,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     * Get predefined fields for a template
     *
     * @param $ID the template ID
+    * @param $withtypandcategory bool with type and category
     *
     * @return an array of predefined fields
    **/
-   function getPredefinedFields($ID) {
+   function getPredefinedFields($ID, $withtypandcategory) {
       global $DB;
 
       $sql = "SELECT *
@@ -122,11 +123,13 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields();
+      $allowed_fields = $tt->getAllowedFields($withtypandcategory);
 
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+         if (isset($allowed_fields[$rule['num']])) {
+            $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+         }
       }
       return $fields;
    }
