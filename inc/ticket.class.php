@@ -1770,6 +1770,13 @@ class Ticket extends CommonITILObject {
       $tab[13]['nosort']        = true;
       $tab[13]['massiveaction'] = false;
 
+      $tab[131]['table']         = $this->getTable();
+      $tab[131]['field']         = 'itemtype';
+      $tab[131]['name']          = $LANG['document'][14].' - '.$LANG['common'][17];
+      $tab[131]['datatype']      = 'itemtypename';
+      $tab[131]['nosort']        = true;
+      $tab[131]['massiveaction'] = false;
+
       $tab[9]['table']    = 'glpi_requesttypes';
       $tab[9]['field']    = 'name';
       $tab[9]['name']     = $LANG['job'][44];
