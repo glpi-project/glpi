@@ -146,6 +146,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      $already_display = true;
                      break;
 
+                  case "timestamp" :
+                     Dropdown::showTimeStamp($search["linkfield"]);
+                     $already_display = true;
+                     break;
+
                   case "text" :
                      echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
                      $already_display = true;
