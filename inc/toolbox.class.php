@@ -46,8 +46,7 @@ class Toolbox {
    static function get_magic_quotes_runtime() {
 
       // Deprecated function(8192): Function get_magic_quotes_runtime() is deprecated
-      /// TODO use PHP_VERSION_ID when PHP comptibility set > 5.3
-      if (explode('.', PHP_VERSION) < 50400) {
+      if (PHP_VERSION_ID < 50400) {
          return get_magic_quotes_runtime();
       }
       return 0;
@@ -64,8 +63,7 @@ class Toolbox {
    static function get_magic_quotes_gpc() {
 
       // Deprecated function(8192): Function get_magic_quotes_gpc() is deprecated
-      /// TODO use PHP_VERSION_ID when PHP comptibility set > 5.3
-      if (explode('.', PHP_VERSION) < 50400) {
+      if (PHP_VERSION_ID < 50400) {
          return get_magic_quotes_gpc();
       }
       return 0;
