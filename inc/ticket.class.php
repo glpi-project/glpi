@@ -1030,7 +1030,7 @@ class Ticket extends CommonITILObject {
                   $mandatory_missing = array();
                   $fieldsname = $tt->getAllowedFieldsNames();
                   foreach ($tt->mandatory as $key => $val) {
-                     if (!isset($input[$key]) || empty($input[$key])) {
+                     if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
                   }
@@ -1042,7 +1042,6 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         
          $mandatory_ok = true;
 
          if (!isset($input["urgency"])) {
@@ -1075,8 +1074,6 @@ class Ticket extends CommonITILObject {
             return false;
          }
       }
-
-      exit();
 
       unset($_SESSION["helpdeskSaved"]);
 
