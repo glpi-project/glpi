@@ -766,7 +766,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
 
-      if (isset($input["status"]) && in_array($this->fields["status"],
+      if (isset($input["status"]) && in_array($input["status"],
                                               $this->getSolvedStatusArray())) {
          if (isset($input["date"])) {
             $input["solvedate"] = $input["date"];
@@ -775,7 +775,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      if (isset($input["status"]) && in_array($this->fields["status"],
+      if (isset($input["status"]) && in_array($input["status"],
                                               $this->getClosedStatusArray())) {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];

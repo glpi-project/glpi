@@ -411,7 +411,7 @@ class Html {
             self::header($LANG['login'][5]);
 
          } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            seml::helpHeader($LANG['login'][5]);
+            self::helpHeader($LANG['login'][5]);
          }
       }
       echo "<div class='center'><br><br>";
@@ -2467,7 +2467,7 @@ class Html {
 
       //  Suivi ticket
       if (Session::haveRight("observe_ticket","1")) {
-         echo "<li id='menu2'>";
+         echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
                 $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
          echo "</li>";
@@ -2475,7 +2475,7 @@ class Html {
 
       // Reservation
       if (Session::haveRight("reservation_helpdesk","1")) {
-         echo "<li id='menu3'>";
+         echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
                 $LANG['Menu'][17]."\" class='itemP'>".$LANG['Menu'][17]."</a>";
          echo "</li>";
@@ -2483,7 +2483,7 @@ class Html {
 
       // FAQ
       if (Session::haveRight("faq","r")) {
-         echo "<li id='menu4' >";
+         echo "<li id='menu5' >";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
                 $LANG['knowbase'][1]."\" class='itemP'>".$LANG['Menu'][20]."</a>";
          echo "</li>";
