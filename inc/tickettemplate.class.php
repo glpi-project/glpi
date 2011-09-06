@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Ticket Template class
 /// since version 0.83
 class TicketTemplate extends CommonDropdown {
-   /// TODO : manage hidden fields for predefined values : display value for predefined and hidden fields
-   /// Only hidden fields for post-only
    /// TODO add preview of template
 
    // From CommonDBTM
