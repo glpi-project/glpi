@@ -122,7 +122,7 @@ $LANG['calendar'][10]="Idő tartományok";
 $LANG['calendar'][11]="Zárási idők"; 
 $LANG['calendar'][12]="nap(ok)"; 
 $LANG['calendar'][13]="hét"; 
-$LANG['calendar'][14]="month(s)"; // en_GB string to be translated / singular (plural) like month(s)
+$LANG['calendar'][14]="hónap(ok)"; // singular (plural) like month(s)
 $LANG['calendar'][15]="év"; 
 $LANG['calendar'][16]="Most"; 
 $LANG['calendar'][17]="Dátum megadása"; 
@@ -1716,7 +1716,7 @@ $LANG['setup'][104]="2- Súlyos (nem használt)";
 $LANG['setup'][105]="3- Fontos (sikeres belépések)"; 
 $LANG['setup'][106]="4- Jelentős (hozzáadás, törlés, követés)"; 
 $LANG['setup'][107]="5- Teljes"; 
-$LANG['setup'][108]="Maximum number of characters for the summary text boxes"; // en_GB string to be translated
+$LANG['setup'][108]="Maximum karakterszám összegző szövegdobozokban"; 
 $LANG['setup'][109]="Naplók megőrzése (napokban, 0=végtelen)"; 
 $LANG['setup'][110]="Mutassa az új bejelentéseket bejelentkezéskor"; 
 $LANG['setup'][111]="Keresési eredmények egy oldalon"; 
