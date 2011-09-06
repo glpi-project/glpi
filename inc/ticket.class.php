@@ -2960,8 +2960,7 @@ class Ticket extends CommonITILObject {
                      'impact'                    => 3,
                      'priority'                  => Ticket::computePriority(3,3),
                      'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
-                     'hour'                      => 0,
-                     'minute'                    => 0,
+                     'actiontime'                => 0,
                      'date'                      => $_SESSION["glpi_currenttime"],
                      'entities_id'               => $_SESSION["glpiactive_entity"],
                      'status'                    => 'new',
@@ -3021,6 +3020,21 @@ class Ticket extends CommonITILObject {
             }
          }
       }
+      Html::printCleanArray($tt->predefined);
+      if ($tt && isset($tt->predefined) && count($tt->predefined)) {
+         $allowedfields = $tt->getAllowedFields();
+         foreach ($tt->predefined as $idsearchoption => $predefvalue) {
+            if (isset($allowedfields[$idsearchoption])) {
+               $predeffield = $allowedfields[$idsearchoption];
+               // Is always default value : not set
+               if ($options[$predeffield] == $values[$predeffield]) {
+                  $options[$predeffield] = $predefvalue;
+               }
+            }
+
+         }
+      }
+
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
@@ -3430,7 +3444,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
          echo "<td colspan='3'>";
-         Dropdown::showTimeStamp('actiontime');
+         Dropdown::showTimeStamp('actiontime',array('value' => $options['actiontime']));
          echo "</td>";
          echo "</tr>";
       }
@@ -3618,6 +3632,9 @@ class Ticket extends CommonITILObject {
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            if ($tt && $tt->isField('id') && $tt->fields['id'] > 0) {
+               echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
+            }
          }
          echo "</td></tr>";
       }
