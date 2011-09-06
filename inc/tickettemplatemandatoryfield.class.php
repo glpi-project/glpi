@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')) {
 /// since version 0.83
 class TicketTemplateMandatoryField extends CommonDBChild {
 
+   /// TODO delete items_id if itemtype is deleted
+
    // From CommonDBChild
    public $itemtype  = 'TicketTemplate';
    public $items_id  = 'tickettemplates_id';
@@ -94,11 +96,11 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     * Get mandatory fields for a template
     *
     * @param $ID the template ID
-    * @param $withtypandcategory bool with type and category
+    * @param $withtypeandcategory bool with type and category
     *
     * @return an array of mandatory fields
    **/
-   function getMandatoryFields($ID,$withtypandcategory) {
+   function getMandatoryFields($ID,$withtypeandcategory=true) {
       global $DB;
 
       $sql = "SELECT *
@@ -108,7 +110,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields(true);
+      $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
 
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
@@ -139,21 +141,23 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
          return false;
       }
-
       $canedit = $tt->can($ID, "w");
-      $fields  = $tt->getAllowedFieldsNames(true);
-      $rand    = mt_rand();
-      echo "<form name='tickettemplatemandatoryfields_form$rand'
-                  id='tickettemplatemandatoryfields_form$rand' method='post' action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      $ttm = new TicketTemplateMandatoryField();
+      $used = $ttm->getMandatoryFields($ID);
+      $fields  = $tt->getAllowedFieldsNames(true,isset($used['itemtype']));
 
-      echo "<div class='center'>";
+      $rand    = mt_rand();
 
       $query = "SELECT `glpi_tickettemplatemandatoryfields`.*
                 FROM `glpi_tickettemplatemandatoryfields`
                 WHERE (`tickettemplates_id` = '$ID')";
 
       if ($result=$DB->query($query)) {
+         echo "<form name='tickettemplatemandatoryfields_form$rand'
+                     id='tickettemplatemandatoryfields_form$rand' method='post' action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
          echo self::getTypeName($DB->numrows($result));

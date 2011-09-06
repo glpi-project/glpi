@@ -1509,7 +1509,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return a string
    **/
 
-   static function getSpecificValueToDisplay($field, $value) {
+   static function getSpecificValueToDisplay($field, $value, $options=array()) {
 
       switch ($field) {
          case 'urgency':

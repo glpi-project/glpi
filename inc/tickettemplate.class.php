@@ -104,7 +104,7 @@ class TicketTemplate extends CommonDropdown {
 
 
 
-   static function getAllowedFields($withtypandcategory = 0) {
+   static function getAllowedFields($withtypandcategory = 0, $with_items_id = 1) {
       static $allowed_fields = array();
 
       // For integer value for index
@@ -113,11 +113,17 @@ class TicketTemplate extends CommonDropdown {
       } else {
          $withtypandcategory = 0;
       }
-      if (!isset($allowed_fields[$withtypandcategory])) {
+      if ($with_items_id) {
+         $with_items_id = 1;
+      } else {
+         $with_items_id = 0;
+      }
+
+      if (!isset($allowed_fields[$withtypandcategory][$with_items_id])) {
          $ticket = new Ticket();
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypandcategory] =
+         $allowed_fields[$withtypandcategory][$with_items_id] =
                array($ticket->getSearchOptionIDByField('field', 'name',
                                                       'glpi_tickets')        => 'name',
                      $ticket->getSearchOptionIDByField('field', 'content',
@@ -138,6 +144,8 @@ class TicketTemplate extends CommonDropdown {
                                                       'glpi_tickets')        => 'due_date',
                      $ticket->getSearchOptionIDByField('field', 'actiontime',
                                                       'glpi_tickets')        => 'actiontime',
+                     $ticket->getSearchOptionIDByField('field', 'itemtype',
+                                                      'glpi_tickets')        => 'itemtype',
                      4  => '_users_id_requester',
                      71 => '_groups_id_requester',
                      5  => '_users_id_assign',
@@ -148,28 +156,31 @@ class TicketTemplate extends CommonDropdown {
                                                       'glpi_suppliers')      => 'suppliers_id_assign',
             );
          if ($withtypandcategory) {
-            $allowed_fields[$withtypandcategory][$ticket->getSearchOptionIDByField('field',
+            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
                                           'completename','glpi_itilcategories')] = 'itilcategories_id';
-            $allowed_fields[$withtypandcategory][$ticket->getSearchOptionIDByField('field',
+            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
                                           'type','glpi_tickets')] = 'type';
          }
 
+         if ($with_items_id) {
+            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
+                                          'items_id','glpi_tickets')] = 'items_id';
+         }
       }
 
-      return $allowed_fields[$withtypandcategory];
+      return $allowed_fields[$withtypandcategory][$with_items_id];
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
-     /// TODO ADD : item linked : itemtype / items_id
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
 
    
      /// TODO Manage due_date on relative computation
    }
 
-   function getAllowedFieldsNames($withtypandcategory = 0) {
+   function getAllowedFieldsNames($withtypandcategory = 0, $with_items_id = 1) {
 
       $searchOption = Search::getOptions('Ticket');
-      $tab          = $this->getAllowedFields($withtypandcategory);
+      $tab          = $this->getAllowedFields($withtypandcategory, $with_items_id);
       foreach ($tab as $ID => $shortname) {
          if (isset($searchOption[$ID]['name'])) {
             $tab[$ID] = $searchOption[$ID]['name'];
@@ -265,7 +276,7 @@ class TicketTemplate extends CommonDropdown {
          echo "<input type='hidden' name='field' value=\"".$ticket->fields[$field]."\">";
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
-               echo $ticket->getValueToDisplay($num, $ticket->fields[$field], true);
+               echo $ticket->getValueToDisplay($num, $ticket->fields[$field], array('comments'=>true));
             }
          }
       }

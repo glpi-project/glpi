@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')) {
 /// since version 0.83
 class TicketTemplateHiddenField extends CommonDBChild {
 
+   /// TODO delete items_id if itemtype is deleted
+
    // From CommonDBChild
    public $itemtype  = 'TicketTemplate';
    public $items_id  = 'tickettemplates_id';
@@ -94,11 +96,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
     * Get hidden fields for a template
     *
     * @param $ID the template ID
-    * @param $withtypandcategory bool with type and category
+    * @param $withtypeandcategory bool with type and category
     *
     * @return an array of hidden fields
    **/
-   function getHiddenFields($ID, $withtypandcategory) {
+   function getHiddenFields($ID, $withtypeandcategory = false) {
       global $DB;
 
       $sql = "SELECT *
@@ -108,7 +110,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields($withtypandcategory);
+      $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
 
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
@@ -139,8 +141,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
          return false;
       }
 
+      $ttm = new TicketTemplateHiddenField();
+      $used = $ttm->getHiddenFields($ID);
+   
       $canedit = $tt->can($ID, "w");
-      $fields  = $tt->getAllowedFieldsNames();
+      $fields  = $tt->getAllowedFieldsNames(false,isset($used['itemtype']));
       $rand    = mt_rand();
       echo "<form name='tickettemplatehiddenfields_form$rand'
                   id='tickettemplatehiddenfields_form$rand' method='post' action='";
