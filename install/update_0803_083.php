@@ -1007,28 +1007,30 @@ function update0803to083() {
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `comment` TEXT DEFAULT NULL,
-                  `is_helpdeskvisible` TINYINT( 1 ) NOT NULL DEFAULT 0,
-                  `is_default` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
-                  KEY `is_recursive` (`is_recursive`),
-                  KEY `is_default` (`is_default`),
-                  KEY `is_helpdeskvisible` (`is_helpdeskvisible`)
+                  KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query)
       or die("0.83 add table glpi_tickettemplates ". $LANG['update'][90] . $DB->error());
 
       $query = "INSERT INTO `glpi_tickettemplates`
-                       (`name`, `is_recursive`, `is_helpdeskvisible`, `is_default`)
-                VALUES ('Default', 1, 1, 1)";
+                       (`name`, `is_recursive`)
+                VALUES ('Default', 1)";
       $DB->query($query)
       or die("0.83 add default ticket template " . $LANG['update'][90] . $DB->error());
       $default_template = $DB->insert_id();
 
-      $ADDTODISPLAYPREF['TicketTemplate'] = array(2,3);
    }
+
+   $migration->addField('glpi_itilcategories', 'tickettemplates_id_incident', "integer");
+   $migration->addKey('glpi_itilcategories', 'tickettemplates_id_incident');
+
+   $migration->addField('glpi_itilcategories', 'tickettemplates_id_demand', "integer");
+   $migration->addKey('glpi_itilcategories', 'tickettemplates_id_demand');
+
 
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (
