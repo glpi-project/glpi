@@ -90,6 +90,28 @@ class TicketTemplateHiddenField extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Get hidden fields for a template
+    *
+    * @param $ID the template ID
+    *
+    * @return an array of hidden fields
+   **/
+   function getHiddenFields($ID) {
+      global $DB;
+
+      $sql = "SELECT *
+              FROM `".$this->getTable()."`
+              WHERE `".$this->items_id."` = '$ID'
+              ORDER BY `id`";
+      $result = $DB->query($sql);
+
+      $fields = array();
+      while ($rule = $DB->fetch_assoc($result)) {
+         $fields[$rule['num']] = $rule['num'];
+      }
+      return $fields;
+   }
 
    /**
     * Print the hidden fields
