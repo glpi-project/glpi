@@ -1039,6 +1039,7 @@ $LANG['job'][64] = "Champ prédéfini";
 $LANG['job'][65] = "Champ obligatoire";
 $LANG['job'][66] = "Gabarit pour une demande";
 $LANG['job'][67] = "Gabarit pour un incident";
+$LANG['job'][68]  = "Des champs obligatoires ne sont pas renseignés. Veuillez corriger :";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";
