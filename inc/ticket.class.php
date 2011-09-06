@@ -2999,7 +2999,6 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = NULL;
-      echo $options['type']." ".$options['itilcategories_id'];
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
@@ -3020,10 +3019,8 @@ class Ticket extends CommonITILObject {
             } else {
                $tt = NULL;
             }
-
          }
       }
-      print_r($tt);
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
