@@ -3025,11 +3025,10 @@ class Ticket extends CommonITILObject {
       }
 
       // Load ticket template if available :
-      $tt = NULL;
+      $tt = new TicketTemplate();
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
-            $tt = new TicketTemplate();
             $field = '';
             switch ($options['type']) {
                case self::INCIDENT_TYPE :
@@ -3040,11 +3039,7 @@ class Ticket extends CommonITILObject {
                   break;
             }
             if (!empty($field) && $categ->fields[$field]) {
-               if (!$tt->getFromDBWithDatas($categ->fields[$field])) {
-                  $tt = NULL;
-               }
-            } else {
-               $tt = NULL;
+               $tt->getFromDBWithDatas($categ->fields[$field]);
             }
          }
       }
@@ -3059,7 +3054,7 @@ class Ticket extends CommonITILObject {
       // Store predefined fields to be able not to take into account on change template
       $predefined_fields = array();
 
-      if ($tt && isset($tt->predefined) && count($tt->predefined)) {
+      if (isset($tt->predefined) && count($tt->predefined)) {
 //          print_r($tt->predefined);
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($options[$predeffield])) {
@@ -3083,6 +3078,9 @@ class Ticket extends CommonITILObject {
             }
          }
       }
+
+      // Put ticket template on $options for actors
+      $options['_tickettemplate'] = $tt;
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
@@ -3200,7 +3198,11 @@ class Ticket extends CommonITILObject {
 
       // SLA
       echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
+      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
+      if (!$ID) {
+         echo $tt->getMandatoryMark('due_date');
+      }
+      echo "</td>";
       echo "<td>";
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
@@ -3247,7 +3249,7 @@ class Ticket extends CommonITILObject {
                                                           "cleanhide('sla_action');cleandisplay('sla_choice');").
                      "\">".$LANG['sla'][12].'</a>';
                echo "</span>";
-               echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:";
+               echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:&nbsp;";
                Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                           'value'  => $this->fields["slas_id"]));
                echo "</span>";
@@ -3263,7 +3265,7 @@ class Ticket extends CommonITILObject {
          }
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo "</td><td>";
-         echo $LANG['choice'][2]." ".$LANG['sla'][1]."&nbsp;: ";
+         echo $LANG['choice'][2]." ".$LANG['sla'][1]."&nbsp;:".$tt->getMandatoryMark('slas_id');
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value'  => $this->fields["slas_id"]));
          echo "</td></tr></table>";
@@ -3352,7 +3354,7 @@ class Ticket extends CommonITILObject {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;: </th>";
+      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;:".$tt->getMandatoryMark('status')."</th>";
       echo "<td width='40%'>";
       if ($canupdate) {
          self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
@@ -3360,7 +3362,8 @@ class Ticket extends CommonITILObject {
          echo self::getStatus($this->fields["status"]);
       }
       echo "</td>";
-      echo "<th class='left'>".$LANG['job'][44]."&nbsp;: </th>";
+      echo "<th class='left'>".$LANG['job'][44]."&nbsp;:".
+            $tt->getMandatoryMark('requesttypes_id')."</th>";
       echo "<td>";
       if ($canupdate) {
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
@@ -3372,7 +3375,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][29]."&nbsp;: </th>";
+      echo "<th>".$LANG['joblist'][29]."&nbsp;:".$tt->getMandatoryMark('urgency')."</th>";
       echo "<td>";
 
       if (($canupdate && $canpriority)
@@ -3412,7 +3415,7 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
+      echo "<th>".$LANG['joblist'][30]."&nbsp;:".$tt->getMandatoryMark('impact')."</th>";
       echo "<td>";
       if ($canupdate) {
          $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
@@ -3469,7 +3472,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;: </th>";
+      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority')."</th>";
       echo "<td>";
 
       if ($canupdate && $canpriority) {
@@ -3499,7 +3502,7 @@ class Ticket extends CommonITILObject {
       // Need comment right to add a followup with the actiontime
       if (!$ID && Session::haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th>".$LANG['job'][20]."&nbsp;: </th>";
+         echo "<th>".$LANG['job'][20]."&nbsp;:".$tt->getMandatoryMark('actiontime')."</th>";
          echo "<td colspan='3'>";
          Dropdown::showTimeStamp('actiontime',array('value' => $options['actiontime']));
          echo "</td>";
@@ -3515,7 +3518,7 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
+      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:".$tt->getMandatoryMark('name')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          $rand = mt_rand();
@@ -3557,7 +3560,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
+      echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:".$tt->getMandatoryMark('content')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
@@ -3689,7 +3692,7 @@ class Ticket extends CommonITILObject {
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-            if ($tt && $tt->isField('id') && $tt->fields['id'] > 0) {
+            if ($tt->isField('id') && $tt->fields['id'] > 0) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
                         value=\"".rawurlencode(serialize($predefined_fields))."\">";

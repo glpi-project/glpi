@@ -353,8 +353,10 @@ class CommonGLPI {
             $withtemplate = $options['withtemplate'];
          }
          foreach ($options as $key => $val) {
-            $extraparamhtml .= "&amp;$key=$val";
-            $extraparam     .= "&$key=$val";
+            if ($key[0] != '_') {
+               $extraparamhtml .= "&amp;$key=$val";
+               $extraparam     .= "&$key=$val";
+            }
          }
       }
 
