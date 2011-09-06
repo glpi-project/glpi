@@ -733,7 +733,8 @@ class EntityData extends CommonDBChild {
       if ($ID!=0) {
          $toadd = array(0 => $LANG['common'][102]);
       }
-      Ticket::dropdownType('tickettype', $entdata->fields["tickettype"], $toadd);
+      Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
+                                              'toadd'  =>$toadd));
 
       if ($entdata->fields["calendars_id"] == 0) {
          $calendar = new Calendar();

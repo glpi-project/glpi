@@ -2082,21 +2082,36 @@ class Ticket extends CommonITILObject {
     *
     * @param $name select name
     * @param $value default value
-    * @param $toadd
+    * @param $options options
+    *
+    * Parameters which could be used in options array :
+    *    - value : integer / preselected value (default 0)
+    *    - toadd : array / array of specific values to add at the begining
+    *    - on_change : string / value to transmit to "onChange"
     *
     * @return string id of the select
    **/
-   static function dropdownType($name, $value=0, $toadd=array()) {
+   static function dropdownType($name, $options = array()) {
       global $LANG;
 
-      $options = array();
-      if (count($toadd)>0) {
-         $options = $toadd;
+      $params['value']       = 0;
+      $params['toadd']       = array();
+      $params['on_change']   = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
       }
 
-      $options += self::getTypes();
+      $items = array();
+      if (count($params['toadd'])>0) {
+         $items = $params['toadd'];
+      }
 
-      return Dropdown::showFromArray($name, $options, array('value' => $value));
+      $items += self::getTypes();
+
+      return Dropdown::showFromArray($name, $items, $params);
    }
 
 
@@ -2888,7 +2903,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]."&nbsp;:&nbsp;</td><td>";
-      Ticket::dropdownType('type',$type);
+      Ticket::dropdownType('type',array('value' => $type));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2974,6 +2989,7 @@ class Ticket extends CommonITILObject {
                      '_add_validation'           => 0,
                      'type'                      => -1);
 
+
       // Restore saved value or override with page parameter
       foreach ($values as $name => $value) {
          if (!isset($options[$name])) {
@@ -3021,17 +3037,35 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Predefined fields from template : reset them
+      if (isset($options['_predefined_fields'])) {
+         $options['_predefined_fields'] = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
+      } else {
+         $options['_predefined_fields'] = array();
+      }
+
+      // Store predefined fields to be able not to take into account on change template
+      $predefined_fields = array();
+
       if ($tt && isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
-               if ($options[$predeffield] == $values[$predeffield]) {
+               // Set if already predefined field
+               if ($options[$predeffield] == $values[$predeffield] ||
+                  isset($options['_predefined_fields'][$field])) {
                   $options[$predeffield] = $predefvalue;
+                  $predefined_fields[$predeffield] = $predeffield;
                }
             }
          }
+      } else { // No template load : reset predefined values
+         if (count($options['_predefined_fields'])) {
+            foreach ($options['_predefined_fields'] as $predeffield) {
+               $options[$predeffield] = $values[$predeffield];
+            }
+         }
       }
-
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
@@ -3257,7 +3291,12 @@ class Ticket extends CommonITILObject {
       echo "<td  width='40%'>";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
-         self::dropdownType('type', $this->fields["type"]);
+         $opt = array('value' => $this->fields["type"]);
+         /// Auto submit to load template
+         if (!$ID) {
+            $opt['on_change'] = 'submit()';
+         }
+         self::dropdownType('type',$opt);
       } else {
          echo self::getTicketTypeName($this->fields["type"]);
       }
@@ -3270,6 +3309,10 @@ class Ticket extends CommonITILObject {
                       'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
             $opt['condition'] = '`is_helpdeskvisible`=1';
+         }
+         /// Auto submit to load template
+         if (!$ID) {
+            $opt['on_change'] = 'submit()';
          }
          Dropdown::show('ITILCategory', $opt);
 
@@ -3631,6 +3674,8 @@ class Ticket extends CommonITILObject {
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             if ($tt && $tt->isField('id') && $tt->fields['id'] > 0) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
+               echo "<input type='hidden' name='_predefined_fields'
+                        value=\"".rawurlencode(serialize($predefined_fields))."\">";
             }
          }
          echo "</td></tr>";

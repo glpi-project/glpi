@@ -1117,19 +1117,21 @@ class Dropdown {
     *    - value : integer / preselected value (default 0)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - readonly : boolean / used as a readonly item (default false)
+    *    - on_change : string / value to transmit to "onChange"
    **/
    static function showFromArray($name, $elements, $options = array()) {
 
       $param['value']    = '';
       $param['used']     = array();
       $param['readonly'] = false;
+      $param['on_change']   = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $param[$key] = $val;
          }
       }
-
+      
       // readonly mode
       if ($param['readonly']) {
          echo "<input type='hidden' name='$name' value='".$param['value']."'>";
@@ -1140,7 +1142,14 @@ class Dropdown {
 
       } else {
          $rand = mt_rand();
-         echo "<select name='$name' id='dropdown_".$name.$rand."'>";
+
+         echo "<select name='$name' id='dropdown_".$name.$rand."'";
+
+         if (!empty($param["on_change"])) {
+            echo " onChange='".$param["on_change"]."'";
+         }
+
+         echo '>';
 
          foreach ($elements as $key => $val) {
             if (!isset($param['used'][$key])) {
