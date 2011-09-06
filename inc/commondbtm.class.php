@@ -2862,10 +2862,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $field string field to display
     * @param $value integer.string id of the search option field or field name
+    * @param $options array options array
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, $value) {
+   static function getSpecificValueToDisplay($field, $value, $options = array()) {
       return '';
    }
 
@@ -2879,38 +2880,48 @@ class CommonDBTM extends CommonGLPI {
     *                                                            or field name
     *                                                            or search option array
     * @param $value mixed value to display
-    * @param $withcomment bool display comment if available
+    * @param $options array options array
+    * Parameters which could be used in options array :
+    *    - comments : boolean / is the comments displayed near the value (default false)
+    *    - any others options passed to specific display method
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_or_search_options, $value, $withcomment=false) {
+   function getValueToDisplay($field_id_or_search_options, $value, $options = array()) {
       global $LANG, $CFG_GLPI;
 
-      $options = array();
+      $param['comments'] = false;
+      foreach ($param as $key => $val) {
+         if (!isset($options[$key])) {
+            $options[$key] = $val;
+         }
+      }
+
+      $searchoptions = array();
       if (is_array($field_id_or_search_options)) {
-         $options = $field_id_or_search_options;
+         $searchoptions = $field_id_or_search_options;
       } else {
          $searchopt = Search::getOptions($this->getType());
 
          // Get if id of search option is passed
          if (is_numeric($field_id_or_search_options)) {
             if (isset($searchopt[$field_id_or_search_options])) {
-               $options = $searchopt[$field_id_or_search_options];
+               $searchoptions = $searchopt[$field_id_or_search_options];
             }
          } else { // Get if field name is passed
-            $options = $this->getSearchOptionByField('field', $field_id_or_search_options,
+            $searchoptions = $this->getSearchOptionByField('field', $field_id_or_search_options,
                                                      $this->getTable());
          }
       }
 
-      if (count($options)) {
-         if (isset($options['datatype'])) {
+      if (count($searchoptions)) {
+         if (isset($searchoptions['datatype'])) {
             $unit = '';
-            if (isset($options['unit'])) {
-               $unit = $options['unit'];
+            if (isset($searchoptions['unit'])) {
+               $unit = $searchoptions['unit'];
             }
 
-            switch ($options['datatype']) {
+            switch ($searchoptions['datatype']) {
                case "number" :
                   return str_replace(' ', '&nbsp;', Html::formatNumber($value, false, 0)). $unit;
 
@@ -2923,7 +2934,7 @@ class CommonDBTM extends CommonGLPI {
 
                case "text" :
                   $text = nl2br($value);
-                  if (isset($options['htmltext']) && $options['htmltext']) {
+                  if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
                   }
                   return $text;
@@ -2940,8 +2951,8 @@ class CommonDBTM extends CommonGLPI {
 
                case "timestamp" :
                   $withseconds = false;
-                  if (isset($options['withseconds'])) {
-                     $withseconds = $options['withseconds'];
+                  if (isset($searchoptions['withseconds'])) {
+                     $withseconds = $searchoptions['withseconds'];
                   }
                   return Html::timestampToString($value,$withseconds);
 
@@ -2962,20 +2973,20 @@ class CommonDBTM extends CommonGLPI {
                return "&nbsp;";
 
                case "dropdown" :
-                  if ($options['table'] == 'glpi_users') {
-                     if ($withcomment) {
+                  if ($searchoptions['table'] == 'glpi_users') {
+                     if ($param['comments']) {
                         $tmp = getUserName($value,2);
                         return $tmp['name'].'&nbsp;'.
-                                 Html::showToolTip($tmp['comment'],array('display' => false));
+                                 Html::showToolTip($tmp['comment'], array('display' => false));
                      }
                      return getUserName($value);
                   }
-                  if ($withcomment) {
-                     $tmp = Dropdown::getDropdownName($options['table'],$value,1);
+                  if ($param['comments']) {
+                     $tmp = Dropdown::getDropdownName($searchoptions['table'],$value,1);
                      return $tmp['name'].'&nbsp;'.
-                            Html::showToolTip($tmp['comment'],array('display' => false));
+                            Html::showToolTip($tmp['comment'], array('display' => false));
                   }
-                  return Dropdown::getDropdownName($options['table'],$value);
+                  return Dropdown::getDropdownName($searchoptions['table'],$value);
 
                case "right" :
                   return Profile::getRightValue($value);
@@ -2996,9 +3007,9 @@ class CommonDBTM extends CommonGLPI {
             }
          }
          // Get specific display if available
-         $itemtype = getItemTypeForTable($options['table']);
+         $itemtype = getItemTypeForTable($searchoptions['table']);
          $item     = new $itemtype();
-         $specific = $item->getSpecificValueToDisplay($options['field'], $value);
+         $specific = $item->getSpecificValueToDisplay($searchoptions['field'], $value, $options);
          if (!empty($specific)) {
             return $specific;
          }

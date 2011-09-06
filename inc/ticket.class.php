@@ -1774,6 +1774,7 @@ class Ticket extends CommonITILObject {
       $tab[131]['field']         = 'itemtype';
       $tab[131]['name']          = $LANG['document'][14].' - '.$LANG['common'][17];
       $tab[131]['datatype']      = 'itemtypename';
+      $tab[131]['itemtype_list'] = 'ticket_types';
       $tab[131]['nosort']        = true;
       $tab[131]['massiveaction'] = false;
 
@@ -2081,7 +2082,7 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-   static function getSpecificValueToDisplay($field, $value) {
+   static function getSpecificValueToDisplay($field, $value, $options=array()) {
       switch ($field) {
          case 'status':
             return self::getStatus($value);
@@ -2091,6 +2092,17 @@ class Ticket extends CommonITILObject {
             return self::getTicketTypeName($value);
             break;
 
+         case 'items_id':
+            if (isset($options['itemtype'])) {
+               if ($options['comments']) {
+                  $tmp = Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value,1);
+                  return $tmp['name'].'&nbsp;'.
+                           Html::showToolTip($tmp['comment'], array('display' => false));
+
+               }
+               return Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value);
+            }
+            break;
          default :
             return parent::getSpecificValueToDisplay($field, $value);
       }
@@ -2917,9 +2929,15 @@ class Ticket extends CommonITILObject {
 
       unset($_SESSION["helpdeskSaved"]);
 
-      if ($CFG_GLPI['urgency_mask']==(1<<3)) {
-         // Dont show dropdown if only 1 value enabled
-         echo "<input type='hidden' name='urgency' value='3'>";
+      if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
+         // Dont show dropdown if only 1 value enabled or field is hidden
+         echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
+      }
+
+      // Display predefined fields if hidden 
+      if ($tt->isHiddenField('itemtype')) {
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtypr']."'>";
+         echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
 
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
@@ -2975,15 +2993,19 @@ class Ticket extends CommonITILObject {
       }
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['help'][24]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
-         Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
-         Ticket::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
-                                    $_SESSION["glpiactive_entity"]);
-         echo "<span id='item_ticket_selection_information'></span>";
+         if (!$tt->isHiddenField('itemtype')) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['help'][24]."&nbsp;:";
+            echo $tt->getMandatoryMark('itemtype');
+            echo "</td>";
+            echo "<td>";
+            Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
+            Ticket::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
+                                       $_SESSION["glpiactive_entity"]);
+            echo "<span id='item_ticket_selection_information'></span>";
 
-         echo "</td></tr>";
+            echo "</td></tr>";
+         }
       }
 
 
@@ -3541,7 +3563,10 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: </th>";
+      echo "<th class='left' rowspan='2'>";
+      echo $LANG['document'][14]."&nbsp;:";
+      echo $tt->getMandatoryMark('itemtype');
+      echo "</th>";
       echo "<td rowspan='2'>";
 
       // Select hardware on creation or if have update right

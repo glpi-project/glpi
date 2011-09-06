@@ -87,6 +87,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Ticket::dropdownStatus($search["linkfield"]);
             break;
 
+         case "glpi_tickets.items_id" :
+            if (isset($_POST['itemtype_used']) && !empty($_POST['itemtype_used'])) {
+               Dropdown::show($_POST['itemtype_used'], array('name' => $search["linkfield"]));
+            }
+            break;
+
          case "glpi_tickets.type" :
             Ticket::dropdownType($search["linkfield"]);
             break;
@@ -139,6 +145,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      echo "</td>";
                      $already_display = true;
                      $USE_TABLE       = true;
+                     break;
+
+                  case "itemtypename" :
+                     if (isset($search['itemtype_list'])) {
+                        Dropdown::dropdownTypes($search["linkfield"],'',$CFG_GLPI[$search['itemtype_list']]);
+                        $already_display = true;
+                     }
                      break;
 
                   case "bool" :
