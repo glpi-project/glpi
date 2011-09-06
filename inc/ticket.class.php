@@ -3020,18 +3020,15 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      Html::printCleanArray($tt->predefined);
+
       if ($tt && isset($tt->predefined) && count($tt->predefined)) {
-         $allowedfields = $tt->getAllowedFields();
-         foreach ($tt->predefined as $idsearchoption => $predefvalue) {
-            if (isset($allowedfields[$idsearchoption])) {
-               $predeffield = $allowedfields[$idsearchoption];
+         foreach ($tt->predefined as $predeffield => $predefvalue) {
+            if (isset($options[$predeffield])) {
                // Is always default value : not set
                if ($options[$predeffield] == $values[$predeffield]) {
                   $options[$predeffield] = $predefvalue;
                }
             }
-
          }
       }
 
