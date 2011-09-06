@@ -1113,6 +1113,11 @@ function update0803to083() {
          }
       }
    }
+// Keep global mandatory config
+//    $migration->dropField('glpi_configs', 'is_ticket_title_mandatory');
+//    $migration->dropField('glpi_configs', 'is_ticket_content_mandatory');
+//    $migration->dropField('glpi_configs', 'is_ticket_category_mandatory');
+
    $migration->addField('glpi_profiles', 'tickettemplate', "char", array('update' => '`sla`'));
 
    $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');

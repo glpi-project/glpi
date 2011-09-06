@@ -533,6 +533,7 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
+
       // check mandatory fields
       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
          $title = trim($input['name']);
@@ -1016,12 +1017,33 @@ class Ticket extends CommonITILObject {
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $LANG;
 
-      // Check mandatory
-      $mandatory_ok = true;
+      // Standard clean datas
+      $input =  parent::prepareInputForAdd($input);
 
       // Do not check mandatory on auto import (mailgates)
       if (!isset($input['_auto_import'])) {
          $_SESSION["helpdeskSaved"] = $input;
+         if (isset($input['_tickettemplates_id']) && $input['_tickettemplates_id']) {
+            $tt = new TicketTemplate();
+            if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
+               if (count($tt->mandatory)) {
+                  $mandatory_missing = array();
+                  $fieldsname = $tt->getAllowedFieldsNames();
+                  foreach ($tt->mandatory as $key => $val) {
+                     if (!isset($input[$key]) || empty($input[$key])) {
+                        $mandatory_missing[$key] = $fieldsname[$val];
+                     }
+                  }
+                  if (count($mandatory_missing)) {
+                     $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
+                     Session::addMessageAfterRedirect($message, false, ERROR);
+                     return false;
+                  }
+               }
+            }
+         }
+         
+         $mandatory_ok = true;
 
          if (!isset($input["urgency"])) {
             Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
@@ -1049,19 +1071,12 @@ class Ticket extends CommonITILObject {
             $mandatory_ok = false;
          }
 
-//          if (isset($input['use_email_notification']) && $input['use_email_notification']
-//              && (!isset($input['user_email']) || empty($input['user_email']))) {
-//
-//             Session::addMessageAfterRedirect($LANG['help'][16], false, ERROR);
-//             $mandatory_ok = false;
-//          }
-
          if (!$mandatory_ok) {
             return false;
          }
       }
 
-      $input =  parent::prepareInputForAdd($input);
+      exit();
 
       unset($_SESSION["helpdeskSaved"]);
 
@@ -2984,7 +2999,7 @@ class Ticket extends CommonITILObject {
                      'items_id'                  => 0,
                      'plan'                      => array(),
                      'global_validation'         => 'none',
-                     'due_date'                  => '',
+                     'due_date'                  => 'NULL',
                      'slas_id'                   => 0,
                      '_add_validation'           => 0,
                      'type'                      => -1);
@@ -3048,21 +3063,26 @@ class Ticket extends CommonITILObject {
       $predefined_fields = array();
 
       if ($tt && isset($tt->predefined) && count($tt->predefined)) {
+//          print_r($tt->predefined);
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
+//                echo $predeffield." ".$options[$predeffield]." = ".$values[$predeffield]."<br>";
                if ($options[$predeffield] == $values[$predeffield] ||
-                  isset($options['_predefined_fields'][$field])) {
+                  (isset($options['_predefined_fields'][$field])
+                  && $options[$predeffield] == $options['_predefined_fields'][$field])) {
                   $options[$predeffield] = $predefvalue;
-                  $predefined_fields[$predeffield] = $predeffield;
+                  $predefined_fields[$predeffield] = $predefvalue;
                }
             }
          }
       } else { // No template load : reset predefined values
          if (count($options['_predefined_fields'])) {
-            foreach ($options['_predefined_fields'] as $predeffield) {
-               $options[$predeffield] = $values[$predeffield];
+            foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
+               if ($options[$predeffield] == $predefvalue) {
+                  $options[$predeffield] = $values[$predeffield];
+               }
             }
          }
       }

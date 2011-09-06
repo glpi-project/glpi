@@ -142,9 +142,11 @@ class TicketTemplate extends CommonDropdown {
          );
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
-     /// TODO ADD : hour / minute : review display : one field actiontime
      /// TODO ADD : item linked : itemtype / items_id
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
+
+   
+     /// TODO Manage due_date on relative computation
 
    }
 

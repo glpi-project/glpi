@@ -738,7 +738,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater
-      if ($lastupdater=Session::getLoginUserID(true)) {
+      if ($lastupdater = Session::getLoginUserID(true)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
