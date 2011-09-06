@@ -43,7 +43,6 @@ class TicketTemplate extends CommonDropdown {
    /// TODO : manage hidden fields for predefined values : display value for predefined and hidden fields
    /// Only hidden fields for post-only
    /// TODO add preview of template
-   /// If link to categorie : move default to category / drop is_helpdeskvisible
 
    // From CommonDBTM
    public $dohistory = true;
@@ -51,6 +50,38 @@ class TicketTemplate extends CommonDropdown {
    protected $forward_entity_to = array('TicketTemplateHiddenField',
                                         'TicketTemplateMandatoryField',
                                         'TicketTemplatePredefinedField');
+
+
+   /// Mandatory Fields
+   var $mandatory = array();
+   /// Hidden fields
+   var $hidden = array();
+   /// Predefined fields
+   var $predefined = array();
+
+   /**
+    * Retrieve an item from the database with additional datas
+    *
+    * @param $ID ID of the item to get
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBWithDatas($ID) {
+      global $DB;
+
+      if ($this->getFromDB($ID)) {
+         echo "jj";
+         $tth = new TicketTemplateHiddenField();
+         $this->hidden = $tth->getHiddenFields($ID);
+         $ttm = new TicketTemplateMandatoryField();
+         $this->mandatory = $ttm->getMandatoryFields($ID);
+         $ttp = new TicketTemplatePredefinedField();
+         $this->predefined = $ttp->getPredefinedFields($ID);
+         return true;
+      }
+      echo "kk";
+      return false;
+   }
 
 
    static function getTypeName($nb=0) {
@@ -145,19 +176,6 @@ class TicketTemplate extends CommonDropdown {
       return $ong;
    }
 
-
-   function getAdditionalFields() {
-      global $LANG;
-
-      return array(array('name'  => 'is_helpdeskvisible',
-                         'label' => $LANG['tracking'][39],
-                         'type'  => 'bool',
-                         'list'  => true),
-                   array('name'  => 'is_default',
-                         'label' => $LANG['job'][28],
-                         'type'  => 'bool',
-                         'list'  => true));
-   }
 
    /**
     * Get search function for the class

@@ -105,6 +105,29 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Get predefined fields for a template
+    *
+    * @param $ID the template ID
+    *
+    * @return an array of predefined fields
+   **/
+   function getPredefinedFields($ID) {
+      global $DB;
+
+      $sql = "SELECT *
+              FROM `".$this->getTable()."`
+              WHERE `".$this->items_id."` = '$ID'
+              ORDER BY `id`";
+      $result = $DB->query($sql);
+
+      $fields = array();
+      while ($rule = $DB->fetch_assoc($result)) {
+         $fields[$rule['num']] = $rule['value'];
+      }
+      return $fields;
+   }
+
 
    /**
     * Print the predefined fields

@@ -2997,6 +2997,33 @@ class Ticket extends CommonITILObject {
          $options['type'] = EntityData::getUsedConfig('tickettype', $options['entities_id']);
       }
 
+      // Load ticket template if available :
+      $tt = NULL;
+      echo $options['type']." ".$options['itilcategories_id'];
+      if ($options['type'] && $options['itilcategories_id']) {
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($options['itilcategories_id'])) {
+            $tt = new TicketTemplate();
+            $field = '';
+            switch ($options['type']) {
+               case self::INCIDENT_TYPE :
+                  $field = 'tickettemplates_id_incident';
+                  break;
+               case self::DEMAND_TYPE :
+                  $field = 'tickettemplates_id_demand';
+                  break;
+            }
+            if (!empty($field) && $categ->fields[$field]) {
+               if (!$tt->getFromDBWithDatas($categ->fields[$field])) {
+                  $tt = NULL;
+               }
+            } else {
+               $tt = NULL;
+            }
+
+         }
+      }
+      print_r($tt);
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
