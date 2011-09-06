@@ -106,9 +106,12 @@ class TicketTemplateHiddenField extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
+      $tt = new TicketTemplate();
+      $allowed_fields = $tt->getAllowedFields();
+
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $fields[$rule['num']] = $rule['num'];
+         $fields[$allowed_fields[$rule['num']]] = $rule['num'];
       }
       return $fields;
    }
