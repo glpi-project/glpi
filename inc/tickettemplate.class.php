@@ -169,18 +169,6 @@ class TicketTemplate extends CommonDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'is_helpdeskvisible';
-      $tab[2]['name']          = $LANG['tracking'][39];
-      $tab[2]['datatype']      = 'bool';
-
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'is_default';
-      $tab[3]['name']          = $LANG['job'][28];
-      $tab[3]['datatype']      = 'bool';
-      $tab[3]['massiveaction'] = false;
-
-
       return $tab;
    }
 

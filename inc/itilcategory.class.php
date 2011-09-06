@@ -76,7 +76,16 @@ class ITILCategory extends CommonTreeDropdown {
                     array('name'  => 'is_helpdeskvisible',
                           'label' => $LANG['tracking'][39],
                           'type'  => 'bool',
-                          'list'  => true));
+                          'list'  => true),
+                    array('name'  => 'tickettemplates_id_demand',
+                          'label' => $LANG['job'][66],
+                          'type'  => 'dropdownValue',
+                          'list'  => true),
+                    array('name'  => 'tickettemplates_id_incident',
+                          'label' => $LANG['job'][67],
+                          'type'  => 'dropdownValue',
+                          'list'  => true),
+);
    }
 
 
@@ -92,6 +101,16 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[71]['table'] = 'glpi_groups';
       $tab[71]['field'] = 'name';
       $tab[71]['name']  = $LANG['common'][35];
+
+      $tab[72]['table']     = 'glpi_tickettemplates';
+      $tab[72]['field']     = 'name';
+      $tab[72]['linkfield'] = 'tickettemplates_id_demand';
+      $tab[72]['name']      = $LANG['job'][66];
+
+      $tab[73]['table']     = 'glpi_tickettemplates';
+      $tab[73]['field']     = 'name';
+      $tab[73]['linkfield'] = 'tickettemplates_id_incident';
+      $tab[73]['name']      = $LANG['job'][67];
 
       $tab[2]['table']    = $this->getTable();
       $tab[2]['field']    = 'is_helpdeskvisible';
