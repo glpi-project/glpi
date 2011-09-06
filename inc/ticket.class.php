@@ -3040,7 +3040,7 @@ class Ticket extends CommonITILObject {
                   break;
             }
             if (!empty($field) && $categ->fields[$field]) {
-               $tt->getFromDBWithDatas($categ->fields[$field]);
+               $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
          }
       }

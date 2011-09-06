@@ -66,16 +66,16 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return true if succeed else false
    **/
-   function getFromDBWithDatas($ID) {
+   function getFromDBWithDatas($ID, $withtypandcategory = true) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
          $tth = new TicketTemplateHiddenField();
-         $this->hidden = $tth->getHiddenFields($ID);
+         $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
          $ttm = new TicketTemplateMandatoryField();
-         $this->mandatory = $ttm->getMandatoryFields($ID);
+         $this->mandatory = $ttm->getMandatoryFields($ID, $withtypandcategory);
          $ttp = new TicketTemplatePredefinedField();
-         $this->predefined = $ttp->getPredefinedFields($ID);
+         $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
          return true;
       }
       return false;
@@ -103,7 +103,7 @@ class TicketTemplate extends CommonDropdown {
 
 
 
-   static function getAllowedFields() {
+   static function getAllowedFields($withtypandcategory = true) {
       static $allowed_fields = array();
       if (count($allowed_fields) == 0) {
          $ticket = new Ticket();
@@ -113,12 +113,8 @@ class TicketTemplate extends CommonDropdown {
                                                       'glpi_tickets')        => 'name',
                      $ticket->getSearchOptionIDByField('field', 'content',
                                                       'glpi_tickets')        => 'content',
-   /*                   $ticket->getSearchOptionIDByField('field', 'completename',
-                                                      'glpi_itilcategories') => 'itilcategories_id',*/
                      $ticket->getSearchOptionIDByField('field', 'status',
                                                       'glpi_tickets')        => 'status',
-   /*                   $ticket->getSearchOptionIDByField('field', 'type',
-                                                      'glpi_tickets')        => 'type',*/
                      $ticket->getSearchOptionIDByField('field', 'urgency',
                                                       'glpi_tickets')        => 'urgency',
                      $ticket->getSearchOptionIDByField('field', 'impact',
@@ -142,6 +138,13 @@ class TicketTemplate extends CommonDropdown {
                      $ticket->getSearchOptionIDByField('field', 'name',
                                                       'glpi_suppliers')      => 'suppliers_id_assign',
             );
+         if ($withtypandcategory) {
+            $allowed_fields[$ticket->getSearchOptionIDByField('field', 'completename','glpi_itilcategories')]
+                               = 'itilcategories_id';
+            $allowed_fields[$ticket->getSearchOptionIDByField('field', 'type','glpi_tickets')]
+                               = 'type';
+         }
+
       }
 
       return $allowed_fields;
