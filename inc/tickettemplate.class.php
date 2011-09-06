@@ -70,8 +70,11 @@ class TicketTemplate extends CommonDropdown {
       if ($this->getFromDB($ID)) {
          $tth = new TicketTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
+
+         // Always get all mandatory fields
          $ttm = new TicketTemplateMandatoryField();
-         $this->mandatory = $ttm->getMandatoryFields($ID, $withtypandcategory);
+         $this->mandatory = $ttm->getMandatoryFields($ID, true);
+
          $ttp = new TicketTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
          return true;
@@ -101,13 +104,21 @@ class TicketTemplate extends CommonDropdown {
 
 
 
-   static function getAllowedFields($withtypandcategory = true) {
+   static function getAllowedFields($withtypandcategory = 0) {
       static $allowed_fields = array();
-      if (count($allowed_fields) == 0) {
+
+      // For integer value for index
+      if ($withtypandcategory) {
+         $withtypandcategory = 1;
+      } else {
+         $withtypandcategory = 0;
+      }
+      if (!isset($allowed_fields[$withtypandcategory])) {
          $ticket = new Ticket();
 
          // SearchOption ID => name used for options
-         $allowed_fields=array($ticket->getSearchOptionIDByField('field', 'name',
+         $allowed_fields[$withtypandcategory] =
+               array($ticket->getSearchOptionIDByField('field', 'name',
                                                       'glpi_tickets')        => 'name',
                      $ticket->getSearchOptionIDByField('field', 'content',
                                                       'glpi_tickets')        => 'content',
@@ -137,15 +148,15 @@ class TicketTemplate extends CommonDropdown {
                                                       'glpi_suppliers')      => 'suppliers_id_assign',
             );
          if ($withtypandcategory) {
-            $allowed_fields[$ticket->getSearchOptionIDByField('field', 'completename','glpi_itilcategories')]
-                               = 'itilcategories_id';
-            $allowed_fields[$ticket->getSearchOptionIDByField('field', 'type','glpi_tickets')]
-                               = 'type';
+            $allowed_fields[$withtypandcategory][$ticket->getSearchOptionIDByField('field',
+                                          'completename','glpi_itilcategories')] = 'itilcategories_id';
+            $allowed_fields[$withtypandcategory][$ticket->getSearchOptionIDByField('field',
+                                          'type','glpi_tickets')] = 'type';
          }
 
       }
 
-      return $allowed_fields;
+      return $allowed_fields[$withtypandcategory];
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : item linked : itemtype / items_id
@@ -199,10 +210,11 @@ class TicketTemplate extends CommonDropdown {
    /**
    * Get mandatory mark if field is mandatory
    * @param $field string field
+   * @param $force bool force display based on global config
    * @return string to display
    **/
-   function getMandatoryMark($field) {
-      if (isset($this->mandatory[$field])) {
+   function getMandatoryMark($field, $force = false) {
+      if ($force || $this->isMandatoryField($field)) {
          return "<span class='red'>*</span>";
       }
       return '';
@@ -247,11 +259,11 @@ class TicketTemplate extends CommonDropdown {
    * @param $ticket ticket object
    * @return string to display
    **/
-   function getEndHiddenFieldValue($field,&$ticket) {
+   function getEndHiddenFieldValue($field,&$ticket = NULL) {
       if ($this->isHiddenField($field)) {
          echo "</span>";
          echo "<input type='hidden' name='field' value=\"".$ticket->fields[$field]."\">";
-         if ($this->isPredefinedField($field)) {
+         if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
                echo $ticket->getValueToDisplay($num, $ticket->fields[$field], true);
             }
