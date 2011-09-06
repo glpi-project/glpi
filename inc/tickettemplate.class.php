@@ -70,7 +70,6 @@ class TicketTemplate extends CommonDropdown {
       global $DB;
 
       if ($this->getFromDB($ID)) {
-         echo "jj";
          $tth = new TicketTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID);
          $ttm = new TicketTemplateMandatoryField();
@@ -79,7 +78,6 @@ class TicketTemplate extends CommonDropdown {
          $this->predefined = $ttp->getPredefinedFields($ID);
          return true;
       }
-      echo "kk";
       return false;
    }
 
