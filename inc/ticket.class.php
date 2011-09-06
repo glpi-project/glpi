@@ -2982,13 +2982,8 @@ class Ticket extends CommonITILObject {
       // Optional line
       $ismultientities = Session::isMultiEntitiesMode();
       echo "<tr>";
-      if (!$ID) {
-         echo "<th colspan='2'>";
-         echo "Choix template/categorie";
-         echo "</th><th colspan='2'>";
-      } else {
-         echo "</th><th colspan='4'>";
-      }
+      echo "<th colspan='4'>";
+
 
       if ($ID) {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
@@ -3150,23 +3145,14 @@ class Ticket extends CommonITILObject {
       echo "</table>";
 
       echo "</th></tr>";
-      echo "</table>";
 
-      if (!$ID) {
-         $this->showActorsPartForm($ID,$options);
+      if ($ID) {
+         echo "</table>";
+         echo "<table  class='tab_cadre_fixe'>";
       }
 
 
-      echo "<table  class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;: </th>";
-      echo "<td width='40%'>";
-      if ($canupdate) {
-         self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
-      } else {
-         echo self::getStatus($this->fields["status"]);
-      }
-      echo "</td>";
       echo "<th width='10%'>".$LANG['common'][17]."&nbsp;: </th>";
       echo "<td  width='40%'>";
       // Permit to set type when creating ticket without update right
@@ -3176,6 +3162,53 @@ class Ticket extends CommonITILObject {
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
+      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
+      echo "<td >";
+      // Permit to set category when creating ticket without update right
+      if ($canupdate || !$ID || $canupdate_descr) {
+         $opt = array('value'  => $this->fields["itilcategories_id"],
+                      'entity' => $this->fields["entities_id"]);
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+            $opt['condition'] = '`is_helpdeskvisible`=1';
+         }
+         Dropdown::show('ITILCategory', $opt);
+
+      } else {
+         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+
+
+      if (!$ID) {
+         echo "</table>";
+         $this->showActorsPartForm($ID,$options);
+         echo "<table  class='tab_cadre_fixe'>";
+      }
+
+
+
+
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;: </th>";
+      echo "<td width='40%'>";
+      if ($canupdate) {
+         self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
+      } else {
+         echo self::getStatus($this->fields["status"]);
+      }
+      echo "</td>";
+      echo "<th class='left'>".$LANG['job'][44]."&nbsp;: </th>";
+      echo "<td>";
+      if ($canupdate) {
+         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
+      } else {
+         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+      }
+      echo "</td>";
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -3194,23 +3227,29 @@ class Ticket extends CommonITILObject {
          echo parent::getUrgencyName($this->fields["urgency"]);
       }
       echo "</td>";
-
-      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
-      echo "<td >";
-      // Permit to set category when creating ticket without update right
-      if ($canupdate || !$ID || $canupdate_descr) {
-         $opt = array('value'  => $this->fields["itilcategories_id"],
-                      'entity' => $this->fields["entities_id"]);
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            $opt['condition'] = '`is_helpdeskvisible`=1';
-         }
-         Dropdown::show('ITILCategory', $opt);
-
+      // Display validation state
+      echo "<th>";
+      if (!$ID) {
+         echo $LANG['validation'][26]."&nbsp;:&nbsp;";
       } else {
-         echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
+         echo $LANG['validation'][0]."&nbsp;:&nbsp;";
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</th>";
+      echo "<td>";
+      if (!$ID) {
+         User::dropdown(array('name'   => "_add_validation",
+                              'entity' => $this->fields['entities_id'],
+                              'right'  => 'validate_ticket'));
+      } else {
+         if ($canupdate) {
+            TicketValidation::dropdownStatus('global_validation',
+                                             array('global' => true,
+                                                   'value'  => $this->fields['global_validation']));
+         } else {
+            echo TicketValidation::getStatus($this->fields['global_validation']);
+         }
+      }
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
@@ -3294,39 +3333,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['job'][44]."&nbsp;: </th>";
-      echo "<td>";
-      if ($canupdate) {
-         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
-      } else {
-         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
-      }
-      echo "</td>";
 
-      // Display validation state
-      echo "<th>";
-      if (!$ID) {
-         echo $LANG['validation'][26]."&nbsp;:&nbsp;";
-      } else {
-         echo $LANG['validation'][0]."&nbsp;:&nbsp;";
-      }
-      echo "</th>";
-      echo "<td>";
-      if (!$ID) {
-         User::dropdown(array('name'   => "_add_validation",
-                              'entity' => $this->fields['entities_id'],
-                              'right'  => 'validate_ticket'));
-      } else {
-         if ($canupdate) {
-            TicketValidation::dropdownStatus('global_validation',
-                                             array('global' => true,
-                                                   'value'  => $this->fields['global_validation']));
-         } else {
-            echo TicketValidation::getStatus($this->fields['global_validation']);
-         }
-      }
-      echo "</td></tr>";
 
 
       // Need comment right to add a followup with the actiontime
