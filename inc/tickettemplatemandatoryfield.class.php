@@ -108,7 +108,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields($withtypandcategory);
+      $allowed_fields = $tt->getAllowedFields(true);
 
       $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
@@ -141,7 +141,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       }
 
       $canedit = $tt->can($ID, "w");
-      $fields  = $tt->getAllowedFieldsNames();
+      $fields  = $tt->getAllowedFieldsNames(true);
       $rand    = mt_rand();
       echo "<form name='tickettemplatemandatoryfields_form$rand'
                   id='tickettemplatemandatoryfields_form$rand' method='post' action='";

@@ -1028,7 +1028,7 @@ class Ticket extends CommonITILObject {
             if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
                if (count($tt->mandatory)) {
                   $mandatory_missing = array();
-                  $fieldsname = $tt->getAllowedFieldsNames();
+                  $fieldsname = $tt->getAllowedFieldsNames(true);
                   foreach ($tt->mandatory as $key => $val) {
                      if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
                         $mandatory_missing[$key] = $fieldsname[$val];

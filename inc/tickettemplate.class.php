@@ -166,10 +166,10 @@ class TicketTemplate extends CommonDropdown {
      /// TODO Manage due_date on relative computation
    }
 
-   function getAllowedFieldsNames() {
+   function getAllowedFieldsNames($withtypandcategory = 0) {
 
       $searchOption = Search::getOptions('Ticket');
-      $tab          = $this->getAllowedFields();
+      $tab          = $this->getAllowedFields($withtypandcategory);
       foreach ($tab as $ID => $shortname) {
          if (isset($searchOption[$ID]['name'])) {
             $tab[$ID] = $searchOption[$ID]['name'];
