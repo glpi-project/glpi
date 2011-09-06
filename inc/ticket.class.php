@@ -1803,6 +1803,7 @@ class Ticket extends CommonITILObject {
       $tab[30]['field']         = 'name';
       $tab[30]['name']          = $LANG['sla'][1];
       $tab[30]['massiveaction'] = false;
+      $tab[30]['datatype']      = 'dropdown';
 
       $tab[32]['table']         = 'glpi_slalevels';
       $tab[32]['field']         = 'name';
@@ -3198,10 +3199,13 @@ class Ticket extends CommonITILObject {
 
       // SLA
       echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
+      echo "<td>";
+      echo $tt->getBeginHiddenFieldText('due_date');
+      echo "<span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
       if (!$ID) {
          echo $tt->getMandatoryMark('due_date');
       }
+      echo $tt->getEndHiddenFieldText('due_date');
       echo "</td>";
       echo "<td>";
       if ($ID) {
@@ -3263,11 +3267,18 @@ class Ticket extends CommonITILObject {
          if ($this->fields["due_date"]=='NULL') {
             $this->fields["due_date"]='';
          }
+         echo $tt->getBeginHiddenFieldValue('due_date');
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
+         echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td><td>";
-         echo $LANG['choice'][2]." ".$LANG['sla'][1]."&nbsp;:".$tt->getMandatoryMark('slas_id');
+         echo $tt->getBeginHiddenFieldText('slas_id');
+         echo $LANG['sla'][1]."&nbsp;:".$tt->getMandatoryMark('slas_id');
+         echo $tt->getEndHiddenFieldText('slas_id');
+         echo "</td><td>";
+         echo $tt->getBeginHiddenFieldValue('slas_id');
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value'  => $this->fields["slas_id"]));
+         echo $tt->getEndHiddenFieldValue('slas_id',$this);
          echo "</td></tr></table>";
       }
 
@@ -3354,35 +3365,54 @@ class Ticket extends CommonITILObject {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][0]."&nbsp;:".$tt->getMandatoryMark('status')."</th>";
+      echo "<th width='10%'>";
+      echo $tt->getBeginHiddenFieldText('status');
+      echo $LANG['joblist'][0]."&nbsp;:".$tt->getMandatoryMark('status');
+      echo $tt->getEndHiddenFieldText('status');
+      echo "</th>";
       echo "<td width='40%'>";
+      echo $tt->getBeginHiddenFieldValue('status');
       if ($canupdate) {
          self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       } else {
          echo self::getStatus($this->fields["status"]);
       }
+      echo $tt->getEndHiddenFieldValue('status',$this);
+
       echo "</td>";
-      echo "<th class='left'>".$LANG['job'][44]."&nbsp;:".
-            $tt->getMandatoryMark('requesttypes_id')."</th>";
+      echo "<th class='left'>";
+      echo $tt->getBeginHiddenFieldText('requesttypes_id');
+      echo $LANG['job'][44]."&nbsp;:".$tt->getMandatoryMark('requesttypes_id');
+      echo $tt->getEndHiddenFieldText('requesttypes_id');
+      echo "</th>";
       echo "<td>";
+      echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
       }
+      echo $tt->getEndHiddenFieldValue('requesttypes_id',$this);
+
       echo "</td>";
 
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][29]."&nbsp;:".$tt->getMandatoryMark('urgency')."</th>";
+      echo "<th>";
+      echo $tt->getBeginHiddenFieldText('urgency');
+      echo $LANG['joblist'][29]."&nbsp;:".$tt->getMandatoryMark('urgency');
+      echo $tt->getEndHiddenFieldText('urgency');
+      echo "</th>";
       echo "<td>";
 
       if (($canupdate && $canpriority)
           || !$ID
           || $canupdate_descr) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
+         echo $tt->getBeginHiddenFieldValue('urgency');
          $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
+         echo $tt->getEndHiddenFieldValue('urgency', $this);
 
       } else {
          $idurgency = "value_urgency".mt_rand();
@@ -3415,13 +3445,21 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][30]."&nbsp;:".$tt->getMandatoryMark('impact')."</th>";
+      echo "<th>";
+      echo $tt->getBeginHiddenFieldText('impact');
+      echo $LANG['joblist'][30]."&nbsp;:".$tt->getMandatoryMark('impact');
+      echo $tt->getEndHiddenFieldText('impact');
+
+      echo "</th>";
       echo "<td>";
+      echo $tt->getBeginHiddenFieldValue('impact');
+
       if ($canupdate) {
          $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       } else {
          echo parent::getImpactName($this->fields["impact"]);
       }
+      echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
       echo "<th class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: </th>";
@@ -3472,16 +3510,17 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority')."</th>";
+      echo "<th class='left'>";
+      echo $LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority');
+      echo "</th>";
       echo "<td>";
+      $idajax     = 'change_priority_' . mt_rand();
 
-      if ($canupdate && $canpriority) {
+      if ($canupdate && $canpriority && !$tt->isHiddenField('priority')) {
          $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
-         $idajax     = 'change_priority_' . mt_rand();
          echo "&nbsp;<span id='$idajax' style='display:none'></span>";
 
       } else {
-         $idajax     = 'change_priority_' . mt_rand();
          $idpriority = 0;
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
       }
@@ -3502,9 +3541,15 @@ class Ticket extends CommonITILObject {
       // Need comment right to add a followup with the actiontime
       if (!$ID && Session::haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th>".$LANG['job'][20]."&nbsp;:".$tt->getMandatoryMark('actiontime')."</th>";
+         echo "<th>";
+         echo $tt->getBeginHiddenFieldText('actiontime');
+         echo $LANG['job'][20]."&nbsp;:".$tt->getMandatoryMark('actiontime');
+         echo $tt->getEndHiddenFieldText('actiontime');
+         echo "</th>";
          echo "<td colspan='3'>";
+         echo $tt->getBeginHiddenFieldValue('actiontime');
          Dropdown::showTimeStamp('actiontime',array('value' => $options['actiontime']));
+         echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
          echo "</tr>";
       }
@@ -3518,9 +3563,15 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:".$tt->getMandatoryMark('name')."</th>";
+      echo "<th width='10%'>";
+      echo $tt->getBeginHiddenFieldText('name');
+      echo $LANG['common'][57]."&nbsp;:".$tt->getMandatoryMark('name');
+      echo $tt->getEndHiddenFieldText('name');
+      echo "</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
+         echo $tt->getBeginHiddenFieldText('name');
+
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showName$rand() {\n";
@@ -3548,6 +3599,7 @@ class Ticket extends CommonITILObject {
             showName$rand();
             </script>";
          }
+         echo $tt->getEndHiddenFieldText('name');
 
       } else {
          if (empty($this->fields["name"])) {
@@ -3560,9 +3612,15 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['joblist'][6]."&nbsp;:".$tt->getMandatoryMark('content')."</th>";
+      echo "<th width='10%'>";
+      echo $tt->getBeginHiddenFieldText('content');
+      echo $LANG['joblist'][6]."&nbsp;:".$tt->getMandatoryMark('content');
+      echo $tt->getEndHiddenFieldText('content');
+      echo "</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
+         echo $tt->getBeginHiddenFieldText('content');
+
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showDesc$rand() {\n";
@@ -3588,6 +3646,7 @@ class Ticket extends CommonITILObject {
             showDesc$rand();
             </script>";
          }
+         echo $tt->getEndHiddenFieldText('content');
 
       } else {
          echo nl2br($this->fields["content"]);

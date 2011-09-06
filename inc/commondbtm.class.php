@@ -2878,11 +2878,12 @@ class CommonDBTM extends CommonGLPI {
     * @param $field_id_or_search_options integer/string/array id of the search option field
     *                                                            or field name
     *                                                            or search option array
-    * @param $value mixed value t display
+    * @param $value mixed value to display
+    * @param $withcomment bool display comment if available
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_or_search_options, $value) {
+   function getValueToDisplay($field_id_or_search_options, $value, $withcomment=false) {
       global $LANG, $CFG_GLPI;
 
       $options = array();
@@ -2962,7 +2963,17 @@ class CommonDBTM extends CommonGLPI {
 
                case "dropdown" :
                   if ($options['table'] == 'glpi_users') {
+                     if ($withcomment) {
+                        $tmp = getUserName($value,2);
+                        return $tmp['name'].'&nbsp;'.
+                                 Html::showToolTip($tmp['comment'],array('display' => false));
+                     }
                      return getUserName($value);
+                  }
+                  if ($withcomment) {
+                     $tmp = Dropdown::getDropdownName($options['table'],$value,1);
+                     return $tmp['name'].'&nbsp;'.
+                            Html::showToolTip($tmp['comment'],array('display' => false));
                   }
                   return Dropdown::getDropdownName($options['table'],$value);
 
