@@ -1438,7 +1438,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_tickettype" :
-               Ticket::dropdownType($name, $value);
+               Ticket::dropdownType($name, array('value' => $value));
                $display = true;
                break;
          }

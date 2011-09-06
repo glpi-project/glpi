@@ -156,7 +156,7 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_tickets.type" :
-                  Ticket::dropdownType($inputname, $_REQUEST['value']);
+                  Ticket::dropdownType($inputname, array('value' => $_REQUEST['value']));
                   $display = true;
                   break;
 
