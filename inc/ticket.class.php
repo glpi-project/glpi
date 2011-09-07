@@ -3093,7 +3093,7 @@ class Ticket extends CommonITILObject {
                      'entities_id'               => $_SESSION["glpiactive_entity"],
                      'status'                    => 'new',
                      'followup'                  => array(),
-                     'itemtype'                  => $this->getTypeName(),
+                     'itemtype'                  => '',
                      'items_id'                  => 0,
                      'plan'                      => array(),
                      'global_validation'         => 'none',
