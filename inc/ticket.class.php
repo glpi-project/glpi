@@ -380,7 +380,7 @@ class Ticket extends CommonITILObject {
 
             // Not for Ticket class
             if ($item->getType() != __CLASS__) {
-                  return self::createTabEntry($title, $nb);
+               return self::createTabEntry($title, $nb);
             }
          }
          switch ($item->getType()) {
@@ -2934,7 +2934,7 @@ class Ticket extends CommonITILObject {
          echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
       }
 
-      // Display predefined fields if hidden 
+      // Display predefined fields if hidden
       if ($tt->isHiddenField('itemtype')) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtypr']."'>";
          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
@@ -3062,7 +3062,6 @@ class Ticket extends CommonITILObject {
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
 
-
       $users_id_requester = Session::getLoginUserID();
       // No default requester if own ticket right = tech and update_ticket right to update requester
       if (Session::haveRight('own_ticket',1) && Session::haveRight('update_ticket',1)) {
@@ -3094,7 +3093,7 @@ class Ticket extends CommonITILObject {
                      'entities_id'               => $_SESSION["glpiactive_entity"],
                      'status'                    => 'new',
                      'followup'                  => array(),
-                     'itemtype'                  => '',
+                     'itemtype'                  => $this->getTypeName(),
                      'items_id'                  => 0,
                      'plan'                      => array(),
                      'global_validation'         => 'none',
