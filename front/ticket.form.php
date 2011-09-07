@@ -189,7 +189,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 } else {
    Html::header($LANG['job'][13],'',"maintain","ticket");
 
-   $track->showForm(0, $_REQUEST);
+   $track->showForm(0);
 }
 
 
