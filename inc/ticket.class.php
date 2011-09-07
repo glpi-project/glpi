@@ -3069,7 +3069,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set default values...
-      $values = array('_users_id_requester'      => $users_id_requester,
+      $default_values = array('_users_id_requester'      => $users_id_requester,
                      '_users_id_requester_notif' => array('use_notification' => 1),
                      '_groups_id_requester'      => 0,
                      '_users_id_assign'          => 0,
@@ -3102,36 +3102,37 @@ class Ticket extends CommonITILObject {
                      '_add_validation'           => 0,
                      'type'                      => -1);
 
+      $values = $_REQUEST;
 
       // Restore saved value or override with page parameter
-      foreach ($values as $name => $value) {
-         if (!isset($options[$name])) {
+      foreach ($default_values as $name => $value) {
+         if (!isset($values[$name])) {
             if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $options[$name] = $_SESSION["helpdeskSaved"][$name];
+               $values[$name] = $_SESSION["helpdeskSaved"][$name];
             } else {
-               $options[$name] = $value;
+               $values[$name] = $value;
             }
          }
       }
 
       // Clean text fields
-      $options['name']    = stripslashes($options['name']);
-      $options['content'] = Html::cleanPostForTextArea($options['content']);
+      $values['name']    = stripslashes($values['name']);
+      $values['content'] = Html::cleanPostForTextArea($values['content']);
 
       if (isset($_SESSION["helpdeskSaved"])) {
          unset($_SESSION["helpdeskSaved"]);
       }
-      if ($options['type']<=0) {
-         $options['type'] = EntityData::getUsedConfig('tickettype', $options['entities_id']);
+      if ($values['type']<=0) {
+         $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id']);
       }
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
-      if ($options['type'] && $options['itilcategories_id']) {
+      if ($values['type'] && $values['itilcategories_id']) {
          $categ = new ITILCategory();
-         if ($categ->getFromDB($options['itilcategories_id'])) {
+         if ($categ->getFromDB($values['itilcategories_id'])) {
             $field = '';
-            switch ($options['type']) {
+            switch ($values['type']) {
                case self::INCIDENT_TYPE :
                   $field = 'tickettemplates_id_incident';
                   break;
@@ -3146,10 +3147,10 @@ class Ticket extends CommonITILObject {
       }
 
       // Predefined fields from template : reset them
-      if (isset($options['_predefined_fields'])) {
-         $options['_predefined_fields'] = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
+      if (isset($values['_predefined_fields'])) {
+         $values['_predefined_fields'] = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
       } else {
-         $options['_predefined_fields'] = array();
+         $values['_predefined_fields'] = array();
       }
 
       // Store predefined fields to be able not to take into account on change template
@@ -3157,29 +3158,29 @@ class Ticket extends CommonITILObject {
 
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($options[$predeffield])) {
+            if (isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
-               if ($options[$predeffield] == $values[$predeffield] ||
-                  (isset($options['_predefined_fields'][$field])
-                  && $options[$predeffield] == $options['_predefined_fields'][$field])) {
-                  $options[$predeffield] = $predefvalue;
+               if ($values[$predeffield] == $default_values[$predeffield] ||
+                  (isset($values['_predefined_fields'][$field])
+                  && $values[$predeffield] == $values['_predefined_fields'][$field])) {
+                  $values[$predeffield] = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             }
          }
       } else { // No template load : reset predefined values
-         if (count($options['_predefined_fields'])) {
-            foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
-               if ($options[$predeffield] == $predefvalue) {
-                  $options[$predeffield] = $values[$predeffield];
+         if (count($values['_predefined_fields'])) {
+            foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
+               if ($values[$predeffield] == $predefvalue) {
+                  $values[$predeffield] = $default_values[$predeffield];
                }
             }
          }
       }
 
-      // Put ticket template on $options for actors
-      $options['_tickettemplate'] = $tt;
+      // Put ticket template on $values for actors
+      $values['_tickettemplate'] = $tt;
 
       $canupdate    = Session::haveRight('update_ticket', '1');
       $canpriority  = Session::haveRight('update_priority', '1');
@@ -3192,7 +3193,7 @@ class Ticket extends CommonITILObject {
          $this->check($ID,'r');
       } else {
          // Create item
-         $this->check(-1,'w',$options);
+         $this->check(-1,'w',$values);
       }
 
       $this->showTabs($options);
@@ -3204,7 +3205,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($options["_users_id_requester"], true);
+         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true);
          $this->userentities = array();
          //For each user's entity, check if the technician which creates the ticket have access to it
          foreach ($all_entities as $tmp => $ID_entity) {
@@ -3456,7 +3457,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          echo "</table>";
-         $this->showActorsPartForm($ID,$options);
+         $this->showActorsPartForm($ID,$values);
          echo "<table  class='tab_cadre_fixe'>";
       }
 
@@ -3584,7 +3585,7 @@ class Ticket extends CommonITILObject {
          }
          $dev_user_id = 0;
          if (!$ID) {
-            $dev_user_id = $options['_users_id_requester'];
+            $dev_user_id = $values['_users_id_requester'];
 
          } else if (isset($this->users[parent::REQUESTER])
                     && count($this->users[parent::REQUESTER])==1) {
@@ -3651,14 +3652,14 @@ class Ticket extends CommonITILObject {
          echo "</th>";
          echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime',array('value' => $options['actiontime']));
+         Dropdown::showTimeStamp('actiontime',array('value' => $values['actiontime']));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
          echo "</tr>";
       }
       echo "</table>";
       if ($ID) {
-         $this->showActorsPartForm($ID,$options);
+         $this->showActorsPartForm($ID,$values);
       }
 
 
@@ -3796,16 +3797,16 @@ class Ticket extends CommonITILObject {
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             Ticket_Ticket::dropdownLinks('_link[link]',
-                                         (isset($options["_link"])?$options["_link"]['link']:''));
+                                         (isset($values["_link"])?$values["_link"]['link']:''));
             echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]'
-                         value='".(isset($options["_link"])?$options["_link"]['tickets_id_2']:'')."'
+                         value='".(isset($values["_link"])?$values["_link"]['tickets_id_2']:'')."'
                          size='10'>\n";
             echo "&nbsp;";
             echo "</div>";
 
-            if (isset($options["_link"]) && !empty($options["_link"]['tickets_id_2'])) {
+            if (isset($values["_link"]) && !empty($values["_link"]['tickets_id_2'])) {
                echo "<script language='javascript'>Ext.get('linkedticket$rand_linked_ticket').
                       setDisplayed('block');</script>";
             }
