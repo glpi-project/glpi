@@ -2936,7 +2936,7 @@ class Ticket extends CommonITILObject {
 
       // Display predefined fields if hidden
       if ($tt->isHiddenField('itemtype')) {
-         echo "<input type='hidden' name='itemtype' value='".$options['itemtypr']."'>";
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
 
