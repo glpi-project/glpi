@@ -3644,22 +3644,7 @@ class Html {
                    urldecode(Toolbox::substr($split[$i], $pos+1))."'>";
          }
 
-         echo "<select name='display_type'>";
-         echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][27]." ".
-                $LANG['common'][68]."</option>";
-         echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][27]." ".
-                $LANG['common'][69]."</option>";
-         echo "<option value='".SYLK_OUTPUT."'>".$LANG['buttons'][28]."</option>";
-         echo "<option value='".CSV_OUTPUT."'>".$LANG['buttons'][44]."</option>";
-         echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][29]." ".
-                $LANG['common'][68]."</option>";
-         echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][29]." ".
-                $LANG['common'][69]."</option>";
-         echo "<option value='-".SYLK_OUTPUT."'>".$LANG['buttons'][30]."</option>";
-         echo "<option value='-".CSV_OUTPUT."'>".$LANG['buttons'][45]."</option>";
-         echo "</select>&nbsp;";
-         echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-                title=\"".$LANG['buttons'][31]."\" value=\"".$LANG['buttons'][31]."\">";
+         Dropdown::showOutputFormat();
          echo "</form>";
          echo "</td>" ;
       }
