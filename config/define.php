@@ -218,7 +218,7 @@ define("ERROR",1);
 
 //Bookmark types
 define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
-
+define("BOOKMARK_URI",2); //bookmark without controls
 
 $CFG_GLPI["unicity_types"] = array('Budget', 'Computer', 'Contact', 'Contract', 'Infocom', 'Monitor',
                                    'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'Software',
