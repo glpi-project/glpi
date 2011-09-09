@@ -101,7 +101,7 @@ class CommonGLPI {
     *
     * @return array of types
    **/
-   function getOtherTabs($typeform) {
+   static function getOtherTabs($typeform) {
 
       if (isset(self::$othertabs[$typeform])) {
          return self::$othertabs[$typeform];
