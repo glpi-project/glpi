@@ -92,6 +92,24 @@ class CommonGLPI {
 
 
    /**
+    * Get the array of Tab managed by other types
+    * Getter for plugin (ex PDF) to access protected property
+    *
+    * @since version 0.83
+    *
+    * @param $typeform string object class name to add tab on form
+    *
+    * @return array of types
+   **/
+   function getOtherTabs($typeform) {
+
+      if (isset(self::$othertabs[$typeform])) {
+         return self::$othertabs[$typeform];
+      }
+      return array();
+   }
+
+   /**
     * Define tabs to display
     *
     * NB : Only called for existing object
