@@ -189,8 +189,6 @@ define("AUTO_ASSIGN_CATEGORY_HARDWARE",2);
 define("INFO",0);
 define("ERROR",1);
 
-//Bookmark types
-define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
 // For plugins
 $PLUGIN_HOOKS     = array();

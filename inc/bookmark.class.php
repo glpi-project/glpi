@@ -40,7 +40,9 @@ class Bookmark extends CommonDBTM {
 
    var $auto_message_on_action=false;
 
-   const WIDTH = 750;
+   const WIDTH  = 750;
+   const SEARCH = 1; //SEARCH SYSTEM bookmark
+   const URI    = 2;
 
    function canCreate() {
       return Session::haveRight('bookmark_public', 'w');
@@ -211,7 +213,7 @@ class Bookmark extends CommonDBTM {
    function prepareQueryToStore($type, $query_tab, $itemtype=0) {
 
       switch ($type) {
-         case BOOKMARK_SEARCH :
+         case self::SEARCH :
             $fields_toclean = array('add_search_count', 'add_search_count2', 'delete_search_count',
                                     'delete_search_count2', 'glpisearchcount', 'glpisearchcount2',
                                     'start');
@@ -251,7 +253,7 @@ class Bookmark extends CommonDBTM {
       global $LANG;
 
       switch ($type) {
-         case BOOKMARK_SEARCH :
+         case self::SEARCH :
             // Check if all datas are valid
             $opt = Search::getCleanedOptions($this->fields['itemtype']);
 
@@ -382,7 +384,7 @@ class Bookmark extends CommonDBTM {
       global $DB;
 
       // Get bookmark / Only search bookmark
-      if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
+      if ($this->getFromDB($ID) && $this->fields['type'] = self::SEARCH) {
          $dd = new Bookmark_User();
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
@@ -417,7 +419,7 @@ class Bookmark extends CommonDBTM {
       global $DB;
 
       // Get bookmark / Only search bookmark
-      if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
+      if ($this->getFromDB($ID) && $this->fields['type'] = self::SEARCH) {
          $dd = new Bookmark_User();
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
@@ -522,7 +524,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>&nbsp;</td>";
                }
                echo "<td class='center'>";
-               if ($this->fields['type']==BOOKMARK_SEARCH) {
+               if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;
                             mark_default=1&amp;id=".$this->fields["id"]."\">".$LANG['choice'][0].
