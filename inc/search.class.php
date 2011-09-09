@@ -1677,7 +1677,7 @@ class Search {
       echo "<td width='80' class='center'>";
       echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
       echo "</td><td>";
-      Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
+      Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
       echo "<a href='$target?reset=reset' >";
       echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";

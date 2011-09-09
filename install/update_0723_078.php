@@ -2928,7 +2928,7 @@ function update0723to078($output='HTML') {
 
       $query = "SELECT `id`, `query`
                 FROM `glpi_bookmarks`
-                WHERE `type` = ".BOOKMARK_SEARCH." ";
+                WHERE `type` = ".Bookmark::SEARCH." ";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
@@ -5384,7 +5384,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $query = "SELECT *
              FROM `glpi_bookmarks`
              WHERE `itemtype` = 'Ticket'
-                   AND `type` = '".BOOKMARK_SEARCH."'";
+                   AND `type` = '".Bookmark::SEARCH."'";
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
