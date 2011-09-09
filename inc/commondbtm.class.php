@@ -471,18 +471,17 @@ class CommonDBTM extends CommonGLPI {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
             if ($tablename[0]!='_') {
 
+               $itemtype = getItemTypeForTable($tablename);
+               $object   = new $itemtype();
                if (!is_array($field)) {
-                  $query = "UPDATE `$tablename`
-                            SET `$field` = '$newval'
-                            WHERE `$field` = '".$this->fields['id']."'";
-                  $DB->query($query);
-
+                  foreach($DB->request($tablename, array($field => $this->fields['id'])) as $data) {
+                     $object->update(array('id' => $data['id'], $field => $newval));
+                  }
                } else {
                   foreach ($field as $f) {
-                     $query = "UPDATE `$tablename`
-                               SET `$f` = '$newval'
-                               WHERE `$f` = '".$this->fields['id']."'";
-                     $DB->query($query);
+                     foreach($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
+                        $object->update(array('id' => $data['id'], $f => $newval));
+                     }
                   }
                }
 
@@ -492,7 +491,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Clean ticket open against the item
-      if (in_array($this->getType(),$CFG_GLPI["ticket_types"])) {
+      if (in_array($this->getType(), $CFG_GLPI["ticket_types"])) {
          $job = new Ticket;
 
          $query = "SELECT *
