@@ -1423,20 +1423,28 @@ class OcsServer extends CommonDBTM {
    }
 
 
+   /**
+    * Return field matching between OCS and GLPI
+    *
+    * @return array of glpifield => ocsfield
+   **/
    static function getOcsFieldsMatching() {
 
-      return array('SMANUFACTURER'  => 'manufacturers_id',
-                   'WINPRODKEY'     => 'os_license_number',
-                   'WINPRODID'      => 'os_licenseid',
-                   'OSNAME'         => 'operatingsystems_id',
-                   'OSVERSION'      => 'operatingsystemversions_id',
-                   'OSCOMMENTS'     => 'operatingsystemservicepacks_id',
-                   'WORKGROUP'      => 'domains_id',
-                   'USERID'         => 'contact',
-                   'NAME'           => 'name',
-                   'DESCRIPTION'    => 'comment',
-                   'SSN'            => 'serial',
-                   'SMODEL'         => 'computermodels_id');
+      // Manufacturer and Model both as text (for rules) and as id (for import)
+      return array('manufacturer'                     => 'SMANUFACTURER',
+                   'manufacturers_id'                 => 'SMANUFACTURER',
+                   'os_license_number'                => 'WINPRODKEY',
+                   'os_licenseid'                     => 'WINPRODID',
+                   'operatingsystems_id'              => 'OSNAME',
+                   'operatingsystemversions_id'       => 'OSVERSION',
+                   'operatingsystemservicepacks_id'   => 'OSCOMMENTS',
+                   'domains_id'                       => 'WORKGROUP',
+                   'contact'                          => 'USERID',
+                   'name'                             => 'NAME',
+                   'comment'                          => 'DESCRIPTION',
+                   'serial'                           => 'SSN',
+                   'model'                            => 'SMODEL',
+                   'computermodels_id'                => 'SMODEL');
    }
 
 
@@ -1458,14 +1466,8 @@ class OcsServer extends CommonDBTM {
 
       $input['ocsid'] = $ocs_fields['ID'];
 
-      // As TEXT for rule engine (also add as ID below)
-      $input['model']        = (isset($ocs_fields['SMODEL'])
-                                    ? $ocs_fields['SMODEL'] : '');
-      $input['manufacturer'] = (isset($ocs_fields['SMANUFACTURER'])
-                                    ? $ocs_fields['SMANUFACTURER'] : '');
-
       // Others fields
-      foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
+      foreach (self::getOcsFieldsMatching() as $glpi_field => $ocs_field) {
          if (isset($ocs_fields[$ocs_field])) {
             $table     = getTableNameForForeignKeyField($glpi_field);
             $ocs_field = Toolbox::encodeInUtf8($ocs_field);
