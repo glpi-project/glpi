@@ -113,6 +113,8 @@ $obsoleted = array(
    'getItemTypeSearchURL'              =>  'Toolbox::getItemTypeSearchURL',
    'getItemTypeTabsURL'                =>  'Toolbox::getItemTypeTabsURL',
    'getLoginUserID'                    =>  'Session::getLoginUserID',
+   'get_magic_quotes_gpc'              =>  'Toolbox::get_magic_quotes_gpc',
+   'get_magic_quotes_runtime'          =>  'Toolbox::get_magic_quotes_runtime',
    'getMemoryLimit'                    =>  'Toolbox::getMemoryLimit',
    'getPluginSearchOptions'            =>  'Plugin::getPluginSearchOptions',
    'getPluginsDatabaseRelations'       =>  'Plugin::getPluginsDatabaseRelations',
@@ -200,7 +202,8 @@ $obsoleted = array(
    'DEBUG_MODE'                        =>  'Session::DEBUG_MODE',
    'NORMAL_MODE'                       =>  'Session::NORMAL_MODE',
    'TRANSLATION_MODE'                  =>  'Session::TRANSLATION_MODE',
-   'HISTORY_'                          => 'Log::HISTORY_',
+   'HISTORY_'                          =>  'Log::HISTORY_',
+   'BOOKMARK_SEARCH'                   =>  'Bookmark::SEARCH'
 );
 
 $res = 0;
