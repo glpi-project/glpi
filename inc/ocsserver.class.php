@@ -1412,6 +1412,13 @@ class OcsServer extends CommonDBTM {
 
       $input['ocsid'] = $ocs_fields['ID'];
 
+      // As TEXT for rule engine (also add as ID below)
+      $input['model']        = (isset($ocs_fields['SMODEL'])
+                                    ? $ocs_fields['SMODEL'] : '');
+      $input['manufacturer'] = (isset($ocs_fields['SMANUFACTURER'])
+                                    ? $ocs_fields['SMANUFACTURER'] : '');
+
+      // Others fields
       foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
          if (isset($ocs_fields[$ocs_field])) {
             $table     = getTableNameForForeignKeyField($glpi_field);
@@ -2650,7 +2657,8 @@ class OcsServer extends CommonDBTM {
 
       $query_ocs = "SELECT `hardware`.*,
                            `accountinfo`.`TAG` AS TAG,
-                           `bios`.`SSN` AS SERIAL
+                           `bios`.`SSN` AS SERIAL,
+                           `bios`.`SMODEL`, `bios`.`SMANUFACTURER`
                     FROM `hardware`
                     INNER JOIN `accountinfo` ON (`hardware`.`id` = `accountinfo`.`HARDWARE_ID`)
                     INNER JOIN `bios` ON (`hardware`.`id` = `bios`.`HARDWARE_ID`)".
@@ -2670,11 +2678,13 @@ class OcsServer extends CommonDBTM {
 
          while ($data = $DBocs->fetch_array($result_ocs)) {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
-            $hardware[$data["ID"]]["date"]   = $data["LASTDATE"];
-            $hardware[$data["ID"]]["name"]   = $data["NAME"];
-            $hardware[$data["ID"]]["TAG"]    = $data["TAG"];
-            $hardware[$data["ID"]]["id"]     = $data["ID"];
-            $hardware[$data["ID"]]["serial"] = $data["SERIAL"];
+            $hardware[$data["ID"]]["date"]         = $data["LASTDATE"];
+            $hardware[$data["ID"]]["name"]         = $data["NAME"];
+            $hardware[$data["ID"]]["TAG"]          = $data["TAG"];
+            $hardware[$data["ID"]]["id"]           = $data["ID"];
+            $hardware[$data["ID"]]["serial"]       = $data["SERIAL"];
+            $hardware[$data["ID"]]["model"]        = $data["SMODEL"];
+            $hardware[$data["ID"]]["manufacturer"] = $data["SMANUFACTURER"];
 
             $query_network = "SELECT *
                               FROM `networks`
@@ -2769,7 +2779,8 @@ class OcsServer extends CommonDBTM {
                    $LANG['buttons'][37]."\">";
             echo "</td></tr>\n";
 
-            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][19]."</th>\n";
+            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][5]." / ";
+            echo $LANG['common'][22]." / ".$LANG['common'][19]."</th>\n";
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
@@ -2788,7 +2799,7 @@ class OcsServer extends CommonDBTM {
                   $data = $rule->processAllRules(array(), array(), $tab["id"]);
                }
                echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td>\n";
-               echo "<td>".$tab["serial"]."</td>\n";
+               echo "<td>".$tab["manufacturer"]." / ".$tab["model"]." / ".$tab["serial"]."</td>\n";
                echo "<td>" . convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . $tab["TAG"] . "</td>\n";
                if ($advanced && !$tolinked) {

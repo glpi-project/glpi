@@ -119,6 +119,12 @@ class RuleImportComputer extends Rule {
 
       $criterias['serial']['name']        = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
 
+      // Model as Text to allow text criteria (contains, regex, ...)
+      $criterias['model']['name']         = $LANG['rulesengine'][152].' : '.$LANG['common'][22];
+
+      // Manufacturer as Text to allow text criteria (contains, regex, ...)
+      $criterias['manufacturer']['name']  = $LANG['rulesengine'][152].' : '.$LANG['common'][5];
+
       return $criterias;
    }
 
@@ -247,7 +253,8 @@ class RuleImportComputer extends Rule {
       $sql_where         = '';
       $sql_from          = '';
       $continue          = true;
-      $global_criteria   = array('IPADDRESS', 'IPSUBNET', 'MACADDRESS', 'name', 'serial');
+      $global_criteria   = array('IPADDRESS', 'IPSUBNET', 'MACADDRESS', 'manufacturer',
+                                 'model', 'name', 'serial');
 
       foreach ($global_criteria as $criterion) {
          $criteria = $this->getCriteriaByID($criterion);
@@ -331,6 +338,21 @@ class RuleImportComputer extends Rule {
 
             case 'serial' :
                $sql_where .= " AND `glpi_computers`.`serial`='".$input["serial"]."'";
+               break;
+
+            case 'model' :
+               // search for model, don't create it if not found
+               $options = array('manufacturer' => $input['manufacturer']);
+               $mid = Dropdown::importExternal('ComputerModel', $input['model'], -1,
+                                               $options, '', false);
+               $sql_where .= " AND `glpi_computers`.`computermodels_id`='$mid'";
+               break;
+
+            case 'manufacturer' :
+               // search for manufacturer, don't create it if not found
+               $mid = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
+                                               array(), '', false);
+               $sql_where .= " AND `glpi_computers`.`manufacturers_id`='$mid'";
                break;
 
             case 'states_id' :
