@@ -44,7 +44,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-if (!isset($_REQUEST['itemtype']) && !empty($_REQUEST['itemtype'])) {
+if (!isset($_REQUEST['itemtype']) || empty($_REQUEST['itemtype'])) {
    exit();
 }
 
