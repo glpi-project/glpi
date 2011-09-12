@@ -303,6 +303,7 @@ class RuleImportComputer extends Rule {
                    LEFT JOIN `glpi_ocslinks`
                           ON (`glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`)";
 
+      // TODO : why don't take care of Rule match attribute ?
       $needport = false;
       foreach ($complex_criterias as $criteria) {
          switch ($criteria->fields['criteria']) {
