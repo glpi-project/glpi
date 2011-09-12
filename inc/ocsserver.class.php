@@ -2708,7 +2708,8 @@ class OcsServer extends CommonDBTM {
       $query_ocs = "SELECT `hardware`.*,
                            `accountinfo`.`TAG` AS TAG,
                            `bios`.`SSN` AS SERIAL,
-                           `bios`.`SMODEL`, `bios`.`SMANUFACTURER`
+                           `bios`.`SMODEL`,
+                           `bios`.`SMANUFACTURER`
                     FROM `hardware`
                     INNER JOIN `accountinfo` ON (`hardware`.`id` = `accountinfo`.`HARDWARE_ID`)
                     INNER JOIN `bios` ON (`hardware`.`id` = `bios`.`HARDWARE_ID`)".
@@ -2774,7 +2775,7 @@ class OcsServer extends CommonDBTM {
          }
 
          if ($tolinked && count($hardware)) {
-            echo "<div class='center'><strong>" . $LANG['ocsng'][22] . "</strong></div>";
+            echo "<div class='center b'>" . $LANG['ocsng'][22] . "</div>";
          }
          echo "<div class='center'>";
 

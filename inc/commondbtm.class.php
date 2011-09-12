@@ -486,13 +486,15 @@ class CommonDBTM extends CommonGLPI {
                $itemtype = getItemTypeForTable($tablename);
                $object   = new $itemtype();
                if (!is_array($field)) {
-                  foreach($DB->request($tablename, array($field => $this->fields['id'])) as $data) {
-                     $object->update(array('id' => $data['id'], $field => $newval));
+                  foreach ($DB->request($tablename, array($field => $this->fields['id'])) as $data) {
+                     $object->update(array('id'   => $data['id'],
+                                           $field => $newval));
                   }
                } else {
                   foreach ($field as $f) {
-                     foreach($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
-                        $object->update(array('id' => $data['id'], $f => $newval));
+                     foreach ($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
+                        $object->update(array('id' => $data['id'],
+                                              $f   => $newval));
                      }
                   }
                }
