@@ -109,6 +109,7 @@ class CommonGLPI {
       return array();
    }
 
+
    /**
     * Define tabs to display
     *

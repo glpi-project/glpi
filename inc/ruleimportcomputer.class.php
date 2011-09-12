@@ -344,17 +344,17 @@ class RuleImportComputer extends Rule {
 
             case 'model' :
                // search for model, don't create it if not found
-               $options = array('manufacturer' => $input['manufacturer']);
-               $mid = Dropdown::importExternal('ComputerModel', $input['model'], -1,
-                                               $options, '', false);
-               $sql_where .= " AND `glpi_computers`.`computermodels_id`='$mid'";
+               $options    = array('manufacturer' => $input['manufacturer']);
+               $mid        = Dropdown::importExternal('ComputerModel', $input['model'], -1,
+                                                      $options, '', false);
+               $sql_where .= " AND `glpi_computers`.`computermodels_id` = '$mid'";
                break;
 
             case 'manufacturer' :
                // search for manufacturer, don't create it if not found
-               $mid = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
-                                               array(), '', false);
-               $sql_where .= " AND `glpi_computers`.`manufacturers_id`='$mid'";
+               $mid        = Dropdown::importExternal('Manufacturer', $input['manufacturer'], -1,
+                                                      array(), '', false);
+               $sql_where .= " AND `glpi_computers`.`manufacturers_id` = '$mid'";
                break;
 
             case 'states_id' :
