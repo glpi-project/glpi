@@ -2113,8 +2113,7 @@ class Ticket extends CommonITILObject {
     * Dropdown of ticket type
     *
     * @param $name select name
-    * @param $value default value
-    * @param $options options
+    * @param $options array of options
     *
     * Parameters which could be used in options array :
     *    - value : integer / preselected value (default 0)
@@ -2123,7 +2122,7 @@ class Ticket extends CommonITILObject {
     *
     * @return string id of the select
    **/
-   static function dropdownType($name, $options = array()) {
+   static function dropdownType($name, $options=array()) {
       global $LANG;
 
       $params['value']       = 0;
@@ -2841,18 +2840,18 @@ class Ticket extends CommonITILObject {
 
       // Set default values...
       $values = array('_users_id_requester_notif' => array('use_notification' => ($email==""?0:1)),
-                     'name'                      => '',
-                     'content'                   => '',
-                     'itilcategories_id'         => 0,
-                     'urgency'                   => 3,
-                     'itemtype'                  => '',
-                     'items_id'                  => 0,
-                     'plan'                      => array(),
-                     'global_validation'         => 'none',
-                     'due_date'                  => 'NULL',
-                     'slas_id'                   => 0,
-                     '_add_validation'           => 0,
-                     'type'                      => -1);
+                      'name'                      => '',
+                      'content'                   => '',
+                      'itilcategories_id'         => 0,
+                      'urgency'                   => 3,
+                      'itemtype'                  => '',
+                      'items_id'                  => 0,
+                      'plan'                      => array(),
+                      'global_validation'         => 'none',
+                      'due_date'                  => 'NULL',
+                      'slas_id'                   => 0,
+                      '_add_validation'           => 0,
+                      'type'                      => -1);
 
 
       // Restore saved value or override with page parameter
@@ -2869,7 +2868,8 @@ class Ticket extends CommonITILObject {
       echo "<form method='post' name='helpdeskform' action='".
              $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
       echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
-      echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk')."'>";
+      echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
+           "'>";
 
 
       // Load ticket template if available :
@@ -2882,10 +2882,12 @@ class Ticket extends CommonITILObject {
                case self::INCIDENT_TYPE :
                   $field = 'tickettemplates_id_incident';
                   break;
+
                case self::DEMAND_TYPE :
                   $field = 'tickettemplates_id_demand';
                   break;
             }
+
             if (!empty($field) && $categ->fields[$field]) {
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
@@ -2894,7 +2896,8 @@ class Ticket extends CommonITILObject {
 
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
-         $options['_predefined_fields'] = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
+         $options['_predefined_fields']
+                     = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
       } else {
          $options['_predefined_fields'] = array();
       }
@@ -2907,16 +2910,17 @@ class Ticket extends CommonITILObject {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
-               if ($options[$predeffield] == $values[$predeffield] ||
-                  (isset($options['_predefined_fields'][$field])
-                  && $options[$predeffield] == $options['_predefined_fields'][$field])) {
-                  $options[$predeffield] = $predefvalue;
+               if ($options[$predeffield] == $values[$predeffield]
+                   || (isset($options['_predefined_fields'][$field])
+                       && $options[$predeffield] == $options['_predefined_fields'][$field])) {
+                  $options[$predeffield]           = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             } else { // Not defined options set as hidden field
                echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
             }
          }
+
       } else { // No template load : reset predefined values
          if (count($options['_predefined_fields'])) {
             foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
@@ -2950,11 +2954,10 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:";
-      echo $tt->getMandatoryMark('type');
-      echo "</td><td>";
-      Ticket::dropdownType('type',array('value'     => $options['type'],
-                                        'on_change' => 'submit()'));
+      echo "<td>".$LANG['common'][17]."&nbsp;:".$tt->getMandatoryMark('type')."</td>";
+      echo "<td>";
+      self::dropdownType('type', array('value'     => $options['type'],
+                                       'on_change' => 'submit()'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2970,11 +2973,9 @@ class Ticket extends CommonITILObject {
       if ($CFG_GLPI['urgency_mask']!=(1<<3)) {
          if (!$tt->isHiddenField('urgency')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['joblist'][29]."&nbsp;:";
-            echo $tt->getMandatoryMark('urgency');
-            echo "</td>";
+            echo "<td>".$LANG['joblist'][29]."&nbsp;:".$tt->getMandatoryMark('urgency')."</td>";
             echo "<td>";
-            Ticket::dropdownUrgency("urgency", $options['urgency']);
+            self::dropdownUrgency("urgency", $options['urgency']);
             echo "</td></tr>";
          }
       }
@@ -2995,13 +2996,11 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0) {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['help'][24]."&nbsp;:";
-            echo $tt->getMandatoryMark('itemtype');
-            echo "</td>";
+            echo "<td>".$LANG['help'][24]."&nbsp;:".$tt->getMandatoryMark('itemtype')."</td>";
             echo "<td>";
-            Ticket::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
-            Ticket::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
-                                       $_SESSION["glpiactive_entity"]);
+            self::dropdownMyDevices(Session::getLoginUserID(), $_SESSION["glpiactive_entity"]);
+            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
+                                     $_SESSION["glpiactive_entity"]);
             echo "<span id='item_ticket_selection_information'></span>";
 
             echo "</td></tr>";
@@ -3009,21 +3008,22 @@ class Ticket extends CommonITILObject {
       }
 
 
-      if (!$tt->isHiddenField('name') || $tt->isPredefinedField('name')
-         || $CFG_GLPI['is_ticket_title_mandatory']) {
+      if (!$tt->isHiddenField('name')
+          || $tt->isPredefinedField('name')
+          || $CFG_GLPI['is_ticket_title_mandatory']) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][57]."&nbsp;:";
-         echo $tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_title_mandatory']);
-         echo "</td>";
-         echo "<td><input type='text' maxlength='250' size='80' name='name' value=\"".$options['name']."\"></td></tr>";
+         echo "<td>".$LANG['common'][57]."&nbsp;:".
+                     $tt->getMandatoryMark('name', $CFG_GLPI['is_ticket_title_mandatory'])."</td>";
+         echo "<td><input type='text' maxlength='250' size='80' name='name'
+                          value=\"".$options['name']."\"></td></tr>";
       }
 
-      if ($tt->isHiddenField('content') || $tt->isPredefinedField('content')
-         || $CFG_GLPI['is_ticket_content_mandatory']) {
+      if ($tt->isHiddenField('content')
+          || $tt->isPredefinedField('content')
+          || $CFG_GLPI['is_ticket_content_mandatory']) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['joblist'][6]."&nbsp;:";
-         echo $tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_content_mandatory']);
-         echo "</td>";
+         echo "<td>".$LANG['joblist'][6]."&nbsp;:".
+                     $tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_content_mandatory'])."</td>";
          echo "<td><textarea name='content' cols='80' rows='14'>".$options['content']."</textarea>";
          echo "</td></tr>";
       }
@@ -3035,7 +3035,7 @@ class Ticket extends CommonITILObject {
              "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 
       echo "&nbsp;";
-      Ticket::showDocumentAddButton(60);
+      self::showDocumentAddButton(60);
 
       echo "</td>";
       echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
@@ -3049,14 +3049,13 @@ class Ticket extends CommonITILObject {
       if ($tt->isField('id') && $tt->fields['id'] > 0) {
          echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
          echo "<input type='hidden' name='_predefined_fields'
-                  value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                      value=\"".rawurlencode(serialize($predefined_fields))."\">";
       }
 
       echo "</td></tr>";
 
       echo "</table></div></form>";
    }
-
 
 
    function showForm($ID, $options=array()) {
@@ -3069,38 +3068,38 @@ class Ticket extends CommonITILObject {
       }
 
       // Set default values...
-      $default_values = array('_users_id_requester'      => $users_id_requester,
-                     '_users_id_requester_notif' => array('use_notification' => 1),
-                     '_groups_id_requester'      => 0,
-                     '_users_id_assign'          => 0,
-                     '_users_id_assign_notif'    => array('use_notification' => 1),
-                     '_groups_id_assign'         => 0,
-                     '_users_id_observer'        => 0,
-                     '_users_id_observer_notif'  => array('use_notification' => 1),
-                     '_groups_id_observer'       => 0,
-                     '_link'                     => array('tickets_id_2' => '',
-                                                         'link'         => ''),
-                     'suppliers_id_assign'       => 0,
-                     'name'                      => '',
-                     'content'                   => '',
-                     'itilcategories_id'         => 0,
-                     'urgency'                   => 3,
-                     'impact'                    => 3,
-                     'priority'                  => Ticket::computePriority(3,3),
-                     'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
-                     'actiontime'                => 0,
-                     'date'                      => $_SESSION["glpi_currenttime"],
-                     'entities_id'               => $_SESSION["glpiactive_entity"],
-                     'status'                    => 'new',
-                     'followup'                  => array(),
-                     'itemtype'                  => '',
-                     'items_id'                  => 0,
-                     'plan'                      => array(),
-                     'global_validation'         => 'none',
-                     'due_date'                  => 'NULL',
-                     'slas_id'                   => 0,
-                     '_add_validation'           => 0,
-                     'type'                      => -1);
+      $default_values = array('_users_id_requester'       => $users_id_requester,
+                              '_users_id_requester_notif' => array('use_notification' => 1),
+                              '_groups_id_requester'      => 0,
+                              '_users_id_assign'          => 0,
+                              '_users_id_assign_notif'    => array('use_notification' => 1),
+                              '_groups_id_assign'         => 0,
+                              '_users_id_observer'        => 0,
+                              '_users_id_observer_notif'  => array('use_notification' => 1),
+                              '_groups_id_observer'       => 0,
+                              '_link'                     => array('tickets_id_2' => '',
+                                                                   'link'         => ''),
+                              'suppliers_id_assign'       => 0,
+                              'name'                      => '',
+                              'content'                   => '',
+                              'itilcategories_id'         => 0,
+                              'urgency'                   => 3,
+                              'impact'                    => 3,
+                              'priority'                  => self::computePriority(3, 3),
+                              'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
+                              'actiontime'                => 0,
+                              'date'                      => $_SESSION["glpi_currenttime"],
+                              'entities_id'               => $_SESSION["glpiactive_entity"],
+                              'status'                    => 'new',
+                              'followup'                  => array(),
+                              'itemtype'                  => '',
+                              'items_id'                  => 0,
+                              'plan'                      => array(),
+                              'global_validation'         => 'none',
+                              'due_date'                  => 'NULL',
+                              'slas_id'                   => 0,
+                              '_add_validation'           => 0,
+                              'type'                      => -1);
 
       $values = $_REQUEST;
 
@@ -3122,7 +3121,7 @@ class Ticket extends CommonITILObject {
       if (isset($_SESSION["helpdeskSaved"])) {
          unset($_SESSION["helpdeskSaved"]);
       }
-      if ($values['type']<=0) {
+      if ($values['type'] <= 0) {
          $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id']);
       }
 
@@ -3136,10 +3135,12 @@ class Ticket extends CommonITILObject {
                case self::INCIDENT_TYPE :
                   $field = 'tickettemplates_id_incident';
                   break;
+
                case self::DEMAND_TYPE :
                   $field = 'tickettemplates_id_demand';
                   break;
             }
+
             if (!empty($field) && $categ->fields[$field]) {
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
@@ -3148,7 +3149,8 @@ class Ticket extends CommonITILObject {
 
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
-         $values['_predefined_fields'] = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
+         $values['_predefined_fields']
+                        = unserialize(rawurldecode(stripslashes($values['_predefined_fields'])));
       } else {
          $values['_predefined_fields'] = array();
       }
@@ -3161,14 +3163,15 @@ class Ticket extends CommonITILObject {
             if (isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
-               if ($values[$predeffield] == $default_values[$predeffield] ||
-                  (isset($values['_predefined_fields'][$field])
-                  && $values[$predeffield] == $values['_predefined_fields'][$field])) {
-                  $values[$predeffield] = $predefvalue;
+               if ($values[$predeffield] == $default_values[$predeffield]
+                   || (isset($values['_predefined_fields'][$field])
+                             && $values[$predeffield] == $values['_predefined_fields'][$field])) {
+                  $values[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             }
          }
+
       } else { // No template load : reset predefined values
          if (count($values['_predefined_fields'])) {
             foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
@@ -3199,7 +3202,8 @@ class Ticket extends CommonITILObject {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
-                                        && $this->isUser(parent::REQUESTER, Session::getLoginUserID())
+                                        && $this->isUser(parent::REQUESTER,
+                                                         Session::getLoginUserID())
                                         && $this->numberOfFollowups() == 0
                                         && $this->numberOfTasks() == 0);
 
@@ -3233,11 +3237,10 @@ class Ticket extends CommonITILObject {
       echo "<tr>";
       echo "<th colspan='4'>";
 
-
       if ($ID) {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
          if ($ismultientities) {
-            echo "(".Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']) . ")";
+            echo "(".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']) . ")";
          }
 
       } else {
@@ -3298,8 +3301,7 @@ class Ticket extends CommonITILObject {
 
       // SLA
       echo "<tr>";
-      echo "<td>";
-      echo $tt->getBeginHiddenFieldText('due_date');
+      echo "<td>".$tt->getBeginHiddenFieldText('due_date');
       echo "<span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
       if (!$ID) {
          echo $tt->getMandatoryMark('due_date');
@@ -3341,6 +3343,7 @@ class Ticket extends CommonITILObject {
                     $LANG['buttons'][6]."'>";
             }
             echo "</span>";
+
          } else {
             echo "<table><tr><td>";
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
@@ -3349,7 +3352,7 @@ class Ticket extends CommonITILObject {
                echo "<td><span id='sla_action'>";
                echo "<a href='#' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
                                                                        $LANG['sla'][14]),
-                                                          "cleanhide('sla_action');cleandisplay('sla_choice');").
+                                             "cleanhide('sla_action');cleandisplay('sla_choice');").
                      "\">".$LANG['sla'][12].'</a>';
                echo "</span>";
                echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:&nbsp;";
@@ -3369,12 +3372,11 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('due_date');
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
-         echo "</td><td>";
-         echo $tt->getBeginHiddenFieldText('slas_id');
-         echo $LANG['sla'][1]."&nbsp;:".$tt->getMandatoryMark('slas_id');
-         echo $tt->getEndHiddenFieldText('slas_id');
-         echo "</td><td>";
-         echo $tt->getBeginHiddenFieldValue('slas_id');
+         echo "</td>";
+         echo "<td>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
+                     $tt->getMandatoryMark('slas_id').
+                     $tt->getEndHiddenFieldText('slas_id')."</td><";
+         echo "<td>".$tt->getBeginHiddenFieldValue('slas_id');
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value'  => $this->fields["slas_id"]));
          echo $tt->getEndHiddenFieldValue('slas_id',$this);
@@ -3414,10 +3416,9 @@ class Ticket extends CommonITILObject {
          echo "<table  class='tab_cadre_fixe'>";
       }
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['common'][17]."&nbsp;: </th>";
-      echo "<td  width='40%'>";
+      echo "<td width='40%'>";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
          $opt = array('value' => $this->fields["type"]);
@@ -3425,13 +3426,13 @@ class Ticket extends CommonITILObject {
          if (!$ID) {
             $opt['on_change'] = 'submit()';
          }
-         self::dropdownType('type',$opt);
+         self::dropdownType('type', $opt);
       } else {
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
       echo "<th>".$LANG['common'][36]."&nbsp;:";
-      echo $tt->getMandatoryMark('itilcategories_id',$CFG_GLPI['is_ticket_category_mandatory']);
+      echo $tt->getMandatoryMark('itilcategories_id', $CFG_GLPI['is_ticket_category_mandatory']);
       echo "</th>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
@@ -3453,24 +3454,15 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-
-
       if (!$ID) {
          echo "</table>";
          $this->showActorsPartForm($ID,$values);
-         echo "<table  class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixe'>";
       }
 
-
-
-
-
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>";
-      echo $tt->getBeginHiddenFieldText('status');
-      echo $LANG['joblist'][0]."&nbsp;:".$tt->getMandatoryMark('status');
-      echo $tt->getEndHiddenFieldText('status');
-      echo "</th>";
+      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('status').$LANG['joblist'][0]."&nbsp;:".
+                $tt->getMandatoryMark('status').$tt->getEndHiddenFieldText('status')."</th>";
       echo "<td width='40%'>";
       echo $tt->getBeginHiddenFieldValue('status');
       if ($canupdate) {
@@ -3481,11 +3473,9 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('status',$this);
 
       echo "</td>";
-      echo "<th class='left'>";
-      echo $tt->getBeginHiddenFieldText('requesttypes_id');
-      echo $LANG['job'][44]."&nbsp;:".$tt->getMandatoryMark('requesttypes_id');
-      echo $tt->getEndHiddenFieldText('requesttypes_id');
-      echo "</th>";
+      echo "<th class='left'>".$tt->getBeginHiddenFieldText('requesttypes_id').$LANG['job'][44].
+                "&nbsp;:".$tt->getMandatoryMark('requesttypes_id').
+                $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
@@ -3494,17 +3484,12 @@ class Ticket extends CommonITILObject {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
       }
       echo $tt->getEndHiddenFieldValue('requesttypes_id',$this);
-
       echo "</td>";
-
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
-      echo $tt->getBeginHiddenFieldText('urgency');
-      echo $LANG['joblist'][29]."&nbsp;:".$tt->getMandatoryMark('urgency');
-      echo $tt->getEndHiddenFieldText('urgency');
-      echo "</th>";
+      echo "<th>".$tt->getBeginHiddenFieldText('urgency').$LANG['joblist'][29]."&nbsp;:".
+                  $tt->getMandatoryMark('urgency').$tt->getEndHiddenFieldText('urgency')."</th>";
       echo "<td>";
 
       if (($canupdate && $canpriority)
@@ -3517,7 +3502,8 @@ class Ticket extends CommonITILObject {
 
       } else {
          $idurgency = "value_urgency".mt_rand();
-         echo "<input id='$idurgency' type='hidden' name='urgency' value='".$this->fields["urgency"]."'>";
+         echo "<input id='$idurgency' type='hidden' name='urgency' value='".$this->fields["urgency"].
+              "'>";
          echo parent::getUrgencyName($this->fields["urgency"]);
       }
       echo "</td>";
@@ -3546,12 +3532,8 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
-      echo $tt->getBeginHiddenFieldText('impact');
-      echo $LANG['joblist'][30]."&nbsp;:".$tt->getMandatoryMark('impact');
-      echo $tt->getEndHiddenFieldText('impact');
-
-      echo "</th>";
+      echo "<th>".$tt->getBeginHiddenFieldText('impact').$LANG['joblist'][30]."&nbsp;:".
+                  $tt->getMandatoryMark('impact').$tt->getEndHiddenFieldText('impact')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('impact');
 
@@ -3563,10 +3545,8 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>";
-      echo $LANG['document'][14]."&nbsp;:";
-      echo $tt->getMandatoryMark('itemtype');
-      echo "</th>";
+      echo "<th class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: ".
+                $tt->getMandatoryMark('itemtype')."</th>";
       echo "<td rowspan='2'>";
 
       // Select hardware on creation or if have update right
@@ -3614,9 +3594,8 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>";
-      echo $LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority');
-      echo "</th>";
+      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority').
+           "</th>";
       echo "<td>";
       $idajax     = 'change_priority_' . mt_rand();
 
@@ -3640,19 +3619,15 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
 
-
-
       // Need comment right to add a followup with the actiontime
       if (!$ID && Session::haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th>";
-         echo $tt->getBeginHiddenFieldText('actiontime');
-         echo $LANG['job'][20]."&nbsp;:".$tt->getMandatoryMark('actiontime');
-         echo $tt->getEndHiddenFieldText('actiontime');
-         echo "</th>";
+         echo "<th>".$tt->getBeginHiddenFieldText('actiontime').$LANG['job'][20]."&nbsp;:".
+                     $tt->getMandatoryMark('actiontime').$tt->getEndHiddenFieldText('actiontime').
+              "</th>";
          echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime',array('value' => $values['actiontime']));
+         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime']));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
          echo "</tr>";
@@ -3662,16 +3637,13 @@ class Ticket extends CommonITILObject {
          $this->showActorsPartForm($ID,$values);
       }
 
-
       $view_linked_tickets = ($ID || $canupdate);
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>";
-      echo $tt->getBeginHiddenFieldText('name');
-      echo $LANG['common'][57]."&nbsp;:".$tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_title_mandatory']);
-      echo $tt->getEndHiddenFieldText('name');
-      echo "</th>";
+      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').$LANG['common'][57]."&nbsp;: ".
+                $tt->getMandatoryMark('name', $CFG_GLPI['is_ticket_title_mandatory']).
+                $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldText('name');
@@ -3716,11 +3688,9 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>";
-      echo $tt->getBeginHiddenFieldText('content');
-      echo $LANG['joblist'][6]."&nbsp;:".$tt->getMandatoryMark('content',$CFG_GLPI['is_ticket_content_mandatory']);
-      echo $tt->getEndHiddenFieldText('content');
-      echo "</th>";
+      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('content').$LANG['joblist'][6]."&nbsp;: ".
+               $tt->getMandatoryMark('content', $CFG_GLPI['is_ticket_content_mandatory']).
+               $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldText('content');
@@ -3733,7 +3703,8 @@ class Ticket extends CommonITILObject {
                          'cols'  => 115,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
-         Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
+         Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php",
+                                $params);
          echo "}";
          echo "</script>\n";
          echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
@@ -3858,10 +3829,9 @@ class Ticket extends CommonITILObject {
             if ($tt->isField('id') && $tt->fields['id'] > 0) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
-                        value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                            value=\"".rawurlencode(serialize($predefined_fields))."\">";
             }
          }
-         echo "</td></tr>";
       }
 
       echo "</table>";

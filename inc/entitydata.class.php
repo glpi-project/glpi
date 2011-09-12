@@ -139,9 +139,10 @@ class EntityData extends CommonDBChild {
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       }
 
-      if (is_numeric(Session::getLoginUserID(false))) { // Cron need to update max_closedate
+      if (is_numeric(Session::getLoginUserID(false))) { // Filter input for connected
          return $this->checkRightDatas($input);
       }
+      // for cron
       return $input;
    }
 
@@ -734,7 +735,7 @@ class EntityData extends CommonDBChild {
          $toadd = array(0 => $LANG['common'][102]);
       }
       Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
-                                              'toadd'  =>$toadd));
+                                               'toadd'  =>$toadd));
 
       if ($entdata->fields["calendars_id"] == 0) {
          $calendar = new Calendar();
