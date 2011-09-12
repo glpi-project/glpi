@@ -92,15 +92,18 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Get mandatory fields for a template
+    *
+    * @since version 0.83
     *
     * @param $ID the template ID
     * @param $withtypeandcategory bool with type and category
     *
     * @return an array of mandatory fields
    **/
-   function getMandatoryFields($ID,$withtypeandcategory=true) {
+   function getMandatoryFields($ID, $withtypeandcategory=true) {
       global $DB;
 
       $sql = "SELECT *
@@ -109,10 +112,10 @@ class TicketTemplateMandatoryField extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
-      $tt = new TicketTemplate();
+      $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
+      $fields         = array();
 
-      $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
@@ -142,9 +145,9 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          return false;
       }
       $canedit = $tt->can($ID, "w");
-      $ttm = new TicketTemplateMandatoryField();
+      $ttm = new self();
       $used = $ttm->getMandatoryFields($ID);
-      $fields  = $tt->getAllowedFieldsNames(true,isset($used['itemtype']));
+      $fields  = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
 
       $rand    = mt_rand();
 

@@ -107,15 +107,18 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Get predefined fields for a template
+    *
+    * @since version 0.83
     *
     * @param $ID the template ID
     * @param $withtypeandcategory bool with type and category
     *
     * @return an array of predefined fields
    **/
-   function getPredefinedFields($ID, $withtypeandcategory = false) {
+   function getPredefinedFields($ID, $withtypeandcategory=false) {
       global $DB;
 
       $sql = "SELECT *
@@ -124,10 +127,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
-      $tt = new TicketTemplate();
+      $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
+      $fields         = array();
 
-      $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['value'];
@@ -158,13 +161,13 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $canedit       = $tt->can($ID, "w");
 
-      $ttp = new TicketTemplatePredefinedField();
-      $used_fields = $ttp->getPredefinedFields($ID);
+      $ttp           = new self();
+      $used_fields   = $ttp->getPredefinedFields($ID);
+
       $itemtype_used = '';
       if (isset($used_fields['itemtype'])) {
          $itemtype_used = $used_fields['itemtype'];
       }
-
 
       $fields        = $tt->getAllowedFieldsNames(false, isset($used_fields['itemtype']));
       $searchOption  = Search::getOptions('Ticket');
@@ -178,9 +181,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $query = "SELECT `glpi_tickettemplatepredefinedfields`.*
                 FROM `glpi_tickettemplatepredefinedfields`
-                WHERE (`tickettemplates_id` = '$ID') ORDER BY 'id'";
+                WHERE (`tickettemplates_id` = '$ID')
+                ORDER BY 'id'";
 
-      $display_options = array('itemtype'=>$itemtype_used);
+      $display_options = array('itemtype' => $itemtype_used);
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";
@@ -203,7 +207,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                echo "<td>".$fields[$data['num']]."</td>";
 
                echo "<td>";
-               echo $ticket->getValueToDisplay($searchOption[$data['num']], $data['value'], $display_options);
+               echo $ticket->getValueToDisplay($searchOption[$data['num']], $data['value'],
+                                               $display_options);
                echo "</td>";
                $used[$data['num']] = $data['value'];
             }
@@ -218,14 +223,14 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
-            $display_fields += $fields;
+            $display_fields    += $fields;
 
             $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                              'toadd'));
             echo "</td><td colspan='2' class='top'>";
-            $paramsmassaction = array('id_field'  => '__VALUE__',
-                                      'itemtype'  => 'Ticket');
-            $paramsmassaction['itemtype_used'] = $itemtype_used;
+            $paramsmassaction                 = array('id_field'        => '__VALUE__',
+                                                      'itemtype'        => 'Ticket',
+                                                      'itemtype_used'   => $itemtype_used);
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",

@@ -92,15 +92,18 @@ class TicketTemplateHiddenField extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Get hidden fields for a template
+    *
+    * @since version 0.83
     *
     * @param $ID the template ID
     * @param $withtypeandcategory bool with type and category
     *
     * @return an array of hidden fields
    **/
-   function getHiddenFields($ID, $withtypeandcategory = false) {
+   function getHiddenFields($ID, $withtypeandcategory=false) {
       global $DB;
 
       $sql = "SELECT *
@@ -109,10 +112,10 @@ class TicketTemplateHiddenField extends CommonDBChild {
               ORDER BY `id`";
       $result = $DB->query($sql);
 
-      $tt = new TicketTemplate();
+      $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
+      $fields         = array();
 
-      $fields = array();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             $fields[$allowed_fields[$rule['num']]] = $rule['num'];
@@ -120,6 +123,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       }
       return $fields;
    }
+
 
    /**
     * Print the hidden fields
@@ -132,7 +136,6 @@ class TicketTemplateHiddenField extends CommonDBChild {
     * @return Nothing (call to classes members)
    **/
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
-
       global $DB, $LANG;
 
       $ID = $tt->fields['id'];
@@ -141,11 +144,11 @@ class TicketTemplateHiddenField extends CommonDBChild {
          return false;
       }
 
-      $ttm = new TicketTemplateHiddenField();
-      $used = $ttm->getHiddenFields($ID);
-   
+      $ttm     = new self();
+      $used    = $ttm->getHiddenFields($ID);
+
       $canedit = $tt->can($ID, "w");
-      $fields  = $tt->getAllowedFieldsNames(false,isset($used['itemtype']));
+      $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
       $rand    = mt_rand();
       echo "<form name='tickettemplatehiddenfields_form$rand'
                   id='tickettemplatehiddenfields_form$rand' method='post' action='";

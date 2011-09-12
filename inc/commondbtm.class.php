@@ -2865,7 +2865,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, $value, $options = array()) {
+   static function getSpecificValueToDisplay($field, $value, $options=array()) {
       return '';
    }
 
@@ -2886,7 +2886,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_or_search_options, $value, $options = array()) {
+   function getValueToDisplay($field_id_or_search_options, $value, $options=array()) {
       global $LANG, $CFG_GLPI;
 
       $param['comments'] = false;
@@ -2909,7 +2909,7 @@ class CommonDBTM extends CommonGLPI {
             }
          } else { // Get if field name is passed
             $searchoptions = $this->getSearchOptionByField('field', $field_id_or_search_options,
-                                                     $this->getTable());
+                                                           $this->getTable());
          }
       }
 
@@ -2975,17 +2975,17 @@ class CommonDBTM extends CommonGLPI {
                   if ($searchoptions['table'] == 'glpi_users') {
                      if ($param['comments']) {
                         $tmp = getUserName($value,2);
-                        return $tmp['name'].'&nbsp;'.
-                                 Html::showToolTip($tmp['comment'], array('display' => false));
+                        return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
+                                                                       array('display' => false));
                      }
                      return getUserName($value);
                   }
                   if ($param['comments']) {
                      $tmp = Dropdown::getDropdownName($searchoptions['table'],$value,1);
-                     return $tmp['name'].'&nbsp;'.
-                            Html::showToolTip($tmp['comment'], array('display' => false));
+                     return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
+                                                                    array('display' => false));
                   }
-                  return Dropdown::getDropdownName($searchoptions['table'],$value);
+                  return Dropdown::getDropdownName($searchoptions['table'], $value);
 
                case "right" :
                   return Profile::getRightValue($value);

@@ -600,81 +600,91 @@ class Dropdown {
       static $optgroup = NULL;
 
       if (is_null($optgroup)) {
-         $optgroup =
-            array($LANG['setup'][139] => array('Location'        => Location::getTypeName(2),
-                                               'State'           => State::getTypeName(2),
-                                               'Manufacturer'    => Manufacturer::getTypeName(2)),
+         $optgroup = array($LANG['setup'][139]
+                           => array('Location'        => Location::getTypeName(2),
+                                    'State'           => State::getTypeName(2),
+                                    'Manufacturer'    => Manufacturer::getTypeName(2)),
 
-                  $LANG['title'][24]  => array('ITILCategory'     => ITILCategory::getTypeName(2),
-                                               'TicketTemplate'   => TicketTemplate::getTypeName(2),
-                                               'TaskCategory'     => TaskCategory::getTypeName(2),
-                                               'SolutionType'     => SolutionType::getTypeName(2),
-                                               'RequestType'      => RequestType::getTypeName(2),
-                                               'SolutionTemplate' => SolutionTemplate::getTypeName(2),
-),
+                           $LANG['title'][24]
+                           => array('ITILCategory'     => ITILCategory::getTypeName(2),
+                                    'TicketTemplate'   => TicketTemplate::getTypeName(2),
+                                    'TaskCategory'     => TaskCategory::getTypeName(2),
+                                    'SolutionType'     => SolutionType::getTypeName(2),
+                                    'RequestType'      => RequestType::getTypeName(2),
+                                    'SolutionTemplate' => SolutionTemplate::getTypeName(2)),
 
-                  $LANG['setup'][140] => array('ComputerType'         => ComputerType::getTypeName(2),
-                                               'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(2),
-                                               'PrinterType'          => PrinterType::getTypeName(2),
-                                               'MonitorType'          => MonitorType::getTypeName(2),
-                                               'PeripheralType'       => PeripheralType::getTypeName(2),
-                                               'PhoneType'            => PhoneType::getTypeName(2),
-                                               'SoftwareLicenseType'  => SoftwareLicenseType::getTypeName(2),
-                                               'CartridgeItemType'    => CartridgeItemType::getTypeName(2),
-                                               'ConsumableItemType'   => ConsumableItemType::getTypeName(2),
-                                               'ContractType'         => ContractType::getTypeName(2),
-                                               'ContactType'          => ContactType::getTypeName(2),
-                                               'DeviceMemoryType'     => DeviceMemoryType::getTypeName(2),
-                                               'SupplierType'         => SupplierType::getTypeName(2),
-                                               'InterfaceType'        => InterfaceType::getTypeName(2),
-                                               'DeviceCaseType'       => DeviceCaseType::getTypeName(2),
-                                               'PhonePowerSupply'     => PhonePowerSupply::getTypeName(2),
-                                               'Filesystem'           => Filesystem::getTypeName(2)),
+                           $LANG['setup'][140]
+                           => array('ComputerType'         => ComputerType::getTypeName(2),
+                                    'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(2),
+                                    'PrinterType'          => PrinterType::getTypeName(2),
+                                    'MonitorType'          => MonitorType::getTypeName(2),
+                                    'PeripheralType'       => PeripheralType::getTypeName(2),
+                                    'PhoneType'            => PhoneType::getTypeName(2),
+                                    'SoftwareLicenseType'  => SoftwareLicenseType::getTypeName(2),
+                                    'CartridgeItemType'    => CartridgeItemType::getTypeName(2),
+                                    'ConsumableItemType'   => ConsumableItemType::getTypeName(2),
+                                    'ContractType'         => ContractType::getTypeName(2),
+                                    'ContactType'          => ContactType::getTypeName(2),
+                                    'DeviceMemoryType'     => DeviceMemoryType::getTypeName(2),
+                                    'SupplierType'         => SupplierType::getTypeName(2),
+                                    'InterfaceType'        => InterfaceType::getTypeName(2),
+                                    'DeviceCaseType'       => DeviceCaseType::getTypeName(2),
+                                    'PhonePowerSupply'     => PhonePowerSupply::getTypeName(2),
+                                    'Filesystem'           => Filesystem::getTypeName(2)),
 
-                  $LANG['common'][22] => array('ComputerModel'         => ComputerModel::getTypeName(2),
-                                               'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(2),
-                                               'PrinterModel'          => PrinterModel::getTypeName(2),
-                                               'MonitorModel'          => MonitorModel::getTypeName(2),
-                                               'PeripheralModel'       => PeripheralModel::getTypeName(2),
-                                               'PhoneModel'            => PhoneModel::getTypeName(2)),
+                        $LANG['common'][22]
+                        => array('ComputerModel'         => ComputerModel::getTypeName(2),
+                                 'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(2),
+                                 'PrinterModel'          => PrinterModel::getTypeName(2),
+                                 'MonitorModel'          => MonitorModel::getTypeName(2),
+                                 'PeripheralModel'       => PeripheralModel::getTypeName(2),
+                                 'PhoneModel'            => PhoneModel::getTypeName(2)),
 
-                  $LANG['computers'][57]
-                                      => array('VirtualMachineType'   => VirtualMachineType::getTypeName(2),
-                                               'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
-                                               'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
+                        $LANG['computers'][57]
+                        => array('VirtualMachineType'   => VirtualMachineType::getTypeName(2),
+                                 'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
+                                 'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
 
-                  $LANG['Menu'][26]   => array('DocumentCategory' => DocumentCategory::getTypeName(2),
-                                               'DocumentType'     => DocumentType::getTypeName(2)),
+                        $LANG['Menu'][26]
+                        => array('DocumentCategory' => DocumentCategory::getTypeName(2),
+                                 'DocumentType'     => DocumentType::getTypeName(2)),
 
-                  $LANG['Menu'][18]   => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
+                        $LANG['Menu'][18]
+                        => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
 
+                        $LANG['Menu'][42]
+                        => array('Calendar' => Calendar::getTypeName(2),
+                                 'Holiday'  => Holiday::getTypeName(2)),
 
-                  $LANG['Menu'][42]   => array('Calendar' => Calendar::getTypeName(2),
-                                               'Holiday'  => Holiday::getTypeName(2)),
+                        $LANG['setup'][145]
+                        => array('OperatingSystem'    => OperatingSystem::getTypeName(2),
+                                 'OperatingSystemVersion'
+                                                      => OperatingSystemVersion::getTypeName(2),
+                                 'OperatingSystemServicePack'
+                                                      => OperatingSystemServicePack::getTypeName(2),
+                                 'AutoUpdateSystem'   => AutoUpdateSystem::getTypeName(2)),
 
+                        $LANG['setup'][88]
+                        => array('NetworkInterface'   => NetworkInterface::getTypeName(2),
+                                 'NetworkEquipmentFirmware'
+                                                      => NetworkEquipmentFirmware::getTypeName(2),
+                                 'Netpoint'           => Netpoint::getTypeName(2),
+                                 'Domain'             => Domain::getTypeName(2),
+                                 'Network'            => Network::getTypeName(2),
+                                 'Vlan'               => Vlan::getTypeName(2)),
 
-                  $LANG['setup'][145] => array('OperatingSystem'        => OperatingSystem::getTypeName(2),
-                                               'OperatingSystemVersion' => OperatingSystemVersion::getTypeName(2),
-                                               'OperatingSystemServicePack'
-                                                                        => OperatingSystemServicePack::getTypeName(2),
-                                               'AutoUpdateSystem'       => AutoUpdateSystem::getTypeName(2)),
+                        $LANG['Menu'][4]
+                        => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
 
-                  $LANG['setup'][88]  => array('NetworkInterface'         => NetworkInterface::getTypeName(2),
-                                               'NetworkEquipmentFirmware' => NetworkEquipmentFirmware::getTypeName(2),
-                                               'Netpoint'                 => Netpoint::getTypeName(2),
-                                               'Domain'                   => Domain::getTypeName(2),
-                                               'Network'                  => Network::getTypeName(2),
-                                               'Vlan'                     => Vlan::getTypeName(2)),
+                        $LANG['common'][34]
+                        => array('UserTitle'     => UserTitle::getTypeName(2),
+                                 'UserCategory'  => UserCategory::getTypeName(2)),
 
-                  $LANG['Menu'][4]    => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
+                        $LANG['rulesengine'][19]
+                        => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
 
-                  $LANG['common'][34] => array('UserTitle'     => UserTitle::getTypeName(2),
-                                               'UserCategory'  => UserCategory::getTypeName(2)),
-
-                  $LANG['rulesengine'][19]
-                                      => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
-
-                  $LANG['setup'][811] => array('Fieldblacklist' => Fieldblacklist::getTypeName(2))
+                        $LANG['setup'][811]
+                        => array('Fieldblacklist' => Fieldblacklist::getTypeName(2))
 
                  ); //end $opt
 
@@ -1111,7 +1121,7 @@ class Dropdown {
     *
     * @param $name select name
     * @param $elements array of elements to display
-    * @param $options options
+    * @param $options array of options
     *
     * Parameters which could be used in options array :
     *    - value : integer / preselected value (default 0)
@@ -1119,7 +1129,7 @@ class Dropdown {
     *    - readonly : boolean / used as a readonly item (default false)
     *    - on_change : string / value to transmit to "onChange"
    **/
-   static function showFromArray($name, $elements, $options = array()) {
+   static function showFromArray($name, $elements, $options=array()) {
 
       $param['value']    = '';
       $param['used']     = array();
