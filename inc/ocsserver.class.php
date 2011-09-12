@@ -2728,6 +2728,7 @@ class OcsServer extends CommonDBTM {
 
          while ($data = $DBocs->fetch_array($result_ocs)) {
             $data = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data));
+            // TODO Should probably use self::getComputerInformations()
             $hardware[$data["ID"]]["date"]          = $data["LASTDATE"];
             $hardware[$data["ID"]]["name"]          = $data["NAME"];
             $hardware[$data["ID"]]["TAG"]           = $data["TAG"];
