@@ -2496,100 +2496,16 @@ class Search {
             case "datetime" :
             case "date" :
             case "date_delay" :
-               $format_use = "Y-m-d";
+               $force_day = true;
                if ($searchopt[$ID]["datatype"]=='datetime') {
-                  $format_use = "Y-m-d H:i:s";
+                  $force_day = false;
                }
-               // Parsing relative date
-               switch ($val) {
-                  case 'NOW' :
-                     $val = date($format_use);
-                     break;
-
-                  case 'TODAY' :
-                     $val = date("Y-m-d");
-                     break;
+               if (strstr($val,'BEGIN') || strstr($val,'LAST')) {
+                  $force_day = true;
                }
 
-               // Search on begin of month / year
-               if (strstr($val,'BEGIN')) {
-                  $hour   = 0;
-                  $minute = 0;
-                  $second = 0;
-                  $month  = date("n");
-                  $day    = 1;
-                  $year   = date("Y");
-                  $format_use = "Y-m-d";
+               $val = Html::computeGenericDateTimeSearch($val,$force_day);
 
-                  switch ($val) {
-                        case "BEGINYEAR":
-                           $month = 1;
-                           break;
-
-                        case "BEGINMONTH":
-                           break;
-                  }
-
-                  $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
-               }
-
-               // Search on Last monday, sunday...
-               if (strstr($val,'LAST')) {
-                  $format_use = "Y-m-d";
-                  $lastday = str_replace("LAST", "LAST ", $val);
-                  $hour   = 0;
-                  $minute = 0;
-                  $second = 0;
-                  $month  = date("n", strtotime($lastday));
-                  $day    = date("j", strtotime($lastday));
-                  $year   = date("Y", strtotime($lastday));
-
-                  $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
-               }
-
-               // Search on +- x days, hours...
-               if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
-                  if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
-                     $nb = intval($matches[2]);
-                     if ($matches[1]=='-') {
-                        $nb = -$nb;
-                     }
-                     // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
-                     $hour   = date("H");
-                     $minute = date("i");
-                     $second = 0;
-                     $month  = date("n");
-                     $day    = date("j");
-                     $year   = date("Y");
-
-                     switch ($matches[3]) {
-                        case "YEAR" :
-                           $year += $nb;
-                           $format_use = "Y-m-d";
-                           break;
-
-                        case "MONTH" :
-                           $month += $nb;
-                           $format_use = "Y-m-d";
-                           break;
-
-                        case "WEEK" :
-                           $day += 7*$nb;
-                           $format_use = "Y-m-d";
-                           break;
-
-                        case "DAY" :
-                           $day += $nb;
-                           $format_use = "Y-m-d";
-                           break;
-
-                        case "HOUR" :
-                           $hour += $nb;
-                           break;
-                     }
-                     $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
-                  }
-               }
                break;
          }
       }

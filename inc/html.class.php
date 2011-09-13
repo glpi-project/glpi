@@ -3023,19 +3023,31 @@ class Html {
     *
     * @param $element name of the html element
     * @param $value default value
-    * @param $with_time display with time selection ?
-    * @param $with_future display with future date selection ?
+    * @param $options : array of options may be :
+    *      - with_time display with time selection ? (default false)
+    *      - with_future display with future date selection ? (default false)
+    *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
     *
     * @return rand value of dropdown
    **/
-   static function showGenericDateTimeSearch($element, $value='', $with_time=false,
-                                             $with_future=false) {
+   static function showGenericDateTimeSearch($element, $value='', $options = array()) {
       global $LANG, $CFG_GLPI;
 
+      $params['with_time']          = false;
+      $params['with_future']        = false;
+      $params['with_days']          = true;
+      $params['with_specific_date'] = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
       $rand = mt_rand();
 
       // Validate value
       if ($value!='NOW'
+          && $value!='TODAY'
           && !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)
           && !strstr($value,'HOUR')
           && !strstr($value,'DAY')
@@ -3059,16 +3071,20 @@ class Html {
       echo "<select id='genericdate$element$rand' name='_select_$element'>";
 
       $val = 'NOW';
-      if ($with_time) {
+      if ($params['with_time']) {
          echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][16]."</option>";
-         echo "<option value='TODAY' ".($value==='TODAY'?'selected':'').">".$LANG['calendar'][27]."</option>";
+         if ($params['with_days']) {
+            echo "<option value='TODAY' ".($value==='TODAY'?'selected':'').">".$LANG['calendar'][27]."</option>";
+         }
       } else {
          echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][27]."</option>";
       }
-      echo "<option value='0' ".($value===0?'selected':'').">".$LANG['calendar'][17]."</option>";
+      if ($params['with_specific_date']) {
+         echo "<option value='0' ".($value===0?'selected':'').">".$LANG['calendar'][17]."</option>";
+      }
 
 
-      if ($with_time) {
+      if ($params['with_time']) {
          for ($i=1 ; $i<=24 ; $i++) {
             $val = '-'.$i.'HOUR';
             echo "<option value='$val' ".($value===$val?'selected':'').">";
@@ -3082,26 +3098,31 @@ class Html {
          echo "- $i ".$LANG['calendar'][12]."</option>";
       }
 
-      $list = array("LASTSUNDAY" => $LANG['calendar'][18],
-                    "LASTMONDAY" => $LANG['calendar'][19],
-                    "LASTTUESDAY" => $LANG['calendar'][20],
-                    "LASTWEDNESDAY" => $LANG['calendar'][21],
-                    "LASTTHURSDAY" => $LANG['calendar'][22],
-                    "LASTFRIDAY" => $LANG['calendar'][23],
-                    "LASTSATURDAY" => $LANG['calendar'][24] );
+      if ($params['with_days']) {
+         $list = array("LASTSUNDAY" => $LANG['calendar'][18],
+                     "LASTMONDAY" => $LANG['calendar'][19],
+                     "LASTTUESDAY" => $LANG['calendar'][20],
+                     "LASTWEDNESDAY" => $LANG['calendar'][21],
+                     "LASTTHURSDAY" => $LANG['calendar'][22],
+                     "LASTFRIDAY" => $LANG['calendar'][23],
+                     "LASTSATURDAY" => $LANG['calendar'][24] );
 
-      foreach ($list as $val => $dico) {
-         echo "<option value='$val' ".($value===$val?'selected':'').">$dico</option>";
+         foreach ($list as $val => $dico) {
+            echo "<option value='$val' ".($value===$val?'selected':'').">$dico</option>";
+         }
       }
+
       for ($i=1 ; $i<=10 ; $i++) {
          $val = '-'.$i.'WEEK';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "- $i ".$LANG['calendar'][13]."</option>";
       }
 
-      $val = "BEGINMONTH";
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo $LANG['calendar'][25]."</option>";
+      if ($params['with_days']) {
+         $val = "BEGINMONTH";
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo $LANG['calendar'][25]."</option>";
+      }
 
       for ($i=1 ; $i<=12 ; $i++) {
          $val = '-'.$i.'MONTH';
@@ -3109,9 +3130,11 @@ class Html {
          echo "- $i ".$LANG['calendar'][14]."</option>";
       }
 
-      $val = "BEGINYEAR";
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo $LANG['calendar'][26]."</option>";
+      if ($params['with_days']) {
+         $val = "BEGINYEAR";
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo $LANG['calendar'][26]."</option>";
+      }
 
       for ($i=1 ; $i<=10 ; $i++) {
          $val = '-'.$i.'YEAR';
@@ -3119,8 +3142,8 @@ class Html {
          echo "- $i ".$LANG['calendar'][15]."</option>";
       }
 
-      if ($with_future) {
-         if ($with_time) {
+      if ($params['with_future']) {
+         if ($params['with_time']) {
             for ($i=1 ; $i<=24 ; $i++) {
                $val = $i.'HOUR';
                echo "<option value='$val' ".($value===$val?'selected':'').">";
@@ -3156,24 +3179,122 @@ class Html {
       echo "</select>";
 
       echo "</td><td>";
-      echo "<div id='displaygenericdate$element$rand'></div>";
+      if ($params['with_specific_date']) {
+         echo "<div id='displaygenericdate$element$rand'></div>";
 
-      $params = array('value'          => '__VALUE__',
-                       'name'          => $element,
-                       'withtime'      => $with_time,
-                       'specificvalue' => $specific_value);
+         $params = array('value'          => '__VALUE__',
+                        'name'          => $element,
+                        'withtime'      => $params['with_time'],
+                        'specificvalue' => $specific_value);
 
-      Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
+         Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
 
-      $params['value'] = $value;
-      Ajax::updateItem("displaygenericdate$element$rand", $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
-                     $params);
+         $params['value'] = $value;
+         Ajax::updateItem("displaygenericdate$element$rand", $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                        $params);
+      } else {
+         echo "&nbsp;";
+      }
 
       echo "</td></tr></table>";
       return $rand;
    }
 
+   static function computeGenericDateTimeSearch($val, $force_day = false) {
+
+      $format_use = "Y-m-d H:i:s";
+      if ($force_day) {
+         $format_use = "Y-m-d";
+      }
+
+      // Parsing relative date
+      switch ($val) {
+         case 'NOW' :
+            return date($format_use);
+            break;
+
+         case 'TODAY' :
+            return date("Y-m-d");
+            break;
+      }
+
+      // Search on begin of month / year
+      if (strstr($val,'BEGIN')) {
+         $hour   = 0;
+         $minute = 0;
+         $second = 0;
+         $month  = date("n");
+         $day    = 1;
+         $year   = date("Y");
+
+         switch ($val) {
+               case "BEGINYEAR":
+                  $month = 1;
+                  break;
+
+               case "BEGINMONTH":
+                  break;
+         }
+
+         return date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
+      }
+
+      // Search on Last monday, sunday...
+      if (strstr($val,'LAST')) {
+         $lastday = str_replace("LAST", "LAST ", $val);
+         $hour   = 0;
+         $minute = 0;
+         $second = 0;
+         $month  = date("n", strtotime($lastday));
+         $day    = date("j", strtotime($lastday));
+         $year   = date("Y", strtotime($lastday));
+
+         return date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
+      }
+
+      // Search on +- x days, hours...
+      if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
+         if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
+            $nb = intval($matches[2]);
+            if ($matches[1]=='-') {
+               $nb = -$nb;
+            }
+            // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
+            $hour   = date("H");
+            $minute = date("i");
+            $second = 0;
+            $month  = date("n");
+            $day    = date("j");
+            $year   = date("Y");
+
+            switch ($matches[3]) {
+               case "YEAR" :
+                  $year += $nb;
+                  break;
+
+               case "MONTH" :
+                  $month += $nb;
+                  break;
+
+               case "WEEK" :
+                  $day += 7*$nb;
+                  break;
+
+               case "DAY" :
+                  $day += $nb;
+                  break;
+
+               case "HOUR" :
+                  $format_use = "Y-m-d H:i:s";
+                  $hour += $nb;
+                  break;
+            }
+            return date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
+         }
+      }
+      return $val;
+   }
 
    /**
     * Print the form used to select profile if several are available
