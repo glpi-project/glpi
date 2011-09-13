@@ -135,8 +135,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $used = array();
 
-      $query = "SELECT *
+      $query = "SELECT `glpi_networkports_vlans`.*,
+                  `glpi_vlans`.`tag` as vlantag,
+                  `glpi_vlans`.`comment` as vlancomment
                FROM `glpi_networkports_vlans`
+                  LEFT JOIN `glpi_vlans`
+                        ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
                WHERE `networkports_id` = '$ID'";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
@@ -144,6 +148,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
          while ($line = $DB->fetch_array($result)) {
             $used[$line["vlans_id"]] = $line["vlans_id"];
             echo "<tr><td>" . Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
+            Html::showToolTip($LANG['common'][114]."&nbsp;: ".$line['vlantag']."<br>
+                  ".$LANG['common'][25] ."&nbsp;: ".$line['vlancomment']);
+
             echo "</td>\n<td>";
             if ($canedit) {
                echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
