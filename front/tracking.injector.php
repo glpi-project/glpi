@@ -39,8 +39,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (empty($_POST["type"])
-    || ($_POST["type"] != "Helpdesk")
+if (!isset($_POST["_type"])
+    || ($_POST["_type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {
    checkRight("create_ticket","1");
 }
