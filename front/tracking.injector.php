@@ -39,8 +39,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (empty($_POST["type"])
-    || ($_POST["type"] != "Helpdesk")
+if (empty($_POST["_type"])
+    || ($_POST["_type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {
    Session::checkRight("create_ticket", "1");
 }
@@ -52,7 +52,7 @@ if (empty($_POST) || count($_POST) == 0) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
-if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
    Html::nullHeader($LANG['title'][10]);
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
@@ -76,7 +76,7 @@ if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype
 
 if (isset($_POST['add'])) {
    if ($newID = $track->add($_POST)) {
-      if (isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+      if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
          echo "<div class='center'>".$LANG['help'][18]."<br><br>";
          Html::displayBackLink();
          echo "</div>";
