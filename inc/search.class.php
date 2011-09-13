@@ -2484,18 +2484,22 @@ class Search {
                      switch ($matches[3]) {
                         case "YEAR" :
                            $year += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "MONTH" :
                            $month += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "WEEK" :
                            $day += 7*$nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "DAY" :
                            $day += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "HOUR" :
