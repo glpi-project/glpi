@@ -136,7 +136,16 @@ $LANG['calendar'][14] = "mois";  // singular (plural) like month(s)
 $LANG['calendar'][15] = "année(s)";
 $LANG['calendar'][16] = "Maintenant";
 $LANG['calendar'][17] = "Spécifier une date";
-
+$LANG['calendar'][18] = "dimanche dernier";
+$LANG['calendar'][19] = "lundi dernier";
+$LANG['calendar'][20] = "mardi dernier";
+$LANG['calendar'][21] = "mercredi dernier";
+$LANG['calendar'][22] = "jeudi dernier";
+$LANG['calendar'][23] = "vendredi dernier";
+$LANG['calendar'][24] = "samedi dernier";
+$LANG['calendar'][25] = "Début du mois";
+$LANG['calendar'][26] = "Début de l'année";
+$LANG['calendar'][27] = "Aujourd'hui";
 
 $LANG['calendarD'][0] = "D";
 $LANG['calendarD'][1] = "L";

@@ -2501,9 +2501,53 @@ class Search {
                   $format_use = "Y-m-d H:i:s";
                }
                // Parsing relative date
-               if ($val=='NOW') {
-                  $val = date($format_use);
+               switch ($val) {
+                  case 'NOW' :
+                     $val = date($format_use);
+                     break;
+
+                  case 'TODAY' :
+                     $val = date("Y-m-d");
+                     break;
                }
+
+               // Search on begin of month / year
+               if (strstr($val,'BEGIN')) {
+                  $hour   = 0;
+                  $minute = 0;
+                  $second = 0;
+                  $month  = date("n");
+                  $day    = 1;
+                  $year   = date("Y");
+                  $format_use = "Y-m-d";
+
+                  switch ($val) {
+                        case "BEGINYEAR":
+                           $month = 1;
+                           break;
+
+                        case "BEGINMONTH":
+                           break;
+                  }
+
+                  $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
+               }
+
+               // Search on Last monday, sunday...
+               if (strstr($val,'LAST')) {
+                  $format_use = "Y-m-d";
+                  $lastday = str_replace("LAST", "LAST ", $val);
+                  $hour   = 0;
+                  $minute = 0;
+                  $second = 0;
+                  $month  = date("n", strtotime($lastday));
+                  $day    = date("j", strtotime($lastday));
+                  $year   = date("Y", strtotime($lastday));
+
+                  $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
+               }
+
+               // Search on +- x days, hours...
                if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
                   if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
                      $nb = intval($matches[2]);
@@ -2521,18 +2565,22 @@ class Search {
                      switch ($matches[3]) {
                         case "YEAR" :
                            $year += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "MONTH" :
                            $month += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "WEEK" :
                            $day += 7*$nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "DAY" :
                            $day += $nb;
+                           $format_use = "Y-m-d";
                            break;
 
                         case "HOUR" :
