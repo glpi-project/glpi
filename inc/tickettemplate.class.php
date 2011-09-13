@@ -75,9 +75,20 @@ class TicketTemplate extends CommonDropdown {
          $tth          = new TicketTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
 
+         // Force items_id if itemtype is defined
+         if (isset($this->hidden['itemtype']) && !isset($this->hidden['items_id'])) {
+            $this->hidden['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
+                                                                          'glpi_tickets');
+         }
          // Always get all mandatory fields
          $ttm             = new TicketTemplateMandatoryField();
          $this->mandatory = $ttm->getMandatoryFields($ID);
+
+         // Force items_id if itemtype is defined
+         if (isset($this->mandatory['itemtype']) && !isset($this->mandatory['items_id'])) {
+            $this->mandatory['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
+                                                                              'glpi_tickets');
+         }
 
          $ttp              = new TicketTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
@@ -347,11 +358,22 @@ class TicketTemplate extends CommonDropdown {
 
       if ($this->isHiddenField($field)) {
          echo "</span>";
-         echo "<input type='hidden' name='field' value=\"".$ticket->fields[$field]."\">";
+         echo "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
-               echo $ticket->getValueToDisplay($num, $ticket->fields[$field],
-                                               array('comments' => true));
+               $display_options = array('comments'       => true);
+               if ($this->isPredefinedField('itemtype')) {
+                  $display_options['itemtype'] = $ticket->fields['itemtype'];
+               }
+               echo $ticket->getValueToDisplay($num, $ticket->fields[$field], $display_options);
+               /// Display items_id
+               
+               if ($field == 'itemtype') {
+                  echo "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
+                  if ($num = array_search('items_id',$this->getAllowedFields())) {
+                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields['items_id'], $display_options);
+                  }
+               }
             }
          }
       }
