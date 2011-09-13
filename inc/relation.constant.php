@@ -200,6 +200,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_softwarelicenses'        => 'entities_id',
                                  'glpi_softwares'               => 'entities_id',
                                  'glpi_solutiontemplates'       => 'entities_id',
+                                 'glpi_solutiontypes'           => 'entities_id',
                                  'glpi_suppliers'               => 'entities_id',
                                  'glpi_taskcategories'          => 'entities_id',
                                  'glpi_itilcategories'          => 'entities_id',
