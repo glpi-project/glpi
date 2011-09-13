@@ -81,6 +81,10 @@ class TicketTemplate extends CommonDropdown {
 
          $ttp              = new TicketTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
+         // Compute due_date
+         if (isset($this->predefined['due_date'])) {
+            $this->predefined['due_date'] = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
+         }
          return true;
       }
       return false;
@@ -181,8 +185,6 @@ class TicketTemplate extends CommonDropdown {
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
-
-     /// TODO Manage due_date on relative computation
    }
 
 
