@@ -327,7 +327,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     AND `$linktable`.`type` = '".self::REQUESTER."'
                                     AND `$itemtable`.`status`
                                        NOT IN ('".implode("', '",
-                                                          array_merge($his->getSolvedStatusArray(),
+                                                          array_merge($this->getSolvedStatusArray(),
                                                                       $this->getClosedStatusArray())
                                                           )."')");
    }
