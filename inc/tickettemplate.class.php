@@ -182,7 +182,6 @@ class TicketTemplate extends CommonDropdown {
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
 
-
      /// TODO Manage due_date on relative computation
    }
 

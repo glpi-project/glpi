@@ -230,7 +230,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "</td><td colspan='2' class='top'>";
             $paramsmassaction                 = array('id_field'        => '__VALUE__',
                                                       'itemtype'        => 'Ticket',
-                                                      'itemtype_used'   => $itemtype_used);
+                                                      'itemtype_used'   => $itemtype_used,
+                                                      'relative_dates'   => 1);
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",

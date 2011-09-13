@@ -140,11 +140,22 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      break;
 
                   case "datetime" :
-                     echo "<table><tr><td>";
-                     Html::showDateTimeFormItem($search["linkfield"]);
-                     echo "</td>";
-                     $already_display = true;
-                     $USE_TABLE       = true;
+                     if (!isset($_POST['relative_dates']) || !$_POST['relative_dates']) {
+                        echo "<table><tr><td>";
+                        Html::showDateTimeFormItem($search["linkfield"]);
+                        echo "</td>";
+                        $already_display = true;
+                        $USE_TABLE       = true;
+                     } else { // For ticket template
+                        Html::showGenericDateTimeSearch($search["linkfield"], '',
+                                             array('with_time'          => true,
+                                                   'with_future'        => (isset($search['maybefuture'])
+                                                                     && $search['maybefuture']),
+                                                   'with_days'          => false,
+                                                   'with_specific_date' => false));
+
+                        $already_display = true;
+                     }
                      break;
 
                   case "itemtypename" :
