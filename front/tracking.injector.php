@@ -52,7 +52,7 @@ if (empty($_POST) || count($_POST) == 0) {
    glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
-if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
    nullHeader($LANG['title'][10]);
 } else if ($_POST["_from_helpdesk"]) {
    helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
@@ -73,8 +73,10 @@ if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype
    $_POST["items_id"] = 0;
 }
 
+
+
 if ($newID = $track->add($_POST)) {
-   if (isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+   if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
       echo "<div class='center'>".$LANG['help'][18]."<br><br>";
       displayBackLink();
       echo "</div>";
