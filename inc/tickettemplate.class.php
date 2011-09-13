@@ -52,7 +52,7 @@ class TicketTemplate extends CommonDropdown {
    public $second_level_menu = "ticket";
    public $third_level_menu = "TicketTemplate";
 
-   public $display_title  = false;
+   public $display_dropdowntitle  = false;
 
 
    // Specific fields
