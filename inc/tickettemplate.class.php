@@ -451,5 +451,21 @@ class TicketTemplate extends CommonDropdown {
       }
    }
 
+   /**
+    * Print preview for Ticket template
+    *
+    * @param $tt TicketTemplate object
+    *
+    * @return Nothing (call to classes members)
+   **/
+   static function showHelpdeskPreview(TicketTemplate $tt) {
+      if (!$tt->getID()) {
+         return false;
+      }
+      if ($tt->getFromDBWithDatas($tt->getID())) {
+         $ticket = new  Ticket();
+         $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
+      }
+   }
 }
 ?>
