@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Ticket Template class
 /// since version 0.83
 class TicketTemplate extends CommonDropdown {
-   /// TODO add preview of template
-
    // From CommonDBTM
    public $dohistory = true;
 
@@ -49,7 +47,15 @@ class TicketTemplate extends CommonDropdown {
                                         'TicketTemplateMandatoryField',
                                         'TicketTemplatePredefinedField');
 
+   // From CommonDropdown
+   public $first_level_menu  = "maintain";
+   public $second_level_menu = "ticket";
+   public $third_level_menu = "TicketTemplate";
 
+   public $display_title  = false;
+
+
+   // Specific fields
    /// Mandatory Fields
    var $mandatory  = array();
    /// Hidden fields

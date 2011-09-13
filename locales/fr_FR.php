@@ -1094,6 +1094,8 @@ $LANG['jobresolution'][4] = "Solution rejetée";
 $LANG['jobresolution'][5] = "En cas de rejet de la solution, vous devez indiquer un motif";
 $LANG['jobresolution'][6] = "Gabarit de solution";
 
+$LANG['jobrecurrent'][1] = "Tickets récurrents";
+
 
 $LANG['knowbase'][1]  = "Foire aux questions";
 

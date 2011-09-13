@@ -1084,6 +1084,17 @@ class Html {
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
          if (Session::haveRight('tickettemplate', 'r')) {
+            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['title']
+                           = $LANG['job'][59];
+            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['page']
+                           = '/front/tickettemplate.php';
+            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['search']
+                           = '/front/tickettemplate.php';
+            if (Session::haveRight('tickettemplate', 'w')) {
+               $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['add']
+                              = '/front/tickettemplate.form.php';
+            }
+
             $menu['maintain']['content']['ticket']['links']['template']
                               = '/front/tickettemplate.php';
          }

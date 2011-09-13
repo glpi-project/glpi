@@ -607,7 +607,6 @@ class Dropdown {
 
                            $LANG['title'][24]
                            => array('ITILCategory'     => ITILCategory::getTypeName(2),
-                                    'TicketTemplate'   => TicketTemplate::getTypeName(2),
                                     'TaskCategory'     => TaskCategory::getTypeName(2),
                                     'SolutionType'     => SolutionType::getTypeName(2),
                                     'RequestType'      => RequestType::getTypeName(2),
