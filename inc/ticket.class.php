@@ -2796,11 +2796,11 @@ class Ticket extends CommonITILObject {
     * Print the helpdesk form
     *
     * @param $ID int : ID of the user who want to display the Helpdesk
-    * @param $from_helpdesk int : is display from the helpdesk.php ?
+    * @param $ticket_template int : ID ticket template for preview : false if not used for preview
     *
     * @return nothing (print the helpdesk)
    **/
-   static function showFormHelpdesk($ID, $from_helpdesk) {
+   static function showFormHelpdesk($ID, $ticket_template = false) {
       global $DB, $CFG_GLPI, $LANG;
 
       if (!Session::haveRight("create_ticket","1")) {
@@ -2865,9 +2865,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      echo "<form method='post' name='helpdeskform' action='".
-             $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
-      echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
+      if (!$ticket_template) {
+         echo "<form method='post' name='helpdeskform' action='".
+               $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
+      }
+      echo "<input type='hidden' name='_from_helpdesk' value='1'>";
       echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
            "'>";
 
@@ -2892,6 +2894,10 @@ class Ticket extends CommonITILObject {
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
          }
+      }
+
+      if ($ticket_template) {
+         $tt->getFromDBWithDatas($ticket_template, false);
       }
 
       // Predefined fields from template : reset them
@@ -3042,19 +3048,25 @@ class Ticket extends CommonITILObject {
 
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>";
-      echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
+      if (!$ticket_template) {
 
-      if ($tt->isField('id') && $tt->fields['id'] > 0) {
-         echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
-         echo "<input type='hidden' name='_predefined_fields'
-                      value=\"".rawurlencode(serialize($predefined_fields))."\">";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' class='center'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
+
+         if ($tt->isField('id') && $tt->fields['id'] > 0) {
+            echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
+            echo "<input type='hidden' name='_predefined_fields'
+                        value=\"".rawurlencode(serialize($predefined_fields))."\">";
+         }
+
+         echo "</td></tr>";
       }
 
-      echo "</td></tr>";
-
-      echo "</table></div></form>";
+      echo "</table></div>";
+      if (!$ticket_template) {
+         echo "</form>";
+      }
    }
 
 

@@ -102,7 +102,7 @@ if (isset($_POST['add'])) {
 
 } else { // reload display form
    $_SESSION["helpdeskSaved"] = $_REQUEST;
-   Ticket::showFormHelpdesk(Session::getLoginUserID(),1);
+   Ticket::showFormHelpdesk(Session::getLoginUserID());
    Html::helpFooter();
 }
 
