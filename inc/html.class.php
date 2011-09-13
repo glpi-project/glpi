@@ -1083,6 +1083,11 @@ class Html {
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
+         if (Session::haveRight('tickettemplate', 'r')) {
+            $menu['maintain']['content']['ticket']['links']['template']
+                              = '/front/tickettemplate.php';
+         }
+
 
          if (Session::haveRight('validate_ticket',1)) {
             $opt = array();
