@@ -333,7 +333,7 @@ function addTracking($type, $ID, $ID_entity) {
                          mt_rand(0, 60)*MINUTE_TIMESTAMP;
             $closedate = $opendate+$closetime;
          }
-         $solutiontype = mt_rand(0, $MAX['solutiontypes']);
+         $solutiontype = mt_rand($FIRST['solutiontypes'], $LAST['solutiontypes']);
          $solution     = "Solution ".Toolbox::getRandomString(20);
       }
       $updatedate = $opendate+max($firstactiontime, $solvetime, $closetime);
@@ -521,19 +521,6 @@ function generateGlobalDropdowns() {
          $val = "type de cartouche $i";
       }
       $query = "INSERT INTO `glpi_cartridgeitemtypes`
-                VALUES (NULL, '$val', 'comment $val')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-   }
-
-
-   $items = array();
-   for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "type de solution $i";
-      }
-      $query = "INSERT INTO `glpi_solutiontypes`
                 VALUES (NULL, '$val', 'comment $val')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
@@ -1535,6 +1522,22 @@ function generate_entity($ID_entity) {
    }
 
    $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
+
+   $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
+
+   $items = array();
+   for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "type de solution $i";
+      }
+      $query = "INSERT INTO `glpi_solutiontypes`
+                VALUES (NULL, '$val', 'comment $val','$ID_entity', '1')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+   }
+   $LAST["solutiontypes"] = getMaxItem("glpi_solutiontypes");
+
 
    // Add Specific questions
    $k = 0;

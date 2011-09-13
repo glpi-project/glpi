@@ -1179,6 +1179,8 @@ function update0803to083() {
    $DB->query($query)
    or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
 
+   $migration->displayMessage($LANG['update'][142] . ' - various fields add');
+
 
    //Software dictionnary update
    $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
@@ -1187,17 +1189,28 @@ function update0803to083() {
                         array('value' => '-2'));
 
    // Groups perm
-   $migration->addfield('glpi_groups', 'is_requester', 'bool', array('value' => '1'));
-   $migration->addfield('glpi_groups', 'is_assign',    'bool', array('value' => '1'));
-   $migration->addfield('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
-   $migration->addfield('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
-   $migration->addfield('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_requester', 'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_assign',    'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
+   $migration->addField('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
 
    $migration->addKey('glpi_groups', 'is_requester');
    $migration->addKey('glpi_groups', 'is_assign');
    $migration->addKey('glpi_groups', 'is_notify');
    $migration->addKey('glpi_groups', 'is_itemgroup');
    $migration->addKey('glpi_groups', 'is_usergroup');
+
+   // Ticket solution by entity
+   $migration->addfield('glpi_solutiontypes', 'entities_id', 'integer', array('value' => '0'));
+   $migration->addfield('glpi_solutiontypes', 'is_recursive', 'bool', array('value' => '1'));
+
+   $migration->addKey('glpi_solutiontypes', 'entities_id');
+   $migration->addKey('glpi_solutiontypes', 'is_recursive');
+
+   // Fix solution template index
+   $migration->dropKey('glpi_solutiontemplates', 'unicity');
+   $migration->addKey('glpi_solutiontemplates', 'entities_id');
 
    // New index for count on tab
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
