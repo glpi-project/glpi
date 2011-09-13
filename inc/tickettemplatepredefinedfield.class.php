@@ -184,7 +184,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
 
-      $display_options = array('itemtype' => $itemtype_used);
+      $display_options = array('itemtype'       => $itemtype_used,
+                               'relative_dates' => true);
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";

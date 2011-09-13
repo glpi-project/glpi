@@ -2945,10 +2945,23 @@ class CommonDBTM extends CommonGLPI {
 
                case "date" :
                case "date_delay" :
-                  return Html::convDate($value);
+                  if (isset($options['relative_dates']) && $options['relative_dates']) {
+                     $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
+                                                                        'with_future' => true));
+                     return $dates[$value];
+                  } else {
+                     return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
+                  }
 
                case "datetime" :
-                  return Html::convDateTime($value);
+                  if (isset($options['relative_dates']) && $options['relative_dates']) {
+                     $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
+                                                                        'with_future' => true));
+
+                     return $dates[$value];
+                  } else {
+                     return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
+                  }
 
                case "timestamp" :
                   $withseconds = false;

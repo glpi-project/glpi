@@ -3375,7 +3375,7 @@ class Ticket extends CommonITILObject {
          echo "</td>";
          echo "<td>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
                      $tt->getMandatoryMark('slas_id').
-                     $tt->getEndHiddenFieldText('slas_id')."</td><";
+                     $tt->getEndHiddenFieldText('slas_id')."</td>";
          echo "<td>".$tt->getBeginHiddenFieldValue('slas_id');
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value'  => $this->fields["slas_id"]));
