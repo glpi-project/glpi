@@ -50,6 +50,9 @@ abstract class CommonDropdown extends CommonDBTM {
    //Menu & navigation
    public $first_level_menu  = "config";
    public $second_level_menu = "dropdowns";
+   public $third_level_menu  = "";
+
+   public $display_title  = true;
 
 
    /**
@@ -103,14 +106,19 @@ abstract class CommonDropdown extends CommonDBTM {
    function title() {
       global $LANG;
 
-      Dropdown::showItemTypeMenu($LANG['setup'][0], Dropdown::getStandardDropdownItemTypes(),
-                                 $this->getSearchUrl());
+      if ($this->display_title) {
+         Dropdown::showItemTypeMenu($LANG['setup'][0], Dropdown::getStandardDropdownItemTypes(),
+                                    $this->getSearchUrl());
+      }
    }
 
 
    function displayHeader () {
+      if (empty($this->third_level_menu)) {
+        $this->third_level_menu = $this->getType();
+      }
       Html::header($this->getTypeName(2), '', $this->first_level_menu, $this->second_level_menu,
-                   $this->getType());
+                   $this->third_level_menu);
    }
 
 
