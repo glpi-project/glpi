@@ -242,10 +242,12 @@ class SLA extends CommonDBTM {
          // Based on a calendar
          if ($this->fields['calendars_id']>0) {
             $cal = new Calendar();
+            $work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
 
             if ($cal->getFromDB($this->fields['calendars_id'])) {
                return $cal->computeEndDate($start_date,
-                                           $this->fields['resolution_time']+$additional_delay);
+                                           $this->fields['resolution_time']+$additional_delay,
+                                           $work_in_days);
             }
          }
 
@@ -275,7 +277,7 @@ class SLA extends CommonDBTM {
 
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slas_id']==$this->fields['id']) { // correct sla level
-               $force_work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
+               $work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
                $delay = $this->fields['resolution_time']+$slalevel->fields['execution_time']
                         +$additional_delay;
 
@@ -283,7 +285,7 @@ class SLA extends CommonDBTM {
                if ($this->fields['calendars_id']>0) {
                   $cal = new Calendar();
                   if ($cal->getFromDB($this->fields['calendars_id'])) {
-                     return $cal->computeEndDate($start_date, $delay, $force_work_in_days);
+                     return $cal->computeEndDate($start_date, $delay, $work_in_days);
                   }
                }
 
