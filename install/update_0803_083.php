@@ -53,6 +53,7 @@ function update0803to083() {
                           'glpi_changetasks',
                           'glpi_groups_problems', 'glpi_items_problems', 'glpi_problems',
                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
+                          'glpi_ticketrecurrents',
                           'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
                           'glpi_tickettemplatemandatoryfields',
                           'glpi_tickettemplatepredefinedfields');
@@ -1178,6 +1179,32 @@ function update0803to083() {
                           FROM `glpi_tickets`)";
    $DB->query($query)
    or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
+
+   $migration->displayMessage($LANG['update'][142] . ' - recurrent tickets');
+
+   if (!TableExists('glpi_ticketrecurrents')) {
+      $query = "CREATE TABLE `glpi_ticketrecurrents` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar( 255 ) NULL DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `begin_date` datetime DEFAULT NULL,
+                  `create_before` int(11) NOT NULL DEFAULT '0',
+                  `next_creation_date` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `is_active` (`is_active`),
+                  KEY `tickettemplates_id` (`tickettemplates_id`),
+                  KEY `next_creation_date` (`next_creation_date`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_ticketrecurrents ".$LANG['update'][90].$DB->error());
+   }
+
 
    $migration->displayMessage($LANG['update'][142] . ' - various fields add');
 
