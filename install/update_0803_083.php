@@ -663,7 +663,7 @@ function update0803to083() {
    $migration->addField("glpi_states", 'ancestors_cache', "longtext");
    $migration->addField("glpi_states", 'sons_cache', "longtext");
    $migration->migrationOneTable('glpi_states');
-   $migration->addKey("glpi_states", array('states_id','name'),'unicity');
+   $migration->addKey("glpi_states", array('states_id','name'), 'unicity');
    regenerateTreeCompleteName("glpi_states");
 
    $migration->changeField("glpi_authldaps", 'group_condition', 'group_condition', "text");
