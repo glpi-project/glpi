@@ -194,7 +194,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             if (!empty($this->fields['begin'])
                 && ($item->fields["status"]=="new" || $item->fields["status"]=="assign")) {
 
-               $input2['id']            = $job->getID();
+               $input2['id']            = $item->getID();
                $input2['status']        = "plan";
                $input2['_disablenotif'] = true;
                $item->update($input2);
@@ -501,7 +501,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             if ($item->getFromDB($data["id"])) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
                   // Do not check entity here because webcal used non authenticated access
-//                  if (Session::haveAccessToEntity($job->fields["entities_id"])) {
+//                  if (Session::haveAccessToEntity($item->fields["entities_id"])) {
                      $interv[$data["begin"]."$$$".$i][$item->getForeignKeyField()] = $data["id"];
                      $interv[$data["begin"]."$$$".$i]["id"]                        = $data["id"];
                      if (isset($data["state"])) {
