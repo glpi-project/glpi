@@ -159,11 +159,11 @@ class Calendar extends CommonDropdown {
     *
     * @param $start datetime begin
     * @param $end datetime end
-    * @param $force_work_in_days boolean force working in days
+    * @param $work_in_days boolean force working in days
     *
     * @return timestamp of delay
    **/
-   function getActiveTimeBetween($start, $end, $force_work_in_days=false) {
+   function getActiveTimeBetween($start, $end, $work_in_days=false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -183,7 +183,7 @@ class Calendar extends CommonDropdown {
 
       $activetime = 0;
 
-      if ($force_work_in_days) {
+      if ($work_in_days) {
          $activetime = $timeend-$timestart;
 
       } else {
@@ -236,11 +236,11 @@ class Calendar extends CommonDropdown {
     *
     * @param $start datetime begin
     * @param $delay timestamp delay to add
-    * @param $force_work_in_days boolean force working in days
+    * @param $work_in_days boolean force working in days
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $force_work_in_days=false) {
+   function computeEndDate($start, $delay, $work_in_days=false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -250,7 +250,7 @@ class Calendar extends CommonDropdown {
       $timestart  = strtotime($start);
       $datestart  = date('Y-m-d',$timestart);
 
-      if ($delay >= DAY_TIMESTAMP || $force_work_in_days) { // only based on days
+      if ($work_in_days) { // only based on days
          $cache_duration = $this->getDurationsCache();
 
          // Compute Real starting time
