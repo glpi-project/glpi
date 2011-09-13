@@ -3054,8 +3054,14 @@ class Html {
       echo "<select id='genericdate$element$rand' name='_select_$element'>";
 
       $val = 'NOW';
-      echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][16]."</option>";
+      if ($with_time) {
+         echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][16]."</option>";
+         echo "<option value='TODAY' ".($value==='TODAY'?'selected':'').">".$LANG['calendar'][27]."</option>";
+      } else {
+         echo "<option value='$val' ".($value===$val?'selected':'').">".$LANG['calendar'][27]."</option>";
+      }
       echo "<option value='0' ".($value===0?'selected':'').">".$LANG['calendar'][17]."</option>";
+
 
       if ($with_time) {
          for ($i=1 ; $i<=24 ; $i++) {
@@ -3071,17 +3077,36 @@ class Html {
          echo "- $i ".$LANG['calendar'][12]."</option>";
       }
 
+      $list = array("LASTSUNDAY" => $LANG['calendar'][18],
+                    "LASTMONDAY" => $LANG['calendar'][19],
+                    "LASTTUESDAY" => $LANG['calendar'][20],
+                    "LASTWEDNESDAY" => $LANG['calendar'][21],
+                    "LASTTHURSDAY" => $LANG['calendar'][22],
+                    "LASTFRIDAY" => $LANG['calendar'][23],
+                    "LASTSATURDAY" => $LANG['calendar'][24] );
+
+      foreach ($list as $val => $dico) {
+         echo "<option value='$val' ".($value===$val?'selected':'').">$dico</option>";
+      }
       for ($i=1 ; $i<=10 ; $i++) {
          $val = '-'.$i.'WEEK';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "- $i ".$LANG['calendar'][13]."</option>";
       }
 
+      $val = "BEGINMONTH";
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo $LANG['calendar'][25]."</option>";
+
       for ($i=1 ; $i<=12 ; $i++) {
          $val = '-'.$i.'MONTH';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "- $i ".$LANG['calendar'][14]."</option>";
       }
+
+      $val = "BEGINYEAR";
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo $LANG['calendar'][26]."</option>";
 
       for ($i=1 ; $i<=10 ; $i++) {
          $val = '-'.$i.'YEAR';
