@@ -52,7 +52,7 @@ abstract class CommonDropdown extends CommonDBTM {
    public $second_level_menu = "dropdowns";
    public $third_level_menu  = "";
 
-   public $display_title  = true;
+   public $display_dropdowntitle  = true;
 
 
    /**
@@ -106,7 +106,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function title() {
       global $LANG;
 
-      if ($this->display_title) {
+      if ($this->display_dropdowntitle) {
          Dropdown::showItemTypeMenu($LANG['setup'][0], Dropdown::getStandardDropdownItemTypes(),
                                     $this->getSearchUrl());
       }
