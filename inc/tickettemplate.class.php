@@ -210,10 +210,47 @@ class TicketTemplate extends CommonDropdown {
       $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
       $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
       $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
+      $this->addStandardTab('TicketTemplate', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case 'TicketTemplate' :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showCentralPreview($item);
+                  return true;
+
+               case 2 :
+                  $item->showHelpdeskPreview($item);
+                  return true;
+
+            }
+            break;
+      }
+      return false;
+   }
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (Session::haveRight("tickettemplate","r")) {
+         switch ($item->getType()) {
+            case 'TicketTemplate' :
+               $ong[1] = $LANG['common'][56];
+               $ong[2] = $LANG['Menu'][31];
+               return $ong;
+         }
+      }
+      return '';
+   }
+
 
 
    /**
@@ -374,6 +411,23 @@ class TicketTemplate extends CommonDropdown {
       return false;
    }
 
+
+   /**
+    * Print preview for Ticket template
+    *
+    * @param $tt TicketTemplate object
+    *
+    * @return Nothing (call to classes members)
+   **/
+   static function showCentralPreview(TicketTemplate $tt) {
+      if (!$tt->getID()) {
+         return false;
+      }
+      if ($tt->getFromDBWithDatas($tt->getID())) {
+         $ticket = new  Ticket();
+         $ticket->showForm(0, array('template_preview' => $tt->getID()));
+      }
+   }
 
 }
 ?>

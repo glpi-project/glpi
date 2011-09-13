@@ -3147,6 +3147,10 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (isset($options['template_preview'])) {
+         $tt->getFromDBWithDatas($options['template_preview'], false);
+      }
+
       // Predefined fields from template : reset them
       if (isset($values['_predefined_fields'])) {
          $values['_predefined_fields']
@@ -3164,8 +3168,8 @@ class Ticket extends CommonITILObject {
                // Is always default value : not set
                // Set if already predefined field
                if ($values[$predeffield] == $default_values[$predeffield]
-                   || (isset($values['_predefined_fields'][$field])
-                             && $values[$predeffield] == $values['_predefined_fields'][$field])) {
+                   || (isset($values['_predefined_fields'][$predeffield])
+                             && $values[$predeffield] == $values['_predefined_fields'][$predeffield])) {
                   $values[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
@@ -3192,14 +3196,16 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w',$values);
-      }
+         if ($ID > 0) {
+            $this->check($ID,'r');
+         } else {
+            // Create item
+            $this->check(-1,'w',$values);
+         }
 
-      $this->showTabs($options);
+      if (!isset($options['template_preview'])) {
+         $this->showTabs($options);
+      }
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
                                         && $this->isUser(parent::REQUESTER,
@@ -3227,8 +3233,10 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
-            $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+      if (!isset($options['template_preview'])) {
+         echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
+               $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+      }
       echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -3789,11 +3797,12 @@ class Ticket extends CommonITILObject {
 
       echo "</tr>";
 
-      if (!$ID
+      if ((!$ID
           || $canupdate
           || $canupdate_descr
           || Session::haveRight("assign_ticket","1")
-          || Session::haveRight("steal_ticket","1")) {
+          || Session::haveRight("steal_ticket","1"))
+            && !isset($options['template_preview'])) {
 
          echo "<tr class='tab_bg_1'>";
 
@@ -3839,9 +3848,10 @@ class Ticket extends CommonITILObject {
 
       echo "</div>";
 
-      echo "</form>";
-
-      $this->addDivForTabs();
+      if (!isset($options['template_preview'])) {
+         echo "</form>";
+         $this->addDivForTabs();
+      }
 
       return true;
    }
