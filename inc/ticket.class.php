@@ -3101,7 +3101,9 @@ class Ticket extends CommonITILObject {
                               '_add_validation'           => 0,
                               'type'                      => -1);
 
-      $values = $_REQUEST;
+      if (!isset($options['template_preview'])) {
+         $values = $_REQUEST;
+      }
 
       // Restore saved value or override with page parameter
       foreach ($default_values as $name => $value) {
@@ -3553,9 +3555,13 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>".$LANG['document'][14]."&nbsp;: ".
-                $tt->getMandatoryMark('itemtype')."</th>";
+      echo "<th class='left' rowspan='2'>";
+      echo $tt->getBeginHiddenFieldText('itemtype');
+      echo $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype');
+      echo $tt->getEndHiddenFieldText('itemtype');
+      echo "</th>";
       echo "<td rowspan='2'>";
+      echo $tt->getBeginHiddenFieldValue('itemtype',$this);
 
       // Select hardware on creation or if have update right
       if ($canupdate || !$ID || $canupdate_descr) {
@@ -3598,6 +3604,8 @@ class Ticket extends CommonITILObject {
             echo $LANG['help'][30];
          }
       }
+      echo $tt->getEndHiddenFieldValue('itemtype',$this);
+
       echo "</td>";
       echo "</tr>";
 
