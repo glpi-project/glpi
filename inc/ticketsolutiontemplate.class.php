@@ -78,8 +78,9 @@ class TicketSolutionTemplate extends CommonDropdown {
             echo "&nbsp;</td></tr>";
             // And a new line to have a complete display
             echo "<tr class='center'><td colspan='5'>";
-            initEditorSystem($field['name']);
-            echo "<textarea name='".$field['name']."' rows='3'>".$this->fields[$field['name']].
+            $rand = mt_rand();
+            initEditorSystem($field['name'].$rand);
+            echo "<textarea id='".$field['name']."$rand' name='".$field['name']."' rows='3'>".$this->fields[$field['name']].
                  "</textarea>";
             break;
       }

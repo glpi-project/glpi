@@ -3202,10 +3202,11 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
 
       if ($canedit) {
-         initEditorSystem("solution");
+         $rand = mt_rand();
+         initEditorSystem("solution$rand");
 
          echo "<div id='solution$rand_text'>";
-         echo "<textarea id='solution' name='solution' rows='12' cols='80'>";
+         echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'>";
          echo $this->getField('solution');
          echo "</textarea></div>";
 
