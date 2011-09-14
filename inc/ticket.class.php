@@ -1106,13 +1106,28 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Auto group define from item
-//       if ($item != NULL) {
-//          if ($item->isField('groups_id')
-//              && (!isset($input["_groups_id_requester"]) || $input["_groups_id_requester"]==0)) {
-//             $input["_groups_id_requester"] = $item->getField('groups_id');
-//          }
-//       }
+      // Business Rules do not override manual SLA
+      $manual_slas_id = 0;
+      if (isset($input['slas_id']) && $input['slas_id'] > 0) {
+         $manual_slas_id = $input['slas_id'];
+      }
+
+      // Process Business Rules
+      $rules = new RuleTicketCollection($input['entities_id']);
+
+      // Set unset variables with are needed
+      $user = new User();
+      if (isset($input["_users_id_requester"])
+          && $user->getFromDB($input["_users_id_requester"])) {
+         $input['users_locations'] = $user->fields['locations_id'];
+      }
+
+      $input = $rules->processAllRules($input, $input, array('recursive' => true));
+
+      // Restore slas_id
+      if ($manual_slas_id > 0) {
+         $input['slas_id'] = $manual_slas_id;
+      }
 
       // Manage auto assign
       $entitydata = new EntityData();
@@ -1179,29 +1194,6 @@ class Ticket extends CommonITILObject {
                }
             }
             break;
-      }
-
-      // Business Rules do not override manual SLA
-      $manual_slas_id = 0;
-      if (isset($input['slas_id']) && $input['slas_id'] > 0) {
-         $manual_slas_id = $input['slas_id'];
-      }
-
-      // Process Business Rules
-      $rules = new RuleTicketCollection($input['entities_id']);
-
-      // Set unset variables with are needed
-      $user = new User();
-      if (isset($input["_users_id_requester"])
-          && $user->getFromDB($input["_users_id_requester"])) {
-         $input['users_locations'] = $user->fields['locations_id'];
-      }
-
-      $input = $rules->processAllRules($input, $input, array('recursive' => true));
-
-      // Restore slas_id
-      if ($manual_slas_id > 0) {
-         $input['slas_id'] = $manual_slas_id;
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
