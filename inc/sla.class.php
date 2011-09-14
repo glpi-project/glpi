@@ -250,8 +250,8 @@ class SLA extends CommonDBTM {
       if (isset($this->fields['id'])) {
          // Based on a calendar
          if ($this->fields['calendars_id']>0) {
-            $cal = new Calendar();
-            $work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
+            $cal          = new Calendar();
+            $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
 
             if ($cal->getFromDB($this->fields['calendars_id'])) {
                return $cal->computeEndDate($start_date,
@@ -286,9 +286,9 @@ class SLA extends CommonDBTM {
 
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slas_id']==$this->fields['id']) { // correct sla level
-               $work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
-               $delay = $this->fields['resolution_time']+$slalevel->fields['execution_time']
-                        +$additional_delay;
+               $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
+               $delay        = $this->fields['resolution_time']+$slalevel->fields['execution_time']
+                               +$additional_delay;
 
                // Based on a calendar
                if ($this->fields['calendars_id']>0) {
@@ -324,14 +324,14 @@ class SLA extends CommonDBTM {
       }
 
       if (isset($this->fields['id'])) {
-         $slalevel = new SlaLevel();
-         $cal      = new Calendar();
-         $force_work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
+         $slalevel     = new SlaLevel();
+         $cal          = new Calendar();
+         $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
 
          // Based on a calendar
          if ($this->fields['calendars_id']>0) {
             if ($cal->getFromDB($this->fields['calendars_id'])) {
-               return $cal->getActiveTimeBetween($start, $end, $force_work_in_days);
+               return $cal->getActiveTimeBetween($start, $end, $work_in_days);
             }
 
          } else { // No calendar
