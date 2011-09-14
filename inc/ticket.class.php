@@ -3563,7 +3563,7 @@ class Ticket extends CommonITILObject {
                 $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
                 $tt->getEndHiddenFieldText('itemtype')."</th>";
       echo "<td rowspan='2'>";
-      echo $tt->getBeginHiddenFieldValue('itemtype', $this);
+      echo $tt->getBeginHiddenFieldValue('itemtype');
 
       // Select hardware on creation or if have update right
       if ($canupdate || !$ID || $canupdate_descr) {
