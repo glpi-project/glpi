@@ -75,6 +75,7 @@ class TicketRecurrent extends CommonDropdown {
          case 'TicketRecurrent' :
             switch ($tabnum) {
                case 1 :
+                  // TODO showStats est une fonction de ticket.class sans paramètre
                   $item->showStats($item);
                   return true;
             }
@@ -82,6 +83,7 @@ class TicketRecurrent extends CommonDropdown {
       }
       return false;
    }
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
@@ -107,6 +109,7 @@ class TicketRecurrent extends CommonDropdown {
 
       return $ong;
    }
+
 
    /**
     * Get search function for the class

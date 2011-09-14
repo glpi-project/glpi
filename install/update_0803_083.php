@@ -1229,7 +1229,7 @@ function update0803to083() {
    $migration->addKey('glpi_groups', 'is_usergroup');
 
    // Ticket solution by entity
-   $migration->addfield('glpi_solutiontypes', 'entities_id', 'integer', array('value' => '0'));
+   $migration->addfield('glpi_solutiontypes', 'entities_id', 'integer');
    $migration->addfield('glpi_solutiontypes', 'is_recursive', 'bool', array('value' => '1'));
 
    $migration->addKey('glpi_solutiontypes', 'entities_id');

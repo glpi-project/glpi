@@ -111,7 +111,7 @@ abstract class CommonDevice extends CommonDropdown {
       global $LANG;
 
       Dropdown::showItemTypeMenu(Toolbox::ucfirst($LANG['log'][18]),
-                                 Dropdown::getDeviceItemTypes(), $this->getSearchUrl());
+                                 Dropdown::getDeviceItemTypes(), $this->getSearchURL());
    }
 
 

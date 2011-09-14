@@ -1087,14 +1087,15 @@ $LANG['joblist'][35] = "Non clos";
 $LANG['joblist'][36] = "Valeur du statut en base";
 
 
+$LANG['jobrecurrent'][1] = "Tickets récurrents";
+
+
 $LANG['jobresolution'][1] = "Solution";
 $LANG['jobresolution'][2] = "Solutions";
 $LANG['jobresolution'][3] = "Solution approuvée";
 $LANG['jobresolution'][4] = "Solution rejetée";
 $LANG['jobresolution'][5] = "En cas de rejet de la solution, vous devez indiquer un motif";
 $LANG['jobresolution'][6] = "Gabarit de solution";
-
-$LANG['jobrecurrent'][1] = "Tickets récurrents";
 
 
 $LANG['knowbase'][1]  = "Foire aux questions";
