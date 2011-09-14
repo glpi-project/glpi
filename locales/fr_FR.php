@@ -1649,6 +1649,9 @@ $LANG['pager'][2] = "de";
 $LANG['pager'][3] = "sur";
 $LANG['pager'][4] = "Afficher";
 $LANG['pager'][5] = "éléments";
+$LANG['pager'][6] = "du";
+$LANG['pager'][7] = "au";
+
 
 
 $LANG['peripherals'][18] = "Marque";
