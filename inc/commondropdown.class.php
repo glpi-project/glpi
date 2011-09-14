@@ -108,7 +108,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if ($this->display_dropdowntitle) {
          Dropdown::showItemTypeMenu($LANG['setup'][0], Dropdown::getStandardDropdownItemTypes(),
-                                    $this->getSearchUrl());
+                                    $this->getSearchURL());
       }
    }
 

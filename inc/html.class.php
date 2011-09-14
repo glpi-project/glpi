@@ -1085,11 +1085,11 @@ class Html {
 
          if (Session::haveRight('tickettemplate', 'r')) {
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['title']
-                           = $LANG['job'][59];
+                              = $LANG['job'][59];
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['page']
-                           = '/front/tickettemplate.php';
+                              = '/front/tickettemplate.php';
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['search']
-                           = '/front/tickettemplate.php';
+                              = '/front/tickettemplate.php';
             if (Session::haveRight('tickettemplate', 'w')) {
                $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['add']
                               = '/front/tickettemplate.form.php';
@@ -1163,12 +1163,14 @@ class Html {
 
 
       if (Session::haveRight("show_all_ticket","1")) {
-         $menu['maintain']['content']['ticketrecurrent']['title']           = $LANG['jobrecurrent'][1];
-         $menu['maintain']['content']['ticketrecurrent']['shortcut']        = '';
-         $menu['maintain']['content']['ticketrecurrent']['page']            = '/front/ticketrecurrent.php';
-         $menu['maintain']['content']['ticketrecurrent']['links']['search'] = '/front/ticketrecurrent.php';
+         $menu['maintain']['content']['ticketrecurrent']['title']    = $LANG['jobrecurrent'][1];
+         $menu['maintain']['content']['ticketrecurrent']['shortcut'] = '';
+         $menu['maintain']['content']['ticketrecurrent']['page']     = '/front/ticketrecurrent.php';
+         $menu['maintain']['content']['ticketrecurrent']['links']['search']
+                                                                     = '/front/ticketrecurrent.php';
          if (Session::haveRight("update_ticket","1")) {
-            $menu['maintain']['content']['ticketrecurrent']['links']['add'] = '/front/ticketrecurrent.form.php';
+            $menu['maintain']['content']['ticketrecurrent']['links']['add']
+                              = '/front/ticketrecurrent.form.php';
          }
       }
 

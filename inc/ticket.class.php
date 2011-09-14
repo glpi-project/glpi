@@ -2792,7 +2792,7 @@ class Ticket extends CommonITILObject {
     *
     * @return nothing (print the helpdesk)
    **/
-   static function showFormHelpdesk($ID, $ticket_template = false) {
+   static function showFormHelpdesk($ID, $ticket_template=false) {
       global $DB, $CFG_GLPI, $LANG;
 
       if (!Session::haveRight("create_ticket","1")) {
@@ -3041,7 +3041,6 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>";
 
       if (!$ticket_template) {
-
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
@@ -3049,7 +3048,7 @@ class Ticket extends CommonITILObject {
          if ($tt->isField('id') && $tt->fields['id'] > 0) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
-                        value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                         value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
 
          echo "</td></tr>";

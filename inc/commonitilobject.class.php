@@ -2283,9 +2283,9 @@ abstract class CommonITILObject extends CommonDBTM {
       // Settings a solution will set status to solved
       if ($canedit) {
          Dropdown::show('SolutionType',
-                        array('value' => $this->getField('solutiontypes_id'),
-                              'rand'  => $rand_type,
-                              'entity'   => $this->getEntityID()));
+                        array('value'  => $this->getField('solutiontypes_id'),
+                              'rand'   => $rand_type,
+                              'entity' => $this->getEntityID()));
       } else {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
                                         $this->getField('solutiontypes_id'));
