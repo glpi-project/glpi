@@ -87,8 +87,8 @@ class SolutionTemplate extends CommonDropdown {
             echo "<tr class='center'><td colspan='5'>";
             $rand = mt_rand();
             Html::initEditorSystem($field['name'].$rand);
-            echo "<textarea id='".$field['name']."$rand' name='".$field['name']."' rows='3'>".$this->fields[$field['name']].
-                 "</textarea>";
+            echo "<textarea id='".$field['name']."$rand' name='".$field['name']."' rows='3'>".
+                   $this->fields[$field['name']]."</textarea>";
             break;
       }
    }

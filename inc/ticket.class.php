@@ -3202,12 +3202,12 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-         if ($ID > 0) {
-            $this->check($ID,'r');
-         } else {
-            // Create item
-            $this->check(-1,'w',$values);
-         }
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w',$values);
+      }
 
       if (!isset($options['template_preview'])) {
          $this->showTabs($options);
@@ -3559,13 +3559,11 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>";
-      echo $tt->getBeginHiddenFieldText('itemtype');
-      echo $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype');
-      echo $tt->getEndHiddenFieldText('itemtype');
-      echo "</th>";
+      echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
+                $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
+                $tt->getEndHiddenFieldText('itemtype')."</th>";
       echo "<td rowspan='2'>";
-      echo $tt->getBeginHiddenFieldValue('itemtype',$this);
+      echo $tt->getBeginHiddenFieldValue('itemtype', $this);
 
       // Select hardware on creation or if have update right
       if ($canupdate || !$ID || $canupdate_descr) {
@@ -3810,11 +3808,11 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       if ((!$ID
-          || $canupdate
-          || $canupdate_descr
-          || Session::haveRight("assign_ticket","1")
-          || Session::haveRight("steal_ticket","1"))
-            && !isset($options['template_preview'])) {
+           || $canupdate
+           || $canupdate_descr
+           || Session::haveRight("assign_ticket","1")
+           || Session::haveRight("steal_ticket","1"))
+          && !isset($options['template_preview'])) {
 
          echo "<tr class='tab_bg_1'>";
 
