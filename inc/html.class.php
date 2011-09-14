@@ -3051,7 +3051,7 @@ class Html {
     *
     * @return rand value of dropdown
    **/
-   static function showGenericDateTimeSearch($element, $value='', $options = array()) {
+   static function showGenericDateTimeSearch($element, $value='', $options=array()) {
       global $LANG, $CFG_GLPI;
 
       $params['with_time']          = false;
@@ -3098,28 +3098,30 @@ class Html {
       }
 
       echo "</select>";
-
       echo "</td><td>";
       echo "<div id='displaygenericdate$element$rand'></div>";
 
-      $params = array('value'          => '__VALUE__',
-                     'name'          => $element,
-                     'withtime'      => $params['with_time'],
-                     'specificvalue' => $specific_value);
+      $params = array('value'         => '__VALUE__',
+                      'name'          => $element,
+                      'withtime'      => $params['with_time'],
+                      'specificvalue' => $specific_value);
 
       Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
 
       $params['value'] = $value;
-      Ajax::updateItem("displaygenericdate$element$rand", $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
-                     $params);
+      Ajax::updateItem("displaygenericdate$element$rand",
+                       $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
 
       echo "</td></tr></table>";
       return $rand;
    }
 
+
    /**
     * Get items to display for showGenericDateTimeSearch
+    *
+    * @since version 0.83
     *
     * @param $options : array of options may be :
     *      - with_time display with time selection ? (default false)
@@ -3156,7 +3158,6 @@ class Html {
       if ($params['with_specific_date']) {
          $dates[0] = $LANG['calendar'][17];
       }
-
 
       if ($params['with_time']) {
          for ($i=1 ; $i<=24 ; $i++) {
@@ -3225,8 +3226,11 @@ class Html {
 
    }
 
+
     /**
     * Compute date / datetime value resulting of showGenericDateTimeSearch
+    *
+    * @since version 0.83
     *
     * @param $val date / datetime value passed
     * @param $force_day bool force computation in days
@@ -3234,7 +3238,7 @@ class Html {
     * @return computed date / datetime value
     * @see showGenericDateTimeSearch
    **/
-   static function computeGenericDateTimeSearch($val, $force_day = false) {
+   static function computeGenericDateTimeSearch($val, $force_day=false) {
 
       $format_use = "Y-m-d H:i:s";
       if ($force_day) {
@@ -3245,11 +3249,9 @@ class Html {
       switch ($val) {
          case 'NOW' :
             return date($format_use);
-            break;
 
          case 'TODAY' :
             return date("Y-m-d");
-            break;
       }
 
       // Search on begin of month / year
@@ -3328,6 +3330,7 @@ class Html {
       }
       return $val;
    }
+
 
    /**
     * Print the form used to select profile if several are available

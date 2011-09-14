@@ -93,14 +93,15 @@ class TicketTemplate extends CommonDropdown {
          // Force items_id if itemtype is defined
          if (isset($this->mandatory['itemtype']) && !isset($this->mandatory['items_id'])) {
             $this->mandatory['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
-                                                                              'glpi_tickets');
+                                                                             'glpi_tickets');
          }
 
          $ttp              = new TicketTemplatePredefinedField();
          $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
          // Compute due_date
          if (isset($this->predefined['due_date'])) {
-            $this->predefined['due_date'] = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
+            $this->predefined['due_date']
+                        = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
          }
          return true;
       }
@@ -254,6 +255,7 @@ class TicketTemplate extends CommonDropdown {
       return false;
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
@@ -367,17 +369,18 @@ class TicketTemplate extends CommonDropdown {
          echo "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
-               $display_options = array('comments'       => true);
+               $display_options = array('comments' => true);
                if ($this->isPredefinedField('itemtype')) {
                   $display_options['itemtype'] = $ticket->fields['itemtype'];
                }
                echo $ticket->getValueToDisplay($num, $ticket->fields[$field], $display_options);
                /// Display items_id
-               
+
                if ($field == 'itemtype') {
                   echo "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
                   if ($num = array_search('items_id',$this->getAllowedFields())) {
-                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields['items_id'], $display_options);
+                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields['items_id'],
+                                                           $display_options);
                   }
                }
             }
@@ -443,19 +446,23 @@ class TicketTemplate extends CommonDropdown {
    /**
     * Print preview for Ticket template
     *
+    * @since version 0.83
+    *
     * @param $tt TicketTemplate object
     *
     * @return Nothing (call to classes members)
    **/
    static function showCentralPreview(TicketTemplate $tt) {
+
       if (!$tt->getID()) {
          return false;
       }
       if ($tt->getFromDBWithDatas($tt->getID())) {
-         $ticket = new  Ticket();
+         $ticket = new Ticket();
          $ticket->showForm(0, array('template_preview' => $tt->getID()));
       }
    }
+
 
    /**
     * Print preview for Ticket template

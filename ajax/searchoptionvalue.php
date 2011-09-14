@@ -236,17 +236,19 @@ if (isset($_REQUEST['searchtype'])) {
                   case "date" :
                   case "date_delay" :
                      Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'],
-                                                   array('with_time'   => false,
-                                                         'with_future' => (isset($searchopt['maybefuture'])
-                                                                           && $searchopt['maybefuture'])));
+                                                     array('with_time'   => false,
+                                                           'with_future'
+                                                               => (isset($searchopt['maybefuture'])
+                                                                   && $searchopt['maybefuture'])));
                      $display = true;
                      break;
 
                   case "datetime" :
-                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'], 
-                                                   array('with_time'   => true,
-                                                         'with_future' => (isset($searchopt['maybefuture'])
-                                                                           && $searchopt['maybefuture'])));
+                     Html::showGenericDateTimeSearch($inputname, $_REQUEST['value'],
+                                                     array('with_time'   => true,
+                                                           'with_future'
+                                                               => (isset($searchopt['maybefuture'])
+                                                                   && $searchopt['maybefuture'])));
                      $display = true;
                      break;
                }

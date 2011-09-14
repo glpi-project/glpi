@@ -148,11 +148,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                         $USE_TABLE       = true;
                      } else { // For ticket template
                         Html::showGenericDateTimeSearch($search["linkfield"], '',
-                                             array('with_time'          => true,
-                                                   'with_future'        => (isset($search['maybefuture'])
-                                                                     && $search['maybefuture']),
-                                                   'with_days'          => false,
-                                                   'with_specific_date' => false));
+                                                        array('with_time'          => true,
+                                                              'with_future'
+                                                                  => (isset($search['maybefuture'])
+                                                                      && $search['maybefuture']),
+                                                              'with_days'          => false,
+                                                              'with_specific_date' => false));
 
                         $already_display = true;
                      }
