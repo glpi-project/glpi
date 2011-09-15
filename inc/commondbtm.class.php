@@ -643,6 +643,7 @@ class CommonDBTM extends CommonGLPI {
       $this->input = $input;
 
       // Call the plugin hook - $this->input can be altered
+      // This hook get the data from the form, not yet altered
       Plugin::doHook("pre_item_add", $this);
 
       if ($this->input && is_array($this->input)) {
@@ -653,11 +654,18 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $this->input = $this->prepareInputForAdd($this->input);
-         //Check values to inject
-         $this->filterValues();
       }
 
       if ($this->input && is_array($this->input)) {
+         // Call the plugin hook - $this->input can be altered
+         // This hook get the data altered by the object method
+         Plugin::doHook("pre_item_add2", $this);
+      }
+
+      if ($this->input && is_array($this->input)) {
+         //Check values to inject
+         $this->filterValues();
+
          $this->fields = array();
          $table_fields = $DB->list_fields($this->getTable());
 
