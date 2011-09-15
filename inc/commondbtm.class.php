@@ -659,7 +659,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->input && is_array($this->input)) {
          // Call the plugin hook - $this->input can be altered
          // This hook get the data altered by the object method
-         Plugin::doHook("pre_item_add2", $this);
+         Plugin::doHook("post_prepareadd", $this);
       }
 
       if ($this->input && is_array($this->input)) {
