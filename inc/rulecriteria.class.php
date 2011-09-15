@@ -188,7 +188,7 @@ class RuleCriteria extends CommonDBChild {
 
       //If pattern is wildcard, don't check the rule and return true
       //or if the condition is "already present in GLPI" : will be processed later
-      if ($pattern == Rule::RULE_WILDCARD || $pattern == Rule::PATTERN_FIND) {
+      if ($pattern == Rule::RULE_WILDCARD || $condition == Rule::PATTERN_FIND) {
          return true;
       }
 
