@@ -665,7 +665,9 @@ class CommonDBTM extends CommonGLPI {
       if ($this->input && is_array($this->input)) {
          //Check values to inject
          $this->filterValues();
+      }
 
+      if ($this->input && is_array($this->input)) {
          $this->fields = array();
          $table_fields = $DB->list_fields($this->getTable());
 
