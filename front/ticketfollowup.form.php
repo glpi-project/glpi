@@ -37,8 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
-
 $fup = new TicketFollowup();
 
 if (isset($_POST["add"])) {
