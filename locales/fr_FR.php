@@ -1088,6 +1088,7 @@ $LANG['joblist'][36] = "Valeur du statut en base";
 
 
 $LANG['jobrecurrent'][1] = "Tickets récurrents";
+$LANG['jobrecurrent'][2] = "Création anticipée";
 
 
 $LANG['jobresolution'][1] = "Solution";
@@ -2044,8 +2045,8 @@ $LANG['search'][2]  = "contient";
 $LANG['search'][3]  = "sous";
 $LANG['search'][4]  = "trié par";
 
-$LANG['search'][8]  = "Date début";
-$LANG['search'][9]  = "Date fin";
+$LANG['search'][8]  = "Date de début";
+$LANG['search'][9]  = "Date de fin";
 
 $LANG['search'][11] = "Éléments visualisés";
 $LANG['search'][12] = "Spécifier une date de fin";

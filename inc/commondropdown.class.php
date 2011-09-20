@@ -186,6 +186,10 @@ abstract class CommonDropdown extends CommonDBTM {
                      $this->fields[$field['name']]."</textarea >";
                break;
 
+            case 'integer' : 
+               Dropdown::showInteger($field['name'], $this->fields[$field['name']]);
+               break;
+
             case 'parent' :
                if ($field['name']=='entities_id') {
                   $restrict = -1;
