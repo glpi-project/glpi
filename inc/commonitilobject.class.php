@@ -305,7 +305,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Count active ITIL Objects requested by a user
+    * Count active ITIL Objects requested by an user
     *
     * @since version 0.83
     *
@@ -332,6 +332,34 @@ abstract class CommonITILObject extends CommonDBTM {
                                                           )."')");
    }
 
+
+   /**
+    * Count active ITIL Objects assigned to an user
+    *
+    * @since version 0.83
+    *
+    * @param $users_id integer ID of the User
+    *
+    * @return integer
+   **/
+   function countActiveObjectsForTech ($users_id) {
+
+      $linkclass = new $this->userlinkclass();
+      $itemtable = $this->getTable();
+      $itemtype  = $this->getType();
+      $itemfk    = $this->getForeignKeyField();
+      $linktable = $linkclass->getTable();
+
+      return countElementsInTable(array($itemtable,$linktable),
+                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                    AND `$linktable`.`users_id` = '$users_id'
+                                    AND `$linktable`.`type` = '".self::ASSIGN."'
+                                    AND `$itemtable`.`status`
+                                       NOT IN ('".implode("', '",
+                                                          array_merge($this->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')");
+   }
 
    function cleanDBonPurge() {
 
@@ -1876,9 +1904,11 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
+      $itemtype = $this->getType();
+
       echo self::getActorIcon('user', $type);
-      /// For ticket templates : mandatories
-      if (isset($options['_tickettemplate'])) {
+      // For ticket templates : mandatories
+      if ($itemtype == 'Ticket' && isset($options['_tickettemplate'])) {
          echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
       }
       echo "&nbsp;";
@@ -1916,29 +1946,46 @@ abstract class CommonITILObject extends CommonDBTM {
                                      'moreparams'      => $paramscomment);
 
       }
-      //List all users in the active entities
+      // List all users in the active entities
       User::dropdown($params);
 
 
-      // display opened tickets for user
-      if ($this->getType() == 'Ticket'
-          && $type == self::REQUESTER
+      if ($itemtype == 'Ticket') {
+
+         // display opened tickets for user
+         if ($type == self::REQUESTER
           && $options["_users_id_".$typename] > 0) {
 
-         $options2['field'][0]      = 4; // users_id
-         $options2['searchtype'][0] = 'equals';
-         $options2['contains'][0]   = $options["_users_id_".$typename];
-         $options2['link'][0]       = 'AND';
+            $options2['field'][0]      = 4; // users_id
+            $options2['searchtype'][0] = 'equals';
+            $options2['contains'][0]   = $options["_users_id_".$typename];
+            $options2['link'][0]       = 'AND';
 
-         $options2['field'][1]      = 12; // status
-         $options2['searchtype'][1] = 'equals';
-         $options2['contains'][1]   = 'notold';
-         $options2['link'][1]       = 'AND';
+            $options2['field'][1]      = 12; // status
+            $options2['searchtype'][1] = 'equals';
+            $options2['contains'][1]   = 'notold';
+            $options2['link'][1]       = 'AND';
 
-         $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+            $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
-         echo "&nbsp;<a href='$url' title=\"".$LANG['job'][21]."\" target='_blank'>(".
-               $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
+            echo "&nbsp;<a href='$url' title=\"".$LANG['joblist'][21]."\" target='_blank'>(".
+                  $LANG['joblist'][21]."&nbsp;:&nbsp;".
+                  $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
+         }
+
+         // Display active tickets for a tech
+         // Need to update information on dropdown changes
+         if ($type == self::ASSIGN) {
+            Ajax::updateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,"actor_".$typename."_$rand",
+                                          $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                          array('users_id_assign' => '__VALUE__'));
+            echo "<span id='actor_".$typename."_$rand'>";
+            if ($options["_users_id_".$typename] > 0) {
+               $_REQUEST['users_id_assign'] = $options["_users_id_".$typename];
+               include_once GLPI_ROOT.'/ajax/ticketassigninformation.php';
+            }
+            echo "</span>";
+         }
       }
 
       if ($CFG_GLPI['use_mailing']) {
