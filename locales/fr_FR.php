@@ -844,8 +844,6 @@ $LANG['help'][8]  = "Informez-moi des suites données";
 
 $LANG['help'][14] = "Envoyer message";
 
-$LANG['help'][16] = "Vous voulez être informé des suites données mais vous n'avez pas saisi d'adresse de messagerie.";
-
 $LANG['help'][18] = "Votre demande a bien été enregistrée, son traitement est en cours.";
 $LANG['help'][19] = "Merci d'avoir utilisé notre système d'assistance.";
 
@@ -1020,7 +1018,6 @@ $LANG['job'][35] = "Planification";
 $LANG['job'][36] = "ticket(s) en cours ou résolu(s) récemment sur cet élément.";
 $LANG['job'][37] = "Résumé";
 $LANG['job'][38] = "Ticket";
-$LANG['job'][39] = "Modifier un suivi";
 $LANG['job'][40] = "Coût horaire";
 $LANG['job'][41] = "Coût fixe";
 $LANG['job'][42] = "Coût matériel";
@@ -1212,8 +1209,6 @@ $LANG['log'][32]  = "ajout lien avec un élément";
 $LANG['log'][33]  = "suppression lien avec un élément";
 $LANG['log'][34]  = "ajout lien avec fournisseur";
 $LANG['log'][35]  = "suppression lien avec fournisseur";
-$LANG['log'][36]  = "suppression d'un courriel";
-$LANG['log'][37]  = "ajout d'un courriel";
 
 $LANG['log'][40]  = "connexion de l'IP";
 $LANG['log'][41]  = "échec de connexion";
@@ -1672,7 +1667,6 @@ $LANG['phones'][39] = "Haut parleur";
 $LANG['phones'][40] = "Nombre de lignes";
 
 
-$LANG['planning'][0] = "Le technicien demandé a déjà une intervention prévue pour cette plage.";
 $LANG['planning'][1] = "Erreur dans l'entrée de vos dates. La date de début est sûrement supérieure à la date de fin";
 $LANG['planning'][2] = "L'utilisateur est déjà occupé pour la période utilisée :";
 $LANG['planning'][3] = "Durée";
