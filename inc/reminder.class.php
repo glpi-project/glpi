@@ -462,8 +462,10 @@ class Reminder extends CommonDBTM {
                }
                $interv[$data["begin"]."$$".$i]["name"]       = Html::resume_text($data["name"],
                                                                                  $CFG_GLPI["cut"]);
-               $interv[$data["begin"]."$$".$i]["text"]       = Html::resume_text($data["text"],
-                                                                                 $CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["text"]       =
+                           Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
+                                                            $CFG_GLPI["cut"]);
+
                $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
                $interv[$data["begin"]."$$".$i]["is_private"] = $data["is_private"];
                $interv[$data["begin"]."$$".$i]["state"]      = $data["state"];
@@ -744,7 +746,8 @@ class Reminder extends CommonDBTM {
             $tabremind[$sort."$$".$i]["end"]          = ($data["is_planned"]?"".$data["end"]."":"");
             $tabremind[$sort."$$".$i]["name"]         = Html::resume_text($remind->fields["name"],
                                                                           $CFG_GLPI["cut"]);
-            $tabremind[$sort."$$".$i]["text"]         = Html::resume_text($remind->fields["text"],
+
+            $tabremind[$sort."$$".$i]["text"]         =Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($remind->fields["name"])),
                                                                           $CFG_GLPI["cut"]);
          }
       }
@@ -778,7 +781,7 @@ class Reminder extends CommonDBTM {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                   $val["reminders_id"]."'>".$val["name"]."</a>";
             echo "<div class='kb_resume'>";
-            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($val["text"])),125);
+            echo $val['text'];
             echo "</div></td>";
 
             if ($val["end"]!="") {
