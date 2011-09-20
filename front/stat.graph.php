@@ -290,54 +290,6 @@ echo "</td></tr>";
 echo "</table></div>";
 
 
-/*
-///////// Stats nombre intervention
-// Total des interventions
-$entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-// Total des interventions résolues
-$entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-// Total des interventions closes
-$entrees_closed = Stat::constructEntryValues("inter_closed",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-//Temps moyen de resolution d'intervention
-$entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-//Temps moyen de cloture d'intervention
-$entrees_avgclosedtime = Stat::constructEntryValues("inter_avgclosedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-//Temps moyen d'intervention reel
-$entrees_avgactiontime = Stat::constructEntryValues("inter_avgactiontime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-//Temps moyen de prise en compte de l'intervention
-$entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-
-
-Stat::showGraph(array($LANG['job'][14] => $entrees_total,
-                     $LANG['job'][15]  => $entrees_solved,
-                     $LANG['job'][16]  => $entrees_closed),
-               array('title'=>$LANG['stats'][13],
-                     'showtotal' => 1,
-                     'unit'      => $LANG['stats'][35]));
-
-// Pass to hour values
-foreach ($entrees_avgclosedtime as $key => $val) {
-   $entrees_avgclosedtime[$key]/=HOUR_TIMESTAMP;
-}
-foreach ($entrees_avgsolvedtime as $key => $val) {
-   $entrees_avgsolvedtime[$key]/=HOUR_TIMESTAMP;
-}
-foreach ($entrees_avgtaketime as $key => $val) {
-   $entrees_avgtaketime[$key]/=HOUR_TIMESTAMP;
-}
-foreach ($entrees_avgactiontime as $key => $val) {
-   $entrees_avgactiontime[$key]/=HOUR_TIMESTAMP;
-}
-
-Stat::showGraph(array($LANG['stats'][10] => $entrees_avgclosedtime,
-                        $LANG['stats'][9] => $entrees_avgsolvedtime,
-                        $LANG['stats'][12]  => $entrees_avgtaketime,
-                        $LANG['stats'][14]  => $entrees_avgactiontime),
-               array('title'   => $LANG['stats'][8],
-                     'unit'     => $LANG['job'][21],
-                     'showtotal' => 1,
-                     'datatype' => 'average'));
-*/
 
 
 $show_all = false;
