@@ -59,12 +59,12 @@ class TicketRecurrent extends CommonDropdown {
 
 
    function canCreate() {
-      return Session::haveRight('show_all_ticket', 1);
+      return Session::haveRight('ticketrecurrent', 'w');
    }
 
 
    function canView() {
-      return Session::haveRight('show_all_ticket', 1);
+      return Session::haveRight('ticketrecurrent', 'r');
    }
 
 
@@ -75,8 +75,7 @@ class TicketRecurrent extends CommonDropdown {
          case 'TicketRecurrent' :
             switch ($tabnum) {
                case 1 :
-                  // TODO showStats est une fonction de ticket.class sans paramètre
-                  $item->showStats($item);
+                  $item->showInfos();
                   return true;
             }
             break;
@@ -169,7 +168,10 @@ class TicketRecurrent extends CommonDropdown {
       return $tab;
    }
 
+   function showInfos () {
 
+      print_r($this);
+   }
 
 }
 ?>
