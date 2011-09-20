@@ -522,9 +522,10 @@ class TicketTask  extends CommonDBTM {
       echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='5'>".
            "<textarea name='content' cols='50' rows='6'>".$this->fields["content"]."</textarea></td>";
-      if ($this->fields["date"]) {
+      if ($ID) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
-         echo "<td>".convDateTime($this->fields["date"]);
+         echo "<td>";
+         showDateTimeFormItem("date", $this->fields["date"], 1, false);
       } else {
          echo "<td colspan='2'>&nbsp;";
       }
