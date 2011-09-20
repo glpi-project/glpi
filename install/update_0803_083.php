@@ -50,9 +50,10 @@ function update0803to083() {
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks',
-                          'glpi_groups_problems', 'glpi_items_problems', 'glpi_problems',
+                          'glpi_changetasks', 'glpi_entities_reminders', 'glpi_groups_problems',
+                          'glpi_groups_reminders', 'glpi_items_problems', 'glpi_problems',
                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
+                          'glpi_profiles_reminders', 'glpi_reminders_users',
                           'glpi_ticketrecurrents',
                           'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
                           'glpi_tickettemplatemandatoryfields',
@@ -1259,6 +1260,102 @@ function update0803to083() {
 
    // New index for count on tab
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
+
+
+   $migration->displayMessage($LANG['update'][142] . ' - Create new default profiles');
+
+   $profiles = array('hotliner' => array('name'                      => 'hotliner',
+                                         'interface'                 => 'central',
+                                         'user'                      => 'r',
+                                         'import_externalauth_users' => 'w',
+                                         'create_ticket'             => '1',
+                                         'assign_ticket'             => '1',
+                                         'global_add_followups'      => '1',
+                                         'update_ticket'             => '1',
+                                         'show_all_ticket'           => '1',
+                                         'show_full_ticket'          => '1',
+                                         'show_planning'             => '1',
+                                         'show_group_planning'       => '1',
+                                         'show_all_planning'         => '1',
+                                         'statistic'                 => '1',
+                                         'password_update'           => '1',
+                                         'helpdesk_hardware'         => '3',
+                                         'helpdesk_item_type'        => addslashes('["Computer","Software","Phone"]'),
+                                         'show_group_ticket'         => '1',
+                                         'create_validation'         => '1',
+                                         'update_own_followups'      => '1',
+                                         'create_ticket_on_login'    => '1',),
+
+                                 );
+
+   foreach ($profiles as $profile => $data) {
+      $query  = "INSERT INTO `glpi_profiles` (`".implode("`, `",array_keys($data))."`)
+                  VALUES ('".implode("', '",$data)."')";
+      $DB->query($query)
+      or die("0.83 create new profile $profile " . $LANG['update'][90] . $DB->error());
+   }
+
+   $migration->displayMessage($LANG['update'][142] . ' - Reminder visibility');
+
+   if (!TableExists('glpi_reminders_users')) {
+      $query = "CREATE TABLE `glpi_reminders_users` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `reminders_id` (`reminders_id`),
+                  KEY `users_id` (`users_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_reminders_users ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_groups_reminders')) {
+      $query = "CREATE TABLE `glpi_groups_reminders` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int(11) NOT NULL DEFAULT '0',
+                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `reminders_id` (`reminders_id`),
+                  KEY `groups_id` (`groups_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_groups_reminders ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_profiles_reminders')) {
+      $query = "CREATE TABLE `glpi_profiles_reminders` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int(11) NOT NULL DEFAULT '0',
+                  `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `reminders_id` (`reminders_id`),
+                  KEY `profiles_id` (`profiles_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_profiles_reminders ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_entities_reminders')) {
+      $query = "CREATE TABLE `glpi_entities_reminders` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `reminders_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `reminders_id` (`reminders_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_entities_reminders ".$LANG['update'][90].$DB->error());
+   }
+   /// TODO migrate datas for entities + drop fields : is_private / entities_id / is_recursive
+   /// TODO migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

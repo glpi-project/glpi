@@ -74,35 +74,5 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->show();
 
-
-   $profiles = array('hotliner' => array('name'                      => 'hotliner',
-                                         'interface'                 => 'central',
-                                         'user'                      => 'r',
-                                         'import_externalauth_users' => 'w',
-                                         'create_ticket'             => '1',
-                                         'assign_ticket'             => '1',
-                                         'global_add_followups'      => '1',
-                                         'update_ticket'             => '1',
-                                         'show_all_ticket'           => '1',
-                                         'show_full_ticket'          => '1',
-                                         'show_planning'             => '1',
-                                         'show_group_planning'       => '1',
-                                         'show_all_planning'         => '1',
-                                         'statistic'                 => '1',
-                                         'password_update'           => '1',
-                                         'helpdesk_hardware'         => '3',
-                                         'helpdesk_item_type'        => addslashes('["Computer","Software","Phone"]'),
-                                         'show_group_ticket'         => '1',
-                                         'create_validation'         => '1',
-                                         'update_own_followups'      => '1',
-                                         'create_ticket_on_login'    => '1',),
-
-                                 );
-   foreach ($profiles as $profile => $data) {
-      $query  = "INSERT INTO `glpi_profiles` (`".implode("`, `",array_keys($data))."`)
-                  VALUES ('".implode("', '",$data)."')";
-      echo $query;
-   }
-
 Html::footer();
 ?>
