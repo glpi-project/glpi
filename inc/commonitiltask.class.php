@@ -790,9 +790,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td class='center middle' rowspan='$rowspan'>".
            "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
            "</textarea></td>";
-      if ($this->fields["date"]) {
+      if ($ID > 0) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
-         echo "<td>".Html::convDateTime($this->fields["date"]);
+         echo "<td>";
+         Html::showDateTimeFormItem("date", $this->fields["date"], 1, false);
       } else {
          echo "<td colspan='2'>&nbsp;";
       }
