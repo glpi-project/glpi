@@ -231,9 +231,9 @@ class Reminder extends CommonDBTM {
 
       $canedit = $this->can($ID,'w');
 
-       if ($canedit) {
+      if ($canedit) {
           Html::initEditorSystem('text');
-       }
+      }
 
       $this->showTabs($options);
 
