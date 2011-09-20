@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+Session::checkLoginUser();
+
 $fup = new TicketFollowup();
 
 if (isset($_POST["add"])) {
