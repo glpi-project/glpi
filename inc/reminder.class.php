@@ -121,20 +121,6 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if (isset($input['is_helpdesk_visible'])
-          && $input['is_helpdesk_visible']
-          && (!isset($input['is_private']) || $input['is_private'])) {
-         unset($input['is_helpdesk_visible']);
-      }
-
-      if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
-
-         if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
-            unset($input['is_recursive']);
-            Session::addMessageAfterRedirect($LANG['common'][75], false, ERROR);
-         }
-      }
-
       // set new date.
       $input["date"] = $_SESSION["glpi_currenttime"];
 
@@ -167,20 +153,6 @@ class Reminder extends CommonDBTM {
 
          } else {
             Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
-         }
-      }
-
-      if (isset($input['is_helpdesk_visible'])
-          && $input['is_helpdesk_visible']
-          && (!isset($input['is_private']) || $input['is_private'])) {
-         unset($input['is_helpdesk_visible']);
-      }
-
-      if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
-
-         if (!Session::haveRecursiveAccessToEntity($input["entities_id"])) {
-            unset($input['is_recursive']);
-            Session::addMessageAfterRedirect($LANG['common'][75], false, ERROR);
          }
       }
 
@@ -416,14 +388,14 @@ class Reminder extends CommonDBTM {
       $readpub = $readpriv="";
 
       // See public reminder ?
-      if (Session::haveRight("reminder_public","r")) {
-         $readpub = "(`is_private` = 0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
-                                                                   true).")";
-      }
+//       if (Session::haveRight("reminder_public","r")) {
+//          $readpub = "(`is_private` = 0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
+//                                                                    true).")";
+//       }
 
       // See my private reminder ?
       if ($who_group=="mine" || $who===Session::getLoginUserID()) {
-         $readpriv = "(`is_private` = 1 AND `users_id` = '".Session::getLoginUserID()."')";
+         $readpriv = "(`users_id` = '".Session::getLoginUserID()."')";
       }
 
       if ($readpub && $readpriv) {
@@ -467,7 +439,9 @@ class Reminder extends CommonDBTM {
                                                             $CFG_GLPI["cut"]);
 
                $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
-               $interv[$data["begin"]."$$".$i]["is_private"] = $data["is_private"];
+               /// TODO : check visibility to know if it is private : useful ?
+               $interv[$data["begin"]."$$".$i]["is_private"] = false;
+//               $interv[$data["begin"]."$$".$i]["is_private"] = $data["is_private"];
                $interv[$data["begin"]."$$".$i]["state"]      = $data["state"];
             }
          }
@@ -558,14 +532,12 @@ class Reminder extends CommonDBTM {
    static function showListForCentral($entity = -1, $parent = false) {
       global $DB, $CFG_GLPI, $LANG;
 
+      /// TODO 
+      echo "TO COMPLETLY REVIEW : DISPLAY notes created by me AND publics ones";
+
       // show reminder that are not planned
       $users_id = Session::getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];
-
-      $is_helpdesk_visible = '';
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-          $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1 ";
-      }
 
       $restrict_visibility = " AND (`begin_view_date` IS NULL
                                     OR `begin_view_date` < '$today')
@@ -576,7 +548,7 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `users_id` = '$users_id'
-                         AND `is_private` = '1'
+                         -- AND `is_private` = '1'
                          AND (`end` >= '$today'
                               OR `is_planned` = '0')
                          $restrict_visibility
@@ -589,10 +561,9 @@ class Reminder extends CommonDBTM {
          $query = "SELECT *
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
-                         $is_helpdesk_visible
-                         $restrict_visibility".
-                         getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
-                   ORDER BY `name`";
+                         $restrict_visibility ORDER BY `name`";
+//                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
+//                    ORDER BY `name`";
 
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
@@ -610,7 +581,6 @@ class Reminder extends CommonDBTM {
                    FROM `glpi_reminders`
                    WHERE `is_private` = '0'
                          AND `is_recursive` = '1'
-                         $is_helpdesk_visible
                          $restrict_visibility".
                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
                    ORDER BY `name`";
