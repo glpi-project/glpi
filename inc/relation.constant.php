@@ -481,7 +481,7 @@ $RELATION = array("glpi_authldaps"
                   "glpi_ticketemplates"
                         => array('glpi_itilcategories'      => array('tickettemplates_id_incident',
                                                                      'tickettemplates_id_demand'),
-                                 'glpi_ticketrecurrents'    => 'tickettemplates_id'
+                                 'glpi_ticketrecurrents'    => 'tickettemplates_id',
                                  'glpi_tickettemplatehiddenfields'
                                                             => 'tickettemplates_id',
                                  'glpi_tickettemplatepredefinedfields'
