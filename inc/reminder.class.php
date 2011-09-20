@@ -215,7 +215,7 @@ class Reminder extends CommonDBTM {
     * @param $options array
     *     - target filename : where to go when done.
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Show Reminder or blank form
@@ -231,14 +231,15 @@ class Reminder extends CommonDBTM {
 
       $canedit = $this->can($ID,'w');
 
-//       if ($canedit) {
-//          echo "<form method='post' name='remind' action='".$this->getFormURL()."'>";
-//       }
+       if ($canedit) {
+//          Html::initEditorSystem('text');
+       }
 
       $this->showTabs($options);
 
 //      echo "<div class='center'><table class='tab_cadre' width='450'>";
       $this->showFormHeader($options);
+
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
@@ -255,6 +256,9 @@ class Reminder extends CommonDBTM {
       echo "<td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo getUserName($this->fields["users_id"]);
+      if (!$ID) {
+      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+      }
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
@@ -412,13 +416,13 @@ class Reminder extends CommonDBTM {
 
       // See public reminder ?
       if (Session::haveRight("reminder_public","r")) {
-         $readpub = "(is_private=0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
+         $readpub = "(`is_private` = 0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
                                                                    true).")";
       }
 
       // See my private reminder ?
       if ($who_group=="mine" || $who===Session::getLoginUserID()) {
-         $readpriv = "(is_private=1 AND users_id='".Session::getLoginUserID()."')";
+         $readpriv = "(`is_private` = 1 AND `users_id` = '".Session::getLoginUserID()."')";
       }
 
       if ($readpub && $readpriv) {
