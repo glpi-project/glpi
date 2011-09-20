@@ -373,6 +373,7 @@ $LANG['common'][111] = "Matériels utilisés";
 $LANG['common'][112] = "Matériels gérés";
 $LANG['common'][113] = "Visibilité";
 $LANG['common'][114] = "TAG ID";
+$LANG['common'][115] = "Periodicité";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -1089,6 +1090,8 @@ $LANG['joblist'][36] = "Valeur du statut en base";
 
 $LANG['jobrecurrent'][1] = "Tickets récurrents";
 $LANG['jobrecurrent'][2] = "Création anticipée";
+$LANG['jobrecurrent'][3] = "Prochaine création";
+$LANG['jobrecurrent'][4] = "Périodicité invalide. Elle doit être supérieure à la création anticipée.";
 
 
 $LANG['jobresolution'][1] = "Solution";

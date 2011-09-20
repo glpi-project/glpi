@@ -109,6 +109,23 @@ class TicketRecurrent extends CommonDropdown {
       return $ong;
    }
 
+   function prepareInputForAdd($input) {
+      $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
+                                                                    $input['periodicity'],
+                                                                    $input['create_before']);
+      return $input;
+   }
+
+   function prepareInputForUpdate($input) {
+      if (isset($input['begin_date']) && isset($input['periodicity'])
+         && isset($input['create_before'])) {
+         $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
+                                                                    $input['periodicity'],
+                                                                    $input['create_before']);
+      }
+      return $input;
+   }
+
    /**
     * Return Additional Fileds for this type
    **/
@@ -126,11 +143,17 @@ class TicketRecurrent extends CommonDropdown {
                          'label' => $LANG['search'][8],
                          'type'  => 'datetime',
                          'list'  => false),
+                   array('name'  => 'periodicity',
+                         'label' => $LANG['common'][115],
+                         'type'  => 'timestamp',
+                         'min'   => DAY_TIMESTAMP,
+                         'step'  => DAY_TIMESTAMP,
+                         'max'   => 2*MONTH_TIMESTAMP),
                    array('name'  => 'create_before',
                          'label' => $LANG['jobrecurrent'][2],
-                         'type'  => 'integer',
-                         'unit'  => $LANG['gmt'][1],
-                         'list'  => true),);
+                         'type'  => 'timestamp',
+                         'max'   => 7*DAY_TIMESTAMP,
+                         'step'  => HOUR_TIMESTAMP),);
    }
 
 
@@ -159,18 +182,60 @@ class TicketRecurrent extends CommonDropdown {
       $tab[13]['name']     = $LANG['search'][8];
       $tab[13]['datatype'] = 'datetime';
 
+      $tab[15]['table']    = $this->getTable();
+      $tab[15]['field']    = 'periodicity';
+      $tab[15]['name']     = $LANG['common'][115];
+      $tab[15]['datatype'] = 'timestamp';
+
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'create_before';
       $tab[14]['name']     = $LANG['jobrecurrent'][2];
-      $tab[14]['datatype'] = 'integer';
-      $tab[14]['unit']     = '&nbsp;'.$LANG['gmt'][1];
+      $tab[14]['datatype'] = 'timestamp';
 
       return $tab;
    }
 
+   /**
+   * Show next creation date
+   *
+   * @return nothing only display
+   **/
    function showInfos () {
+      global $LANG;
 
-      print_r($this);
+      if (!is_null($this->fields['next_creation_date'])) {
+         echo "<div class='center'>";
+         echo $LANG['jobrecurrent'][3].'&nbsp;:&nbsp;';
+         echo Html::convDateTime($this->fields['next_creation_date']);
+         echo "</div>";
+
+      }
+   }
+
+   /**
+   * Compute next creation date of a ticket
+   *
+   * @param $begin_date datetime Begin date of the recurrent ticket
+   * @param $periodicity timestamp Periodicity of creation
+   * @param $create_before timestamp Create before specific timestamp
+   *
+   * @return datetime next creation date
+   **/
+   function computeNextCreationDate($begin_date, $periodicity, $create_before){
+      if ($create_before > $periodicity) {
+         Session::addMessageAfterRedirect($LANG['jobrecurrent'][4], false, ERROR);
+         return NULL;
+      }
+      if ($periodicity > 0) {
+         $timestart  = strtotime($begin_date) - $create_before;
+         $now = time();
+         if ($now > $timestart) {
+            $times = floor(($now-$timestart) / $periodicity);
+            return date("Y-m-d H:i:s",$timestart+($times+1)*$periodicity);
+         }
+      }
+
+      return NULL;
    }
 
 }

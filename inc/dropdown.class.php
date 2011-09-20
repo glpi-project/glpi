@@ -1009,7 +1009,7 @@ class Dropdown {
       $params['value']       = 0;
       $params['min']         = 0;
       $params['max']         = DAY_TIMESTAMP;
-      $params['withseconds'] = false;
+      $params['step']        = 15*MINUTE_TIMESTAMP;
       $params['emptylabel']  = self::EMPTY_VALUE;
 
       if (is_array($options) && count($options)) {
@@ -1019,22 +1019,29 @@ class Dropdown {
       }
 
       // Manage min :
-      $params['min'] = floor($params['min']/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+      $params['min'] = floor($params['min']/$params['step'])*$params['step'];
 
       if ($params['min'] == 0) {
-         $params['min'] = 15 * MINUTE_TIMESTAMP;
+         $params['min'] = $params['step'];
       }
 
       $params['max'] = max($params['value'], $params['max']);
 
       // Floor with MINUTE_TIMESTAMP for rounded purpose
-      $params['value'] = floor(($params['value'])/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+      $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
 
       $values = array(0  => $params['emptylabel']);
-      for ($i = $params['min'] ; $i <= $params['max']; $i+=15*MINUTE_TIMESTAMP) {
-         $hour       = floor($i/HOUR_TIMESTAMP);
+      for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
+         $day        = floor($i/DAY_TIMESTAMP);
+         $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
          $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
-         $values[$i] = $hour.$LANG['gmt'][2].($minute==0?'00':$minute);
+         $values[$i] = '';
+         if ($day > 0) {
+            $values[$i] = $day.'&nbsp;'.$LANG['calendar'][12].'&nbsp;';
+         }
+         if ($hour > 0 || $minute > 0) {
+            $values[$i] .= $hour.$LANG['gmt'][2].($minute==0?'':$minute);
+         }
       }
 
       return Dropdown::showFromArray("$myname", $values, array('value' => $params['value']));

@@ -190,6 +190,20 @@ abstract class CommonDropdown extends CommonDBTM {
                Dropdown::showInteger($field['name'], $this->fields[$field['name']]);
                break;
 
+            case 'timestamp' :
+               $param = array('value' => $this->fields[$field['name']]);
+               if (isset($field['min'])) {
+                  $param['min'] = $field['min'];
+               }
+               if (isset($field['max'])) {
+                  $param['max'] = $field['max'];
+               }
+               if (isset($field['step'])) {
+                  $param['step'] = $field['step'];
+               }
+               Dropdown::showTimeStamp($field['name'], $param);
+               break;
+
             case 'parent' :
                if ($field['name']=='entities_id') {
                   $restrict = -1;
