@@ -1501,7 +1501,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
       $query = "INSERT INTO `glpi_itilcategories`
                 VALUES (NULL, '$ID_entity', '1', '$newID', 'categorie $i', '',
-                        'comment categorie $i', '1', '0',
+                        'comment categorie $i', '2', '0',
                         '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
                         '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);

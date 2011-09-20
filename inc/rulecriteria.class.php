@@ -130,47 +130,49 @@ class RuleCriteria extends CommonDBChild {
     * @param $condition condition used
     * @param $initValue the pattern
    **/
-   function getValueToMatch($condition, &$initValue) {
-      global $LANG;
-
-      $type = $this->getType();
-
-      if (!empty($type)
-          && ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT)) {
-
-         switch ($this->getType()) {
-            case "dropdown" :
-               return Dropdown::getDropdownName($this->getTable(), $initValue);
-
-            case "dropdown_users" :
-               return getUserName($initValue);
-
-            case "dropdown_tracking_itemtype" :
-               if (class_exists($initValue)) {
-                  $item = new $initValue();
-                  return $item->getTypeName();
-               } else {
-                  if (empty($initValue)) {
-                     return $LANG['help'][30];
-                  }
-               }
-               break;
-
-            case "dropdown_urgency" :
-               return Ticket::getUrgencyName($initValue);
-
-            case "dropdown_impact" :
-               return Ticket::getImpactName($initValue);
-
-            case "dropdown_priority" :
-               return Ticket::getPriorityName($initValue);
-
-            case "dropdown_tickettype" :
-               return Ticket::getTicketTypeName($initValue);
-         }
-      }
-      return $initValue;
-   }
+/// TODO Delete : no more used
+//    function getValueToMatch($condition, &$initValue) {
+//       global $LANG;
+// 
+//       $type = $this->getType();
+// 
+//       if (!empty($type)
+//           && (!in_array($condition, array(Rule::PATTERN_IS,
+//                                           Rule::PATTERN_IS_NOT,
+//                                           Rule::PATTERN_UNDER,)))) {
+//          switch ($this->getType()) {
+//             case "dropdown" :
+//                return Dropdown::getDropdownName($this->getTable(), $initValue);
+// 
+//             case "dropdown_users" :
+//                return getUserName($initValue);
+// 
+//             case "dropdown_tracking_itemtype" :
+//                if (class_exists($initValue)) {
+//                   $item = new $initValue();
+//                   return $item->getTypeName();
+//                } else {
+//                   if (empty($initValue)) {
+//                      return $LANG['help'][30];
+//                   }
+//                }
+//                break;
+// 
+//             case "dropdown_urgency" :
+//                return Ticket::getUrgencyName($initValue);
+// 
+//             case "dropdown_impact" :
+//                return Ticket::getImpactName($initValue);
+// 
+//             case "dropdown_priority" :
+//                return Ticket::getPriorityName($initValue);
+// 
+//             case "dropdown_tickettype" :
+//                return Ticket::getTicketTypeName($initValue);
+//          }
+//       }
+//       return $initValue;
+//    }
 
 
    /**
@@ -234,6 +236,14 @@ class RuleCriteria extends CommonDBChild {
          case Rule::PATTERN_IS_NOT :
             if ($field != $pattern) {
                $criterias_results[$criteria] = $pattern;
+               return true;
+            }
+            return false;
+
+         case Rule::PATTERN_UNDER :
+            $table = getTableNameForForeignKeyField($criteria);
+            $values = getSonsOf($table, $pattern);
+            if (isset($values[$field])) {
                return true;
             }
             return false;
@@ -317,9 +327,9 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID, $itemtype) {
+   static function getConditionByID($ID, $itemtype, $criterion = '') {
 
-      $conditions = self::getConditions($itemtype);
+      $conditions = self::getConditions($itemtype, $criterion);
       if (isset($conditions[$ID])) {
          return $conditions[$ID];
       }
@@ -349,7 +359,18 @@ class RuleCriteria extends CommonDBChild {
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
       }
+      /// Add Under criteria if tree dropdown table used
+      $item = new $itemtype();
+      $crit = $item->getCriteria($criterion);
 
+      if (isset($crit['type']) && $crit['type'] == 'dropdown') {
+         $crititemtype = getItemtypeForTable($crit['table']);
+         $item = new $crititemtype();
+         if ($item instanceof CommonTreeDropdown) {
+            $criteria[Rule::PATTERN_UNDER] = $LANG['search'][3];
+         }
+      }
+      
       return $criteria;
    }
 

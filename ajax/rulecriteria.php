@@ -56,17 +56,13 @@ if (isset($_POST["sub_type"])) {
       if (!isset($_POST["criteria"])) {
          $_POST["criteria"] = key($criterias);
       }
-      $type = "";
-
-      if (isset($criterias[$_POST["criteria"]]['type'])) {
-         $type = $criterias[$_POST["criteria"]]['type'];
-      }
 
       if (isset($criterias[$_POST["criteria"]]['allow_condition'])) {
          $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'];
       } else {
          $allow_condition = array();
       }
+
       $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"],
                                                    array('criterion'        => $_POST["criteria"],
                                                          'allow_conditions' => $allow_condition));
