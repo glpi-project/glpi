@@ -1204,6 +1204,8 @@ function update0803to083() {
 
       $DB->query($query)
       or die("0.83 add table glpi_ticketrecurrents ".$LANG['update'][90].$DB->error());
+
+      $ADDTODISPLAYPREF['TickerRecurrent'] = array(11, 12, 13, 14);
    }
 
 
