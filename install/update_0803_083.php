@@ -1206,7 +1206,7 @@ function update0803to083() {
       $DB->query($query)
       or die("0.83 add table glpi_ticketrecurrents ".$LANG['update'][90].$DB->error());
 
-      $ADDTODISPLAYPREF['TickerRecurrent'] = array(11, 12, 13, 14, 15);
+      $ADDTODISPLAYPREF['TicketRecurrent'] = array(11, 12, 13, 15, 14);
    }
 
    $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
