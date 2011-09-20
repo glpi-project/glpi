@@ -1281,7 +1281,7 @@ class Ticket extends CommonITILObject {
          $fup->add($toadd);
       }
 
-      if (isset($this->input["plan"])
+      if ((isset($this->input["plan"]) && count($this->input["plan"]))
           || (isset($this->input["actiontime"])
               && $this->input["actiontime"]>0)) {
 
@@ -1294,7 +1294,7 @@ class Ticket extends CommonITILObject {
                         "tickets_id" => $this->fields['id'],
                         "actiontime" => $this->input["actiontime"]);
 
-         if (isset($this->input["plan"])) {
+         if (isset($this->input["plan"]) && count($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
          $toadd['_no_notif'] = true;
