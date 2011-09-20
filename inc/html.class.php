@@ -3236,11 +3236,16 @@ class Html {
     *
     * @param $val date / datetime value passed
     * @param $force_day bool force computation in days
+    * @param $specifictime timestamp set specific timestamp
     *
     * @return computed date / datetime value
     * @see showGenericDateTimeSearch
    **/
-   static function computeGenericDateTimeSearch($val, $force_day=false) {
+   static function computeGenericDateTimeSearch($val, $force_day=false, $specifictime='') {
+
+      if (empty($specifictime)) {
+         $specifictime = strtotime($_SESSION["glpi_currenttime"]);
+      }
 
       $format_use = "Y-m-d H:i:s";
       if ($force_day) {
@@ -3250,10 +3255,10 @@ class Html {
       // Parsing relative date
       switch ($val) {
          case 'NOW' :
-            return date($format_use);
+            return date($format_use, $specifictime);
 
          case 'TODAY' :
-            return date("Y-m-d");
+            return date("Y-m-d", $specifictime);
       }
 
       // Search on begin of month / year
@@ -3261,9 +3266,9 @@ class Html {
          $hour   = 0;
          $minute = 0;
          $second = 0;
-         $month  = date("n");
+         $month  = date("n", $specifictime);
          $day    = 1;
-         $year   = date("Y");
+         $year   = date("Y", $specifictime);
 
          switch ($val) {
                case "BEGINYEAR":
@@ -3298,12 +3303,12 @@ class Html {
                $nb = -$nb;
             }
             // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
-            $hour   = date("H");
-            $minute = date("i");
+            $hour   = date("H", $specifictime);
+            $minute = date("i", $specifictime);
             $second = 0;
-            $month  = date("n");
-            $day    = date("j");
-            $year   = date("Y");
+            $month  = date("n", $specifictime);
+            $day    = date("j", $specifictime);
+            $year   = date("Y", $specifictime);
 
             switch ($matches[3]) {
                case "YEAR" :

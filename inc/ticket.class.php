@@ -3064,8 +3064,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function showForm($ID, $options=array()) {
-      global $DB, $CFG_GLPI, $LANG;
+   static function getDefaultValues () {
 
       $users_id_requester = Session::getLoginUserID();
       // No default requester if own ticket right = tech and update_ticket right to update requester
@@ -3074,38 +3073,46 @@ class Ticket extends CommonITILObject {
       }
 
       // Set default values...
-      $default_values = array('_users_id_requester'       => $users_id_requester,
-                              '_users_id_requester_notif' => array('use_notification' => 1),
-                              '_groups_id_requester'      => 0,
-                              '_users_id_assign'          => 0,
-                              '_users_id_assign_notif'    => array('use_notification' => 1),
-                              '_groups_id_assign'         => 0,
-                              '_users_id_observer'        => 0,
-                              '_users_id_observer_notif'  => array('use_notification' => 1),
-                              '_groups_id_observer'       => 0,
-                              '_link'                     => array('tickets_id_2' => '',
-                                                                   'link'         => ''),
-                              'suppliers_id_assign'       => 0,
-                              'name'                      => '',
-                              'content'                   => '',
-                              'itilcategories_id'         => 0,
-                              'urgency'                   => 3,
-                              'impact'                    => 3,
-                              'priority'                  => self::computePriority(3, 3),
-                              'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
-                              'actiontime'                => 0,
-                              'date'                      => $_SESSION["glpi_currenttime"],
-                              'entities_id'               => $_SESSION["glpiactive_entity"],
-                              'status'                    => 'new',
-                              'followup'                  => array(),
-                              'itemtype'                  => '',
-                              'items_id'                  => 0,
-                              'plan'                      => array(),
-                              'global_validation'         => 'none',
-                              'due_date'                  => 'NULL',
-                              'slas_id'                   => 0,
-                              '_add_validation'           => 0,
-                              'type'                      => -1);
+      return  array('_users_id_requester'       => $users_id_requester,
+                    '_users_id_requester_notif' => array('use_notification' => 1),
+                    '_groups_id_requester'      => 0,
+                    '_users_id_assign'          => 0,
+                    '_users_id_assign_notif'    => array('use_notification' => 1),
+                    '_groups_id_assign'         => 0,
+                    '_users_id_observer'        => 0,
+                    '_users_id_observer_notif'  => array('use_notification' => 1),
+                    '_groups_id_observer'       => 0,
+                    '_link'                     => array('tickets_id_2' => '',
+                                                         'link'         => ''),
+                    'suppliers_id_assign'       => 0,
+                    'name'                      => '',
+                    'content'                   => '',
+                    'itilcategories_id'         => 0,
+                    'urgency'                   => 3,
+                    'impact'                    => 3,
+                    'priority'                  => self::computePriority(3, 3),
+                    'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
+                    'actiontime'                => 0,
+                    'date'                      => $_SESSION["glpi_currenttime"],
+                    'entities_id'               => $_SESSION["glpiactive_entity"],
+                    'status'                    => 'new',
+                    'followup'                  => array(),
+                    'itemtype'                  => '',
+                    'items_id'                  => 0,
+                    'plan'                      => array(),
+                    'global_validation'         => 'none',
+                    'due_date'                  => 'NULL',
+                    'slas_id'                   => 0,
+                    '_add_validation'           => 0,
+                    'type'                      => -1);
+
+
+   }
+
+   function showForm($ID, $options=array()) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $default_values = self::getDefaultValues();
 
       if (!isset($options['template_preview'])) {
          $values = $_REQUEST;

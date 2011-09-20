@@ -1209,6 +1209,18 @@ function update0803to083() {
       $ADDTODISPLAYPREF['TicketRecurrent'] = array(11, 12, 13, 15, 14);
    }
 
+
+   if (!countElementsInTable('glpi_crontasks', "`itemtype`='TicketRecurrent' AND `name`='ticketrecurrent'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('TicketRecurrent', 'ticketrecurrent', 3600, NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->query($query)
+      or die("0.83 populate glpi_crontasks for ticketrecurrent " . $LANG['update'][90] . $DB->error());
+   }
+
+
    $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
 
 

@@ -238,5 +238,86 @@ class TicketRecurrent extends CommonDropdown {
       return NULL;
    }
 
+   /**
+    * Give cron informations
+    *
+    * @param $name : task's name
+    *
+    * @return arrray of informations
+   **/
+   static function cronInfo($name) {
+      global $LANG;
+
+      switch ($name) {
+         case 'ticketrecurrent' :
+            return array('description' => $LANG['jobrecurrent'][1]);
+      }
+      return array();
+   }
+
+   /**
+    * Cron for ticket's automatic close
+    *
+    * @param $task : crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+   **/
+   static function cronTicketRecurrent($task) {
+      global $DB;
+
+      $tot = 0;
+
+      $query = "SELECT *
+                FROM `glpi_ticketrecurrents`
+                WHERE `glpi_ticketrecurrents`.`next_creation_date` < NOW()
+                  AND `glpi_ticketrecurrents`.`is_active` = 1";
+
+      foreach ($DB->request($query) as $data) {
+         $tot++;
+         self::createTicket($data);
+      }
+
+      $task->setVolume($tot);
+      return ($tot > 0);
+   }
+
+   /**
+    * Create a ticket based on ticket recurrent infos
+    *
+    * @param $data array data of a entry of glpi_ticketrecurrents
+    *
+    * @return nothing
+   **/
+   static function createTicket($data) {
+      $tt = new TicketTemplate();
+
+      // Create ticket based on ticket template and entity informations of ticketrecurrent
+      if ($tt->getFromDB($data['tickettemplates_id'])) {
+         // Get default values for ticket
+         $input = Ticket::getDefaultValues();
+         // Apply tickettemplates predefined values
+         $ttp              = new TicketTemplatePredefinedField();
+         $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
+
+         if (count($predefined)) {
+            foreach ($predefined as $predeffield => $predefvalue) {
+               $input[$predeffield] = $predefvalue;
+            }
+         }
+         // Set date to creation date
+         $createtime = strtotime($data['next_creation_date']) + $data['create_before'];
+         $input['date'] = date('Y-m-d H:i:s', $createtime);
+         // Compute due_date if predefined based on create date
+         if (isset($predefined['due_date'])) {
+            $input['due_date']
+                        = Html::computeGenericDateTimeSearch($predefined['due_date'], false,
+                                                             $createtime);
+         }
+         $ticket = new Ticket();
+         $ticket->add($input);
+      }
+
+      // Compute next creation date
+   }
 }
 ?>
