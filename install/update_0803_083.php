@@ -1186,6 +1186,7 @@ function update0803to083() {
       $query = "CREATE TABLE `glpi_ticketrecurrents` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `name` varchar( 255 ) NULL DEFAULT NULL,
+                  `comment` TEXT DEFAULT NULL,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,

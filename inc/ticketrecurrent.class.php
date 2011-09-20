@@ -110,6 +110,30 @@ class TicketRecurrent extends CommonDropdown {
       return $ong;
    }
 
+   /**
+    * Return Additional Fileds for this type
+   **/
+   function getAdditionalFields() {
+      global $LANG;
+      return array(array('name'  => 'is_active',
+                         'label' => $LANG['common'][60],
+                         'type'  => 'bool',
+                         'list'  => false),
+                   array('name'  => 'tickettemplates_id',
+                         'label' => $LANG['job'][58],
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                   array('name'  => 'begin_date',
+                         'label' => $LANG['search'][8],
+                         'type'  => 'datetime',
+                         'list'  => false),
+                   array('name'  => 'create_before',
+                         'label' => $LANG['jobrecurrent'][2],
+                         'type'  => 'integer',
+                         'unit'  => $LANG['gmt'][1],
+                         'list'  => true),);
+   }
+
 
    /**
     * Get search function for the class
@@ -117,8 +141,34 @@ class TicketRecurrent extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      return parent::getSearchOptions();
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'is_active';
+      $tab[11]['name']     = $LANG['common'][60];
+      $tab[11]['datatype'] = 'bool';
+
+      $tab[12]['table']    = 'glpi_tickettemplates';
+      $tab[12]['field']    = 'name';
+      $tab[12]['name']     = $LANG['job'][58];
+      $tab[12]['datatype'] = 'itemtypename';
+
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'begin_date';
+      $tab[13]['name']     = $LANG['search'][8];
+      $tab[13]['datatype'] = 'datetime';
+
+      $tab[14]['table']    = $this->getTable();
+      $tab[14]['field']    = 'create_before';
+      $tab[14]['name']     = $LANG['jobrecurrent'][2];
+      $tab[14]['datatype'] = 'integer';
+      $tab[14]['unit']     = '&nbsp;'.$LANG['gmt'][1];
+
+      return $tab;
    }
+
 
 
 }
