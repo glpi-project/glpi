@@ -232,12 +232,11 @@ class Reminder extends CommonDBTM {
       $canedit = $this->can($ID,'w');
 
        if ($canedit) {
-//          Html::initEditorSystem('text');
+          Html::initEditorSystem('text');
        }
 
       $this->showTabs($options);
 
-//      echo "<div class='center'><table class='tab_cadre' width='450'>";
       $this->showFormHeader($options);
 
 
@@ -372,7 +371,9 @@ class Reminder extends CommonDBTM {
       if ($canedit) {
          echo "<textarea cols='115' rows='15' name='text'>".$this->fields["text"]."</textarea>";
       } else {
-         echo nl2br($this->fields["text"]);
+         echo "<div  id='kbanswer'>";
+         echo Toolbox::unclean_cross_side_scripting_deep($this->fields["text"]);
+         echo "</div>";
       }
 
       echo "</td></tr>\n";
@@ -650,7 +651,8 @@ class Reminder extends CommonDBTM {
             echo "<a id='content_reminder_".$data["id"].$rand."'
                   href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".
                   $data["name"]."</a>&nbsp;";
-            Html::showToolTip($data["text"],
+
+            Html::showToolTip(Toolbox::unclean_cross_side_scripting_deep($data["text"]),
                               array('applyto' => "content_reminder_".$data["id"].$rand));
 
             if ($data["is_planned"]) {
@@ -775,7 +777,9 @@ class Reminder extends CommonDBTM {
             echo "<td width='60%' class='left'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
                   $val["reminders_id"]."'>".$val["name"]."</a>";
-            echo "<div class='kb_resume'>".Html::resume_text($val["text"], 125)."</div></td>";
+            echo "<div class='kb_resume'>";
+            echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($val["text"])),125);
+            echo "</div></td>";
 
             if ($val["end"]!="") {
                echo "<td class='center'>";
