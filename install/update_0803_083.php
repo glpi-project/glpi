@@ -1208,6 +1208,8 @@ function update0803to083() {
       $ADDTODISPLAYPREF['TickerRecurrent'] = array(11, 12, 13, 14);
    }
 
+   $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
+
 
    $migration->displayMessage($LANG['update'][142] . ' - various fields add');
 
