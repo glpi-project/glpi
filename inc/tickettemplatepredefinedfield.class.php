@@ -162,14 +162,14 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $canedit       = $tt->can($ID, "w");
 
       $ttp           = new self();
-      $used_fields   = $ttp->getPredefinedFields($ID);
+      $used_fields   = $ttp->getPredefinedFields($ID, true);
 
       $itemtype_used = '';
       if (isset($used_fields['itemtype'])) {
          $itemtype_used = $used_fields['itemtype'];
       }
 
-      $fields        = $tt->getAllowedFieldsNames(false, isset($used_fields['itemtype']));
+      $fields        = $tt->getAllowedFieldsNames(true, isset($used_fields['itemtype']));
       $searchOption  = Search::getOptions('Ticket');
       $ticket        = new Ticket();
       $rand          = mt_rand();
