@@ -94,7 +94,7 @@ class RuleRight extends Rule {
       echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
-      echo "<input type=hidden name='_method' value='addRule'>";
+      echo "<input type=hidden name='_method' value='AddRule'>";
       echo "<input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\" class='submit'>";
       echo "</td></tr>\n";
 

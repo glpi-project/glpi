@@ -103,9 +103,10 @@ if (isset($_POST["add"])) {
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
    Html::back();
 
-} else if (isset($_POST["execute"])) {
-   if (method_exists($dropdown, $_POST["_method"])) {
-      call_user_func(array(&$dropdown, $_POST["_method"]), $_POST);
+} else if (isset($_POST['execute']) && isset($_POST['_method'])) {
+   $method = 'execute'.$_POST['_method'];
+   if (method_exists($dropdown, $method)) {
+      call_user_func(array(&$dropdown, $method), $_POST);
       Html::back();
    } else {
       Html::displayErrorAndDie($LANG['common'][24]);

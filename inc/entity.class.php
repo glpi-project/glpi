@@ -447,7 +447,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   function addRule($input) {
+   function executeAddRule($input) {
       global $LANG;
 
       $this->check($_POST["affectentity"], 'w');

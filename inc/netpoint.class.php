@@ -94,7 +94,7 @@ class Netpoint extends CommonDropdown {
     * @param $input array of values
     *
     */
-   function addMulti ($input) {
+   function executeAddMulti ($input) {
       global $LANG;
 
       $this->check(-1,'w',$input);
@@ -367,7 +367,7 @@ class Netpoint extends CommonDropdown {
          echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<input type='hidden' name='_method' value='addMulti'></td>";
+         echo "<input type='hidden' name='_method' value='AddMulti'></td>";
          echo "<td><input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\"
                     class='submit'>";
          echo "</td></tr>\n";
