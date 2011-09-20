@@ -86,6 +86,7 @@ class Rule extends CommonDBTM {
    const PATTERN_EXISTS          = 8;
    const PATTERN_DOES_NOT_EXISTS = 9;
    const PATTERN_FIND            = 10;
+   const PATTERN_UNDER           = 11;
 
    const AND_MATCHING = "AND";
    const OR_MATCHING  = "OR";
@@ -1262,7 +1263,7 @@ class Rule extends CommonDBTM {
    function getMinimalCriteriaText($fields) {
 
       $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this))."</td>";
+      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"])."</td>";
       $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
                                                          $fields["pattern"]) . "</td>";
       return $text;
@@ -1304,7 +1305,9 @@ class Rule extends CommonDBTM {
           || $condition == self::PATTERN_FIND) {
           return $LANG['choice'][1];
 
-      } else if ($condition==self::PATTERN_IS || $condition==self::PATTERN_IS_NOT) {
+      } else if (in_array($condition, array(self::PATTERN_IS,
+                                            self::PATTERN_IS_NOT,
+                                            self::PATTERN_UNDER))) {
          $crit = $this->getCriteria($ID);
 
          if (isset($crit['type'])) {
@@ -1390,7 +1393,9 @@ class Rule extends CommonDBTM {
       $tested  = false;
 
       if (isset($crit['type'])
-          && ($test || $condition == self::PATTERN_IS || $condition == self::PATTERN_IS_NOT)) {
+          && ($test || in_array($condition, array(self::PATTERN_IS,
+                                                  self::PATTERN_IS_NOT,
+                                                  self::PATTERN_UNDER)))) {
 
          switch ($crit['type']) {
             case "yesonly" :
@@ -1529,7 +1534,9 @@ class Rule extends CommonDBTM {
    function getCriteriaValue($ID, $condition, $value) {
       global $LANG;
 
-      if ($condition!=self::PATTERN_IS && $condition!=self::PATTERN_IS_NOT) {
+      if (!in_array($condition, array(self::PATTERN_IS,
+                                      self::PATTERN_IS_NOT,
+                                      self::PATTERN_UNDER,))) {
          $crit = $this->getCriteria($ID);
          if (isset($crit['type'])) {
 
