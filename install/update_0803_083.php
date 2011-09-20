@@ -1354,8 +1354,63 @@ function update0803to083() {
       $DB->query($query)
       or die("0.83 add table glpi_entities_reminders ".$LANG['update'][90].$DB->error());
    }
-   /// TODO migrate datas for entities + drop fields : is_private / entities_id / is_recursive
-   /// TODO migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
+
+   /// Migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
+   if (FieldExists("glpi_reminders", 'is_helpdesk_visible')) {
+      $query = "SELECT `id`
+                FROM `glpi_reminders`
+                WHERE `is_helpdesk_visible` = 1";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            // Grab helpdesk profiles
+            $helpdesk_profiles = array();
+            foreach ($DB->request("glpi_profiles",
+                                 "`interface` = 'helpdesk'") as $data2) {
+               $helpdesk_profiles[$data2['id']] = $data2['id'];
+            }
+            if (count($helpdesk_profiles)) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  foreach ($helpdesk_profiles as $pid) {
+                     $query = "INSERT INTO `glpi_profiles_reminders`
+                                 (`reminders_id`,`profiles_id`)
+                                 VALUES ('".$data['id']."','$pid');";
+                     $DB->query($query)
+                      or die("0.83 migrate data for is_helpdesk_visible drop on glpi_reminders ".$LANG['update'][90].$DB->error());
+                  }
+               }
+            }
+         }
+      }
+
+      ///TODO  Drop is_helpdesk_visible field from glpi_reminders
+//       $migration->dropField("glpi_reminders", 'is_helpdesk_visible');
+
+   }
+
+   // Migrate datas for entities + drop fields : is_private / entities_id / is_recursive
+   if (FieldExists("glpi_reminders", 'is_private')) {
+
+      $query = "SELECT *
+                FROM `glpi_reminders`
+                WHERE `is_private` = 0";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "INSERT INTO `glpi_entities_reminders`
+                           (`reminders_id`,`entities_id`, `is_recursive`)
+                           VALUES ('".$data['id']."','".$data['entities_id']."','".$data['is_recursive']."');";
+               $DB->query($query)
+                  or die("0.83 migrate data for public reminders ".$LANG['update'][90].$DB->error());
+            }
+         }
+      }
+      ///TODO  Drop fields from glpi_reminders
+//       $migration->dropField("glpi_reminders", 'is_private');
+//       $migration->dropField("glpi_reminders", 'entities_id');
+//       $migration->dropField("glpi_reminders", 'is_recursive');
+   }
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
