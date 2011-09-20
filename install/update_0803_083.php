@@ -1192,6 +1192,7 @@ function update0803to083() {
                   `is_active` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   `tickettemplates_id` int(11) NOT NULL DEFAULT '0',
                   `begin_date` datetime DEFAULT NULL,
+                  `periodicity` int(11) NOT NULL DEFAULT '0',
                   `create_before` int(11) NOT NULL DEFAULT '0',
                   `next_creation_date` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
@@ -1205,7 +1206,7 @@ function update0803to083() {
       $DB->query($query)
       or die("0.83 add table glpi_ticketrecurrents ".$LANG['update'][90].$DB->error());
 
-      $ADDTODISPLAYPREF['TickerRecurrent'] = array(11, 12, 13, 14);
+      $ADDTODISPLAYPREF['TickerRecurrent'] = array(11, 12, 13, 14, 15);
    }
 
    $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
