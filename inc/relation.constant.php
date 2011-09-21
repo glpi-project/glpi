@@ -67,7 +67,9 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_computers' => 'computermodels_id'),
 
                   "glpi_computers"
-                        => array('glpi_computers_devicecases'         => 'computers_id',
+                        => array(
+/* can't autoload class 'glpi_computers_device.....' when purge
+                                 'glpi_computers_devicecases'         => 'computers_id',
                                  'glpi_computers_devicecontrols'      => 'computers_id',
                                  'glpi_computers_devicedrives'        => 'computers_id',
                                  'glpi_computers_devicegraphiccards'  => 'computers_id',
@@ -79,6 +81,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_computers_devicepowersupplies' => 'computers_id',
                                  'glpi_computers_deviceprocessors'    => 'computers_id',
                                  'glpi_computers_devicesoundcards'    => 'computers_id',
+*/
                                  'glpi_computers_items'               => 'computers_id',
                                  'glpi_computers_softwarelicenses'    => 'computers_id',
                                  'glpi_computers_softwareversions'    => 'computers_id',
