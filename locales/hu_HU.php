@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls nem létezik";
 $LANG['setup'][182]="Kilépéskori URL"; 
 $LANG['setup'][185]="Logok fájlba (SQL, email, automatikus műveletek..)"; 
 $LANG['setup'][186]="LDAP könyvtár időzónája"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 hitelesítő kulcs"; 
 $LANG['setup'][191]="e-mail attribútum x509 hitelesítéshez"; 
 $LANG['setup'][192]="Bekapcsolva"; 

@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls eksisterer ikke";
 $LANG['setup'][182]="URL ved udlogning"; 
 $LANG['setup'][185]="Log i filer (SQL, e-mail, automatisk hændelse...)"; 
 $LANG['setup'][186]="LDAP bibliotek tidszone"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 certifikat-godkendelse"; 
 $LANG['setup'][191]="e-mail-attribut for x509 godkendelse"; 
 $LANG['setup'][192]="Aktiveret"; 

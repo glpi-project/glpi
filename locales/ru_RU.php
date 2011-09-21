@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls не существует";
 $LANG['setup'][182]="URL перенаправления при выходе"; 
 $LANG['setup'][185]="Записывать в файлы (SQL, mail, автоматические действия...)"; 
 $LANG['setup'][186]="Часовой пояс LDAP"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 сертификат аутентификация"; 
 $LANG['setup'][191]="email атрибут для x509 аутентификации"; 
 $LANG['setup'][192]="Включен"; 

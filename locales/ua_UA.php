@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls не існує";
 $LANG['setup'][182]="Logout fallback URL"; // en_GB string to be translated
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)"; // en_GB string to be translated
 $LANG['setup'][186]="LDAP directory time zone"; // en_GB string to be translated
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 certificate authentication"; // en_GB string to be translated
 $LANG['setup'][191]="email атрибут для x509 аутентифікації"; 
 $LANG['setup'][192]="Активізований"; 

@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls موجود نیست";
 $LANG['setup'][182]="نشانی خروج پشتیبان"; 
 $LANG['setup'][185]="فایل های ثبت وقایع (SQL,email, اقدام خودکار ...)"; 
 $LANG['setup'][186]="منطقه زمانی فهرست LDAP"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="گواهی احراز هویت x509"; 
 $LANG['setup'][191]="ویژگی رایانامه برای احراز هویت x509"; 
 $LANG['setup'][192]="فعال شده"; 

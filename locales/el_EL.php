@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls δεν υπάρχει";
 $LANG['setup'][182]="Logout fallback URL"; 
 $LANG['setup'][185]="Καταγραφές σε αρχεία (SQL, mail, cron...)"; 
 $LANG['setup'][186]="Ζώνη ώρας καταλόγου LDAP"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="Επικύρωση πιστοποιητικού x509"; 
 $LANG['setup'][191]="ιδιότητα ηλκετρονικής αλληλογραφίας για πιστοποίηση x509"; 
 $LANG['setup'][192]="Ενεργός"; 

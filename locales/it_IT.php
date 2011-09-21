@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="La funzione ldap_start_tls non esiste";
 $LANG['setup'][182]="URL di destinazione alla disconnessione (logout)"; 
 $LANG['setup'][185]="Log in file distinti (SQL, e-mail, operazioni pianificare...)"; 
 $LANG['setup'][186]="Fuso orario directory LDAP"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="Certificato X.509"; 
 $LANG['setup'][191]="Attributo e-mail per autenticazione X.509"; 
 $LANG['setup'][192]="Attivato"; 

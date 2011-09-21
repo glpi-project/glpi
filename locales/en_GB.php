@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls does not exist";
 $LANG['setup'][182]="Logout fallback URL"; 
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)"; 
 $LANG['setup'][186]="LDAP directory time zone"; 
+$LANG['setup'][187]="GLPI server time zone"; 
 $LANG['setup'][190]="x509 certificate authentication"; 
 $LANG['setup'][191]="email attribute for x509 authentication"; 
 $LANG['setup'][192]="Enabled"; 

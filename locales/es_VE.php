@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="Función ldap_start_tls inexistente";
 $LANG['setup'][182]="Dirección URL después de desconexión"; 
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)"; 
 $LANG['setup'][186]="Huso horario"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="Certificado x509"; 
 $LANG['setup'][191]="Atributos de correo para x509"; 
 $LANG['setup'][192]="Activado"; 

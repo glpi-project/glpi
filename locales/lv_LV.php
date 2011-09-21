@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls neeksistē";
 $LANG['setup'][182]="Logout fallback URL"; // en_GB string to be translated
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)"; // en_GB string to be translated
 $LANG['setup'][186]="LDAP direktorijas laika zona"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 sertifikāta autentifikācija"; 
 $LANG['setup'][191]="E-pasta atribūts x509 autentifikācijai"; 
 $LANG['setup'][192]="Ieslēgts"; 

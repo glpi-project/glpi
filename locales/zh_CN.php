@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls不存在";
 $LANG['setup'][182]="注销后转向网址"; 
 $LANG['setup'][185]="日志文件（SQL,电子邮件，自动操作）"; 
 $LANG['setup'][186]="LDAP目录时区"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509证书"; 
 $LANG['setup'][191]="x509认证电子邮件属性"; 
 $LANG['setup'][192]="激活的"; 

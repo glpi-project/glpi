@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="Funció ldap_start_tls inexistent";
 $LANG['setup'][182]="URL de retorn al sortir de l'aplicació (logout)"; 
 $LANG['setup'][185]="Registres en arxius (SQL, correu, cron...)"; 
 $LANG['setup'][186]="Fus horari d'LDAP"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="Certificat x509"; 
 $LANG['setup'][191]="Atributs de correu per a l'autenticació x509"; 
 $LANG['setup'][192]="Activat"; 

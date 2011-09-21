@@ -1778,6 +1778,7 @@ $LANG['setup'][181]="ldap_start_tls neexistuje";
 $LANG['setup'][182]="Odhlásiť pri tlačítku späť"; 
 $LANG['setup'][185]="Logy v samostatných súboroch (SQL, mail, cron...)"; 
 $LANG['setup'][186]="Časová zóna LDAP adresára"; 
+$LANG['setup'][187]="GLPI server time zone"; // en_GB string to be translated
 $LANG['setup'][190]="x509 certifikát"; 
 $LANG['setup'][191]="e-mail stribút pre x509"; 
 $LANG['setup'][192]="Zapnuté"; 
