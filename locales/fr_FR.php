@@ -2060,6 +2060,7 @@ $LANG['setup'][182] = "Adresse web de retour à la déconnexion (logout)";
 
 $LANG['setup'][185] = "Traceurs dans fichiers (SQL, courriel, action automatique...)";
 $LANG['setup'][186] = "Fuseau horaire de l'annuaire LDAP";
+$LANG['setup'][187] = "Fuseau horaire du serveur GLPI";
 
 $LANG['setup'][190] = "Authentification par certificat x509";
 $LANG['setup'][191] = "Attribut adresse de messagerie pour authentification par certificat x509";

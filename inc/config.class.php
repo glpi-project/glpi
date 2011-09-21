@@ -412,7 +412,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['ldap'][45] . "&nbsp;:</td><td>";
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
-      echo "</td><td> " . $LANG['setup'][186] . "&nbsp;:</td><td>";
+      echo "</td><td> " . $LANG['setup'][187] . "&nbsp;:</td><td>";
       Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
       echo "</td></tr>";
 
