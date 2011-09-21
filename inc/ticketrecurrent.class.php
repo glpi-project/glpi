@@ -222,6 +222,8 @@ class TicketRecurrent extends CommonDropdown {
    * @return datetime next creation date
    **/
    function computeNextCreationDate($begin_date, $periodicity, $create_before){
+      global $LANG;
+
       if ($create_before > $periodicity) {
          Session::addMessageAfterRedirect($LANG['jobrecurrent'][4], false, ERROR);
          return NULL;
