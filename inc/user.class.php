@@ -893,10 +893,11 @@ class User extends CommonDBTM {
     * @param $ldap_method LDAP method
     * @param $userdn Basedn of the user
     * @param $login User Login
+    * @param $import boolean true for import, false for update
     *
-    * @return String : basedn of the user / false if not founded
+    * @return boolean : true if found / false if not founded
    **/
-   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login) {
+   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login, $import=true) {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...
@@ -1006,11 +1007,11 @@ class User extends CommonDBTM {
             $this->fields['_ruleright_process'] = true;
 
             //If rule  action is ignore import
-            if (isset($this->fields["_stop_import"])) {
+            if ($import && isset($this->fields["_stop_import"])) {
                return false;
             }
             //or no rights found & do not import users with no rights
-            if (!$CFG_GLPI["use_noright_users_add"]) {
+            if ($import && !$CFG_GLPI["use_noright_users_add"]) {
                $ok = false;
                if (isset($this->fields["_ldap_rules"]) && count($this->fields["_ldap_rules"])) {
                   if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])

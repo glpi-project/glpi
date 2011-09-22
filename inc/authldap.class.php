@@ -1577,8 +1577,10 @@ class AuthLDAP extends CommonDBTM {
             $login   = $infos[$config_ldap->fields['login_field']];
             $groups  = array();
             $user    = new User();
+
             //Get informations from LDAP
-            if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login))) {
+            if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
+                                   ($action == self::ACTION_IMPORT))) {
                // Add the auth method
                // Force date sync
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
@@ -1853,7 +1855,7 @@ class AuthLDAP extends CommonDBTM {
          $auth->extauth                  = 1;
          $auth->user_present             = $auth->user->getFromDBbyName(addslashes($login));
          $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
-                                  array('user_dn' => $user_dn));
+                                  !$auth->user_present);
          $auth->user->fields["authtype"] = Auth::LDAP;
          $auth->user->fields["auths_id"] = $ldap_method["id"];
       }
