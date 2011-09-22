@@ -43,15 +43,13 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0801to0803($output='HTML') {
+function update0801to0803() {
    global $DB, $LANG, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.80.3</h3>";
-   }
+   $migration->displayTitle($LANG['install'][4]." -> 0.80.3");
 
    $migration->changeField("glpi_fieldunicities", 'fields', 'fields', "text");
 
