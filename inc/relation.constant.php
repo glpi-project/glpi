@@ -111,13 +111,13 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_contracttypes"
                         => array('glpi_contracts'=>'contracttypes_id'),
-
+/*
                   "glpi_devicecases"
                         => array('glpi_computers_devicecases' => 'devicecases_id'),
-
+*/
                   "glpi_devicecasetypes"
                         => array('glpi_devicecases' => 'devicecasetypes_id'),
-
+/*
                   "glpi_devicecontrols"
                         => array('glpi_computers_devicecontrols' => 'devicecontrols_id'),
 
@@ -132,10 +132,10 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_devicememories"
                         => array('glpi_computers_devicememories' => 'devicememories_id'),
-
+*/
                   "glpi_devicememorytypes"
                         => array('glpi_devicememories' => 'devicememorytypes_id'),
-
+/*
                   "glpi_devicemotherboards"
                         => array('glpi_computers_devicemotherboards' => 'devicemotherboards_id'),
 
@@ -153,7 +153,7 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_devicesoundcards"
                         => array('glpi_computers_devicesoundcards' => 'devicesoundcards_id'),
-
+*/
                   "glpi_documentcategories"
                         => array('glpi_configs'   => 'documentcategories_id_forticket',
                                  'glpi_documents' => 'documentcategories_id'),
