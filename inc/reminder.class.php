@@ -532,8 +532,9 @@ class Reminder extends CommonDBTM {
    static function showListForCentral($entity = -1, $parent = false) {
       global $DB, $CFG_GLPI, $LANG;
 
-      /// TODO 
+      /// TODO
       echo "TO COMPLETLY REVIEW : DISPLAY notes created by me AND publics ones";
+      $is_helpdesk_visible = '';
 
       // show reminder that are not planned
       $users_id = Session::getLoginUserID();
