@@ -41,17 +41,14 @@ Html::header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
 
-   if (!class_exists($_POST['itemtype']) ) {
+   if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
 
    if (isset($_POST['sub_type'])) {
-      if (!class_exists($_POST['sub_type']) ) {
+      if (!($item = getItemForItemtype($_POST['sub_type']))) {
          exit();
       }
-      $item = new $_POST["sub_type"]();
-   } else {
-      $item = new $_POST["itemtype"]();
    }
 
    if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {

@@ -45,11 +45,10 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Security
-if (!isset($_POST['itemtype']) || !class_exists($_POST['itemtype'])) {
+if (!isset($_POST['itemtype']) || !($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
 
-$item = new $_POST['itemtype']();
 $item->getEmpty();
 $table = $item->getTable();
 // Security

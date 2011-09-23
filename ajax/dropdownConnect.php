@@ -44,10 +44,10 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-if (!class_exists($_POST['fromtype']) ) {
+if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromtype']))) {
    exit();
 }
-$fromitem = new $_POST['fromtype']();
+
 $fromitem->checkGlobal('w');
 
 if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["used"])) {

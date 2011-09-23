@@ -39,11 +39,9 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!isset($_POST["itemtype"]) || !class_exists($_POST["itemtype"])) {
+if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
-
-$item = new $_POST["itemtype"]();
 
 if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
    Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
