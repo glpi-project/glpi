@@ -173,37 +173,18 @@ class UserEmail  extends CommonDBChild {
       $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
 
       $count = 0;
-      /// Display default email
-      foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
-         if ($count) {
-            echo '<br>';
-         }
-         $count++;
-         echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
-                value='".$data['id']."' checked ".($canedit?'':'disabled').">&nbsp;";
-         if (!$canedit || $data['is_dynamic']) {
-            echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
-            echo $data['email']." (D)";
-         } else {
-            echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                   value='".$data['email']."' >";
-         }
-         if (!NotificationMail::isUserAddressValid($data['email'])) {
-            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-         }
-      }
 
-      // Display others email
+      // Display emails
       foreach ($DB->request("glpi_useremails",
-                            "`users_id` = '$users_id' AND `is_default` = '0'") as $data) {
+                            array('users_id' => $users_id, 'ORDER' => 'email')) as $data) {
          if ($count) {
             echo '<br>';
          }
          $count++;
 
          echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
-                value='".$data['id']."' ".($canedit?'':'disabled').">&nbsp;";
+                value='".$data['id']."'".
+                ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
          if (!$canedit || $data['is_dynamic']) {
             echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
             echo $data['email']." (D)";
