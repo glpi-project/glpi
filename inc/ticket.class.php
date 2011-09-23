@@ -3469,6 +3469,11 @@ class Ticket extends CommonITILObject {
          if (!$ID) {
             $opt['on_change'] = 'submit()';
          }
+         /// if categorie mandatory, no empty choice
+         if ($ID && $CFG_GLPI["is_ticket_category_mandatory"]) {
+            $opt['display_emptychoice'] = false;
+         }
+
          Dropdown::show('ITILCategory', $opt);
 
       } else {
