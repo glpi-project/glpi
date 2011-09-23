@@ -439,10 +439,9 @@ class Group extends CommonDBTM {
 
       $nb = 0;
       foreach ($types as $itemtype) {
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
          $item->getEmpty();
          if (!$item->isField($field)) {
             continue;

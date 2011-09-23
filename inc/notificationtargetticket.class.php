@@ -113,8 +113,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if ($this->obj) {
          $itemtype = $this->obj->getField('itemtype');
 
-         if ($itemtype != NOT_AVAILABLE && $itemtype != '' &&  class_exists($itemtype)) {
-            $item = new $itemtype();
+         if ($itemtype != NOT_AVAILABLE && $itemtype != '' &&  $item = getItemForItemtype($itemtype)) {
             $item->getFromDB($this->obj->getField('items_id'));
             $this->target_object = $item;
          }

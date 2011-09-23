@@ -50,10 +50,9 @@ for ($i = 0; $line = $DB->fetch_array($result); $i++) {
    $table = $line[0];
    $type = getItemTypeForTable($table);
 
-   if (class_exists($type)) {
+   if ($item = getItemForItemtype($type)) {
       //echo "+  $table > $type : Ok\n";
 
-      $item = new $type ();
       if (get_class($item) != $type) {
          echo "** $table > $type > " . get_class($item) . " incoherent get_class($type) ** \n";
       }

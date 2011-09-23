@@ -487,8 +487,7 @@ class CommonDBTM extends CommonGLPI {
 
                if (!is_array($field)) {
                   foreach ($DB->request($tablename, array($field => $this->fields['id'])) as $data) {
-                     if (class_exists($itemtype)) {
-                        $object   = new $itemtype();
+                     if ($object = getItemForItemtype($itemtype)) {
                         $object->update(array('id'   => $data['id'],
                                               $field => $newval));
                      }
@@ -496,8 +495,7 @@ class CommonDBTM extends CommonGLPI {
                } else {
                   foreach ($field as $f) {
                      foreach ($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
-                        if (class_exists($itemtype)) {
-                           $object   = new $itemtype();
+                        if ($object = getItemForItemtype($itemtype)) {
                            $object->update(array('id' => $data['id'],
                                                 $f   => $newval));
                         }
@@ -2860,8 +2858,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function getItemEntity($itemtype, $items_id) {
 
-      if ($itemtype && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype && $item = getItemForItemtype($itemtype)) {
 
          if ($item->getFromDB($items_id)) {
             return $item->getEntityID();
@@ -3022,8 +3019,7 @@ class CommonDBTM extends CommonGLPI {
                   return Profile::getRightValue($value);
 
                case "itemtypename" :
-                  if (class_exists($value)) {
-                     $obj = new $value();
+                  if ($obj = getItemForItemtype($value)) {
                      return $obj->getTypeName();
                   }
                   break;
@@ -3052,11 +3048,9 @@ class CommonDBTM extends CommonGLPI {
    static function listTemplates($itemtype, $target, $add = 0) {
       global $DB, $CFG_GLPI, $LANG;
 
-      if (!class_exists($itemtype)) {
+      if (!($item = getItemForItemtype($itemtype))) {
          return false;
       }
-
-      $item = new $itemtype;
 
       if (!$item->maybeTemplate()) {
          return false;

@@ -62,9 +62,7 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (class_exists($type)) {
-         $item = new $type();
-
+      if ($item = getItemForItemtype($type)) {
          if ($item->getFromDB($this->fields[$this->items_id]) && $item->isEntityAssign()) {
             return $item->getEntityID();
          }
@@ -87,8 +85,7 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (class_exists($type)) {
-         $item = new $type();
+      if ($item = getItemForItemtype($type)) {
          return $item->isEntityAssign();
       }
 
@@ -114,8 +111,7 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (class_exists($type)) {
-         $item = new $type();
+      if ($item = getItemForItemtype($type)) {
          return $item->maybeRecursive();
       }
 
@@ -141,9 +137,7 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (class_exists($type)) {
-         $item = new $type();
-
+      if ($item = getItemForItemtype($type)) {
          if ($item->getFromDB($this->fields[$this->items_id])) {
             return $item->isRecursive();
          }
@@ -170,11 +164,10 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (!class_exists($type)) {
+      if (!($item = getItemForItemtype($type))) {
          return false;
       }
 
-      $item = new $type();
       if (!$item->dohistory) {
          return false;
       }
@@ -204,11 +197,10 @@ abstract class CommonDBChild extends CommonDBTM {
          $type = $this->itemtype;
       }
 
-      if (!class_exists($type)) {
+      if (!($item = getItemForItemtype($type))) {
          return false;
       }
 
-      $item = new $type();
       if (!$item->dohistory) {
          return false;
       }

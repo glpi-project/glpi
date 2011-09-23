@@ -87,9 +87,7 @@ class State extends CommonTreeDropdown {
       $states     = array();
 
       foreach ($state_type as $key=>$itemtype) {
-         if (class_exists($itemtype)) {
-            $item = new $itemtype();
-
+         if ($item = getItemForItemtype($itemtype)) {
             if (!$item->canView()) {
                unset($state_type[$key]);
 
@@ -121,8 +119,7 @@ class State extends CommonTreeDropdown {
          echo "<th>".$LANG['state'][0]."</th>";
 
          foreach ($state_type as $key => $itemtype) {
-            if (class_exists($itemtype)) {
-               $item = new $itemtype();
+            if ($item = getItemForItemtype($itemtype)) {
                echo "<th>".$item->getTypeName()."</th>";
                $total[$itemtype] = 0;
             } else {

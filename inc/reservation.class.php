@@ -288,11 +288,10 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      if (!class_exists($ri->fields["itemtype"])) {
+      if (!($item = getItemForItemtype($ri->fields["itemtype"]))) {
          return false;
       }
 
-      $item = new $ri->fields["itemtype"]();
       if (!$item->getFromDB($ri->fields["items_id"])) {
          return false;
       }
@@ -379,8 +378,7 @@ class Reservation extends CommonDBChild {
          }
          $type = $m->fields["itemtype"];
          $name = NOT_AVAILABLE;
-         if (class_exists($m->fields["itemtype"])) {
-            $item = new $m->fields["itemtype"]();
+         if ($item = getItemForItemtype($m->fields["itemtype"])) {
             $type  =$item->getTypeName();
 
             if ($item->getFromDB($m->fields["items_id"])) {
@@ -601,8 +599,7 @@ class Reservation extends CommonDBChild {
          $name = NOT_AVAILABLE;
          $item = NULL;
 
-         if (class_exists($r->fields["itemtype"])) {
-            $item = new $r->fields["itemtype"]();
+         if ($item = getItemForItemtype($r->fields["itemtype"])) {
             $type = $item->getTypeName();
 
             if ($item->getFromDB($r->fields["items_id"])) {
@@ -714,10 +711,9 @@ class Reservation extends CommonDBChild {
             while ($data=$DB->fetch_array($result)) {
                $m->getFromDB($data['id']);
 
-               if (!class_exists($m->fields["itemtype"])) {
+               if (!($item = getItemForItemtype($m->fields["itemtype"]))) {
                   continue;
                }
-               $item = new $m->fields["itemtype"]();
 
                if ($item->getFromDB($m->fields["items_id"])
                   && Session::haveAccessToEntity($item->fields["entities_id"])) {
@@ -995,8 +991,7 @@ class Reservation extends CommonDBChild {
             if ($ri->getFromDB($data["reservationitems_id"])) {
                $link = "&nbsp;";
 
-               if (class_exists($ri->fields['itemtype'])) {
-                  $item = new $ri->fields['itemtype']();
+               if ($item = getItemForItemtype($ri->fields['itemtype'])) {
                   if ($item->getFromDB($ri->fields['items_id'])) {
                      $link = $item->getLink();
                   }
@@ -1051,8 +1046,7 @@ class Reservation extends CommonDBChild {
             if ($ri->getFromDB($data["reservationitems_id"])) {
                $link = "&nbsp;";
 
-               if (class_exists($ri->fields['itemtype'])) {
-                  $item = new $ri->fields['itemtype']();
+               if ($item = getItemForItemtype($ri->fields['itemtype'])) {
                   if ($item->getFromDB($ri->fields['items_id'])) {
                      $link=$item->getLink();
                   }

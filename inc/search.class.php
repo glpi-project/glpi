@@ -67,8 +67,8 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype != 'States') {
+         $item = getItemForItemtype($itemtype);
       }
 
 
@@ -783,7 +783,7 @@ class Search {
          }
          */
          if ($output_type==GLOBAL_SEARCH) {
-            if (class_exists($itemtype)) {
+            if ($item = getItemForItemtype) {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows>$p['start']+GLOBAL_SEARCH_DISPLAY_COUNT) {
@@ -1103,8 +1103,7 @@ class Search {
                }
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                   $typename = $data["TYPE"];
-                  if (class_exists($data["TYPE"])) {
-                     $itemtmp  = new $data["TYPE"]();
+                  if ($itemtmp = getItemForItemtype($data["TYPE"])) {
                      $typename = $itemtmp->getTypeName();
                   }
                   echo self::showItem($output_type, $typename, $item_num, $row_num);
@@ -1377,8 +1376,8 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype!='States'){
+         $item = getItemForItemtype($itemtype);
       }
 
       $linked =  self::getMetaItemtypeAvailable($itemtype);
@@ -1942,8 +1941,8 @@ class Search {
 
       $toview = array();
       $item   = NULL;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype!='States') {
+         $item = getItemForItemtype($itemtype);
       }
       // Add first element (name)
       array_push($toview, 1);
@@ -1973,8 +1972,8 @@ class Search {
       $itemtable = getTableForItemType($itemtype);
       $item      = NULL;
       $mayberecursive = false;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype!='States') {
+         $item = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
       $ret = "";
@@ -3997,8 +3996,7 @@ class Search {
             return CommonITILObject::getImpactName($data[$NAME.$num]);
 
          case 'glpi_tickets.items_id' :
-            if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {
-               $item = new $data[$NAME.$num."_2"]();
+            if (!empty($data[$NAME.$num."_2"]) && $item = getItemForItemtype($data[$NAME.$num."_2"])) {
                if ($item->getFromDB($data[$NAME.$num])) {
                   return $item->getLink(true);
                }
@@ -4252,8 +4250,7 @@ class Search {
                return Profile::getRightValue($data[$NAME.$num]);
 
             case "itemtypename":
-               if (class_exists($data[$NAME.$num])) {
-                  $obj = new $data[$NAME.$num]();
+               if ($obj = getItemForItemtype($data[$NAME.$num])) {
                   return $obj->getTypeName();
                }
                return "";
@@ -4611,8 +4608,7 @@ class Search {
             $search['States'][80]['field']     = 'completename';
             $search['States'][80]['name']      = $LANG['entity'][0];
 
-         } else if (class_exists($itemtype)) {
-            $item = new $itemtype();
+         } else if ($item = getItemForItemtype($itemtype)) {
             $search[$itemtype] = $item->getSearchOptions();
          }
 

@@ -104,11 +104,10 @@ abstract class CommonDBRelation extends CommonDBTM {
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
          $type1 = $input[$this->itemtype_1];
       }
-      if (!class_exists($type1)) {
+      if (!($item1 = getItemForItemtype($type1))) {
          return false;
       }
 
-      $item1 = new $type1();
       // Can create a relation with a dropdown/device (use it) without read right
       if (!($item1 instanceof CommonDropdown)
           && !$item1->can($input[$this->items_id_1],'r')) {
@@ -122,11 +121,10 @@ abstract class CommonDBRelation extends CommonDBTM {
          $type2 = $input[$this->itemtype_2];
       }
 
-      if (!class_exists($type2)) {
+      if (!($item2 = getItemForItemtype($type2))) {
          return false;
       }
 
-      $item2 = new $type2();
       if (!$this->checks_only_for_itemtype1
           && !($item2 instanceof CommonDropdown)) {
          if (!$item2->can($input[$this->items_id_2],'r')) {
@@ -208,11 +206,10 @@ abstract class CommonDBRelation extends CommonDBTM {
          $type1 = $this->fields[$this->itemtype_1];
       }
 
-      if (!class_exists($type1)) {
+      if (!($item1 = getItemForItemtype($type1))) {
          return false;
       }
 
-      $item1 = new $type1();
       if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
@@ -222,11 +219,10 @@ abstract class CommonDBRelation extends CommonDBTM {
          $type2 = $this->fields[$this->itemtype_2];
       }
 
-      if (!class_exists($type2)) {
+      if (!($item2 = getItemForItemtype($type2))) {
          return false;
       }
 
-      $item2 = new $type2();
       if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
          return false;
       }
@@ -266,11 +262,10 @@ abstract class CommonDBRelation extends CommonDBTM {
          $type1 = $this->fields[$this->itemtype_1];
       }
 
-      if (!class_exists($type1)) {
+      if (!($item1 = getItemForItemtype($type1))) {
          return false;
       }
 
-      $item1 = new $type1();
       if (!$item1->getFromDB($this->fields[$this->items_id_1])) {
          return false;
       }
@@ -281,11 +276,10 @@ abstract class CommonDBRelation extends CommonDBTM {
          $type2 = $this->fields[$this->itemtype_2];
       }
 
-      if (!class_exists($type2)) {
+      if (!($item2 = getItemForItemtype($type2))) {
          return false;
       }
 
-      $item2 = new $type2();
       if (!$item2->getFromDB($this->fields[$this->items_id_2])) {
          return false;
       }

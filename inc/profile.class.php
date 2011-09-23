@@ -557,9 +557,8 @@ class Profile extends CommonDBTM {
 
       foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
 
-         if (class_exists($itemtype)) {
+         if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
-               $item = new $itemtype();
                echo "<option value='".$itemtype."' ".
                      (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
                      $item->getTypeName()."</option>\n";
@@ -909,9 +908,8 @@ class Profile extends CommonDBTM {
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
       foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
-         if (class_exists($itemtype)) {
+         if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
-               $item = new $itemtype();
                echo "<option value='".$itemtype."' ".
                      (in_array($itemtype, $this->fields["helpdesk_item_type"])?" selected":"").">".
                      $item->getTypeName()."</option>\n";

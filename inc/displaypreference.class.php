@@ -214,8 +214,8 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $item = NULL;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype!='States') {
+         $item = getItemForItemtype($itemtype);
       }
 
       $IDuser = Session::getLoginUserID();
@@ -371,8 +371,8 @@ class DisplayPreference extends CommonDBTM {
       $IDuser = 0;
 
       $item = NULL;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($itemtype!='States') {
+         $item = getItemForItemtype($itemtype);
       }
 
       $global_write = Session::haveRight("search_config_global", "w");
@@ -538,8 +538,7 @@ class DisplayPreference extends CommonDBTM {
          foreach ($req as $data) {
             echo "<tr class='tab_bg_1'><td width='10'>";
             echo "<input  type='checkbox' name='itemtype[".$data["itemtype"]."]' value='1'></td>";
-            if (class_exists($data["itemtype"])) {
-               $item = new $data["itemtype"]();
+            if ($item = getItemForItemtype($data["itemtype"])) {
                $name = $item->getTypeName();
             } else {
                $name = $data["itemtype"];

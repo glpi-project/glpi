@@ -90,8 +90,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                $tomove[$data['id']] = $ID;
                $type = GetItemTypeForTable($this->item_table);
 
-               if (class_exists($type)) {
-                  $dropdown = new $type();
+               if ($dropdown = getItemForItemtype($type)) {
                   $dropdown->delete(array('id'          => $data['id'],
                                           '_replace_by' => $ID));
                }
@@ -246,9 +245,10 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                         $DB->query($sql);
                      }
                      // Add new assoc
-                     if (!class_exists('CartridgeItem')) {
+                     /// TODO delete autoload will do the job
+/*                     if (!class_exists('CartridgeItem')) {
                         include_once (GLPI_ROOT . "/inc/cartridgeitem.function.php");
-                     }
+                     }*/
                      $ct = new CartridgeItem();
                      foreach ($carttype as $cartID) {
                         foreach ($tab as $model) {

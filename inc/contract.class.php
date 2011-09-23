@@ -820,10 +820,9 @@ class Contract extends CommonDBTM {
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT `$itemtable`.*,
