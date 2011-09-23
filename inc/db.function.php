@@ -116,7 +116,6 @@ function getItemTypeForTable($table) {
       }
 
       $itemtype=$prefix.$table;
-
       // Get real existence of itemtype
       if (class_exists($itemtype)) {
          $item     = new $itemtype();
@@ -200,6 +199,9 @@ function getItemForItemtype($itemtype) {
 function getPlural($string) {
 
    $rules = array(//'singular' => 'plural'
+                  /// TODO : real singular is criterion and plural criteria. Need to update class / tables names
+                  'criterias$'   =>'criterias',// Special case (criterias) when getPLural is called on already plural form
+                  's$'           =>'ses',
                   's$'           =>'ses',
                   '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'ch$'          =>'ches',
@@ -231,9 +233,10 @@ function getSingular($string) {
                   'ches$'          => 'ch',
                   'shes$'          => 'sh',
                   'sses$'          => 'ss', // Case like addresses
+                  'cases$'          => 'case', // Case like cases
                   '([aeiou])ses$'  => '\1s', // Case like aliases
                   'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
-                  'ias$'           => 'ias', // Special case (aliases) when getSingular is called on already singular form
+                  'alias$'           => 'alias', // Special case (aliases) when getSingular is called on already singular form
                   'ies$'           => 'y', // special case : category
                   's$'             => ''); // Add at the end if not exists
 
