@@ -109,12 +109,13 @@ echo "</td>";
 echo "</tr>";
 echo "</table></form>";
 
-if (empty($_REQUEST["dropdown"]) || !class_exists($_REQUEST["dropdown"])) {
+if (empty($_REQUEST["dropdown"]) || !($item = getItemForItemtype($_REQUEST["dropdown"]))) {
    // Do nothing
    Html::footer();
    exit();
 }
-$item = new $_REQUEST["dropdown"]();
+
+
 if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";

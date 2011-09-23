@@ -70,8 +70,7 @@ if (isset($_GET["add"])) {
       $_GET["items_id"] = $ic->fields["items_id"];
    }
    $item = false;
-   if (isset($_GET["itemtype"]) && class_exists($_GET["itemtype"])) {
-      $item = new $_GET["itemtype"]();
+   if (isset($_GET["itemtype"]) && $item = getItemForItemtype($_GET["itemtype"])) {
       if (!isset($_GET["items_id"]) || !$item->getFromDB($_GET["items_id"])) {
          $item = false;
       }

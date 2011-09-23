@@ -93,8 +93,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST['id'], "networkport", 5, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][73]);
 
-   if (class_exists($np->fields['itemtype'])) {
-      $item = new $np->fields['itemtype']();
+   if ($item = getItemForItemtype($np->fields['itemtype'])) {
       Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");

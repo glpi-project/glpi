@@ -112,8 +112,7 @@ if (isset($_POST["add"])) {
    if (isset($_POST['item'])
        && ($_POST["field"]=='groups_id' || $_POST["field"]=='groups_id_tech' )) {
       foreach ($_POST['item'] as $type => $ids) {
-         if (class_exists($type)) {
-            $item = new $type();
+         if ($item = getItemForItemtype($type)) {
             foreach ($ids as $id => $val) {
                if ($val && $item->can($id,'w')) {
                   $item->update(array('id'            => $id,
