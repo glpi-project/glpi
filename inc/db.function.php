@@ -175,6 +175,21 @@ function getTableForItemType($itemtype) {
 }
 
 
+
+/**
+ * Get new item objet for an itemtype
+ *
+ * @param $itemtype string: itemtype
+ *
+ * @return itemtype object or false if class does not exists
+**/
+function getItemForItemtype($itemtype) {
+   if (class_exists($itemtype)) {
+      return new $itemtype();
+   }
+   return false;
+}
+
 /**
  * Return the plural of a string
  *
