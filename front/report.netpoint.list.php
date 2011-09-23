@@ -90,8 +90,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
          if ($networkports_id_1) {
             $np->getFromDB($networkports_id_1);
             $ordi = '';
-            if (class_exists($np->fields["itemtype"])) {
-               $item=new $np->fields["itemtype"]();
+            if ($item = getItemForItemtype($np->fields["itemtype"])) {
                if ($item->getFromDB($np->fields["items_id"])) {
                   $ordi = $item->getName();
                }

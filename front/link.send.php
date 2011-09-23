@@ -44,8 +44,7 @@ if (isset($_GET["lID"])) {
       $file = $DB->result($result,0,"data");
       $link = $DB->result($result,0,"link");
 
-      if (class_exists($_GET["itemtype"])) {
-         $item = new $_GET["itemtype"]();
+      if ($item = getItemForItemtype($_GET["itemtype"])) {
          if ($item->getFromDB($_GET["id"])) {
             $content_filename = Link::generateLinkContents($link, $item);
             $content_data     = Link::generateLinkContents($file, $item);
