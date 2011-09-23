@@ -48,10 +48,10 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 // Security
-if (!class_exists($_POST['itemtype']) ) {
+if (!($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
-$item  = new $_POST['itemtype']();
+
 $table = $item->getTable();
 
 $displaywith = false;
