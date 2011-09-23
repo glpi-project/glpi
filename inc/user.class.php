@@ -524,7 +524,7 @@ class User extends CommonDBTM {
    function post_addItem() {
       global $LANG;
 
-      // add emails
+      // add emails (use _useremails set from UI, not _emails set from LDAP)
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
          $useremail = new UserEmail();
          foreach ($this->input['_useremails'] as $id => $email) {
@@ -662,7 +662,7 @@ class User extends CommonDBTM {
 
    function post_updateItem($history=1) {
 
-      // Update emails
+      // Update emails  (use _useremails set from UI, not _emails set from LDAP)
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
          $useremail = new UserEmail();
          foreach ($this->input['_useremails'] as $id => $email) {
@@ -896,6 +896,9 @@ class User extends CommonDBTM {
 
    /**
     * Synchronise Dynamics emails of the user
+    *
+    * Use _emails (set from getFromLDAP), not _usermails set from UI
+    *
    **/
    function syncDynamicEmails() {
       global $DB;
@@ -926,10 +929,10 @@ class User extends CommonDBTM {
                $useremail = new UserEmail();
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {
-                     if (in_array($data["email"], $this->input["_emails"])) {
+                     $i = array_search($data["email"], $this->input["_emails"]);
+                     if ($i !== false) {
                         // Delete found item in order not to add it again
-                        unset($this->input["_emails"][array_search($data["email"],
-                              $this->input["_emails"])]);
+                        unset($this->input["_emails"][$i]);
                      } else if ($data['is_dynamic']) {
                         // Delete not found email
                         $useremail->delete(array('id' => $data["id"]));
