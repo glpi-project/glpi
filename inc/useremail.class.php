@@ -182,9 +182,13 @@ class UserEmail  extends CommonDBChild {
          $count++;
          echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
                 value='".$data['id']."' checked ".($canedit?'':'disabled').">&nbsp;";
-         echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
-
+         if (!$canedit || $data['is_dynamic']) {
+            echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
+            echo $data['email']." (D)";
+         } else {
+            echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
+                   value='".$data['email']."' >";
+         }
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
@@ -200,13 +204,17 @@ class UserEmail  extends CommonDBChild {
 
          echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
                 value='".$data['id']."' ".($canedit?'':'disabled').">&nbsp;";
-         echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
-                value='".$data['email']."' ".(!$canedit || $data['is_dynamic']?'disabled':'').">";
+         if (!$canedit || $data['is_dynamic']) {
+            echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
+            echo $data['email']." (D)";
+         } else {
+            echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
+                   value='".$data['email']."' >";
+         }
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
-
       }
 
       if ($canedit) {
