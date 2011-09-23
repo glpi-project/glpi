@@ -78,18 +78,18 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_computers' => 'computermodels_id'),
 
                   "glpi_computers"
-                        => array('glpi_computers_devicecases'         => 'computers_id',
-                                 'glpi_computers_devicecontrols'      => 'computers_id',
-                                 'glpi_computers_devicedrives'        => 'computers_id',
-                                 'glpi_computers_devicegraphiccards'  => 'computers_id',
-                                 'glpi_computers_deviceharddrives'    => 'computers_id',
-                                 'glpi_computers_devicememories'      => 'computers_id',
-                                 'glpi_computers_devicemotherboards'  => 'computers_id',
-                                 'glpi_computers_devicenetworkcards'  => 'computers_id',
-                                 'glpi_computers_devicepcis'          => 'computers_id',
-                                 'glpi_computers_devicepowersupplies' => 'computers_id',
-                                 'glpi_computers_deviceprocessors'    => 'computers_id',
-                                 'glpi_computers_devicesoundcards'    => 'computers_id',
+                        => array('_glpi_computers_devicecases'         => 'computers_id',
+                                 '_glpi_computers_devicecontrols'      => 'computers_id',
+                                 '_glpi_computers_devicedrives'        => 'computers_id',
+                                 '_glpi_computers_devicegraphiccards'  => 'computers_id',
+                                 '_glpi_computers_deviceharddrives'    => 'computers_id',
+                                 '_glpi_computers_devicememories'      => 'computers_id',
+                                 '_glpi_computers_devicemotherboards'  => 'computers_id',
+                                 '_glpi_computers_devicenetworkcards'  => 'computers_id',
+                                 '_glpi_computers_devicepcis'          => 'computers_id',
+                                 '_glpi_computers_devicepowersupplies' => 'computers_id',
+                                 '_glpi_computers_deviceprocessors'    => 'computers_id',
+                                 '_glpi_computers_devicesoundcards'    => 'computers_id',
                                  'glpi_computers_items'               => 'computers_id',
                                  'glpi_computers_softwarelicenses'    => 'computers_id',
                                  'glpi_computers_softwareversions'    => 'computers_id',
@@ -242,7 +242,7 @@ $RELATION = array("glpi_authldaps"
                   "glpi_holidays"
                         => array('glpi_calendars_holidays' => 'holidays_id',),
 
-                  "glpi_interfaces"
+                  "glpi_interfacetypes"
                         => array('glpi_deviceharddrives'   => 'interfacetypes_id',
                                  'glpi_devicedrives'       => 'interfacetypes_id',
                                  'glpi_devicegraphiccards' => 'interfacetypes_id',

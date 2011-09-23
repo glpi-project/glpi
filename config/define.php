@@ -308,4 +308,38 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'refresh_ticket_list', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'use_flat_dropdowntree');
 
+/// TODO need this array be empty
+// Itemtypes not implements : need to create class to avoid warning on autoload
+$CFG_GLPI['missingclasses'] = array('cartridgeitem_printermodel',
+                                    'computer_devicecase',
+                                    'computer_devicecontrol',
+                                    'computer_devicedrive',
+                                    'computer_devicegraphiccard',
+                                    'computer_deviceharddrive',
+                                    'computer_devicememory',
+                                    'computer_devicemotherboard',
+                                    'computer_devicenetworkcard',
+                                    'computer_devicepci',
+                                    'computer_devicepowersupply',
+                                    'computer_deviceprocessor',
+                                    'computer_devicesoundcard',
+                                    'rulecachecomputermodel',
+                                    'rulecachecomputertype',
+                                    'rulecachemanufacturer',
+                                    'rulecachemonitormodel',
+                                    'rulecachemonitortype',
+                                    'rulecachenetworkequipmentmodel',
+                                    'rulecachenetworkequipmenttype',
+                                    'rulecacheoperatingsystemservicepack',
+                                    'rulecacheoperatingsystem',
+                                    'rulecacheoperatingsystemversion',
+                                    'rulecacheperipheralmodel',
+                                    'rulecacheperipheraltype',
+                                    'rulecachephonemodel',
+                                    'rulecachephonetype',
+                                    'rulecacheprintermodel',
+                                    'rulecacheprinter',
+                                    'rulecacheprintertype',
+                                    'rulecachesoftware',);
+
 ?>
