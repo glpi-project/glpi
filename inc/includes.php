@@ -45,7 +45,7 @@ include_once (GLPI_ROOT . "/inc/common.function.php");
 $_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
 
 function __autoload($classname) {
-   global $DEBUG_AUTOLOAD;
+   global $DEBUG_AUTOLOAD, $CFG_GLPI;
    static $notfound = array();
 
    // empty classname or non concerted plugin
@@ -85,18 +85,21 @@ function __autoload($classname) {
       }
    }
 
-   if (file_exists("$dir$item.class.php")) {
-      include_once ("$dir$item.class.php");
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-         $DEBUG_AUTOLOAD[]=$classname;
-      }
+   // No errors for missing classes due to implementation
+   if (!in_array($item,$CFG_GLPI['missingclasses'])){
+      if (file_exists("$dir$item.class.php")) {
+         include_once ("$dir$item.class.php");
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $DEBUG_AUTOLOAD[]=$classname;
+         }
 
-   } else if (!isset($notfound["x$classname"])) {
-      // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-      //logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
-      trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
-      $notfound["x$classname"] = true;
-   }
+      } else if (!isset($notfound["x$classname"])) {
+         // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
+         //logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
+         trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
+         $notfound["x$classname"] = true;
+      }
+   } 
 }
 
 // Init Timer to compute time of display

@@ -223,7 +223,7 @@ $RELATION = array("glpi_authldaps"
                   "glpi_holidays"
                         => array('glpi_calendars_holidays' => 'holidays_id',),
 
-                  "glpi_interfaces"
+                  "glpi_interfacetypes"
                         => array('glpi_deviceharddrives'   => 'interfacetypes_id',
                                  'glpi_devicedrives'       => 'interfacetypes_id',
                                  'glpi_devicegraphiccards' => 'interfacetypes_id',
