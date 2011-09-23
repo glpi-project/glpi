@@ -2499,10 +2499,9 @@ class User extends CommonDBTM {
       echo "<th>&nbsp;</th></tr>";
 
       foreach ($type_user as $itemtype) {
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
             $query = "SELECT *
@@ -2565,10 +2564,9 @@ class User extends CommonDBTM {
                "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 
          foreach ($type_group as $itemtype) {
-            if (!class_exists($itemtype)) {
+            if (!($item = getItemForItemtype($itemtype))) {
                continue;
             }
-            $item = new $itemtype();
             if ($item->canView()) {
                $itemtable = getTableForItemType($itemtype);
                $query = "SELECT *

@@ -229,8 +229,7 @@ class ReservationItem extends CommonDBTM {
       if ($r->getFromDB($ID)) {
          $type = $r->fields["itemtype"];
          $name = NOT_AVAILABLE;
-         if (class_exists($r->fields["itemtype"])) {
-            $item = new $r->fields["itemtype"]();
+         if ($item = getItemForItemtype($r->fields["itemtype"])) {
             $type = $item->getTypeName();
             if ($item->getFromDB($r->fields["items_id"])) {
                $name = $item->getName();
@@ -279,10 +278,9 @@ class ReservationItem extends CommonDBTM {
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
          $itemtable = getTableForItemType($itemtype);
          $query = "SELECT `glpi_reservationitems`.`id`,
                           `glpi_reservationitems`.`comment`,

@@ -172,8 +172,7 @@ class Event extends CommonDBTM {
             default :
                $type=getSingular($type);
                $url='';
-               if (class_exists($type)) {
-                  $item = new $type();
+               if ($item = getItemForItemtype($type)) {
                   $url  =  $item->getFormURL();
                }
                if (!empty($url)) {
@@ -255,8 +254,7 @@ class Event extends CommonDBTM {
             $itemtype = $logItemtype[$type];
          } else {
             $type = getSingular($type);
-            if (class_exists($type)) {
-               $item = new $type();
+            if ($item = getItemForItemtype($type)) {
                $itemtype = $item->getTypeName();
             }
          }
@@ -365,8 +363,7 @@ class Event extends CommonDBTM {
             $itemtype = $logItemtype[$type];
          } else {
             $type = getSingular($type);
-            if (class_exists($type)) {
-               $item = new $type();
+            if ($item = getItemForItemtype($type)) {
                $itemtype = $item->getTypeName();
             }
          }

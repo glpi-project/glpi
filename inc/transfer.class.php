@@ -341,8 +341,8 @@ class Transfer extends CommonDBTM {
 
       if (count($DC_CONNECT) && count($this->needtobe_transfer['Computer'])>0) {
          foreach ($DC_CONNECT as $itemtype) {
+
             $itemtable = getTableForItemType($itemtype);
-            $item      = new $itemtype();
 
             // Clean DB / Search unexisting links and force disconnect
             $query = "SELECT `glpi_computers_items`.`id`
@@ -363,6 +363,10 @@ class Transfer extends CommonDBTM {
                }
             }
 
+            if (!($item = getItemForItemtype($itemtype))) {
+               continue;
+            }
+
             $query = "SELECT DISTINCT `items_id`
                       FROM `glpi_computers_items`
                       WHERE `itemtype` = '$itemtype'
@@ -371,10 +375,6 @@ class Transfer extends CommonDBTM {
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
                   while ($data=$DB->fetch_array($result)) {
-
-                     if (!class_exists($itemtype)) {
-                        continue;
-                     }
 
                      if ($item->getFromDB($data['items_id'])
                          && $item->isRecursive()
@@ -953,10 +953,9 @@ class Transfer extends CommonDBTM {
    function transferItem($itemtype, $ID, $newID) {
       global $CFG_GLPI, $DB;
 
-      if (!class_exists($itemtype)) {
+      if (!($item = getItemForItemtype($itemtype))) {
          return;
       }
-      $item = new $itemtype();
 
       // Is already transfer ?
       if (!isset($this->already_transfer[$itemtype][$ID])) {
@@ -2040,11 +2039,9 @@ class Transfer extends CommonDBTM {
             break;
       }
 
-      if (!class_exists($link_type)) {
+      if (!($link_item = getItemForItemtype($link_type))) {
          continue;
       }
-
-      $link_item = new $link_type();
 
       // Get connections
       $query = "SELECT *
@@ -3221,10 +3218,9 @@ class Transfer extends CommonDBTM {
                          ORDER BY locname, `$table`.`name`";
                $entID = -1;
 
-               if (!class_exists($itemtype)) {
+               if (!($item = getItemForItemtype($itemtype))) {
                   continue;
                }
-               $item = new $itemtype();
 
                if ($result=$DB->query($query)) {
                   if ($DB->numrows($result)) {

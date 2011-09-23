@@ -942,8 +942,7 @@ class EntityData extends CommonDBChild {
 
       if (strstr($url,"[ITEMTYPE]")
           && $ticket->fields['itemtype']
-          && class_exists($ticket->fields['itemtype'])) {
-         $objet = new $ticket->fields['itemtype']();
+          && $objet = getItemForItemtype($ticket->fields['itemtype'])) {
          $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName()), $url);
       }
 
@@ -953,8 +952,7 @@ class EntityData extends CommonDBChild {
 
       if (strstr($url,"[ITEM_NAME]")
           && $ticket->fields['itemtype']
-          && class_exists($ticket->fields['itemtype'])) {
-         $objet = new $ticket->fields['itemtype']();
+          && $objet = getItemForItemtype($ticket->fields['itemtype'])) {
          if ($objet->getFromDB($ticket->fields['items_id'])) {
             $url = str_replace("[ITEM_NAME]", urlencode($objet->getName()), $url);
          }

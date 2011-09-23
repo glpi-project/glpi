@@ -1333,8 +1333,7 @@ class Rule extends CommonDBTM {
                   return getUserName($pattern);
 
                case "dropdown_tracking_itemtype" :
-                  if (class_exists($pattern)) {
-                     $item = new $pattern();
+                  if ($item = getItemForItemtype($pattern)) {
                      return $item->getTypeName();
                   }
                   if (empty($pattern)) {
@@ -1727,8 +1726,7 @@ class Rule extends CommonDBTM {
 
    static function getActionsByType($sub_type) {
 
-      if (class_exists($sub_type)) {
-         $rule = new $sub_type();
+      if ($rule = getItemForItemtype($sub_type)) {
          return $rule->getActions();
       }
       return array();

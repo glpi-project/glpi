@@ -163,8 +163,7 @@ class FieldUnicity extends CommonDropdown {
          //Add criteria : display dropdown
          $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
-            if (class_exists($itemtype)) {
-               $item = new $itemtype();
+            if ($item = getItemForItemtype($itemtype)) {
                if ($item->can(-1,'r')) {
                   $options[$itemtype] = $item->getTypeName($itemtype);
                }

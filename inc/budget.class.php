@@ -312,10 +312,10 @@ class Budget extends CommonDropdown{
       for ($i = 0; $i < $number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
 
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
+
          if ($item->canView()) {
             switch ($itemtype) {
                default :
@@ -450,10 +450,10 @@ class Budget extends CommonDropdown{
 
       if ($DB->numrows($result)) {
          while ($types = $DB->fetch_array($result)) {
-            if (!class_exists($types['itemtype'])) {
+            if (!($item = getItemForItemtype($types['itemtype']))) {
                continue;
             }
-            $item = new $types['itemtype']();
+
             $found_types[$types['itemtype']] = $item->getTypeName();
             $table = getTableForItemType($types['itemtype']);
             $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,

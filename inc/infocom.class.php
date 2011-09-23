@@ -176,8 +176,7 @@ class Infocom extends CommonDBChild {
 
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
          $input['alert'] = $CFG_GLPI["default_infocom_alert"];
-         if (class_exists($input['itemtype'])) {
-            $item = new $input['itemtype']();
+         if ($item = getItemForItemtype($input['itemtype'])) {
             if ($item->getFromDB($input['items_id'])) {
                $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
@@ -346,8 +345,7 @@ class Infocom extends CommonDBChild {
    **/
 //    function isEntityAssign() {
 //
-//       if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
-//          $item = new $this->fields["itemtype"]();
+//       if (isset($this->fields["itemtype"]) && $item = getItemForItemtype($this->fields["itemtype"])) {
 //          return $item->isEntityAssign();
 //       }
 //
@@ -361,8 +359,7 @@ class Infocom extends CommonDBChild {
    **/
 //    function getEntityID () {
 //
-//       if (class_exists($this->fields["itemtype"])) {
-//          $item = new $this->fields["itemtype"]();
+//       if ($item = getItemForItemtype($this->fields["itemtype"])) {
 //          if ($item->getFromDB($this->fields["items_id"])) {
 //             return $item->getEntityID();
 //          }
@@ -377,8 +374,7 @@ class Infocom extends CommonDBChild {
    **/
 //    function maybeRecursive() {
 //
-//       if (class_exists($this->fields["itemtype"])) {
-//          $item = new $this->fields["itemtype"]();
+//       if ($item = getItemForItemtype($this->fields["itemtype"])) {
 //          return $item->maybeRecursive();
 //       }
 //
@@ -394,8 +390,7 @@ class Infocom extends CommonDBChild {
    **/
 //    function isRecursive() {
 //
-//       if (class_exists($this->fields["itemtype"])) {
-//          $item = new $this->fields["itemtype"]();
+//       if ($item = getItemForItemtype($this->fields["itemtype"])) {
 //          return $item->isRecursive();
 //       }
 //
@@ -604,10 +599,9 @@ class Infocom extends CommonDBChild {
    static function showDisplayLink($itemtype, $device_id, $update=0) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if (!Session::haveRight("infocom","r") || !class_exists($itemtype)) {
+      if (!Session::haveRight("infocom","r") || !($item = getItemForItemtype($itemtype))) {
          return false;
       }
-      $item = new $itemtype();
 
       $query="SELECT COUNT(*)
               FROM `glpi_infocoms`

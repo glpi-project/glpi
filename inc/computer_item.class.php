@@ -90,10 +90,9 @@ class Computer_Item extends CommonDBRelation{
 
       if ($ID<0) {
          // Ajout
-         if (!class_exists($input['itemtype'])) {
+         if (!($item = getItemForItemtype($input['itemtype']))) {
             return false;
          }
-         $item = new $input['itemtype']();
 
          if (!$item->getFromDB($input['items_id'])) {
             return false;
@@ -237,8 +236,7 @@ class Computer_Item extends CommonDBRelation{
          $computer->getFromDB($this->fields['computers_id']);
 
          //Get device fields
-         if (class_exists($this->fields['itemtype'])) {
-            $device = new $this->fields['itemtype']();
+         if ($device = getItemForItemtype($this->fields['itemtype'])) {
             if ($device->getFromDB($this->fields['items_id'])) {
 
                if (!$device->getField('is_global')) {

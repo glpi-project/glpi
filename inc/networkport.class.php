@@ -113,7 +113,7 @@ class NetworkPort extends CommonDBChild {
       // Not attached to itemtype -> not added
       if (!isset($input['itemtype'])
           || empty($input['itemtype'])
-          || !class_exists($input['itemtype'])
+          || !($item = getItemForItemtype($input['itemtype']))
           || !isset($input['items_id'])
           || $input['items_id'] <= 0) {
          return false;
@@ -123,7 +123,6 @@ class NetworkPort extends CommonDBChild {
          unset($input["logical_number"]);
       }
 
-      $item = new $input['itemtype']();
       if ($item->getFromDB($input['items_id'])) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
@@ -243,8 +242,7 @@ class NetworkPort extends CommonDBChild {
       echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
       foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
-         if (class_exists($itemtype)) {
-            $item = new $itemtype();
+         if ($item = getItemForItemtype($itemtype)) {
             echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
          } else {
             unset($CFG_GLPI["networkport_types"][$key]);
@@ -441,8 +439,7 @@ class NetworkPort extends CommonDBChild {
       if ($contact_id = $contact->getOppositeContact($ID)) {
          $netport->getFromDB($contact_id);
 
-         if (class_exists($netport->fields["itemtype"])) {
-            $device2 = new $netport->fields["itemtype"]();
+         if ($device2 = getItemForItemtype($netport->fields["itemtype"])) {
 
             if ($device2->getFromDB($netport->fields["items_id"])) {
                echo "\n<table width='100%'>\n";
@@ -539,8 +536,7 @@ class NetworkPort extends CommonDBChild {
       $type = $this->fields['itemtype'];
       $link = NOT_AVAILABLE;
 
-      if (class_exists($this->fields['itemtype'])) {
-         $item = new $this->fields['itemtype']();
+      if ($item = getItemForItemtype($this->fields['itemtype'])) {
          $type = $item->getTypeName();
 
          if ($item->getFromDB($this->fields["items_id"])) {
@@ -846,8 +842,7 @@ class NetworkPort extends CommonDBChild {
    static function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
       global $DB;
 
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
+      if ($item = getItemForItemtype($itemtype)) {
 
          $query = "SELECT `obj.id`
                    FROM " . $item->getTable() . " AS obj,

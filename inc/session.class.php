@@ -680,8 +680,7 @@ class Session {
          foreach ($modules as $mod => $right) {
             // Itemtype
             if (preg_match('/[A-Z]/', $mod[0])) {
-               if (class_exists($mod)) {
-                  $item = new $mod();
+               if ($item = getItemForItemtype($mod)) {
                   if ($item->canGlobal($right)) {
                      $valid = true;
                   }

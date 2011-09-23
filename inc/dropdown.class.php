@@ -66,10 +66,9 @@ class Dropdown {
    static function show($itemtype, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if ($itemtype && !class_exists($itemtype)) {
+      if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
       }
-      $item = new $itemtype();
 
       $table = $item->getTable();
 
@@ -393,8 +392,7 @@ class Dropdown {
 
       if (count($types)) {
          foreach ($types as $type) {
-            if (class_exists($type)) {
-               $item           = new $type();
+            if ($item = getItemForItemtype($type)) {
                $options[$type] = $item->getTypeName();
             }
          }
@@ -696,13 +694,10 @@ class Dropdown {
          foreach ($optgroup as $label=>$dp) {
             foreach ($dp as $key => $val) {
 
-               if (class_exists($key)) {
-                  $tmp = new $key();
-
+               if ($tmp = getItemForItemtype($key)) {
                   if (!$tmp->canView()) {
                      unset($optgroup[$label][$key]);
                   }
-
                } else {
                   unset($optgroup[$label][$key]);
                }
@@ -911,8 +906,7 @@ class Dropdown {
       $options = array();
 
       foreach ($types as $type) {
-         if (class_exists($type)) {
-            $item = new $type();
+         if ($item = getItemForItemtype($type)) {
             $options[$type] = $item->getTypeName($type);
          }
       }
@@ -1252,10 +1246,9 @@ class Dropdown {
    **/
    static function import ($itemtype, $input) {
 
-      if (!class_exists($itemtype)) {
+      if (!($item = getItemForItemtype($itemtype))) {
          return false;
       }
-      $item = new $itemtype();
       return $item->import($input);
    }
 
@@ -1277,10 +1270,9 @@ class Dropdown {
    static function importExternal($itemtype, $value, $entities_id=-1, $external_params=array(),
                                   $comment='', $add=true) {
 
-      if (!class_exists($itemtype)) {
+      if (!($item = getItemForItemtype($itemtype))) {
          return false;
       }
-      $item = new $itemtype();
       return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
    }
 
@@ -1298,11 +1290,11 @@ class Dropdown {
       /// TODO include in CommonDBTM defining only getAdditionalMassiveAction in sub classes
       /// for specific actions (return a array of action name and title)
 
-      if (!class_exists($itemtype)) {
+      if (!($item = getItemForItemtype($itemtype))) {
          return false;
       }
 
-      if ($itemtype=='NetworkPort') {
+      if ($itemtype == 'NetworkPort') {
          echo "<select name='massiveaction' id='massiveaction'>";
 
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
@@ -1323,7 +1315,6 @@ class Dropdown {
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 
       } else {
-         $item    = new $itemtype();
          $infocom = new Infocom();
          $isadmin = $item->canUpdate();
 

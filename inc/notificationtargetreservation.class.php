@@ -79,8 +79,7 @@ class NotificationTargetReservation extends NotificationTarget {
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
          $itemtype = $reservationitem->getField('itemtype');
 
-         if (class_exists($itemtype)) {
-            $item = new $itemtype();
+         if ($item = getItemForItemtype($itemtype)) {
             $item->getFromDB($reservationitem->getField('items_id'));
             $this->datas['##reservation.itemtype##']    = $item->getTypeName();
             $this->datas['##reservation.item.name##']   = $item->getField('name');
@@ -184,8 +183,7 @@ class NotificationTargetReservation extends NotificationTarget {
          if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
             $itemtype = $ri->getField('itemtype');
 
-            if ($itemtype != NOT_AVAILABLE && $itemtype != '' && class_exists($itemtype)) {
-               $item = new $itemtype();
+            if ($itemtype != NOT_AVAILABLE && $itemtype != '' && $item = getItemForItemtype($itemtype)) {
                $item->getFromDB($ri->getField('items_id'));
                $this->target_object = $item;
             }

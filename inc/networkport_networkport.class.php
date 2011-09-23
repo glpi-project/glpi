@@ -172,16 +172,14 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $sourcehistory = false;
       $desthistory   = false;
 
-      if (class_exists($ps->fields['itemtype'])) {
-         $sourceitem = new $ps->fields['itemtype']();
+      if ($sourceitem = getItemForItemtype($ps->fields['itemtype'])) {
          if ($sourceitem->getFromDB($ps->fields['items_id'])) {
             $sourcename    = $sourceitem->getName();
             $sourcehistory = $sourceitem->dohistory;
          }
       }
 
-      if (class_exists($pd->fields['itemtype'])) {
-         $destitem = new $pd->fields['itemtype']();
+      if ($destitem = getItemForItemtype($pd->fields['itemtype'])) {
          if ($destitem->getFromDB($pd->fields['items_id'])) {
             $destname    = $destitem->getName();
             $desthistory = $destitem->dohistory;
@@ -270,8 +268,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $name      = NOT_AVAILABLE;
          $dohistory = false;
 
-         if (class_exists($np2->fields["itemtype"])) {
-            $item = new $np2->fields["itemtype"]();
+         if ($item = getItemForItemtype($np2->fields["itemtype"])) {
             if ($item->getFromDB($np2->fields["items_id"])) {
                $name      = $item->getName();
                $dohistory = $item->dohistory;
@@ -296,8 +293,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
 
          $name      = NOT_AVAILABLE;
          $dohistory = false;
-         if (class_exists($np1->fields["itemtype"])) {
-            $item = new $np1->fields["itemtype"]();
+         if ($item = getItemForItemtype($np1->fields["itemtype"])) {
             if ($item->getFromDB($np1->fields["items_id"])) {
                $name      = $item->getName();
                $dohistory = $item->dohistory;

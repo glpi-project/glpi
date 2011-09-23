@@ -148,8 +148,7 @@ class RuleCriteria extends CommonDBChild {
 //                return getUserName($initValue);
 // 
 //             case "dropdown_tracking_itemtype" :
-//                if (class_exists($initValue)) {
-//                   $item = new $initValue();
+//                if ($item = getItemForItemtype($initValue)) {
 //                   return $item->getTypeName();
 //                } else {
 //                   if (empty($initValue)) {

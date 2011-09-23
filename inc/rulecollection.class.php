@@ -976,8 +976,8 @@ class RuleCollection extends CommonDBTM {
       if (($check_dictionnary_type && in_array($itemtype, $CFG_GLPI["dictionnary_types"]))
           || !$check_dictionnary_type) {
 
-         if (class_exists($typeclass)) {
-            return new $typeclass();
+         if ($item = getItemForItemtype($typeclass)) {
+            return $item;
          }
          return NULL;
       }

@@ -168,10 +168,9 @@ class Document extends CommonDBTM {
 
       if (isset($input["items_id"])
           && isset($input["itemtype"])
-          && class_exists($input["itemtype"])
+          && $item = getItemForItemtype($input["itemtype"])
           && $input["items_id"]>0) {
 
-         $item     = new $input["itemtype"]();
          $typename = $item->getTypeName();
          $name     = NOT_AVAILABLE;
 
@@ -781,10 +780,9 @@ class Document extends CommonDBTM {
 
       for ($i=0 ; $i < $number ; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
-         if (!class_exists($itemtype)) {
+         if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
-         $item = new $itemtype();
 
          if ($item->canView()) {
             $column="name";

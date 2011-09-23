@@ -1437,10 +1437,9 @@ class Stat {
             $item_num = 1;
             // Get data and increment loop variables
             $data = $DB->fetch_assoc($result);
-            if (!class_exists($data["itemtype"])) {
+            if (!($item = getItemForItemtype($data["itemtype"]))) {
                continue;
             }
-            $item = new $data["itemtype"]();
             if ($item->getFromDB($data["items_id"])) {
                echo Search::showNewLine($output_type, $i%2);
                echo Search::showItem($output_type, $item->getTypeName()." - ".$item->getLink(),
