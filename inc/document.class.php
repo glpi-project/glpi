@@ -168,7 +168,7 @@ class Document extends CommonDBTM {
 
       if (isset($input["items_id"])
           && isset($input["itemtype"])
-          && $item = getItemForItemtype($input["itemtype"])
+          && ($item = getItemForItemtype($input["itemtype"]))
           && $input["items_id"]>0) {
 
          $typename = $item->getTypeName();

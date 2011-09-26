@@ -1060,7 +1060,7 @@ class NotificationTarget extends CommonDBChild {
                echo "<tr class='tab_bg_2'><td>".$notif->getLink();
                echo "</td><td>".dropdown::getDropdownName('glpi_entities', $notif->getEntityID());
                echo "</td><td>".dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
-               $itemtype=$notif->getField('itemtype');
+               $itemtype = $notif->getField('itemtype');
                if ($tmp = getItemForItemtype($itemtype)) {
                   echo $tmp->getTypeName();
                }

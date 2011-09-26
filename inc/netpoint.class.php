@@ -53,6 +53,7 @@ class Netpoint extends CommonDropdown {
                          'list'  => true));
    }
 
+
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -62,25 +63,28 @@ class Netpoint extends CommonDropdown {
       return $LANG['networking'][51];
    }
 
+
    function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
    }
+
 
    function canView() {
       return Session::haveRight('entity_dropdown', 'r');
    }
 
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
-      $tab = parent::getSearchOptions();
+      $tab  = parent::getSearchOptions();
 
-      $tab+=Location::getSearchOptionsToAdd();
+      $tab += Location::getSearchOptionsToAdd();
 
       $tab[3]['datatype']      = 'itemlink';
       $tab[3]['itemlink_type'] = 'Location';
@@ -88,13 +92,16 @@ class Netpoint extends CommonDropdown {
       return $tab;
    }
 
+
    /**
     * Handled Multi add item
     *
+    * @since version 0.83 (before addMulti)
+    *
     * @param $input array of values
     *
-    */
-   function executeAddMulti ($input) {
+   **/
+   function executeAddMulti($input) {
       global $LANG;
 
       $this->check(-1,'w',$input);
@@ -106,6 +113,7 @@ class Netpoint extends CommonDropdown {
       Ajax::refreshDropdownPopupInMainWindow();
    }
 
+
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
@@ -116,32 +124,33 @@ class Netpoint extends CommonDropdown {
     * @param $display_comment display the comment near the dropdown
     * @param $entity_restrict Restrict to a defined entity
     * @param $devtype
+    *
     * @return nothing (display the select box)
     *
     */
-   static function dropdownNetpoint($myname,$value=0,$locations_id=-1,$display_comment=1,
-                                    $entity_restrict=-1,$devtype=-1) {
-      global $CFG_GLPI,$LANG;
+   static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
+                                    $entity_restrict=-1, $devtype=-1) {
+      global $CFG_GLPI, $LANG;
 
-      $rand = mt_rand();
-      $name = "------";
-      $comment = "";
-      $limit_length = $_SESSION["glpidropdown_chars_limit"];
+      $rand          = mt_rand();
+      $name          = "------";
+      $comment       = "";
+      $limit_length  = $_SESSION["glpidropdown_chars_limit"];
       if (empty($value)) {
          $value = 0;
       }
       if ($value > 0) {
          $tmpname = Dropdown::getDropdownName("glpi_netpoints",$value,1);
          if ($tmpname["name"] != "&nbsp;") {
-            $name = $tmpname["name"];
-            $comment = $tmpname["comment"];
-            $limit_length = max(Toolbox::strlen($name),$_SESSION["glpidropdown_chars_limit"]);
+            $name          = $tmpname["name"];
+            $comment       = $tmpname["comment"];
+            $limit_length  = max(Toolbox::strlen($name),$_SESSION["glpidropdown_chars_limit"]);
          }
       }
       $use_ajax = false;
       if ($CFG_GLPI["use_ajax"]) {
          if ($locations_id < 0 || $devtype == 'NetworkEquipment') {
-            $nb = countElementsInTableForEntity("glpi_netpoints",$entity_restrict);
+            $nb = countElementsInTableForEntity("glpi_netpoints", $entity_restrict);
          } else if ($locations_id > 0) {
             $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
          } else {
@@ -185,23 +194,25 @@ class Netpoint extends CommonDropdown {
       return $rand;
    }
 
+
    /**
     * check if a netpoint already exists (before import)
     *
     * @param $input array of value to import (name, locations_id, entities_id)
     *
     * @return the ID of the new (or -1 if not found)
-    */
-   function findID (&$input) {
+   **/
+   function findID(&$input) {
       global $DB;
 
       if (!empty($input["name"])) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
                    WHERE `name` = '".$input["name"]."'
-                     AND `locations_id`='".(isset($input["locations_id"])?$input["locations_id"]:0)."'".
-                     getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
-                                                $input['entities_id'],$this->maybeRecursive());
+                         AND `locations_id` = '".(isset($input["locations_id"])
+                                                      ?$input["locations_id"]:0)."'".
+                         getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
+                                                    $input['entities_id'], $this->maybeRecursive());
 
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
@@ -269,6 +280,7 @@ class Netpoint extends CommonDropdown {
     * Print the HTML array of the Netpoint associated to a Location
     *
     * @param $item Location
+    *
     * @return Nothing (display)
    **/
    static function showForLocation($item) {
@@ -377,5 +389,4 @@ class Netpoint extends CommonDropdown {
    }
 
 }
-
 ?>

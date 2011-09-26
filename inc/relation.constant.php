@@ -372,8 +372,8 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_profiles"
                         => array('glpi_profiles_reminders' => 'profiles_id',
-                                 'glpi_users'              => 'profiles_id',
-                                 'glpi_profiles_users'     => 'profiles_id'),
+                                 'glpi_profiles_users'     => 'profiles_id',
+                                 'glpi_users'              => 'profiles_id'),
 
                   "glpi_reminders"
                         => array('glpi_entities_reminders' => 'reminders_id',
@@ -540,7 +540,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_problemtasks'        => array('users_id', 'users_id_tech'),
                                  'glpi_profiles_users'      => 'users_id',
                                  'glpi_reminders'           => 'users_id',
-                                 'glpi_reminders_users'           => 'users_id',
+                                 'glpi_reminders_users'     => 'users_id',
                                  'glpi_reservations'        => 'users_id',
                                  'glpi_softwares'           => array('users_id_tech', 'users_id'),
                                  'glpi_ticketfollowups'     => 'users_id',

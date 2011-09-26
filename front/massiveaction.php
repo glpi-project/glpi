@@ -88,7 +88,7 @@ Html::header($LANG['title'][42], $_SERVER['PHP_SELF']);
 
 if (isset($_GET['multiple_actions'])) {
    if (isset($_SESSION['glpi_massiveaction'])
-         && isset($_SESSION['glpi_massiveaction']['items'])) {
+       && isset($_SESSION['glpi_massiveaction']['items'])) {
 
       $percent = min(100,round(100*($_SESSION['glpi_massiveaction']['item_count']
                                     - count($_SESSION['glpi_massiveaction']['items']))
@@ -98,13 +98,13 @@ if (isset($_GET['multiple_actions'])) {
 }
 
 if (isset($_POST["action"])
-      && isset($_POST["itemtype"])
-      && isset($_POST["item"])
-      && count($_POST["item"])) {
+    && isset($_POST["itemtype"])
+    && isset($_POST["item"])
+    && count($_POST["item"])) {
 
    /// Save selection
    if (!isset($_SESSION['glpimassiveactionselected'])
-         || count($_SESSION['glpimassiveactionselected']) == 0) {
+       || count($_SESSION['glpimassiveactionselected']) == 0) {
 
       $_SESSION['glpimassiveactionselected'] = array();
       foreach ($_POST["item"] as $key => $val) {
@@ -193,7 +193,7 @@ if (isset($_POST["action"])
          if (isset($searchopt[$_POST["id_field"]])) {
             /// Infocoms case
             if (!isPluginItemType($_POST["itemtype"])
-                  && Search::isInfocomOption($_POST["itemtype"],$_POST["id_field"])) {
+                && Search::isInfocomOption($_POST["itemtype"],$_POST["id_field"])) {
 
                $ic = new Infocom();
                $link_entity_type = -1;
@@ -208,10 +208,10 @@ if (isset($_POST["action"])
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
                         if ($link_entity_type < 0
-                              || $link_entity_type == $item->getEntityID()
-                              || ($ent->fields["is_recursive"]
-                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
-                                             $item->getEntityID())))) {
+                            || $link_entity_type == $item->getEntityID()
+                            || ($ent->fields["is_recursive"]
+                                && in_array($link_entity_type, getAncestorsOf("glpi_entities",
+                                            $item->getEntityID())))) {
                            // Add infocom if not exists
                            if (!$ic->getFromDBforDevice($_POST["itemtype"],$key)) {
                               $input2["items_id"] = $key;
@@ -239,14 +239,14 @@ if (isset($_POST["action"])
                if ($item2 = getItemForItemtype($itemtype2)) {
 
                   if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
-                        && $item2->isEntityAssign()
-                        && $item->isEntityAssign()) {
+                      && $item2->isEntityAssign()
+                      && $item->isEntityAssign()) {
                      if ($item2->getFromDB($_POST[$_POST["field"]])) {
                         if (isset($item2->fields["entities_id"])
-                              && $item2->fields["entities_id"] >=0) {
+                            && $item2->fields["entities_id"] >=0) {
 
                            if (isset($item2->fields["is_recursive"])
-                                 && $item2->fields["is_recursive"]) {
+                               && $item2->fields["is_recursive"]) {
 
                               $link_entity_type = getSonsOf("glpi_entities",
                                                             $item2->fields["entities_id"]);
@@ -261,9 +261,9 @@ if (isset($_POST["action"])
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
                         if (count($link_entity_type) == 0
-                              || in_array($item->fields["entities_id"],$link_entity_type)) {
+                            || in_array($item->fields["entities_id"],$link_entity_type)) {
                            $item->update(array('id'            => $key,
-                                                $_POST["field"] => $_POST[$_POST["field"]]));
+                                               $_POST["field"] => $_POST[$_POST["field"]]));
                         }
                      }
                   }
@@ -282,7 +282,7 @@ if (isset($_POST["action"])
                if ($val == 1) {
                   if ($item->getFromDB($key)) {
                      if (!$item->isEntityAssign()
-                           || ($_POST['entities_id'] != $item->getEntityID())) {
+                         || ($_POST['entities_id'] != $item->getEntityID())) {
                         $item->duplicate($options);
                      }
                   }
@@ -297,7 +297,7 @@ if (isset($_POST["action"])
             if ($val == 1) {
                $comp = new Computer();
                if ($comp->getFromDB($key)
-                     && $comp->fields["entities_id"] == $_SESSION["glpiactive_entity"]) {
+                   && $comp->fields["entities_id"] == $_SESSION["glpiactive_entity"]) {
                   $inst->add(array('computers_id'        => $key,
                                     'softwareversions_id' => $_POST["softwareversions_id"]));
                }
@@ -321,9 +321,9 @@ if (isset($_POST["action"])
       case "add_userprofile" :
          $right = new Profile_User();
          if (isset($_POST['profiles_id'])
-               && $_POST['profiles_id'] > 0
-               && isset($_POST['entities_id'])
-               && $_POST['entities_id'] >= 0) {
+             && $_POST['profiles_id'] > 0
+             && isset($_POST['entities_id'])
+             && $_POST['entities_id'] >= 0) {
 
             $input['entities_id']  = $_POST['entities_id'];
             $input['profiles_id']  = $_POST['profiles_id'];
@@ -473,7 +473,7 @@ if (isset($_POST["action"])
                }
             }
             $_SESSION['glpi_massiveaction']['item_count']
-               = count($_SESSION['glpi_massiveaction']['items']);
+                     = count($_SESSION['glpi_massiveaction']['items']);
             Html::redirect($_SERVER['PHP_SELF'].'?multiple_actions=1');
 
          } else {
@@ -519,7 +519,7 @@ if (isset($_POST["action"])
 
       case "replay_dictionnary" :
          $softdictionnayrule = new RuleDictionnarySoftwareCollection();
-         $ids = array();
+         $ids                = array();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                $ids[] = $key;
@@ -536,10 +536,10 @@ if (isset($_POST["action"])
             if ($val == 1) {
                $user->getFromDB($key);
                if (($user->fields["authtype"] == Auth::LDAP)
-                     || ($user->fields["authtype"] == Auth::EXTERNAL)) {
+                    || ($user->fields["authtype"] == Auth::EXTERNAL)) {
                   AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'  => $user->fields["name"]),
-                                                      1, $user->fields["auths_id"]);
+                                                           'value'  => $user->fields["name"]),
+                                                     1, $user->fields["auths_id"]);
                }
             }
          }
@@ -663,10 +663,9 @@ if (isset($_POST["action"])
                foreach ($_POST["item"] as $key => $val) {
                   if ($val==1 && $item->can($key,'w')) {
                      // Check if parent is not a child of the original one
-                     if (!in_array($parent->getID(),
-                                    getSonsOf($item->getTable(), $item->getID()))) {
+                     if (!in_array($parent->getID(), getSonsOf($item->getTable(), $item->getID()))) {
                         $item->update(array('id' => $key,
-                                             $fk  => $_POST['parent']));
+                                            $fk  => $_POST['parent']));
                      }
                   }
                }
@@ -680,9 +679,8 @@ if (isset($_POST["action"])
             if ($val==1 && $item->can($key,'w')) {
                if ($item->getEntityID()==$_SESSION['glpiactive_entity']) {
                      $item->update(array('id'           => $key,
-                                          'is_recursive' => 1));
+                                         'is_recursive' => 1));
                } else {
-
                   $input = $item->fields;
 
                   // Remove keys (and name, tree dropdown will use completename)
@@ -701,7 +699,7 @@ if (isset($_POST["action"])
                   // Delete old
                   if ($newid > 0) {
                      $item->delete(array('id'          => $key,
-                                          '_replace_by' => $newid));
+                                         '_replace_by' => $newid));
                   }
                }
             }
@@ -722,8 +720,7 @@ if (isset($_POST["action"])
                $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
             }
             else {
-               $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1,
-                                                            $_POST['entities_id']);
+               $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $_POST['entities_id']);
             }
          }
          break;

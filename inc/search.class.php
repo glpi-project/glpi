@@ -1376,7 +1376,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if ($itemtype!='States'){
+      if ($itemtype!='States') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -3996,7 +3996,8 @@ class Search {
             return CommonITILObject::getImpactName($data[$NAME.$num]);
 
          case 'glpi_tickets.items_id' :
-            if (!empty($data[$NAME.$num."_2"]) && $item = getItemForItemtype($data[$NAME.$num."_2"])) {
+            if (!empty($data[$NAME.$num."_2"])
+                && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
                if ($item->getFromDB($data[$NAME.$num])) {
                   return $item->getLink(true);
                }

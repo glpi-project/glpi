@@ -447,6 +447,12 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.83 (before addRule)
+    *
+    * @param $input array of values
+    *
+   **/
    function executeAddRule($input) {
       global $LANG;
 
