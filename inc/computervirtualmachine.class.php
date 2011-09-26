@@ -425,8 +425,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       $query = "SELECT `id`
                 FROM `glpi_computers`
-                WHERE `id` NOT IN ('".$fields['id']."')
-                      AND LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
+                WHERE LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
       $result = $DB->query($query);
 
       //Virtual machine found, return ID
