@@ -204,7 +204,6 @@ function getPlural($string) {
                   /// TODO : real singular is criterion and plural criteria. Need to update class / tables names
                   'criterias$'   =>'criterias',// Special case (criterias) when getPLural is called on already plural form
                   's$'           =>'ses',
-                  's$'           =>'ses',
                   '([^aeiou])y$' => '\1ies', // special case : category (but not key)
                   'ch$'          =>'ches',
                   'sh$'          =>'shes',
