@@ -117,8 +117,7 @@ function getItemTypeForTable($table) {
 
       $itemtype=$prefix.$table;
       // Get real existence of itemtype
-      if (class_exists($itemtype)) {
-         $item     = new $itemtype();
+      if ($item = getItemForItemtype($itemtype)) {
          $itemtype = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
          $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
@@ -174,20 +173,23 @@ function getTableForItemType($itemtype) {
 }
 
 
-
 /**
  * Get new item objet for an itemtype
+ *
+ * @since version 0.83
  *
  * @param $itemtype string: itemtype
  *
  * @return itemtype object or false if class does not exists
 **/
 function getItemForItemtype($itemtype) {
+
    if (class_exists($itemtype)) {
       return new $itemtype();
    }
    return false;
 }
+
 
 /**
  * Return the plural of a string

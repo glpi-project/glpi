@@ -185,8 +185,7 @@ class CommonGLPI {
             break;
 
          default :
-            if (!is_integer($itemtype) && class_exists($itemtype)) {
-               $obj = new $itemtype();
+            if (!is_integer($itemtype) && ($obj = getItemForItemtype($itemtype))) {
                $titles = $obj->getTabNameForItem($this, $withtemplate);
                if (!is_array($titles)) {
                   $titles = array(1 => $titles);
@@ -282,8 +281,9 @@ class CommonGLPI {
                $tabnum = $data[1];
             }
 
-            if (!is_integer($itemtype) && $itemtype!='empty' && class_exists($itemtype)) {
-               $obj = new $itemtype();
+            if (!is_integer($itemtype)
+                && $itemtype!='empty'
+                && ($obj = getItemForItemtype($itemtype))) {
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
             break;
