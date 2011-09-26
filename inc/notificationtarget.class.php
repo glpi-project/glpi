@@ -186,8 +186,8 @@ class NotificationTarget extends CommonDBChild {
    **/
    static function getInstanceByType($itemtype, $event='', $options=array()) {
 
-      if ($itemtype != '' && class_exists($itemtype)) {
-         return self::getInstance(new $itemtype(), $event, $options);
+      if ($itemtype != '' && ($item = getItemForItemtype($itemtype))) {
+         return self::getInstance($item, $event, $options);
       }
       return false;
    }
