@@ -1263,7 +1263,8 @@ class Rule extends CommonDBTM {
    function getMinimalCriteriaText($fields) {
 
       $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this), $fields["criteria"])."</td>";
+      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this),
+                                                       $fields["criteria"])."</td>";
       $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
                                                          $fields["pattern"]) . "</td>";
       return $text;

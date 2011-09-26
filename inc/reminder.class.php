@@ -204,13 +204,11 @@ class Reminder extends CommonDBTM {
       $canedit = $this->can($ID,'w');
 
       if ($canedit) {
-          Html::initEditorSystem('text');
+         Html::initEditorSystem('text');
       }
 
       $this->showTabs($options);
-
       $this->showFormHeader($options);
-
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
@@ -248,7 +246,6 @@ class Reminder extends CommonDBTM {
                                            $this->fields["is_recursive"]);
 
       } else {
-
          if ($this->fields["is_private"]) {
             echo $LANG['common'][77];
          } else {
@@ -267,6 +264,7 @@ class Reminder extends CommonDBTM {
             echo Dropdpown::getYesNo($this->fields['is_helpdesk_visible']);
          }
          echo "</td>\n";
+
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
@@ -432,11 +430,11 @@ class Reminder extends CommonDBTM {
                } else {
                   $interv[$data["begin"]."$$".$i]["end"] = $data["end"];
                }
-               $interv[$data["begin"]."$$".$i]["name"]       = Html::resume_text($data["name"],
-                                                                                 $CFG_GLPI["cut"]);
-               $interv[$data["begin"]."$$".$i]["text"]       =
-                           Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
-                                                            $CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["name"]
+                  = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
+               $interv[$data["begin"]."$$".$i]["text"]
+                  = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
+                                                  $CFG_GLPI["cut"]);
 
                $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
                /// TODO : check visibility to know if it is private : useful ?
@@ -709,17 +707,22 @@ class Reminder extends CommonDBTM {
                $sort = $data["date"];
             }
 
-            $tabremind[$sort."$$".$i]["reminders_id"] = $remind->fields["id"];
-            $tabremind[$sort."$$".$i]["users_id"]     = $remind->fields["users_id"];
-            $tabremind[$sort."$$".$i]["entity"]       = $remind->fields["entities_id"];
-            $tabremind[$sort."$$".$i]["begin"]        = ($data["is_planned"]?"".$data["begin"]."":"".
-                                                         $data["date"]."");
-            $tabremind[$sort."$$".$i]["end"]          = ($data["is_planned"]?"".$data["end"]."":"");
-            $tabremind[$sort."$$".$i]["name"]         = Html::resume_text($remind->fields["name"],
-                                                                          $CFG_GLPI["cut"]);
+            $tabremind[$sort."$$".$i]["reminders_id"]
+               = $remind->fields["id"];
+            $tabremind[$sort."$$".$i]["users_id"]
+               = $remind->fields["users_id"];
+            $tabremind[$sort."$$".$i]["entity"]
+               = $remind->fields["entities_id"];
+            $tabremind[$sort."$$".$i]["begin"]
+               = ($data["is_planned"]?"".$data["begin"]."":"".$data["date"]."");
+            $tabremind[$sort."$$".$i]["end"]
+               = ($data["is_planned"]?"".$data["end"]."":"");
+            $tabremind[$sort."$$".$i]["name"]
+               = Html::resume_text($remind->fields["name"], $CFG_GLPI["cut"]);
 
-            $tabremind[$sort."$$".$i]["text"]         =Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($remind->fields["name"])),
-                                                                          $CFG_GLPI["cut"]);
+            $tabremind[$sort."$$".$i]["text"]
+               = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($remind->fields["name"])),
+                                               $CFG_GLPI["cut"]);
          }
       }
       ksort($tabremind);
@@ -786,9 +789,8 @@ class Reminder extends CommonDBTM {
          }
       }
       echo "</table>\n";
-   }
+  }
 
 
 }
-
 ?>

@@ -133,9 +133,9 @@ class RuleCriteria extends CommonDBChild {
 /// TODO Delete : no more used
 //    function getValueToMatch($condition, &$initValue) {
 //       global $LANG;
-// 
+//
 //       $type = $this->getType();
-// 
+//
 //       if (!empty($type)
 //           && (!in_array($condition, array(Rule::PATTERN_IS,
 //                                           Rule::PATTERN_IS_NOT,
@@ -143,10 +143,10 @@ class RuleCriteria extends CommonDBChild {
 //          switch ($this->getType()) {
 //             case "dropdown" :
 //                return Dropdown::getDropdownName($this->getTable(), $initValue);
-// 
+//
 //             case "dropdown_users" :
 //                return getUserName($initValue);
-// 
+//
 //             case "dropdown_tracking_itemtype" :
 //                if ($item = getItemForItemtype($initValue)) {
 //                   return $item->getTypeName();
@@ -156,16 +156,16 @@ class RuleCriteria extends CommonDBChild {
 //                   }
 //                }
 //                break;
-// 
+//
 //             case "dropdown_urgency" :
 //                return Ticket::getUrgencyName($initValue);
-// 
+//
 //             case "dropdown_impact" :
 //                return Ticket::getImpactName($initValue);
-// 
+//
 //             case "dropdown_priority" :
 //                return Ticket::getPriorityName($initValue);
-// 
+//
 //             case "dropdown_tickettype" :
 //                return Ticket::getTicketTypeName($initValue);
 //          }
@@ -240,7 +240,7 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_UNDER :
-            $table = getTableNameForForeignKeyField($criteria);
+            $table  = getTableNameForForeignKeyField($criteria);
             $values = getSonsOf($table, $pattern);
             if (isset($values[$field])) {
                return true;
@@ -323,10 +323,11 @@ class RuleCriteria extends CommonDBChild {
     *
     * @param $ID condition's ID
     * @param $itemtype itemtype
+    * @param $criterion
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID, $itemtype, $criterion = '') {
+   static function getConditionByID($ID, $itemtype, $criterion='') {
 
       $conditions = self::getConditions($itemtype, $criterion);
       if (isset($conditions[$ID])) {
@@ -337,9 +338,12 @@ class RuleCriteria extends CommonDBChild {
 
 
    /**
+    * @param $itemtype itemtype
+    * @param $criterion
     *
+    * @return array of criteria
    **/
-   static function getConditions($itemtype, $criterion = '') {
+   static function getConditions($itemtype, $criterion='') {
       global $LANG;
 
       $criteria =  array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
@@ -364,12 +368,12 @@ class RuleCriteria extends CommonDBChild {
 
       if (isset($crit['type']) && $crit['type'] == 'dropdown') {
          $crititemtype = getItemtypeForTable($crit['table']);
-         $item = new $crititemtype();
+         $item         = new $crititemtype();
          if ($item instanceof CommonTreeDropdown) {
             $criteria[Rule::PATTERN_UNDER] = $LANG['search'][3];
          }
       }
-      
+
       return $criteria;
    }
 

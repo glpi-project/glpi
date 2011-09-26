@@ -373,7 +373,7 @@ $LANG['common'][111] = "Matériels utilisés";
 $LANG['common'][112] = "Matériels gérés";
 $LANG['common'][113] = "Visibilité";
 $LANG['common'][114] = "TAG ID";
-$LANG['common'][115] = "Periodicité";
+$LANG['common'][115] = "Périodicité";
 
 
 $LANG['computers'][0]  = "Volume";
