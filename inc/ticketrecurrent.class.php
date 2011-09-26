@@ -109,6 +109,7 @@ class TicketRecurrent extends CommonDropdown {
       return $ong;
    }
 
+
    function prepareInputForAdd($input) {
       $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
                                                                     $input['periodicity'],
@@ -116,21 +117,25 @@ class TicketRecurrent extends CommonDropdown {
       return $input;
    }
 
+
    function prepareInputForUpdate($input) {
+
       if (isset($input['begin_date']) && isset($input['periodicity'])
-         && isset($input['create_before'])) {
+          && isset($input['create_before'])) {
          $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
-                                                                    $input['periodicity'],
-                                                                    $input['create_before']);
+                                                                       $input['periodicity'],
+                                                                       $input['create_before']);
       }
       return $input;
    }
+
 
    /**
     * Return Additional Fileds for this type
    **/
    function getAdditionalFields() {
       global $LANG;
+
       return array(array('name'  => 'is_active',
                          'label' => $LANG['common'][60],
                          'type'  => 'bool',
@@ -195,12 +200,13 @@ class TicketRecurrent extends CommonDropdown {
       return $tab;
    }
 
+
    /**
-   * Show next creation date
-   *
-   * @return nothing only display
+    * Show next creation date
+    *
+    * @return nothing only display
    **/
-   function showInfos () {
+   function showInfos() {
       global $LANG;
 
       if (!is_null($this->fields['next_creation_date'])) {
@@ -208,18 +214,18 @@ class TicketRecurrent extends CommonDropdown {
          echo $LANG['jobrecurrent'][3].'&nbsp;:&nbsp;';
          echo Html::convDateTime($this->fields['next_creation_date']);
          echo "</div>";
-
       }
    }
 
+
    /**
-   * Compute next creation date of a ticket
-   *
-   * @param $begin_date datetime Begin date of the recurrent ticket
-   * @param $periodicity timestamp Periodicity of creation
-   * @param $create_before timestamp Create before specific timestamp
-   *
-   * @return datetime next creation date
+    * Compute next creation date of a ticket
+    *
+    * @param $begin_date datetime Begin date of the recurrent ticket
+    * @param $periodicity timestamp Periodicity of creation
+    * @param $create_before timestamp Create before specific timestamp
+    *
+    * @return datetime next creation date
    **/
    function computeNextCreationDate($begin_date, $periodicity, $create_before){
       global $LANG;
@@ -228,17 +234,19 @@ class TicketRecurrent extends CommonDropdown {
          Session::addMessageAfterRedirect($LANG['jobrecurrent'][4], false, ERROR);
          return NULL;
       }
+
       if ($periodicity > 0) {
          $timestart  = strtotime($begin_date) - $create_before;
-         $now = time();
+         $now        = time();
          if ($now > $timestart) {
             $times = floor(($now-$timestart) / $periodicity);
-            return date("Y-m-d H:i:s",$timestart+($times+1)*$periodicity);
+            return date("Y-m-d H:i:s", $timestart+($times+1)*$periodicity);
          }
       }
 
       return NULL;
    }
+
 
    /**
     * Give cron informations
@@ -257,6 +265,7 @@ class TicketRecurrent extends CommonDropdown {
       return array();
    }
 
+
    /**
     * Cron for ticket's automatic close
     *
@@ -272,7 +281,7 @@ class TicketRecurrent extends CommonDropdown {
       $query = "SELECT *
                 FROM `glpi_ticketrecurrents`
                 WHERE `glpi_ticketrecurrents`.`next_creation_date` < NOW()
-                  AND `glpi_ticketrecurrents`.`is_active` = 1";
+                      AND `glpi_ticketrecurrents`.`is_active` = 1";
 
       foreach ($DB->request($query) as $data) {
          $tot++;
@@ -283,6 +292,7 @@ class TicketRecurrent extends CommonDropdown {
       return ($tot > 0);
    }
 
+
    /**
     * Create a ticket based on ticket recurrent infos
     *
@@ -291,6 +301,7 @@ class TicketRecurrent extends CommonDropdown {
     * @return nothing
    **/
    static function createTicket($data) {
+
       $tt = new TicketTemplate();
 
       // Create ticket based on ticket template and entity informations of ticketrecurrent
@@ -298,7 +309,7 @@ class TicketRecurrent extends CommonDropdown {
          // Get default values for ticket
          $input = Ticket::getDefaultValues();
          // Apply tickettemplates predefined values
-         $ttp              = new TicketTemplatePredefinedField();
+         $ttp        = new TicketTemplatePredefinedField();
          $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
 
          if (count($predefined)) {
@@ -307,27 +318,27 @@ class TicketRecurrent extends CommonDropdown {
             }
          }
          // Set date to creation date
-         $createtime = strtotime($data['next_creation_date']) + $data['create_before'];
+         $createtime    = strtotime($data['next_creation_date']) + $data['create_before'];
          $input['date'] = date('Y-m-d H:i:s', $createtime);
          // Compute due_date if predefined based on create date
          if (isset($predefined['due_date'])) {
-            $input['due_date']
-                        = Html::computeGenericDateTimeSearch($predefined['due_date'], false,
-                                                             $createtime);
+            $input['due_date'] = Html::computeGenericDateTimeSearch($predefined['due_date'], false,
+                                                                    $createtime);
          }
          $ticket = new Ticket();
          $ticket->add($input);
       }
 
       // Compute next creation date
-      $tr = new TicketRecurrent();
+      $tr = new self();
       if ($tr->getFromDB($data['id'])) {
-         $input['id'] = $data['id'];
+         $input['id']                 = $data['id'];
          $input['next_creation_date'] = $tr->computeNextCreationDate($data['begin_date'],
                                                                      $data['periodicity'],
                                                                      $data['create_before']);
          $tr->update($input);
       }
    }
+
 }
 ?>

@@ -361,6 +361,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                           )."')");
    }
 
+
    function cleanDBonPurge() {
 
       if (!empty($this->grouplinkclass)) {
@@ -1913,7 +1914,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "&nbsp;";
 
-
       $right = $this->getDefaultActorRightSearch($type);
 
       if ($options["_users_id_".$typename] == 0) {
@@ -1949,12 +1949,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // List all users in the active entities
       User::dropdown($params);
 
-
       if ($itemtype == 'Ticket') {
 
          // display opened tickets for user
-         if ($type == self::REQUESTER
-          && $options["_users_id_".$typename] > 0) {
+         if ($type == self::REQUESTER && $options["_users_id_".$typename] > 0) {
 
             $options2['field'][0]      = 4; // users_id
             $options2['searchtype'][0] = 'equals';
@@ -1976,7 +1974,8 @@ abstract class CommonITILObject extends CommonDBTM {
          // Display active tickets for a tech
          // Need to update information on dropdown changes
          if ($type == self::ASSIGN) {
-            Ajax::updateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,"actor_".$typename."_$rand",
+            Ajax::updateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,
+                                          "actor_".$typename."_$rand",
                                           $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                           array('users_id_assign' => '__VALUE__'));
             echo "<span id='actor_".$typename."_$rand'>";

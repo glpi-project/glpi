@@ -1278,8 +1278,7 @@ class Ticket extends CommonITILObject {
       }
 
       if ((isset($this->input["plan"]) && count($this->input["plan"]))
-          || (isset($this->input["actiontime"])
-              && $this->input["actiontime"]>0)) {
+          || (isset($this->input["actiontime"]) && $this->input["actiontime"]>0)) {
 
          $task = new TicketTask();
          $type = "new";
@@ -3056,6 +3055,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @since version 0.83
+   **/
    static function getDefaultValues () {
 
       $users_id_requester = Session::getLoginUserID();
@@ -3098,8 +3100,8 @@ class Ticket extends CommonITILObject {
                     '_add_validation'           => 0,
                     'type'                      => -1);
 
-
    }
+
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
