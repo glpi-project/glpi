@@ -497,7 +497,7 @@ class CommonDBTM extends CommonGLPI {
                      foreach ($DB->request($tablename, array($f => $this->fields['id'])) as $data) {
                         if ($object = getItemForItemtype($itemtype)) {
                            $object->update(array('id' => $data['id'],
-                                                $f   => $newval));
+                                                  $f  => $newval));
                         }
                      }
                   }
@@ -2858,7 +2858,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function getItemEntity($itemtype, $items_id) {
 
-      if ($itemtype && $item = getItemForItemtype($itemtype)) {
+      if ($itemtype && ($item = getItemForItemtype($itemtype))) {
 
          if ($item->getFromDB($items_id)) {
             return $item->getEntityID();

@@ -1018,6 +1018,7 @@ $LANG['job'][35] = "Planification";
 $LANG['job'][36] = "ticket(s) en cours ou résolu(s) récemment sur cet élément.";
 $LANG['job'][37] = "Résumé";
 $LANG['job'][38] = "Ticket";
+
 $LANG['job'][40] = "Coût horaire";
 $LANG['job'][41] = "Coût fixe";
 $LANG['job'][42] = "Coût matériel";

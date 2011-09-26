@@ -1284,12 +1284,13 @@ function update0803to083() {
                                          'show_group_ticket'         => '1',
                                          'create_validation'         => '1',
                                          'update_own_followups'      => '1',
-                                         'create_ticket_on_login'    => '1',),
+                                         'create_ticket_on_login'    => '1'),
 
                                  );
 
    foreach ($profiles as $profile => $data) {
-      $query  = "INSERT INTO `glpi_profiles` (`".implode("`, `",array_keys($data))."`)
+      $query  = "INSERT INTO `glpi_profiles`
+                         (`".implode("`, `",array_keys($data))."`)
                   VALUES ('".implode("', '",$data)."')";
       $DB->query($query)
       or die("0.83 create new profile $profile " . $LANG['update'][90] . $DB->error());
@@ -1366,17 +1367,18 @@ function update0803to083() {
             // Grab helpdesk profiles
             $helpdesk_profiles = array();
             foreach ($DB->request("glpi_profiles",
-                                 "`interface` = 'helpdesk'") as $data2) {
+                                  "`interface` = 'helpdesk'") as $data2) {
                $helpdesk_profiles[$data2['id']] = $data2['id'];
             }
             if (count($helpdesk_profiles)) {
                while ($data = $DB->fetch_assoc($result)) {
                   foreach ($helpdesk_profiles as $pid) {
                      $query = "INSERT INTO `glpi_profiles_reminders`
-                                 (`reminders_id`,`profiles_id`)
-                                 VALUES ('".$data['id']."','$pid');";
+                                      (`reminders_id`, `profiles_id`)
+                               VALUES ('".$data['id']."', '$pid');";
                      $DB->query($query)
-                      or die("0.83 migrate data for is_helpdesk_visible drop on glpi_reminders ".$LANG['update'][90].$DB->error());
+                     or die("0.83 migrate data for is_helpdesk_visible drop on glpi_reminders ".
+                            $LANG['update'][90].$DB->error());
                   }
                }
             }
@@ -1399,10 +1401,11 @@ function update0803to083() {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_entities_reminders`
-                           (`reminders_id`,`entities_id`, `is_recursive`)
-                           VALUES ('".$data['id']."','".$data['entities_id']."','".$data['is_recursive']."');";
+                                (`reminders_id`, `entities_id`, `is_recursive`)
+                         VALUES ('".$data['id']."', '".$data['entities_id']."',
+                                 '".$data['is_recursive']."');";
                $DB->query($query)
-                  or die("0.83 migrate data for public reminders ".$LANG['update'][90].$DB->error());
+               or die("0.83 migrate data for public reminders ".$LANG['update'][90].$DB->error());
             }
          }
       }

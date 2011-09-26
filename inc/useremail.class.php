@@ -63,7 +63,9 @@ class UserEmail  extends CommonDBChild {
 
 
    function canCreateItem() {
-      return (Session::haveRight('user','w') || $this->fields['users_id'] == Session::getLoginUserID());
+
+      return (Session::haveRight('user','w')
+              || $this->fields['users_id'] == Session::getLoginUserID());
    }
 
 
@@ -175,8 +177,8 @@ class UserEmail  extends CommonDBChild {
       $count = 0;
 
       // Display emails
-      foreach ($DB->request("glpi_useremails",
-                            array('users_id' => $users_id, 'ORDER' => 'email')) as $data) {
+      foreach ($DB->request("glpi_useremails", array('users_id' => $users_id,
+                                                     'ORDER'    => 'email')) as $data) {
          if ($count) {
             echo '<br>';
          }

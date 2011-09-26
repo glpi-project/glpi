@@ -482,7 +482,7 @@ class Ticket extends CommonITILObject {
    **/
    function getAdditionalDatas() {
 
-      if ($this->fields["itemtype"] && $item = getItemForItemtype($this->fields["itemtype"])) {
+      if ($this->fields["itemtype"] && ($item = getItemForItemtype($this->fields["itemtype"]))) {
          if ($item->getFromDB($this->fields["items_id"])) {
             $this->hardwaredatas=$item;
          }
@@ -683,7 +683,7 @@ class Ticket extends CommonITILObject {
              && $this->fields['groups_id'] == 0
              && (!isset($input['groups_id']) || $input['groups_id'] == 0)) {
 
-            if ($input["itemtype"] && $item = getItemForItemtype($input["itemtype"])) {
+            if ($input["itemtype"] && ($item = getItemForItemtype($input["itemtype"]))) {
                $item->getFromDB($input["items_id"]);
                if ($item->isField('groups_id')) {
                   $input["groups_id"] = $item->getField('groups_id');
@@ -956,7 +956,8 @@ class Ticket extends CommonITILObject {
              || in_array("cost_fixed",$this->updates)
              || in_array("cost_material",$this->updates)) {
 
-            if ($this->fields["itemtype"] && $item = getItemForItemtype($this->fields["itemtype"])) {
+            if ($this->fields["itemtype"]
+                && ($item = getItemForItemtype($this->fields["itemtype"]))) {
                if ($item->getFromDB($this->fields["items_id"])) {
                   $newinput = array();
                   $newinput['id']         = $this->fields["items_id"];
@@ -2342,7 +2343,8 @@ class Ticket extends CommonITILObject {
 
          // My items
          foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
-            if ($item = getItemForItemtype($itemtype) && parent::isPossibleToAssignType($itemtype)) {
+            if (($item = getItemForItemtype($itemtype))
+                && parent::isPossibleToAssignType($itemtype)) {
                $itemtable = getTableForItemType($itemtype);
                $query = "SELECT *
                          FROM `$itemtable`
@@ -2418,7 +2420,8 @@ class Ticket extends CommonITILObject {
 
                $tmp_device = "";
                foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
-                  if ($item = getItemForItemtype($itemtype) && parent::isPossibleToAssignType($itemtype)) {
+                  if (($item = getItemForItemtype($itemtype))
+                      && parent::isPossibleToAssignType($itemtype)) {
                      $itemtable = getTableForItemType($itemtype);
                      $query = "SELECT *
                                FROM `$itemtable`
@@ -2484,7 +2487,7 @@ class Ticket extends CommonITILObject {
             $types = array('Peripheral', 'Monitor', 'Printer', 'Phone');
             foreach ($types as $itemtype) {
                if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-                   && $item = getItemForItemtype($itemtype)) {
+                   && ($item = getItemForItemtype($itemtype))) {
                   $itemtable = getTableForItemType($itemtype);
                   if (!isset($already_add[$itemtype])) {
                      $already_add[$itemtype] = array();
@@ -2654,7 +2657,10 @@ class Ticket extends CommonITILObject {
             echo "<span id='results_$myname$rand'>\n";
 
             // Display default value if itemtype is displayed
-            if ($found_type && $itemtype && $item = getItemForItemtype($itemtype) && $items_id) {
+            if ($found_type
+                && $itemtype
+                && ($item = getItemForItemtype($itemtype))
+                && $items_id) {
                if ($item->getFromDB($items_id)) {
                   echo "<select name='items_id'>\n";
                   echo "<option value='$items_id'>".$item->getName();
@@ -3577,7 +3583,7 @@ class Ticket extends CommonITILObject {
       if ($canupdate || !$ID || $canupdate_descr) {
          if ($ID) {
             if ($this->fields['itemtype']
-                && $item = getItemForItemtype($this->fields['itemtype'])
+                && ($item = getItemForItemtype($this->fields['itemtype']))
                 && $this->fields["items_id"]) {
                if ($item->can($this->fields["items_id"],'r')) {
                   echo $item->getTypeName()." - ".$item->getLink(true);
@@ -3605,7 +3611,9 @@ class Ticket extends CommonITILObject {
          echo "<span id='item_ticket_selection_information'></span>";
 
       } else {
-         if ($ID && $this->fields['itemtype'] && $item = getItemForItemtype($this->fields['itemtype'])) {
+         if ($ID
+             && $this->fields['itemtype']
+             && ($item = getItemForItemtype($this->fields['itemtype']))) {
             $item->getFromDB($this->fields['items_id']);
             echo $item->getTypeName()." - ".$item->getNameID();
          } else {
