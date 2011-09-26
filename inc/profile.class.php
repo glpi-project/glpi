@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
                                           'helpdesk_item_type', 'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
                                           'show_group_hardware', 'show_group_ticket',
-                                          'tickettemplate', 'validate_ticket', 'ticketrecurrent');
+                                          'ticketrecurrent', 'tickettemplate', 'validate_ticket');
 
 
    /// Common fields used for all profiles type
@@ -797,30 +797,24 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-
       echo "<td>".$LANG['profiles'][4]."&nbsp;:</td><td>";
       Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][45]."&nbsp;:</td><td>";
       Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
       echo "</td>";
-
-      echo "<td>&nbsp;</td><td>&nbsp;";
-      echo "</td>";
-
+      echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][59]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['job'][59]."&nbsp;: </td><td>";
       self::dropdownNoneReadWrite("tickettemplate", $this->fields["tickettemplate"], 1, 1, 1);
       echo "</td>";
-
       echo "<td>".$LANG['jobrecurrent'][1]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("ticketrecurrent", $this->fields["ticketrecurrent"], 1, 1, 1);
       echo "</td>";
-
-      echo "<td>&nbsp;</td><td>&nbsp;";
-      echo "</td>";
+      echo "<td>&nbsp;</td><td>&nbsp;</td>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][40]."</th>";
       echo "</tr>\n";
