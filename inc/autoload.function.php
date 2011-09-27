@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+include_once (GLPI_ROOT."/config/based_config.php");
+include_once (GLPI_ROOT."/config/define.php");
+
+
 /// TODO delete when PHP comptibility set > 5.3
 // PHP_VERSION_ID is available as of PHP 5.2.7, if our
 // version is lower than that, then emulate it
@@ -117,7 +121,7 @@ function __autoload($classname) {
       $item = strtolower($classname);
    }
 
-   // No errors for missing classes due to implementation
+   // No errors for missing classes due to implementation 
    if (!in_array($item,$CFG_GLPI['missingclasses'])){
       if (file_exists("$dir$item.class.php")) {
          include_once ("$dir$item.class.php");
