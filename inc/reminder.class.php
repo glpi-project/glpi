@@ -62,29 +62,35 @@ class Reminder extends CommonDBTM {
       return (Session::haveRight('reminder_public', 'w') || Session::haveRight('reminder', 'w'));
    }
 
-
    function canView() {
       return (Session::haveRight('reminder_public', 'r') || Session::haveRight('reminder', 'r'));
    }
 
    function canViewItem() {
-      /// TODO
+      // Is my reminder or is in visibility
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+            || (Session::haveRight('reminder_public', 'r')
+               && $this->haveVisibilityAccess()));
+
       return true;
    }
 
    function canCreateItem() {
-      /// TODO
-      return true;
+      // Is my reminder
+      return ($this->fields['users_id'] == Session::getLoginUserID());
    }
 
    function canUpdateItem() {
-      /// TODO
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+            || (Session::haveRight('reminder_public', 'r')
+               && $this->haveVisibilityAccess()));
       return true;
    }
 
    function post_getFromDB () {
       // Users
       $this->users = Reminder_User::getUsers($this->fields['id']);
+
       // Entities
       $this->entities = Entity_Reminder::getEntities($this->fields['id']);
 
@@ -95,25 +101,158 @@ class Reminder extends CommonDBTM {
       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+   /**
+    * Is the login user have access to reminder based on visibility configuration
+    *
+    * @return boolean
+    **/
+   function haveVisibilityAccess() {
+      // Users
+      if (isset($this->users[Session::getLoginUserID()])) {
+         return false;
+      }
+      // Groups
+      if (count($this->groups)
+         && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         foreach ($this->groups as $key => $data) {
+            foreach ($data as $group) {
+               if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
+                  // All the group
+                  if ($group['entities_id'] < 0) {
+                     return true;
+                  } else { // Restrict to entities
+                     $entities = array($group['entities_id']);
+                     if ($group['is_recursive']) {
+                        $entities = getSonsOf('glpi_entities',$group['entities_id']);
+                     }
+                     if (Session::haveAccessToOneOfEntities($entities, true)) {
+                        return true;
+                     }
+                  }
+
+               }
+            }
+         }
+      }
+      // Entities
+      if (count($this->entities)
+         && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         foreach ($this->entities as $key => $data) {
+            foreach ($data as $entity) {
+               $entities = array($entity['entities_id']);
+               if ($entity['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities',$entity['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)
+         && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
+            foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
+               // All the profile
+               if ($profile['entities_id'] < 0) {
+                  return true;
+               } else { // Restrict to entities
+                  $entities = array($profile['entities_id']);
+                  if ($profile['is_recursive']) {
+                     $entities = getSonsOf('glpi_entities',$profile['entities_id']);
+                  }
+                  if (Session::haveAccessToOneOfEntities($entities, true)) {
+                     return true;
+                  }
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Return visibility joins to add to SQL
+    *
+    * @return string joins to add
+    **/
+   static function addVisibilityJoins() {
+      $join = '';
+
+      // Users
+      $join .= " LEFT JOIN `glpi_reminders_users`
+                  ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
+      // Groups
+      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         $join .= " LEFT JOIN `glpi_groups_reminders`
+                     ON (`glpi_groups_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+      }
+      // Profiles
+      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         $join .= " LEFT JOIN `glpi_profiles_reminders`
+                     ON (`glpi_profiles_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+      }
+      // Entities
+      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         $join .= " LEFT JOIN `glpi_entities_reminders`
+                     ON (`glpi_entities_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+      }
+
+      return $join;
+
+   }
+
+   /**
+    * Return visibility SQL restriction to add 
+    *
+    * @return string restrict to add
+    **/
+   static function addVisibilityRestrict() {
+      $restrict = '0';
+
+      // Users
+      $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
+      // Groups
+      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         $restrict .= " OR (`glpi_groups_reminders`.`groups_id`
+                           IN ('".implode("','",$_SESSION["glpigroups"])."')
+                           AND (`glpi_groups_reminders`.`entities_id` < 0
+                              ".getEntitiesRestrictRequest("OR","glpi_groups_reminders", '', '', true)
+                        .")) ";
+      }
+      // Profiles
+      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         $restrict .= " OR (`glpi_profiles_reminders`.`profiles_id` = '".$_SESSION["glpiactiveprofile"]['id']."'
+                           AND (`glpi_profiles_reminders`.`entities_id` < 0
+                              ".getEntitiesRestrictRequest("OR","glpi_profiles_reminders", '', '', true)
+                        .")) ";
+      }
+
+      // Entities
+      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true);
+      }
+
+      return $restrict;
+   }
+
 
    function post_addItem() {
 
-
-      if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
-                                       $this->fields["end"],
-                                       array('Reminder' => array($this->fields['id'])));
-      }
+      Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                    $this->fields["end"],
+                                    array('Reminder' => array($this->fields['id'])));
    }
 
 
    function post_updateItem($history=1) {
 
-      if ($this->fields["is_private"]) {
-         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
-                                       $this->fields["end"],
-                                       array('Reminder' => array($this->fields['id'])));
-      }
+      Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                    $this->fields["end"],
+                                    array('Reminder' => array($this->fields['id'])));
    }
 
 
@@ -237,8 +376,6 @@ class Reminder extends CommonDBTM {
 
       $this->fields["name"]        = $LANG['reminder'][6];
       $this->fields["users_id"]    = Session::getLoginUserID();
-      $this->fields["is_private"]  = 1;
-      $this->fields["entities_id"] = $_SESSION["glpiactive_entity"];
    }
 
 
@@ -589,74 +726,59 @@ class Reminder extends CommonDBTM {
    }
 
 
-   static function showListForCentral($entity = -1, $parent = false) {
+   /**
+    * Show list for central view
+    *
+    * @param $personal boolean : display reminders created by me ?
+    *
+    * @return Nothing (display function)
+    **/
+   static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI, $LANG;
 
-      /// TODO
-      echo "TO COMPLETLY REVIEW : DISPLAY notes created by me AND publics ones";
-      $is_helpdesk_visible = '';
-
-      // show reminder that are not planned
       $users_id = Session::getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];
 
-      $restrict_visibility = " AND (`begin_view_date` IS NULL
-                                    OR `begin_view_date` < '$today')
-                              AND (`end_view_date` IS NULL
-                                   OR `end_view_date` > '$today') ";
+      $restrict_visibility = " AND (`glpi_reminders`.`begin_view_date` IS NULL
+                                    OR `glpi_reminders`.`begin_view_date` < '$today')
+                              AND (`glpi_reminders`.`end_view_date` IS NULL
+                                   OR `glpi_reminders`.`end_view_date` > '$today') ";
 
-      if ($entity < 0) {
-         $query = "SELECT *
+      if ($personal) {
+         $query = "SELECT `glpi_reminders`.*
                    FROM `glpi_reminders`
-                   WHERE `users_id` = '$users_id'
-                         -- AND `is_private` = '1'
-                         AND (`end` >= '$today'
-                              OR `is_planned` = '0')
+                   WHERE `glpi_reminders`.`users_id` = '$users_id'
+                         AND (`glpi_reminders`.`end` >= '$today'
+                              OR `glpi_reminders`.`is_planned` = '0')
                          $restrict_visibility
-                   ORDER BY `name`";
+                   ORDER BY `glpi_reminders`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
          $is_private = 1;
 
-      } else if ($entity == $_SESSION["glpiactive_entity"]) {
-         $query = "SELECT *
+      } else { // Show public reminders / not mines
+         $query = "SELECT `glpi_reminders`.*
                    FROM `glpi_reminders`
-                   WHERE `is_private` = '0'
-                         $restrict_visibility ORDER BY `name`";
-//                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
-//                    ORDER BY `name`";
+                   ".self::addVisibilityJoins()."
+                   WHERE `glpi_reminders`.`users_id` <> '$users_id'
+                         $restrict_visibility
+                        AND (
+                           ".self::addVisibilityRestrict()."
+                        )
+                        ORDER BY `glpi_reminders`.`name`";
 
+//          echo $query;
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
-                     "</a> (".Dropdown::getDropdownName("glpi_entities", $entity).")";
+                     "</a>";
          } else {
-            $titre = $LANG['reminder'][1]." (".Dropdown::getDropdownName("glpi_entities", $entity).")";
+            $titre = $LANG['reminder'][1];
          }
 
          if (Session::haveRight("reminder_public","w")) {
             $is_private = 0;
          }
 
-      } else if ($parent) {
-         $query = "SELECT *
-                   FROM `glpi_reminders`
-                   WHERE `is_private` = '0'
-                         AND `is_recursive` = '1'
-                         $restrict_visibility".
-                         getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
-                   ORDER BY `name`";
-
-         $titre = $LANG['reminder'][1]." (".Dropdown::getDropdownName("glpi_entities", $entity).")";
-
-      } else { // Filles
-         $query = "SELECT *
-                   FROM `glpi_reminders`
-                   WHERE `is_private` = '0'
-                         $is_helpdesk_visible $restrict_visibility".
-                         getEntitiesRestrictRequest("AND", "glpi_reminders", "", $entity)."
-                   ORDER BY `name`";
-
-         $titre = $LANG['reminder'][1]." (".Dropdown::getDropdownName("glpi_entities", $entity).")";
       }
 
       $result = $DB->query($query);

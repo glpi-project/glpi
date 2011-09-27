@@ -764,14 +764,15 @@ class Session {
     * Check if you could access to one entity of an list
     *
     * @param $tab : list ID of entities
+    * @param $is_recursive : boolean if recursive item
     *
     * @return Boolean :
    **/
-   static function haveAccessToOneOfEntities($tab) {
+   static function haveAccessToOneOfEntities($tab, $is_recursive = 0) {
 
       if (is_array($tab) && count($tab)) {
          foreach ($tab as $val) {
-            if (self::haveAccessToEntity($val)) {
+            if (self::haveAccessToEntity($val, $is_recursive)) {
                return true;
             }
          }
