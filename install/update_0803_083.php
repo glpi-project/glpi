@@ -1317,9 +1317,14 @@ function update0803to083() {
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `reminders_id` int(11) NOT NULL DEFAULT '0',
                   `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
-                  KEY `groups_id` (`groups_id`)
+                  KEY `groups_id` (`groups_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query)
@@ -1331,9 +1336,13 @@ function update0803to083() {
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `reminders_id` int(11) NOT NULL DEFAULT '0',
                   `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
-                  KEY `profiles_id` (`profiles_id`)
+                  KEY `profiles_id` (`profiles_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query)
@@ -1367,7 +1376,7 @@ function update0803to083() {
             // Grab helpdesk profiles
             $helpdesk_profiles = array();
             foreach ($DB->request("glpi_profiles",
-                                  "`interface` = 'helpdesk'") as $data2) {
+                                  "`interface` = 'helpdesk' AND `reminder_public` = 'r'") as $data2) {
                $helpdesk_profiles[$data2['id']] = $data2['id'];
             }
             if (count($helpdesk_profiles)) {
