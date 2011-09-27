@@ -3372,11 +3372,12 @@ class Ticket extends CommonITILObject {
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
-               echo "<td><span id='sla_action'>";
+               echo "<td>";
+               echo "<span id='sla_action'>";
                echo "<a href='#' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
                                                                        $LANG['sla'][14]),
                                              "cleanhide('sla_action');cleandisplay('sla_choice');").
-                     "\">".$LANG['sla'][12].'</a>';
+                     ">".$LANG['sla'][12].'</a>';
                echo "</span>";
                echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:&nbsp;";
                Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
