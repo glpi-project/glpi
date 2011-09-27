@@ -2356,6 +2356,10 @@ class Search {
       global $CFG_GLPI;
 
       switch ($itemtype) {
+         case 'Reminder' :
+               return " `glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
+                        OR (".Reminder::addVisibilityRestrict().")";
+            break;
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
@@ -3005,6 +3009,21 @@ class Search {
          case 'Entity' :
             return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                      "glpi_entitydatas", "");
+
+         case 'Reminder' :
+            $out = self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_reminders_users", "reminders_users_id", 0, 0,
+                                      array('jointype' => 'child'));
+            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_groups_reminders", "groups_reminders_id", 0, 0,
+                                      array('jointype' => 'child'));
+            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_entities_reminders", "entities_reminders_id", 0, 0,
+                                      array('jointype' => 'child'));
+            $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_profiles_reminders", "profiles_reminders_id", 0, 0,
+                                      array('jointype' => 'child'));
+            return $out;
 
          case 'Ticket' :
             // Same structure in addDefaultWhere

@@ -40,12 +40,15 @@ Session::checkCentralAccess();
 
 Html::header($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
-Reminder::showList();
+Search::show('Reminder');
 
-if (Session::haveRight("reminder_public","r")) {
-   Reminder::showList(false,false);
-   Reminder::showList(false,true);
-}
+
+// Reminder::showList();
+// 
+// if (Session::haveRight("reminder_public","r")) {
+//    Reminder::showList(false,false);
+//    Reminder::showList(false,true);
+// }
 
 Html::footer();
 ?>
