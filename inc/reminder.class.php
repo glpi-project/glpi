@@ -59,11 +59,13 @@ class Reminder extends CommonDBTM {
 
 
    function canCreate() {
-      return (Session::haveRight('reminder_public', 'w') || Session::haveRight('reminder', 'w'));
+      return (Session::haveRight('reminder_public', 'w')
+               || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
    }
 
    function canView() {
-      return (Session::haveRight('reminder_public', 'r') || Session::haveRight('reminder', 'r'));
+      return (Session::haveRight('reminder_public', 'r')
+               || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
    }
 
    function canViewItem() {
@@ -107,9 +109,14 @@ class Reminder extends CommonDBTM {
     * @return boolean
     **/
    function haveVisibilityAccess() {
+      // No public reminder right : no visibility check
+      if (!Session::haveRight('reminder_public', 'r')) {
+         return false;
+      }
+
       // Users
       if (isset($this->users[Session::getLoginUserID()])) {
-         return false;
+         return true;
       }
       // Groups
       if (count($this->groups)
@@ -753,6 +760,8 @@ class Reminder extends CommonDBTM {
    static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI, $LANG;
 
+      $reminder = new Reminder();
+
       $users_id = Session::getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];
 
@@ -762,6 +771,13 @@ class Reminder extends CommonDBTM {
                                    OR `glpi_reminders`.`end_view_date` > '$today') ";
 
       if ($personal) {
+
+
+         /// Personal notes only for central view
+         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+            return false;
+         }
+
          $query = "SELECT `glpi_reminders`.*
                    FROM `glpi_reminders`
                    WHERE `glpi_reminders`.`users_id` = '$users_id'
@@ -771,9 +787,13 @@ class Reminder extends CommonDBTM {
                    ORDER BY `glpi_reminders`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
-         $is_private = 1;
 
-      } else { // Show public reminders / not mines
+      } else {
+         // Show public reminders / not mines : need to have access to public reminders
+         if (!Session::haveRight('reminder_public', 'r')) {
+            return false;
+         }
+
          $query = "SELECT `glpi_reminders`.*
                    FROM `glpi_reminders`
                    ".self::addVisibilityJoins()."
@@ -791,21 +811,16 @@ class Reminder extends CommonDBTM {
          } else {
             $titre = $LANG['reminder'][1];
          }
-
-         if (Session::haveRight("reminder_public","w")) {
-            $is_private = 0;
-         }
-
       }
 
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
 
-      if ($nb || isset($is_private)) {
+      if ($nb) {
          echo "<br><table class='tab_cadrehov'>";
          echo "<tr><th><div class='relative'><span>$titre</span>";
 
-         if (isset($is_private)) {
+         if ($reminder->canCreate()) {
             echo "<span class='reminder_right'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
@@ -844,7 +859,7 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if ($nb || isset($is_private)) {
+      if ($nb) {
          echo "</table>\n";
       }
    }
@@ -1004,6 +1019,37 @@ class Reminder extends CommonDBTM {
       $canedit = $this->can($ID,'w');
 
       echo "<div class='center'>";
+
+      $rand = mt_rand();
+
+      if ($canedit) {
+         echo "<form name='remindervisibility_form$rand' id='remindervisibility_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('Reminder')."'>";
+         echo "<input type='hidden' name='reminders_id' value='$ID'>";
+
+      }
+
+
+      echo "<div class='firstbloc'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
+      echo "<tr><td class='tab_bg_2' width='100px'>";
+
+
+      $addrand = Dropdown::dropdownTypes('_type','', array('User','Group','Profile', 'Entity'));
+      $params = array('type' => '__VALUE__');
+
+      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                    $params);
+
+      echo "</td>";
+      echo "<td>";
+      echo "<span id='visibility$rand'></span>";
+      echo "</td></tr>";
+      echo "</table></div>";
+
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       if ($canedit) {
@@ -1032,11 +1078,107 @@ class Reminder extends CommonDBTM {
          }
       }
       // Groups
+      if (count($this->groups)) {
+         foreach ($this->groups as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+                  echo "<td>".$LANG['common'][35]."</td>";
+                  echo "<td>";
+                  $names = Dropdown::getDropdownName('glpi_groups',$data['groups_id'],1);
+                  echo $names["name"]." ";
+                  echo Html::showToolTip($names["comment"]);
+                  if ($data['entities_id'] >= 0) {
+                     echo " / ";
+                     echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                     if ($data['is_recursive']) {
+                        echo " <strong>(R)</strong>";
+                     }
+                  }
+                  echo "</td>";
+               }
+            }
+         }
+      }
       // Entity
+      if (count($this->entities)) {
+         foreach ($this->entities as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+                  echo "<td>".$LANG['entity'][0]."</td>";
+                  echo "<td>";
+                  $names = Dropdown::getDropdownName('glpi_entities',$data['entities_id'],1);
+                  echo $names["name"]." ";
+                  echo Html::showToolTip($names["comment"]);
+                  if ($data['is_recursive']) {
+                     echo " <strong>(R)</strong>";
+                  }
+                  echo "</td>";
+               }
+            }
+         }
+      }
       // Profiles
+      if (count($this->profiles)) {
+         foreach ($this->profiles as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+                  echo "<td>".$LANG['profiles'][22]."</td>";
+                  echo "<td>";
+                  $names = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+                  echo $names["name"]." ";
+                  echo Html::showToolTip($names["comment"]);
+                  if ($data['entities_id'] >= 0) {
+                     echo " / ";
+                     echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                     if ($data['is_recursive']) {
+                        echo " <strong>(R)</strong>";
+                     }
+                  }
+                  echo "</td>";
+               }
+            }
+         }
+      }
 
 
-      echo "</table></div>";
+      if ($canedit) {
+
+
+         echo "<tr><td colspan='3'>";
+         echo "</td></tr>";
+      }
+      echo "</table>";
+      if ($canedit) {
+         Html::openArrowMassives("remindervisibility_form$rand", true);
+         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]));
+         echo "</form>";
+      }
+
+      echo "</div>";
       // Add items
 
 

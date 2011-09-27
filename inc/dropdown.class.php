@@ -385,7 +385,7 @@ class Dropdown {
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownTypes($name, $value=0, $types=array(), $used=array()) {
+   static function dropdownTypes($name, $value='', $types=array(), $used=array()) {
       global $CFG_GLPI;
 
       $options = array('' => self::EMPTY_VALUE);
