@@ -110,6 +110,12 @@ if (isset($_REQUEST['searchtype'])) {
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
+               case "glpi_reminders.state" :
+                  Planning::dropdownState($inputname, $_REQUEST['value']);
+                  $display = true;
+                  break;
+
+
                case "glpi_changes.status" :
                   Change::dropdownStatus($inputname, $_REQUEST['value'], 1);
                   $display = true;

@@ -2357,8 +2357,8 @@ class Search {
 
       switch ($itemtype) {
          case 'Reminder' :
-               return " `glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                        OR ".Reminder::addVisibilityRestrict()."";
+               return " (`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
+                        OR ".Reminder::addVisibilityRestrict().")";
             break;
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
@@ -3968,6 +3968,9 @@ class Search {
                   return $events[$data[$NAME.$num]];
                }
                return '';
+
+         case 'glpi_reminders.state' :
+            return Planning::getState($data[$NAME.$num]);
 
          case 'glpi_crontasks.description' :
             $tmp = new CronTask();
