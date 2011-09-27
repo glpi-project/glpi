@@ -1394,8 +1394,7 @@ function update0803to083() {
          }
       }
 
-      ///TODO  Drop is_helpdesk_visible field from glpi_reminders
-//       $migration->dropField("glpi_reminders", 'is_helpdesk_visible');
+      $migration->dropField("glpi_reminders", 'is_helpdesk_visible');
 
    }
 
@@ -1418,11 +1417,14 @@ function update0803to083() {
             }
          }
       }
-      ///TODO  Drop fields from glpi_reminders
-//       $migration->dropField("glpi_reminders", 'is_private');
-//       $migration->dropField("glpi_reminders", 'entities_id');
-//       $migration->dropField("glpi_reminders", 'is_recursive');
+
+      $migration->dropField("glpi_reminders", 'is_private');
+      $migration->dropField("glpi_reminders", 'entities_id');
+      $migration->dropField("glpi_reminders", 'is_recursive');
    }
+
+   $ADDTODISPLAYPREF['Reminder'] = array(2,3,4,5,6,7);
+
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

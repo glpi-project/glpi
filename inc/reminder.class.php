@@ -263,7 +263,6 @@ class Reminder extends CommonDBTM {
    }
 
 
-   /// TODO : complete getSearchOptions
    function getSearchOptions() {
       global $LANG;
 
@@ -276,6 +275,58 @@ class Reminder extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
+
+      $tab[2]['table']         = 'glpi_users';
+      $tab[2]['field']         = 'name';
+      $tab[2]['name']          = $LANG['common'][37];
+      $tab[2]['datatype']      = 'dropdown';
+      $tab[2]['massiveaction'] = false;
+
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'state';
+      $tab[3]['name']          = $LANG['state'][0];
+      $tab[3]['datatype']      = 'dropdown';
+      $tab[3]['massiveaction'] = false;
+      $tab[3]['searchtype']    = 'equals';
+
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'text';
+      $tab[4]['name']          = $LANG['joblist'][6];
+      $tab[4]['massiveaction'] = false;
+      $tab[4]['datatype']      = 'text';
+      $tab[4]['htmltext']      = true;
+
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'begin_view_date';
+      $tab[5]['name']          = $LANG['search'][8];
+      $tab[5]['datatype']      = 'datetime';
+
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'end_view_date';
+      $tab[6]['name']          = $LANG['search'][9];
+      $tab[6]['datatype']      = 'datetime';
+
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'is_planned';
+      $tab[7]['name']          = $LANG['job'][35];
+      $tab[7]['datatype']      = 'bool';
+      $tab[7]['massiveaction'] = false;
+
+      $tab[8]['table']         = $this->getTable();
+      $tab[8]['field']         = 'begin';
+      $tab[8]['name']          = $LANG['job'][35].' - '.$LANG['search'][8];
+      $tab[8]['datatype']      = 'datetime';
+
+      $tab[9]['table']         = $this->getTable();
+      $tab[9]['field']         = 'end';
+      $tab[9]['name']          = $LANG['job'][35].' - '.$LANG['search'][9];
+      $tab[9]['datatype']      = 'datetime';
+
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       return $tab;
    }
@@ -358,10 +409,12 @@ class Reminder extends CommonDBTM {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
-      $input["name"] = trim($input["name"]);
+      if (isset($input["name"])) {
+         $input["name"] = trim($input["name"]);
 
-      if (empty($input["name"])) {
-         $input["name"] = $LANG['reminder'][15];
+         if (empty($input["name"])) {
+            $input["name"] = $LANG['reminder'][15];
+         }
       }
 
       if (isset($input['plan'])) {
