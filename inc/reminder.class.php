@@ -41,6 +41,13 @@ if (!defined('GLPI_ROOT')) {
 /// Reminder class
 class Reminder extends CommonDBTM {
 
+   // For visibility checks
+   protected $users       = array();
+   protected $groups      = array();
+   protected $profiles    = array();
+   protected $entities    = array();
+
+
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -61,7 +68,22 @@ class Reminder extends CommonDBTM {
    }
 
 
+   function post_getFromDB () {
+      // Users
+      $this->users = Reminder_User::getUsers($this->fields['id']);
+      // Entities
+      $this->entities = Entity_Reminder::getEntities($this->fields['id']);
+
+      // Group / entities
+      $this->groups = Group_Reminder::getGroups($this->fields['id']);
+
+      // Profile / entities
+      $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
+   }
+
+
    function post_addItem() {
+
 
       if ($this->fields["is_private"]) {
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
@@ -81,13 +103,39 @@ class Reminder extends CommonDBTM {
    }
 
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (Session::haveRight("reminder_public","r")) {
+         switch ($item->getType()) {
+            case 'Reminder' :
+               $ong = array();
+               $ong[1] = $LANG['reminder'][2];
+               return $ong;
+         }
+      }
+      return '';
+   }
+
    function defineTabs($options=array()) {
       global $LANG;
 
       $ong    = array();
       $this->addStandardTab('Document', $ong, $options);
+      $this->addStandardTab('Reminder', $ong, $options);
 
       return $ong;
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Reminder' :
+            $item->showVisibility();
+            return true;
+            break;
+      }
+      return false;
    }
 
 
@@ -229,7 +277,7 @@ class Reminder extends CommonDBTM {
       echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       echo "</td></tr>\n";
-
+/*
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       if ($canedit && Session::haveRight("reminder_public","w")) {
@@ -269,7 +317,7 @@ class Reminder extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "</tr>";
-
+*/
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";
@@ -791,6 +839,17 @@ class Reminder extends CommonDBTM {
       echo "</table>\n";
   }
 
+   /**
+    * Show visibility config for a reminder
+    *
+    */
+   function showVisibility() {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $ID = $this->fields['id'];
+
+      return true;
+   }
 
 }
 ?>

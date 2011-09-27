@@ -1797,7 +1797,7 @@ $LANG['registry'][6] = "Nom OCSNG";
 
 $LANG['reminder'][0]  = "Notes personnelles";
 $LANG['reminder'][1]  = "Notes publiques";
-
+$LANG['reminder'][2]  = "Public visé";
 $LANG['reminder'][6]  = "Nouvelle note";
 
 $LANG['reminder'][12] = "Ajouter au planning";
