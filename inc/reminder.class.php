@@ -1001,6 +1001,45 @@ class Reminder extends CommonDBTM {
 
       $ID = $this->fields['id'];
 
+      $canedit = $this->can($ID,'w');
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>&nbsp;</th>";
+      }
+      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['mailing'][121]."</th>";
+      echo "</tr>";
+      // Users
+      if (count($this->users)) {
+         foreach ($this->users as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+                  echo "<td>".$LANG['common'][34]."</td>";
+                  echo "<td>".getUserName($data['users_id'])."</td>";
+               }
+            }
+         }
+      }
+      // Groups
+      // Entity
+      // Profiles
+
+
+      echo "</table></div>";
+      // Add items
+
+
       return true;
    }
 
