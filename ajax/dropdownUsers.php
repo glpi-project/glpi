@@ -87,7 +87,8 @@ if ($DB->numrows($result)) {
    }
 }
 
-asort($users);
+// Sort non case sensitive
+uasort($users, function($a, $b){ return strcasecmp($a, $b); });
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'";
 if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
