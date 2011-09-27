@@ -524,6 +524,9 @@ class Auth {
       //In case the user was deleted in the LDAP directory
       $user_deleted_ldap = false;
 
+      // Trim login_name : avoid LDAP search errors
+      $login_name = trim($login_name);
+
       if (!$noauto && $authtype=self::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
