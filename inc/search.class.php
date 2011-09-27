@@ -2358,7 +2358,7 @@ class Search {
       switch ($itemtype) {
          case 'Reminder' :
                return " `glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                        OR (".Reminder::addVisibilityRestrict().")";
+                        OR ".Reminder::addVisibilityRestrict()."";
             break;
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
