@@ -374,6 +374,7 @@ $LANG['common'][112] = "Matériels gérés";
 $LANG['common'][113] = "Visibilité";
 $LANG['common'][114] = "TAG ID";
 $LANG['common'][115] = "Périodicité";
+$LANG['common'][116] = "Ajouter une cible";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -1236,7 +1237,8 @@ $LANG['log'][63]  = "suppression d'un champ prédéfini";
 $LANG['log'][64]  = "modification du champ";
 $LANG['log'][65]  = "règle";
 $LANG['log'][66]  = "Sécurité";
-
+$LANG['log'][67]  = "suppression d'une cible à une note";
+$LANG['log'][68]  = "ajout d'une cible à une note";
 $LANG['log'][70]  = "ajout d'un port réseau";
 $LANG['log'][71]  = "ajout de plusieurs ports réseau";
 
@@ -1797,7 +1799,9 @@ $LANG['registry'][6] = "Nom OCSNG";
 
 $LANG['reminder'][0]  = "Notes personnelles";
 $LANG['reminder'][1]  = "Notes publiques";
-$LANG['reminder'][2]  = "Public visé";
+$LANG['reminder'][2]  = "Cibles";
+$LANG['reminder'][3]  = "Pas de restriction";
+
 $LANG['reminder'][6]  = "Nouvelle note";
 
 $LANG['reminder'][12] = "Ajouter au planning";
