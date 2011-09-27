@@ -43,15 +43,16 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 $TIMER_DEBUG = new Timer();
 $TIMER_DEBUG->start();
 
-
-// Security of PHP_SELF
-$_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
-
 /// TODO try to remove them if possible
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 // Standard includes
 include_once (GLPI_ROOT . "/config/config.php");
+
+
+// Security of PHP_SELF
+$_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
+
 
 
 
