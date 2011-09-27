@@ -87,12 +87,14 @@ if ($DB->numrows($result)) {
    }
 }
 
-function local_cmp($a, $b) {
-   return strcasecmp($a, $b);
+if (!function_exists('dpuser_cmp')) {
+   function dpuser_cmp($a, $b) {
+      return strcasecmp($a, $b);
+   }
 }
 
 // Sort non case sensitive
-uasort($users, 'local_cmp');
+uasort($users, 'dpuser_cmp');
 
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'";
