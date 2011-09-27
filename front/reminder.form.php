@@ -58,7 +58,6 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])) {
    $remind->check($_POST["id"],'w');   // Right to update the reminder
-   $remind->check(-1,'w',$_POST);      // Right when entity change
 
    $remind->update($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);

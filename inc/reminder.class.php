@@ -218,7 +218,7 @@ class Reminder extends CommonDBTM {
     * @return string restrict to add
     **/
    static function addVisibilityRestrict() {
-      $restrict = '0';
+      $restrict = '(0';
 
       // Users
       $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
@@ -242,7 +242,7 @@ class Reminder extends CommonDBTM {
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true);
       }
-
+      $restrict .= ") ";
       return $restrict;
    }
 
@@ -608,18 +608,20 @@ class Reminder extends CommonDBTM {
 
       $readpub = $readpriv="";
 
+      $joinstoadd = '';
+
       // See public reminder ?
-//       if (Session::haveRight("reminder_public","r")) {
-//          $readpub = "(`is_private` = 0 AND".getEntitiesRestrictRequest("", "glpi_reminders", '', '',
-//                                                                    true).")";
-//       }
+      if (Session::haveRight("reminder_public","r")) {
+         $readpub = self::addVisibilityRestrict();
+         $joinstoadd = self::addVisibilityJoins();
+      }
 
       // See my private reminder ?
       if ($who_group=="mine" || $who===Session::getLoginUserID()) {
-         $readpriv = "(`users_id` = '".Session::getLoginUserID()."')";
+         $readpriv = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
-      if ($readpub && $readpriv) {
+      if (!empty($readpub) && !empty($readpriv)) {
          $ASSIGN = "($readpub OR $readpriv)";
       } else if ($readpub) {
          $ASSIGN = $readpub;
@@ -628,9 +630,10 @@ class Reminder extends CommonDBTM {
       }
 
       if ($ASSIGN) {
-         $query2 = "SELECT *
+         $query2 = "SELECT `glpi_reminders`.*
                     FROM `glpi_reminders`
-                    WHERE `is_planned` = '1'
+                    $joinstoadd
+                    WHERE `glpi_reminders`.`is_planned` = '1'
                           AND $ASSIGN
                           AND `begin` < '$end'
                           AND `end` > '$begin'
@@ -660,9 +663,6 @@ class Reminder extends CommonDBTM {
                                                   $CFG_GLPI["cut"]);
 
                $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
-               /// TODO : check visibility to know if it is private : useful ?
-               $interv[$data["begin"]."$$".$i]["is_private"] = false;
-//               $interv[$data["begin"]."$$".$i]["is_private"] = $data["is_private"];
                $interv[$data["begin"]."$$".$i]["state"]      = $data["state"];
             }
          }
@@ -680,7 +680,6 @@ class Reminder extends CommonDBTM {
     **/
    static function getAlreadyPlannedInformation($val) {
       global $CFG_GLPI;
-
       $out  = self::getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
               Html::convDateTime($val["end"]).' : ';
       $out .= "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
@@ -707,7 +706,7 @@ class Reminder extends CommonDBTM {
       $users_id = "";  // show users_id reminder
       $img      = "rdv_private.png"; // default icon for reminder
 
-      if (!$val["is_private"]) {
+      if ($val["users_id"] != Session::getLoginUserID()) {
          $users_id = "<br>".$LANG['common'][95]."&nbsp;: ".getUserName($val["users_id"]);
          $img      = "rdv_public.png";
       }
@@ -774,7 +773,7 @@ class Reminder extends CommonDBTM {
 
 
          /// Personal notes only for central view
-         if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
+         if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
             return false;
          }
 
@@ -799,9 +798,7 @@ class Reminder extends CommonDBTM {
                    ".self::addVisibilityJoins()."
                    WHERE `glpi_reminders`.`users_id` <> '$users_id'
                          $restrict_visibility
-                        AND (
-                           ".self::addVisibilityRestrict()."
-                        )
+                        AND ".self::addVisibilityRestrict()."
                         ORDER BY `glpi_reminders`.`name`";
 
 //          echo $query;
