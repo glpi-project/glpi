@@ -59,14 +59,28 @@ class Reminder extends CommonDBTM {
 
 
    function canCreate() {
-      return Session::haveRight('reminder_public', 'w');
+      return (Session::haveRight('reminder_public', 'w') || Session::haveRight('reminder', 'w'));
    }
 
 
    function canView() {
-      return Session::haveRight('reminder_public', 'r');
+      return (Session::haveRight('reminder_public', 'r') || Session::haveRight('reminder', 'r'));
    }
 
+   function canViewItem() {
+      /// TODO
+      return true;
+   }
+
+   function canCreateItem() {
+      /// TODO
+      return true;
+   }
+
+   function canUpdateItem() {
+      /// TODO
+      return true;
+   }
 
    function post_getFromDB () {
       // Users
@@ -654,7 +668,7 @@ class Reminder extends CommonDBTM {
 
          if (isset($is_private)) {
             echo "<span class='reminder_right'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?is_private=$is_private'>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
                   $LANG['buttons'][8]."\"></a></span>";
          }
