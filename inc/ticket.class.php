@@ -4728,8 +4728,8 @@ class Ticket extends CommonITILObject {
          $fourth_col = "";
 
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
-            foreach ($job->users[parent::REQUESTER] as $k => $d) {
-               $userdata    = getUserName($k,2);
+            foreach ($job->users[parent::REQUESTER] as $d) {
+               $userdata    = getUserName($d["users_id"],2);
                $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
                $fourth_col .= Html::showToolTip($userdata["comment"],
                                                 array('link'    => $userdata["link"],
@@ -4739,8 +4739,8 @@ class Ticket extends CommonITILObject {
          }
 
          if (isset($job->groups[parent::REQUESTER]) && count($job->groups[parent::REQUESTER])) {
-            foreach ($job->groups[parent::REQUESTER] as $k => $d) {
-               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $k);
+            foreach ($job->groups[parent::REQUESTER] as $d) {
+               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                $fourth_col .= "<br>";
             }
          }
@@ -4751,8 +4751,8 @@ class Ticket extends CommonITILObject {
          $fifth_col = "";
 
          if (isset($job->users[parent::ASSIGN]) && count($job->users[parent::ASSIGN])) {
-            foreach ($job->users[parent::ASSIGN] as $k => $d) {
-               $userdata = getUserName($k, 2);
+            foreach ($job->users[parent::ASSIGN] as $d) {
+               $userdata = getUserName($d["users_id"], 2);
                $fifth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
                $fifth_col .= Html::showToolTip($userdata["comment"],
                                                array('link'    => $userdata["link"],
@@ -4762,9 +4762,9 @@ class Ticket extends CommonITILObject {
          }
 
          if (isset($job->groups[parent::ASSIGN]) && count($job->groups[parent::ASSIGN])) {
-            foreach ($job->groups[parent::ASSIGN] as $k => $d) {
-               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $k);
-               $fourth_col .= "<br>";
+            foreach ($job->groups[parent::ASSIGN] as $d) {
+               $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               $fifth_col .= "<br>";
             }
          }
 
