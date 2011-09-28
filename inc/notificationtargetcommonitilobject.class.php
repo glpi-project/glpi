@@ -151,7 +151,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       foreach ($DB->request($query) as $data) {
          //Add the group in the notified users list
-         $this->getAddressByGroup(1, $data['groups_id']);
+         $this->getAddressesByGroup(1, $data['groups_id']);
       }
    }
 

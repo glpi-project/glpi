@@ -843,7 +843,7 @@ class NotificationTarget extends CommonDBChild {
 
          //Send to all the users of a group
          case Notification::SUPERVISOR_GROUP_TYPE :
-            $this->getAddressByGroup(1, $data['items_id']);
+            $this->getAddressesByGroup(1, $data['items_id']);
             break;
 
          //Send to all the users of a profile
