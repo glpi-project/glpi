@@ -2088,7 +2088,14 @@ class Search {
 
          case "glpi_groups.name" :
             if ($itemtype != 'Group' && $itemtype != 'User') {
-               return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
+               
+               if ($meta
+                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+               }
+               return "`$table$addtable`.`$field` AS ".$NAME."_$num, ";
+               
+//                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
             break;
 
