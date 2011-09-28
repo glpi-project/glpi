@@ -2118,10 +2118,11 @@ class Search {
             break;
 
          case "glpi_groups.name" :
-            if ($itemtype == 'Ticket') {
-               return " GROUP_CONCAT(DISTINCT `$table$addtable`.`name` SEPARATOR '$$$$')
-                           AS ".$NAME."_".$num.", ";
-            } else if ($itemtype != 'Group' && $itemtype != 'User') {
+            if ($itemtype != 'Group' && $itemtype != 'User') {
+               if ($meta
+                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+               }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
             break;
