@@ -2118,7 +2118,10 @@ class Search {
             break;
 
          case "glpi_groups.name" :
-            if ($itemtype != 'Group' && $itemtype != 'User') {
+            if ($itemtype == 'Ticket') {
+               return " GROUP_CONCAT(DISTINCT `$table$addtable`.`name` SEPARATOR '$$$$')
+                           AS ".$NAME."_".$num.", ";
+            } else if ($itemtype != 'Group' && $itemtype != 'User') {
                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
             break;
