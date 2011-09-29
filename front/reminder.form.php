@@ -70,13 +70,19 @@ if (isset($_POST["add"])) {
       $item = NULL;
       switch ($_POST["_type"]) {
          case 'User' :
-            $item = new Reminder_User();
+            if (isset($_POST['users_id']) && $_POST['users_id']) {
+               $item = new Reminder_User();
+            }
             break;
          case 'Group' :
-            $item = new Group_Reminder();
+            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+               $item = new Group_Reminder();
+            }
             break;
          case 'Profile' :
-            $item = new Profile_Reminder();
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+               $item = new Profile_Reminder();
+            }
             break;
          case 'Entity' :
             $item = new Entity_Reminder();
@@ -85,7 +91,6 @@ if (isset($_POST["add"])) {
       if (!is_null($item)) {
          $item->add($_POST);
          Event::log($_POST["reminders_id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][68]);
-
       }
    }
    Html::back();
