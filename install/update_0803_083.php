@@ -707,6 +707,10 @@ function update0803to083() {
 
    $migration->addField("glpi_users", "refresh_ticket_list", "int(11) NULL DEFAULT NULL");
 
+   $migration->addField("glpi_configs", "set_default_tech", "bool", array('value' => '1'));
+
+   $migration->addField("glpi_users", "set_default_tech", "tinyint(1) NULL DEFAULT NULL");
+
    $migration->addField("glpi_reservations", "group", "integer");
 
    $migration->addKey("glpi_reservations", array('reservationitems_id', 'group'), "resagroup");
