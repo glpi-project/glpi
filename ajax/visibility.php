@@ -65,7 +65,8 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
          break;
 
       case 'Entity':
-         Dropdown::show('Entity');
+         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
+                                        'value'  => $_SESSION['glpiactive_entity']));
          $display= true;
          break;
 
@@ -81,7 +82,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
                                        $params);
          $display= true;
          break;
-      
+
    }
    if ($display) {
       echo "&nbsp;<input type='submit' name='addvisibility' value=\"".$LANG['buttons'][8]."\"
