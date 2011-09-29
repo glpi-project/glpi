@@ -73,8 +73,6 @@ class Reminder extends CommonDBTM {
       return ($this->fields['users_id'] == Session::getLoginUserID()
             || (Session::haveRight('reminder_public', 'r')
                && $this->haveVisibilityAccess()));
-
-      return true;
    }
 
    function canCreateItem() {
@@ -86,7 +84,6 @@ class Reminder extends CommonDBTM {
       return ($this->fields['users_id'] == Session::getLoginUserID()
             || (Session::haveRight('reminder_public', 'r')
                && $this->haveVisibilityAccess()));
-      return true;
    }
 
    function post_getFromDB () {
@@ -213,7 +210,7 @@ class Reminder extends CommonDBTM {
    }
 
    /**
-    * Return visibility SQL restriction to add 
+    * Return visibility SQL restriction to add
     *
     * @return string restrict to add
     **/
@@ -917,17 +914,17 @@ class Reminder extends CommonDBTM {
 
 //    static function showList($is_private=1, $is_recursive=0) {
 //       global $DB, $CFG_GLPI, $LANG;
-// 
+//
 //       // show reminder that are not planned
 //       $planningRight = Session::haveRight("show_planning", "1");
 //       $users_id      = Session::getLoginUserID();
-// 
+//
 //       $is_helpdesk_visible = '';
 //       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
 //           $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
 //       }
 //       // Here do not restrict on visibility. Can view all reminders
-// 
+//
 //       if (!$is_private && $is_recursive) { // show public reminder
 //          $query = "SELECT *
 //                    FROM `glpi_reminders`
@@ -935,9 +932,9 @@ class Reminder extends CommonDBTM {
 //                          AND `is_recursive` = '1'
 //                          $is_helpdesk_visible ".
 //                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", "", true);
-// 
+//
 //          $titre = $LANG['reminder'][16];
-// 
+//
 //       } else if (!$is_private && !$is_recursive) { // show public reminder
 //          $query = "SELECT *
 //                    FROM `glpi_reminders`
@@ -945,34 +942,34 @@ class Reminder extends CommonDBTM {
 //                          AND `is_recursive` = '0'
 //                          $is_helpdesk_visible ".
 //                          getEntitiesRestrictRequest("AND", "glpi_reminders");
-// 
+//
 //          $titre = $LANG['reminder'][1];
-// 
+//
 //       } else { // show private reminder
 //          $query = "SELECT *
 //                    FROM `glpi_reminders`
 //                    WHERE `users_id` = '$users_id'
 //                          AND `is_private` = '1'
 //                          $is_helpdesk_visible";
-// 
+//
 //          $titre = $LANG['reminder'][0];
 //       }
-// 
+//
 //       $result = $DB->query($query);
-// 
+//
 //       $tabremind = array();
 //       $remind    = new Reminder();
-// 
+//
 //       if ($DB->numrows($result)>0) {
 //          for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
 //             $remind->getFromDB($data["id"]);
-// 
+//
 //             if ($data["is_planned"]) { //Un rdv on va trier sur la date begin
 //                $sort = $data["begin"];
 //             } else { // non programmé on va trier sur la date de modif...
 //                $sort = $data["date"];
 //             }
-// 
+//
 //             $tabremind[$sort."$$".$i]["reminders_id"]
 //                = $remind->fields["id"];
 //             $tabremind[$sort."$$".$i]["users_id"]
@@ -985,16 +982,16 @@ class Reminder extends CommonDBTM {
 //                = ($data["is_planned"]?"".$data["end"]."":"");
 //             $tabremind[$sort."$$".$i]["name"]
 //                = Html::resume_text($remind->fields["name"], $CFG_GLPI["cut"]);
-// 
+//
 //             $tabremind[$sort."$$".$i]["text"]
 //                = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($remind->fields["name"])),
 //                                                $CFG_GLPI["cut"]);
 //          }
 //       }
 //       ksort($tabremind);
-// 
+//
 //       echo "<br><table class='tab_cadre_fixehov'>";
-// 
+//
 //       if ($is_private) {
 //          echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG['common'][27]."</th></tr>\n";
 //       } else {
@@ -1004,11 +1001,11 @@ class Reminder extends CommonDBTM {
 //          echo "<th>".$LANG['title'][37]."</th>";
 //          echo "<th colspan='2'>".$LANG['common'][27]."</th></tr>\n";
 //       }
-// 
+//
 //       if (count($tabremind)>0) {
 //          foreach ($tabremind as $key => $val) {
 //             echo "<tr class='tab_bg_2'>";
-// 
+//
 //             if (!$is_private) {
 //                // preg to split line (if needed) before ">" sign in completename
 //                echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1",
@@ -1016,36 +1013,36 @@ class Reminder extends CommonDBTM {
 //                                                                    $val["entity"])). "</td>";
 //                echo "<td>" .Dropdown::getDropdownName("glpi_users", $val["users_id"]) . "</td>";
 //             }
-// 
+//
 //             echo "<td width='60%' class='left'>";
 //             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
 //                   $val["reminders_id"]."'>".$val["name"]."</a>";
 //             echo "<div class='kb_resume'>";
 //             echo $val['text'];
 //             echo "</div></td>";
-// 
+//
 //             if ($val["end"]!="") {
 //                echo "<td class='center'>";
 //                $tab      = explode(" ",$val["begin"]);
 //                $date_url = $tab[0];
-// 
+//
 //                if ($planningRight) {
 //                   echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
 //                         "&amp;type=day'>";
 //                }
-// 
+//
 //                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
 //                      Toolbox::ucfirst($LANG['log'][16]).
 //                      "\" title=\"".Toolbox::ucfirst($LANG['log'][16])."\">";
-// 
+//
 //                if ($planningRight) {
 //                   echo "</a>";
 //                }
-// 
+//
 //                echo "</td>";
 //                echo "<td class='center' >".Html::convDateTime($val["begin"]);
 //                echo "<br>".Html::convDateTime($val["end"])."";
-// 
+//
 //             } else {
 //                echo "<td>&nbsp;</td>";
 //                echo "<td class='center'>";
