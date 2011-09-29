@@ -295,7 +295,8 @@ class Ticket extends CommonITILObject {
    function getDefaultActor($type) {
 
       if ($type == self::ASSIGN) {
-         if (Session::haveRight("own_ticket","1")) {
+         if (Session::haveRight("own_ticket","1")
+             && $_SESSION['glpiset_default_tech']) {
             return Session::getLoginUserID();
          }
       }
