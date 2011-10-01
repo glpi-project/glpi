@@ -423,6 +423,10 @@ class ComputerVirtualMachine extends CommonDBChild {
    static function findVirtualMachine($fields=array()) {
       global $DB;
 
+      if (!isset($fields['uuid']) || empty($fields['uuid'])) {
+         return false;
+      }
+
       $query = "SELECT `id`
                 FROM `glpi_computers`
                 WHERE LOWER(`uuid`) ".self::getUUIDRestrictRequest($fields['uuid']);
