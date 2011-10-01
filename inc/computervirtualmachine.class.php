@@ -203,19 +203,11 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>";
       if ($link_computer = self::findVirtualMachine($this->fields)) {
          $computer = new Computer();
-         if ($computer->can($link_computer,'r')) {
-            $url = "<a href='computer.form.php?id=".$link_computer."'>";
-            $url.= $computer->fields["name"]."</a>";
-
-            $tooltip = $LANG['common'][16]."&nbsp;: ".$computer->fields['name'];
-            $tooltip.= "<br>".$LANG['common'][19]."&nbsp;: ";
-            $tooltip.= "<br>".$computer->fields['serial'];
-            $tooltip.= "<br>".$computer->fields['comment'];
-            $url .= "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
+         if ($computer->getFromDB($link_computer)) {
+            echo $computer->getLink(true);
          } else {
-            $url = $this->fields['name'];
+            echo NOT_AVAILABLE;
          }
-         echo $url;
       }
       echo "</td>";
 
@@ -442,6 +434,10 @@ class ComputerVirtualMachine extends CommonDBChild {
    **/
    static function findVirtualMachine($fields=array()) {
       global $DB;
+
+      if (!isset($fields['uuid']) || empty($fields['uuid'])) {
+         return false;
+      }
 
       $query = "SELECT `id`
                 FROM `glpi_computers`
