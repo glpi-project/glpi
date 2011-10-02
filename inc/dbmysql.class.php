@@ -375,14 +375,19 @@ class DBmysql {
     * @return list of fields
    **/
    function list_fields($table) {
+      static $cache = array();
 
+      if (isset($cache[$table])) {
+         return $cache[$table];
+      }
       $result = $this->query("SHOW COLUMNS FROM `$table`");
       if ($result) {
          if ($this->numrows($result) > 0) {
+            $cache[$table] = array();
             while ($data = mysql_fetch_assoc($result)) {
-               $ret[$data["Field"]] = $data;
+               $cache[$table][$data["Field"]] = $data;
             }
-            return $ret;
+            return $cache[$table];
          }
          return array();
       }
