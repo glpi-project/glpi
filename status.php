@@ -37,7 +37,7 @@ define('GLPI_ROOT', '.');
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Force in normal mode
-$_SESSION['glpi_use_mode'] = NORMAL_MODE;
+$_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
 // Need to be used using :
 // check_http -H servername -u /glpi/status.php -s GLPI_OK
