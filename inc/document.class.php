@@ -185,6 +185,8 @@ class Document extends CommonDBTM {
          if ($create_from_item && !$upload_result) {
             return false;
          }
+         // Document is moved, so $_FILES is no more useful
+         unset($_FILES['filename']);
       }
 
       // Default document name
@@ -253,6 +255,8 @@ class Document extends CommonDBTM {
             $this->moveUploadedDocument($input, $input["upload_file"]);
          } else if (isset($_FILES['filename'])) {
             $this->uploadDocument($input, $_FILES['filename']);
+            // Document is moved, so $_FILES is no more useful
+            unset($_FILES['filename']);
          }
       }
 
