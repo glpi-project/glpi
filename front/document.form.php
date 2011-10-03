@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkRight("document", "r");
+Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = -1;
