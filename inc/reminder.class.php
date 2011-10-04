@@ -42,10 +42,10 @@ if (!defined('GLPI_ROOT')) {
 class Reminder extends CommonDBTM {
 
    // For visibility checks
-   protected $users       = array();
-   protected $groups      = array();
-   protected $profiles    = array();
-   protected $entities    = array();
+   protected $users     = array();
+   protected $groups    = array();
+   protected $profiles  = array();
+   protected $entities  = array();
 
 
    static function getTypeName($nb=0) {
@@ -60,52 +60,62 @@ class Reminder extends CommonDBTM {
 
    function canCreate() {
       return (Session::haveRight('reminder_public', 'w')
-               || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+              || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
    }
+
 
    function canView() {
       return (Session::haveRight('reminder_public', 'r')
-               || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+              || $_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
    }
 
+
    function canViewItem() {
+
       // Is my reminder or is in visibility
       return ($this->fields['users_id'] == Session::getLoginUserID()
-            || (Session::haveRight('reminder_public', 'r')
-               && $this->haveVisibilityAccess()));
+              || (Session::haveRight('reminder_public', 'r')
+                  && $this->haveVisibilityAccess()));
    }
+
 
    function canCreateItem() {
       // Is my reminder
       return ($this->fields['users_id'] == Session::getLoginUserID());
    }
 
+
    function canUpdateItem() {
+
       return ($this->fields['users_id'] == Session::getLoginUserID()
-            || (Session::haveRight('reminder_public', 'r')
-               && $this->haveVisibilityAccess()));
+              || (Session::haveRight('reminder_public', 'r')
+                   && $this->haveVisibilityAccess()));
    }
 
+
    function post_getFromDB () {
+
       // Users
-      $this->users = Reminder_User::getUsers($this->fields['id']);
+      $this->users    = Reminder_User::getUsers($this->fields['id']);
 
       // Entities
       $this->entities = Entity_Reminder::getEntities($this->fields['id']);
 
       // Group / entities
-      $this->groups = Group_Reminder::getGroups($this->fields['id']);
+      $this->groups   = Group_Reminder::getGroups($this->fields['id']);
 
       // Profile / entities
       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+
    /**
     * Is the login user have access to reminder based on visibility configuration
     *
     * @return boolean
-    **/
+   **/
    function haveVisibilityAccess() {
+
       // No public reminder right : no visibility check
       if (!Session::haveRight('reminder_public', 'r')) {
          return false;
@@ -117,35 +127,35 @@ class Reminder extends CommonDBTM {
       }
       // Groups
       if (count($this->groups)
-         && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+          && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
          foreach ($this->groups as $key => $data) {
             foreach ($data as $group) {
                if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
                   // All the group
                   if ($group['entities_id'] < 0) {
                      return true;
-                  } else { // Restrict to entities
-                     $entities = array($group['entities_id']);
-                     if ($group['is_recursive']) {
-                        $entities = getSonsOf('glpi_entities',$group['entities_id']);
-                     }
-                     if (Session::haveAccessToOneOfEntities($entities, true)) {
-                        return true;
-                     }
                   }
-
+                  // Restrict to entities
+                  $entities = array($group['entities_id']);
+                  if ($group['is_recursive']) {
+                     $entities = getSonsOf('glpi_entities', $group['entities_id']);
+                  }
+                  if (Session::haveAccessToOneOfEntities($entities, true)) {
+                     return true;
+                  }
                }
             }
          }
       }
+
       // Entities
       if (count($this->entities)
-         && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+          && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          foreach ($this->entities as $key => $data) {
             foreach ($data as $entity) {
                $entities = array($entity['entities_id']);
                if ($entity['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities',$entity['entities_id']);
+                  $entities = getSonsOf('glpi_entities', $entity['entities_id']);
                }
                if (Session::haveAccessToOneOfEntities($entities, true)) {
                   return true;
@@ -156,20 +166,20 @@ class Reminder extends CommonDBTM {
 
       // Profiles
       if (count($this->profiles)
-         && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+          && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
          if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
             foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
                // All the profile
                if ($profile['entities_id'] < 0) {
                   return true;
-               } else { // Restrict to entities
-                  $entities = array($profile['entities_id']);
-                  if ($profile['is_recursive']) {
-                     $entities = getSonsOf('glpi_entities',$profile['entities_id']);
-                  }
-                  if (Session::haveAccessToOneOfEntities($entities, true)) {
-                     return true;
-                  }
+               }
+               // Restrict to entities
+               $entities = array($profile['entities_id']);
+               if ($profile['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
                }
             }
          }
@@ -178,67 +188,75 @@ class Reminder extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Return visibility joins to add to SQL
     *
     * @return string joins to add
-    **/
+   **/
    static function addVisibilityJoins() {
+
       $join = '';
 
       // Users
       $join .= " LEFT JOIN `glpi_reminders_users`
-                  ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
+                     ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
       // Groups
       if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
          $join .= " LEFT JOIN `glpi_groups_reminders`
-                     ON (`glpi_groups_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+                        ON (`glpi_groups_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
       // Profiles
       if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
          $join .= " LEFT JOIN `glpi_profiles_reminders`
-                     ON (`glpi_profiles_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+                        ON (`glpi_profiles_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          $join .= " LEFT JOIN `glpi_entities_reminders`
-                     ON (`glpi_entities_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
+                        ON (`glpi_entities_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
 
       return $join;
 
    }
 
+
    /**
     * Return visibility SQL restriction to add
     *
     * @return string restrict to add
-    **/
+   **/
    static function addVisibilityRestrict() {
+
       $restrict = '(0';
 
       // Users
       $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
+
       // Groups
       if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
          $restrict .= " OR (`glpi_groups_reminders`.`groups_id`
-                           IN ('".implode("','",$_SESSION["glpigroups"])."')
-                           AND (`glpi_groups_reminders`.`entities_id` < 0
-                              ".getEntitiesRestrictRequest("OR","glpi_groups_reminders", '', '', true)
-                        .")) ";
+                                 IN ('".implode("','",$_SESSION["glpigroups"])."')
+                            AND (`glpi_groups_reminders`.`entities_id` < 0
+                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_reminders", '', '',
+                                                              true).")) ";
       }
+
       // Profiles
       if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
-         $restrict .= " OR (`glpi_profiles_reminders`.`profiles_id` = '".$_SESSION["glpiactiveprofile"]['id']."'
-                           AND (`glpi_profiles_reminders`.`entities_id` < 0
-                              ".getEntitiesRestrictRequest("OR","glpi_profiles_reminders", '', '', true)
-                        .")) ";
+         $restrict .= " OR (`glpi_profiles_reminders`.`profiles_id`
+                                 = '".$_SESSION["glpiactiveprofile"]['id']."'
+                            AND (`glpi_profiles_reminders`.`entities_id` < 0
+                                 ".getEntitiesRestrictRequest("OR", "glpi_profiles_reminders", '',
+                                                              '', true).")) ";
       }
 
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true);
       }
+
       $restrict .= ") ";
       return $restrict;
    }
@@ -328,19 +346,19 @@ class Reminder extends CommonDBTM {
       return $tab;
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       if (Session::haveRight("reminder_public","r")) {
          switch ($item->getType()) {
             case 'Reminder' :
-               $ong = array();
-               $ong[1] = $LANG['reminder'][2];
-               return $ong;
+               return array(1 =>$LANG['reminder'][2]);
          }
       }
       return '';
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -352,13 +370,13 @@ class Reminder extends CommonDBTM {
       return $ong;
    }
 
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
          case 'Reminder' :
             $item->showVisibility();
             return true;
-            break;
       }
       return false;
    }
@@ -1054,15 +1072,15 @@ class Reminder extends CommonDBTM {
 //       echo "</table>\n";
 //   }
 
+
    /**
     * Show visibility config for a reminder
     *
-    */
+   **/
    function showVisibility() {
       global $DB, $CFG_GLPI, $LANG;
 
-      $ID = $this->fields['id'];
-
+      $ID      = $this->fields['id'];
       $canedit = $this->can($ID,'w');
 
       echo "<div class='center'>";
@@ -1073,26 +1091,22 @@ class Reminder extends CommonDBTM {
          echo "<form name='remindervisibility_form$rand' id='remindervisibility_form$rand' ";
          echo " method='post' action='".Toolbox::getItemTypeFormURL('Reminder')."'>";
          echo "<input type='hidden' name='reminders_id' value='$ID'>";
-
       }
-
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
       echo "<tr><td class='tab_bg_2' width='100px'>";
 
-
-      $addrand = Dropdown::dropdownTypes('_type','', array('User','Group','Profile', 'Entity'));
-      $params = array('type' => '__VALUE__');
+      $addrand = Dropdown::dropdownTypes('_type', '', array('Entity', 'Group', 'Profile', 'User'));
+      $params  = array('type' => '__VALUE__');
 
       Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/visibility.php",
                                     $params);
 
       echo "</td>";
-      echo "<td>";
-      echo "<span id='visibility$rand'></span>";
+      echo "<td><span id='visibility$rand'></span>";
       echo "</td></tr>";
       echo "</table></div>";
 
@@ -1105,6 +1119,7 @@ class Reminder extends CommonDBTM {
       echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['mailing'][121]."</th>";
       echo "</tr>";
+
       // Users
       if (count($this->users)) {
          foreach ($this->users as $key => $val) {
@@ -1118,12 +1133,14 @@ class Reminder extends CommonDBTM {
                   }
                   echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
-                  echo "<td>".$LANG['common'][34]."</td>";
-                  echo "<td>".getUserName($data['users_id'])."</td>";
                }
+               echo "<td>".$LANG['common'][34]."</td>";
+               echo "<td>".getUserName($data['users_id'])."</td>";
+               echo "</tr>";
             }
          }
       }
+
       // Groups
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
@@ -1137,23 +1154,25 @@ class Reminder extends CommonDBTM {
                   }
                   echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
-                  echo "<td>".$LANG['common'][35]."</td>";
-                  echo "<td>";
-                  $names = Dropdown::getDropdownName('glpi_groups',$data['groups_id'],1);
-                  echo $names["name"]." ";
-                  echo Html::showToolTip($names["comment"]);
-                  if ($data['entities_id'] >= 0) {
-                     echo " / ";
-                     echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
-                     if ($data['is_recursive']) {
-                        echo " <strong>(R)</strong>";
-                     }
-                  }
-                  echo "</td>";
                }
+               echo "<td>".$LANG['common'][35]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['entities_id'] >= 0) {
+                  echo " / ";
+                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  if ($data['is_recursive']) {
+                     echo " <strong>(R)</strong>";
+                  }
+               }
+               echo "</td>";
+               echo "<tr>";
             }
          }
       }
+
       // Entity
       if (count($this->entities)) {
          foreach ($this->entities as $key => $val) {
@@ -1167,19 +1186,21 @@ class Reminder extends CommonDBTM {
                   }
                   echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
-                  echo "<td>".$LANG['entity'][0]."</td>";
-                  echo "<td>";
-                  $names = Dropdown::getDropdownName('glpi_entities',$data['entities_id'],1);
-                  echo $names["name"]." ";
-                  echo Html::showToolTip($names["comment"]);
-                  if ($data['is_recursive']) {
-                     echo " <strong>(R)</strong>";
-                  }
-                  echo "</td>";
                }
+               echo "<td>".$LANG['entity'][0]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['is_recursive']) {
+                  echo " <strong>(R)</strong>";
+               }
+               echo "</td>";
+               echo "<tr>";
             }
          }
       }
+
       // Profiles
       if (count($this->profiles)) {
          foreach ($this->profiles as $key => $val) {
@@ -1193,28 +1214,26 @@ class Reminder extends CommonDBTM {
                   }
                   echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
-                  echo "<td>".$LANG['profiles'][22]."</td>";
-                  echo "<td>";
-                  $names = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
-                  echo $names["name"]." ";
-                  echo Html::showToolTip($names["comment"]);
-                  if ($data['entities_id'] >= 0) {
-                     echo " / ";
-                     echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
-                     if ($data['is_recursive']) {
-                        echo " <strong>(R)</strong>";
-                     }
-                  }
-                  echo "</td>";
                }
+               echo "<td>".$LANG['profiles'][22]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['entities_id'] >= 0) {
+                  echo " / ";
+                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  if ($data['is_recursive']) {
+                     echo " <strong>(R)</strong>";
+                  }
+               }
+               echo "</td>";
+               echo "<tr>";
             }
          }
       }
 
-
       if ($canedit) {
-
-
          echo "<tr><td colspan='3'>";
          echo "</td></tr>";
       }
@@ -1227,7 +1246,6 @@ class Reminder extends CommonDBTM {
 
       echo "</div>";
       // Add items
-
 
       return true;
    }
