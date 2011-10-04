@@ -5008,8 +5008,9 @@ class Ticket extends CommonITILObject {
                 LEFT JOIN `glpi_tickets_users`
                            ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
                                AND `glpi_tickets_users`.`type` = '".parent::ASSIGN."')
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5053,8 +5054,9 @@ class Ticket extends CommonITILObject {
                 LEFT JOIN `glpi_profiles_users`
                      ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 LEFT JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`) ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2).";
@@ -5094,8 +5096,9 @@ class Ticket extends CommonITILObject {
                                 `glpi_suppliers`.`name` AS name
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_suppliers`
-                     ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`) ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+                     ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5134,8 +5137,9 @@ class Ticket extends CommonITILObject {
                 LEFT JOIN `glpi_tickets_users`
                      ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
                          AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."')
-                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5173,8 +5177,9 @@ class Ticket extends CommonITILObject {
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_users`
-                     ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`) ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+                     ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5213,8 +5218,9 @@ class Ticket extends CommonITILObject {
                      ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
                          AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')
                 LEFT JOIN `glpi_groups`
-                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
-                getEntitiesRestrictRequest(" WHERE", "glpi_tickets");
+                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5252,8 +5258,9 @@ class Ticket extends CommonITILObject {
                      ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
                          AND `glpi_groups_tickets`.`type` = '".parent::ASSIGN."')
                 LEFT JOIN `glpi_groups`
-                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
-                getEntitiesRestrictRequest(" WHERE", "glpi_tickets");
+                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5286,8 +5293,9 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT DISTINCT `priority`
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+                FROM `glpi_tickets`
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5321,8 +5329,9 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT DISTINCT `urgency`
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                FROM `glpi_tickets`
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5357,8 +5366,9 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT DISTINCT `impact`
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                FROM `glpi_tickets`
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5392,8 +5402,9 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT DISTINCT `requesttypes_id`
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                FROM `glpi_tickets`
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5426,8 +5437,9 @@ class Ticket extends CommonITILObject {
       global $DB;
 
       $query = "SELECT DISTINCT `solutiontypes_id`
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                FROM `glpi_tickets`
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -5471,10 +5483,11 @@ class Ticket extends CommonITILObject {
       $query = "SELECT DISTINCT `glpi_users`.`$field`
                 FROM `glpi_tickets`
                 INNER JOIN `glpi_tickets_users`
-                     ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
+                     ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)
-                LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`) ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)
+                WHERE NOT `glpi_tickets`.`is_deleted` ".
+                getEntitiesRestrictRequest("AND", "glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
