@@ -1089,7 +1089,7 @@ class Ticket extends CommonDBTM {
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          if ($this->fields['slas_id']>0) {
-            $sla->deleteLevelsToDo($this);
+            SLA::deleteLevelsToDo($this);
          }
       }
 

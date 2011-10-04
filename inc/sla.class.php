@@ -364,7 +364,7 @@ class SLA extends CommonDBTM {
     *
     * @return execution date time (NULL if sla not exists)
    **/
-   function deleteLevelsToDo(Ticket $ticket) {
+   static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
       if ($ticket->fields["slalevels_id"]>0) {
