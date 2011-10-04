@@ -2135,8 +2135,9 @@ class User extends CommonDBTM {
          default :
             $joinprofile = true;
             // Check read or active for rights
-            $where = " ((`glpi_profiles`.`".$right."` = '1' OR `glpi_profiles`.`".$right."` = 'r') ".
-                        getEntitiesRestrictRequest("AND","glpi_profiles_users", '',
+            $where = " ((`glpi_profiles`.`".$right."` = '1'
+                          OR `glpi_profiles`.`".$right."` = 'r') ".
+                        getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                    $entity_restrict, 1)." ";
 
             if (!in_array($right,Profile::$helpdesk_rights)) {

@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Profile_Reminder
+/// since version 0.83
 class Profile_Reminder extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -50,14 +51,14 @@ class Profile_Reminder extends CommonDBRelation {
    /**
     * Get profiles for a reminder
     *
-    * @param $reminders_id ID of the reminder 
+    * @param $reminders_id ID of the reminder
     *
     * @return array of profiles linked to a reminder
    **/
    static function getProfiles($reminders_id) {
       global $DB;
 
-      $prof = array();
+      $prof  = array();
       $query = "SELECT `glpi_profiles_reminders`.*
                 FROM `glpi_profiles_reminders`
                 WHERE `reminders_id` = '$reminders_id'";
@@ -69,5 +70,4 @@ class Profile_Reminder extends CommonDBRelation {
    }
 
 }
-
 ?>

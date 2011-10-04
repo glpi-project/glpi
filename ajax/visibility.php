@@ -49,44 +49,44 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
    switch ($_REQUEST['type']) {
       case 'User':
          User::dropdown(array('right' => 'reminder_public'));
-         $display= true;
+         $display = true;
          break;
 
       case 'Group':
          $rand = Dropdown::show('Group');
          echo "<span id='subvisibility$rand'></span>";
          $params = array('items_id' => '__VALUE__',
-                         'type'     =>$_REQUEST['type']);
+                         'type'     => $_REQUEST['type']);
 
          Ajax::updateItemOnSelectEvent("dropdown_groups_id".$rand,"subvisibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
                                        $params);
-         $display= true;
+         $display = true;
          break;
 
       case 'Entity':
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
                                         'value'  => $_SESSION['glpiactive_entity']));
-         $display= true;
+         $display = true;
          break;
 
       case 'Profile':
          $rand = Dropdown::show('Profile', array('condition' => "`reminder_public` = 'r'
-                                                               OR `reminder_public` = 'w'"));
+                                                                 OR `reminder_public` = 'w'"));
          echo "<span id='subvisibility$rand'></span>";
          $params = array('items_id' => '__VALUE__',
-                         'type'     =>$_REQUEST['type']);
+                         'type'     => $_REQUEST['type']);
 
          Ajax::updateItemOnSelectEvent("dropdown_profiles_id".$rand,"subvisibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
                                        $params);
          $display= true;
          break;
-
    }
+
    if ($display) {
       echo "&nbsp;<input type='submit' name='addvisibility' value=\"".$LANG['buttons'][8]."\"
-               class='submit'>";
+                   class='submit'>";
    }
 }
 ?>

@@ -680,7 +680,7 @@ class Reminder extends CommonDBTM {
 
       // See public reminder ?
       if (Session::haveRight("reminder_public","r")) {
-         $readpub = self::addVisibilityRestrict();
+         $readpub    = self::addVisibilityRestrict();
          $joinstoadd = self::addVisibilityJoins();
       }
 
@@ -827,7 +827,7 @@ class Reminder extends CommonDBTM {
    static function showListForCentral($personal = true) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $reminder = new Reminder();
+      $reminder = new self();
 
       $users_id = Session::getLoginUserID();
       $today    = $_SESSION["glpi_currenttime"];

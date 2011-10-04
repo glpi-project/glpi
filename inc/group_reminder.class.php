@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Group_Reminder
+/// since version 0.83
 class Group_Reminder extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -50,7 +51,7 @@ class Group_Reminder extends CommonDBRelation {
    /**
     * Get groups for a reminder
     *
-    * @param $reminders_id ID of the reminder 
+    * @param $reminders_id ID of the reminder
     *
     * @return array of groups linked to a reminder
    **/
@@ -58,9 +59,9 @@ class Group_Reminder extends CommonDBRelation {
       global $DB;
 
       $groups = array();
-      $query = "SELECT `glpi_groups_reminders`.*
-                FROM `glpi_groups_reminders`
-                WHERE `reminders_id` = '$reminders_id'";
+      $query  = "SELECT `glpi_groups_reminders`.*
+                 FROM `glpi_groups_reminders`
+                 WHERE `reminders_id` = '$reminders_id'";
 
       foreach ($DB->request($query) as $data) {
          $groups[$data['groups_id']][] = $data;
@@ -69,5 +70,4 @@ class Group_Reminder extends CommonDBRelation {
    }
 
 }
-
 ?>
