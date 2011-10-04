@@ -44,7 +44,11 @@ if (isset($_POST['newprofile'])) {
    if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       Session::changeProfile($_POST['newprofile']);
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-         Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+         if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
+            Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
+         } else {
+            Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+         }
       }
       Html::redirect($_SERVER['PHP_SELF']);
    }
