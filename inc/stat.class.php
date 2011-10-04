@@ -530,7 +530,8 @@ class Stat {
       global $DB;
 
       $query         = "";
-      $WHERE         = getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+      $WHERE         = "WHERE NOT `glpi_tickets`.`is_deleted` ".
+                       getEntitiesRestrictRequest("AND", "glpi_tickets");
       $LEFTJOIN      = "";
       $LEFTJOINUSER  = "LEFT JOIN `glpi_tickets_users`
                            ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)";
