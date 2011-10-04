@@ -121,12 +121,12 @@ function __autoload($classname) {
       $item = strtolower($classname);
    }
 
-   // No errors for missing classes due to implementation 
+   // No errors for missing classes due to implementation
    if (!in_array($item,$CFG_GLPI['missingclasses'])){
       if (file_exists("$dir$item.class.php")) {
          include_once ("$dir$item.class.php");
          if (isset($_SESSION['glpi_use_mode'])
-            && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+             && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             $DEBUG_AUTOLOAD[] = $classname;
          }
 

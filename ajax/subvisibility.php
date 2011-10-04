@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Nelly Mahu-Lasson
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -45,16 +45,16 @@ if (strpos($_SERVER['PHP_SELF'],"subvisibility.php")) {
 Session::checkLoginUser();
 
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
-   && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
+    && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
    switch ($_REQUEST['type']) {
-      case 'Group':
-      case 'Profile':
+      case 'Group' :
+      case 'Profile' :
          echo "&nbsp;".$LANG['entity'][0]."&nbsp;:&nbsp;";
          Dropdown::show('Entity', array('toadd' => array(-1 => $LANG['reminder'][3])));
          echo "&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
          Dropdown::showYesNo('is_recursive');
          break;
-      
+
    }
 }
 ?>

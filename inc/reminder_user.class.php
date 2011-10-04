@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Reminder_User
+/// since version 0.83
 class Reminder_User extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -50,7 +51,7 @@ class Reminder_User extends CommonDBRelation {
    /**
     * Get users for a reminder
     *
-    * @param $reminders_id ID of the reminder 
+    * @param $reminders_id ID of the reminder
     *
     * @return array of users linked to a reminder
    **/
@@ -69,5 +70,4 @@ class Reminder_User extends CommonDBRelation {
    }
 
 }
-
 ?>

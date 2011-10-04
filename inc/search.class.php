@@ -2121,7 +2121,8 @@ class Search {
             if ($itemtype != 'Group' && $itemtype != 'User') {
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
+                                       AS ".$NAME."_$num, ";
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
@@ -2356,14 +2357,14 @@ class Search {
     *
     * @return select string
    **/
-   static function addDefaultWhere ($itemtype) {
+   static function addDefaultWhere($itemtype) {
       global $CFG_GLPI;
 
       switch ($itemtype) {
          case 'Reminder' :
-               return " (`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                        OR ".Reminder::addVisibilityRestrict().")";
-            break;
+            return " (`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
+                      OR ".Reminder::addVisibilityRestrict().")";
+
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";

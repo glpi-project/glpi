@@ -340,6 +340,5 @@ $CFG_GLPI['missingclasses'] = array('cartridgeitem_printermodel',
                                     'rulecacheprintermodel',
                                     'rulecacheprinter',
                                     'rulecacheprintertype',
-                                    'rulecachesoftware',);
-
+                                    'rulecachesoftware');
 ?>

@@ -1239,6 +1239,7 @@ $LANG['log'][65]  = "règle";
 $LANG['log'][66]  = "Sécurité";
 $LANG['log'][67]  = "suppression d'une cible à une note";
 $LANG['log'][68]  = "ajout d'une cible à une note";
+
 $LANG['log'][70]  = "ajout d'un port réseau";
 $LANG['log'][71]  = "ajout de plusieurs ports réseau";
 

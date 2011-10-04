@@ -38,6 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Entity_Reminder
+/// since version 0.83
 class Entity_Reminder extends CommonDBRelation {
 
    // From CommonDBRelation
@@ -50,14 +51,14 @@ class Entity_Reminder extends CommonDBRelation {
    /**
     * Get entities for a reminder
     *
-    * @param $reminders_id ID of the reminder 
+    * @param $reminders_id ID of the reminder
     *
     * @return array of entities linked to a reminder
    **/
    static function getEntities($reminders_id) {
       global $DB;
 
-      $ent = array();
+      $ent   = array();
       $query = "SELECT `glpi_entities_reminders`.*
                 FROM `glpi_entities_reminders`
                 WHERE `reminders_id` = '$reminders_id'";
@@ -69,5 +70,4 @@ class Entity_Reminder extends CommonDBRelation {
    }
 
 }
-
 ?>

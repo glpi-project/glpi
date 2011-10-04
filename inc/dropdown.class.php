@@ -399,7 +399,7 @@ class Dropdown {
       }
       asort($options);
       return self::showFromArray($name, $options, array('value' => $value,
-                                                            'used'  => $used));
+                                                        'used'  => $used));
    }
 
 

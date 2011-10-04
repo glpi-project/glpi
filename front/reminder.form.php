@@ -64,9 +64,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 }  else if (isset($_POST["addvisibility"])) {
-
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
-      && isset($_POST["reminders_id"]) && $_POST["reminders_id"]) {
+       && isset($_POST["reminders_id"]) && $_POST["reminders_id"]) {
       $item = NULL;
       switch ($_POST["_type"]) {
          case 'User' :
@@ -74,28 +73,32 @@ if (isset($_POST["add"])) {
                $item = new Reminder_User();
             }
             break;
+
          case 'Group' :
             if (isset($_POST['groups_id']) && $_POST['groups_id']) {
                $item = new Group_Reminder();
             }
             break;
+
          case 'Profile' :
             if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
                $item = new Profile_Reminder();
             }
             break;
+
          case 'Entity' :
             $item = new Entity_Reminder();
             break;
       }
       if (!is_null($item)) {
          $item->add($_POST);
-         Event::log($_POST["reminders_id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][68]);
+         Event::log($_POST["reminders_id"], "reminder", 4, "tools",
+                    $_SESSION["glpiname"]." ".$LANG['log'][68]);
       }
    }
    Html::back();
-}  else if (isset($_POST["deletevisibility"])) {
 
+}  else if (isset($_POST["deletevisibility"])) {
    if (isset($_POST["group"]) && count($_POST["group"])) {
       $item = new Group_Reminder();
       foreach ($_POST["group"] as $key => $val) {
@@ -123,15 +126,15 @@ if (isset($_POST["add"])) {
    }
 
    if (isset($_POST["profile"]) && count($_POST["profile"])) {
-      $item = new profile_Reminder();
+      $item = new Profile_Reminder();
       foreach ($_POST["profile"] as $key => $val) {
          if ($item->can($key,'w')) {
             $item->delete(array('id' => $key));
          }
       }
    }
-
-   Event::log($_POST["reminders_id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][67]);
+   Event::log($_POST["reminders_id"], "reminder", 4, "tools",
+              $_SESSION["glpiname"]." ".$LANG['log'][67]);
    Html::back();
 
 } else {
