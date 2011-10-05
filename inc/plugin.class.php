@@ -912,6 +912,12 @@ class Plugin extends CommonDBTM {
             CommonGLPI::registerStandardTab($form, $itemtype);
          }
       }
+      
+      //Manage entity forward from a source itemtype to this itemtype
+      if (isset($attrib['forwardentityfrom'])) {
+         CommonDBTM::addForwardEntity($attrib['forwardentityfrom'], $itemtype);
+      }
+      
       // Use it for plugin debug
 //       if (count($attrib)) {
 //          foreach ($attrib as $key => $val) {

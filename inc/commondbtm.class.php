@@ -62,6 +62,8 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
+   //Forward entity to plugins itemtypes
+   static protected $plugins_forward_entity = array();
 
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
@@ -934,6 +936,12 @@ class CommonDBTM extends CommonGLPI {
                      $this->addMessageOnUpdateAction();
                      Plugin::doHook("item_update", $this);
 
+                     //Fill forward_entity_to array with itemtypes coming from plugins
+                     if (isset(self::$plugins_forward_entity[$this->getType()])) {
+                        foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
+                           $this->forward_entity_to[] = $itemtype;
+                        }
+                     }
                      // forward entity information if needed
                      if (count($this->forward_entity_to)
                          && (in_array("entities_id",$this->updates)
@@ -3112,5 +3120,16 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+   /**
+    * Specificy a plugin itemtype for which entities_id and is_recursive should be forwarded
+    * @param $for_itemtype change of entity for this itemtype will be forwarder
+    * @param $to_itemtype change of entity will affect this itemtype
+    * 
+    * @return nothing
+    * @since 0.83
+    */
+   static function addForwardEntity($for_itemtype, $to_itemtype) {
+      self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;
+   }
 }
 ?>
