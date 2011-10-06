@@ -295,14 +295,15 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "install" :
-            $inst = new Computer_SoftwareVersion();
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $comp = new Computer;
-                  if ($comp->getFromDB($key)
-                      && $comp->fields["entities_id"] == $_SESSION["glpiactive_entity"]) {
-                     $inst->add(array('computers_id'        => $key,
-                                      'softwareversions_id' => $_POST["softwareversions_id"]));
+            if (isset($_POST['softwareversions_id']) && $_POST['softwareversions_id']>0) {
+               $inst = new Computer_SoftwareVersion();
+               foreach ($_POST['item'] as $key => $val) {
+                  if ($val == 1) {
+                     $input = array('computers_id'        => $key,
+                                    'softwareversions_id' => $_POST['softwareversions_id']);
+                     if ($inst->can(-1, 'w', $input)) {
+                        $inst->add($input);
+                     }
                   }
                }
             }
