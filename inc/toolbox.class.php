@@ -619,7 +619,26 @@ class Toolbox {
       return $mem;
    }
 
-
+   /**
+    * Check is current memory_limit is enough for GLPI
+    * 
+    * @return 0 if PHP not compiled with memory_limit support
+    *         1 no memory limit (memory_limit = -1)
+    *         2 insufficient memory for GLPI
+    *         3 enough memory for GLPI
+    */
+   static function checkMemoryLimit() {
+      $mem = self::getMemoryLimit();
+      if ($mem == "") {
+         return 0;
+      } elseif ($mem == "-1") {
+         return 1;
+      } elseif ($mem<64*1024*1024) {
+         return 2;
+      }
+      return 3;
+   }
+   
    /**
     * Common Checks needed to use GLPI
     *
@@ -745,31 +764,32 @@ class Toolbox {
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][86]."</td>";
 
+      //Get memory limit
       $mem = self::getMemoryLimit();
-
-      if ( $mem == "" ) { // memory_limit non compilé -> no memory limit
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][95]." - ".
-                    $LANG['install'][89]."\" title=\"".$LANG['install'][95]." - ".
-                    $LANG['install'][89]."\"></td></tr>";
-
-      } else if ( $mem == "-1" ) { // memory_limit compilé mais illimité
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][96]." - ".
-                    $LANG['install'][89]."\" title=\"".$LANG['install'][96]." - ".
-                    $LANG['install'][89]."\"></td></tr>";
-
-      } else if ($mem<64*1024*1024) { // memoire insuffisante
-         $showmem = $mem/1048576;
-         echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><b>".
-                                $LANG['install'][87]." $showmem Mo</b><br>".$LANG['install'][88]."<br>".
-                                $LANG['install'][90]."</td></tr>";
-         $error = 2;
-
-      } else { // on a sufisament de mémoire on passe à la suite
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][91]." - ".
-                    $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
-                    $LANG['install'][89]."\"></td></tr>";
+      switch (self::checkMemoryLimit()) {
+         case 0: // memory_limit not compiled -> no memory limit
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][95]." - ".
+                       $LANG['install'][89]."\" title=\"".$LANG['install'][95]." - ".
+                       $LANG['install'][89]."\"></td></tr>";
+            break;
+         case 1: // memory_limit compiled and unlimited
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][96]." - ".
+                       $LANG['install'][89]."\" title=\"".$LANG['install'][96]." - ".
+                       $LANG['install'][89]."\"></td></tr>";
+            break;
+         case 2: //Insufficient memory
+            $showmem = $mem/1048576;
+            echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><b>".
+                                   $LANG['install'][87]." $showmem Mo</b><br>".$LANG['install'][88]."<br>".
+                                   $LANG['install'][90]."</td></tr>";
+            $error = 2;
+            break;
+         case 3: //Got enough memory, going to the next step
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][91]." - ".
+                       $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
+                       $LANG['install'][89]."\"></td></tr>";
+            break;
       }
-
       $suberr = Config::checkWriteAccessToDirs();
 
       return ($suberr ? $suberr : $error);
