@@ -48,10 +48,14 @@ if ($_POST['softwares_id']>0) {
       $_POST['value'] = 0;
    }
 
+   $restrict = getEntitiesRestrictRequest(' AND', 'glpi_softwarelicenses', 'entities_id',
+                                          $_POST["entity_restrict"], true);
+
    // Make a select box
    $query = "SELECT DISTINCT *
              FROM `glpi_softwarelicenses`
              WHERE `glpi_softwarelicenses`.`softwares_id` = '".$_POST['softwares_id']."'
+                   $restrict
              ORDER BY `name`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);

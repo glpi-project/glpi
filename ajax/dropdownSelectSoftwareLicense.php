@@ -79,8 +79,9 @@ if ($DB->numrows($result)) {
 }
 echo "</select>\n";
 
-$paramsselsoft = array('softwares_id' => '__VALUE__',
-                       'myname'       => $_POST["myname"]);
+$paramsselsoft = array('softwares_id'    => '__VALUE__',
+                       'entity_restrict' => $_POST['entity_restrict'],
+                       'myname'          => $_POST['myname']);
 
 ajaxUpdateItemOnSelectEvent("item_type$rand", "show_".$_POST["myname"].$rand,
                             $CFG_GLPI["root_doc"]."/ajax/dropdownSoftwareLicense.php",
