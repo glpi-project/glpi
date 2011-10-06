@@ -728,9 +728,15 @@ class CronTask extends CommonDBTM{
     * @return the name of last task launched
    **/
    static public function launch($mode, $max=1, $name='') {
-
+      global $LANG;
+      
       $taskname = '';
-
+      //If cron is launched in command line, and if memory is insufficient, display a warning in
+      //the logs
+      if ($mode==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
+         Toolbox::logDebug($LANG['install'][88]);
+      }
+      
       if (self::get_lock()) {
          $crontask = new self();
          for ($i=1 ; $i<=$max ; $i++) {
