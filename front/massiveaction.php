@@ -355,7 +355,7 @@ if (isset($_POST["action"])
             $contactsupplier = new Contact_Supplier();
             foreach ($_POST["item"] as $key => $val) {
                $input = array('suppliers_id' => $key,
-                              'contacts_id'  => $_POST['conID']);
+                              'contacts_id'  => $_POST['contactID']);
                if ($contactsupplier->can(-1, 'w', $input)) {
                   $contactsupplier->add($input);
                }
@@ -368,7 +368,7 @@ if (isset($_POST["action"])
          foreach ($_POST["item"] as $key => $val) {
             $input = array('itemtype'     => $_POST["itemtype"],
                            'items_id'     => $key,
-                           'contracts_id' => $_POST['contracts_id']);
+                           'contracts_id' => $_POST['contractID']);
             if ($contractitem->can(-1, 'w', $input)) {
                $contractitem->add($input);
             }
@@ -379,7 +379,7 @@ if (isset($_POST["action"])
          if ($_POST["itemtype"] == 'Contact') {
             $contactsupplier = new Contact_Supplier();
             foreach ($_POST["item"] as $key => $val) {
-               $input = array('suppliers_id' => $_POST['entID'],
+               $input = array('suppliers_id' => $_POST['supplierID'],
                               'contacts_id'  => $key);
                if ($contactsupplier->can(-1, 'w', $input)) {
                   $contactsupplier->add($input);
