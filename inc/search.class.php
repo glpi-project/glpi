@@ -2178,7 +2178,7 @@ class Search {
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
-                        GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
+                     GROUP_CONCAT(`$table$addtable`.`tickets_id_2` SEPARATOR '$$$$')
                            AS ".$NAME."_".$num."_2, ";
 
          case "glpi_networkports.mac" :
@@ -2756,8 +2756,9 @@ class Search {
             break;
 
          case "glpi_tickets_tickets.tickets_id_1" :
-            return $link." (`$table`.`tickets_id_1` = '$val'
-                            OR `$table`.`tickets_id_2` = '$val')";
+            return $link." ((`$table`.`tickets_id_1` = '$val'
+                             OR `$table`.`tickets_id_2` = '$val')
+                            AND `glpi_tickets`.`id` <> '$val')";
 
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
