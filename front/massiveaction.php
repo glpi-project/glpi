@@ -371,7 +371,7 @@ if (isset($_POST["itemtype"])) {
             foreach ($_POST["item"] as $key => $val) {
                $input = array('itemtype'     => $_POST["itemtype"],
                               'items_id'     => $key,
-                              'contracts_id' => $_POST['contracts_id']);
+                              'contracts_id' => $_POST['conID']);
                if ($contractitem->can(-1, 'w', $input)) {
                   $contractitem->add($input);
                }
