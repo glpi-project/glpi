@@ -667,11 +667,13 @@ class Ticket extends CommonITILObject {
 
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
-         if (!empty($input['_link']['tickets_id_2'])
-             && $ticket_ticket->can(-1, 'w', $input['_link'])) {
-
-            if ($ticket_ticket->add($input['_link'])) {
-               $input['_forcenotif'] = true;
+         if (!empty($input['_link']['tickets_id_2'])) {
+            if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
+               if ($ticket_ticket->add($input['_link'])) {
+                  $input['_forcenotif'] = true;
+               }
+            } else {
+               Session::addMessageAfterRedirect($LANG['tracking'][11], false, ERROR);
             }
          }
       }
