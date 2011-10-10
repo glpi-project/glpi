@@ -33,6 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+// Ensure current directory when run from crontab
+chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+
 if ($argv) {
    for ($i=1 ; $i<count($argv) ; $i++) {
       //To be able to use = in search filters, enter \= instead in command line
