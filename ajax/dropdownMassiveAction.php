@@ -232,19 +232,19 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_contract" :
-         Contract::dropdown(array('name' => "conID"));
+         Contract::dropdown(array('name' => "contractID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";
          break;
 
       case "add_contact" :
-         Dropdown::show('Contact', array('name' => "conID"));
+         Dropdown::show('Contact', array('name' => "contactID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";
          break;
 
       case "add_enterprise" :
-         Dropdown::show('Supplier', array('name' => "conID"));
+         Dropdown::show('Supplier', array('name' => "supplierID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";
          break;
