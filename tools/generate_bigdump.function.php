@@ -1678,8 +1678,8 @@ function generate_entity($ID_entity) {
                         'info@ent$i.com', 'notes suppliers $i')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
-      $entID = $DB->insert_id();
-      addDocuments('Supplier', $entID);
+      $supplierID = $DB->insert_id();
+      addDocuments('Supplier', $supplierID);
    }
    $LAST["enterprises"] = getMaxItem("glpi_suppliers");
 
@@ -1700,12 +1700,12 @@ function generate_entity($ID_entity) {
                         'notes contract $i', '0', '1','', '0')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
-      $conID = $DB->insert_id();
-      addDocuments('Contract', $conID);
+      $contractID = $DB->insert_id();
+      addDocuments('Contract', $contractID);
 
       // Add an enterprise
       $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$conID')";
+                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$contractID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1721,12 +1721,12 @@ function generate_entity($ID_entity) {
                         'notes contract $i', '0', '1','', '0')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
-      $conID = $DB->insert_id();
-      addDocuments('Contract', $conID);
+      $contractID = $DB->insert_id();
+      addDocuments('Contract', $contractID);
 
       // Add an enterprise
       $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"], $LAST["enterprises"])."', '$conID')";
+                VALUES(NULL, '".mt_rand($FIRST["enterprises"], $LAST["enterprises"])."', '$contractID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
    $LAST["contract"] = getMaxItem("glpi_contracts");
@@ -1750,11 +1750,11 @@ function generate_entity($ID_entity) {
                         'mobile $i', 'fax $i', 'email $i', '".mt_rand(1,$MAX['contact_type'])."',
                         'comment $i', '0', 'notes contact $i')";
       $DB->query($query) or die("PB REQUETE ".$query);
-      $conID = $DB->insert_id();
+      $contactID = $DB->insert_id();
 
       // Link with enterprise
       $query = "INSERT INTO `glpi_contacts_suppliers`
-                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$conID')";
+                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$contactID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1770,11 +1770,11 @@ function generate_entity($ID_entity) {
                         '".mt_rand(1,$MAX['contact_type'])."', 'comment $i', '0',
                         'notes contact $i')";
       $DB->query($query) or die("PB REQUETE ".$query);
-      $conID = $DB->insert_id();
+      $contactID = $DB->insert_id();
 
       // Link with enterprise
       $query = "INSERT INTO `glpi_contacts_suppliers`
-                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$conID')";
+                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$contactID')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
    $LAST["contacts"] = getMaxItem("glpi_contacts");
