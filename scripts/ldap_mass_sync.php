@@ -33,21 +33,19 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if ($argv) {
-   for ($i=1 ; $i<count($argv) ; $i++) {
-      //To be able to use = in search filters, enter \= instead in command line
-      //Replace the \= by ° not to match the split function
-      $arg   = str_replace('\=','°',$argv[$i]);
-      $it    = explode("=",$arg);
+// Ensure current directory when run from crontab
+chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+
+if (isset($_SERVER['argv'])) {
+   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
+      $it = explode("=", $_SERVER['argv'][$i], 2);
       $it[0] = preg_replace('/^--/','',$it[0]);
 
-      //Replace the ° by = the find the good filter
-      $it           = str_replace('°','=',$it);
-      $_GET[$it[0]] = $it[1];
+      $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
 
-if ((isset($argv) && in_array('help',$argv))
+if ((isset($_SERVER['argv']) && in_array('help', $_SERVER['argv']))
     || isset($_GET['help'])) {
    echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
    echo "Options values :\n";
