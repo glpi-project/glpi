@@ -247,7 +247,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_enterprise" :
-         Dropdown::show('Supplier', array('name' => "conID"));
+         Dropdown::show('Supplier', array('name' => "entID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";
          break;
