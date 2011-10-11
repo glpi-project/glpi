@@ -53,7 +53,8 @@ function update0801to0803($output='HTML') {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80.3</h3>";
    }
 
-   $migration->changeField("glpi_fieldunicities", 'fields', 'fields', "text");
+   $migration->changeField("glpi_fieldunicities", 'fields', 'fields',
+                           "TEXT COLLATE utf8_unicode_ci DEFAULT NULL");
 
    $migration->dropKey('glpi_ocslinks', 'unicity');
    $migration->migrationOneTable('glpi_ocslinks');
