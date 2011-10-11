@@ -117,14 +117,6 @@ if (isset($_POST["add"])) {
               $_SESSION["glpiname"] ." ".$LANG['log'][27]);
    Html::back();
 
-} else if (isset($_POST["force_ocs_resynch"])) {
-   $computer->check($_POST['id'], 'w');
-   //Get the ocs server id associated with the machine
-   $ocsservers_id = OcsServer::getByMachineID($_POST["id"]);
-   //Update the computer
-   OcsServer::updateComputer($_POST["resynch_id"], $ocsservers_id, 1, 1);
-   Html::back();
-
 } else {//print computer informations
    Html::header($LANG['Menu'][0], $_SERVER['PHP_SELF'], "inventory", "computer");
    //show computer form to add
