@@ -2758,7 +2758,7 @@ function update0723to078($output='HTML') {
                    SET `itemtype_link` = '$val'
                    WHERE `device_internal_type` = '$key'
                         AND `linked_action` IN (".Log::HISTORY_ADD_RELATION.",
-                                                ".Log::ISTORY_DEL_RELATION.",
+                                                ".Log::HISTORY_DEL_RELATION.",
                                                 ".Log::HISTORY_DISCONNECT_DEVICE.",
                                                 ".Log::HISTORY_CONNECT_DEVICE.")";
          $DB->query($query)
