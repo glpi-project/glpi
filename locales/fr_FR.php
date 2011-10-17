@@ -2553,6 +2553,7 @@ $LANG['tracking'][7]  = "La description du ticket est obligatoire : modification
 $LANG['tracking'][8]  = "Votre ticket ne contient pas de description, veuillez corriger.";
 $LANG['tracking'][9]  = "Par défaut pour les tickets";
 $LANG['tracking'][10] = "Par défaut pour les collecteurs";
+$LANG['tracking'][11] = "Ticket inconnu";
 
 $LANG['tracking'][24] = "Document Ticket";
 
