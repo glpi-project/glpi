@@ -3753,10 +3753,14 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_tickets', 'solution')) {
       $query = "ALTER TABLE `glpi_tickets`
                 ADD `ticketsolutiontypes_id` INT( 11 ) NOT NULL DEFAULT '0',
-                ADD `solution` TEXT NULL,
-                ADD INDEX `ticketsolutiontypes_id` ( `ticketsolutiontypes_id` ) ";
+                ADD `solution` TEXT NULL";
       $DB->query($query)
       or die("0.78 create glpi_ticketsolutions " . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_tickets`
+                ADD INDEX `ticketsolutiontypes_id` ( `ticketsolutiontypes_id` ) ";
+      $DB->query($query)
+      or die("0.78 add key for glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
 
       // Move old status "old_done"", "old_notdone" as solution
       // and change to new "solved" / "closed" status
