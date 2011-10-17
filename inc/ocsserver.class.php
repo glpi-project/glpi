@@ -1317,7 +1317,7 @@ class OcsServer extends CommonDBTM {
                                           WHERE `ID` = '".$data["ID"]."'";
                         $DBocs->query($querychecksum);
                      } else {
-                        // Not found, probably because ID change twice between to sync
+                        // Not found, probably because ID change twice since previous sync
                         // No way to found new DEVICEID
                         $query = "UPDATE `glpi_ocslinks`
                                   SET `ocsid` = '$equiv'
