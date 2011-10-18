@@ -1162,13 +1162,13 @@ class Html {
       }
 
 
-      if (Session::haveRight("show_all_ticket","1")) {
+      if (Session::haveRight("ticketrecurrent","r")) {
          $menu['maintain']['content']['ticketrecurrent']['title']    = $LANG['jobrecurrent'][1];
          $menu['maintain']['content']['ticketrecurrent']['shortcut'] = '';
          $menu['maintain']['content']['ticketrecurrent']['page']     = '/front/ticketrecurrent.php';
          $menu['maintain']['content']['ticketrecurrent']['links']['search']
                                                                      = '/front/ticketrecurrent.php';
-         if (Session::haveRight("update_ticket","1")) {
+         if (Session::haveRight("ticketrecurrent","w")) {
             $menu['maintain']['content']['ticketrecurrent']['links']['add']
                               = '/front/ticketrecurrent.form.php';
          }

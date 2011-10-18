@@ -3596,9 +3596,11 @@ class Ticket extends CommonITILObject {
       echo "</th>";
       echo "<td>";
       if (!$ID) {
-         User::dropdown(array('name'   => "_add_validation",
-                              'entity' => $this->fields['entities_id'],
-                              'right'  => 'validate_ticket'));
+         if (Session::haveRight('create_validation',1)) {
+            User::dropdown(array('name'   => "_add_validation",
+                                 'entity' => $this->fields['entities_id'],
+                                 'right'  => 'validate_ticket'));
+         }
       } else {
          if ($canupdate) {
             TicketValidation::dropdownStatus('global_validation',

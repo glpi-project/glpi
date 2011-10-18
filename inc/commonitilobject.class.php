@@ -2124,17 +2124,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::REQUESTER);
-         /// For ticket templates : mandatories
-         if (isset($options['_tickettemplate'])) {
-            echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
-         }
-         echo "&nbsp;";
-
-         Dropdown::show('Group', array('name'      => '_groups_id_requester',
-                                       'value'     => $options["_groups_id_requester"],
-                                       'entity'    => $this->fields["entities_id"],
-                                       'condition' => '`is_requester`'));
+         if ($this->canAdminActors()) {
+            echo self::getActorIcon('group', self::REQUESTER);
+            /// For ticket templates : mandatories
+            if (isset($options['_tickettemplate'])) {
+               echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
+            }
+            echo "&nbsp;";
+   
+            Dropdown::show('Group', array('name'      => '_groups_id_requester',
+                                          'value'     => $options["_groups_id_requester"],
+                                          'entity'    => $this->fields["entities_id"],
+                                          'condition' => '`is_requester`'));
+        }
 
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
@@ -2159,17 +2161,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::OBSERVER);
-         /// For ticket templates : mandatories
-         if (isset($options['_tickettemplate'])) {
-            echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
+         if ($this->canAdminActors()) {
+            echo self::getActorIcon('group', self::OBSERVER);
+            /// For ticket templates : mandatories
+            if (isset($options['_tickettemplate'])) {
+               echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
+            }
+            echo "&nbsp;";
+   
+            Dropdown::show('Group', array('name'      => '_groups_id_observer',
+                                          'value'     => $options["_groups_id_observer"],
+                                          'entity'    => $this->fields["entities_id"],
+                                          'condition' => '`is_requester`'));
          }
-         echo "&nbsp;";
-
-         Dropdown::show('Group', array('name'      => '_groups_id_observer',
-                                       'value'     => $options["_groups_id_observer"],
-                                       'entity'    => $this->fields["entities_id"],
-                                       'condition' => '`is_requester`'));
       } else {
          $this->showGroupsAssociated(self::OBSERVER, $candeleteobserver);
       }
