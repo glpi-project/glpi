@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id$
@@ -4098,10 +4099,12 @@ class Ticket extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
-         Dropdown::show('Group', array('name'   => '_groups_id_requester',
-                                       'value'  => $options["_groups_id_requester"],
-                                       'entity' => $this->fields["entities_id"]));
+         if (haveRight("update_ticket","1")) {
+            echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
+            Dropdown::show('Group', array('name'   => '_groups_id_requester',
+                                          'value'  => $options["_groups_id_requester"],
+                                          'entity' => $this->fields["entities_id"]));
+         }
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
@@ -4127,10 +4130,12 @@ class Ticket extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
-         Dropdown::show('Group', array('name'   => '_groups_id_observer',
-                                       'value'  => $options["_groups_id_observer"],
-                                       'entity' => $this->fields["entities_id"]));
+         if (haveRight("update_ticket","1")) {
+            echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
+            Dropdown::show('Group', array('name'   => '_groups_id_observer',
+                                          'value'  => $options["_groups_id_observer"],
+                                          'entity' => $this->fields["entities_id"]));
+         }
       } else {
          $this->showGroupsAssociated(self::OBSERVER, $candeleteobserver);
       }
@@ -4553,9 +4558,11 @@ class Ticket extends CommonDBTM {
       echo "</th>";
       echo "<td>";
       if (!$ID) {
-         User::dropdown(array('name'   => "_add_validation",
-                              'entity' => $this->fields['entities_id'],
-                              'right'  => 'validate_ticket'));
+         if (haveRight('create_validation','1')) {
+            User::dropdown(array('name'   => "_add_validation",
+                                 'entity' => $this->fields['entities_id'],
+                                 'right'  => 'validate_ticket'));
+         }
       } else {
          if ($canupdate) {
             TicketValidation::dropdownStatus('global_validation',
