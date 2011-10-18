@@ -49,8 +49,13 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
    switch ($_REQUEST['type']) {
       case 'Group' :
       case 'Profile' :
+         
+         $params = array('value' => $_SESSION['glpiactive_entity']);
+         if (Session::isViewAllEntities()) {
+            $params['toadd'] = array(-1 => $LANG['reminder'][3]);
+         }
          echo "&nbsp;".$LANG['entity'][0]."&nbsp;:&nbsp;";
-         Dropdown::show('Entity', array('toadd' => array(-1 => $LANG['reminder'][3])));
+         Dropdown::show('Entity', $params);
          echo "&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
          Dropdown::showYesNo('is_recursive');
          break;
