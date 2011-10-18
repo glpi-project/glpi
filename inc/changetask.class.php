@@ -86,13 +86,20 @@ class ChangeTask extends CommonITILTask {
       if (!parent::canReadITILItem()) {
          return false;
       }
-
-      return (Session::haveRight("edit_all_change", "1")
+      
+      $change = new Change();
+      
+      if ($change->getFromDB($this->fields['changes_id'])) {
+         return (Session::haveRight("edit_all_change", "1")
               || (Session::haveRight("show_my_change", "1")
-                  && ($ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+                  && ($change->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
-                          && $ticket->haveAGroup(CommonITILObject::ASSIGN,
+                          && $change->haveAGroup(CommonITILObject::ASSIGN,
                                                  $_SESSION['glpigroups'])))));
+      } else {
+         return false;
+      }
+      
    }
 
 

@@ -262,7 +262,9 @@ class Ticket extends CommonITILObject {
       }
 
       if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
-            && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
+            && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
+               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+            ) {
          return true;
       }
 
@@ -282,7 +284,8 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
+      if (($this->isUser(parent::REQUESTER,Session::getLoginUserID()) 
+            || $this->fields["users_id_recipient"] === Session::getLoginUserID())
           && $this->numberOfFollowups() == 0
           && $this->numberOfTasks() == 0
           && $this->fields["date"] == $this->fields["date_mod"]) {
@@ -1633,7 +1636,8 @@ class Ticket extends CommonITILObject {
    function canAddFollowups() {
 
       return ((Session::haveRight("add_followups","1")
-               && $this->isUser(parent::REQUESTER,Session::getLoginUserID()))
+               && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
+                  || $this->fields["users_id_recipient"] === Session::getLoginUserID()))
               || Session::haveRight("global_add_followups","1")
               || (Session::haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
@@ -2836,7 +2840,7 @@ class Ticket extends CommonITILObject {
 
       // Set default values...
       $values = array('_users_id_requester_notif' => array('use_notification' => ($email==""?0:1)),
-                      'delegate'                   => 0,
+                      'nodelegate'                => 1,
                       '_users_id_requester'       => 0,
                       'name'                      => '',
                       'content'                   => '',
@@ -2850,7 +2854,7 @@ class Ticket extends CommonITILObject {
                       'slas_id'                   => 0,
                       '_add_validation'           => 0,
                       'type'                      => -1,
-                      'right'                     => "id");
+                      '_right'                     => "id");
 
 
       // Restore saved value or override with page parameter
@@ -2870,25 +2874,23 @@ class Ticket extends CommonITILObject {
       }
       
       
-      
       $delegating = User::getDelegateGroupsForUser();
-      if (!empty($delegating)) {
+      
+      if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".$LANG['job'][69]."&nbsp;:&nbsp;";
-         $items[0] = $LANG['choice'][1];
-         $items[1] = $LANG['choice'][0];
          
-         $rand   = Dropdown::showFromArray("delegate", $items, array("value" => $options['delegate']));
+         $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
          
-         $params = array ('delegate'            => '__VALUE__',
-                           'rand'             => $rand,
-                           'right'             => "delegate",
-                           '_users_id_requester'       => $options['_users_id_requester'],
-                           '_users_id_requester_notif' => $options['_users_id_requester_notif']['use_notification'],
-                           'use_notification' => $options['_users_id_requester_notif']['use_notification'],
-                           'entity_restrict'  => $_SESSION["glpiactive_entity"]);
+         $params = array ('nodelegate'                   => '__VALUE__',
+                          'rand'                      => $rand,
+                          'right'                     => "delegate",
+                          '_users_id_requester'       => $options['_users_id_requester'],
+                          '_users_id_requester_notif' => $options['_users_id_requester_notif']['use_notification'],
+                          'use_notification'          => $options['_users_id_requester_notif']['use_notification'],
+                          'entity_restrict'           => $_SESSION["glpiactive_entity"]);
 
-         Ajax::UpdateItemOnSelectEvent("dropdown_delegate".$rand, "show_result".$rand, $CFG_GLPI["root_doc"].
+         Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand, $CFG_GLPI["root_doc"].
                                    "/ajax/dropdownDelegationUsers.php", $params);
          
          echo "</th></tr>";
@@ -2899,8 +2901,9 @@ class Ticket extends CommonITILObject {
          if ($options["_users_id_requester"] == 0) {
             $options['_users_id_requester'] = Session::getLoginUserID();
          } else {
-            $options['right'] = "delegate";
+            $options['_right'] = "delegate";
          }
+         
          $self->showActorAddFormOnCreate(self::REQUESTER, $options);
          echo "</div>";
          echo "</td></tr>";

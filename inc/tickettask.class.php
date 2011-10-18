@@ -109,11 +109,15 @@ class TicketTask  extends CommonITILTask {
       if (!parent::canReadITILItem()) {
          return false;
       }
-
-      return (Session::haveRight("global_add_tasks","1")
-              || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
+      $ticket = new Ticket();
+      if ($ticket->getFromDB($this->fields['tickets_id'])) {
+         return (Session::haveRight("global_add_tasks","1")
+               || $ticket->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+               || (isset($_SESSION["glpigroups"])
+                     && $ticket->haveAGroup(CommonITILObject::ASSIGN, $_SESSION['glpigroups'])));
+      } else {
+         return false;
+      }
    }
 
 

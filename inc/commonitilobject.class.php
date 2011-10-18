@@ -1914,11 +1914,12 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "&nbsp;";
       
-      if (!isset($options["right"])) {
+      if (!isset($options["_right"])) {
          $right = $this->getDefaultActorRightSearch($type);
       } else {
-         $right = $options["right"];
+         $right = $options["_right"];
       }
+      
       if ($options["_users_id_".$typename] == 0) {
          $options["_users_id_".$typename] = $this->getDefaultActor($type);
       }
@@ -1956,8 +1957,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // display opened tickets for user
          if ($type == self::REQUESTER 
-               && $options["_users_id_".$typename] > 0 
-                  && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               && $options["_users_id_".$typename] > 0) {
 
             $options2['field'][0]      = 4; // users_id
             $options2['searchtype'][0] = 'equals';
@@ -2095,9 +2095,9 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
          } else {
             $delegating = User::getDelegateGroupsForUser();
-            if (!empty($delegating)) {
+            if (count($delegating)) {
                //$this->getDefaultActor(self::REQUESTER); 
-               $options['right'] = "delegate";
+               $options['_right'] = "delegate";
                $this->showActorAddFormOnCreate(self::REQUESTER, $options);
             } else {
                echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
