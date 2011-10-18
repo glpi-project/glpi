@@ -46,6 +46,8 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
    $display = false;
+   $rand = mt_rand();
+   
    switch ($_REQUEST['type']) {
       case 'User':
          User::dropdown(array('right' => 'reminder_public'));
@@ -53,14 +55,17 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
          break;
 
       case 'Group':
-         $rand = Dropdown::show('Group');
-         echo "<span id='subvisibility$rand'></span>";
-         $params = array('items_id' => '__VALUE__',
-                         'type'     => $_REQUEST['type']);
+         $params = array('rand' => $rand);
+         $params['toupdate'] = array('value_fieldname' => 'value',
+                                     'to_update'       => "subvisibility$rand",
+                                     'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                                     'moreparams'      => array('items_id' => '__VALUE__',
+                                                                'type'     => $_REQUEST['type']));
 
-         Ajax::updateItemOnSelectEvent("dropdown_groups_id".$rand,"subvisibility$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                       $params);
+         Dropdown::show('Group', $params);
+
+         echo "<span id='subvisibility$rand'></span>";
+
          $display = true;
          break;
 
@@ -71,15 +76,18 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
          break;
 
       case 'Profile':
-         $rand = Dropdown::show('Profile', array('condition' => "`reminder_public` = 'r'
-                                                                 OR `reminder_public` = 'w'"));
+         $params = array('rand'      => $rand,
+                         'condition' => "`reminder_public` IN ('r','w')");
+         $params['toupdate'] = array('value_fieldname' => 'value',
+                                     'to_update'       => "subvisibility$rand",
+                                     'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                                     'moreparams'      => array('items_id' => '__VALUE__',
+                                                                'type'     => $_REQUEST['type']));
+         
+         Dropdown::show('Profile', $params);
+         
          echo "<span id='subvisibility$rand'></span>";
-         $params = array('items_id' => '__VALUE__',
-                         'type'     => $_REQUEST['type']);
-
-         Ajax::updateItemOnSelectEvent("dropdown_profiles_id".$rand,"subvisibility$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                       $params);
+         
          $display= true;
          break;
    }
