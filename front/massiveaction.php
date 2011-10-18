@@ -996,13 +996,16 @@ if (isset($_POST["action"])
          /// TODO : find a way to have stats
          $nbok++;
    }
+   // Default message : all ok
    $message = $LANG['common'][23];
+   // All failed. operations failed
    if ($nbok == 0) {
       $message = $LANG['common'][118];
       if ($nbnoright) {
          $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
       }
    } else if ($nbnoright || $nbko) {
+      // Partial success
       $message = $LANG['common'][117];
       $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
    }
