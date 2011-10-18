@@ -91,15 +91,16 @@ class Calendar extends CommonDropdown {
       $input = $this->fields;
       $oldID = $input['id'];
       unset($input['id']);
-      $newID = $this->add($input);
-
-
-      $calhol = new Calendar_Holiday();
-      $calhol->cloneCalendar($oldID, $newID);
-      $calseg = new CalendarSegment();
-      $calseg->cloneCalendar($oldID, $newID);
-
-      $this->updateDurationCache($newID);
+      if ($newID = $this->add($input)) {
+         $calhol = new Calendar_Holiday();
+         $calhol->cloneCalendar($oldID, $newID);
+         $calseg = new CalendarSegment();
+         $calseg->cloneCalendar($oldID, $newID);
+   
+         $this->updateDurationCache($newID);
+         return true;
+      }
+      return false;
 
    }
 

@@ -347,11 +347,11 @@ class Computer_Item extends CommonDBRelation{
    *
    * Print the form for computers or templates connections to printers, screens or peripherals
    *
-   *@param $target
-   *@param $comp Computer object
-   *@param $withtemplate=''  boolean : Template or basic item.
+   * @param $target
+   * @param $comp Computer object
+   * @param $withtemplate=''  boolean : Template or basic item.
    *
-   *@return Nothing (call to classes members)
+   * @return Nothing (call to classes members)
    **/
    static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI, $LANG;

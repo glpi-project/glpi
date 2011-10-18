@@ -375,6 +375,12 @@ $LANG['common'][113] = "Visibilité";
 $LANG['common'][114] = "TAG ID";
 $LANG['common'][115] = "Périodicité";
 $LANG['common'][116] = "Ajouter une cible";
+$LANG['common'][117] = "Opération réalisée partiellement avec succès";
+$LANG['common'][118] = "Opération échouée";
+$LANG['common'][119] = "échec(s)";
+$LANG['common'][120] = "réussite(s)";
+$LANG['common'][121] = "problème(s) d'habilitation";
+
 
 
 $LANG['computers'][0]  = "Volume";
