@@ -206,13 +206,14 @@ class Calendar extends CommonDropdown {
          return 0;
       }
 
-      $timestart  = strtotime($start);
-      $timeend    = strtotime($end);
+      $timestart   = strtotime($start);
+      $timeend     = strtotime($end);
       
-      $datestart  = date('Y-m-d',$timestart);
-      $dateend    = date('Y-m-d',$timeend);
-      $timerealend = strtotime($dateend.' 24:00:00');
-      $activetime = 0;
+      $datestart   = date('Y-m-d',$timestart);
+      $dateend     = date('Y-m-d',$timeend);
+      /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+      $timerealend = strtotime($dateend.' 23:59:59');
+      $activetime  = 0;
 
       if ($work_in_days) {
          $activetime = $timeend-$timestart;
