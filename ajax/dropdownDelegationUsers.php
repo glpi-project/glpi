@@ -48,8 +48,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-
-if ($_POST["delegate"] == 0) {
+if ($_POST["nodelegate"] == 1) {
    $_POST['_users_id_requester'] = Session::getLoginUserID();
    $_POST['right'] = "id";
 } else {
