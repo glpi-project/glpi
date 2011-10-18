@@ -156,7 +156,7 @@ class SlaLevel_Ticket extends CommonDBTM {
 
             } else if ($ticket->fields['status'] != 'solved') {
                // If status = solved : keep the line in case of solution not validated
-               $input = $ticket->fields;
+               $input['id'] = $ticket->getID();
                $input['_auto_update'] = true;
 
                if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
@@ -174,6 +174,9 @@ class SlaLevel_Ticket extends CommonDBTM {
                // Action done : drop the line
                $slalevelticket->delete(array('id' => $data['id']));
             }
+         } else {
+            // Drop line
+            $slalevelticket->delete(array('id' => $data['id']));
          }
 
       } else {
