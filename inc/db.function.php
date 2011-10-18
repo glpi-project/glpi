@@ -301,17 +301,18 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
 /**
  * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param $table string: table name
+ * @param $table     string: table name
  * @param $condition string: condition to use
- * @param $usecache boolean
+ * @param $usecache  boolean
+ * @param $order     string: result order
  *
  * @return array containing all the datas
 **/
-function getAllDatasFromTable($table, $condition="", $usecache=false) {
+function getAllDatasFromTable($table, $condition='', $usecache=false, $order='') {
    global $DB;
    static $cache = array();
 
-   if (empty($condition) && $usecache && isset($cache[$table])) {
+   if (empty($condition) && empty($order) && $usecache && isset($cache[$table])) {
       return $cache[$table];
    }
 
@@ -322,6 +323,9 @@ function getAllDatasFromTable($table, $condition="", $usecache=false) {
    if (!empty($condition)) {
       $query .= " WHERE $condition ";
    }
+   if (!empty($order)) {
+      $query .= " ORDER BY $order ";
+   }
 
    if ($result=$DB->query($query)) {
       while ($data=$DB->fetch_assoc($result)) {
@@ -329,7 +333,7 @@ function getAllDatasFromTable($table, $condition="", $usecache=false) {
       }
    }
 
-   if (empty($condition) && $usecache) {
+   if (empty($condition) && empty($order) && $usecache) {
       $cache[$table] = $datas;
    }
    return $datas;
