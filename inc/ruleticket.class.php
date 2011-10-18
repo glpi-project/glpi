@@ -293,6 +293,11 @@ class RuleTicket extends Rule {
       $criterias['_mailgate']['name']      = $LANG['mailgate'][0];
       $criterias['_mailgate']['linkfield'] = '_mailgate';
       $criterias['_mailgate']['type']      = 'dropdown';
+
+      $criterias['_x-priority']['name']  = $LANG['mailing'][132].' : X-Priority';
+      $criterias['_x-priority']['table'] = '';
+      $criterias['_x-priority']['type']  = 'text';
+
       return $criterias;
    }
 

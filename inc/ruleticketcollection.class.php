@@ -75,5 +75,12 @@ class RuleTicketCollection extends RuleCollection {
       return Session::haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
    }
 
+   function prepareInputDataForProcess($input,$params) {
+      // Pass x-priority header if exists
+      if (isset($input['_head']['x-priority'])) {
+         $input['_x-priority'] = $input['_head']['x-priority'];
+      }
+      return $input;
+   }
 }
 ?>
