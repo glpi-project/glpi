@@ -2638,10 +2638,13 @@ class OcsServer extends CommonDBTM {
                $query = "UPDATE `glpi_ocslinks`
                          SET `$field` = '" . addslashes(exportArrayToDB($tab)) . "'
                          WHERE `computers_id` = '$computers_id'";
-               $DB->query($query);
+               if ($DB->query($query)) {
+                  return true;
+               }
             }
          }
       }
+      return false;
    }
 
 
@@ -2659,9 +2662,12 @@ class OcsServer extends CommonDBTM {
             $query = "UPDATE `glpi_ocslinks`
                       SET `$field` = '" . $newArray . "'
                       WHERE `computers_id` = '$computers_id'";
-            $DB->query($query);
+            if ($DB->query($query)) {
+               return true;
+            }
          }
       }
+      return false;
    }
 
 
@@ -3123,10 +3129,13 @@ class OcsServer extends CommonDBTM {
                $query = "UPDATE `glpi_ocslinks`
                          SET `$field` = '" . exportArrayToDB($tab) . "'
                          WHERE `computers_id` = '$computers_id'";
-               $DB->query($query);
+               if ($DB->query($query)) {
+                  return true;
+               }
             }
          }
       }
+      return false;
    }
 
 

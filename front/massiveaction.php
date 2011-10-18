@@ -120,6 +120,10 @@ if (isset($_POST["action"])
       $REDIRECT = $CFG_GLPI['root_doc']."/front/central.php";
    }
 
+   $nbok      = 0;
+   $nbnoright = 0;
+   $nbko      = 0;
+   
    switch($_POST["action"]) {
       case "connect_to_computer" :
          if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {
@@ -130,7 +134,13 @@ if (isset($_POST["action"])
                                  'itemtype'     => $_POST["itemtype"],
                                  'items_id'     => $_POST["connect_item"]);
                   if ($conn->can(-1, 'w', $input)) {
-                     $conn->add($input);
+                     if ($conn->add($input)) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
                   }
                }
             }
@@ -146,7 +156,13 @@ if (isset($_POST["action"])
                                  'itemtype'     => $_POST["itemtype"],
                                  'items_id'     => $key);
                   if ($conn->can(-1, 'w', $input)) {
-                     $conn->add($input);
+                     if ($conn->add($input)) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
                   }
                }
             }
@@ -157,8 +173,14 @@ if (isset($_POST["action"])
          $conn = new Computer_Item();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               if ($item->getFromDB($key)) {
-                  $conn->disconnectForItem($item);
+               if ($item->can($key, 'd')) {
+                  if ($conn->disconnectForItem($item)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -166,8 +188,16 @@ if (isset($_POST["action"])
 
       case "delete" :
          foreach ($_POST["item"] as $key => $val) {
-            if ($val == 1 && $item->can($key,'d')) {
-               $item->delete(array("id" => $key));
+            if ($val == 1) {
+               if ($item->can($key,'d')){
+                  if ($item->delete(array("id" => $key))) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
+               }
             }
          }
          break;
@@ -175,7 +205,15 @@ if (isset($_POST["action"])
       case "purge" :
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               $item->delete(array("id" => $key), 1);
+               if ($item->can($key,'d')){
+                  if ($item->delete(array("id" => $key), 1)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
+               }
             }
          }
          break;
@@ -183,12 +221,21 @@ if (isset($_POST["action"])
       case "restore" :
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               $item->restore(array("id" => $key));
+               if ($item->can($key,'d')){
+                  if ($item->restore(array("id" => $key))) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
+               }
             }
          }
          break;
 
       case "update" :
+         /// TODO add right checks
          $searchopt = Search::getCleanedOptions($_POST["itemtype"],'w');
          if (isset($searchopt[$_POST["id_field"]])) {
             /// Infocoms case
@@ -212,20 +259,35 @@ if (isset($_POST["action"])
                             || ($ent->fields["is_recursive"]
                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
                                             $item->getEntityID())))) {
-                           // Add infocom if not exists
-                           if (!$ic->getFromDBforDevice($_POST["itemtype"],$key)) {
-                              $input2["items_id"] = $key;
-                              $input2["itemtype"] = $_POST["itemtype"];
-                              unset($ic->fields);
-                              $ic->add($input2);
-                              $ic->getFromDBforDevice($_POST["itemtype"], $key);
-                           }
-                           $id = $ic->fields["id"];
-                           unset($ic->fields);
+                           $input2["items_id"] = $key;
+                           $input2["itemtype"] = $_POST["itemtype"];
 
-                           $ic->update(array('id'            => $id,
-                                             $_POST["field"] => $_POST[$_POST["field"]]));
+                           if ($ic->can(-1,'w',$input2)) {
+                              // Add infocom if not exists
+                              if (!$ic->getFromDBforDevice($_POST["itemtype"],$key)) {
+                                 $input2["items_id"] = $key;
+                                 $input2["itemtype"] = $_POST["itemtype"];
+                                 unset($ic->fields);
+                                 $ic->add($input2);
+                                 $ic->getFromDBforDevice($_POST["itemtype"], $key);
+                              }
+                              $id = $ic->fields["id"];
+                              unset($ic->fields);
+   
+                              if ($ic->update(array('id'            => $id,
+                                                $_POST["field"] => $_POST[$_POST["field"]]))) {
+                                 $nbok++;
+                              } else {
+                                 $nbko++;
+                              }
+                           } else {
+                              $nbnoright++;
+                           }
+                        } else {
+                           $nbnoright++;
                         }
+                     } else {
+                        $nbko++;
                      }
                   }
                }
@@ -259,12 +321,20 @@ if (isset($_POST["action"])
                }
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($item->getFromDB($key)) {
+                     if ($item->can($key,'w')) {
                         if (count($link_entity_type) == 0
                             || in_array($item->fields["entities_id"],$link_entity_type)) {
-                           $item->update(array('id'            => $key,
-                                               $_POST["field"] => $_POST[$_POST["field"]]));
+                           if ($item->update(array('id'            => $key,
+                                               $_POST["field"] => $_POST[$_POST["field"]]))) {
+                              $nbok++;
+                           } else {
+                              $nbko++;
+                           }
+                        } else {
+                           $nbnoright++;
                         }
+                     } else {
+                        $nbnoright++;
                      }
                   }
                }
@@ -272,7 +342,8 @@ if (isset($_POST["action"])
          }
          break;
 
-      case "duplicate" :
+      case "duplicate" : // For calendar duplicate in another entity
+         /// TODO manage right management
          if (method_exists($item,'duplicate')) {
             $options = array();
             if ($item->isEntityAssign()) {
@@ -283,8 +354,16 @@ if (isset($_POST["action"])
                   if ($item->getFromDB($key)) {
                      if (!$item->isEntityAssign()
                          || ($_POST['entities_id'] != $item->getEntityID())) {
-                        $item->duplicate($options);
+                        if ($item->duplicate($options)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbko++;
                      }
+                  } else {
+                     $nbko++;
                   }
                }
             }
@@ -299,7 +378,13 @@ if (isset($_POST["action"])
                   $input = array('computers_id'        => $key,
                                  'softwareversions_id' => $_POST['softwareversions_id']);
                   if ($inst->can(-1, 'w', $input)) {
-                     $inst->add($input);
+                     if ($inst->add($input)) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
                   }
                }
             }
@@ -313,7 +398,13 @@ if (isset($_POST["action"])
                $input = array('groups_id' => $_POST["groups_id"],
                               'users_id'  => $key);
                if ($groupuser->can(-1,'w',$input)) {
-                  $groupuser->add($input);
+                  if ($groupuser->add($input)){
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -332,7 +423,15 @@ if (isset($_POST["action"])
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $input['users_id'] = $key;
-                  $right->add($input);
+                  if ($right->can(-1,'w',$input)) {
+                     if ($right->add($input)) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
+                  }
                }
             }
          }
@@ -345,7 +444,13 @@ if (isset($_POST["action"])
                            'items_id'     => $key,
                            'documents_id' => $_POST['docID']);
             if ($documentitem->can(-1, 'w', $input)) {
-               $documentitem->add($input);
+               if ($documentitem->add($input)) {
+                  $nbok++;
+               } else {
+                  $nbko++;
+               }
+            } else {
+               $nbnoright++;
             }
          }
          break;
@@ -357,7 +462,13 @@ if (isset($_POST["action"])
                $input = array('suppliers_id' => $key,
                               'contacts_id'  => $_POST['contactID']);
                if ($contactsupplier->can(-1, 'w', $input)) {
-                  $contactsupplier->add($input);
+                  if ($contactsupplier->add($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                 $nbnoright++;
                }
             }
          }
@@ -370,7 +481,13 @@ if (isset($_POST["action"])
                            'items_id'     => $key,
                            'contracts_id' => $_POST['contractID']);
             if ($contractitem->can(-1, 'w', $input)) {
-               $contractitem->add($input);
+              if ($contractitem->add($input)) {
+                  $nbok++;
+               } else {
+                  $nbko++;
+               }
+            } else {
+               $nbnoright++;
             }
          }
          break;
@@ -382,7 +499,13 @@ if (isset($_POST["action"])
                $input = array('suppliers_id' => $_POST['supplierID'],
                               'contacts_id'  => $key);
                if ($contactsupplier->can(-1, 'w', $input)) {
-                  $contactsupplier->add($input);
+                  if ($contactsupplier->add($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -395,30 +518,58 @@ if (isset($_POST["action"])
                   $input = array('itemtype' => $_POST['itemtype'],
                                  'items_id' => $key);
                   if (!$ic->getFromDBforDevice($_POST['itemtype'], $key)) {
-                     $ic->add($input);
+                      if ($ic->can(-1,'w',$input)) {
+                        if ($ic->add($input)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                      } else {
+                        $nbnoright++;
+                      }
+                  } else {
+                     $nbko++;
                   }
                }
             }
          break;
 
       case "change_authtype" :
+         /// TODO manage rights
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                $ids[] = $key;
             }
          }
-         User::changeAuthMethod($ids, $_POST["authtype"], $_POST["auths_id"]);
+         if (Session::haveRight("user_authtype","w")) {
+            if (User::changeAuthMethod($ids, $_POST["authtype"], $_POST["auths_id"])) {
+               $nbok++;
+            } else {
+               $nbko++;
+            }
+         } else {
+            $nbnoright++;
+         }
          break;
 
       case "unlock_ocsng_field" :
+         /// TODO manage rights
          $fields = OcsServer::getLockableFields();
          if ($_POST['field'] == 'all' || isset($fields[$_POST['field']])) {
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   if ($_POST['field'] == 'all') {
-                     OcsServer::replaceOcsArray($key ,array(), "computer_update");
+                     if (OcsServer::replaceOcsArray($key ,array(), "computer_update")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                   } else {
-                     OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update", true);
+                     if (OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update", true)) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                   }
                }
             }
@@ -431,31 +582,56 @@ if (isset($_POST["action"])
       case "unlock_ocsng_software" :
       case "unlock_ocsng_ip" :
       case "unlock_ocsng_disk" :
+         /// TODO manage rights
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                switch ($_POST["action"]) {
                   case "unlock_ocsng_monitor" :
-                     OcsServer::unlockItems($key, "import_monitor");
+                     if (OcsServer::unlockItems($key, "import_monitor")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
 
                   case "unlock_ocsng_printer" :
-                     OcsServer::unlockItems($key, "import_printer");
+                     if (OcsServer::unlockItems($key, "import_printer")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
 
                   case "unlock_ocsng_peripheral" :
-                     OcsServer::unlockItems($key, "import_peripheral");
+                     if (OcsServer::unlockItems($key, "import_peripheral")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
 
                   case "unlock_ocsng_software" :
-                     OcsServer::unlockItems($key, "import_software");
+                     if (OcsServer::unlockItems($key, "import_software")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
 
                   case "unlock_ocsng_ip" :
-                     OcsServer::unlockItems($key, "import_ip");
+                     if (OcsServer::unlockItems($key, "import_ip")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
 
                   case "unlock_ocsng_disk" :
-                     OcsServer::unlockItems($key, "import_disk");
+                     if (OcsServer::unlockItems($key, "import_disk")) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                      break;
                }
             }
@@ -463,6 +639,7 @@ if (isset($_POST["action"])
          break;
 
       case "force_ocsng_update" :
+         /// TODO check rights
          // First time
          if (!isset($_GET['multiple_actions'])) {
             $_SESSION['glpi_massiveaction']['POST']      = $_POST;
@@ -499,6 +676,8 @@ if (isset($_POST["action"])
                Html::redirect($REDIRECT);
             }
          }
+         // Unable to manage numbers with redirect
+         $nbok++;
          break;
 
       case "compute_software_category" :
@@ -740,7 +919,17 @@ if (isset($_POST["action"])
             Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
          }
    }
-   Session::addMessageAfterRedirect($LANG['common'][23]);
+   $message = $LANG['common'][23];
+   if ($nbok == 0) {
+      $message = $LANG['common'][118];
+      if ($nbnoright) {
+         $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
+      }
+   } else if ($nbnoright || $nbko) {
+      $message = $LANG['common'][117];
+      $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
+   }
+   Session::addMessageAfterRedirect($message);
    Html::redirect($REDIRECT);
 
 } else { //action, itemtype or item not defined

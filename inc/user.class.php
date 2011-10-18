@@ -2397,6 +2397,10 @@ class User extends CommonDBTM {
    static function changeAuthMethod($IDs=array(), $authtype=1 ,$server=-1) {
       global $DB;
 
+      if (!Session::haveRight("user_authtype","w")) {
+         return false;
+      }
+
       if (!empty($IDs) && in_array($authtype, array(Auth::DB_GLPI,
                                                     Auth::LDAP,
                                                     Auth::MAIL,
@@ -2405,8 +2409,11 @@ class User extends CommonDBTM {
          $query = "UPDATE `glpi_users`
                    SET `authtype` = '$authtype', `auths_id` = '$server', `password` = ''
                    WHERE `id` IN ('$where')";
-         $DB->query($query);
+         if ($DB->query($query)) {
+            return true;
+         }
       }
+      return false;
    }
 
 
