@@ -114,7 +114,7 @@ class SlaLevel_Ticket extends CommonDBTM {
             $slalevel = new SlaLevel();
             $sla      = new SLA();
             // Check if sla datas are OK
-            if ($ticket->fields['slas_id']>0
+            if ($ticket->fields['slas_id'] > 0
                 && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
 
                if ($ticket->fields['status'] == 'closed') {
@@ -122,7 +122,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                   $slalevelticket->delete(array('id' => $data['id']));
                } else if ($ticket->fields['status'] != 'solved') {
                   // If status = solved : keep the line in case of solution not validated
-                  $input = $ticket->fields;
+                  $input['id'] = $ticket->getID();
                   $input['_auto_update'] = true;
 
                   if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
@@ -137,6 +137,9 @@ class SlaLevel_Ticket extends CommonDBTM {
                   $ticket->update($input);
                   $sla->addLevelToDo($ticket);
                }
+            } else {
+               // Drop line
+               $slalevelticket->delete(array('id' => $data['id']));
             }
          } else {
             // Drop line
