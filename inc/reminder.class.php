@@ -881,21 +881,20 @@ class Reminder extends CommonDBTM {
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
 
-      if ($nb) {
-         echo "<br><table class='tab_cadrehov'>";
-         echo "<tr><th><div class='relative'><span>$titre</span>";
+      echo "<br><table class='tab_cadrehov'>";
+      echo "<tr><th><div class='relative'><span>$titre</span>";
 
-         if ($reminder->canCreate()) {
-            echo "<span class='reminder_right'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
-                  $LANG['buttons'][8]."\"></a></span>";
-         }
-
-         echo "</div></th></tr>\n";
+      if ($reminder->canCreate()) {
+         echo "<span class='reminder_right'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
+               $LANG['buttons'][8]."\"></a></span>";
       }
 
+      echo "</div></th></tr>\n";
+      
       if ($nb) {
+
          $rand = mt_rand();
 
          while ($data =$DB->fetch_array($result)) {
@@ -922,11 +921,10 @@ class Reminder extends CommonDBTM {
 
             echo "</div></td></tr>\n";
          }
-      }
 
-      if ($nb) {
-         echo "</table>\n";
-      }
+      } 
+      echo "</table>\n";
+
    }
 
 
