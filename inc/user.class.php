@@ -2159,9 +2159,9 @@ class User extends CommonDBTM {
                $query = "SELECT `glpi_users`.`id`
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
-                         WHERE `glpi_groups_users`.`groups_id` IN ('".implode("','",$ID)."')
+                         WHERE `glpi_groups_users`.`groups_id` IN ('".implode("','",$groups)."')
                               AND `glpi_groups_users`.`users_id` <> '".Session::getLoginUserID()."' ";
- 
+               
                $result = $DB->query($query);
    
                if ($DB->numrows($result)) {
