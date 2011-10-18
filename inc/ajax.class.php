@@ -413,7 +413,7 @@ class Ajax {
       global $CFG_GLPI, $DB, $LANG;
 
       $initparams = $params;
-      if ($rand==0) {
+      if ($rand == 0) {
          $rand = mt_rand();
       }
 
