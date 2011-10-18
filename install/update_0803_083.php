@@ -1232,6 +1232,11 @@ function update0803to083() {
    $migration->displayMessage($LANG['update'][142] . ' - various fields add');
 
 
+   // Ticket delegation
+   $migration->addField('glpi_groups_users', 'is_userdelegate', 'bool');
+   $migration->addKey('glpi_groups_users', 'is_userdelegate');
+
+
    //Software dictionnary update
    $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
    $migration->addField("glpi_rulecachesoftwares", "new_entities_id", "string");
@@ -1244,13 +1249,13 @@ function update0803to083() {
    $migration->addField('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
-
+   
    $migration->addKey('glpi_groups', 'is_requester');
    $migration->addKey('glpi_groups', 'is_assign');
    $migration->addKey('glpi_groups', 'is_notify');
    $migration->addKey('glpi_groups', 'is_itemgroup');
    $migration->addKey('glpi_groups', 'is_usergroup');
-
+   
    // Ticket solution by entity
    $migration->addfield('glpi_solutiontypes', 'entities_id', 'integer');
    $migration->addfield('glpi_solutiontypes', 'is_recursive', 'bool', array('value' => '1'));

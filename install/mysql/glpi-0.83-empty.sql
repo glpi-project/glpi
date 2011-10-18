@@ -2046,10 +2046,12 @@ CREATE TABLE `glpi_groups_users` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `is_manager` tinyint(1) NOT NULL DEFAULT '0',
+  `is_userdelegate` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`groups_id`),
   KEY `groups_id` (`groups_id`),
-  KEY `is_manager` (`is_manager`)
+  KEY `is_manager` (`is_manager`),
+  KEY `is_userdelegate` (`is_userdelegate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

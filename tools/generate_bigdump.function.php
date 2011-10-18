@@ -195,8 +195,9 @@ function addDocuments($type, $ID) {
  * @param $ID_entity entity ID
 **/
 function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
-   global $DB, $FIRST, $LAST,$current_year;
+   global $DB, $FIRST, $LAST;
 
+   $current_year = date('Y');
 
    $orderdate     = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
    $buydate       = $orderdate+mt_rand(0, 60)*DAY_TIMESTAMP;
@@ -1280,11 +1281,11 @@ function generate_entity($ID_entity) {
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0)";
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0)";
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1308,12 +1309,12 @@ function generate_entity($ID_entity) {
 
       $group = mt_rand($FIRST['groups'], $LAST['groups']);
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0, 1)";
+                VALUES (NULL, '$user_id', '$group', 0, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $group = mt_rand($FIRST['techgroups'], $LAST['techgroups']);
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0, 1)";
+                VALUES (NULL, '$user_id', '$group', 0, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1337,11 +1338,11 @@ function generate_entity($ID_entity) {
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0)";
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0)";
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1365,7 +1366,7 @@ function generate_entity($ID_entity) {
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0)";
+                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1620,7 +1621,7 @@ function generate_entity($ID_entity) {
                         '0.0000', '0', '', NULL, '')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
-
+   $LAST["budget"] = getMaxItem("glpi_budgets");
 
    // GLobal ones
    for ($i=0 ; $i<$MAX['document']/2 ; $i++) {

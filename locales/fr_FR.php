@@ -380,6 +380,8 @@ $LANG['common'][118] = "Opération échouée";
 $LANG['common'][119] = "échec(s)";
 $LANG['common'][120] = "réussite(s)";
 $LANG['common'][121] = "problème(s) d'habilitation";
+$LANG['common'][122] = "Rôle";
+$LANG['common'][123] = "Délégataire";
 
 
 
@@ -1055,6 +1057,7 @@ $LANG['job'][65] = "Champ obligatoire";
 $LANG['job'][66] = "Gabarit pour une demande";
 $LANG['job'][67] = "Gabarit pour un incident";
 $LANG['job'][68] = "Des champs obligatoires ne sont pas renseignés. Veuillez corriger :";
+$LANG['job'][69] = "Ce ticket me concerne";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";
@@ -2638,6 +2641,8 @@ $LANG['users'][20] = "Supprimer des superviseurs";
 $LANG['users'][21] = "Courriel par défaut";
 $LANG['users'][22] = "Titres des utilisateurs";
 $LANG['users'][23] = "Catégories des utilisateurs";
+$LANG['users'][24] = "Ajouter aux délégataires";
+$LANG['users'][25] = "Supprimer des délégataires";
 
 $LANG['validation'][0]  = "Validation";
 $LANG['validation'][1]  = "Envoyer une demande de validation";
