@@ -116,8 +116,10 @@ class KnowbaseItem extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
-      // set new date.
-      $input["date"] = $_SESSION["glpi_currenttime"];
+      // set new date if not exists
+      if (!isset($input["date"]) || empty($input["date"])) {
+         $input["date"] = $_SESSION["glpi_currenttime"];
+      }
       // set users_id
 
       // set title for question if empty
