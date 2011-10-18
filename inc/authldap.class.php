@@ -2358,7 +2358,8 @@ class AuthLDAP extends CommonDBTM {
       return $DB->result($result,0,'cpt');
    }
 
-
+/*
+ **** UNUSED ***
    static function getFirstLdapServer() {
       global $DB;
 
@@ -2369,7 +2370,7 @@ class AuthLDAP extends CommonDBTM {
 
       return $DB->result($result,0,'id');
    }
-
+*/
 
    static private function buildLdapFilter(AuthLdap $authldap) {
       //Build search filter
