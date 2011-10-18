@@ -4273,9 +4273,7 @@ class Ticket extends CommonDBTM {
       echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
       echo "<td>";
       $date = $this->fields["date"];
-      if (!$ID) {
-         $date = date("Y-m-d H:i:s");
-      }
+      
       if ($canupdate) {
          showDateTimeFormItem("date", $date, 1, false);
       } else {
