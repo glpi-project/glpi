@@ -1913,9 +1913,12 @@ abstract class CommonITILObject extends CommonDBTM {
          echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
       }
       echo "&nbsp;";
-
-      $right = $this->getDefaultActorRightSearch($type);
-
+      
+      if (!isset($options["right"])) {
+         $right = $this->getDefaultActorRightSearch($type);
+      } else {
+         $right = $options["right"];
+      }
       if ($options["_users_id_".$typename] == 0) {
          $options["_users_id_".$typename] = $this->getDefaultActor($type);
       }
@@ -1952,7 +1955,9 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($itemtype == 'Ticket') {
 
          // display opened tickets for user
-         if ($type == self::REQUESTER && $options["_users_id_".$typename] > 0) {
+         if ($type == self::REQUESTER 
+               && $options["_users_id_".$typename] > 0 
+                  && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
 
             $options2['field'][0]      = 4; // users_id
             $options2['searchtype'][0] = 'equals';
@@ -2089,8 +2094,15 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($this->canAdminActors()) {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
          } else {
-            echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
-            echo getUserName($options["_users_id_requester"], $showuserlink);
+            $delegating = User::getDelegateGroupsForUser();
+            if (!empty($delegating)) {
+               //$this->getDefaultActor(self::REQUESTER); 
+               $options['right'] = "delegate";
+               $this->showActorAddFormOnCreate(self::REQUESTER, $options);
+            } else {
+               echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
+               echo getUserName($options["_users_id_requester"], $showuserlink);
+            }
          }
 
          //If user have access to more than one entity, then display a combobox : Ticket case

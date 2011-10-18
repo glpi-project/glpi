@@ -108,6 +108,30 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
    Html::back();
 
+} else if (isset($_POST["unset_delegate"])) {
+   if (isset($_POST["item"]) && count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         if ($groupuser->can($key,'w')) {
+            $groupuser->update(array('id'         => $key,
+                                     'is_userdelegate' => 0));
+         }
+      }
+   }
+   Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
+   Html::back();
+
+} else if (isset($_POST["set_delegate"])) {
+   if (isset($_POST["item"]) && count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         if ($groupuser->can($key,'w')) {
+            $groupuser->update(array('id'         => $key,
+                                     'is_userdelegate' => 1));
+         }
+      }
+   }
+   Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
+   Html::back();
+
 } else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {
    if (isset($_POST['item'])
        && ($_POST["field"]=='groups_id' || $_POST["field"]=='groups_id_tech' )) {

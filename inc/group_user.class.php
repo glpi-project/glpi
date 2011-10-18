@@ -221,7 +221,8 @@ class Group_User extends CommonDBRelation{
       $query = "SELECT `glpi_users`.*,
                        `glpi_groups_users`.`id` AS linkID,
                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
-                       `glpi_groups_users`.`is_manager` AS is_manager
+                       `glpi_groups_users`.`is_manager` AS is_manager,
+                       `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
                 WHERE `glpi_groups_users`.`groups_id`='$ID'
@@ -261,7 +262,7 @@ class Group_User extends CommonDBRelation{
          if ($nb) {
             echo "<div class='firstbloc'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][603]."</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
 
             User::dropdown(array('right'  => "all",
@@ -270,6 +271,10 @@ class Group_User extends CommonDBRelation{
 
             echo "</td><td>".$LANG['common'][64]."</td><td>";
             Dropdown::showYesNo("is_manager", 0);
+
+            echo "</td><td>".$LANG['common'][123]."</td><td>";
+            Dropdown::showYesNo("is_userdelegate", 0);
+
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name'is_dynamic' value='0'>";
             echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\"
@@ -284,17 +289,28 @@ class Group_User extends CommonDBRelation{
 
       if (count($used)) {
          Session::initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
-         foreach (array(1,0) as $is_manager) {
-            echo "<div id='groupuser_form$rand-$is_manager' class='spaced'>";
+         $items = array(
+            0 => "is_manager",
+            1 => "is_userdelegate",
+            2 => "is_user");
+         foreach ($items as $key => $role) {
+
+            echo "<div id='groupuser_form$rand-$role' class='spaced'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='$headerspan'>".($is_manager?$LANG['common'][64]:$LANG['Menu'][14]).
-                                                " (D=".$LANG['profiles'][29].")";
+            $title = $LANG['Menu'][14]." (D=".$LANG['profiles'][29].")";
+            if ($role == "is_manager") {
+               $title = $LANG['common'][64];
+            } else if ($role == "is_userdelegate") {
+               $title = $LANG['common'][123];
+            }
+            echo "<tr><th colspan='$headerspan'>".$title;
             echo "</th></tr>";
 
             $i    = 0;
             $user = new User();
+            
             foreach  ($used as $id => $data) {
-               if ($data['is_manager'] != $is_manager || !$user->can($id, 'r')) {
+               if ((isset($data[$role]) && !$data[$role]) || !$user->can($id, 'r')) {
                   // For recursive group, could be in another (sister) entity
                   continue;
                }
@@ -335,12 +351,15 @@ class Group_User extends CommonDBRelation{
             echo "</table>";
 
             if ($canedit && $i) {
-               Html::openArrowMassives("groupuser_form$rand-$is_manager", true);
+               Html::openArrowMassives("groupuser_form$rand-$role", true);
                $actions = array('deleteuser' => $LANG['buttons'][6]);
-               if ($is_manager) {
+               if ($role == "is_manager") {
                   $actions['unset_manager'] = $LANG['users'][20];
+               } else if ($role == "is_userdelegate") {
+                  $actions['unset_delegate'] = $LANG['users'][25];
                } else {
                   $actions['set_manager'] = $LANG['users'][19];
+                  $actions['set_delegate'] = $LANG['users'][24];
                }
                Html::closeArrowMassives($actions);
             }

@@ -2090,8 +2090,29 @@ class User extends CommonDBTM {
 
       return $tab;
    }
+   
+   /**
+   * Get all groups where the current user have delegating
+   *
+   * @return array of groups id
+   * @since version 0.83
+   **/
+   static function getDelegateGroupsForUser() {
+      
+      $restrict = "`users_id` = '".Session::getLoginUserID()."' 
+                  AND `glpi_groups_users`.`is_userdelegate` = '1'";
 
-
+      $datas = getAllDatasFromTable("glpi_groups_users",$restrict);
+      $groups = array();
+      if (count($datas)) {
+         foreach ($datas as $link) {
+            $groups[$link['groups_id']] = $link['groups_id'];
+         }
+      } 
+      return $groups;
+   }
+   
+   
    /**
     * Execute the query to select box with all glpi users where select key = name
     *
@@ -2126,7 +2147,42 @@ class User extends CommonDBTM {
          case "id" :
             $where = " `glpi_users`.`id` = '".Session::getLoginUserID()."' ";
             break;
-
+         
+         case "delegate" :
+            
+            $groups = self::getDelegateGroupsForUser();
+            
+            $users = array();
+            
+            if (count($groups)) {
+                 
+               $query = "SELECT `glpi_users`.`id`
+                         FROM `glpi_groups_users`
+                         LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
+                         WHERE `glpi_groups_users`.`groups_id` IN ('".implode("','",$ID)."')
+                              AND `glpi_groups_users`.`users_id` <> '".Session::getLoginUserID()."' ";
+ 
+               $result = $DB->query($query);
+   
+               if ($DB->numrows($result)) {
+                  while ($data=$DB->fetch_array($result)) {
+                        $users[$data["id"]] = $data["id"];
+                  }
+               }
+            }
+            // Add me to users list for central
+            if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+               $users[Session::getLoginUserID()] = Session::getLoginUserID();
+            }
+            
+            if (count($users)) {
+               $where = " `glpi_users`.`id` IN ('".implode("','",$users)."')";
+            } else {
+               $where = '0';
+            }
+            
+            break;
+            
          case "all" :
             $where = " `glpi_users`.`id` > '1' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
@@ -2216,6 +2272,7 @@ class User extends CommonDBTM {
             $query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
          }
       }
+
       return $DB->query($query);
    }
 
