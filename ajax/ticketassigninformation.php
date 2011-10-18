@@ -58,6 +58,8 @@ if (isset($_REQUEST['users_id_assign']) && $_REQUEST['users_id_assign'] > 0) {
    $options2['contains'][1]   = 'notold';
    $options2['link'][1]       = 'AND';
 
+   $options2['reset'] = 'reset';
+   
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
    echo "&nbsp;<a href='$url' title=\"".$LANG['joblist'][21]."\" target='_blank'>(".
