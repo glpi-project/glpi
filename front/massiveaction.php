@@ -676,7 +676,7 @@ if (isset($_POST["action"])
                Html::redirect($REDIRECT);
             }
          }
-         // Unable to manage numbers with redirect
+         /// TODO  Unable to manage numbers with redirect
          $nbok++;
          break;
 
@@ -687,17 +687,25 @@ if (isset($_POST["action"])
             if ($val == 1) {
                $params = array();
                //Get software name and manufacturer
-               $soft->getFromDB($key);
-               $params["name"]             = $soft->fields["name"];
-               $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
-               $params["comment"]          = $soft->fields["comment"];
-               //Process rules
-               $soft->update($softcatrule->processAllRules(null, $soft->fields, $params));
+               if ($soft->can($key,'w')) {
+                  $params["name"]             = $soft->fields["name"];
+                  $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
+                  $params["comment"]          = $soft->fields["comment"];
+                  //Process rules
+                  if ($soft->update($softcatrule->processAllRules(null, $soft->fields, $params))) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
+               }
             }
          }
          break;
 
       case "replay_dictionnary" :
+         /// TODO check rights
          $softdictionnayrule = new RuleDictionnarySoftwareCollection();
          $ids                = array();
          foreach ($_POST["item"] as $key => $val) {
@@ -705,7 +713,12 @@ if (isset($_POST["action"])
                $ids[] = $key;
             }
          }
-         $softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids);
+         if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0){
+            $nbok++;
+         } else {
+            $nbko++;
+         }
+         
          break;
 
       case "force_user_ldap_update" :
@@ -717,9 +730,13 @@ if (isset($_POST["action"])
                $user->getFromDB($key);
                if (($user->fields["authtype"] == Auth::LDAP)
                     || ($user->fields["authtype"] == Auth::EXTERNAL)) {
-                  AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                  if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                            'value'  => $user->fields["name"]),
-                                                     1, $user->fields["auths_id"]);
+                                                         1, $user->fields["auths_id"])) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
                }
             }
          }
@@ -738,6 +755,7 @@ if (isset($_POST["action"])
             }
          }
          $REDIRECT = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
+         $nbok++;
          break;
 
       case "add_followup" :
@@ -749,7 +767,13 @@ if (isset($_POST["action"])
                               'requesttypes_id' => $_POST['requesttypes_id'],
                               'content'         => $_POST['content']);
                if ($fup->can(-1,'w',$input)) {
-                  $fup->add($input);
+                  if ($fup->add($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -763,7 +787,13 @@ if (isset($_POST["action"])
                               'users_id_validate'  => $_POST['users_id_validate'],
                               'comment_submission' => $_POST['comment_submission']);
                if ($valid->can(-1,'w',$input)) {
-                  $valid->add($input);
+                  if ($valid->add($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -777,7 +807,13 @@ if (isset($_POST["action"])
                               'taskcategories_id' => $_POST['taskcategories_id'],
                               'content'           => $_POST['content']);
                if ($task->can(-1,'w',$input)) {
-                  $task->add($input);
+                  if ($task->add($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -798,7 +834,13 @@ if (isset($_POST["action"])
                   $input['_itil_assign'] = $_POST['_itil_assign'];
                }
                if ($ticket->can($key,'w')) {
-                  $ticket->update($input);
+                  if ($ticket->update($input)) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -815,7 +857,13 @@ if (isset($_POST["action"])
                      $input['_link']['link']         = $_POST['link'];
                      $input['_link']['tickets_id_2'] = $key;
                      if ($ticket->can($_POST['tickets_id_1'],'w')) {
-                        $ticket->update($input);
+                        if ($ticket->update($input)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbnoright++;
                      }
                   }
                }
@@ -829,7 +877,11 @@ if (isset($_POST["action"])
             $crontask = new CronTask();
             foreach ($_POST["item"] as $key => $val) {
                if ($val==1 && $crontask->getFromDB($key)) {
-                     $crontask->resetDate();
+                  if ($crontask->resetDate()) {
+                     $nbok++;
+                  } else {
+                     $nbko++;
+                  }
                }
             }
          }
@@ -844,9 +896,17 @@ if (isset($_POST["action"])
                   if ($val==1 && $item->can($key,'w')) {
                      // Check if parent is not a child of the original one
                      if (!in_array($parent->getID(), getSonsOf($item->getTable(), $item->getID()))) {
-                        $item->update(array('id' => $key,
-                                            $fk  => $_POST['parent']));
+                        if ($item->update(array('id' => $key,
+                                            $fk  => $_POST['parent']))) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbko++;
                      }
+                  } else {
+                     $nbnoright++;
                   }
                }
             }
@@ -856,31 +916,43 @@ if (isset($_POST["action"])
       case 'merge' :
          $fk = $item->getForeignKeyField();
          foreach ($_POST["item"] as $key => $val) {
-            if ($val==1 && $item->can($key,'w')) {
-               if ($item->getEntityID()==$_SESSION['glpiactive_entity']) {
-                     $item->update(array('id'           => $key,
-                                         'is_recursive' => 1));
-               } else {
-                  $input = $item->fields;
-
-                  // Remove keys (and name, tree dropdown will use completename)
-                  if ($item instanceof CommonTreeDropdown) {
-                     unset($input['id'], $input['name'], $input[$fk]);
+            if ($val==1) {
+               if ($item->can($key,'w')) {
+                  if ($item->getEntityID()==$_SESSION['glpiactive_entity']) {
+                        if ($item->update(array('id'           => $key,
+                                          'is_recursive' => 1))) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
                   } else {
-                     unset($input['id']);
+                     $input = $item->fields;
+   
+                     // Remove keys (and name, tree dropdown will use completename)
+                     if ($item instanceof CommonTreeDropdown) {
+                        unset($input['id'], $input['name'], $input[$fk]);
+                     } else {
+                        unset($input['id']);
+                     }
+                     // Change entity
+                     $input['entities_id']  = $_SESSION['glpiactive_entity'];
+                     $input['is_recursive'] = 1;
+                     $input = Toolbox::addslashes_deep($input);
+                     // Import new
+                     if ($newid = $item->import($input)) {
+   
+                        // Delete old
+                        if ($newid > 0) {
+                           $item->delete(array('id'          => $key,
+                                             '_replace_by' => $newid));
+                        }
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                   }
-                  // Change entity
-                  $input['entities_id']  = $_SESSION['glpiactive_entity'];
-                  $input['is_recursive'] = 1;
-                  $input = Toolbox::addslashes_deep($input);
-                  // Import new
-                  $newid = $item->import($input);
-
-                  // Delete old
-                  if ($newid > 0) {
-                     $item->delete(array('id'          => $key,
-                                         '_replace_by' => $newid));
-                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
@@ -888,6 +960,7 @@ if (isset($_POST["action"])
 
       case 'delete_email':
       case 'import_email':
+         /// TODO check rights
          $emails_ids = array();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
@@ -903,6 +976,8 @@ if (isset($_POST["action"])
                $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $_POST['entities_id']);
             }
          }
+         /// TODO not able to know it is ok
+         $nbok++;
          break;
 
       default :
@@ -918,6 +993,8 @@ if (isset($_POST["action"])
             // hook from the plugin defining the type
             Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
          }
+         /// TODO : find a way to have stats
+         $nbok++;
    }
    $message = $LANG['common'][23];
    if ($nbok == 0) {
