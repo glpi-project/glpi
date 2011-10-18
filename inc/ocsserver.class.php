@@ -1339,6 +1339,9 @@ class OcsServer extends CommonDBTM {
                                           SET `CHECKSUM` = (CHECKSUM | ".pow(2, self::HARDWARE_FL).")
                                           WHERE `ID` = '".$data["ID"]."'";
                         $DBocs->query($querychecksum);
+                     // } else {
+                        // We're damned ! no way to find new ID
+                        // TODO : delete ocslinks ?
                      }
 
                   } else {
@@ -1360,6 +1363,16 @@ class OcsServer extends CommonDBTM {
                                           SET `CHECKSUM` = (CHECKSUM | ".pow(2, self::HARDWARE_FL).")
                                           WHERE `ID` = '".$data["ID"]."'";
                         $DBocs->query($querychecksum);
+                     } else {
+                        // Not found, probably because ID change twice since previous sync
+                        // No way to found new DEVICEID
+                        $query = "UPDATE `glpi_ocslinks`
+                                  SET `ocsid` = '$equiv'
+                                  WHERE `ocsid` = '$del'
+                                        AND `ocsservers_id` = '$ocsservers_id'";
+                        $DB->query($query);
+                        // for history, see below
+                        $data = array('ID' => $equiv);
                      }
                   }
 
