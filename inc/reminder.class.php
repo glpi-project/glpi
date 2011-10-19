@@ -1096,7 +1096,12 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
       echo "<tr><td class='tab_bg_2' width='100px'>";
 
-      $addrand = Dropdown::dropdownTypes('_type', '', array('Entity', 'Group', 'Profile', 'User'));
+      $types = array( 'Group', 'Profile', 'User');
+      if (Session::isMultiEntitiesMode()) {
+         $types[] = 'Entity';
+      }
+
+      $addrand = Dropdown::dropdownTypes('_type', '', $types);
       $params  = array('type' => '__VALUE__');
 
       Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
