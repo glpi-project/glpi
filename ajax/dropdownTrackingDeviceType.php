@@ -47,10 +47,10 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
 
    // Message for post-only
    if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
-      echo "<br>&nbsp;&nbsp;&nbsp;".$LANG['help'][23].'&nbsp;:';
+      echo "<br>".$LANG['help'][23].'&nbsp;:';
    }
 
-   echo "<br>&nbsp;&nbsp;&nbsp;";
+   echo "<br>";
    Ajax::displaySearchTextForDropdown($_POST['myname'].$rand,8);
    
    $paramstrackingdt = array('searchText'      => '__VALUE__',
