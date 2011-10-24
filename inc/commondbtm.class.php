@@ -3122,14 +3122,16 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Specificy a plugin itemtype for which entities_id and is_recursive should be forwarded
+    *
     * @param $for_itemtype change of entity for this itemtype will be forwarder
     * @param $to_itemtype change of entity will affect this itemtype
-    * 
+    *
     * @return nothing
     * @since 0.83
-    */
+   **/
    static function addForwardEntity($for_itemtype, $to_itemtype) {
       self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;
    }
+
 }
 ?>
