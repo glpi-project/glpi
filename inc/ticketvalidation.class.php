@@ -399,6 +399,23 @@ class TicketValidation  extends CommonDBChild {
 
 
    /**
+    * All validations requests for a ticket have the same status ?
+    *
+    * @param $tickets_id ticket ID
+   **/
+   static function isAllValidationsHaveSameStatusForTicket($tickets_id) {
+      global $DB;
+
+      $query = "SELECT DISTINCT `status`
+                FROM `glpi_ticketvalidations`
+                WHERE `tickets_id` = '$tickets_id'";
+      $result = $DB->query($query);
+
+      return ($DB->numrows($result)==1);
+   }
+
+
+   /**
     * Get Ticket validation demands count
     *
     * @param $tickets_id ticket ID
