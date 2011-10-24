@@ -621,7 +621,7 @@ class Toolbox {
 
    /**
     * Check is current memory_limit is enough for GLPI
-    * 
+    *
     * @return 0 if PHP not compiled with memory_limit support
     *         1 no memory limit (memory_limit = -1)
     *         2 insufficient memory for GLPI
@@ -638,7 +638,7 @@ class Toolbox {
       }
       return 3;
    }
-   
+
    /**
     * Common Checks needed to use GLPI
     *
@@ -1127,25 +1127,19 @@ class Toolbox {
    static function getItemTypeTabsURL($itemtype, $full=true) {
       global $CFG_GLPI;
 
-      /// TODO only use common.tabs.php when all items migrate to new tabs system or clean tabs file on migration
+      /// To keep for plugins
 
-      $predir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $dir = '';
-
+      $filename = "/ajax/common.tabs.php";
       if ($plug=isPluginItemType($itemtype)) {
-         $dir = "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
-
-      } else { // Standard case
-         $item = strtolower($itemtype);
+         $dir      = "/plugins/".strtolower($plug['plugin']);
+         $item     = strtolower($plug['class']);
+         $tempname = $dir."/ajax/$item.tabs.php";
+         if (file_exists(GLPI_ROOT.$tempname)) {
+            $filename = $tempname;
+         }
       }
 
-      $filename = $dir."/ajax/$item.tabs.php";
-      // Use default one is tabs not exists
-      if (!file_exists(GLPI_ROOT.$filename)) {
-         $filename = "/ajax/common.tabs.php";
-      }
-      return $predir.$filename;
+      return ($full ? $CFG_GLPI['root_doc'] : '').$filename;
    }
 
 
