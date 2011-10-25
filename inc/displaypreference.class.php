@@ -581,6 +581,61 @@ class DisplayPreference extends CommonDBTM {
       return true;
    }
 
+   /**
+    * For tab management : force isNewItem
+    *
+    * @since version 0.83
+   **/
+   function isNewItem() {
+      return false;
+   }
+
+
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $ong['no_all_tab'] = true;
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      switch ($item->getType()) {
+         case __CLASS__:
+            $ong = array();
+            $ong[1] = $LANG['central'][13];  // view group
+            if (Session::checkRight('search_config', 'w')) {
+               $ong[2] = $LANG['central'][12]; // view personnal
+            }
+            return $ong;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      switch ($item->getType()) {
+         case __CLASS__ :
+            switch ($tabnum) {
+               case 1 :
+                  $item->showFormGlobal($_POST['target'], $_POST["displaytype"]);
+                  break;
+
+               case 2 :
+                  Session::checkRight('search_config', 'w');
+                  $item->showFormPerso($_POST['target'], $_POST["displaytype"]);
+                  break;
+            }
+            break;
+      }
+      return false;
+   }
 }
 
 ?>
