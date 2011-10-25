@@ -41,6 +41,12 @@ if (!defined('GLPI_ROOT')) {
 
 class KnowbaseItem extends CommonDBTM {
 
+   // For visibility checks
+   protected $users     = array();
+   protected $groups    = array();
+   protected $profiles  = array();
+   protected $entities  = array();
+
    static function getTypeName() {
       global $LANG;
 
@@ -64,15 +70,22 @@ class KnowbaseItem extends CommonDBTM {
 
    function canViewItem() {
       global $CFG_GLPI;
-
+      /// TODO add check on entities_id is_recursive for public_faq
       if ($this->fields["is_faq"]) {
-         return (Session::haveRight('knowbase', 'r')
-                 || Session::haveRight('faq', 'r')
+         return (((Session::haveRight('knowbase', 'r')
+                 || Session::haveRight('faq', 'r')) && $this->haveVisibilityAccess())
                  || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
       }
-      return Session::haveRight("knowbase", "r");
+      return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
    }
 
+   function canUpdateItem() {
+      // Personal knowbase or visibility and write access
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || ((($this->fields["is_faq"] && Session::haveRight("faq", "w"))
+                   || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
+                   && $this->haveVisibilityAccess()));
+   }
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -90,7 +103,11 @@ class KnowbaseItem extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return $this->getTypeName(1);
+               $ong[1] = $this->getTypeName(1);
+               if ($item->canUpdate()) {
+                  $ong[2] = $LANG['reminder'][2];
+               }
+               return $ong;
          }
       }
       return '';
@@ -101,7 +118,14 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if($item->getType() == __CLASS__) {
-         $item->showMenu();
+         switch($tabnum) {
+            case 1:
+               $item->showMenu();
+               break;
+            case 2:
+               $item->showVisibility();
+               break;
+         }
       }
       return true;
    }
@@ -119,6 +143,172 @@ class KnowbaseItem extends CommonDBTM {
       }
    }
 
+
+   function post_getFromDB () {
+
+      // Users
+      $this->users    = KnowbaseItem_User::getUsers($this->fields['id']);
+
+      // Entities
+      $this->entities = Entity_KnowbaseItem::getEntities($this->fields['id']);
+
+      // Group / entities
+      $this->groups   = Group_KnowbaseItem::getGroups($this->fields['id']);
+
+      // Profile / entities
+      $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
+   }
+
+
+   /**
+    * Is the login user have access to KnowbaseItem based on visibility configuration
+    *
+    * @return boolean
+   **/
+   function haveVisibilityAccess() {
+
+      // No public knowbaseitem right : no visibility check
+      if (!Session::haveRight('faq', 'r') && !Session::haveRight('knowbase', 'r') ) {
+         return false;
+      }
+
+      // Users
+      if (isset($this->users[Session::getLoginUserID()])) {
+         return true;
+      }
+      // Groups
+      if (count($this->groups)
+          && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         foreach ($this->groups as $key => $data) {
+            foreach ($data as $group) {
+               if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
+                  // All the group
+                  if ($group['entities_id'] < 0) {
+                     return true;
+                  }
+                  // Restrict to entities
+                  $entities = array($group['entities_id']);
+                  if ($group['is_recursive']) {
+                     $entities = getSonsOf('glpi_entities', $group['entities_id']);
+                  }
+                  if (Session::haveAccessToOneOfEntities($entities, true)) {
+                     return true;
+                  }
+               }
+            }
+         }
+      }
+
+      // Entities
+      if (count($this->entities)
+          && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         foreach ($this->entities as $key => $data) {
+            foreach ($data as $entity) {
+               $entities = array($entity['entities_id']);
+               if ($entity['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities', $entity['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)
+          && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
+            foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
+               // All the profile
+               if ($profile['entities_id'] < 0) {
+                  return true;
+               }
+               // Restrict to entities
+               $entities = array($profile['entities_id']);
+               if ($profile['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Return visibility joins to add to SQL
+    *
+    * @return string joins to add
+   **/
+   static function addVisibilityJoins() {
+
+      $join = '';
+
+      // Users
+      $join .= " LEFT JOIN `glpi_knowbaseitems_users`
+                     ON (`glpi_knowbaseitems_users`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      // Groups
+      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         $join .= " LEFT JOIN `glpi_groups_knowbaseitems`
+                        ON (`glpi_groups_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      }
+      // Profiles
+      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         $join .= " LEFT JOIN `glpi_knowbaseitems_profiles`
+                        ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      }
+      // Entities
+      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         $join .= " LEFT JOIN `glpi_entities_knowbaseitems`
+                        ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      }
+
+      return $join;
+
+   }
+
+   /**
+    * Return visibility SQL restriction to add
+    *
+    * @return string restrict to add
+   **/
+   static function addVisibilityRestrict() {
+
+      $restrict = '(0';
+
+      // Users
+      $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
+
+      // Groups
+      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
+                                 IN ('".implode("','",$_SESSION["glpigroups"])."')
+                            AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
+                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems", '', '',
+                                                              true).")) ";
+      }
+
+      // Profiles
+      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
+                                 = '".$_SESSION["glpiactiveprofile"]['id']."'
+                            AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
+                                 ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles", '',
+                                                              '', true).")) ";
+      }
+
+      // Entities
+      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_knowbaseitems", '', '', true);
+      }
+
+      $restrict .= ") ";
+      return $restrict;
+   }
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -247,18 +437,19 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<p class='center'>";
 
-         if (Session::isMultiEntitiesMode()) {
-            echo $LANG['entity'][0]."&nbsp;: ";
-            Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
-                                           'comments' => 0 ));
-            echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
-            if ($canrecu) {
-               Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-            } else {
-               echo Dropdown::getYesNo($this->fields["is_recursive"]);
-            }
-         }
-         echo "<br><br>" . $LANG['knowbase'][5]."&nbsp;: ";
+//          if (Session::isMultiEntitiesMode()) {
+//             echo $LANG['entity'][0]."&nbsp;: ";
+//             Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
+//                                            'comments' => 0 ));
+//             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
+//             if ($canrecu) {
+//                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
+//             } else {
+//                echo Dropdown::getYesNo($this->fields["is_recursive"]);
+//             }
+//          }
+//          echo "<br><br>" . 
+         echo $LANG['knowbase'][5]."&nbsp;: ";
 
          if (Session::haveRight("faq","w") && Session::haveRight("knowbase","w")) {
             Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
@@ -918,6 +1109,189 @@ class KnowbaseItem extends CommonDBTM {
 
       return $tab;
    }
+
+   /**
+    * Show visibility config for a knowbaseitem
+    *
+   **/
+   function showVisibility() {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $ID      = $this->fields['id'];
+      $canedit = $this->can($ID,'w');
+
+      echo "<div class='center'>";
+
+      $rand = mt_rand();
+
+      if ($canedit) {
+         echo "<form name='knowbaseitemvisibility_form$rand' id='knowbaseitemvisibility_form$rand' ";
+         echo " method='post' action='".Toolbox::getItemTypeFormURL('KnowbaseItem')."'>";
+         echo "<input type='hidden' name='knowbaseitems_id' value='$ID'>";
+      }
+
+      echo "<div class='firstbloc'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
+      echo "<tr><td class='tab_bg_2' width='100px'>";
+
+      $types = array( 'Group', 'Profile', 'User');
+      if (Session::isMultiEntitiesMode()) {
+         $types[] = 'Entity';
+      }
+
+      $addrand = Dropdown::dropdownTypes('_type', '', $types);
+      $params  = array('type' => '__VALUE__');
+
+      Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                    $params);
+
+      echo "</td>";
+      echo "<td><span id='visibility$rand'></span>";
+      echo "</td></tr>";
+      echo "</table></div>";
+
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>&nbsp;</th>";
+      }
+      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['mailing'][121]."</th>";
+      echo "</tr>";
+
+      // Users
+      if (count($this->users)) {
+         foreach ($this->users as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+               }
+               echo "<td>".$LANG['common'][34]."</td>";
+               echo "<td>".getUserName($data['users_id'])."</td>";
+               echo "</tr>";
+            }
+         }
+      }
+
+      // Groups
+      if (count($this->groups)) {
+         foreach ($this->groups as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+               }
+               echo "<td>".$LANG['common'][35]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['entities_id'] >= 0) {
+                  echo " / ";
+                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  if ($data['is_recursive']) {
+                     echo " <strong>(R)</strong>";
+                  }
+               }
+               echo "</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      // Entity
+      if (count($this->entities)) {
+         foreach ($this->entities as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+               }
+               echo "<td>".$LANG['entity'][0]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['is_recursive']) {
+                  echo " <strong>(R)</strong>";
+               }
+               echo "</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)) {
+         foreach ($this->profiles as $key => $val) {
+            foreach ($val as $data) {
+               echo "<tr>";
+               if ($canedit) {
+                  echo "<td>";
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
+                  echo "</td>";
+               }
+               echo "<td>".$LANG['profiles'][22]."</td>";
+               echo "<td>";
+               $names = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+               echo $names["name"]." ";
+               echo Html::showToolTip($names["comment"]);
+               if ($data['entities_id'] >= 0) {
+                  echo " / ";
+                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  if ($data['is_recursive']) {
+                     echo " <strong>(R)</strong>";
+                  }
+               }
+               echo "</td>";
+               echo "<tr>";
+            }
+         }
+      }
+
+      if ($canedit) {
+         echo "<tr><td colspan='3'>";
+         echo "</td></tr>";
+      }
+      echo "</table>";
+      if ($canedit) {
+         Html::openArrowMassives("knowbaseitemvisibility_form$rand", true);
+         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]));
+         echo "</form>";
+      }
+
+      echo "</div>";
+      // Add items
+
+      return true;
+   }
+
 
 }
 

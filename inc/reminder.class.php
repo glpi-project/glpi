@@ -88,7 +88,7 @@ class Reminder extends CommonDBTM {
    function canUpdateItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', 'r')
+              || (Session::haveRight('reminder_public', 'w')
                    && $this->haveVisibilityAccess()));
    }
 
