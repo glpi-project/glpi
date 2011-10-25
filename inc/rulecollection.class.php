@@ -1015,6 +1015,71 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * For tabs management : force isNewItem
+    *
+    * @since version 0.83
+   **/
+   function isNewItem() {
+      return false;
+   }
+
+
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $ong['no_all_tab'] = true;
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if ($item instanceof RuleCollection){
+            $ong = array();
+            if ($item->showInheritedTab()) {
+               $ong[1] = $LANG['rulesengine'][20].' : '.
+                         Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+            }
+            $title = $LANG['rulesengine'][17];
+            if ($item->isRuleRecursive()) {
+               $title = $LANG['rulesengine'][23].' : '.
+                        Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+            }
+            $ong[2] = $title;
+            if ($item->showChildrensTab()) {
+               $ong[3] = $LANG['rulesengine'][21];
+            }
+            return $ong;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+
+      if ($item instanceof RuleCollection) {
+            switch ($tabnum) {
+               case 1:
+               case 2:
+               case 3 :
+                  if ($item->isRuleEntityAssigned()) {
+                     $item->setEntity($_SESSION['glpiactive_entity']);
+                  }
+                  $item->title();
+                  $item->showEngineSummary();
+                  $item->showListRules($_POST['target'], $_POST);
+                  break;
+            }
+            return true;
+      }
+      return false;
+   }
+
 }
 
 ?>
