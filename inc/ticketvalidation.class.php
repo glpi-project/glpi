@@ -241,8 +241,13 @@ class TicketValidation  extends CommonDBChild {
       $job = new Ticket;
       $mailsend = false;
 
+      $donotif = $CFG_GLPI["use_mailing"];
+      if (isset($this->input['_disablenotif'])) {
+         $donotif = false;
+      }
+
       if ($job->getFromDB($this->fields["tickets_id"])) {
-         if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
+         if (count($this->updates) && $donotif) {
             $options = array('validation_id'     => $this->fields["id"],
                              'validation_status' => $this->fields["status"]);
             $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
