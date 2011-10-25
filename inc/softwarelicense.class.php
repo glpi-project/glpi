@@ -514,6 +514,9 @@ class SoftwareLicense extends CommonDBTM {
                                                                      '', '', true));
       echo "<div class='spaced'>";
 
+      Session::initNavigateListItems('SoftwareLicense',
+                                     $LANG['help'][31] ." = ". $software->fields["name"]);
+
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>\n";
@@ -552,9 +555,6 @@ class SoftwareLicense extends CommonDBTM {
                        getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) ."
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
-
-      Session::initNavigateListItems('SoftwareLicense',
-                                     $LANG['help'][31] ." = ". $software->fields["name"]);
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
