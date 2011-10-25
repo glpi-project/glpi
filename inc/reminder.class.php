@@ -108,6 +108,10 @@ class Reminder extends CommonDBTM {
       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+   function countVisibilities() {
+      return (count($this->entities) + count($this->users) 
+            + count($this->groups) + count($this->profiles));
+   }
 
    /**
     * Is the login user have access to reminder based on visibility configuration
@@ -192,9 +196,10 @@ class Reminder extends CommonDBTM {
    /**
     * Return visibility joins to add to SQL
     *
+    * @param $forceall force all joins
     * @return string joins to add
    **/
-   static function addVisibilityJoins() {
+   static function addVisibilityJoins($forceall = false) {
 
       $join = '';
 
@@ -202,17 +207,17 @@ class Reminder extends CommonDBTM {
       $join .= " LEFT JOIN `glpi_reminders_users`
                      ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
       // Groups
-      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+      if ($forceall || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
          $join .= " LEFT JOIN `glpi_groups_reminders`
                         ON (`glpi_groups_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
       // Profiles
-      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+      if ($forceall || (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id']))) {
          $join .= " LEFT JOIN `glpi_profiles_reminders`
                         ON (`glpi_profiles_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
       // Entities
-      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+      if ($forceall || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
          $join .= " LEFT JOIN `glpi_entities_reminders`
                         ON (`glpi_entities_reminders`.`reminders_id` = `glpi_reminders`.`id`) ";
       }
@@ -353,7 +358,12 @@ class Reminder extends CommonDBTM {
       if (Session::haveRight("reminder_public","r")) {
          switch ($item->getType()) {
             case 'Reminder' :
-               return array(1 =>$LANG['reminder'][2]);
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  return array(1 => self::createTabEntry($LANG['reminder'][2], $item->countVisibilities()));
+               } else {
+                  return array(1 => $LANG['reminder'][2]);
+               }
+               break;
          }
       }
       return '';
