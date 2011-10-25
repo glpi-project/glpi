@@ -2087,7 +2087,7 @@ $LANG['setup'][8]   = "Activer les informations financières et administratives 
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 $LANG['setup'][11]  = "Rafraichissement automatique de la liste des tickets";
-$LANG['setup'][12]  = "Prendre en charge les nouveaux tickets";
+$LANG['setup'][12]  = "Pré-sélection comme technicien lors de la création de ticket";
 
 $LANG['setup'][14]  = "Adresse de messagerie";
 $LANG['setup'][15]  = "Adresses de messagerie";
