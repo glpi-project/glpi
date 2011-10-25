@@ -1138,6 +1138,7 @@ class Toolbox {
       global $CFG_GLPI;
 
       /// To keep for plugins
+      /// TODO drop also for plugins.
 
       $filename = "/ajax/common.tabs.php";
       if ($plug=isPluginItemType($itemtype)) {
