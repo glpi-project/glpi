@@ -42,7 +42,9 @@ class SlaLevel extends RuleTicket {
 
    protected $rules_id_field    = 'slalevels_id';
    protected $ruleactionclass   = 'SlaLevelAction';
-
+   // No criteria
+   protected $rulecriteriaclass = '';
+   
    public $right='sla';
 
    /**

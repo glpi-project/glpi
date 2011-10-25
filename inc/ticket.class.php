@@ -230,7 +230,7 @@ class Ticket extends CommonITILObject {
       $input['sla_wainting_duration'] = 0;
       $input['id']                    = $id;
 
-      SlaLevel_Ticket::deleteForTicket($this->getID());
+      SlaLevel_Ticket::deleteForTicket($id);
 
       return $this->update($input);
    }
