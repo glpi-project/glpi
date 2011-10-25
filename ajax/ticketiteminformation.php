@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 15930 2011-10-25 10:47:55Z jmd $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
