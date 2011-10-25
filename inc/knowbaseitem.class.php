@@ -657,6 +657,9 @@ class KnowbaseItem extends CommonDBTM {
          echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
       }
 
+      if ($this->countVisibilities()==0) {
+         echo "<br><span class='red'>".$LANG['knowbase'][3]."</span>";
+      }
       echo "</th>";
       echo "<th class='tdkb' colspan='2'>";
 
