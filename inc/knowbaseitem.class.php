@@ -130,7 +130,7 @@ class KnowbaseItem extends CommonDBTM {
       // set users_id
 
       // set title for question if empty
-      if (empty($input["name"])) {
+      if (isset($input["name"]) && empty($input["name"])) {
          $input["name"] = $LANG['common'][30];
       }
 
