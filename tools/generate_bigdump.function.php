@@ -1548,9 +1548,13 @@ function generate_entity($ID_entity) {
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
          $query = "INSERT INTO `glpi_knowbaseitems`
-                   VALUES (NULL, '$ID_entity', '0', '$i', 'Entity $ID_entity Question $k',
+                   VALUES (NULL, '$i', 'Entity $ID_entity Question $k',
                            'Reponse $k', '".mt_rand(0,1)."', '10', '".mt_rand(0,1000)."', NOW(),
                            NOW())";
+         $DB->query($query) or die("PB REQUETE ".$query);
+         
+         $newID = $DB->insert_id();
+         $query = "INSERT INTO `glpi_entities_knowbaseitems` VALUES (NULL, '$newID','$ID_entity','0')";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
    }
@@ -1562,9 +1566,13 @@ function generate_entity($ID_entity) {
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
          $query = "INSERT INTO `glpi_knowbaseitems`
-                   VALUES (NULL, '$ID_entity', '1', '$i', 'Entity $ID_entity Recursive Question $k',
+                   VALUES (NULL, '$i', 'Entity $ID_entity Recursive Question $k',
                            'Reponse $k ".Toolbox::getRandomString(50)."','".mt_rand(0,1)."', '10',
                            '".mt_rand(0,1000)."', NOW(), NOW())";
+         $DB->query($query) or die("PB REQUETE ".$query);
+         
+         $newID = $DB->insert_id();
+         $query = "INSERT INTO `glpi_entities_knowbaseitems` VALUES (NULL, '$newID','$ID_entity','1')";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
    }
