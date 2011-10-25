@@ -50,8 +50,10 @@ function update0803to083() {
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_entities_reminders', 'glpi_groups_problems',
-                          'glpi_groups_reminders', 'glpi_items_problems', 'glpi_problems',
+                          'glpi_changetasks', 'glpi_entities_knowbaseitems', 'glpi_entities_reminders',
+                          'glpi_groups_problems', 'glpi_groups_knowbaseitems', 'glpi_groups_reminders',
+                          'glpi_knwobaseitems_profiles',  'glpi_knwobaseitems_users',
+                          'glpi_items_problems', 'glpi_problems',
                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
                           'glpi_profiles_reminders', 'glpi_reminders_users',
                           'glpi_ticketrecurrents',
@@ -1433,6 +1435,102 @@ function update0803to083() {
    }
 
    $ADDTODISPLAYPREF['Reminder'] = array(2,3,4,5,6,7);
+
+   $migration->displayMessage($LANG['update'][142] . ' - KnowbaseItem visibility');
+
+   if (!TableExists('glpi_knowbaseitems_users')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_users` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+                  KEY `users_id` (`users_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_knowbaseitems_users ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_groups_knowbaseitems')) {
+      $query = "CREATE TABLE `glpi_groups_knowbaseitems` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+                  KEY `groups_id` (`groups_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_groups_knowbaseitems ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_knowbaseitems_profiles')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_profiles` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '-1',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+                  KEY `profiles_id` (`profiles_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_knowbaseitems_profiles ".$LANG['update'][90].$DB->error());
+   }
+
+   if (!TableExists('glpi_entities_knowbaseitems')) {
+      $query = "CREATE TABLE `glpi_entities_knowbaseitems` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+
+      $DB->query($query)
+      or die("0.83 add table glpi_entities_knowbaseitems ".$LANG['update'][90].$DB->error());
+   }
+
+   /// Migrate datas for entities_id / is_recursive 
+   if (FieldExists("glpi_knowbaseitems", 'entities_id')) {
+      $query = "SELECT *
+                FROM `glpi_knowbaseitems`";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "INSERT INTO `glpi_entities_knowbaseitems`
+                                 (`knowbaseitems_id`, `entities_id`, `is_recursive`)
+                           VALUES ('".$data['id']."', '".$data['entities_id']."', '".$data['is_recursive']."');";
+               $DB->query($query)
+               or die("0.83 migrate data for entities on glpi_knowbaseitems ".
+                        $LANG['update'][90].$DB->error());
+            }
+         }
+      }
+
+      $migration->dropField("glpi_knowbaseitems", 'entities_id');
+      $migration->dropField("glpi_knowbaseitems", 'is_recursive');
+
+   }
+
+
+
+//   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
 
    // ************ Keep it at the end **************

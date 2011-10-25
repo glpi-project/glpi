@@ -116,6 +116,80 @@ if ($_GET["id"] == "new") {
    $kb->removeFromFaq($_GET["id"]);
    Html::back();
 
+} else if (isset($_POST["addvisibility"])) {
+   if (isset($_POST["_type"]) && !empty($_POST["_type"])
+       && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]) {
+      $item = NULL;
+      switch ($_POST["_type"]) {
+         case 'User' :
+            if (isset($_POST['users_id']) && $_POST['users_id']) {
+               $item = new KnowbaseItem_User();
+            }
+            break;
+
+         case 'Group' :
+            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+               $item = new Group_KnowbaseItem();
+            }
+            break;
+
+         case 'Profile' :
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+               $item = new KnowbaseItem_Profile();
+            }
+            break;
+
+         case 'Entity' :
+            $item = new Entity_KnowbaseItem();
+            break;
+      }
+      if (!is_null($item)) {
+         $item->add($_POST);
+         Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
+                    $_SESSION["glpiname"]." ".$LANG['log'][68]);
+      }
+   }
+   Html::back();
+
+}  else if (isset($_POST["deletevisibility"])) {
+   if (isset($_POST["group"]) && count($_POST["group"])) {
+      $item = new Group_KnowbaseItem();
+      foreach ($_POST["group"] as $key => $val) {
+         if ($item->can($key,'w')) {
+            $item->delete(array('id' => $key));
+         }
+      }
+   }
+   if (isset($_POST["user"]) && count($_POST["user"])) {
+      $item = new KnowbaseItem_User();
+      foreach ($_POST["user"] as $key => $val) {
+         if ($item->can($key,'w')) {
+            $item->delete(array('id' => $key));
+         }
+      }
+   }
+
+   if (isset($_POST["entity"]) && count($_POST["entity"])) {
+      $item = new Entity_KnowbaseItem();
+      foreach ($_POST["entity"] as $key => $val) {
+         if ($item->can($key,'w')) {
+            $item->delete(array('id' => $key));
+         }
+      }
+   }
+
+   if (isset($_POST["profile"]) && count($_POST["profile"])) {
+      $item = new KnowbaseItem_Profile();
+      foreach ($_POST["profile"] as $key => $val) {
+         if ($item->can($key,'w')) {
+            $item->delete(array('id' => $key));
+         }
+      }
+   }
+   Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
+              $_SESSION["glpiname"]." ".$LANG['log'][67]);
+   Html::back();
+
 } else if (empty($_GET["id"])) {
    // No id or no tickets id to create from solution
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
