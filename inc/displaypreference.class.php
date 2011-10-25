@@ -559,28 +559,6 @@ class DisplayPreference extends CommonDBTM {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
-      switch ($item->getType()) {
-         case 'Preference' :
-            if (Session::haveRight('search_config', 'w')) {
-               return $LANG['central'][12];
-            }
-            break;
-      }
-      return '';
-   }
-
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
-      if ($item->getType()=='Preference') {
-         self::showForUser(Session::getLoginUserID());
-      }
-      return true;
-   }
-
    /**
     * For tab management : force isNewItem
     *
@@ -605,6 +583,12 @@ class DisplayPreference extends CommonDBTM {
       global $LANG;
 
       switch ($item->getType()) {
+         case 'Preference' :
+            if (Session::haveRight('search_config', 'w')) {
+               return $LANG['central'][12];
+            }
+            break;
+
          case __CLASS__:
             $ong = array();
             $ong[1] = $LANG['central'][13];  // view group
@@ -621,18 +605,21 @@ class DisplayPreference extends CommonDBTM {
       global $CFG_GLPI;
 
       switch ($item->getType()) {
+         case 'Preference' :
+            self::showForUser(Session::getLoginUserID());
+            return true;
+
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
                   $item->showFormGlobal($_POST['target'], $_POST["displaytype"]);
-                  break;
+                  return true;
 
                case 2 :
                   Session::checkRight('search_config', 'w');
                   $item->showFormPerso($_POST['target'], $_POST["displaytype"]);
-                  break;
+                  return true;
             }
-            break;
       }
       return false;
    }
