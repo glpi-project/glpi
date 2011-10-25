@@ -57,9 +57,15 @@ if (isset($_POST['is_private'])) {
          break;
 
       case false :
+         if (isset($_POST['entities_id'])
+             && in_array($_POST['entities_id'], $_SESSION['glpiactiveentities'])) {
+            $val = $_POST['entities_id'];
+         } else {
+            $val = $_SESSION['glpiactive_entity'];
+         }
          echo "<input type='hidden' name='is_private' value='0'>\n";
          echo $LANG['common'][76]."&nbsp;:&nbsp;";
-         Dropdown::show('Entity', array('value' => $_POST["entities_id"]));
+         Dropdown::show('Entity', array('value' => $val));
          echo "&nbsp;+&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
          echo " - ";
