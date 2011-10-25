@@ -155,36 +155,7 @@ if (isset($_GET["action"])) {
 Html::header($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
              $rulecollection->menu_option);
 
-if ($rulecollection->showInheritedTab()) {
-   $tabs[1] = array('title'  => $LANG['rulesengine'][20].' : '.
-                                Dropdown::getDropdownName('glpi_entities',
-                                                          $_SESSION['glpiactive_entity']),
-                    'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                    'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".
-                                 get_class($rulecollection));
-}
-
-$title = $LANG['rulesengine'][17];
-if ($rulecollection->isRuleRecursive()) {
-   $title = $LANG['rulesengine'][23].' : '.Dropdown::getDropdownName('glpi_entities',
-                                                                     $_SESSION['glpiactive_entity']);
-}
-$tabs[2] = array('title'  => $title,
-                 'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                 'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".
-                              get_class($rulecollection));
-
-if ($rulecollection->showChildrensTab()) {
-   $tabs[3] = array('title'  => $LANG['rulesengine'][21],
-                    'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                    'params' => "target=".$_SERVER['PHP_SELF'].
-                                 "&glpi_tab=2&inherited=0&childrens=1&itemtype=".
-                                 get_class($rulecollection));
-}
-
-
-echo "<div id='tabspanel' class='center-h'></div>";
-Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $rulecollection->getRuleClassName());
+$rulecollection->showTabs();
 echo "<div id='tabcontent'>&nbsp;</div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 Html::footer();
