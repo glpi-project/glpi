@@ -46,7 +46,7 @@ Session::checkLoginUser();
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
    $display = false;
    $rand = mt_rand();
-   
+
    switch ($_REQUEST['type']) {
       case 'User':
          User::dropdown(array('right' => 'reminder_public'));
@@ -55,11 +55,12 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
 
       case 'Group':
          $params = array('rand' => $rand);
-         $params['toupdate'] = array('value_fieldname' => 'value',
-                                     'to_update'       => "subvisibility$rand",
-                                     'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams'      => array('items_id' => '__VALUE__',
-                                                                'type'     => $_REQUEST['type']));
+         $params['toupdate']
+                 = array('value_fieldname' => 'value',
+                         'to_update'       => "subvisibility$rand",
+                         'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                         'moreparams'      => array('items_id' => '__VALUE__',
+                                                    'type'     => $_REQUEST['type']));
 
          Dropdown::show('Group', $params);
 
@@ -71,26 +72,27 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
       case 'Entity':
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
                                         'value'  => $_SESSION['glpiactive_entity']));
-         
+
          echo "&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
          Dropdown::showYesNo('is_recursive');
-         
+
          $display = true;
          break;
 
       case 'Profile':
          $params = array('rand'      => $rand,
                          'condition' => "`reminder_public` IN ('r','w')");
-         $params['toupdate'] = array('value_fieldname' => 'value',
-                                     'to_update'       => "subvisibility$rand",
-                                     'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams'      => array('items_id' => '__VALUE__',
-                                                                'type'     => $_REQUEST['type']));
-         
+         $params['toupdate']
+                 = array('value_fieldname' => 'value',
+                         'to_update'       => "subvisibility$rand",
+                         'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                         'moreparams'      => array('items_id' => '__VALUE__',
+                                                    'type'     => $_REQUEST['type']));
+
          Dropdown::show('Profile', $params);
-         
+
          echo "<span id='subvisibility$rand'></span>";
-         
+
          $display= true;
          break;
    }
