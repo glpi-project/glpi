@@ -111,10 +111,11 @@ if ($_GET["action"] == "edit") {
                     'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&itemtype=Bookmark");
 
    if (Session::haveRight('bookmark_public','r')) {
-      $tabs[0] = array('title'  => $LANG['common'][76],
+      $tabs[2] = array('title'  => $LANG['common'][76],
                        'url'    => $CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&itemtype=Bookmark");
+                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=2&itemtype=Bookmark");
    }
+   
    echo "<div id='tabspanel' class='center-h'></div>";
    Ajax::createTabs('tabspanel', 'tabcontent', $tabs, 'Bookmark', Bookmark::WIDTH);
    echo "<div id='tabcontent'>&nbsp;</div>";

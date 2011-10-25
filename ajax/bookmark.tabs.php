@@ -43,9 +43,15 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-
 $bookmark = new Bookmark();
-$bookmark->showBookmarkList($_POST['target'],$_REQUEST['glpi_tab']);
+
+$is_private = 1;
+
+if ($_REQUEST['glpi_tab']==2) {
+   $is_private = 0;
+}
+
+$bookmark->showBookmarkList($_POST['target'], $is_private);
 
 Html::ajaxFooter();
 ?>
