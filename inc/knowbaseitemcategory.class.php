@@ -121,16 +121,18 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
 
          // Get All FAQ categories
-         if (!isset($_SESSION['glpi_faqcategories'])) {
+         if (true || !isset($_SESSION['glpi_faqcategories'])) {
 
             $_SESSION['glpi_faqcategories'] = '(0)';
             $tmp = array();
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
                       FROM `glpi_knowbaseitems`
+                      ".KnowbaseItem::addVisibilityJoins()."
                       LEFT JOIN `glpi_knowbaseitemcategories`
                            ON (`glpi_knowbaseitemcategories`.`id`
                                  = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                       WHERE `glpi_knowbaseitems`.`is_faq` = '1'
+                              AND ".KnowbaseItem::addVisibilityRestrict()."
                             $faq_limit";
 
             if ($result=$DB->query($query)) {
@@ -146,12 +148,13 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                }
                if (count($tmp)) {
                   $_SESSION['glpi_faqcategories'] = "('".implode("','",$tmp)."')";
+                  echo '.';
                }
             }
          }
          $query = "SELECT DISTINCT `glpi_knowbaseitemcategories`.*
                    FROM `glpi_knowbaseitemcategories`
-                   WHERE `id` IN ".$_SESSION['glpi_faqcategories']."
+                   WHERE `glpi_knowbaseitemcategories`.`id` IN ".$_SESSION['glpi_faqcategories']."
                          AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id`
                                  = '".$params["knowbaseitemcategories_id"]."')
                          $faq_limit
@@ -186,7 +189,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             while ($tmpID!=0) {
                $query2 = "SELECT *
                           FROM `glpi_knowbaseitemcategories`
-                          WHERE `id` = '$tmpID'
+                          WHERE `glpi_knowbaseitemcategories`.`id` = '$tmpID'
                                 $faq_limit";
                $result2 = $DB->query($query2);
 

@@ -70,6 +70,10 @@ class KnowbaseItem extends CommonDBTM {
 
    function canViewItem() {
       global $CFG_GLPI;
+      
+      if ($this->fields['users_id'] == Session::getLoginUserID()) {
+         return true;
+      }
       /// TODO add check on entities_id is_recursive for public_faq
       if ($this->fields["is_faq"]) {
          return (((Session::haveRight('knowbase', 'r')
@@ -105,7 +109,11 @@ class KnowbaseItem extends CommonDBTM {
             case __CLASS__ :
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdate()) {
-                  $ong[2] = $LANG['reminder'][2];
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     $ong[2] = self::createTabEntry($LANG['reminder'][2], $item->countVisibilities());
+                  } else {
+                     $ong[2] = $LANG['reminder'][2];                  
+                  }
                }
                return $ong;
          }
@@ -159,6 +167,10 @@ class KnowbaseItem extends CommonDBTM {
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
    }
 
+   function countVisibilities() {
+      return (count($this->entities) + count($this->users) 
+            + count($this->groups) + count($this->profiles));
+   }
 
    /**
     * Is the login user have access to KnowbaseItem based on visibility configuration
@@ -240,29 +252,31 @@ class KnowbaseItem extends CommonDBTM {
    }
 
    /**
-    * Return visibility joins to add to SQL
-    *
-    * @return string joins to add
+   * Return visibility joins to add to SQL
+   *
+   * @param $forceall force all joins
+   * @return string joins to add
    **/
-   static function addVisibilityJoins() {
+   static function addVisibilityJoins($forceall = false) {
 
       $join = '';
 
       // Users
       $join .= " LEFT JOIN `glpi_knowbaseitems_users`
                      ON (`glpi_knowbaseitems_users`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+      
       // Groups
-      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+      if ($forceall || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
          $join .= " LEFT JOIN `glpi_groups_knowbaseitems`
                         ON (`glpi_groups_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
       }
       // Profiles
-      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+      if ($forceall || (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id']))) {
          $join .= " LEFT JOIN `glpi_knowbaseitems_profiles`
                         ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
       }
       // Entities
-      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+      if ($forceall || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
          $join .= " LEFT JOIN `glpi_entities_knowbaseitems`
                         ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
       }
@@ -730,7 +744,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $options : $_GET
     * @param $faq display on faq ?
    **/
-   static function showList($options, $faq=0) {
+   static function showList($options, $faq = 0) {
       global $DB, $LANG, $CFG_GLPI;
 
       // Default values of parameters
@@ -749,15 +763,16 @@ class KnowbaseItem extends CommonDBTM {
       $where = "";
       $order = "";
       $score = "";
-
+      $join = self::addVisibilityJoins();
+      
       // Build query
       if (Session::getLoginUserID()) {
-         $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
+         $where = self::addVisibilityRestrict()." AND ";
       } else {
          // Anonymous access
          if (Session::isMultiEntitiesMode()) {
-            $where = " (`glpi_knowbaseitems`.`entities_id` = '0'
-                        AND `glpi_knowbaseitems`.`is_recursive` = '1')
+            $where = " (`glpi_entities_knowbaseitems`.`entities_id` = '0'
+                        AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')
                         AND ";
          }
       }
@@ -782,6 +797,7 @@ class KnowbaseItem extends CommonDBTM {
          // preliminar query to allow alternate search if no result with fulltext
          $query_1 = "SELECT COUNT(`id`)
                      FROM `glpi_knowbaseitems`
+                     $join
                      WHERE $where_1";
          $result_1 = $DB->query($query_1);
          $numrows_1 = $DB->result($result_1,0,0);
@@ -817,6 +833,7 @@ class KnowbaseItem extends CommonDBTM {
                        `glpi_knowbaseitemcategories`.`completename` AS category
                        $score
                 FROM `glpi_knowbaseitems`
+                $join
                 LEFT JOIN `glpi_knowbaseitemcategories`
                      ON (`glpi_knowbaseitemcategories`.`id`
                            = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
@@ -968,7 +985,7 @@ class KnowbaseItem extends CommonDBTM {
     * Print out list recent or popular kb/faq
     *
     * @param $target where to go on action
-    * @param $type type : recent / popular
+    * @param $type type : recent / popular / not published
     * @param $faq display only faq
     *
     * @return nothing (display table)
@@ -986,28 +1003,48 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $faq_limit = "";
+      // Force all joins for not published to verify no visibility set
+      $join = self::addVisibilityJoins(true);
+      
       if (Session::getLoginUserID()) {
-         $faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true);
-
+         $faq_limit .= "WHERE ".self::addVisibilityRestrict();
       } else {
          // Anonymous access
          if (Session::isMultiEntitiesMode()) {
-            $faq_limit .= " WHERE (`glpi_knowbaseitems`.`entities_id` = '0'
-                                   AND `glpi_knowbaseitems`.`is_recursive` = '1')";
+            $faq_limit .= " WHERE (`glpi_entities_knowbaseitems`.`entities_id` = '0'
+                                   AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
          } else {
             $faq_limit .= " WHERE 1";
          }
+      }
+
+      if ($type=="notpublished") {
+         $title = $LANG['knowbase'][2];
+         // not published = no visibility set
+         $faq_limit = "WHERE `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
+                        AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL 
+                        AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
+                        AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
+                        AND `glpi_knowbaseitems_users`.`users_id` IS NULL";
+      } else {
+         // Only published
+         $faq_limit .= "AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL 
+                           OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
+                           OR `glpi_groups_knowbaseitems`.`groups_id` IS NOT NULL
+                           OR `glpi_knowbaseitems_users`.`users_id` IS NOT NULL)";
       }
 
       if ($faq) { // FAQ
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      $query = "SELECT *
-                FROM `glpi_knowbaseitems`
+      $query = "SELECT `glpi_knowbaseitems`.*
+                FROM `glpi_knowbaseitems` 
+                $join
                 $faq_limit
                 $orderby
                 LIMIT 10";
+      
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -1035,10 +1072,12 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function showViewGlobal($target, $faq=0) {
 
-      echo "<div><table class='center-h' width='950px'><tr><td class='center middle'>";
+      echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
       self::showRecentPopular($target, "recent", $faq);
-      echo "</td><td class='center middle'>";
+      echo "</td><td class='center top'>";
       self::showRecentPopular($target, "popular", $faq);
+      echo "</td><td class='center top'>";
+      self::showRecentPopular($target, "notpublished", $faq);
       echo "</td></tr>";
       echo "</table></div>";
 }
