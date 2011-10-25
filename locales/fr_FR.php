@@ -1112,6 +1112,7 @@ $LANG['jobresolution'][6] = "Gabarit de solution";
 
 $LANG['knowbase'][1]  = "Foire aux questions";
 $LANG['knowbase'][2]  = "Articles non publiés";
+$LANG['knowbase'][3]  = "Non publié";
 
 $LANG['knowbase'][5]  = "Placer cet élément dans la FAQ";
 $LANG['knowbase'][6]  = "Sélectionner une catégorie pour cet élément :";
