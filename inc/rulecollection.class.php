@@ -1039,21 +1039,21 @@ class RuleCollection extends CommonDBTM {
       global $LANG;
 
       if ($item instanceof RuleCollection){
-            $ong = array();
-            if ($item->showInheritedTab()) {
-               $ong[1] = $LANG['rulesengine'][20].' : '.
-                         Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
-            }
-            $title = $LANG['rulesengine'][17];
-            if ($item->isRuleRecursive()) {
-               $title = $LANG['rulesengine'][23].' : '.
-                        Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
-            }
-            $ong[2] = $title;
-            if ($item->showChildrensTab()) {
-               $ong[3] = $LANG['rulesengine'][21];
-            }
-            return $ong;
+         $ong = array();
+         if ($item->showInheritedTab()) {
+            $ong[1] = $LANG['rulesengine'][20].' : '.
+                      Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+         }
+         $title = $LANG['rulesengine'][17];
+         if ($item->isRuleRecursive()) {
+            $title = $LANG['rulesengine'][23].' : '.
+                     Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+         }
+         $ong[2] = $title;
+         if ($item->showChildrensTab()) {
+            $ong[3] = $LANG['rulesengine'][21];
+         }
+         return $ong;
       }
       return '';
    }
@@ -1063,23 +1063,22 @@ class RuleCollection extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($item instanceof RuleCollection) {
-            switch ($tabnum) {
-               case 1:
-               case 2:
-               case 3 :
-                  if ($item->isRuleEntityAssigned()) {
-                     $item->setEntity($_SESSION['glpiactive_entity']);
-                  }
-                  $item->title();
-                  $item->showEngineSummary();
-                  $item->showListRules($_POST['target'], $_POST);
-                  break;
-            }
-            return true;
+         switch ($tabnum) {
+            case 1:
+            case 2:
+            case 3 :
+               if ($item->isRuleEntityAssigned()) {
+                  $item->setEntity($_SESSION['glpiactive_entity']);
+               }
+               $item->title();
+               $item->showEngineSummary();
+               $item->showListRules($_POST['target'], $_POST);
+               break;
+         }
+         return true;
       }
       return false;
    }
 
 }
-
 ?>
