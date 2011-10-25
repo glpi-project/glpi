@@ -43,6 +43,9 @@ include_once (GLPI_ROOT."/inc/dbconnection.class.php");
 Session::setPath();
 Session::start();
 
+Config::detectRootDoc();
+
+
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
 
@@ -122,7 +125,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $CFG_GLPI = array_merge($CFG_GLPI,$config_object->fields);
       $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],
                                                        true);
-      Config::detectRootDoc();
       // Path for icon of document type
       $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
 
