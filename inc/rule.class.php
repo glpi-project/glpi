@@ -996,17 +996,20 @@ class Rule extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-
       // Delete a rule and all associated criterias and actions
-      $sql = "DELETE
-              FROM `".getTableForItemType($this->ruleactionclass)."`
-              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);
+      if (!empty($this->ruleactionclass)) {
+         $sql = "DELETE
+               FROM `".getTableForItemType($this->ruleactionclass)."`
+               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
+         $DB->query($sql);
+      }
 
-      $sql = "DELETE
-              FROM `".getTableForItemType($this->rulecriteriaclass)."`
-              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);
+      if (!empty($this->rulecriteriaclass)) {
+         $sql = "DELETE
+               FROM `".getTableForItemType($this->rulecriteriaclass)."`
+               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
+         $DB->query($sql);
+      }
    }
 
 

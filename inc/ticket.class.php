@@ -1,4 +1,3 @@
-
 <?php
 /*
  * @version $Id$
@@ -325,7 +324,7 @@ class Ticket extends CommonDBTM {
 
       $query1 = "DELETE
                  FROM `glpi_slalevels_tickets`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
+                 WHERE `tickets_id` = '$id'";
       $DB->query($query1);
 
       return $this->update($input);
