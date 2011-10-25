@@ -122,7 +122,7 @@ if (isset($_POST["action"])
    $nbok      = 0;
    $nbnoright = 0;
    $nbko      = 0;
-   
+
    switch($_POST["action"]) {
       case "connect_to_computer" :
          if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {
@@ -272,9 +272,9 @@ if (isset($_POST["action"])
                               }
                               $id = $ic->fields["id"];
                               unset($ic->fields);
-   
+
                               if ($ic->update(array('id'            => $id,
-                                                $_POST["field"] => $_POST[$_POST["field"]]))) {
+                                                    $_POST["field"] => $_POST[$_POST["field"]]))) {
                                  $nbok++;
                               } else {
                                  $nbko++;
@@ -283,7 +283,7 @@ if (isset($_POST["action"])
                               $nbnoright++;
                            }
                         } else {
-                           $nbnoright++;
+                           $nbko++;
                         }
                      } else {
                         $nbko++;
@@ -324,13 +324,13 @@ if (isset($_POST["action"])
                         if (count($link_entity_type) == 0
                             || in_array($item->fields["entities_id"],$link_entity_type)) {
                            if ($item->update(array('id'            => $key,
-                                               $_POST["field"] => $_POST[$_POST["field"]]))) {
+                                                   $_POST["field"] => $_POST[$_POST["field"]]))) {
                               $nbok++;
                            } else {
                               $nbko++;
                            }
                         } else {
-                           $nbnoright++;
+                           $nbko++;
                         }
                      } else {
                         $nbnoright++;
@@ -558,13 +558,14 @@ if (isset($_POST["action"])
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   if ($_POST['field'] == 'all') {
-                     if (OcsServer::replaceOcsArray($key ,array(), "computer_update")) {
+                     if (OcsServer::replaceOcsArray($key, array(), "computer_update")) {
                         $nbok++;
                      } else {
                         $nbko++;
                      }
                   } else {
-                     if (OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update", true)) {
+                     if (OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update",
+                                                     true)) {
                         $nbok++;
                      } else {
                         $nbko++;
@@ -717,7 +718,7 @@ if (isset($_POST["action"])
          } else {
             $nbko++;
          }
-         
+
          break;
 
       case "force_user_ldap_update" :
@@ -728,10 +729,10 @@ if (isset($_POST["action"])
             if ($val == 1) {
                $user->getFromDB($key);
                if (($user->fields["authtype"] == Auth::LDAP)
-                    || ($user->fields["authtype"] == Auth::EXTERNAL)) {
+                   || ($user->fields["authtype"] == Auth::EXTERNAL)) {
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                           'value'  => $user->fields["name"]),
-                                                         1, $user->fields["auths_id"])) {
+                                                               'value'  => $user->fields["name"]),
+                                                                1, $user->fields["auths_id"])) {
                      $nbok++;
                   } else {
                      $nbko++;
@@ -881,6 +882,8 @@ if (isset($_POST["action"])
                   } else {
                      $nbko++;
                   }
+               } else {
+                  $nbko++;
                }
             }
          }
@@ -894,9 +897,10 @@ if (isset($_POST["action"])
                foreach ($_POST["item"] as $key => $val) {
                   if ($val==1 && $item->can($key,'w')) {
                      // Check if parent is not a child of the original one
-                     if (!in_array($parent->getID(), getSonsOf($item->getTable(), $item->getID()))) {
+                     if (!in_array($parent->getID(), getSonsOf($item->getTable(),
+                                   $item->getID()))) {
                         if ($item->update(array('id' => $key,
-                                            $fk  => $_POST['parent']))) {
+                                                $fk  => $_POST['parent']))) {
                            $nbok++;
                         } else {
                            $nbko++;
@@ -917,16 +921,16 @@ if (isset($_POST["action"])
          foreach ($_POST["item"] as $key => $val) {
             if ($val==1) {
                if ($item->can($key,'w')) {
-                  if ($item->getEntityID()==$_SESSION['glpiactive_entity']) {
-                        if ($item->update(array('id'           => $key,
-                                          'is_recursive' => 1))) {
-                           $nbok++;
-                        } else {
-                           $nbko++;
-                        }
+                  if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                     if ($item->update(array('id'           => $key,
+                                             'is_recursive' => 1))) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
                   } else {
                      $input = $item->fields;
-   
+
                      // Remove keys (and name, tree dropdown will use completename)
                      if ($item instanceof CommonTreeDropdown) {
                         unset($input['id'], $input['name'], $input[$fk]);
@@ -939,7 +943,7 @@ if (isset($_POST["action"])
                      $input = Toolbox::addslashes_deep($input);
                      // Import new
                      if ($newid = $item->import($input)) {
-   
+
                         // Delete old
                         if ($newid > 0) {
                            $item->delete(array('id'          => $key,
