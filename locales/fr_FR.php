@@ -332,7 +332,7 @@ $LANG['common'][71]  = "Élément modifié avec succès";
 $LANG['common'][72]  = "Élément mis à la corbeille avec succès";
 $LANG['common'][73]  = "Élément supprimé définitivement avec succès";
 $LANG['common'][74]  = "Élément restauré avec succès";
-$LANG['common'][75]  = "Pas le droit de rendre cet élément récursif pour cette entité";
+
 $LANG['common'][76]  = "Public";
 $LANG['common'][77]  = "Privé";
 $LANG['common'][78]  = "Rendre public";
@@ -377,9 +377,9 @@ $LANG['common'][116] = "Ajouter une cible";
 $LANG['common'][117] = "Opération réalisée partiellement avec succès";
 $LANG['common'][118] = "Opération échouée";
 $LANG['common'][119] = "échec(s)";
-$LANG['common'][120] = "réussite(s)";
+
 $LANG['common'][121] = "problème(s) d'habilitation";
-$LANG['common'][122] = "Rôle";
+
 $LANG['common'][123] = "Délégataire";
 
 
@@ -2429,7 +2429,6 @@ $LANG['sla'][3]  = "Exécution";
 $LANG['sla'][4]  = "Ajouter un niveau d'escalade";
 $LANG['sla'][5]  = "Date d'échéance";
 $LANG['sla'][6]  = "Niveau d'escalade";
-$LANG['sla'][7]  = "Supprimer le SLA";
 $LANG['sla'][8]  = "Prochaine escalade";
 $LANG['sla'][9]  = "Rappels automatiques des SLAs";
 $LANG['sla'][10] = "24 heures sur 24, 7 jours sur 7";
