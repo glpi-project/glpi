@@ -1552,9 +1552,10 @@ function generate_entity($ID_entity) {
                            'Reponse $k', '".mt_rand(0,1)."', '10', '".mt_rand(0,1000)."', NOW(),
                            NOW())";
          $DB->query($query) or die("PB REQUETE ".$query);
-         
+
          $newID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_entities_knowbaseitems` VALUES (NULL, '$newID','$ID_entity','0')";
+         $query = "INSERT INTO `glpi_entities_knowbaseitems`
+                   VALUES (NULL, '$newID','$ID_entity','0')";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
    }
@@ -1570,9 +1571,10 @@ function generate_entity($ID_entity) {
                            'Reponse $k ".Toolbox::getRandomString(50)."','".mt_rand(0,1)."', '10',
                            '".mt_rand(0,1000)."', NOW(), NOW())";
          $DB->query($query) or die("PB REQUETE ".$query);
-         
+
          $newID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_entities_knowbaseitems` VALUES (NULL, '$newID','$ID_entity','1')";
+         $query = "INSERT INTO `glpi_entities_knowbaseitems`
+                   VALUES (NULL, '$newID','$ID_entity','1')";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
    }

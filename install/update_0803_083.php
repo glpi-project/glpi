@@ -1250,13 +1250,13 @@ function update0803to083() {
    $migration->addField('glpi_groups', 'is_notify',    'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_itemgroup', 'bool', array('value' => '1'));
    $migration->addField('glpi_groups', 'is_usergroup', 'bool', array('value' => '1'));
-   
+
    $migration->addKey('glpi_groups', 'is_requester');
    $migration->addKey('glpi_groups', 'is_assign');
    $migration->addKey('glpi_groups', 'is_notify');
    $migration->addKey('glpi_groups', 'is_itemgroup');
    $migration->addKey('glpi_groups', 'is_usergroup');
-   
+
    // Ticket solution by entity
    $migration->addfield('glpi_solutiontypes', 'entities_id', 'integer');
    $migration->addfield('glpi_solutiontypes', 'is_recursive', 'bool', array('value' => '1'));
@@ -1504,7 +1504,7 @@ function update0803to083() {
       or die("0.83 add table glpi_entities_knowbaseitems ".$LANG['update'][90].$DB->error());
    }
 
-   /// Migrate datas for entities_id / is_recursive 
+   /// Migrate datas for entities_id / is_recursive
    if (FieldExists("glpi_knowbaseitems", 'entities_id')) {
       $query = "SELECT *
                 FROM `glpi_knowbaseitems`";
@@ -1513,10 +1513,11 @@ function update0803to083() {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_entities_knowbaseitems`
-                                 (`knowbaseitems_id`, `entities_id`, `is_recursive`)
-                           VALUES ('".$data['id']."', '".$data['entities_id']."', '".$data['is_recursive']."');";
+                                (`knowbaseitems_id`, `entities_id`, `is_recursive`)
+                         VALUES ('".$data['id']."', '".$data['entities_id']."',
+                                 '".$data['is_recursive']."');";
                $DB->query($query)
-               or die("0.83 migrate data for entities on glpi_knowbaseitems ".
+               or die("0.83 migrate data for entities on glpi_entities_knowbaseitems ".
                         $LANG['update'][90].$DB->error());
             }
          }

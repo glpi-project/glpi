@@ -46,6 +46,7 @@ class KnowbaseItem extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+
    static function getTypeName() {
       global $LANG;
 
@@ -69,26 +70,29 @@ class KnowbaseItem extends CommonDBTM {
 
    function canViewItem() {
       global $CFG_GLPI;
-      
+
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
       /// TODO add check on entities_id is_recursive for public_faq
       if ($this->fields["is_faq"]) {
-         return (((Session::haveRight('knowbase', 'r')
-                 || Session::haveRight('faq', 'r')) && $this->haveVisibilityAccess())
-                 || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+         return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
+                  && $this->haveVisibilityAccess())
+                 || (Session::getLoginUserID() === false && $CFG_GLPI["use_public_faq"]));
       }
       return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
    }
 
+
    function canUpdateItem() {
+
       // Personal knowbase or visibility and write access
       return ($this->fields['users_id'] == Session::getLoginUserID()
               || ((($this->fields["is_faq"] && Session::haveRight("faq", "w"))
                    || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
-                   && $this->haveVisibilityAccess()));
+                  && $this->haveVisibilityAccess()));
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -100,6 +104,7 @@ class KnowbaseItem extends CommonDBTM {
       return $ong;
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
@@ -109,9 +114,10 @@ class KnowbaseItem extends CommonDBTM {
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdate()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $ong[2] = self::createTabEntry($LANG['reminder'][2], $item->countVisibilities());
+                     $ong[2] = self::createTabEntry($LANG['reminder'][2],
+                                                    $item->countVisibilities());
                   } else {
-                     $ong[2] = $LANG['reminder'][2];                  
+                     $ong[2] = $LANG['reminder'][2];
                   }
                }
                return $ong;
@@ -122,14 +128,14 @@ class KnowbaseItem extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $CFG_GLPI;
 
       if($item->getType() == __CLASS__) {
          switch($tabnum) {
-            case 1:
+            case 1 :
                $item->showMenu();
                break;
-            case 2:
+
+            case 2 :
                $item->showVisibility();
                break;
          }
@@ -151,6 +157,9 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.83
+   **/
    function post_getFromDB () {
 
       // Users
@@ -166,13 +175,23 @@ class KnowbaseItem extends CommonDBTM {
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
    }
 
+
+   /**
+    * @since version 0.83
+    */
    function countVisibilities() {
-      return (count($this->entities) + count($this->users) 
-            + count($this->groups) + count($this->profiles));
+
+      return (count($this->entities)
+              + count($this->users)
+              + count($this->groups)
+              + count($this->profiles));
    }
+
 
    /**
     * Is the login user have access to KnowbaseItem based on visibility configuration
+    *
+    * @since version 0.83
     *
     * @return boolean
    **/
@@ -187,6 +206,7 @@ class KnowbaseItem extends CommonDBTM {
       if (isset($this->users[Session::getLoginUserID()])) {
          return true;
       }
+
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
@@ -250,42 +270,56 @@ class KnowbaseItem extends CommonDBTM {
       return false;
    }
 
+
    /**
    * Return visibility joins to add to SQL
    *
+   * @since version 0.83
+   *
    * @param $forceall force all joins
+   *
    * @return string joins to add
    **/
-   static function addVisibilityJoins($forceall = false) {
+   static function addVisibilityJoins($forceall=false) {
 
       $join = '';
 
       // Users
       $join .= " LEFT JOIN `glpi_knowbaseitems_users`
                      ON (`glpi_knowbaseitems_users`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
-      
+
       // Groups
-      if ($forceall || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
+      if ($forceall
+          || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
          $join .= " LEFT JOIN `glpi_groups_knowbaseitems`
-                        ON (`glpi_groups_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+                        ON (`glpi_groups_knowbaseitems`.`knowbaseitems_id`
+                              = `glpi_knowbaseitems`.`id`) ";
       }
+
       // Profiles
-      if ($forceall || (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id']))) {
+      if ($forceall
+          || (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id']))) {
          $join .= " LEFT JOIN `glpi_knowbaseitems_profiles`
-                        ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+                        ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id`
+                              = `glpi_knowbaseitems`.`id`) ";
       }
+
       // Entities
-      if ($forceall || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
+      if ($forceall
+          || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
          $join .= " LEFT JOIN `glpi_entities_knowbaseitems`
-                        ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
+                        ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id`
+                              = `glpi_knowbaseitems`.`id`) ";
       }
 
       return $join;
-
    }
+
 
    /**
     * Return visibility SQL restriction to add
+    *
+    * @since version 0.83
     *
     * @return string restrict to add
    **/
@@ -301,8 +335,8 @@ class KnowbaseItem extends CommonDBTM {
          $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
                                  IN ('".implode("','",$_SESSION["glpigroups"])."')
                             AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems", '', '',
-                                                              true).")) ";
+                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
+                                                              '', '', true).")) ";
       }
 
       // Profiles
@@ -310,18 +344,20 @@ class KnowbaseItem extends CommonDBTM {
          $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
                                  = '".$_SESSION["glpiactiveprofile"]['id']."'
                             AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles", '',
-                                                              '', true).")) ";
+                                 ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles",
+                                                              '', '', true).")) ";
       }
 
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_knowbaseitems", '', '', true);
+         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true);
       }
 
       $restrict .= ") ";
       return $restrict;
    }
+
+
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -461,7 +497,7 @@ class KnowbaseItem extends CommonDBTM {
 //                echo Dropdown::getYesNo($this->fields["is_recursive"]);
 //             }
 //          }
-//          echo "<br><br>" . 
+//          echo "<br><br>" .
          echo $LANG['knowbase'][5]."&nbsp;: ";
 
          if (Session::haveRight("faq","w") && Session::haveRight("knowbase","w")) {
@@ -594,7 +630,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       // show item : question and answer
-      if (!Session::haveRight("user","r")) {
+      if (!Session::haveRight("user", "r")) {
          $linkusers_id = false;
       }
 
@@ -656,7 +692,7 @@ class KnowbaseItem extends CommonDBTM {
          echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
       }
 
-      if ($this->countVisibilities()==0) {
+      if ($this->countVisibilities() == 0) {
          echo "<br><span class='red'>".$LANG['knowbase'][3]."</span>";
       }
       echo "</th>";
@@ -746,7 +782,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $options : $_GET
     * @param $faq display on faq ?
    **/
-   static function showList($options, $faq = 0) {
+   static function showList($options, $faq=0) {
       global $DB, $LANG, $CFG_GLPI;
 
       // Default values of parameters
@@ -766,7 +802,7 @@ class KnowbaseItem extends CommonDBTM {
       $order = "";
       $score = "";
       $join = self::addVisibilityJoins();
-      
+
       // Build query
       if (Session::getLoginUserID()) {
          $where = self::addVisibilityRestrict()." AND ";
@@ -775,7 +811,7 @@ class KnowbaseItem extends CommonDBTM {
          if (Session::isMultiEntitiesMode()) {
             $where = " (`glpi_entities_knowbaseitems`.`entities_id` = '0'
                         AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')
-                        AND ";
+                      AND ";
          }
       }
 
@@ -1007,7 +1043,7 @@ class KnowbaseItem extends CommonDBTM {
       $faq_limit = "";
       // Force all joins for not published to verify no visibility set
       $join = self::addVisibilityJoins(true);
-      
+
       if (Session::getLoginUserID()) {
          $faq_limit .= "WHERE ".self::addVisibilityRestrict();
       } else {
@@ -1024,16 +1060,16 @@ class KnowbaseItem extends CommonDBTM {
          $title = $LANG['knowbase'][2];
          // not published = no visibility set
          $faq_limit = "WHERE `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
-                        AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL 
-                        AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
-                        AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
-                        AND `glpi_knowbaseitems_users`.`users_id` IS NULL";
+                             AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL
+                             AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
+                             AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
+                             AND `glpi_knowbaseitems_users`.`users_id` IS NULL";
       } else {
          // Only published
-         $faq_limit .= "AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL 
-                           OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
-                           OR `glpi_groups_knowbaseitems`.`groups_id` IS NOT NULL
-                           OR `glpi_knowbaseitems_users`.`users_id` IS NOT NULL)";
+         $faq_limit .= "AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
+                             OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
+                             OR `glpi_groups_knowbaseitems`.`groups_id` IS NOT NULL
+                             OR `glpi_knowbaseitems_users`.`users_id` IS NOT NULL)";
       }
 
       if ($faq) { // FAQ
@@ -1041,12 +1077,12 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $query = "SELECT `glpi_knowbaseitems`.*
-                FROM `glpi_knowbaseitems` 
+                FROM `glpi_knowbaseitems`
                 $join
                 $faq_limit
                 $orderby
                 LIMIT 10";
-      
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -1154,6 +1190,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Show visibility config for a knowbaseitem
     *
+    * @since version 0.83
+    *
    **/
    function showVisibility() {
       global $DB, $CFG_GLPI, $LANG;
@@ -1173,7 +1211,7 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</th></tr>";
       echo "<tr><td class='tab_bg_2' width='100px'>";
 
       $types = array( 'Group', 'Profile', 'User');
@@ -1251,7 +1289,7 @@ class KnowbaseItem extends CommonDBTM {
                   }
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1279,7 +1317,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo " <strong>(R)</strong>";
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
@@ -1300,7 +1338,7 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo "<td>".$LANG['profiles'][22]."</td>";
                echo "<td>";
-               $names = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+               $names = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                echo $names["name"]." ";
                echo Html::showToolTip($names["comment"]);
                if ($data['entities_id'] >= 0) {
@@ -1311,14 +1349,13 @@ class KnowbaseItem extends CommonDBTM {
                   }
                }
                echo "</td>";
-               echo "<tr>";
+               echo "</tr>";
             }
          }
       }
 
       if ($canedit) {
-         echo "<tr><td colspan='3'>";
-         echo "</td></tr>";
+         echo "<tr><td colspan='3'></td></tr>";
       }
       echo "</table>";
       if ($canedit) {
@@ -1335,5 +1372,4 @@ class KnowbaseItem extends CommonDBTM {
 
 
 }
-
 ?>

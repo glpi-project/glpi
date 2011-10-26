@@ -131,7 +131,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                            ON (`glpi_knowbaseitemcategories`.`id`
                                  = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                       WHERE `glpi_knowbaseitems`.`is_faq` = '1'
-                              AND ".KnowbaseItem::addVisibilityRestrict()."
+                            AND ".KnowbaseItem::addVisibilityRestrict()."
                             $faq_limit";
 
             if ($result=$DB->query($query)) {

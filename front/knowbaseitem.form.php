@@ -159,6 +159,7 @@ if ($_GET["id"] == "new") {
          }
       }
    }
+
    if (isset($_POST["user"]) && count($_POST["user"])) {
       $item = new KnowbaseItem_User();
       foreach ($_POST["user"] as $key => $val) {
