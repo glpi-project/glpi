@@ -121,8 +121,9 @@ class Document extends CommonDBTM {
       global $LANG;
 
       // Can exist for template
-      if (Session::haveRight("document","r") 
-            || $item->getType()=='Ticket' || $item->getType()=='KnowbaseItem') {
+      if (Session::haveRight("document","r")
+          || $item->getType()=='Ticket'
+          || $item->getType()=='KnowbaseItem') {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));

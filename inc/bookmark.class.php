@@ -52,11 +52,12 @@ class Bookmark extends CommonDBTM {
       return Session::haveRight('bookmark_public', 'r');
    }
 
-   
+
    function isNewItem() {
       /// For tabs management : force isNewItem
       return false;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -66,8 +67,8 @@ class Bookmark extends CommonDBTM {
       $ong['no_all_tab'] = true;
       return $ong;
    }
-   
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
@@ -81,24 +82,23 @@ class Bookmark extends CommonDBTM {
             return $ong;
       }
       return '';
-   }   
-   
+   }
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $CFG_GLPI;
 
       switch ($item->getType()) {
          case __CLASS__ :
-
             $is_private = 1;
-            if ($tabnum==2) {
+            if ($tabnum == 2) {
                $is_private = 0;
             }
-
             $item->showBookmarkList($_POST['target'], $is_private);
             return true;
       }
       return false;
    }
+
 
    function prepareInputForAdd($input) {
 
