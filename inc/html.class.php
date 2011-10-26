@@ -1026,7 +1026,7 @@ class Html {
 
       if (Session::haveRight("consumable","r")) {
          $menu['inventory']['content']['consumable']['title']     = $LANG['Menu'][32];
-         $menu['inventory']['content']['consumable']['shortcut']  = 'g';
+         $menu['inventory']['content']['consumable']['shortcut']  = 'a';
          $menu['inventory']['content']['consumable']['page']      = '/front/consumableitem.php';
          $menu['inventory']['content']['consumable']['links']['search']
                                                                   = '/front/consumableitem.php';
@@ -1043,7 +1043,7 @@ class Html {
 
       if (Session::haveRight("phone","r")) {
          $menu['inventory']['content']['phone']['title']           = $LANG['Menu'][34];
-         $menu['inventory']['content']['phone']['shortcut']        = 't';
+         $menu['inventory']['content']['phone']['shortcut']        = 'x';
          $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
          $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
 
@@ -1059,7 +1059,7 @@ class Html {
 
       if ($showstate) {
          $menu['inventory']['content']['state']['title']            = $LANG['Menu'][28];
-         $menu['inventory']['content']['state']['shortcut']         = 'u';
+         $menu['inventory']['content']['state']['shortcut']         = 'j';
          $menu['inventory']['content']['state']['page']             = '/front/states.php';
          $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';
          $menu['inventory']['content']['state']['links']['summary'] = '/front/states.php?synthese=yes';
@@ -1128,7 +1128,7 @@ class Html {
 
       if (Session::haveRight("show_all_problem","1") || Session::haveRight("show_my_problem","1")) {
          $menu['maintain']['content']['problem']['title']           = $LANG['Menu'][7];
-         $menu['maintain']['content']['problem']['shortcut']        = 'p';
+         $menu['maintain']['content']['problem']['shortcut']        = 'l';
          $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
          $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
          if (Session::haveRight("edit_all_problem","1")) {
@@ -1136,19 +1136,19 @@ class Html {
          }
       }
 
-      if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
-         $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
-         $menu['maintain']['content']['change']['shortcut']        = 'h';
-         $menu['maintain']['content']['change']['page']            = '/front/change.php';
-         $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
-         if (Session::haveRight("edit_all_change","1")) {
-            $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
-         }
-      }
+//       if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
+//          $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
+//          $menu['maintain']['content']['change']['shortcut']        = '';
+//          $menu['maintain']['content']['change']['page']            = '/front/change.php';
+//          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
+//          if (Session::haveRight("edit_all_change","1")) {
+//             $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
+//          }
+//       }
 
       if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
          $menu['maintain']['content']['planning']['title']     = Toolbox::ucfirst($LANG['log'][16]);
-         $menu['maintain']['content']['planning']['shortcut']  = 'l';
+         $menu['maintain']['content']['planning']['shortcut']  = '1';
          $menu['maintain']['content']['planning']['page']      = '/front/planning.php';
          $menu['maintain']['content']['planning']['links']['search']
                                                                = '/front/planning.php';
@@ -1156,14 +1156,14 @@ class Html {
 
       if (Session::haveRight("statistic","1")) {
          $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
-         $menu['maintain']['content']['stat']['shortcut'] = 'u';
+         $menu['maintain']['content']['stat']['shortcut'] = '0';
          $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
       }
 
 
       if (Session::haveRight("ticketrecurrent","r")) {
          $menu['maintain']['content']['ticketrecurrent']['title']    = $LANG['jobrecurrent'][1];
-         $menu['maintain']['content']['ticketrecurrent']['shortcut'] = '';
+         $menu['maintain']['content']['ticketrecurrent']['shortcut'] = 'k';
          $menu['maintain']['content']['ticketrecurrent']['page']     = '/front/ticketrecurrent.php';
          $menu['maintain']['content']['ticketrecurrent']['links']['search']
                                                                      = '/front/ticketrecurrent.php';
@@ -1201,7 +1201,7 @@ class Html {
 
 
          $menu['financial']['content']['contact']['title']           = $LANG['Menu'][22];
-         $menu['financial']['content']['contact']['shortcut']        = 't';
+         $menu['financial']['content']['contact']['shortcut']        = 'q';
          $menu['financial']['content']['contact']['page']            = '/front/contact.php';
          $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
 
@@ -1214,7 +1214,7 @@ class Html {
 
       if (Session::haveRight("contract", "r")) {
          $menu['financial']['content']['contract']['title']           = $LANG['Menu'][25];
-         $menu['financial']['content']['contract']['shortcut']        = 'n';
+         $menu['financial']['content']['contract']['shortcut']        = 'r';
          $menu['financial']['content']['contract']['page']            = '/front/contract.php';
          $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
 
@@ -1416,7 +1416,7 @@ class Html {
           || Session::haveRight("rule_mailcollector","r")) {
 
          $menu['admin']['content']['rule']['title']    = $LANG['rulesengine'][17];
-         $menu['admin']['content']['rule']['shortcut'] = 'r';
+         $menu['admin']['content']['rule']['shortcut'] = '3';
          $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
          if ($sector=='admin' && $item == 'rule') {
@@ -1460,7 +1460,7 @@ class Html {
           || Session::haveRight("rule_dictionnary_printer","r")) {
 
          $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
-         $menu['admin']['content']['dictionnary']['shortcut'] = 'd';
+         $menu['admin']['content']['dictionnary']['shortcut'] = 'y';
          $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
          if ($sector=='admin' && $item == 'dictionnary') {
@@ -1701,7 +1701,7 @@ class Html {
 
       if (Session::haveRight("profile","r")) {
          $menu['admin']['content']['profile']['title']           = $LANG['Menu'][35];
-         $menu['admin']['content']['profile']['shortcut']        = 'p';
+         $menu['admin']['content']['profile']['shortcut']        = 'f';
          $menu['admin']['content']['profile']['page']            = '/front/profile.php';
          $menu['admin']['content']['profile']['links']['search'] = "/front/profile.php";
 
@@ -1712,14 +1712,14 @@ class Html {
 
       if (Session::haveRight("backup","w")) {
          $menu['admin']['content']['backup']['title']    = $LANG['Menu'][12];
-         $menu['admin']['content']['backup']['shortcut'] = 'b';
+         $menu['admin']['content']['backup']['shortcut'] = 'w';
          $menu['admin']['content']['backup']['page']     = '/front/backup.php';
       }
 
 
       if (Session::haveRight("logs","r")) {
          $menu['admin']['content']['log']['title']    = $LANG['Menu'][30];
-         $menu['admin']['content']['log']['shortcut'] = 'l';
+         $menu['admin']['content']['log']['shortcut'] = 'o';
          $menu['admin']['content']['log']['page']     = '/front/event.php';
       }
 
@@ -1975,6 +1975,7 @@ class Html {
 
       // Get object-variables and build the navigation-elements
       $i = 1;
+      $already_used_shortcut = array();
       foreach ($menu as $part => $data) {
          if (isset($data['content']) && count($data['content'])) {
             echo "<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
@@ -1990,13 +1991,22 @@ class Html {
             echo "<a href='$link' class='itemP'>".$data['title']."</a>";
             echo "<ul class='ssmenu'>";
 
+
+
             // list menu item
             foreach ($data['content'] as $key => $val) {
                if (isset($val['page'])&& isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
-                  if (isset($val['shortcut'])&&!empty($val['shortcut'])) {
-                     echo " accesskey='".$val['shortcut']."'";
+                  if (isset($val['shortcut']) && !empty($val['shortcut'])) {
+                     if (!isset($already_used_shortcut[$val['shortcut']])) {
+                        echo " accesskey='".$val['shortcut']."'";
+                        $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
+                     } else {
+                        // for debug
+                        Toolbox::logDebug($val['shortcut']." already used");
+                     }
+                     
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
                   } else {
                      echo ">".$val['title']."</a></li>\n";
