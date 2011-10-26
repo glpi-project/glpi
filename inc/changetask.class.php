@@ -40,6 +40,7 @@ class ChangeTask extends CommonITILTask {
 
 
    function canCreate() {
+
       return (Session::haveRight('show_my_change', '1')
               || Session::haveRight('edit_all_change', '1'));
    }
@@ -85,20 +86,19 @@ class ChangeTask extends CommonITILTask {
       if (!parent::canReadITILItem()) {
          return false;
       }
-      
+
       $change = new Change();
-      
+
       if ($change->getFromDB($this->fields['changes_id'])) {
          return (Session::haveRight("edit_all_change", "1")
-              || (Session::haveRight("show_my_change", "1")
-                  && ($change->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && $change->haveAGroup(CommonITILObject::ASSIGN,
-                                                 $_SESSION['glpigroups'])))));
-      } else {
-         return false;
+                 || (Session::haveRight("show_my_change", "1")
+                     && ($change->isUser(CommonITILObject::ASSIGN, Session::getLoginUserID())
+                         || (isset($_SESSION["glpigroups"])
+                             && $change->haveAGroup(CommonITILObject::ASSIGN,
+                                                    $_SESSION['glpigroups'])))));
       }
-      
+      return false;
+
    }
 
 

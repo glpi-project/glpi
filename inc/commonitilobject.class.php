@@ -1912,13 +1912,13 @@ abstract class CommonITILObject extends CommonDBTM {
          echo $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
       }
       echo "&nbsp;";
-      
+
       if (!isset($options["_right"])) {
          $right = $this->getDefaultActorRightSearch($type);
       } else {
          $right = $options["_right"];
       }
-      
+
       if ($options["_users_id_".$typename] == 0) {
          $options["_users_id_".$typename] = $this->getDefaultActor($type);
       }
@@ -1955,8 +1955,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($itemtype == 'Ticket') {
 
          // display opened tickets for user
-         if ($type == self::REQUESTER 
-               && $options["_users_id_".$typename] > 0) {
+         if ($type == self::REQUESTER
+             && $options["_users_id_".$typename] > 0) {
 
             $options2['field'][0]      = 4; // users_id
             $options2['searchtype'][0] = 'equals';
@@ -1967,9 +1967,9 @@ abstract class CommonITILObject extends CommonDBTM {
             $options2['searchtype'][1] = 'equals';
             $options2['contains'][1]   = 'notold';
             $options2['link'][1]       = 'AND';
-            
+
             $options2['reset'] = 'reset';
-            
+
             $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
             echo "&nbsp;<a href='$url' title=\"".$LANG['joblist'][21]."\" target='_blank'>(".
@@ -2097,7 +2097,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             $delegating = User::getDelegateGroupsForUser();
             if (count($delegating)) {
-               //$this->getDefaultActor(self::REQUESTER); 
+               //$this->getDefaultActor(self::REQUESTER);
                $options['_right'] = "delegate";
                $this->showActorAddFormOnCreate(self::REQUESTER, $options);
             } else {
@@ -2132,7 +2132,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
             }
             echo "&nbsp;";
-   
+
             Dropdown::show('Group', array('name'      => '_groups_id_requester',
                                           'value'     => $options["_groups_id_requester"],
                                           'entity'    => $this->fields["entities_id"],
@@ -2169,7 +2169,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_observer');
             }
             echo "&nbsp;";
-   
+
             Dropdown::show('Group', array('name'      => '_groups_id_observer',
                                           'value'     => $options["_groups_id_observer"],
                                           'entity'    => $this->fields["entities_id"],

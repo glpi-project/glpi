@@ -110,8 +110,8 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["unset_delegate"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
-         if ($groupuser->can($key,'w')) {
-            $groupuser->update(array('id'         => $key,
+         if ($groupuser->can($key, 'w')) {
+            $groupuser->update(array('id'              => $key,
                                      'is_userdelegate' => 0));
          }
       }
@@ -122,8 +122,8 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["set_delegate"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
-         if ($groupuser->can($key,'w')) {
-            $groupuser->update(array('id'         => $key,
+         if ($groupuser->can($key, 'w')) {
+            $groupuser->update(array('id'              => $key,
                                      'is_userdelegate' => 1));
          }
       }
