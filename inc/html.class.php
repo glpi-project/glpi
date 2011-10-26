@@ -2004,7 +2004,7 @@ class Html {
                         $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
                      } else {
                         // for debug
-                        Toolbox::logDebug($val['shortcut']." already used");
+//                         Toolbox::logDebug($val['shortcut']." already used");
                      }
                      
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
