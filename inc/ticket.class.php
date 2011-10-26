@@ -260,10 +260,10 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
-            && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
-               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
-            ) {
+      if ($this->numberOfFollowups() == 0
+          && $this->numberOfTasks() == 0
+          && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
+              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
          return true;
       }
 
@@ -283,8 +283,8 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if (($this->isUser(parent::REQUESTER,Session::getLoginUserID()) 
-            || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+      if (($this->isUser(parent::REQUESTER,Session::getLoginUserID())
+           || $this->fields["users_id_recipient"] === Session::getLoginUserID())
           && $this->numberOfFollowups() == 0
           && $this->numberOfTasks() == 0
           && $this->fields["date"] == $this->fields["date_mod"]) {
@@ -1124,7 +1124,7 @@ class Ticket extends CommonITILObject {
           && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
       }
-      
+
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
 
       // Restore slas_id
@@ -1636,7 +1636,7 @@ class Ticket extends CommonITILObject {
 
       return ((Session::haveRight("add_followups","1")
                && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
-                  || $this->fields["users_id_recipient"] === Session::getLoginUserID()))
+                   || $this->fields["users_id_recipient"] === Session::getLoginUserID()))
               || Session::haveRight("global_add_followups","1")
               || (Session::haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
@@ -1645,8 +1645,6 @@ class Ticket extends CommonITILObject {
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])));
    }
-
-
 
 
    /**
@@ -2853,7 +2851,7 @@ class Ticket extends CommonITILObject {
                       'slas_id'                   => 0,
                       '_add_validation'           => 0,
                       'type'                      => -1,
-                      '_right'                     => "id");
+                      '_right'                    => "id");
 
 
       // Restore saved value or override with page parameter
@@ -2871,27 +2869,32 @@ class Ticket extends CommonITILObject {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
       }
-      
-      
+
+
       $delegating = User::getDelegateGroupsForUser();
-      
+
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".$LANG['job'][69]."&nbsp;:&nbsp;";
-         
-         $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
-         
-         $params = array ('nodelegate'                   => '__VALUE__',
-                          'rand'                      => $rand,
-                          'right'                     => "delegate",
-                          '_users_id_requester'       => $options['_users_id_requester'],
-                          '_users_id_requester_notif' => $options['_users_id_requester_notif']['use_notification'],
-                          'use_notification'          => $options['_users_id_requester_notif']['use_notification'],
-                          'entity_restrict'           => $_SESSION["glpiactive_entity"]);
 
-         Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand, $CFG_GLPI["root_doc"].
-                                   "/ajax/dropdownDelegationUsers.php", $params);
-         
+         $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
+
+         $params = array ('nodelegate' => '__VALUE__',
+                          'rand'       => $rand,
+                          'right'      => "delegate",
+                          '_users_id_requester'
+                                       => $options['_users_id_requester'],
+                          '_users_id_requester_notif'
+                                       => $options['_users_id_requester_notif']['use_notification'],
+                          'use_notification'
+                                       => $options['_users_id_requester_notif']['use_notification'],
+                          'entity_restrict'
+                                       => $_SESSION["glpiactive_entity"]);
+
+         Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand,
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
+                                       $params);
+
          echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
          echo "<div id='show_result$rand'>";
@@ -2902,15 +2905,15 @@ class Ticket extends CommonITILObject {
          } else {
             $options['_right'] = "delegate";
          }
-         
+
          $self->showActorAddFormOnCreate(self::REQUESTER, $options);
          echo "</div>";
          echo "</td></tr>";
 
          echo "</table>";
          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
-      
       }
+
       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
       echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk').
            "'>";
@@ -3027,7 +3030,7 @@ class Ticket extends CommonITILObject {
             echo "</td></tr>";
          }
       }
-      
+
       if (empty($delegating) && NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
@@ -3042,10 +3045,11 @@ class Ticket extends CommonITILObject {
 
          echo "</td></tr>";
       }
-      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0) {
+
+      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0) {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['help'][24]."&nbsp;:".$tt->getMandatoryMark('itemtype')."</td>";
+            echo "<td>".$LANG['help'][24]."&nbsp;: ".$tt->getMandatoryMark('itemtype')."</td>";
             echo "<td>";
             self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"]);
             self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
@@ -3055,7 +3059,6 @@ class Ticket extends CommonITILObject {
             echo "</td></tr>";
          }
       }
-
 
       if (!$tt->isHiddenField('name')
           || $tt->isPredefinedField('name')
@@ -3334,7 +3337,7 @@ class Ticket extends CommonITILObject {
       echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
       echo "<td>";
       $date = $this->fields["date"];
-      
+
       if ($canupdate) {
          Html::showDateTimeFormItem("date", $date, 1, false);
       } else {

@@ -84,7 +84,7 @@ class Group_User extends CommonDBRelation{
 
       $canedit = $user->can($ID,'w');
 
-      $rand = mt_rand();
+      $rand        = mt_rand();
       $nb_per_line = 3;
       if ($canedit) {
          $headerspan = $nb_per_line*2;
@@ -256,7 +256,7 @@ class Group_User extends CommonDBRelation{
             $entityrestrict = $group->fields['entities_id'];
          }
          $res = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
-         $nb = ($res ? $DB->result($res,0,"CPT") : 0);
+         $nb  = ($res ? $DB->result($res,0,"CPT") : 0);
 
          if ($nb) {
             echo "<div class='firstbloc'>";
@@ -288,12 +288,11 @@ class Group_User extends CommonDBRelation{
 
       if (count($used)) {
          Session::initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
-         $items = array(
-            0 => "is_manager",
-            1 => "is_userdelegate",
-            2 => "is_user");
-         foreach ($items as $key => $role) {
+         $items = array(0 => "is_manager",
+                        1 => "is_userdelegate",
+                        2 => "is_user");
 
+         foreach ($items as $key => $role) {
             echo "<div id='groupuser_form$rand-$role' class='spaced'>";
             echo "<table class='tab_cadre_fixe'>";
             $title = $LANG['Menu'][14]." (D=".$LANG['profiles'][29].")";
@@ -302,14 +301,14 @@ class Group_User extends CommonDBRelation{
             } else if ($role == "is_userdelegate") {
                $title = $LANG['common'][123];
             }
-            echo "<tr><th colspan='$headerspan'>".$title;
-            echo "</th></tr>";
+            echo "<tr><th colspan='$headerspan'>".$title."</th></tr>";
 
             $i    = 0;
             $user = new User();
-            
-            foreach  ($used as $id => $data) {
-               if ((isset($data[$role]) && !$data[$role]) || !$user->can($id, 'r')) {
+
+            foreach ($used as $id => $data) {
+               if ((isset($data[$role]) && !$data[$role])
+                   || !$user->can($id, 'r')) {
                   // For recursive group, could be in another (sister) entity
                   continue;
                }
