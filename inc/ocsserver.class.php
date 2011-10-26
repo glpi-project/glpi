@@ -2282,7 +2282,7 @@ class OcsServer extends CommonDBTM {
          }
       }
 
-      $query = "SELECT *
+      $query = "SELECT `ocsid`
                 FROM `glpi_ocslinks`
                 WHERE `ocsservers_id` = '$ocsservers_id'";
       $result = $DB->query($query);
