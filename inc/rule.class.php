@@ -1053,7 +1053,11 @@ class Rule extends CommonDBTM {
       echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
 
       if ($display_entities) {
-         echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id'])."</td>";
+         $rec = '';
+         if ($this->maybeRecursive() && $this->fields['is_recursive']) {
+            $rec =' <b>(R)</b>';
+         }
+         echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id'])."$rec</td>";
       }
 
       if (!$display_entities) {
