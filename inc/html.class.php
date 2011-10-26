@@ -1138,7 +1138,7 @@ class Html {
 
       if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
          $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
-         $menu['maintain']['content']['change']['shortcut']        = 'c';
+         $menu['maintain']['content']['change']['shortcut']        = 'h';
          $menu['maintain']['content']['change']['page']            = '/front/change.php';
          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
          if (Session::haveRight("edit_all_change","1")) {
@@ -1995,10 +1995,12 @@ class Html {
                if (isset($val['page'])&& isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
-                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
+                  if (isset($val['shortcut'])&&!empty($val['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
+                     echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
+                  } else {
+                     echo ">".$val['title']."</a></li>\n";
                   }
-                  echo ">".$val['title']."</a></li>\n";
                }
             }
             echo "</ul></li>";
@@ -2035,7 +2037,6 @@ class Html {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
                   if (isset($val['shortcut'])&&!empty($val['shortcut'])) {
-                     echo " accesskey='".$val['shortcut']."'";
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
                   } else {
                      echo ">".$val['title']."</a></li>\n";
