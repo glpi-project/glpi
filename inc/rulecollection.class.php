@@ -1062,18 +1062,27 @@ class RuleCollection extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($item instanceof RuleCollection) {
+         $options = $_POST;
          switch ($tabnum) {
             case 1:
+               $options['inherited'] = 1;
+               break;
+
             case 2:
+               $options['inherited'] = 0;
+               break;
+
             case 3 :
-               if ($item->isRuleEntityAssigned()) {
-                  $item->setEntity($_SESSION['glpiactive_entity']);
-               }
-               $item->title();
-               $item->showEngineSummary();
-               $item->showListRules($_POST['target'], $_POST);
+               $options['inherited'] = 0;
+               $options['childrens'] = 1;
                break;
          }
+         if ($item->isRuleEntityAssigned()) {
+            $item->setEntity($_SESSION['glpiactive_entity']);
+         }
+         $item->title();
+         $item->showEngineSummary();
+         $item->showListRules($_POST['target'], $options);
          return true;
       }
       return false;
