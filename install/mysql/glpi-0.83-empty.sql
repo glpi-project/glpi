@@ -3637,6 +3637,7 @@ CREATE TABLE `glpi_printers` (
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `init_pages_counter` int(11) NOT NULL DEFAULT '0',
+  `last_pages_counter` int(11) NOT NULL DEFAULT '0',
   `notepad` longtext COLLATE utf8_unicode_ci,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `groups_id` int(11) NOT NULL DEFAULT '0',
