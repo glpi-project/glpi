@@ -1719,6 +1719,7 @@ $LANG['printers'][15] = "Parallèle";
 
 $LANG['printers'][18] = "Ports";
 
+$LANG['printers'][26] = "Compteur de page actuel";
 $LANG['printers'][27] = "USB";
 $LANG['printers'][28] = "Ethernet";
 $LANG['printers'][29] = "Wifi";

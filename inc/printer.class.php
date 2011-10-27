@@ -173,6 +173,12 @@ class Printer  extends CommonDBTM {
       } else {
          $input['init_pages_counter'] = 0;
       }
+      if (isset($input['last_pages_counter'])) {
+         $input['last_pages_counter'] = intval($input['last_pages_counter']);
+      } else {
+         $input['last_pages_counter'] = $input['init_pages_counter'];
+      }
+
 
       return $input;
    }
@@ -182,6 +188,9 @@ class Printer  extends CommonDBTM {
 
       if (isset($input['init_pages_counter'])) {
          $input['init_pages_counter'] = intval($input['init_pages_counter']);
+      }
+      if (isset($input['last_pages_counter'])) {
+         $input['last_pages_counter'] = intval($input['last_pages_counter']);
       }
 
       return $input;
@@ -450,8 +459,8 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
-      echo "<td rowspan='5'>".$LANG['common'][25]."&nbsp;:</td>\n";
-      echo "<td rowspan='5'><textarea cols='45' rows='12' name='comment' >".
+      echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='6'><textarea cols='45' rows='12' name='comment' >".
             $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
@@ -464,7 +473,13 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
       echo "<td>";
-      Html::autocompletionTextField($this, "init_pages_counter");
+      Html::autocompletionTextField($this, "init_pages_counter", array('size' => 10));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['printers'][26]."&nbsp;:</td>\n";
+      echo "<td>";
+      Html::autocompletionTextField($this, "last_pages_counter", array('size' => 10));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -616,6 +631,17 @@ class Printer  extends CommonDBTM {
       $tab[46]['field']    = 'have_wifi';
       $tab[46]['name']     = $LANG['printers'][29];
       $tab[46]['datatype'] = 'bool';
+
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'init_pages_counter';
+      $tab[11]['name']     = $LANG['printers'][30];
+      $tab[11]['datatype'] = 'number';
+      $tab[45]['nosearch'] = true; // only display, no index
+
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'last_pages_counter';
+      $tab[12]['name']     = $LANG['printers'][26];
+      $tab[12]['datatype'] = 'number';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';

@@ -1168,6 +1168,7 @@ function update0803to083() {
 
    $migration->addField('glpi_printers', 'last_pages_counter', 'integer',
                         array('after' => 'init_pages_counter'));
+   $migration->addKey('glpi_printers', 'last_pages_counter');
 
    $migration->displayMessage($LANG['update'][142] . ' - various cleaning DB');
 
