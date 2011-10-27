@@ -62,6 +62,7 @@ if (!isset($_REQUEST["withtemplate"])) {
 $item = new $_REQUEST['itemtype']();
 
 if (($item instanceof CommonDBTM)
+    && $item->isNewItem()
     && (!isset($_REQUEST["id"]) || !$item->can($_REQUEST["id"],'r'))) {
    exit();
 }
