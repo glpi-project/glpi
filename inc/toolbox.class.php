@@ -354,7 +354,7 @@ class Toolbox {
       }
 
       $tps = microtime(true);
-      self ::logInFile('php-errors', $msg."\n",true);
+      self::logInFile('php-errors', $msg."\n",true);
    }
 
 

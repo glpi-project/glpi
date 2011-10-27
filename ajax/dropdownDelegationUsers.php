@@ -49,9 +49,9 @@ Session::checkLoginUser();
 
 if ($_POST["nodelegate"] == 1) {
    $_POST['_users_id_requester'] = Session::getLoginUserID();
-   $_POST['right'] = "id";
+   $_POST['_right'] = "id";
 } else {
-   $_POST['right'] = "delegate";
+   $_POST['_right'] = "delegate";
 }
 
 $ticket = new Ticket();
