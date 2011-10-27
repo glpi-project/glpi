@@ -50,6 +50,7 @@ if (isset($_GET['help']) || !count($_GET)) {
    echo "Options values :\n";
    echo "\t--glpi   : check missing computer in GLPI\n";
    echo "\t--ocs    : check missing computer in OCS\n";
+   echo "\t--dup    : check for duplicate links (n links for 1 computer in GLPI)\n";
    echo "\t--clean  : delete invalid link\n";
    exit (0);
 }
@@ -148,6 +149,45 @@ foreach ($DB->request('glpi_ocsservers', $crit) as $serv) {
       }
    }
 }
+
+// Link must be unique (for all servers)
+if (isset($_GET['dup'])) {
+   echo "+ Search duplicate links\n";
+
+   $query = "SELECT `computers_id`, COUNT(*) as cpt
+             FROM `glpi_ocslinks`
+             GROUP BY `computers_id`
+             HAVING `cpt`>1";
+
+   foreach ($DB->request($query) as $data) {
+      printf("%4d links for computer #%d\n", $data['cpt'], $data['computers_id']);
+      $query2 = "SELECT `id`, `ocsservers_id`, `ocsid`, `ocs_deviceid`, `computers_id`, `last_update`
+                 FROM `glpi_ocslinks`
+                 WHERE `computers_id` = '".$data['computers_id']."'
+                 ORDER BY `last_update`";
+      $i = 1;
+      foreach ($DB->request($query2) as $data2) {
+         $del =  ($i < $data['cpt']); // Keep the more recent
+         printf("%12d : %s (%d-%d, last=%s) : %s\n", $data2['id'], $data2['ocs_deviceid'],
+                                       $data2['ocsservers_id'], $data2['ocsid'], $data2['last_update'],
+                                       ($del ? 'delete' : 'keep'));
+         if ($del) {
+            if (isset($_GET['clean'])) {
+               $query_del = "DELETE
+                             FROM `glpi_ocslinks`
+                             WHERE `id` = '" . $data2["id"] . "'";
+               if ($DB->query($query_del)) {
+                  $nbdel++;
+               }
+            } else {
+               $nbtodo++;
+            }
+         }
+         $i++;
+      }
+   }
+}
+
 $tps = microtime(true)-$tps;
 printf("\nChecked links : %d\n", $nbchk);
 if (isset($_GET['clean'])) {
