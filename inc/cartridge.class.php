@@ -89,6 +89,21 @@ class Cartridge extends CommonDBTM {
    }
 
 
+   function post_updateItem($history=1) {
+
+      if (in_array('pages', $this->updates)) {
+         $printer = new Printer();
+         if ($printer->getFromDB($this->fields['printers_id'])
+             && ($this->fields['pages'] > $printer->getField('last_pages_counter')
+                 || $this->oldvalues['pages'] == $printer->getField('last_pages_counter'))) {
+
+            $printer->update(array('id'                 => $printer->getID(),
+                                   'last_pages_counter' => $this->fields['pages'] ));
+         }
+      }
+   }
+
+
    function restore($input,$history=1) {
       global $DB;
 
@@ -114,16 +129,9 @@ class Cartridge extends CommonDBTM {
    *@return boolean : true for success
    **/
    function updatePages($pages) {
-      global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `pages` = '$pages'
-                WHERE `id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
-         return true;
-      }
-      return false;
+      return $this->update(array('id'    => $this->fields['id'],
+                                 'pages' => $pages));
    }
 
 
