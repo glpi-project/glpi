@@ -42,6 +42,8 @@ class DisplayPreference extends CommonDBTM {
    // From CommonDBTM
    var $auto_message_on_action = false;
 
+   protected $displaylist = false;
+
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -591,7 +593,7 @@ class DisplayPreference extends CommonDBTM {
          case __CLASS__:
             $ong = array();
             $ong[1] = $LANG['central'][13];  // view group
-            if (Session::checkRight('search_config', 'w')) {
+            if (Session::haveRight('search_config', 'w')) {
                $ong[2] = $LANG['central'][12]; // view personnal
             }
             return $ong;

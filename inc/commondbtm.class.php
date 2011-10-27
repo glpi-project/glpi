@@ -1883,7 +1883,11 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
     */
    function isNewItem() {
-      return $this->isNewID($this->fields['id']);
+
+      if (isset($this->fields['id'])) {
+         return $this->isNewID($this->fields['id']);
+      }
+      return true;
    }
 
    /**
