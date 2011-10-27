@@ -1166,6 +1166,8 @@ function update0803to083() {
                         array('after' => "users_id_tech"));
    $migration->addKey('glpi_consumableitems', 'groups_id_tech');
 
+   $migration->addField('glpi_printers', 'last_pages_counter', 'integer',
+                        array('after' => 'init_pages_counter'));
 
    $migration->displayMessage($LANG['update'][142] . ' - various cleaning DB');
 
