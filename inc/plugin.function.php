@@ -175,7 +175,7 @@ function getPluginsDatabaseRelations() {
          }
          $function2="plugin_".$plug."_getDatabaseRelations";
          if (function_exists($function2)) {
-            $dps=array_merge($dps,$function2());
+            $dps=array_merge_recursive($dps,$function2());
          }
       }
    }
