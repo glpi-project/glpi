@@ -1424,7 +1424,7 @@ class Dropdown {
                 && ($item instanceof CommonDropdown)
                 && $item->maybeRecursive()) {
 
-               if ($isadmin) {
+               if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
                   echo "<option value='merge'>".$LANG['buttons'][48]." - ".$LANG['software'][48];
                   echo "</option>";
                }
