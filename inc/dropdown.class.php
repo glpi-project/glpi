@@ -523,7 +523,7 @@ class Dropdown {
     * @param $value preselected value.
     * @param $restrict_to allows to display only yes or no in the dropdown (default is yes & no)
     *
-    * @return rand value 
+    * @return rand value
    **/
    static function showYesNo($name, $value=0, $restrict_to=-1) {
       global $LANG;
@@ -1502,7 +1502,7 @@ class Dropdown {
                 && ($item instanceof CommonDropdown)
                 && $item->maybeRecursive()) {
 
-               if ($isadmin) {
+               if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
                   echo "<option value='merge'>".$LANG['buttons'][48]." - ".$LANG['software'][48];
                   echo "</option>";
                }
