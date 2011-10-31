@@ -319,8 +319,8 @@ class Plugin extends CommonDBTM {
                 && isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
 
                echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".
-                      $PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name'].
-                     "</strong></a>";
+                      $PLUGIN_HOOKS['config_page'][$plug['directory']]."'>
+                      <span class='b'>".$plug['name']."</span></a>";
             } else {
                echo $plug['name'];
             }
@@ -911,12 +911,12 @@ class Plugin extends CommonDBTM {
             CommonGLPI::registerStandardTab($form, $itemtype);
          }
       }
-      
+
       //Manage entity forward from a source itemtype to this itemtype
       if (isset($attrib['forwardentityfrom'])) {
          CommonDBTM::addForwardEntity($attrib['forwardentityfrom'], $itemtype);
       }
-      
+
       // Use it for plugin debug
 //       if (count($attrib)) {
 //          foreach ($attrib as $key => $val) {

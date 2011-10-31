@@ -426,17 +426,17 @@ class Computer_Item extends CommonDBRelation{
                   $used[$tID] = $tID;
 
                   echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
-                  echo "<td class='center'><strong>".$item->getLink()."</strong>";
+                  echo "<td class='center'><span class='b'>".$item->getLink()."</span>";
                   echo " - ".Dropdown::getDropdownName("glpi_states", $item->getField('state'));
                   echo "</td><td>".$item->getField('serial');
                   echo "</td><td>".$item->getField('otherserial');
                   echo "</td><td>";
                   if ($canedit && (empty($withtemplate) || $withtemplate != 2)) {
-                     echo "<td class='center'>";
+                     echo "<td class='center b'>";
                      echo "<a href=\"".$CFG_GLPI["root_doc"].
                             "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
                             "disconnect=1&amp;withtemplate=".$withtemplate."\">";
-                     echo "<strong>".$LANG['buttons'][10]."</strong></a></td>";
+                     echo $LANG['buttons'][10]."</a></td>";
                   }
                   echo "</tr>";
                }

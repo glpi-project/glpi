@@ -712,7 +712,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT .
              "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
       echo "<img alt='' name='imgcat$cat' src='".GLPI_ROOT."/pics/folder".
-            (!$display ? '' : "-open") . ".png'>&nbsp;<strong>" . $catname . "</strong>";
+            (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>" . $catname . "</span>";
       echo "</a></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='5'>";
@@ -765,7 +765,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo " - <a href='" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php".
               "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id'>";
-         echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
+         echo "<span class='b'>" . $LANG['buttons'][5] . "</span></a>";
       }
       echo "</td><td>";
 
@@ -786,7 +786,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $licids = array();
       foreach ($DB->request($query) as $licdata) {
          $licids[] = $licdata['id'];
-         echo "<strong>". $licdata['name'] . "</strong> -&nbsp;".$licdata['serial']." ";
+         echo "<span class='b'>". $licdata['name'] . "</span> -&nbsp;".$licdata['serial']." ";
          if (!empty($licdata['type'])) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
@@ -855,7 +855,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo " - <a href='".$CFG_GLPI["root_doc"] ."/front/computer_softwareversion.form.php".
                "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id'>";
-         echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
+         echo "<span class='b'>" . $LANG['buttons'][4] . "</span></a>";
       }
 
       echo "</td></td><td class='b'>" . $data["name"] . " -&nbsp;".$data["serial"]."&nbsp; ";

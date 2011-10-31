@@ -1578,9 +1578,9 @@ class Ticket extends CommonITILObject {
             if ($nbfollow > 0) {
                while ($data = $DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
-                  $message .= "<strong>[ ".Html::convDateTime($fup->fields["date"])." ] ".
+                  $message .= "<span class='b'>[ ".Html::convDateTime($fup->fields["date"])." ] ".
                                ($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"").
-                               "</strong>\n";
+                               "</span>\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['job'][4]."&nbsp;:</span> ".
                                $fup->getAuthorName()."\n";
@@ -3395,16 +3395,16 @@ class Ticket extends CommonITILObject {
             $commentsla = "";
             $slalevel   = new SlaLevel();
             if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
-               $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
+               $commentsla .= '<span class="b">'.$LANG['sla'][6]."&nbsp;:&nbsp;</span>".
                               $slalevel->getName().'<br><br>';
             }
 
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
+               $commentsla .= '<span class="b">'.$LANG['sla'][8]."&nbsp;:&nbsp;</span>".
                               Html::convDateTime($nextaction->fields['date']).'<br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
-                  $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
+                  $commentsla .= '<span class="b">'.$LANG['sla'][6]."&nbsp;:&nbsp;</span>".
                                  $slalevel->getName().'<br>';
                }
             }
@@ -4590,15 +4590,15 @@ class Ticket extends CommonITILObject {
       // Link to open a new ticket
       if ($item->getID() && in_array($item->getType(),
                                      $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
-         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
-              "&amp;itemtype=".$item->getType()."\"><strong>".$LANG['joblist'][7]."</strong></a>";
+              "&amp;itemtype=".$item->getType()."\">".$LANG['joblist'][7]."</a>";
          echo "</td></tr>";
       }
       if ($item->getID() && $item->getType()=='User') {
-         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
-                $item->getID()."\"><strong>".$LANG['joblist'][7]."</strong></a>";
+                $item->getID()."\">".$LANG['joblist'][7]."</a>";
          echo "</td></tr>";
       }
 
@@ -4775,7 +4775,8 @@ class Ticket extends CommonITILObject {
 
          // Third Column
          echo Search::showItem($output_type,
-                               "<strong>".parent::getPriorityName($job->fields["priority"])."</strong>",
+                               "<span class='b'>".parent::getPriorityName($job->fields["priority"]).
+                                 "</span>",
                                $item_num, $row_num, "$align bgcolor='$bgcolor'");
 
          // Fourth Column
@@ -4784,7 +4785,7 @@ class Ticket extends CommonITILObject {
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
             foreach ($job->users[parent::REQUESTER] as $d) {
                $userdata    = getUserName($d["users_id"],2);
-               $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
+               $fourth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
                $fourth_col .= Html::showToolTip($userdata["comment"],
                                                 array('link'    => $userdata["link"],
                                                       'display' => false));
@@ -4807,7 +4808,7 @@ class Ticket extends CommonITILObject {
          if (isset($job->users[parent::ASSIGN]) && count($job->users[parent::ASSIGN])) {
             foreach ($job->users[parent::ASSIGN] as $d) {
                $userdata = getUserName($d["users_id"], 2);
-               $fifth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
+               $fifth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
                $fifth_col .= Html::showToolTip($userdata["comment"],
                                                array('link'    => $userdata["link"],
                                                      'display' => false));
@@ -4840,13 +4841,13 @@ class Ticket extends CommonITILObject {
                   $is_deleted = $item->isDeleted();
 
                   $sixth_col .= $item->getTypeName();
-                  $sixth_col .= "<br><strong>";
+                  $sixth_col .= "<br><span class='b'>";
                   if ($item->canView()) {
                      $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
                   } else {
                      $sixth_col .= $item->getNameID();
                   }
-                  $sixth_col .= "</strong>";
+                  $sixth_col .= "</span>";
                }
             }
 
@@ -4859,14 +4860,14 @@ class Ticket extends CommonITILObject {
 
          // Seventh column
          echo Search::showItem($output_type,
-                               "<strong>".
+                               "<span class='b'>".
                                  Dropdown::getDropdownName('glpi_itilcategories',
                                                            $job->fields["itilcategories_id"]).
-                               "</strong>",
+                               "</span>",
                                $item_num, $row_num, $align);
 
          // Eigth column
-         $eigth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
+         $eigth_column = "<span class='b'>".$job->fields["name"]."</span>&nbsp;";
 
          // Add link
          if ($job->canViewItem()) {
@@ -4923,7 +4924,7 @@ class Ticket extends CommonITILObject {
             foreach ($job->users[parent::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
-                  echo "<strong>".$userdata['name']."</strong>&nbsp;";
+                  echo "<span class='b'>".$userdata['name']."</span>&nbsp;";
                   if ($viewusers) {
                      Html::showToolTip($userdata["comment"], array('link' => $userdata["link"]));
                   }
@@ -4951,12 +4952,12 @@ class Ticket extends CommonITILObject {
             }
             echo "'>";
             echo $job->hardwaredatas->getTypeName()."<br>";
-            echo "<strong>".$job->hardwaredatas->getLink()."</strong>";
+            echo "<span class='b'>".$job->hardwaredatas->getLink()."</span>";
             echo "</td>";
 
          } else if ($job->hardwaredatas) {
-            echo "<td class='center' >".$job->hardwaredatas->getTypeName()."<br><strong>".
-                  $job->hardwaredatas->getNameID()."</strong></td>";
+            echo "<td class='center' >".$job->hardwaredatas->getTypeName()."<br><span class='b'>".
+                  $job->hardwaredatas->getNameID()."</span></td>";
 
          } else {
             echo "<td class='center' >".$LANG['help'][30]."</td>";
@@ -4965,7 +4966,7 @@ class Ticket extends CommonITILObject {
 
          echo "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
                "/front/ticket.form.php?id=".$job->fields["id"]."'>";
-         echo "<strong>".$job->fields["name"]."</strong></a>&nbsp;";
+         echo "<span class='b'>".$job->fields["name"]."</span></a>&nbsp;";
          echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
               ")&nbsp;";
          Html::showToolTip($job->fields['content'],

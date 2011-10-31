@@ -407,7 +407,7 @@ class Planning {
                echo "<tr>";
                for ($i=1 ; $i<=7 ; $i++) {
                   echo "<td class='tab_bg_3 top' width='12%'>";
-                  echo "<strong>".self::displayUsingTwoDigits($hour).":00</strong><br>";
+                  echo "<span class='b'>".self::displayUsingTwoDigits($hour).":00</span><br>";
 
                   // From midnight
                   if ($hour==$hour_begin) {
@@ -462,7 +462,7 @@ class Planning {
                $begin_time = date("Y-m-d H:i:s", strtotime($when)+($hour)*HOUR_TIMESTAMP);
                $end_time   = date("Y-m-d H:i:s", strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
                echo "<td class='tab_bg_3 top' width='12%'>";
-               echo "<strong>".self::displayUsingTwoDigits($hour).":00</strong><br>";
+               echo "<span class='b'>".self::displayUsingTwoDigits($hour).":00</span><br>";
                reset($interv);
                while ($data=current($interv)) {
                   $type = "";

@@ -415,20 +415,20 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][0]."&nbsp;:&nbsp;</td><td>";
       if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
           || is_file(GLPI_CRON_DIR. '/all.lock')) {
-         echo "<strong>" . $LANG['crontask'][60]."</strong><br>";
+         echo "<span class='b'>" . $LANG['crontask'][60]."</span><br>";
          $tmpstate = self::STATE_DISABLE;
       }
 
       if ($isplug) {
          $plug = new Plugin();
          if (!$plug->isActivated($isplug["plugin"])) {
-            echo "<strong>" . $LANG['crontask'][61]."</strong><br>";
+            echo "<span class='b'>" . $LANG['crontask'][61]."</span><br>";
             $tmpstate = self::STATE_DISABLE;
          }
       }
 
       if ($this->fields["state"]==self::STATE_RUNNING) {
-         echo "<strong>" . $this->getStateName(self::STATE_RUNNING)."</strong>";
+         echo "<span class='b'>" . $this->getStateName(self::STATE_RUNNING)."</span>";
       } else {
          self::dropdownState('state', $this->fields["state"]);
       }
@@ -728,14 +728,14 @@ class CronTask extends CommonDBTM{
    **/
    static public function launch($mode, $max=1, $name='') {
       global $LANG;
-      
+
       $taskname = '';
       //If cron is launched in command line, and if memory is insufficient, display a warning in
       //the logs
       if ($mode==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
          Toolbox::logDebug($LANG['install'][88]);
       }
-      
+
       if (self::get_lock()) {
          $crontask = new self();
          for ($i=1 ; $i<=$max ; $i++) {

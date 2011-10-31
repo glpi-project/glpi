@@ -289,14 +289,14 @@ class NetworkPort extends CommonDBChild {
       if ($canedit
           && (empty($withtemplate) || $withtemplate !=2)) {
          echo "\n<div class='firstbloc'><table class='tab_cadre_fixe'>";
-         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<tr><td class='tab_bg_2 center b'>";
          echo "<a href='" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype'><strong>".
-               $LANG['networking'][19]."</strong></a></td>\n";
-         echo "<td class='tab_bg_2 center' width='50%'>";
+               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype'>
+               ".$LANG['networking'][19]."</a></td>\n";
+         echo "<td class='tab_bg_2 center b' width='50%'>";
          echo "<a href='" . $CFG_GLPI["root_doc"] .
                "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype&amp;several=1'>
-               <strong>".$LANG['networking'][46]."</strong></a></td>\n";
+               ".$LANG['networking'][46]."</a></td>\n";
          echo "</tr></table></div>\n";
       }
 
@@ -361,7 +361,7 @@ class NetworkPort extends CommonDBChild {
                   echo "<input type='checkbox' name='del_port[".$netport->fields["id"]."]' value='1'>";
                   echo "</td>\n";
                }
-               echo "<td class='center'><strong>";
+               echo "<td class='center'><span class='b'>";
                if ($canedit && $withtemplate != 2) {
                   echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
                         $netport->fields["id"] . "\">";
@@ -370,7 +370,7 @@ class NetworkPort extends CommonDBChild {
                if ($canedit && $withtemplate != 2) {
                   echo "</a>";
                }
-               echo "</strong>";
+               echo "</span>";
                Html::showToolTip($netport->fields['comment']);
                echo "</td>\n";
                echo "<td>" . $netport->fields["name"] . "</td>\n";
@@ -443,15 +443,14 @@ class NetworkPort extends CommonDBChild {
             if ($device2->getFromDB($netport->fields["items_id"])) {
                echo "\n<table width='100%'>\n";
                echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
-               echo "<td><strong>";
+               echo "<td><span class='b'>";
 
                if ($device2->can($device2->fields["id"], 'r')) {
                   echo $netport->getLink();
-                  echo "</strong>\n";
+                  echo "</span>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".$LANG['networking'][25] . " <strong>";
-                  echo $device2->getLink();
-                  echo "</strong>";
+                  echo "&nbsp;".$LANG['networking'][25] . " <span class='b'>".$device2->getLink();
+                  echo "</span>";
 
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
@@ -460,7 +459,7 @@ class NetworkPort extends CommonDBChild {
 
                   // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
                   if ($canedit || $device2->can($device2->fields["id"], 'w')) {
-                     echo "</td>\n<td class='right'><strong>";
+                     echo "</td>\n<td class='right'><span class='b'>";
 
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
@@ -470,7 +469,7 @@ class NetworkPort extends CommonDBChild {
                         "&nbsp;";
                      }
 
-                     echo "</strong>";
+                     echo "</span>";
                   }
 
                } else {
@@ -479,10 +478,10 @@ class NetworkPort extends CommonDBChild {
                   } else {
                      echo $LANG['common'][0];
                   }
-                  echo "</strong> " . $LANG['networking'][25] . " <strong>";
+                  echo "</span> " . $LANG['networking'][25] . " <span class='b'>";
                   echo $device2->getName();
-                  echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities",
-                                                                   $device2->getEntityID()) .")";
+                  echo "</span><br>(" .Dropdown::getDropdownName("glpi_entities",
+                                                                 $device2->getEntityID()) .")";
                }
 
                echo "</td></tr></table>\n";

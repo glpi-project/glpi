@@ -1045,7 +1045,7 @@ function rembo($string) {
                     '#\[email=(.*?)\](.*?)\[/email\]#',
                     '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
 
-   $replace = array('<strong>$1</strong>',
+   $replace = array('<span class="b">$1</span>',
                     '<em>$1</em>',
                     '<span class="souligne">$1</span>',
                     '<span class="barre">$1</span>',
@@ -1070,7 +1070,7 @@ function rembo($string) {
          $string .= $outside[$i];
          if (isset($inside[$i])) {
             $string .= '<br><br><div class="spaced"><table class="code center"><tr>' .
-                       '<td class="punquote"><strong>Code:</strong><br><br><pre>'.
+                       '<td class="punquote"><span class="b">Code:</span><br><br><pre>'.
                        trim($inside[$i]).'</pre></td></tr></table></div>';
          }
       }

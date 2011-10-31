@@ -3230,12 +3230,13 @@ class Transfer extends CommonDBTM {
                               echo '<br>';
                            }
                            $entID = $data['entID'];
-
+                           echo "<span class='b'>";
                            if ($entID > 0) {
-                              echo '<strong>'.$data['locname'].'</strong><br>';
+                              echo $data['locname'];
                            } else {
-                              echo '<strong>'.$LANG['entity'][2].'</strong><br>';
+                              echo $LANG['entity'][2];
                            }
+                           echo "</span><br>";
 
                         }
                         echo ($data['name'] ? $data['name']."<br>" : "(".$data['id'].")<br>");

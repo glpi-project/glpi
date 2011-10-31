@@ -458,7 +458,7 @@ class Reservation extends CommonDBChild {
                   "annee_courante=$annee_courante'>".$LANG['calendarM'][$i-1]."</a></div>\n";
          }
       }
-      echo "<div class='center'><strong>$annee_apres</strong></div>\n";
+      echo "<div class='center b'>$annee_apres</div>\n";
 
       for ($i=1 ; $i<$mois_courant+1 ; $i++) {
          echo "<div class='calendrier_case2'>";
@@ -608,7 +608,7 @@ class Reservation extends CommonDBChild {
             }
          }
 
-         echo "<strong>$type - $name</strong><br>";
+         echo "<span class='b'>$type - $name</span><br>";
          echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
       }
 
@@ -810,10 +810,10 @@ class Reservation extends CommonDBChild {
                                                         'display' => false));
                }
 
-               echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><strong>".
+               echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><span class='b'>".
                formatUserName($user->fields["id"], $user->fields["name"], $user->fields["realname"],
                               $user->fields["firstname"]);
-               echo "</strong></span>";
+               echo "</span></span>";
                echo $modif_end;
                echo "</td></tr>\n";
             }

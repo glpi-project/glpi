@@ -642,15 +642,14 @@ class Supplier extends CommonDBTM {
          $assocID    = $data["assocID"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-         echo "<td class='center'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>";
-         echo "<strong>".$data["name"];
+         echo "<td class='center b'>
+               <a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$data["name"];
 
          if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
             echo " (".$data["id"].")";
          }
 
-         echo "</strong></a></td>";
+         echo "</a></td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
          echo "</td><td class='center'>".$data["num"]."</td>";
          echo "<td class='center'>".

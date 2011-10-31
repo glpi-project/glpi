@@ -2413,7 +2413,7 @@ class OcsServer extends CommonDBTM {
          Html::printPager($start, $numrows, $target, $parameters);
 
       } else {
-         echo "<div class='center'><strong>" . $LANG['ocsng'][61] . "</strong></div>";
+         echo "<div class='center b'>" . $LANG['ocsng'][61] . "</div>";
          Html::displayBackLink();
       }
       echo "</div>";
@@ -2586,12 +2586,12 @@ class OcsServer extends CommonDBTM {
             Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
-            echo "<br><strong>" . $LANG['ocsng'][11] . "</strong>";
+            echo "<br><span class='b'>" . $LANG['ocsng'][11] . "</span>";
          }
          echo "</div>";
 
       } else {
-         echo "<div class='center'><strong>" . $LANG['ocsng'][12] . "</strong></div>";
+         echo "<div class='center b'>" . $LANG['ocsng'][12] . "</div>";
       }
    }
 

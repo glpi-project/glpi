@@ -454,7 +454,7 @@ class Document extends CommonDBTM {
             }
          }
       }
-      $out .= "<strong>$fileout</strong></a>";
+      $out .= "<span class='b'>$fileout</span></a>";
 
       return $out;
    }

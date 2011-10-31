@@ -84,9 +84,10 @@ class Link_ItemType extends CommonDBTM{
          }
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>$typename</td>";
-         echo "<td class='center'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
-               <strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+         echo "<td class='center b'>";
+         echo "<a href='".$CFG_GLPI["root_doc"].
+                "/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
+                ".$LANG['buttons'][6]."</a></td></tr>";
          $used[$itemtype] = $itemtype;
          $i++;
       }

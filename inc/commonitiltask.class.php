@@ -633,20 +633,20 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</a>";
 
       if ($complete) {
-         echo "<br>";
+         echo "<br><span class='b'>";
          if (isset($val["state"])) {
-            echo "<strong>".Planning::getState($val["state"])."<br>";
+            echo Planning::getState($val["state"])."<br>";
          }
-         echo $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]);
-         echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
+         echo $LANG['joblist'][2]."&nbsp;:</span> ".$parent->getPriorityName($val["priority"]);
+         echo "<br><span class='b'>".$LANG['joblist'][6]."&nbsp;:</span><br>".$val["content"];
 
       } else {
-         $content = '';
+         $content = "span class='b'>";
          if (isset($val["state"])) {
-            $content .= "<strong>".Planning::getState($val["state"])."<br>";
+            $content .= Planning::getState($val["state"])."<br>";
          }
-         $content .= $LANG['joblist'][2]."&nbsp;:</strong> ".$parent->getPriorityName($val["priority"]).
-                    "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"].
+         $content .= $LANG['joblist'][2]."&nbsp;:</span> ".$parent->getPriorityName($val["priority"]).
+                    "<br><span class='b'>".$LANG['joblist'][6]."&nbsp;:</span><br>".$val["content"].
                     "</div>";
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }

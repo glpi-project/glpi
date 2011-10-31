@@ -2255,57 +2255,57 @@ class CommonDBTM extends CommonGLPI {
 
       $comment = "";
       if ($this->isField('serial')) {
-         $comment .= "<strong>".$LANG['common'][19]."&nbsp;: </strong>".
+         $comment .= "<span class='b'>".$LANG['common'][19]."&nbsp;: </span>".
                      $this->getField('serial')."<br>";
       }
 
       if ($this->isField('otherserial')) {
-         $comment .= "<strong>".$LANG['common'][20]."&nbsp;: </strong>".
+         $comment .= "<span class='b'>".$LANG['common'][20]."&nbsp;: </span>".
                      $this->getField('otherserial')."<br>";
       }
 
       if ($this->isField('states_id')) {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<strong>".$LANG['state'][0]."&nbsp;: </strong>$tmp<br>";
+            $comment .= "<span class='b'>".$LANG['state'][0]."&nbsp;: </span>$tmp<br>";
          }
       }
 
       if ($this->isField('locations_id')) {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
+            $comment .= "<span class='b'>".$LANG['common'][15]."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<strong>".$LANG['common'][34]."&nbsp;: "."</strong>".$tmp."<br>";
+            $comment .= "<span class='b'>".$LANG['common'][34]."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('groups_id')) {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
+            $comment .= "<span class='b'>".$LANG['common'][35]."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<strong>".$LANG['common'][10]."&nbsp;: "."</strong>".$tmp."<br>";
+            $comment .= "<span class='b'>".$LANG['common'][10]."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('contact')) {
-         $comment .= "<strong>".$LANG['common'][18]."&nbsp;: </strong>".$this->getField('contact').
-                     "<br>";
+         $comment .= "<span class='b'>".$LANG['common'][18]."&nbsp;: </span>".
+                      $this->getField('contact')."<br>";
       }
 
       if ($this->isField('contact_num')) {
-         $comment .= "<strong>".$LANG['common'][21]."&nbsp;: </strong>".
+         $comment .= "<span class='b'>".$LANG['common'][21]."&nbsp;: </span>".
                      $this->getField('contact_num')."<br>";
       }
 

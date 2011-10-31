@@ -112,8 +112,8 @@ if (isset($_GET["action"])) {
 
    echo "<table class='tab_cadrehov'>";
 
-   echo "<tr><th><div class='relative'><strong>" .$rulecollection->getTitle(). "</strong>";
-   echo " - " .$LANG['rulesengine'][76]. "</th></tr>\n";
+   echo "<tr><th><div class='relative b'>" .$rulecollection->getTitle(). " - " .
+         $LANG['rulesengine'][76]. "</div></th></tr>\n";
    echo "<tr><td class='center'>";
    Html::createProgressBar($LANG['rulesengine'][90]);
    echo "</td></tr>\n";

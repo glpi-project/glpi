@@ -188,7 +188,7 @@ class UserEmail  extends CommonDBChild {
                 ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
          if (!$canedit || $data['is_dynamic']) {
             echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
-            echo $data['email']."<strong>&nbsp;(D)</strong>";
+            echo $data['email']."<span class='b'>&nbsp;(D)</span>";
          } else {
             echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
                    value='".$data['email']."' >";

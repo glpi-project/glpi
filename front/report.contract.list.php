@@ -42,7 +42,7 @@ Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
                'Software');
 # Titre
-echo "<big><strong>".$LANG['reports'][4]."</strong></big><br><br>";
+echo "<span class='big b'>".$LANG['reports'][4]."</span><br><br>";
 
 # Request All
 if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')
@@ -110,7 +110,7 @@ if (isset($query) && count($query)) {
       $result = $DB->query($val);
       if ($result && $DB->numrows($result)) {
          $item = new $key();
-         echo "<strong>".$item->getTypeName()."</strong>";
+         echo "<span class='b'>".$item->getTypeName()."</span>";
          echo "<table class='tab_cadre_report'>";
          echo "<tr><th>".$LANG['common'][16]."</th>";
          echo "<th>".$LANG['common'][28]."</th>";
