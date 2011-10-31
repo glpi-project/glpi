@@ -215,8 +215,9 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                $ID = $row["id"];
                echo "<td class='tdkb_result'>";
                echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png' hspace='5'>";
-               echo "<strong><a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."'>".
-                              $row["name"]."</a></strong>";
+               echo "<span class='b'>".
+                    "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."'>".
+                      $row["name"]."</a></span>";
                echo "<div class='kb_resume'>".Html::resume_text($row['comment'],60)."</div>";
 
                if ($i%3==2) {

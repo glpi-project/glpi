@@ -919,8 +919,8 @@ class RuleCollection extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<strong> ".
-             Dropdown::getYesNo($global_result)."</strong></td>";
+      echo "<td colspan='2' class='center'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<span class='b'>".
+             Dropdown::getYesNo($global_result)."</span></td>";
 
       $output = $this->preProcessPreviewResults($output);
 

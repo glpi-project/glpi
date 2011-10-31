@@ -456,8 +456,8 @@ class Toolbox {
 
       // Display
       if (!isCommandLine()) {
-         echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP '.
-                $type.': </strong>';
+         echo '<div style="position:fload-left; background-color:red; z-index:10000">'.
+              '<span class="b">PHP '.$type.': </span>';
          echo $errmsg.' in '.$filename.' at line '.$linenum.'</div>';
       } else {
          echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";

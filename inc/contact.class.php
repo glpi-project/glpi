@@ -399,7 +399,8 @@ class Contact extends CommonDBTM{
 
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1".
-                     "&amp;id=$ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
+                     "&amp;id=$ID&amp;contacts_id=$instID'>
+                     <span class='b'>".$LANG['buttons'][6]."</span></a>";
             } else {
                echo "&nbsp;";
             }

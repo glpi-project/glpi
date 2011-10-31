@@ -78,6 +78,10 @@ sup {
    top: -0.4em;
 }
 
+.big {
+   font-size: 14px;
+}
+
 .b {
    font-weight: bold;
 }

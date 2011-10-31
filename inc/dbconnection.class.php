@@ -296,10 +296,10 @@ class DBConnection extends CommonDBTM {
       Html::nullHeader("Mysql Error", '');
 
       if (!isCommandLine()) {
-         echo "<div class='center'><p><strong>
+         echo "<div class='center'><p class ='b'>
                 A link to the Mysql server could not be established. Please check your configuration.
-                </strong></p><p><strong>
-                Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p>
+                </p><p class='b'>
+                Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</p>
                </div>";
 
       } else {

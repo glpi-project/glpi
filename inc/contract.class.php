@@ -1025,13 +1025,13 @@ class Contract extends CommonDBTM {
          $con = new Contract();
          $con->getFromDB($cID);
          echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
-         echo "<td class='center'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>";
-         echo "<strong>".$con->fields["name"];
+         echo "<td class='center b'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".
+                $con->fields["name"];
          if ($_SESSION["glpiis_ids_visible"] || empty($con->fields["name"])) {
             echo " (".$con->fields["id"].")";
          }
-         echo "</strong></a></td>";
+         echo "</a></td>";
          echo "<td class='center'>";
          echo Dropdown::getDropdownName("glpi_entities", $con->fields["entities_id"])."</td>";
          echo "<td class='center'>".$con->fields["num"]."</td>";

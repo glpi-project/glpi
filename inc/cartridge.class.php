@@ -500,11 +500,11 @@ class Cartridge extends CommonDBTM {
             if (!is_null($date_use)) {
                if ($data["printID"]>0) {
                   echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?id=".
-                        $data["printID"]."'><strong>".$data["printname"];
+                        $data["printID"]."'><span class='b'>".$data["printname"];
                   if ($_SESSION['glpiis_ids_visible']) {
                      echo " (".$data["printID"].")";
                   }
-                  echo "</strong></a>";
+                  echo "</span></a>";
                } else {
                   echo NOT_AVAILABLE;
                }

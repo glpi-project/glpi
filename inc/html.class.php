@@ -415,7 +415,7 @@ class Html {
       }
       echo "<div class='center'><br><br>";
       echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-      echo "<strong>" . $LANG['common'][54] . "</strong></div>";
+      echo "<span class='b'>" . $LANG['common'][54] . "</span></div>";
       self::nullFooter();
       exit ();
    }
@@ -589,7 +589,7 @@ class Html {
       }
       echo "<div class='center'><br><br>";
       echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-      echo "<strong>$message</strong></div>";
+      echo "<span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
    }
@@ -1460,7 +1460,7 @@ class Html {
           || Session::haveRight("rule_dictionnary_printer","r")) {
 
          $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
-         $menu['admin']['content']['dictionnary']['shortcut'] = 'y';
+         $menu['admin']['content']['dictionnary']['shortcut'] = 'dy';
          $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
          if ($sector=='admin' && $item == 'dictionnary') {
@@ -2006,7 +2006,7 @@ class Html {
                         // for debug
 //                         Toolbox::logDebug($val['shortcut']." already used");
                      }
-                     
+
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
                   } else {
                      echo ">".$val['title']."</a></li>\n";

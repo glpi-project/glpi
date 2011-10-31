@@ -76,8 +76,8 @@ class RuleRightCollection extends RuleCollection {
       $actions = $rule->getActions();
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='4'>".$LANG['rulesengine'][41]." : <strong> ".
-             Dropdown::getYesNo($global_result)."</strong></td>";
+      echo "<td class='center' colspan='4'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<span class='b'>".
+             Dropdown::getYesNo($global_result)."</span></td>";
 
       if (isset($output["_ldap_rules"]["rules_entities"])) {
          echo "<tr class='tab_bg_2'>";

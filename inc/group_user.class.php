@@ -167,7 +167,7 @@ class Group_User extends CommonDBRelation{
             echo "&nbsp;";
 
             if ($data["is_dynamic"]) {
-               echo "<strong>&nbsp;(D)</strong>";
+               echo "<span class='b'>&nbsp;(D)</span>";
             }
             echo "</td>";
             $i++;
@@ -332,7 +332,7 @@ class Group_User extends CommonDBRelation{
                echo "<td>";
                echo $user->getLink();
                if ($data["is_dynamic"]) {
-                  echo "<strong>&nbsp;(D)</strong>";
+                  echo "<span class='b'>&nbsp;(D)</span>";
                }
 
                echo "</td>";

@@ -279,38 +279,38 @@ class Dropdown {
                      case "glpi_contacts" :
                         $name .= " ".$data["firstname"];
                         if (!empty($data["phone"])) {
-                           $comment .= "<br><strong>".$LANG['help'][35]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['help'][35]."&nbsp;: </span> ".
                                         $data["phone"];
                         }
                         if (!empty($data["phone2"])) {
-                           $comment .= "<br><strong>".$LANG['help'][35]." 2&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['help'][35]." 2&nbsp;: </span> ".
                                         $data["phone2"];
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br><strong>".$LANG['common'][42]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['common'][42]."&nbsp;: </span> ".
                                         $data["mobile"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><strong>".$LANG['financial'][30]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['financial'][30]."&nbsp;: </span> ".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><strong>".$LANG['setup'][14]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['setup'][14]."&nbsp;: </span> ".
                                         $data["email"];
                         }
                         break;
 
                      case "glpi_suppliers" :
                         if (!empty($data["phonenumber"])) {
-                           $comment .= "<br><strong>".$LANG['help'][35]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['help'][35]."&nbsp;: </span> ".
                                         $data["phonenumber"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><strong>".$LANG['financial'][30]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['financial'][30]."&nbsp;: </span> ".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><strong>".$LANG['setup'][14]."&nbsp;:</strong> ".
+                           $comment .= "<br><span class='b'>".$LANG['setup'][14]."&nbsp;: </span> ".
                                         $data["email"];
                         }
                         break;

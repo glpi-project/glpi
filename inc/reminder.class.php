@@ -829,11 +829,12 @@ class Reminder extends CommonDBTM {
       echo "</a>";
 
       if ($complete) {
-         echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
+         echo "<br><span class='b'>".Planning::getState($val["state"])."</span><br>";
          echo $val["text"];
 
       } else {
-         Html::showToolTip("<strong>".Planning::getState($val["state"])."</strong><br>".$val["text"],
+         Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
+                              ".$val["text"],
                            array('applyto' => "reminder_".$val["reminders_id"].$rand));
       }
       echo "";
@@ -1190,7 +1191,7 @@ class Reminder extends CommonDBTM {
                   echo " / ";
                   echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
                   if ($data['is_recursive']) {
-                     echo " <strong>(R)</strong>";
+                     echo " <span class='b'>&nbsp;(R)</span>";
                   }
                }
                echo "</td>";
@@ -1219,7 +1220,7 @@ class Reminder extends CommonDBTM {
                echo $names["name"]." ";
                echo Html::showToolTip($names["comment"]);
                if ($data['is_recursive']) {
-                  echo " <strong>(R)</strong>";
+                  echo " <span class='b'>&nbsp;(R)</span>";
                }
                echo "</td>";
                echo "<tr>";
@@ -1250,7 +1251,7 @@ class Reminder extends CommonDBTM {
                   echo " / ";
                   echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
                   if ($data['is_recursive']) {
-                     echo " <strong>(R)</strong>";
+                     echo "<span class='b'>&nbsp;(R)</span>";
                   }
                }
                echo "</td>";

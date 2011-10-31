@@ -553,10 +553,10 @@ class CartridgeItem extends CommonDBTM {
          $pmid = $DB->result($result, $i, "pmid");
          echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
          echo "<td class='center'>$type</td>";
-         echo "<td class='tab_bg_2 center'>";
+         echo "<td class='tab_bg_2 center b'>";
          echo "<a href='".$CFG_GLPI['root_doc'].
                 "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
-         echo "<strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
+         echo $LANG['buttons'][6]."</a></td></tr>";
          $used[$pmid] = $pmid;
          $i++;
       }

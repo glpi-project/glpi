@@ -908,7 +908,7 @@ class Stat {
 
       echo "<p class='center'>";
       echo "<font face='verdana,arial,helvetica,sans-serif' size='2'>";
-      echo "<strong>$titre - $total $unit</strong></font>";
+      echo "<span class='b'>$titre - $total $unit</span></font>";
       echo "<div class='center'>";
 
       if (count($entrees)>0) {

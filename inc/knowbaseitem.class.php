@@ -1285,7 +1285,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo " / ";
                   echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
                   if ($data['is_recursive']) {
-                     echo " <strong>(R)</strong>";
+                     echo " <span class='b'>&nbsp;(R)</span>";
                   }
                }
                echo "</td>";
@@ -1314,7 +1314,7 @@ class KnowbaseItem extends CommonDBTM {
                echo $names["name"]." ";
                echo Html::showToolTip($names["comment"]);
                if ($data['is_recursive']) {
-                  echo " <strong>(R)</strong>";
+                  echo " <span class='b'>&nbsp;(R)</span>";
                }
                echo "</td>";
                echo "</tr>";
@@ -1345,7 +1345,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo " / ";
                   echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
                   if ($data['is_recursive']) {
-                     echo " <strong>(R)</strong>";
+                     echo " <span class='b'>&nbsp;(R)</span>";
                   }
                }
                echo "</td>";

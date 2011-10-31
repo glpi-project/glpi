@@ -97,8 +97,8 @@ if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
 }
 
 foreach ($names as $key => $val) {
-   echo "<tr class='tab_bg_1'><td class='center'>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/$key'><strong>".$val."</strong></a></td></tr>";
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/$key'>".$val."</a></td></tr>";
 }
 
 echo "</table></div>";

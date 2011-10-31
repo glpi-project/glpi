@@ -176,7 +176,7 @@ class Profile_User extends CommonDBTM {
             echo "<td>".$data["name"];
 
             if ($data["is_dynamic"] || $data["is_recursive"]) {
-               echo "<strong>&nbsp;(";
+               echo "<span class='b'>&nbsp;(";
                if ($data["is_dynamic"]) {
                   echo "D";
                }
@@ -186,7 +186,7 @@ class Profile_User extends CommonDBTM {
                if ($data["is_recursive"]) {
                   echo "R";
                }
-               echo ")</strong>";
+               echo ")</span>";
             }
             echo "</td>";
          }
@@ -306,7 +306,7 @@ class Profile_User extends CommonDBTM {
                                       $data2["firstname"], $canshowuser);
 
                   if ($data2["is_dynamic"] || $data2["is_recursive"]) {
-                     echo "<strong>&nbsp;(";
+                     echo "<span class='b'>&nbsp;(";
                      if ($data2["is_dynamic"]) {
                         echo "D";
                      }
@@ -316,7 +316,7 @@ class Profile_User extends CommonDBTM {
                      if ($data2["is_recursive"]) {
                         echo "R";
                      }
-                     echo ")</strong>";
+                     echo ")</span>";
                   }
                   echo "</td>";
                   $i++;
@@ -433,8 +433,8 @@ class Profile_User extends CommonDBTM {
                   echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
                          GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
                   echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
-                  echo "<strong>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
-                        "</strong>";
+                  echo "<span class='b'>".Dropdown::getDropdownName('glpi_entities', $data["entity"]).
+                        "</span>";
                   echo "</a></td></tr>\n";
 
                   echo "<tr><td>";
@@ -467,7 +467,7 @@ class Profile_User extends CommonDBTM {
                                                            $data["realname"], $data["firstname"], 1);
 
                if ($data["is_dynamic"] || $data["is_recursive"]) {
-                  echo "<strong>&nbsp;(";
+                  echo "<span class='b'>&nbsp;(";
                   if ($data["is_dynamic"]) {
                      echo "D";
                   }
@@ -477,7 +477,7 @@ class Profile_User extends CommonDBTM {
                   if ($data["is_recursive"]) {
                      echo "R";
                   }
-                  echo ")</strong>";
+                  echo ")</span>";
                }
                echo "</td>\n";
                $i++;
