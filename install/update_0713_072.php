@@ -190,9 +190,9 @@ function update0713to072() {
       $DB->query($query)
       or die("0.72 backup table glpi_softwareversions " . $LANG['update'][90] . $DB->error());
 
-      echo "<b><p>glpi_softwarelicenses table already exists.
+      echo "<span class='b'><p>glpi_softwarelicenses table already exists.
             A backup have been done to glpi_softwarelicenses_backup.</p>
-            <p>You can delete it if you have no need of it.</p></b>";
+            <p>You can delete it if you have no need of it.</p></span>";
    }
 
    // Create licenses
@@ -241,9 +241,9 @@ function update0713to072() {
       $DB->query($query)
       or die("0.72 backup table glpi_softwareversions " . $LANG['update'][90] . $DB->error());
 
-      echo "<p><b>glpi_softwareversions table already exists.
+      echo "<p><span class='b'>glpi_softwareversions table already exists.
             A backup have been done to glpi_softwareversions_backup.</p><p>
-            You can delete it if you have no need of it.</p></b>";
+            You can delete it if you have no need of it.</p></span>";
    }
 
    if (!TableExists("glpi_softwareversions")) {

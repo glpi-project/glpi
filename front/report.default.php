@@ -41,7 +41,7 @@ Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 # Title
 
-echo "<big><b>GLPI ".$LANG['Menu'][6]."</b></big><br><br>";
+echo "<span class='big b'>GLPI ".$LANG['Menu'][6]."</span><br><br>";
 
 # 1. Get some number data
 

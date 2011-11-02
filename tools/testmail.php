@@ -85,8 +85,9 @@ if ($enc) {
 }
 
 $mmail->Subject="GLPI test mail" . ($enc ? " ($enc)" : '');
-$mmail->Body="<html><body><h3>GLPI test mail</h3><p>Encoding = <b>$enc</b></p>".
-             "<p>Date = <b>$dat</b></p><p>Secret = <b>$secret</b></p></body></html>";
+$mmail->Body="<html><body><h3>GLPI test mail</h3><p>Encoding = <span class='b'>$enc</span></p>".
+             "<p>Date = <span class='b'>$dat</span></p><p>Secret = <span class='b'>$secret</span>".
+             "</p></body></html>";
 $mmail->AltBody="GLPI test mail\nEncoding : $enc\nDate : $dat\nSecret=$secret";
 
 $mmail->AddAddress($dest, "");

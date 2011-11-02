@@ -1018,7 +1018,7 @@ if (isset($_POST["action"])
 } else { //action, itemtype or item not defined
    echo "<div class='center'>".
          "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>";
-   echo "<b>".$LANG['common'][24]."</b></div>";
+   echo "<span class='b'>".$LANG['common'][24]."</span></div>";
    Html::displayBackLink();
 }
 

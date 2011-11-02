@@ -402,9 +402,8 @@ class Event extends CommonDBTM {
        $nb_login = $DB->result($result, 0, 0);
        $date     = $DB->result($result2, 0, 0);
 
-       echo '<b>'.$nb_login.'</b> logins since '.$date ;
+       echo '<span class="b">'.$nb_login.'</span> logins since '.$date ;
     }
 
 }
-
 ?>

@@ -305,7 +305,7 @@ function display_old_locations() {
    $result = $DB->query($query);
 
    while ($data = $DB->fetch_array($result)) {
-      echo "<b>".$data['name']."</b> - ";
+      echo "<span class='b'>".$data['name']."</span> - ";
    }
 
    $DB->free_result($result);

@@ -88,8 +88,8 @@ class Migration {
    **/
    function displayWarning($msg, $red=false) {
 
-      echo ($red ? "<div class='red'><p>" : "<p><b>") .
-            htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</b></p>");
+      echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
+            htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</span></p>");
    }
 
 
