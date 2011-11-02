@@ -4277,7 +4277,7 @@ class Ticket extends CommonDBTM {
       echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
       echo "<td>";
       $date = $this->fields["date"];
-      
+
       if ($canupdate) {
          showDateTimeFormItem("date", $date, 1, false);
       } else {
@@ -6579,8 +6579,9 @@ class Ticket extends CommonDBTM {
 
             $nb = 0;
             foreach ($DB->request($query) as $tick) {
-               $ticket->update(array('id'    => $tick['id'],
-                                    'status' => 'closed'));
+               $ticket->update(array('id'          => $tick['id'],
+                                    'status'       => 'closed',
+                                    '_auto_update' => true));
                $nb++;
             }
 
