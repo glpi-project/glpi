@@ -3661,7 +3661,7 @@ CREATE TABLE `glpi_printers` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
   KEY `groups_id_tech` (`groups_id_tech`),
-  KEY `last_pages_counter` (`last_pages_counter`),
+  KEY `last_pages_counter` (`last_pages_counter`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
