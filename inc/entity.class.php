@@ -444,6 +444,12 @@ class Entity extends CommonTreeDropdown {
       $tab[20]['joinparams']    = array('jointype' => 'child');
       $tab[20]['datatype']      = 'string';
 
+      $tab[25]['table']         = 'glpi_entitydatas';
+      $tab[25]['field']         = 'postcode';
+      $tab[25]['name']          = $LANG['financial'][100];
+      $tab[25]['joinparams']    = array('jointype' => 'child');
+      $tab[25]['datatype']      = 'string';
+
       return $tab;
    }
 
