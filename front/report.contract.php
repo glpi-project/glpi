@@ -44,7 +44,7 @@ Html::header($LANG['Menu'][6], $_SERVER['PHP_SELF'], "utils", "report");
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<table class='tab_cadre' >";
-echo "<tr><th colspan='2'><big><b>".$LANG['reports'][11]." </b></big></th></tr>";
+echo "<tr><th colspan='2'><span class='big'>".$LANG['reports'][11]." </span></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";

@@ -1067,7 +1067,7 @@ class Rule extends CommonDBTM {
       if ($display_entities) {
          $rec = '';
          if ($this->maybeRecursive() && $this->fields['is_recursive']) {
-            $rec =' <b>(R)</b>';
+            $rec =' <span class="b">&nbsp;(R)</span>';
          }
          echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id'])."$rec</td>";
       }

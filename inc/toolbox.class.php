@@ -787,9 +787,10 @@ class Toolbox {
 
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
-            echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><b>".
-                                   $LANG['install'][87]." $showmem Mo</b><br>".$LANG['install'][88].
-                                   "<br>".$LANG['install'][90]."</td></tr>";
+            echo "<td class='red'>
+                  <img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
+                   $LANG['install'][87]." $showmem ".$LANG['common'][82]."</span>".
+                   "<br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
             $error = 2;
             break;
 
