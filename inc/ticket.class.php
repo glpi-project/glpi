@@ -5603,7 +5603,7 @@ class Ticket extends CommonITILObject {
       // Recherche des entités
       $tot = 0;
       foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
-         if ($delay >=0) {
+         if ($delay >= 0) {
             $query = "SELECT *
                       FROM `glpi_tickets`
                       WHERE `entities_id` = '".$entity."'
@@ -5615,8 +5615,9 @@ class Ticket extends CommonITILObject {
 
             $nb = 0;
             foreach ($DB->request($query) as $tick) {
-               $ticket->update(array('id'    => $tick['id'],
-                                    'status' => 'closed'));
+               $ticket->update(array('id'           => $tick['id'],
+                                     'status'       => 'closed',
+                                     '_auto_update' => true));
                $nb++;
             }
 
