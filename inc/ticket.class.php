@@ -335,10 +335,10 @@ class Ticket extends CommonITILObject {
             $nb    = 0;
             $title = $LANG['title'][28];
             switch ($item->getType()) {
-               case 'Change' :
-                  $nb = countElementsInTable('glpi_changes_tickets',
-                                             "`changes_id` = '".$item->getID()."'");
-                  break;
+//                case 'Change' :
+//                   $nb = countElementsInTable('glpi_changes_tickets',
+//                                              "`changes_id` = '".$item->getID()."'");
+//                   break;
 
                case 'Problem' :
                   $nb = countElementsInTable('glpi_problems_tickets',
@@ -413,9 +413,9 @@ class Ticket extends CommonITILObject {
       global $LANG;
 
       switch ($item->getType()) {
-         case 'Change' :
-            Change_Ticket::showForChange($item);
-            break;
+//          case 'Change' :
+//             Change_Ticket::showForChange($item);
+//             break;
 
          case 'Problem' :
             Problem_Ticket::showForProblem($item);
@@ -472,7 +472,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
-      $this->addStandardTab('Change', $ong, $options);
+//       $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
