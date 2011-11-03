@@ -47,9 +47,9 @@ function update0803to083() {
    $migration->displayTitle($LANG['install'][4]." -> 0.83");
 
    $backup_tables = false;
-   $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
+   $newtables     = array(/*'glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_entities_knowbaseitems', 'glpi_entities_reminders',
+                          'glpi_changetasks',*/ 'glpi_entities_knowbaseitems', 'glpi_entities_reminders',
                           'glpi_groups_problems', 'glpi_groups_knowbaseitems', 'glpi_groups_reminders',
                           'glpi_knwobaseitems_profiles',  'glpi_knwobaseitems_users',
                           'glpi_items_problems', 'glpi_problems',
@@ -240,7 +240,7 @@ function update0803to083() {
 
    $migration->displayMessage($LANG['update'][141] . ' - Changes'); // Updating schema
 
-   // Problems management
+ /*  // changes management
    if (!TableExists('glpi_changes')) {
       $query = "CREATE TABLE `glpi_changes` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -418,7 +418,7 @@ function update0803to083() {
 
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
-
+*/
    $migration->displayMessage($LANG['update'][141] . ' - TicketPlanning'); // Updating schema
 
    // Merge tickettasks and ticket planning
