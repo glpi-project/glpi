@@ -76,6 +76,14 @@ class ITILCategory extends CommonTreeDropdown {
                           'label' => $LANG['tracking'][39],
                           'type'  => 'bool',
                           'list'  => true),
+                     array('name'  => 'is_incident',
+                          'label' => $LANG['job'][70],
+                          'type'  => 'bool',
+                          'list'  => true),
+                     array('name'  => 'is_request',
+                          'label' => $LANG['job'][71],
+                          'type'  => 'bool',
+                          'list'  => true),
                     array('name'  => 'tickettemplates_id_demand',
                           'label' => $LANG['job'][66],
                           'type'  => 'dropdownValue',
@@ -110,6 +118,16 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[73]['field']     = 'name';
       $tab[73]['linkfield'] = 'tickettemplates_id_incident';
       $tab[73]['name']      = $LANG['job'][67];
+
+      $tab[74]['table']     = $this->getTable();
+      $tab[74]['field']     = 'is_incident';
+      $tab[74]['name']      = $LANG['job'][70];
+      $tab[74]['datatype'] = 'bool';
+      
+      $tab[75]['table']     = $this->getTable();
+      $tab[75]['field']     = 'is_request';
+      $tab[75]['name']      = $LANG['job'][71];
+      $tab[75]['datatype'] = 'bool';
 
       $tab[2]['table']    = $this->getTable();
       $tab[2]['field']    = 'is_helpdeskvisible';

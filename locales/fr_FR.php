@@ -1057,6 +1057,8 @@ $LANG['job'][66] = "Gabarit pour une demande";
 $LANG['job'][67] = "Gabarit pour un incident";
 $LANG['job'][68] = "Des champs obligatoires ne sont pas renseignés. Veuillez corriger :";
 $LANG['job'][69] = "Ce ticket me concerne";
+$LANG['job'][70] = "Visible pour un incident";
+$LANG['job'][71] = "Visible pour une demande";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";
@@ -2578,7 +2580,6 @@ $LANG['tracking'][35] = "Écrite";
 $LANG['tracking'][37] = "Conserver les tickets à la purge d'un élément de l'inventaire";
 $LANG['tracking'][38] = "Un courriel de suivi a été envoyé à";
 $LANG['tracking'][39] = "Visible dans l'interface simplifiée";
-
 
 $LANG['transfer'][1] = "Transfert";
 
