@@ -1038,6 +1038,11 @@ function update0803to083() {
    $migration->addField('glpi_itilcategories', 'tickettemplates_id_demand', "integer");
    $migration->addKey('glpi_itilcategories', 'tickettemplates_id_demand');
 
+   $migration->addField('glpi_itilcategories', 'is_incident', "integer", array('value' => 1));
+   $migration->addKey('glpi_itilcategories', 'is_incident');
+
+   $migration->addField('glpi_itilcategories', 'is_request', "integer",  array('value' => 1));
+   $migration->addKey('glpi_itilcategories', 'is_request');
 
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (

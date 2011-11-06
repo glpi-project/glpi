@@ -2041,6 +2041,8 @@ CREATE TABLE `glpi_itilcategories` (
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
   `tickettemplates_id_incident` int(11) NOT NULL DEFAULT '0',
   `tickettemplates_id_demand` int(11) NOT NULL DEFAULT '0',
+  `is_incidentvisible` tinyint(1) NOT NULL DEFAULT '1',
+  `is_requestvisible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -2051,7 +2053,9 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `tickettemplates_id_incident` (`tickettemplates_id_incident`),
-  KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`)
+  KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`),
+  KEY `incidentvisible` (`incidentvisible`),
+  KEY `is_requestvisible` (`is_requestvisible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

@@ -3015,8 +3015,20 @@ class Ticket extends CommonITILObject {
       echo "<td>".$LANG['common'][36]."&nbsp;:";
       echo $tt->getMandatoryMark('itilcategories_id', $CFG_GLPI['is_ticket_category_mandatory']);
       echo "</td><td>";
+
+      $condition = "`is_helpdeskvisible`='1'";
+      switch ($options['type']) {
+         case self::INCIDENT_TYPE:
+            $condition .= " AND `is_incident`='1'";
+            break;
+         case self::DEMAND_TYPE:
+            $condition .= " AND `is_request`='1'";
+            break;
+         default:
+            break;
+      }
       Dropdown::show('ITILCategory', array('value'     => $options['itilcategories_id'],
-                                           'condition' => '`is_helpdeskvisible`=1',
+                                           'condition' => $condition,
                                            'on_change' => 'submit()'));
       echo "</td></tr>";
 
@@ -3516,7 +3528,9 @@ class Ticket extends CommonITILObject {
          $opt = array('value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            $opt['condition'] = '`is_helpdeskvisible`=1';
+            $opt['condition'] = '`is_helpdeskvisible`=1 AND ';
+         } else {
+            $opt['condition'] = '';
          }
          /// Auto submit to load template
          if (!$ID) {
@@ -3525,6 +3539,17 @@ class Ticket extends CommonITILObject {
          /// if categorie mandatory, no empty choice
          if ($ID && $CFG_GLPI["is_ticket_category_mandatory"]) {
             $opt['display_emptychoice'] = false;
+         }
+
+         switch ($this->fields["type"]) {
+            case self::INCIDENT_TYPE:
+               $opt['condition'] .= "`is_incident`='1'";
+               break;
+            case self::DEMAND_TYPE:
+               $opt['condition'] .= "`is_request`='1'";
+               break;
+            default:
+               break;
          }
 
          Dropdown::show('ITILCategory', $opt);
