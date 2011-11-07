@@ -1758,7 +1758,8 @@ function helpHeader($title, $url='') {
    //  Le fil d ariane
    echo "<div id='c_ssmenu2'>";
    echo "<ul>";
-   echo "<li><a href='#' title=''>".$LANG['central'][5]."></a></li>";
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title=\"".
+          $LANG['central'][5]."\">".$LANG['central'][5]."></a></li>";
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
    if (haveRight('validate_ticket',1)) {
