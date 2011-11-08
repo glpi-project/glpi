@@ -754,10 +754,10 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".$LANG['setup'][52]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      $autoassign = array(self::CONFIG_PARENT                   => $LANG['common'][102],
-                          self::CONFIG_NEVER                    => $LANG['choice'][0],
-                          Ticket::AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
-                          Ticket::AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+      $autoassign = array(self::CONFIG_PARENT                  => $LANG['common'][102],
+                          self::CONFIG_NEVER                   => $LANG['choice'][0],
+                          self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
+                          self::AUTO_ASSIGN_CATEGORY_HARDWARE  => $LANG['setup'][50]);
 
       if ($ID == 0) {
          unset($autoassign[self::CONFIG_PARENT]);
