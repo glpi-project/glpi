@@ -54,6 +54,9 @@ class EntityData extends CommonDBChild {
    const CONFIG_PARENT   = - 2;
    const CONFIG_NEVER    = -10;
 
+   const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
+   const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
+
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'          => array(// Address
