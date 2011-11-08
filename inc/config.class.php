@@ -561,23 +561,11 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][52] . "&nbsp;:</td><td>";
-      $autoassign = array(NO_AUTO_ASSIGN                => $LANG['choice'][0],
-                          AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
-                          AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
-      Dropdown::showFromArray('auto_assign_mode', $autoassign,
-                              array('value' => $CFG_GLPI["auto_assign_mode"]));
-      echo "</td><td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
       Dropdown::show('DocumentCategory',
                      array('value' => $CFG_GLPI["documentcategories_id_forticket"],
                            'name'  => "documentcategories_id_forticket"));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'], 0, 99, 1,
-                            array(-10 => $LANG['setup'][307]));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
+      echo "</td>";
       echo "<td>" . $LANG['setup'][608] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                           $CFG_GLPI["default_software_helpdesk_visible"]);

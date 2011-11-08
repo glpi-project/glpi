@@ -51,6 +51,9 @@ class EntityData extends CommonDBChild {
    // link in message dont work (no showForm)
    public $auto_message_on_action = false;
 
+   const CONFIG_PARENT   = - 2;
+   const CONFIG_NEVER    = -10;
+
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'          => array(// Address
@@ -718,25 +721,7 @@ class EntityData extends CommonDBChild {
       }
       Dropdown::show('Calendar', $options);
 
-      if ($entdata->fields["calendars_id"] == 0) {
-         $calendar = new Calendar();
-
-         if ($calendar->getFromDB(self::getUsedConfig('calendars_id',$ID))) {
-            echo " - ".$calendar->getLink();
-         }
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."&nbsp;:&nbsp;</td>";
-      echo "<td colspan='2'>";
-      $toadd = array();
-      if ($ID!=0) {
-         $toadd = array(0 => $LANG['common'][102]);
-      }
-      Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
-                                               'toadd'  =>$toadd));
-
-      if ($entdata->fields["calendars_id"] == 0) {
+      if ($entdata->fields["calendars_id"] == self::CONFIG_PARENT) {
          $calendar = new Calendar();
 
          if ($calendar->getFromDB(self::getUsedConfig('calendars_id', $ID))) {
@@ -745,32 +730,74 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      $toadd = array();
+      if ($ID != 0) {
+         $toadd = array(self::CONFIG_PARENT => $LANG['common'][102]);
+      }
+      Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
+                                               'toadd'  =>$toadd));
+
+      if ($entdata->fields["calendars_id"] == self::CONFIG_PARENT) {
+         $calendar = new Calendar();
+
+         if ($calendar->getFromDB(self::getUsedConfig('calendars_id', $ID, '',
+                                                      'Ticket::INCIDENT_TYPE'))) {
+            echo " - ".$calendar->getLink();
+         }
+      }
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td  colspan='2'>".$LANG['setup'][52]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      $autoassign = array(-1                            => $LANG['setup'][731],
-                          NO_AUTO_ASSIGN                => $LANG['choice'][0],
-                          AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
-                          AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+      $autoassign = array(self::CONFIG_PARENT                   => $LANG['common'][102],
+                          self::CONFIG_NEVER                    => $LANG['choice'][0],
+                          Ticket::AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
+                          Ticket::AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+
+      if ($ID == 0) {
+         unset($autoassign[self::CONFIG_PARENT]);
+      }
 
       Dropdown::showFromArray('auto_assign_mode', $autoassign,
                               array('value' => $entdata->fields["auto_assign_mode"]));
 
+      if ($entdata->fields['auto_assign_mode'] == self::CONFIG_PARENT && $ID != 0) {
+         $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entdata->fields['entities_id']);
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $autoassign[$auto_assign_mode];
+         echo "</font>";
+      }
       echo "</td></tr>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][18]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
+      $autoclose = array(self::CONFIG_PARENT => $LANG['common'][102],
+                         self::CONFIG_NEVER  => $LANG['setup'][307]);
+      if ($ID == 0) {
+         unset($autoclose[self::CONFIG_PARENT]);
+      }
+
       Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 99, 1,
-                            array(-1   => $LANG['setup'][731],
-                                  -10  => $LANG['setup'][307]));
-/*
-      Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
-                                  array('max'            => 99,
-                                        'inherit_global' => 1,
-                                        'never_value'    => -10,));
-*/
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td></tr>";
+                            $autoclose);
+
+      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
+
+      if ($entdata->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
+         $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id']);
+
+         echo "<font class='green'>&nbsp;&nbsp;";
+         if ($autoclose_mode >= 0) {
+            echo $autoclose_mode." ".$LANG['calendar'][12];
+         } else {
+            echo $autoclose[$autoclose_mode];
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
 
@@ -778,14 +805,14 @@ class EntityData extends CommonDBChild {
       echo "<td colspan='2'>";
 
       /// no inquest case = rate 0
-      $typeinquest = array(0 => $LANG['common'][102],
-                           1 => $LANG['satisfaction'][9],
-                           2 => $LANG['satisfaction'][10]);
+      $typeinquest = array(self::CONFIG_PARENT  => $LANG['common'][102],
+                           1                    => $LANG['satisfaction'][9],
+                           2                    => $LANG['satisfaction'][10]);
 
       // No inherit from parent for root entity
       if ($ID == 0) {
-         unset($typeinquest[0]);
-         if ($entdata->fields['inquest_config'] == 0) {
+         unset($typeinquest[self::CONFIG_PARENT]);
+         if ($entdata->fields['inquest_config'] == self::CONFIG_PARENT) {
             $entdata->fields['inquest_config'] = 1;
          }
       }
@@ -794,7 +821,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>\n";
 
       // Do not display for root entity in inherit case
-      if ($entdata->fields['inquest_config'] == 0 && $ID !=0) {
+      if ($entdata->fields['inquest_config'] == self::CONFIG_PARENT && $ID !=0) {
          $inquestconfig = self::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
@@ -859,9 +886,9 @@ class EntityData extends CommonDBChild {
     * @param $fieldref  string name of the referent field to know if we look at parent entity
     * @param $entities_id
     * @param $fieldval string name of the field that we want value
-    * @param $is_zero_allowed
+    * @param $default_value value to return
    **/
-   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $is_zero_allowed=false) {
+   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $default_value=-2) {
 
       // for calendar
       if (empty($fieldval)) {
@@ -874,9 +901,7 @@ class EntityData extends CommonDBChild {
       if ($entdata->getFromDB($entities_id)) {
          // Value is defined : use it
          if (isset($entdata->fields[$fieldref])
-            && ($entdata->fields[$fieldref]>0
-                || ($entdata->fields[$fieldref] == 0 && $is_zero_allowed)
-                || !is_numeric($entdata->fields[$fieldref]))) {
+             && ($entdata->fields[$fieldref] != EntityData::CONFIG_PARENT)) {
             return $entdata->fields[$fieldval];
          }
       }
@@ -886,17 +911,17 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval,
-                                       $is_zero_allowed);
+            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
          }
       }
-
+/*
       switch ($fieldval) {
          case "tickettype" :
             // Default is Incident if not set
             return Ticket::INCIDENT_TYPE;
       }
-      return 0;
+      */
+      return $default_value;
    }
 
 

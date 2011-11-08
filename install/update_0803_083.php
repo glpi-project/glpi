@@ -1539,6 +1539,75 @@ function update0803to083() {
    // Plugins
    $migration->addField('glpi_plugins', 'license', 'string');
 
+
+   // migration to new values for inherit parent (0 => -2)
+   $field0 = array('calendars_id', 'tickettype', 'inquest_config');
+
+   foreach ($field0 as $field_0) {
+      if (FieldExists("glpi_entitydatas", $field_0)) {
+         $query = "UPDATE `glpi_entitydatas`
+                   SET `$field_0` = -2
+                   WHERE `$field_0` = 0";
+         $DB->query($query)
+         or die ("0.83 new value for inherit parent 0 in glpi_entitydatas ".$LANG['update'][90].
+                 $DB->error());
+      }
+   }
+
+   // migration to new values for inherit parent (-1 => -2)
+   $fieldparent = array('autofill_buy_date', 'autofill_delivery_date', 'autofill_warranty_date',
+                        'autofill_order_date', 'autofill_use_date');
+
+   foreach ($fieldparent as $field_parent) {
+      if (FieldExists("glpi_entitydatas", $field_parent)) {
+         $query = "UPDATE `glpi_entitydatas`
+                   SET `$field_parent` = -2
+                   WHERE `$field_parent` = -1";
+         $DB->query($query)
+         or die ("0.83 new value for inherit parent -1 in glpi_entitydatas ".$LANG['update'][90].
+                 $DB->error());
+      }
+   }
+
+   // TODO change return config to return parent
+   //   $fieldconfig = array('cartridges_alert_repeat', 'use_licenses_alert', 'use_infocoms_alert',
+   //                     'notclosed_delay', 'consumables_alert_repeat', 'use_contracts_alert',
+   //                     'use_reservations_alert', 'auto_assign_mode', 'autoclose_delay');
+
+   // migration to new values for inherit config
+   $fieldconfig = array('auto_assign_mode', 'autoclose_delay');
+
+   $query = "SELECT *
+             FROM `glpi_configs`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) > 0) {
+         if ($data = $DB->fetch_assoc($result)) {
+
+            foreach ($fieldconfig as $field_config) {
+               if (FieldExists("glpi_entitydatas", $field_config)) {
+
+                  $query = "UPDATE `glpi_entitydatas`
+                            SET `$field_config` = '".$data[$field_config]."'
+                            WHERE `$field_config` = -1";
+                  $DB->query($query)
+                  or die ("0.83 migrate data from config to glpi_entitydatas ".$LANG['update'][90].
+                          $DB->error());
+
+                  $query = "UPDATE `glpi_entitydatas`
+                            SET `auto_assign_mode` = -10
+                            WHERE `auto_assign_mode` = 0";
+                  $DB->query($query)
+                  or die ("0.83 change value No in glpi_entitydatas for auto_assign_mode".
+                          $LANG['update'][90].$DB->error());
+               }
+            }
+         }
+      }
+      $migration->dropField("glpi_configs", 'auto_assign_mode');
+      $migration->dropField("glpi_configs", 'autoclose_delay');
+   }
+
 //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
 
