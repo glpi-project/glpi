@@ -636,7 +636,7 @@ class Printer  extends CommonDBTM {
       $tab[11]['field']    = 'init_pages_counter';
       $tab[11]['name']     = $LANG['printers'][30];
       $tab[11]['datatype'] = 'number';
-      $tab[45]['nosearch'] = true; // only display, no index
+      $tab[11]['nosearch'] = true; // only display and histo, no index
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'last_pages_counter';
