@@ -927,6 +927,17 @@ a.icon_nav_move:hover img {
    background-color: white;
 }
 
+.available {
+   background-color: green;
+}
+
+.notavailable {
+   background-color: red;
+}
+
+.partialavailable {
+   background-color: pink;
+}
 
 
 /* ################--------------- Menu navigation  ---------------#################### */
