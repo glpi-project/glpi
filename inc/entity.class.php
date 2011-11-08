@@ -158,6 +158,7 @@ class Entity extends CommonTreeDropdown {
                   $mailcollector = new RuleMailCollector();
                   $mailcollector->showAndAddRuleForm($this);
                }
+               EntityData::showAdvancedOptions($this);
                Document::showAssociated($this);
                EntityData::showNotificationOptions($this);
                EntityData::showHelpdeskOptions($this);
