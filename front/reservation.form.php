@@ -95,12 +95,8 @@ if (isset($_POST["update"])) {
 
       for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
       
-         // New cross-DST compliant reservation rehearsal
-         $begin_t = strtotime($begin);
-         $end_t   = strtotime($end);
-         $_POST["begin"] = date('Y-m-d', $begin_t + $i*$to_add*DAY_TIMESTAMP) . date(' H:i:s', $begin_t);
-         $_POST["end"]   = date('Y-m-d', $end_t + $i*$to_add*DAY_TIMESTAMP)   . date(' H:i:s', $end_t);
-         
+         $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
+         $_POST["end"]  = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));         
 
          if (Session::haveRight("reservation_central","w")
              || Session::getLoginUserID() === $_POST["users_id"]) {
