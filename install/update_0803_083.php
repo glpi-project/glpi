@@ -1589,7 +1589,6 @@ function update0803to083() {
       }
    }
 
-   if (FieldExists("glpi_entitydatas", $field_parent)) {
    // TODO change return config to return parent
    //   $fieldconfig = array('cartridges_alert_repeat', 'use_licenses_alert', 'use_infocoms_alert',
    //                     'notclosed_delay', 'consumables_alert_repeat', 'use_contracts_alert',
