@@ -66,7 +66,21 @@ switch ($_GET["usertype"]) {
       break;
 }
 
-if (isset($_GET['genical'])) {
+if (isset($_REQUEST['checkavailability'])) {
+   Html::popHeader($LANG['common'][75]);
+   if (!isset($_REQUEST["begin"])) {
+      $_REQUEST["begin"] = "";
+   }
+   if (!isset($_REQUEST["end"])) {
+      $_REQUEST["end"] = "";
+   }   
+   if (!isset($_REQUEST["users_id"])) {
+      $_REQUEST["users_id"] = "";
+   }  
+   Planning::checkAvailability($_REQUEST['users_id'], $_REQUEST['begin'], $_REQUEST['end']);
+   Html::popFooter();
+
+} else if (isset($_GET['genical'])) {
    if (isset($_GET['token'])) {
       // Check user token
       /// TODO : complex : check if the request is valid : rights on uID / gID ?

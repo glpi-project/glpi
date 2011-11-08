@@ -265,6 +265,182 @@ class Planning {
 
 
    /**
+    * Show the availability of a user
+    *
+    * @param $who ID of the user
+    * @param $begin begin date to check
+    * @param $end end date to check
+    *
+    * @return Nothing (display function)
+   **/
+   static function checkAvailability($who, $begin='', $end='') {
+      global $LANG, $CFG_GLPI, $DB;
+      if (empty($who)) {
+         return false;
+      }
+      if (empty($begin)) {
+         $begin = date("Y-m-d");
+      }
+      if (empty($end)) {
+         $end = date("Y-m-d");
+      }
+      if ($end < $begin) {
+         $end = $begin;
+      }
+      $realbegin = $begin." ".$CFG_GLPI["planning_begin"];
+      $realend   = $end." ".$CFG_GLPI["planning_end"];
+      
+      echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['common'][75]."&nbsp:</th>";
+      echo "<th colspan='3'>".getUserName($who)."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo $LANG['buttons'][33]." :";
+      echo "</td>\n";
+      echo "<td>";
+      Html::showDateFormItem("begin", $begin, false);
+      echo "</td>\n";
+      echo "<td>";
+      echo $LANG['buttons'][32]." :";
+      echo "</td>\n";
+      echo "<td>";
+      Html::showDateFormItem("end", $end, false);
+      echo "</td>\n";
+
+      echo "<td rowspan='2' class='center'>";
+      echo "<input type='hidden' name='users_id' value=\"$who\">";
+      echo "<input type='submit' class='button' name='checkavailability' value=\"". $LANG['buttons'][7] ."\">";
+      echo "</td>\n";
+
+      echo "</tr>";
+      echo "</table></form></div>\n";
+      
+      
+            // ---------------Tracking
+      $interv = TicketTask::populatePlanning(array('who'       => $who,
+                                                   'who_group' => 0,
+                                                   'begin'     => $realbegin,
+                                                   'end'       => $realend));
+      // ---------------Problem
+      $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => 0,
+                                                     'begin'     => $realbegin,
+                                                     'end'       => $realend));
+
+      // ---------------reminder
+      $datareminders = Reminder::populatePlanning(array('who'       => $who,
+                                                        'who_group' => 0,
+                                                        'begin'     => $realbegin,
+                                                        'end'       => $realend));
+
+      $interv = array_merge($interv, $interv2, $datareminders);
+      
+      // Print Headers
+      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      // Print Headers
+      echo "<tr class='tab_bg_1'><th>&nbsp;</th>";
+      $colnumber=1;
+      $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
+      $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
+      $begin_hour = intval($plan_begin[0]);
+      $end_hour   = intval($plan_end[0]);
+      if ($plan_end[1]!=0) {
+         $end_hour++;
+      }
+      $colsize=floor(100/($end_hour-$begin_hour));
+      for ($i=$begin_hour;$i<$end_hour;$i++) {
+         echo "<th width='$colsize%'>".($i<10?'0':'').$i." -> ".(($i+1)<10?'0':'').($i+1)."</th>";
+         $colnumber++;
+      }
+      echo "</tr>";
+
+      $day_begin=strtotime($realbegin);
+      $day_end=strtotime($realend);
+      
+
+      for ($time = $day_begin; $time< $day_end;$time+=DAY_TIMESTAMP) {
+         $current_day = date('Y-m-d', $time);
+         echo "<tr><th>".Html::convDate($current_day)."</th>";
+         for ($i=$begin_hour;$i<$end_hour;$i++) {
+         
+            $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP);
+            $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP);
+            // Init activity interval
+            $begin_act = $end_time;
+            $end_act   = $begin_time;
+            
+            
+            /// TODO : review system if 2 independent task from :10 -> :20 + :40 -> :50 
+            /// Will view not available from :10 to :50
+            /// So do not display text for the moment
+            reset($interv);
+            while ($data=current($interv)) {
+               if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
+                  // In
+                  if ($begin_act > $data["begin"]) {
+                     $begin_act = $data["begin"];
+                  }
+                  if ($end_act < $data["end"]) {
+                     $end_act   = $data["end"];
+                  }
+                  
+                  unset($interv[key($interv)]);
+               } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
+                  // Through
+                  $begin_act = $begin_time;
+                  $end_act   = $end_time;
+                  
+                  next($interv);
+               } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
+                  // Begin
+                  if ($begin_act > $data["begin"]) {
+                     $begin_act = $data["begin"];
+                  }
+                  $end_act   = $end_time;
+                  
+                  next($interv);
+               } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
+                  //End
+                  $begin_act = $begin_time;
+                  if ($end_act < $data["end"]) {
+                     $end_act   = $data["end"];
+                  }                  
+                  unset($interv[key($interv)]);
+               } else { // Defautl case
+                  next($interv);
+               }
+            }     
+            if ($begin_act < $end_act) {
+               // Activity in hour
+               if ($begin_act==$begin_time && $end_act == $end_time) {
+                  echo "<td class='notavailable'>&nbsp;</td>";
+               } else {
+                  $text = date("H:i", strtotime($begin_act));
+                  $text .= "&nbsp;->&nbsp;";
+                  $text .= date("H:i", strtotime($end_act));
+                  echo "<td class='partialavailable'>&nbsp;</td>";
+               }
+            } else {
+               // No activity
+               echo "<td class='available'><span>&nbsp;</span></td>";
+            }
+         }
+         echo "</tr>";
+      }
+      echo "<tr><td colspan='$colnumber'>&nbsp;</td></tr>";
+      echo "<tr>";
+      echo "<th>".$LANG['profiles'][34]."</th>";
+      echo "<td class='available'>".$LANG['reservation'][4]."</td>";
+      echo "<td class='notavailable'>".$LANG['reservation'][11]."</td>";
+      echo "<td class='partialavailable'>".$LANG['reservation'][12]."</td>";
+      echo "<td colspan='".($colnumber-4)."'>&nbsp;</td></tr>";
+      echo "</table></div>";
+      
+   }
+   
+
+   /**
     * Show the planning
     *
     * @param $who ID of the user (0 = undefined)
@@ -368,19 +544,13 @@ class Planning {
                                                      'begin'     => $begin,
                                                      'end'       => $end));
 
-      // ---------------Problem
-//       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-//                                                     'who_group' => $who_group,
-//                                                     'begin'     => $begin,
-//                                                     'end'       => $end));
-
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
                                                         'who_group' => $who_group,
                                                         'begin'     => $begin,
                                                         'end'       => $end));
 
-      $interv = array_merge($interv, $interv2,/* $interv3,*/ $datareminders);
+      $interv = array_merge($interv, $interv2, $datareminders);
 
       // --------------- Plugins
       $data = Plugin::doHookFunction("planning_populate", array("begin"     => $begin,
@@ -665,6 +835,12 @@ class Planning {
                                                    'who_group' => 0,
                                                    'begin'     => $begin,
                                                    'end'       => $end));
+                                                   
+      // ---------------Problem
+      $interv2 = ProblemTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => 0,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));                                                   
 
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,
@@ -672,7 +848,7 @@ class Planning {
                                                'begin'     => $begin,
                                                'end'       => $end));
 
-      $interv = array_merge($interv, $data);
+      $interv = array_merge($interv, $interv2, $data);
 
       // ---------------Plugin
       $data = Plugin::doHookFunction("planning_populate", array("begin"     => $begin,

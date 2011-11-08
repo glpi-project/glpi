@@ -332,7 +332,7 @@ $LANG['common'][71]  = "Élément modifié avec succès";
 $LANG['common'][72]  = "Élément mis à la corbeille avec succès";
 $LANG['common'][73]  = "Élément supprimé définitivement avec succès";
 $LANG['common'][74]  = "Élément restauré avec succès";
-
+$LANG['common'][75]  = "Disponibilité";
 $LANG['common'][76]  = "Public";
 $LANG['common'][77]  = "Privé";
 $LANG['common'][78]  = "Rendre public";
@@ -1879,6 +1879,8 @@ $LANG['reservation'][7]  = "Autoriser les réservations";
 $LANG['reservation'][8]  = "Réserver";
 $LANG['reservation'][9]  = "Réserver un matériel";
 $LANG['reservation'][10] = "Matériels réservables";
+$LANG['reservation'][11] = "Indisponible";
+$LANG['reservation'][12] = "Partiellement disponible";
 
 $LANG['reservation'][16] = "Jusqu'à";
 $LANG['reservation'][17] = "Dès";
