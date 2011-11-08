@@ -413,7 +413,7 @@ class EntityData extends CommonDBChild {
 
       $options[0] = $LANG['financial'][113];
       if ($ID > 0) {
-         $options[-1] = $LANG['common'][102];
+         $options[self::CONFIG_PARENT] = $LANG['common'][102];
       }
 
       foreach (getAllDatasFromTable('glpi_states') as $state) {
@@ -459,7 +459,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
       echo "<td>";
-      $options = array(0                           => $LANG['financial'][113],
+      $options = array(self::CONFIG_NEVER          => $LANG['financial'][113],
                        Infocom::COPY_BUY_DATE      => $LANG['setup'][283].': '.$LANG['financial'][14],
                        Infocom::COPY_ORDER_DATE    => $LANG['setup'][283].': '.$LANG['financial'][28],
                        Infocom::COPY_DELIVERY_DATE => $LANG['setup'][283].' '.$LANG['financial'][27]);
@@ -476,9 +476,9 @@ class EntityData extends CommonDBChild {
       echo "<td> " . $LANG['software'][10] . "&nbsp;: </td>";
       echo "<td>";
       if ($ID > 0) {
-         $toadd[-1] = $LANG['common'][102];
+         $toadd[self::CONFIG_PARENT] = $LANG['common'][102];
       }
-      $toadd[-2] = $LANG['common'][110];
+      $toadd[self::CONFIG_PARENT] = $LANG['common'][110];
       Dropdown::show('Entity',
                      array('name'               => 'entities_id_software',
                            'value'              => $entitydata->getField('entities_id_software'),
