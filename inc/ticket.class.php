@@ -54,6 +54,9 @@ class Ticket extends CommonITILObject {
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'ticket_status';
 
+   const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
+   const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
+
    // Specific ones
    /// Hardware datas used by getFromDBwithData
    var $hardwaredatas = NULL;
@@ -1143,10 +1146,10 @@ class Ticket extends CommonITILObject {
          }
       }
       switch ($auto_assign_mode) {
-         case NO_AUTO_ASSIGN :
+         case EntityData::CONFIG_NEVER :
             break;
 
-         case AUTO_ASSIGN_HARDWARE_CATEGORY :
+         case self::AUTO_ASSIGN_HARDWARE_CATEGORY :
             if ($item!=NULL) {
                // Auto assign tech from item
                if ($input['_users_id_assign']==0 && $item->isField('users_id_tech')) {
@@ -1175,7 +1178,7 @@ class Ticket extends CommonITILObject {
             }
             break;
 
-         case AUTO_ASSIGN_CATEGORY_HARDWARE :
+         case self::AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
             if ($input['itilcategories_id']>0
                 && (!$input['_users_id_assign'] || !$input['_groups_id_assign'])) {
