@@ -1554,6 +1554,26 @@ function update0803to083() {
       }
    }
 
+   // problem with value -1 and -2 already used but not in the correct context
+   $migration->addField("glpi_entitydatas", 'entities_id_softwares');
+   if (FieldExists("glpi_entitydatas", 'entities_id_software')) {
+      $query = "UPDATE `glpi_entitydatas`
+                SET `entities_id_softwares` = -10
+                WHERE `entities_id_software` = -2";
+      $DB->query($query)
+      or die ("0.83 correct value for entities_id_softwares in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `entities_id_softwares` = -2
+                WHERE `entities_id_software` = -1";
+      $DB->query($query)
+      or die ("0.83 correct value for entities_id_softwares in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
+
+      $migration->dropField("glpi_entitydatas", 'entities_id_software');
+   }
+
    // migration to new values for inherit parent (-1 => -2)
    $fieldparent = array('autofill_buy_date', 'autofill_delivery_date', 'autofill_warranty_date',
                         'autofill_order_date', 'autofill_use_date');
@@ -1569,10 +1589,11 @@ function update0803to083() {
       }
    }
 
+   if (FieldExists("glpi_entitydatas", $field_parent)) {
    // TODO change return config to return parent
    //   $fieldconfig = array('cartridges_alert_repeat', 'use_licenses_alert', 'use_infocoms_alert',
    //                     'notclosed_delay', 'consumables_alert_repeat', 'use_contracts_alert',
-   //                     'use_reservations_alert', 'auto_assign_mode', 'autoclose_delay');
+   //                     'use_reservations_alert');
 
    // migration to new values for inherit config
    $fieldconfig = array('auto_assign_mode', 'autoclose_delay');
