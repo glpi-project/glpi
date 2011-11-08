@@ -23,8 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with GLPI.If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------
  */
 //zh_TW
@@ -37,16 +36,16 @@ $LANG['backup'][1]="轉存XML";
 $LANG['backup'][11]="大小"; 
 $LANG['backup'][13]="檢視/下載"; 
 $LANG['backup'][16]="由備份檔覆蓋還原目前的資料庫:"; 
-$LANG['backup'][17]="刪除這個檔案"; 
-$LANG['backup'][18]="備份資料庫"; 
+$LANG['backup'][17]="刪除這個檔案 ?"; 
+$LANG['backup'][18]="備份資料庫 ?"; 
 $LANG['backup'][21]="文件已經存在"; 
 $LANG['backup'][22]="找不到位元組"; 
 $LANG['backup'][23]="Mysql 錯誤從"; 
-$LANG['backup'][24]="自動重定向，否則點擊"; 
+$LANG['backup'][24]="自動重定向，否則點選"; 
 
 $LANG['bookmark'][1]="書籤"; 
-$LANG['bookmark'][2]="局部載入的書籤"; 
-$LANG['bookmark'][3]="您目前沒有記錄任何書籤."; 
+$LANG['bookmark'][2]="載入部份的書籤"; 
+$LANG['bookmark'][3]="您目前沒有任何書籤的記錄."; 
 $LANG['bookmark'][4]="新增書籤"; 
 $LANG['bookmark'][5]="公用書籤"; 
 $LANG['bookmark'][6]="預設檢視"; 
@@ -113,7 +112,7 @@ $LANG['buttons'][60]="關閉視窗";
 $LANG['calendar'][0]="YYYY-MM-DD"; 
 $LANG['calendar'][1]="DD-MM-YYYY"; 
 $LANG['calendar'][2]="MM-DD-YYYY"; 
-$LANG['calendar'][3]="遞歸"; 
+$LANG['calendar'][3]="遞迴"; 
 $LANG['calendar'][5]="時間範圍"; 
 $LANG['calendar'][6]="新增一個日程表"; 
 $LANG['calendar'][7]="日"; 
@@ -707,9 +706,9 @@ $LANG['install'][16]="測試暫存檔寫入的權限";
 $LANG['install'][17]="文件無法創建。"; 
 $LANG['install'][18]="非官方的翻譯也可"; 
 $LANG['install'][19]="文件創建了但不能被刪除。"; 
-$LANG['install'][20]="文件和檔案已被創建並刪除 - 漂亮 !"; 
+$LANG['install'][20]="文件和檔案已被創建並刪除 - 完成 !"; 
 $LANG['install'][21]="測試文件檔寫入的權限"; 
-$LANG['install'][22]="文件已被創建 - 漂亮 !"; 
+$LANG['install'][22]="文件已被創建 - 完成 !"; 
 $LANG['install'][23]="測試設定檔寫入權限"; 
 $LANG['install'][24]="初始化資料庫"; 
 $LANG['install'][25]="繼續？"; 
@@ -1585,7 +1584,7 @@ $LANG['rulesengine'][104]="初始值";
 $LANG['rulesengine'][105]="修改後的值"; 
 $LANG['rulesengine'][106]="未變更"; 
 $LANG['rulesengine'][107]="停用"; 
-$LANG['rulesengine'][108]="原本"; 
+$LANG['rulesengine'][108]="原始的"; 
 $LANG['rulesengine'][110]="權利移轉"; 
 $LANG['rulesengine'][111]="實體移轉"; 
 $LANG['rulesengine'][112]="權利和實體移轉"; 

@@ -23,8 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with GLPI.If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------
  */
 //ee_ET
@@ -1886,7 +1885,7 @@ $LANG['setup'][603]="Lisa kasutaja gruppi";
 $LANG['setup'][604]="Lisa kasutaja gruppi"; 
 $LANG['setup'][605]="Lisa kasutajale profiil"; 
 $LANG['setup'][606]="Unable to add. The user already exists."; // en_GB string to be translated
-$LANG['setup'][607]="Associate to a profile"; // en_GB string to be translated
+$LANG['setup'][607]="Lisa profiil"; 
 $LANG['setup'][608]="Software associable to a ticket by default"; // en_GB string to be translated
 $LANG['setup'][609]="Unable to add. The OCSNG server already exists."; // en_GB string to be translated
 $LANG['setup'][610]="Teate pealkiri kohustuslik"; 

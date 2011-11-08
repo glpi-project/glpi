@@ -23,8 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software Foundation, Inc.,
- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with GLPI.If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------
  */
 //sk_SK
@@ -1542,7 +1541,7 @@ $LANG['rulesengine'][49]="Priradiť: vybavenie podľa MAC adresy";
 $LANG['rulesengine'][50]="Číselník modelov PC"; 
 $LANG['rulesengine'][51]="Číselník modelov monitorov"; 
 $LANG['rulesengine'][52]="Číselník modelov telefónov"; 
-$LANG['rulesengine'][53]="Číselník modelov periférií"; 
+$LANG['rulesengine'][53]="Číselník modelov zariadení"; 
 $LANG['rulesengine'][54]="Číselník modelov tlačiarní"; 
 $LANG['rulesengine'][55]="Číselník modelov sietí"; 
 $LANG['rulesengine'][56]="Modely"; 
@@ -1550,7 +1549,7 @@ $LANG['rulesengine'][57]="Pravidlá pre import a spájanie počítačov";
 $LANG['rulesengine'][60]="Číselník typov PC"; 
 $LANG['rulesengine'][61]="Číselník typov monitorov"; 
 $LANG['rulesengine'][62]="Číselník typov telefónov"; 
-$LANG['rulesengine'][63]="Číselník typov periférií"; 
+$LANG['rulesengine'][63]="Číselník typov zariadení"; 
 $LANG['rulesengine'][64]="Číselník typov tlačiarní"; 
 $LANG['rulesengine'][65]="Číselník sieťových zariadení"; 
 $LANG['rulesengine'][66]="Typy"; 
@@ -1705,7 +1704,7 @@ $LANG['setup'][93]="Rozhranie pevného disku";
 $LANG['setup'][94]="Modely monitorov"; 
 $LANG['setup'][95]="Modely siete"; 
 $LANG['setup'][96]="Modely tlačiarní"; 
-$LANG['setup'][97]="Modely periférií"; 
+$LANG['setup'][97]="Modely zariadení"; 
 $LANG['setup'][98]="Kategória úloh"; 
 $LANG['setup'][99]="Číslo budovy"; 
 $LANG['setup'][100]="Miestnosť číslo"; 
