@@ -1053,12 +1053,10 @@ class Rule extends CommonDBTM {
          echo "<td>&nbsp;</td>";
       }
 
-      echo "<td><a id='rules".$this->fields["id"]."' href=\"".str_replace(".php",".form.php",$target).
-                 "?id=".$this->fields["id"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
+      echo "<td>".$this->getLink()."&nbsp;";
 
       if (!empty($this->fields["comment"])) {
-         Html::showToolTip($this->fields["comment"],
-                           array('applyto' => "rules".$this->fields["id"]));
+         Html::showToolTip($this->fields["comment"]);
       }
       echo "</td>";
       echo "<td>".$this->fields["description"]."</td>";
