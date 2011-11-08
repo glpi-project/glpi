@@ -288,10 +288,11 @@ class Plugin extends CommonDBTM {
       $pluglist = $this->find("", "name, directory");
       $i = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
-      echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>\n";
+      echo "<tr><th colspan='8'>".$LANG['plugins'][0]."</th></tr>\n";
 
       if (!empty($pluglist)) {
          echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th>";
+         echo "<th>".$LANG['install'][92]."</th>";
          echo "<th>".$LANG['state'][0]."</th><th>".$LANG['plugins'][9]."</th>";
          echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
@@ -325,8 +326,23 @@ class Plugin extends CommonDBTM {
                echo $plug['name'];
             }
             echo "</td>";
-            echo "<td>".$plug['version']."</td>";
-            echo "<td>";
+            echo "<td>".$plug['version']."</td><td>";
+            if ($plug['license']) {
+               $link = '';
+               if (file_exists(GLPI_ROOT.'/plugins/'.$plug['directory'].'/LICENSE')) {
+                  $link = $CFG_GLPI['root_doc'].'/plugins/'.$plug['directory'].'/LICENSE';
+               } else if (file_exists(GLPI_ROOT.'/plugins/'.$plug['directory'].'/COPYING.txt')) {
+                  $link = $CFG_GLPI['root_doc'].'/plugins/'.$plug['directory'].'/COPYING.txt';
+               }
+               if ($link) {
+                  echo "<a href='$link'>".$plug['license']."</a>";
+               } else {
+                  echo $plug['license'];
+               }
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td><td>";
             switch ($plug['state']) {
                case self::ANEW :
                   echo $LANG['joblist'][9];
