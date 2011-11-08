@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&tickets_id=".
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&itemtype=Ticket&items_id=".
                    $_POST["id"]);
    } else {
       if ($track->can($_POST["id"],'r')) {

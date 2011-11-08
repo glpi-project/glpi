@@ -405,7 +405,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $LANG;
-
+      
       // show kb item form
       if (!Session::haveRight("knowbase","w" ) && !Session::haveRight("faq","w")) {
          return false;
@@ -419,14 +419,20 @@ class KnowbaseItem extends CommonDBTM {
 
       $canedit = $this->can($ID,'w');
       $canrecu = $this->can($ID,'recursive');
-
       if ($canedit) {
          // Load ticket solution
          if (empty($ID) && isset($options['itemtype']) && isset($options['items_id'])) {
             $item = new $options['itemtype']();
             if ($item->getFromDB($options['items_id'])) {
-               $this->fields['name'] = $item->getField('name');
-               $this->fields['answer']   = $item->getField('solution');
+               $this->fields['name']   = $item->getField('name');
+               $this->fields['answer'] = $item->getField('solution');
+               if ($item->isField('itilcategories_id')) {
+                  $ic = new ItilCategory();
+                  if ($ic->getFromDB($item->getField('itilcategories_id'))) {
+                     $this->fields['knowbaseitemcategories_id'] = $ic->getField('knowbaseitemcategories_id');
+                  }
+                  
+               }
             }
          }
          echo "<div id='contenukb'>";
