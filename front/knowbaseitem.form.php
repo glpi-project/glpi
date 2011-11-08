@@ -38,8 +38,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["tickets_id"])) {
-   $_GET["tickets_id"] = "";
+if (!isset($_GET["itemtype"])) {
+   $_GET["itemtype"] = "";
+}
+if (!isset($_GET["items_id"])) {
+   $_GET["items_id"] = "";
 }
 if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
@@ -61,7 +64,7 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w');
 
    Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
-   $available_options = array('tickets_id');
+   $available_options = array('itemtype', 'items_id');
    $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
