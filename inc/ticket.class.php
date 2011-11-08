@@ -4068,7 +4068,7 @@ class Ticket extends CommonITILObject {
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      $query  .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+      $query  .= " LIMIT ".intval($start).",5";
       $result  = $DB->query($query);
 
       $i = 0;
