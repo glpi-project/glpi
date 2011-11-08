@@ -1536,7 +1536,8 @@ function update0803to083() {
 
    }
 
-
+   // Plugins
+   $migration->addField('glpi_plugins', 'license', 'string');
 
 //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
