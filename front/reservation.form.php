@@ -91,8 +91,12 @@ if (isset($_POST["update"])) {
 
       $_POST['_ok'] = true;
       for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
-         $_POST["begin"] = date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
-         $_POST["end"] = date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
+      
+         // New cross-DST compliant reservation rehearsal
+         $begin_t = strtotime($begin);
+         $end_t   = strtotime($end);
+         $_POST["begin"] = date('Y-m-d', $begin_t + $i*$to_add*DAY_TIMESTAMP) . date(' H:i:s', $begin_t);
+         $_POST["end"]   = date('Y-m-d', $end_t + $i*$to_add*DAY_TIMESTAMP)   . date(' H:i:s', $end_t);
 
          if (haveRight("reservation_central","w")
              || getLoginUserID() === $_POST["users_id"]) {
@@ -116,6 +120,8 @@ if (isset($_POST["update"])) {
       // Only one reservation
       if (count($_POST['items']) == 1) {
          $toadd = "?reservationitems_id=$reservationitems_id";
+         $toadd .= "&mois_courant=".$_GET["mois_courant"];
+         $toadd .= "&annee_courante=".$_GET["annee_courant"];
       }
       glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php$toadd");
    }
