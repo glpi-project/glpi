@@ -2054,7 +2054,7 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `tickettemplates_id_incident` (`tickettemplates_id_incident`),
   KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`),
-  KEY `incidentvisible` (`incidentvisible`),
+  KEY `is_incidentvisible` (`is_incidentvisible`),
   KEY `is_requestvisible` (`is_requestvisible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
