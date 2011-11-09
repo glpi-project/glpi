@@ -89,10 +89,10 @@ class TicketCategory extends CommonTreeDropdown {
       $tab[71]['field'] = 'name';
       $tab[71]['name']  = $LANG['common'][35];
 
-      $tab[2]['table']    = $this->getTable();
-      $tab[2]['field']    = 'is_helpdeskvisible';
-      $tab[2]['name']     = $LANG['tracking'][39];
-      $tab[2]['datatype'] = 'bool';
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'is_helpdeskvisible';
+      $tab[3]['name']     = $LANG['tracking'][39];
+      $tab[3]['datatype'] = 'bool';
 
       return $tab;
    }
