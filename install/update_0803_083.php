@@ -1556,6 +1556,7 @@ function update0803to083() {
 
    // problem with value -1 and -2 already used but not in the correct context
    $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer');
+   $migration->migrationOneTable("glpi_entitydatas");
    if (FieldExists("glpi_entitydatas", 'entities_id_software')) {
       $query = "UPDATE `glpi_entitydatas`
                 SET `entities_id_softwares` = -10
