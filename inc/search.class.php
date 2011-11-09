@@ -2398,14 +2398,12 @@ class Search {
                $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                               OR $observer_table.users_id = '".Session::getLoginUserID()."'";
 
-               if (count($_SESSION['glpigroups'])) {
-                  $condition .= " OR $observergroup_table.`groups_id`
-                                          IN ('".implode("','",$_SESSION['glpigroups'])."')";
-               }
 
                if (Session::haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
+                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
+                     $condition .= " OR $observergroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
                }
