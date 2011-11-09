@@ -1880,7 +1880,6 @@ $LANG['reservation'][8]  = "Réserver";
 $LANG['reservation'][9]  = "Réserver un matériel";
 $LANG['reservation'][10] = "Matériels réservables";
 $LANG['reservation'][11] = "Indisponible";
-$LANG['reservation'][12] = "Partiellement disponible";
 
 $LANG['reservation'][16] = "Jusqu'à";
 $LANG['reservation'][17] = "Dès";

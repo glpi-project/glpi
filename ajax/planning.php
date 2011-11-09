@@ -64,8 +64,10 @@ if (isset($_POST["end"]) && !empty($_POST["end"])) {
 }
 
 echo "<table class='tab_cadre'>";
+
+$rand_user = mt_rand();
+
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
-   $rand_user = mt_rand();
    echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
    echo "<td class='center'>";
    $params = array('name'   => "plan[users_id]",
@@ -73,15 +75,13 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
                    'right'  => "own_ticket",
                    'rand'   => $rand_user,
                    'entity' => $_POST["entity"]);
+   
    $params['toupdate'] = array('value_fieldname' => 'users_id',
                               'to_update'        => "user_available$rand_user",
                               'url'              => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
 
    
    User::dropdown($params);
-   echo "<span id='user_available$rand_user'>";
-   include_once(GLPI_ROOT.'/ajax/planningcheck.php');
-   echo "</span>";
    echo "</td></tr>\n";
 }
 
@@ -90,7 +90,15 @@ $rand_begin = Html::showDateTimeFormItem("plan[begin]", $begin, -1, false, true,
                                          $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
 
-echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:&nbsp;</td><td>";
+echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:&nbsp;";
+
+if (isset($_POST["users_id"])) {
+   echo "<span id='user_available$rand_user'>";
+   include_once(GLPI_ROOT.'/ajax/planningcheck.php');
+   echo "</span>";
+}
+
+echo "</td><td>";
 
 $default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
 

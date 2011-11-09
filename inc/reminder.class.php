@@ -608,7 +608,8 @@ class Reminder extends CommonDBTM {
          echo "<script type='text/javascript' >\n";
          echo "function showPlan() {\n";
             echo "Ext.get('plan').setDisplayed('none');";
-            $params = array('form' => 'remind');
+            $params = array('form'     => 'remind',
+                            'users_id' => $this->fields["users_id"]);
 
             if ($ID && $this->fields["is_planned"]) {
                $params['begin'] = $this->fields["begin"];
