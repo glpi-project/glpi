@@ -338,8 +338,6 @@ class Planning {
       
       // Print Headers
       echo "<br><div class='center'><table class='tab_cadre_fixe'>";
-      // Print Headers
-      echo "<tr class='tab_bg_1'><th>&nbsp;</th>";
       $colnumber=1;
       $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
       $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
@@ -348,10 +346,14 @@ class Planning {
       if ($plan_end[1]!=0) {
          $end_hour++;
       }
-      $colsize=floor(100/($end_hour-$begin_hour));
+      $colsize=floor((100-15)/($end_hour-$begin_hour));
+      
+      // Print Headers
+      echo "<tr class='tab_bg_1'><th width='15%'>&nbsp;</th>";
+      
       for ($i=$begin_hour;$i<$end_hour;$i++) {
-         echo "<th width='$colsize%'>".($i<10?'0':'').$i." -> ".(($i+1)<10?'0':'').($i+1)."</th>";
-         $colnumber++;
+         echo "<th width='$colsize%' colspan='4'>".($i<10?'0':'').$i." -> ".(($i+1)<10?'0':'').($i+1)."</th>";
+         $colnumber+=4;
       }
       echo "</tr>";
 
@@ -362,10 +364,12 @@ class Planning {
       for ($time = $day_begin; $time< $day_end;$time+=DAY_TIMESTAMP) {
          $current_day = date('Y-m-d', $time);
          echo "<tr><th>".Html::convDate($current_day)."</th>";
-         for ($i=$begin_hour;$i<$end_hour;$i++) {
+         $begin_quarter = $begin_hour*4;
+         $end_quarter = $end_hour*4;
+         for ($i=$begin_quarter;$i<$end_quarter;$i++) {
          
-            $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP);
-            $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP);
+            $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
+            $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
             // Init activity interval
             $begin_act = $end_time;
             $end_act   = $begin_time;
@@ -413,17 +417,10 @@ class Planning {
             }     
             if ($begin_act < $end_act) {
                // Activity in hour
-               if ($begin_act==$begin_time && $end_act == $end_time) {
                   echo "<td class='notavailable'>&nbsp;</td>";
-               } else {
-                  $text = date("H:i", strtotime($begin_act));
-                  $text .= "&nbsp;->&nbsp;";
-                  $text .= date("H:i", strtotime($end_act));
-                  echo "<td class='partialavailable'>&nbsp;</td>";
-               }
             } else {
                // No activity
-               echo "<td class='available'><span>&nbsp;</span></td>";
+               echo "<td class='available' >&nbsp;</td>";
             }
          }
          echo "</tr>";
@@ -431,10 +428,9 @@ class Planning {
       echo "<tr><td colspan='$colnumber'>&nbsp;</td></tr>";
       echo "<tr>";
       echo "<th>".$LANG['profiles'][34]."</th>";
-      echo "<td class='available'>".$LANG['reservation'][4]."</td>";
-      echo "<td class='notavailable'>".$LANG['reservation'][11]."</td>";
-      echo "<td class='partialavailable'>".$LANG['reservation'][12]."</td>";
-      echo "<td colspan='".($colnumber-4)."'>&nbsp;</td></tr>";
+      echo "<td class='available' colspan=8>".$LANG['reservation'][4]."</td>";
+      echo "<td class='notavailable' colspan=8>".$LANG['reservation'][11]."</td>";
+      echo "<td colspan='".($colnumber-17)."'>&nbsp;</td></tr>";
       echo "</table></div>";
       
    }
