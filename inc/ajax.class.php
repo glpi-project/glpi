@@ -376,7 +376,7 @@ class Ajax {
 
             $out .= $key."=";
             if (is_array($val)) {
-               $out .=  serialize($val);
+               $out .=  rawurlencode(serialize($val));
 
             } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
                $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
@@ -392,9 +392,10 @@ class Ajax {
                }
             }
          }
-         echo $out."'\n";
+         $out .= "'\n";
       }
-      echo "});";
+      $out .= "});";
+      echo $out;
    }
 
 
