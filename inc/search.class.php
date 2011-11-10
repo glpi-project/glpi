@@ -782,7 +782,7 @@ class Search {
          }
          */
          if ($output_type==GLOBAL_SEARCH) {
-            if ($item = getItemForItemtype) {
+            if ($item = getItemForItemtype($itemtype)) {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows>$p['start']+GLOBAL_SEARCH_DISPLAY_COUNT) {
