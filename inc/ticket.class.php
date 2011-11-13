@@ -3073,8 +3073,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (!$tt->isHiddenField('name')
-          || $tt->isPredefinedField('name')
-          || $CFG_GLPI['is_ticket_title_mandatory']) {
+          || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][57]."&nbsp;:".
                      $tt->getMandatoryMark('name', $CFG_GLPI['is_ticket_title_mandatory'])."</td>";
@@ -3082,9 +3081,8 @@ class Ticket extends CommonITILObject {
                           value=\"".$options['name']."\"></td></tr>";
       }
 
-      if ($tt->isHiddenField('content')
-          || $tt->isPredefinedField('content')
-          || $CFG_GLPI['is_ticket_content_mandatory']) {
+      if (!$tt->isHiddenField('content')
+          || $tt->isPredefinedField('content')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['joblist'][6]."&nbsp;:".
                      $tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_content_mandatory'])."</td>";
