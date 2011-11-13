@@ -77,6 +77,8 @@ class TicketTemplate extends CommonDropdown {
       global $DB;
 
       if ($this->getFromDB($ID)) {
+         $ticket = new Ticket();
+         
          $tth          = new TicketTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
 
