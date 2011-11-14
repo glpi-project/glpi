@@ -1540,6 +1540,15 @@ function update0803to083() {
    $migration->addField('glpi_plugins', 'license', 'string');
 
 
+   // create root entity if not exist with old default values
+   if (countElementsInTable('glpi_entitydatas', 'entities_id=0') == 0) {
+      $query = "INSERT INTO `glpi_entitydatas`
+                       (`entities_id`)
+                VALUES (0)";
+      $DB->query($query)
+      or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
+   }
+
    // migration to new values for inherit parent (0 => -2)
    $field0 = array('calendars_id', 'tickettype', 'inquest_config');
 
@@ -1553,6 +1562,9 @@ function update0803to083() {
                  $DB->error());
       }
    }
+   // new default value for inquest
+   $migration->changeField("glpi_entitydatas", "inquest_rate", "int(11) NOT NULL DEFAULT '0'");
+   $migration->changeField("glpi_entitydatas", "`inquest_delay", "int(11) NOT NULL DEFAULT '-10'");
 
    // problem with value -1 and -2 already used but not in the correct context
    $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer');
@@ -1607,7 +1619,7 @@ function update0803to083() {
 
             foreach ($fieldconfig as $field_config) {
                if (FieldExists("glpi_entitydatas", $field_config)) {
-
+                  // value of general config
                   $query = "UPDATE `glpi_entitydatas`
                             SET `$field_config` = '".$data[$field_config]."'
                             WHERE `$field_config` = -1";
@@ -1615,13 +1627,18 @@ function update0803to083() {
                   or die ("0.83 migrate data from config to glpi_entitydatas ".$LANG['update'][90].
                           $DB->error());
 
-                  $query = "UPDATE `glpi_entitydatas`
-                            SET `auto_assign_mode` = -10
-                            WHERE `auto_assign_mode` = 0";
-                  $DB->query($query)
-                  or die ("0.83 change value No in glpi_entitydatas for auto_assign_mode".
-                          $LANG['update'][90].$DB->error());
+                  $migration->changeField("glpi_entitydatas", "$field_config", "$field_config",
+                                          "int(11) NOT NULL DEFAULT '-2'");
                }
+            }
+            if (FieldExists("glpi_entitydatas", "auto_assign_mode")) {
+               // new value for never
+               $query = "UPDATE `glpi_entitydatas`
+                         SET `auto_assign_mode` = -10
+                         WHERE `auto_assign_mode` = 0";
+               $DB->query($query)
+               or die ("0.83 change value Never in glpi_entitydatas for auto_assign_mode".
+                       $LANG['update'][90].$DB->error());
             }
          }
       }
