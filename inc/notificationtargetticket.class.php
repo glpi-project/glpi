@@ -1224,7 +1224,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
                if ($t->countUsers(Ticket::OBSERVER)) {
                   $users = array();
-                  foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
+                  foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $val) {
                      $user_tmp = new User();
                      $user_tmp->getFromDB($uid);
                      $users[$uid] = $user_tmp->getName();
@@ -1236,7 +1236,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
                if ($t->countGroups(Ticket::OBSERVER)) {
                   $groups = array();
-                  foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
+                  foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $val) {
                      $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                   }
                   $tmp['##ticket.observergroups##'] = implode(', ',$groups);
