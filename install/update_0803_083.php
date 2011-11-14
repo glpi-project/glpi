@@ -1563,8 +1563,10 @@ function update0803to083() {
       }
    }
    // new default value for inquest
-   $migration->changeField("glpi_entitydatas", "inquest_rate", "int(11) NOT NULL DEFAULT '0'");
-   $migration->changeField("glpi_entitydatas", "`inquest_delay", "int(11) NOT NULL DEFAULT '-10'");
+   $migration->changeField("glpi_entitydatas", "inquest_rate", "inquest_rate",
+                           "int(11) NOT NULL DEFAULT '0'");
+   $migration->changeField("glpi_entitydatas", "inquest_delay", "inquest_delay",
+                           "int(11) NOT NULL DEFAULT '-10'");
 
    // problem with value -1 and -2 already used but not in the correct context
    $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer');
