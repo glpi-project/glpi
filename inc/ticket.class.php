@@ -1309,8 +1309,13 @@ class Ticket extends CommonITILObject {
       // From interface
       if (isset($this->input['_link'])) {
          $this->input['_link']['tickets_id_1'] = $this->fields['id'];
-         if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
-            $ticket_ticket->add($this->input['_link']);
+         // message if ticket's ID doesn't exist
+         if (!empty($this->input['_link']['tickets_id_2'])) {
+            if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
+               $ticket_ticket->add($this->input['_link']);
+            } else {
+               Session::addMessageAfterRedirect($LANG['tracking'][11], false, ERROR);
+            }
          }
       }
 
