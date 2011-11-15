@@ -1582,29 +1582,6 @@ function update0803to083() {
    $migration->changeField("glpi_entitydatas", "inquest_delay", "inquest_delay",
                            "int(11) NOT NULL DEFAULT '-10'");
 
-   /// TODO is real interesting ? simple modify default value of entities_id_software created before ?
-   // problem with value -1 and -2 already used but not in the correct context
-   $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer',
-                        array('value' => -2));
-   $migration->migrationOneTable("glpi_entitydatas");
-   if (FieldExists("glpi_entitydatas", 'entities_id_software')) {
-      $query = "UPDATE `glpi_entitydatas`
-                SET `entities_id_softwares` = -10
-                WHERE `entities_id_software` = -2";
-      $DB->query($query)
-      or die ("0.83 correct value for entities_id_softwares in glpi_entitydatas ".$LANG['update'][90].
-              $DB->error());
-
-      $query = "UPDATE `glpi_entitydatas`
-                SET `entities_id_softwares` = -2
-                WHERE `entities_id_software` = -1";
-      $DB->query($query)
-      or die ("0.83 correct value for entities_id_softwares in glpi_entitydatas ".$LANG['update'][90].
-              $DB->error());
-
-      $migration->dropField("glpi_entitydatas", 'entities_id_software');
-   }
-
    // migration to new values for inherit parent (-1 => -2)
    $fieldparent = array('autofill_buy_date', 'autofill_delivery_date', 'autofill_warranty_date',
                         'autofill_order_date', 'autofill_use_date');
