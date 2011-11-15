@@ -1582,6 +1582,7 @@ function update0803to083() {
    $migration->changeField("glpi_entitydatas", "inquest_delay", "inquest_delay",
                            "int(11) NOT NULL DEFAULT '-10'");
 
+   /// TODO is real interesting ? simple modify default value of entities_id_software created before ?
    // problem with value -1 and -2 already used but not in the correct context
    $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer',
                         array('value' => -2));
