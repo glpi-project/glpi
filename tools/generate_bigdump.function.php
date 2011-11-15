@@ -1242,8 +1242,19 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
                 VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 1, 0, 1, 1, 1)";
+                        NOW(), 1, 0, 1, 1, 1,
+                        0, 'group $i', 1, NULL, NULL)";
       $DB->query($query) or die("PB REQUETE ".$query);
+      $papa = $DB->insert_id();
+
+      // Generate sub group
+      for ($j=0 ; $j<$MAX['groups'] ; $j++) {
+         $query = "INSERT INTO `glpi_groups`
+                   VALUES (NULL, '$ID_entity', 0, 'subgroup $j', 'comment subgroup $j of group $i', '', '', '',
+                           NOW(), 1, 0, 1, 1, 1,
+                           $papa, 'group $i > subgroup $j', 2, NULL, NULL)";
+         $DB->query($query) or die("PB REQUETE ".$query);
+      }
    }
 
    $LAST["groups"] = $DB->insert_id();
@@ -1253,11 +1264,13 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
                 VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 0, 1, 1, 1, 1)";
+                        NOW(), 0, 1, 1, 1, 1,
+                        0, 'group $i', 1, NULL, NULL)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
    $LAST["techgroups"] = $DB->insert_id();
+   regenerateTreeCompleteName("glpi_groups");
 
 
    // glpi_users
