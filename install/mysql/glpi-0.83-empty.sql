@@ -1831,6 +1831,11 @@ CREATE TABLE `glpi_groups` (
   `is_notify` tinyint(1) NOT NULL DEFAULT '1',
   `is_itemgroup` tinyint(1) NOT NULL DEFAULT '1',
   `is_usergroup` tinyint(1) NOT NULL DEFAULT '1',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+  `sons_cache` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
@@ -1842,7 +1847,8 @@ CREATE TABLE `glpi_groups` (
   KEY `is_assign` (`is_assign`),
   KEY `is_notify` (`is_notify`),
   KEY `is_itemgroup` (`is_itemgroup`),
-  KEY `is_usergroup` (`is_usergroup`)
+  KEY `is_usergroup` (`is_usergroup`),
+  KEY `groups_id` (`groups_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
