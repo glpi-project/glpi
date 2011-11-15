@@ -3232,7 +3232,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($options['template_preview'])) {
-         $tt->getFromDBWithDatas($options['template_preview'], false);
+         $tt->getFromDBWithDatas($options['template_preview'], true);
       }
 
       // Predefined fields from template : reset them
