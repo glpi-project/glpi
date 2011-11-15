@@ -2947,7 +2947,7 @@ class Ticket extends CommonITILObject {
       }
 
       if ($ticket_template) {
-         $tt->getFromDBWithDatas($ticket_template, false);
+         $tt->getFromDBWithDatas($ticket_template, true);
       }
 
       // Predefined fields from template : reset them
