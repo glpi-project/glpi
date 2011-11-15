@@ -4329,13 +4329,29 @@ class Ticket extends CommonITILObject {
 
       if ($foruser) {
          $query .= " LEFT JOIN `glpi_tickets_users`
-                        ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)";
+                        ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
+                           AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."')";
+                        
+         if (Session::haveRight("show_group_ticket",'1')
+             && isset($_SESSION["glpigroups"])
+             && count($_SESSION["glpigroups"])) {
+            $query .= " LEFT JOIN `glpi_groups_tickets`
+                           ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`
+                              AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')";              
+         } 
       }
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
-         $query .= " AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."'
-                     AND `glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
+         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
+         
+         if (Session::haveRight("show_group_ticket",'1')
+             && isset($_SESSION["glpigroups"])
+             && count($_SESSION["glpigroups"])) {
+            $groups = implode("','",$_SESSION['glpigroups']);
+            $query .= " OR `glpi_groups_tickets`.`groups_id` IN ('$groups') ";        
+         }         
+         $query.= ")";
       }
 
       $query .= "GROUP BY `status`";
