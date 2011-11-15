@@ -1633,6 +1633,24 @@ class Ticket extends CommonITILObject {
 
 
    /**
+    * Overloaded from commonDBTM
+    *
+    * @since version 0.83
+    *
+    * @param $type itemtype of object to add
+    *
+    * @return rights
+   **/
+   function canAddItem($type) {
+
+      if ($type == 'Document' && $this->getField('status') == 'closed') {
+         return false;
+      }
+      return parent::canAddItem($type);
+   }
+
+
+   /**
     * Is the current user have right to add followups to the current ticket ?
     *
     * @return boolean
@@ -4340,26 +4358,26 @@ class Ticket extends CommonITILObject {
          $query .= " LEFT JOIN `glpi_tickets_users`
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
                            AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."')";
-                        
+
          if (Session::haveRight("show_group_ticket",'1')
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $query .= " LEFT JOIN `glpi_groups_tickets`
                            ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`
-                              AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')";              
-         } 
+                              AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')";
+         }
       }
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
          $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
-         
+
          if (Session::haveRight("show_group_ticket",'1')
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
-            $query .= " OR `glpi_groups_tickets`.`groups_id` IN ('$groups') ";        
-         }         
+            $query .= " OR `glpi_groups_tickets`.`groups_id` IN ('$groups') ";
+         }
          $query.= ")";
       }
 

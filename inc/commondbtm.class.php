@@ -1333,6 +1333,22 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Have I the global right to add an item for the Object
+    *
+    * May be overloaded if needed (ex KnowbaseItem)
+    *
+    * @since version 0.83
+    *
+    * @param $type itemtype of object to add
+    *
+    * @return rights
+   **/
+   function canAddItem($type) {
+      return $this->can($this->getID(), 'w');
+   }
+
+
+   /**
     * Have I the global right to "create" the Object
     *
     * May be overloaded if needed (ex KnowbaseItem)
