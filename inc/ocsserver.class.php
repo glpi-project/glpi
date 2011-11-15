@@ -2832,8 +2832,8 @@ class OcsServer extends CommonDBTM {
                   }
                   echo "<td>";
                   Dropdown::show('Entity',
-                                 array('name'     => "toimport_entities[".$tab["id"]."]
-                                                      =".$data['entities_id'],
+                                 array('name'     => "toimport_entities[".$tab["id"]."]=".
+                                                      $data['entities_id'],
                                        'value'    => $data['entities_id'],
                                        'comments' => 0));
                   echo "</td>\n";
@@ -2842,8 +2842,8 @@ class OcsServer extends CommonDBTM {
                      $data['locations_id'] = 0;
                   }
                   Dropdown::show('Location',
-                                 array('name'     => "toimport_locations[".$tab["id"]."]
-                                                      =".$data['locations_id'],
+                                 array('name'     => "toimport_locations[".$tab["id"]."]=".
+                                                      $data['locations_id'],
                                        'value'    => $data['locations_id'],
                                        'comments' => 0));
                   echo "</td>\n";
