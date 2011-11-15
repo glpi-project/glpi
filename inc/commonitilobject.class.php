@@ -1574,7 +1574,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                                 '= '.self::REQUESTER)));
 
       $tab[71]['table']         = 'glpi_groups';
-      $tab[71]['field']         = 'name';
+      $tab[71]['field']         = 'completename';
       $tab[71]['datatype']      = 'dropdown';
       $tab[71]['name']          = $LANG['common'][35];
       $tab[71]['forcegroupby']  = true;
@@ -1608,7 +1608,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                                  '= '.self::OBSERVER)));
 
       $tab[65]['table']         = 'glpi_groups';
-      $tab[65]['field']         = 'name';
+      $tab[65]['field']         = 'completename';
       $tab[65]['datatype']      = 'dropdown';
       $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
       $tab[65]['forcegroupby']  = true;
@@ -1643,7 +1643,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
 
       $tab[8]['table']         = 'glpi_groups';
-      $tab[8]['field']         = 'name';
+      $tab[8]['field']         = 'completename';
       $tab[8]['datatype']      = 'dropdown';
       $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
       $tab[8]['forcegroupby']  = true;

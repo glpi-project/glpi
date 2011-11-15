@@ -1961,7 +1961,7 @@ class User extends CommonDBTM {
       $tab[11]['datatype'] = 'string';
 
       $tab[13]['table']         = 'glpi_groups';
-      $tab[13]['field']         = 'name';
+      $tab[13]['field']         = 'completename';
       $tab[13]['name']          = $LANG['common'][35];
       $tab[13]['forcegroupby']  = true;
       $tab[13]['datatype']      = 'itemlink';
