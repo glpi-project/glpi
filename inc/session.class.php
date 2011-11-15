@@ -461,7 +461,7 @@ class Session {
 
       $_SESSION["glpigroups"] = array();
 
-      $query_gp = "SELECT `groups_id`
+      $query_gp = "SELECT `glpi_groups_users`.`groups_id`
                    FROM `glpi_groups_users`
                    LEFT JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                    WHERE `glpi_groups_users`.`users_id`='" . self::getLoginUserID() . "' " .
