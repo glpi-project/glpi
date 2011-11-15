@@ -1570,14 +1570,21 @@ function update0803to083() {
                  $DB->error());
       }
    }
-   // new default value for inquest
+   // new default value
+   $migration->changeField("glpi_entitydatas", "calendars_id", "calendars_id",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "tickettype", "tickettype",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "inquest_config", "inquest_config",
+                           "int(11) NOT NULL DEFAULT '-2'");
    $migration->changeField("glpi_entitydatas", "inquest_rate", "inquest_rate",
                            "int(11) NOT NULL DEFAULT '0'");
    $migration->changeField("glpi_entitydatas", "inquest_delay", "inquest_delay",
                            "int(11) NOT NULL DEFAULT '-10'");
 
    // problem with value -1 and -2 already used but not in the correct context
-   $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer');
+   $migration->addField("glpi_entitydatas", 'entities_id_softwares', 'integer',
+                        array('value' => -2));
    $migration->migrationOneTable("glpi_entitydatas");
    if (FieldExists("glpi_entitydatas", 'entities_id_software')) {
       $query = "UPDATE `glpi_entitydatas`
@@ -1611,6 +1618,18 @@ function update0803to083() {
                  $DB->error());
       }
    }
+   // new default value
+   $migration->changeField("glpi_entitydatas", "autofill_buy_date", "autofill_buy_date",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "autofill_delivery_date", "autofill_delivery_date",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "autofill_warranty_date", "autofill_warranty_date",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "autofill_order_date", "autofill_order_date",
+                           "int(11) NOT NULL DEFAULT '-2'");
+   $migration->changeField("glpi_entitydatas", "autofill_use_date", "autofill_use_date",
+                           "int(11) NOT NULL DEFAULT '-2'");
+
 
    // TODO change return config to return parent
    //   $fieldconfig = array('cartridges_alert_repeat', 'use_licenses_alert', 'use_infocoms_alert',
