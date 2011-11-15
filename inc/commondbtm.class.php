@@ -2270,6 +2270,11 @@ class CommonDBTM extends CommonGLPI {
       global $LANG,$CFG_GLPI;
 
       $comment = "";
+      if ($this->isField('completename')) {
+         $comment .= "<span class='b'>".$LANG['common'][51]."&nbsp;: </span>".
+                     $this->getField('completename')."<br>";
+      }
+
       if ($this->isField('serial')) {
          $comment .= "<span class='b'>".$LANG['common'][19]."&nbsp;: </span>".
                      $this->getField('serial')."<br>";
@@ -2280,14 +2285,14 @@ class CommonDBTM extends CommonGLPI {
                      $this->getField('otherserial')."<br>";
       }
 
-      if ($this->isField('states_id')) {
+      if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
             $comment .= "<span class='b'>".$LANG['state'][0]."&nbsp;: </span>$tmp<br>";
          }
       }
 
-      if ($this->isField('locations_id')) {
+      if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
             $comment .= "<span class='b'>".$LANG['common'][15]."&nbsp;: "."</span>".$tmp."<br>";
@@ -2301,7 +2306,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if ($this->isField('groups_id')) {
+      if ($this->isField('groups_id') && $this->getType()!='Group') {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
             $comment .= "<span class='b'>".$LANG['common'][35]."&nbsp;: "."</span>".$tmp."<br>";
@@ -2323,6 +2328,10 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('contact_num')) {
          $comment .= "<span class='b'>".$LANG['common'][21]."&nbsp;: </span>".
                      $this->getField('contact_num')."<br>";
+      }
+      if (($this instanceof CommonDropdown) && $this->isField('comment')) {
+         $comment .= "<span class='b'>".$LANG['common'][25]."&nbsp;: </span>".
+                     nl2br($this->getField('comment'))."<br>";
       }
 
       if (!empty($comment)) {
