@@ -885,9 +885,9 @@ class OcsServer extends CommonDBTM {
                                                                        :$LANG['ocsng'][18]);
                $msg .= ', '.$LANG['ocsconfig'][38]. " : ".$ocsServer['use_soft_dict'];
          }
+         echo wordwrap($msg."\n", $width, "\n\t\t");
+         echo "\n</pre></td></tr>";
       }
-      echo wordwrap($msg."\n", $width, "\n\t\t");
-      echo "\n</pre></td></tr>";
    }
 
 
