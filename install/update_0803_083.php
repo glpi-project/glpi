@@ -1625,7 +1625,8 @@ function update0803to083() {
          if ($data = $DB->fetch_assoc($result)) {
 
             foreach ($fieldconfig as $field_config) {
-               if (FieldExists("glpi_entitydatas", $field_config)) {
+               if (FieldExists("glpi_entitydatas", $field_config)
+                   && FieldExists("glpi_configs", $field_config)) {
                   // value of general config
                   $query = "UPDATE `glpi_entitydatas`
                             SET `$field_config` = '".$data[$field_config]."'
