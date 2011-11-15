@@ -394,7 +394,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (isset($input['completename']) && !empty($input['completename'])) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
-                   WHERE `completename` = '".$input['completename']."'";
+                   WHERE `completename` = '".addslashes($input['completename'])."'";
          if ($this->isEntityAssign()) {
             $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
                                                  $input['entities_id'], $this->maybeRecursive());
