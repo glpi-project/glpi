@@ -179,7 +179,7 @@ class TicketRecurrent extends CommonDropdown {
       $tab[12]['table']    = 'glpi_tickettemplates';
       $tab[12]['field']    = 'name';
       $tab[12]['name']     = $LANG['job'][58];
-      $tab[12]['datatype'] = 'itemtypename';
+      $tab[12]['datatype'] = 'itemlink';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'begin_date';
@@ -229,9 +229,12 @@ class TicketRecurrent extends CommonDropdown {
    function computeNextCreationDate($begin_date, $periodicity, $create_before){
       global $LANG;
 
+      if (empty($begin_date)) {
+         return 'NULL';
+      }
       if ($create_before > $periodicity) {
          Session::addMessageAfterRedirect($LANG['jobrecurrent'][4], false, ERROR);
-         return NULL;
+         return 'NULL';
       }
 
       if ($periodicity > 0) {
@@ -243,7 +246,7 @@ class TicketRecurrent extends CommonDropdown {
          }
       }
 
-      return NULL;
+      return 'NULL';
    }
 
 
