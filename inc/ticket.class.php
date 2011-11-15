@@ -3517,7 +3517,15 @@ class Ticket extends CommonITILObject {
          if (!$ID) {
             $opt['on_change'] = 'submit()';
          }
-         self::dropdownType('type', $opt);
+         $rand = self::dropdownType('type', $opt);
+         if ($ID) {
+            $params=array('type' => '__VALUE__', 'entity_restrict' => $this->fields['entities_id'],
+                          'value' => $this->fields['itilcategories_id'], 
+                          'currenttype' => $this->fields['type']);
+            Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type", 
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php", 
+                                          $params);
+         }
       } else {
          echo self::getTicketTypeName($this->fields["type"]);
       }
@@ -3555,8 +3563,9 @@ class Ticket extends CommonITILObject {
                break;
          }
 
+         echo "<span id='show_category_by_type'>";
          Dropdown::show('ITILCategory', $opt);
-
+         echo "</span>";
       } else {
          echo Dropdown::getDropdownName("glpi_itilcategories", $this->fields["itilcategories_id"]);
       }
