@@ -106,7 +106,7 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[70]['name']  = $LANG['common'][10];
 
       $tab[71]['table'] = 'glpi_groups';
-      $tab[71]['field'] = 'name';
+      $tab[71]['field'] = 'completename';
       $tab[71]['name']  = $LANG['common'][35];
 
       $tab[72]['table']     = 'glpi_tickettemplates';
@@ -123,7 +123,7 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[74]['field']     = 'is_incident';
       $tab[74]['name']      = $LANG['job'][70];
       $tab[74]['datatype'] = 'bool';
-      
+
       $tab[75]['table']     = $this->getTable();
       $tab[75]['field']     = 'is_request';
       $tab[75]['name']      = $LANG['job'][71];

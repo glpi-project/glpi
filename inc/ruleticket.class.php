@@ -225,7 +225,7 @@ class RuleTicket extends Rule {
       $criterias['users_locations']['type']      = 'dropdown';
 
       $criterias['_groups_id_requester']['table']     = 'glpi_groups';
-      $criterias['_groups_id_requester']['field']     = 'name';
+      $criterias['_groups_id_requester']['field']     = 'completename';
       $criterias['_groups_id_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][35];
       $criterias['_groups_id_requester']['linkfield'] = '_groups_id_requester';
       $criterias['_groups_id_requester']['type']      = 'dropdown';
@@ -237,7 +237,7 @@ class RuleTicket extends Rule {
       $criterias['_users_id_assign']['type']      = 'dropdown_users';
 
       $criterias['_groups_id_assign']['table']     = 'glpi_groups';
-      $criterias['_groups_id_assign']['field']     = 'name';
+      $criterias['_groups_id_assign']['field']     = 'completename';
       $criterias['_groups_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
       $criterias['_groups_id_assign']['linkfield'] = '_groups_id_assign';
       $criterias['_groups_id_assign']['type']      = 'dropdown';
@@ -255,7 +255,7 @@ class RuleTicket extends Rule {
       $criterias['_users_id_observer']['type']      = 'dropdown_users';
 
       $criterias['_groups_id_observer']['table']     = 'glpi_groups';
-      $criterias['_groups_id_observer']['field']     = 'name';
+      $criterias['_groups_id_observer']['field']     = 'completename';
       $criterias['_groups_id_observer']['name']      = $LANG['common'][104]." - ".$LANG['common'][35];
       $criterias['_groups_id_observer']['linkfield'] = '_groups_id_observer';
       $criterias['_groups_id_observer']['type']      = 'dropdown';

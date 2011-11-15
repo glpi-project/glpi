@@ -4613,7 +4613,7 @@ class Search {
             $search['States'][70]['name']      = $LANG['common'][34];
 
             $search['States'][71]['table']     = 'glpi_groups';
-            $search['States'][71]['field']     = 'name';
+            $search['States'][71]['field']     = 'completename';
             $search['States'][71]['name']      = $LANG['common'][35];
 
             $search['States'][19]['table']          = 'state_types';

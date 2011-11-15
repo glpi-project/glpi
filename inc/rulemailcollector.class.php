@@ -141,7 +141,7 @@ class RuleMailCollector extends Rule {
       $criterias['received']['type']  = 'text';
 
       $criterias['GROUPS']['table']     = 'glpi_groups';
-      $criterias['GROUPS']['field']     = 'name';
+      $criterias['GROUPS']['field']     = 'completename';
       $criterias['GROUPS']['name']      = $LANG['common'][34].' : '.$LANG['common'][35];
       $criterias['GROUPS']['linkfield'] = '';
       $criterias['GROUPS']['type']      = 'dropdown';

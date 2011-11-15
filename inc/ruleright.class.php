@@ -301,7 +301,7 @@ class RuleRight extends Rule {
          $criterias['MAIL_EMAIL']['id']        = 'mail_email';
 
          $criterias['GROUPS']['table']     = 'glpi_groups';
-         $criterias['GROUPS']['field']     = 'name';
+         $criterias['GROUPS']['field']     = 'completename';
          $criterias['GROUPS']['name']      = $LANG['rulesengine'][149];
          $criterias['GROUPS']['linkfield'] = '';
          $criterias['GROUPS']['type']      = 'dropdown';

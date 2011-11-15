@@ -260,7 +260,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[24]['name']      = $LANG['common'][10];
 
       $tab[49]['table']     = 'glpi_groups';
-      $tab[49]['field']     = 'name';
+      $tab[49]['field']     = 'completename';
       $tab[49]['linkfield'] = 'groups_id_tech';
       $tab[49]['name']      = $LANG['common'][109];
       $tab[49]['condition'] = '`is_assign`';
