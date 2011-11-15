@@ -1228,7 +1228,7 @@ class Document extends CommonDBTM {
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      $canedit = $item->can($ID,'w');
+      $canedit =  $item->canadditem('Document');
 
       $is_recursive=$item->isRecursive();
 
