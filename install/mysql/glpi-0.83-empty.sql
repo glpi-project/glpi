@@ -2048,6 +2048,7 @@ CREATE TABLE `glpi_itilcategories` (
   `tickettemplates_id_demand` int(11) NOT NULL DEFAULT '0',
   `is_incident` int(11) NOT NULL DEFAULT '1',
   `is_request` int(11) NOT NULL DEFAULT '1',
+  `is_problem` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -2060,7 +2061,8 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `tickettemplates_id_incident` (`tickettemplates_id_incident`),
   KEY `tickettemplates_id_demand` (`tickettemplates_id_demand`),
   KEY `is_incident` (`is_incident`),
-  KEY `is_request` (`is_request`)
+  KEY `is_request` (`is_request`),
+  KEY `is_problem` (`is_problem`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
