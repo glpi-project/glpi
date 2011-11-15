@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Group class
 **/
-class Group extends CommonDBTM {
+class Group extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
@@ -103,6 +103,12 @@ class Group extends CommonDBTM {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();
+
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable($this->getTable(), "`groups_id` = '".$item->getID()."'");
+               }
+               $ong[4] = self::createTabEntry($this->getTypeName(2), $nb);
+
                if ($item->getField('is_itemgroup')) {
                   $ong[1] = $LANG['common'][111];
                }
@@ -139,6 +145,9 @@ class Group extends CommonDBTM {
                   $item->showLDAPForm($item->getID());
                   return true;
 
+               case 4 :
+                  $item->showChildren();
+                  return true;
             }
             break;
       }
@@ -151,13 +160,13 @@ class Group extends CommonDBTM {
 
       $ong = array();
 
+      $this->addStandardTab('Group', $ong, $options);
       if ($this->fields['is_usergroup']) {
          $this->addStandardTab('User', $ong, $options);
       }
       if ($this->fields['is_notify']) {
          $this->addStandardTab('NotificationTarget', $ong, $options);
       }
-      $this->addStandardTab('Group', $ong, $options);
       if ($this->fields['is_requester']) {
          $this->addStandardTab('Ticket', $ong, $options);
       }
@@ -195,9 +204,18 @@ class Group extends CommonDBTM {
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
-      echo "<td class='middle' rowspan='5'>";
+      echo "<td rowspan='6' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td class='middle' rowspan='6'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>".$LANG['setup'][75]."</td><td colspan='2'>";
+      Dropdown::show('Group',
+                     array('value'  => $this->fields['groups_id'],
+                           'name'   => 'groups_id',
+                           'entity' => $this->fields['entities_id'],
+                           'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID) : array())));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -280,25 +298,8 @@ class Group extends CommonDBTM {
    function getSearchOptions() {
       global $LANG;
 
-      $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab = parent::getSearchOptions();
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
-
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
-      $tab[2]['massiveaction'] = false;
-
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
-      $tab[16]['datatype'] = 'text';
 
       if (AuthLdap::useAuthLdap()) {
 
@@ -317,22 +318,6 @@ class Group extends CommonDBTM {
          $tab[5]['name']      = $LANG['setup'][261];
          $tab[5]['datatype']  = 'string';
       }
-
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'is_recursive';
-      $tab[6]['name']     = $LANG['entity'][9];
-      $tab[6]['datatype'] = 'bool';
-
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
-
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'is_requester';
