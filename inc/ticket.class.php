@@ -3558,7 +3558,7 @@ class Ticket extends CommonITILObject {
          $opt = array('value'  => $this->fields["itilcategories_id"],
                       'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            $opt['condition'] = '`is_helpdeskvisible`=1 AND ';
+            $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
          } else {
             $opt['condition'] = '';
          }
@@ -3571,7 +3571,7 @@ class Ticket extends CommonITILObject {
             $opt['display_emptychoice'] = false;
          }
 
-         switch ($this->fields["type"]) {
+         switch ($values['type']) {
             case self::INCIDENT_TYPE:
                $opt['condition'] .= "`is_incident`='1'";
                break;
@@ -3581,7 +3581,6 @@ class Ticket extends CommonITILObject {
             default:
                break;
          }
-
          echo "<span id='show_category_by_type'>";
          Dropdown::show('ITILCategory', $opt);
          echo "</span>";

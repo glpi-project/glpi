@@ -1052,6 +1052,9 @@ function update0803to083() {
    $migration->addField('glpi_itilcategories', 'is_request', "integer",  array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_request');
 
+   $migration->addField('glpi_itilcategories', 'is_problem', "integer",  array('value' => 1));
+   $migration->addKey('glpi_itilcategories', 'is_problem');
+
    if (!TableExists('glpi_tickettemplatehiddenfields')) {
       $query = "CREATE TABLE `glpi_tickettemplatehiddenfields` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1564,7 +1567,7 @@ function update0803to083() {
       if (FieldExists("glpi_entitydatas", $field_0)) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = -2
-                   WHERE `$field_0` = 0";
+                   WHERE `$field_0` = 0 AND `entities_id`!='0'";
          $DB->query($query)
          or die ("0.83 new value for inherit parent 0 in glpi_entitydatas ".$LANG['update'][90].
                  $DB->error());
