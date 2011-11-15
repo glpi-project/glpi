@@ -1059,6 +1059,7 @@ $LANG['job'][68] = "Des champs obligatoires ne sont pas renseignés. Veuillez co
 $LANG['job'][69] = "Ce ticket me concerne";
 $LANG['job'][70] = "Visible pour un incident";
 $LANG['job'][71] = "Visible pour une demande";
+$LANG['job'][72] = "Visible pour un problème";
 
 $LANG['joblist'][0]  = "Statut";
 $LANG['joblist'][1]  = "Seulement les miens";
