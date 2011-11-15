@@ -677,9 +677,17 @@ function update0803to083() {
    $migration->dropKey("glpi_groups", 'ldap_group_dn');
    $migration->changeField("glpi_groups", 'ldap_group_dn', 'ldap_group_dn', "text");
 
+   $migration->addField("glpi_groups", 'groups_id', "integer");
+   $migration->addField("glpi_groups", 'completename', "text");
+   $migration->addField("glpi_groups", 'level', "integer");
+   $migration->addField("glpi_groups", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_groups", 'sons_cache', "longtext");
+
    $migration->migrationOneTable('glpi_groups');
    $migration->addKey("glpi_groups", 'ldap_value', '', 'INDEX', 200);
    $migration->addKey("glpi_groups", 'ldap_group_dn', '', 'INDEX', 200);
+   $migration->addKey("glpi_groups", 'groups_id');
+   regenerateTreeCompleteName("glpi_groups");
 
    $migration->addField("glpi_entitydatas", 'notification_subject_tag', "string",
                         array('after' => 'admin_reply_name'));
