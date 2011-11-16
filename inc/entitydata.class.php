@@ -478,13 +478,17 @@ class EntityData extends CommonDBChild {
       if ($ID > 0) {
          $toadd[self::CONFIG_PARENT] = $LANG['common'][102];
       }
-      //$toadd[self::CONFIG_PARENT] = $LANG['common'][110];
+      $entites = array();
+      foreach (getAncestorsOf('glpi_entities',  $entitydata->fields['entities_id']) as $ent) {
+         if (Session::haveAccessToEntity($ent)) {
+            $entities[] = $ent;
+         }
+      }
       Dropdown::show('Entity',
                      array('name'               => 'entities_id_software',
                            'value'              => $entitydata->getField('entities_id_software'),
                            'toadd'              => $toadd,
-                           'entity'             => getAncestorsOf('glpi_entities',
-                                                                  $entitydata->fields['entities_id']),
+                           'entity'             => $entities,
                            'display_rootentity' => true,
                            'comments'           => false));
       echo "</td><td colspan='2'></td></tr>";
