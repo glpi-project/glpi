@@ -209,8 +209,8 @@ class TicketTask  extends CommonDBTM {
       $job         = new Ticket;
       $mailsend    = false;
 
-      if ($job->getFromDB($this->input["tickets_id"])) {
-         $job->updateDateMod($this->input["tickets_id"]);
+      if ($job->getFromDB($this->fields["tickets_id"])) {
+         $job->updateDateMod($this->fields["tickets_id"]);
 
          if (count($this->updates)) {
             $update_done = true;
