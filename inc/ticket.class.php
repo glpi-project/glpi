@@ -3539,10 +3539,10 @@ class Ticket extends CommonITILObject {
          $rand = self::dropdownType('type', $opt);
          if ($ID) {
             $params=array('type' => '__VALUE__', 'entity_restrict' => $this->fields['entities_id'],
-                          'value' => $this->fields['itilcategories_id'], 
+                          'value' => $this->fields['itilcategories_id'],
                           'currenttype' => $this->fields['type']);
-            Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type", 
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php", 
+            Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php",
                                           $params);
          }
       } else {
@@ -5337,7 +5337,7 @@ class Ticket extends CommonITILObject {
    static function getUsedGroupBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
+      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_groups_tickets`
                      ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
@@ -5351,7 +5351,7 @@ class Ticket extends CommonITILObject {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
                           OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
-      $query .= " ORDER BY `glpi_groups`.`name`";
+      $query .= " ORDER BY `glpi_groups`.`completename`";
 
       $result = $DB->query($query);
       $tab    = array();
@@ -5359,7 +5359,7 @@ class Ticket extends CommonITILObject {
       if ($DB->numrows($result) >=1 ) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["id"];
-            $tmp['link'] = $line["name"];
+            $tmp['link'] = $line["completename"];
             $tab[]       = $tmp;
          }
       }
@@ -5377,7 +5377,7 @@ class Ticket extends CommonITILObject {
    static function getUsedAssignGroupBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
+      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_groups_tickets`
                      ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
@@ -5391,14 +5391,14 @@ class Ticket extends CommonITILObject {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
                           OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
-      $query .= " ORDER BY `glpi_groups`.`name`";
+      $query .= " ORDER BY `glpi_groups`.`completename`";
 
       $result = $DB->query($query);
       $tab    = array();
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["id"];
-            $tmp['link'] = $line["name"];
+            $tmp['link'] = $line["completename"];
             $tab[]       = $tmp;
          }
       }
