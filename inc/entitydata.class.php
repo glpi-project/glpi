@@ -483,7 +483,7 @@ class EntityData extends CommonDBChild {
                      array('name'               => 'entities_id_software',
                            'value'              => $entitydata->getField('entities_id_software'),
                            'toadd'              => $toadd,
-                           'entity'             => getAncestorsOf('glpi_entities', 
+                           'entity'             => getAncestorsOf('glpi_entities',
                                                                   $entitydata->fields['entities_id']),
                            'display_rootentity' => true,
                            'comments'           => false));
@@ -904,9 +904,18 @@ class EntityData extends CommonDBChild {
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
          // Value is defined : use it
-         if (isset($entdata->fields[$fieldref])
-             && ($entdata->fields[$fieldref] != EntityData::CONFIG_PARENT)) {
-            return $entdata->fields[$fieldval];
+         if (isset($entdata->fields[$fieldref])) {
+            // Numerical value
+            if (is_numeric($default_value)
+                && $entdata->fields[$fieldref] != EntityData::CONFIG_PARENT) {
+               // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) num =>", $entdata->fields[$fieldval]);
+               return $entdata->fields[$fieldval];
+            }
+            // String value
+            if (!is_numeric($default_value) && $entdata->fields[$fieldref]) {
+               // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) txt =>", $entdata->fields[$fieldval]);
+               return $entdata->fields[$fieldval];
+            }
          }
       }
 
@@ -915,7 +924,10 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
+            $ret = self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval, $default_value);
+            // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) rec =>", $ret);
+            return $ret;
+
          }
       }
 /*
