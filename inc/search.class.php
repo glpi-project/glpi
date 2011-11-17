@@ -3613,7 +3613,7 @@ class Search {
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
       $linkfield = $searchopt[$ID]["linkfield"];
-
+      
       switch ($table.'.'.$field) {
          case "glpi_users.name" :
             // USER search case
@@ -4846,7 +4846,13 @@ class Search {
                                 'searchopt' => $searchopt[$field_num]);
 
                // Specific case of TreeDropdown : add under
-               $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
+               /// TODO clean realtable usage : for complete_entities
+               if (isset($searchopt[$field_num]['realtable']) && !empty($searchopt[$field_num]['realtable'])) {
+                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['realtable']);   
+               } else {
+                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);   
+               }
+               
                $itemlinked      = new $itemtype_linked();
                if ($itemlinked instanceof CommonTreeDropdown) {
                   $actions['under'] = $LANG['search'][3];

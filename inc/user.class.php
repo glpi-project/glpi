@@ -2040,6 +2040,7 @@ class User extends CommonDBTM {
       $tab[23]['massiveaction'] = false;
 
       $tab[80]['table']         = 'glpi_complete_entities';
+      $tab[80]['realtable']     = 'glpi_entities';
       $tab[80]['linkfield']     = 'entities_id';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0]." (- ".$LANG['Menu'][35].")";
