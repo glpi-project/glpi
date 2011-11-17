@@ -48,6 +48,12 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['searchtype'])) {
    $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
+   
+   /// TODO clean it : used for glpi_complete_entites
+   if (isset($searchopt['realtable']) && !empty($searchopt['realtable'])) {
+      $searchopt['table'] = $searchopt['realtable'];
+   }
+   
    $_REQUEST['value'] = rawurldecode(stripslashes($_REQUEST['value']));
 
    $addmeta = "";
