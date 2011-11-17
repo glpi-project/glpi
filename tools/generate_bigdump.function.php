@@ -972,21 +972,21 @@ function generateGlobalDropdowns() {
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
       $query = "INSERT INTO `glpi_itilcategories`
                 VALUES (NULL, '0', '1', '0', 'categorie $i', '', 'comment categorie $i', '1', '0',
-                        '0', '0', '', '', 1, 0, 0, 1, 1)";
+                        '0', '0', '', '', 1, 0, 0, 1, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $newID = $DB->insert_id();
       for ($j=0 ; $j<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $j++) {
          $query = "INSERT INTO `glpi_itilcategories`
                    VALUES (NULL, '0', '1', '$newID', 's-categorie $j', '', 'comment s-categorie $j',
-                           '2', '0', '0', '0', '', '', 1, 0, 0, 1, 1)";
+                           '2', '0', '0', '0', '', '', 1, 0, 0, 1, 1, 1)";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $k++) {
             $query = "INSERT INTO `glpi_itilcategories`
                       VALUES (NULL, '0', '1', '$newID2', 'ss-categorie $k', '',
-                              'comment ss-categorie $k', '3', '0', '0', '0', '', '', 1, 0, 0, 1, 1)";
+                              'comment ss-categorie $k', '3', '0', '0', '0', '', '', 1, 0, 0, 1, 1, 1)";
             $DB->query($query) or die("PB REQUETE ".$query);
          }
       }
@@ -1242,8 +1242,8 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
                 VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 1, 0, 1, 1, 1,
-                        0, 'group $i', 1, NULL, NULL)";
+                        NOW(), 0, 'group $i', 1, NULL, NULL, 1, 0, 1, 1, 1
+                        )";
       $DB->query($query) or die("PB REQUETE ".$query);
       $papa = $DB->insert_id();
 
@@ -1251,8 +1251,7 @@ function generate_entity($ID_entity) {
       for ($j=0 ; $j<$MAX['groups'] ; $j++) {
          $query = "INSERT INTO `glpi_groups`
                    VALUES (NULL, '$ID_entity', 0, 'subgroup $j', 'comment subgroup $j of group $i', '', '', '',
-                           NOW(), 1, 0, 1, 1, 1,
-                           $papa, 'group $i > subgroup $j', 2, NULL, NULL)";
+                           NOW(), $papa, 'group $i > subgroup $j', 2, NULL, NULL, 1, 0, 1, 1, 1)";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
    }
@@ -1264,8 +1263,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
       $query = "INSERT INTO `glpi_groups`
                 VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 0, 1, 1, 1, 1,
-                        0, 'group $i', 1, NULL, NULL)";
+                        NOW(), 0, 'group $i', 1, NULL, NULL, 0, 1, 1, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
 
@@ -1507,7 +1505,7 @@ function generate_entity($ID_entity) {
              VALUES (NULL, '$ID_entity', '1', '0', 'category for entity $ID_entity', '',
                      'comment category for entity $ID_entity', '1', '0',
                      '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                     '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1)";
+                     '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1, 1)";
    $DB->query($query) or die("PB REQUETE ".$query);
 
    $newID = $DB->insert_id();
@@ -1516,7 +1514,7 @@ function generate_entity($ID_entity) {
                 VALUES (NULL, '$ID_entity', '1', '$newID', 'categorie $i', '',
                         'comment categorie $i', '2', '0',
                         '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1)";
+                        '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1, 1)";
       $DB->query($query) or die("PB REQUETE ".$query);
       $newID=$DB->insert_id();
    }
