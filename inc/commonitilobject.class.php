@@ -575,16 +575,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Special case for Ticket : use autoclose
          if ($this->getType() == 'Ticket') {
-            $entitydata = new EntityData();
-            if ($entitydata->getFromDB($this->fields['entities_id'])) {
-               $autoclosedelay = $entitydata->getfield('autoclose_delay');
-            } else {
-               $autoclosedelay = -1;
-            }
-            // -1 = config
-            if ($autoclosedelay == -1) {
-               $autoclosedelay = $CFG_GLPI['autoclose_delay'];
-            }
+            $autoclosedelay =  EntityData::getUsedConfig('autoclose_delay', $this->getEntityID(),
+                                                         '', EntityData::CONFIG_NEVER);
+
             // 0 = immediatly
             if ($autoclosedelay == 0) {
                $this->fields['status'] = 'closed';
