@@ -180,8 +180,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       $itemtype    = $this->getItilObjectItemType();
       $item        = new $itemtype();
 
-      if ($item->getFromDB($this->input[$item->getForeignKeyField()])) {
-         $item->updateDateMod($this->input[$item->getForeignKeyField()]);
+      if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
+         $item->updateDateMod($this->fields[$item->getForeignKeyField()]);
 
          if (count($this->updates)) {
             $update_done = true;
