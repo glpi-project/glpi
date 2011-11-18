@@ -257,7 +257,7 @@ class Profile_User extends CommonDBTM {
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 WHERE `glpi_profiles_users`.`entities_id` = '$ID'
-                      ";//AND `glpi_users`.`is_deleted` = '0'";
+                     AND `glpi_users`.`is_deleted` = '0'";
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {

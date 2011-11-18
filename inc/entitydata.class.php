@@ -478,7 +478,7 @@ class EntityData extends CommonDBChild {
       if ($ID > 0) {
          $toadd[self::CONFIG_PARENT] = $LANG['common'][102];
       }
-      $entites = array();
+      $entities = array();
       foreach (getAncestorsOf('glpi_entities',  $entitydata->fields['entities_id']) as $ent) {
          if (Session::haveAccessToEntity($ent)) {
             $entities[] = $ent;
