@@ -5630,6 +5630,7 @@ class OcsServer extends CommonDBTM {
 
          $transfer->moveItems($item_to_transfer, $data['entities_id'], $transfer->fields);
       }
+      // TODO : if rules affect a new locations, update the computer. ?
 
       // Update TAG
       self::updateTag($line_links, $line_ocs);
