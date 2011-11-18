@@ -533,8 +533,19 @@ class Computer_Device extends CommonDBTM {
          }
       }
 
-      if (isset($this->fields['specificity'])
-          && $this->fields['specificity'] == $this->input['specificity']) {
+      if ($input['_itemtype'] != 'DeviceMemory' 
+            && isset($this->fields['specificity'])
+               && $this->fields['specificity'] == $this->input['specificity']) {
+         // No change
+         return false;
+      }
+
+      //For memories, type can change even if specificity not
+      if ($input['_itemtype'] == 'DeviceMemory' 
+            && (isset($this->fields['specificity'])
+               && $this->fields['specificity'] == $this->input['specificity']) 
+                  && ((isset($this->fields['devicememories_id'])
+                     && $this->fields['devicememories_id'] == $this->input['devicememories_id']))) {
          // No change
          return false;
       }
