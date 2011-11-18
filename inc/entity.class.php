@@ -524,10 +524,10 @@ class Entity extends CommonTreeDropdown {
    static function getDefaultValueForAttributeInEntity($field, &$entities, $entitydatas) {
       global $CFG_GLPI;
 
+      // TODO to be clean when no more option from config
+
       //If there's a configuration for this entity & the value is not the one of the global config
-      if (isset($entitydatas[$field])
-          && ($entitydatas[$field] > 0
-              || ($field == 'autoclose_delay' && $entitydatas[$field] == 0))) {
+      if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
 
       //No configuration for this entity : if global config allows notification then add the entity

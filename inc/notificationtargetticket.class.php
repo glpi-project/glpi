@@ -221,21 +221,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   = Dropdown::getDropdownName('glpi_requesttypes',
                                                 $this->obj->getField('requesttypes_id'));
 
-      $entitydata = new EntityData();
-      $autoclose_value = $CFG_GLPI['autoclose_delay'];
-
-      if ($entitydata->getFromDB($this->getEntity())) {
-         $autoclose_value = $entitydata->getField('autoclose_delay');
-
-         // Set global config value
-         if ($autoclose_value == -1) {
-            $autoclose_value = $CFG_GLPI['autoclose_delay'];
-         }
-      }
+      $autoclose_value = EntityData::getUsedConfig('autoclose_delay', $this->getEntity(),
+                                                   '', EntityData::CONFIG_NEVER);
 
       $datas['##ticket.autoclose##']             = $LANG['setup'][307];
       $datas['##lang.ticket.autoclosewarning##'] = "";
-      if ($autoclose_value > 0) {
+      if ($autoclose_value >= 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
                $datas['##lang.ticket.autoclosewarning##']
                            = $LANG['job'][54]." ".$autoclose_value." ".Toolbox::ucfirst($LANG['calendar'][12]);

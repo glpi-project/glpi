@@ -795,7 +795,8 @@ class EntityData extends CommonDBChild {
       echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
 
       if ($entdata->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
-         $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id']);
+         $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id'], '',
+                                                EntityData::CONFIG_NEVER);
 
          echo "<font class='green'>&nbsp;&nbsp;";
          if ($autoclose_mode >= 0) {
