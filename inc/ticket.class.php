@@ -1245,7 +1245,8 @@ class Ticket extends CommonITILObject {
 
       // auto set type if not set
       if (!isset($input["type"])) {
-         $input['type'] = EntityData::getUsedConfig('tickettype', $input['entities_id']);
+         $input['type'] = EntityData::getUsedConfig('tickettype', $input['entities_id'],
+                                                    '', Ticket::INCIDENT_TYPE);
       }
 
       return $input;
@@ -2873,7 +2874,7 @@ class Ticket extends CommonITILObject {
                       'due_date'                  => 'NULL',
                       'slas_id'                   => 0,
                       '_add_validation'           => 0,
-                      'type'                      => EntityData::getUsedConfig('tickettype', 
+                      'type'                      => EntityData::getUsedConfig('tickettype',
                                                                                $_SESSION['glpiactive_entity']),
                       '_right'                    => "id");
 
@@ -3225,7 +3226,8 @@ class Ticket extends CommonITILObject {
          unset($_SESSION["helpdeskSaved"]);
       }
       if ($values['type'] <= 0) {
-         $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id']);
+         $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id'],
+                                                     '', Ticket::INCIDENT_TYPE);
       }
 
       // Load ticket template if available :
