@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["deleteuser"])) {
+} else if (isset($_POST['action']) && $_POST['action']=='deleteuser') {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    Html::back();
 
-} else if (isset($_POST["unset_manager"])) {
+} else if (isset($_POST['action']) && $_POST['action']=='unset_manager') {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
    Html::back();
 
-} else if (isset($_POST["set_manager"])) {
+} else if (isset($_POST['action']) && $_POST['action']=='set_manager') {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
    Html::back();
 
-} else if (isset($_POST["unset_delegate"])) {
+} else if (isset($_POST['action']) && $_POST['action']=='unset_delegate') {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key, 'w')) {
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][50]);
    Html::back();
 
-} else if (isset($_POST["set_delegate"])) {
+} else if (isset($_POST['action']) && $_POST['action']=='set_delegate') {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key, 'w')) {
