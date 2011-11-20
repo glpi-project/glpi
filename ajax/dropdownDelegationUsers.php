@@ -49,7 +49,7 @@ Session::checkLoginUser();
 
 if ($_POST["nodelegate"] == 1) {
    $_POST['_users_id_requester'] = Session::getLoginUserID();
-   $_POST['_right'] = "id";
+   $_POST['_right']              = "id";
 } else {
    $_POST['_right'] = "delegate";
 }
