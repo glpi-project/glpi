@@ -139,7 +139,7 @@ class CronTask extends CommonDBTM{
     *    if disable : 1: by config, 2: by system lock, 3: by plugin
     *
    **/
-   function isDisabled () {
+   function isDisabled() {
 
       if ($this->fields['state']==self::STATE_DISABLE) {
          return 1;
@@ -381,7 +381,7 @@ class CronTask extends CommonDBTM{
     *
     * @return Nothing (display)
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!Session::haveRight("config","r") || !$this->getFromDB($ID)) {

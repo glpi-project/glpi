@@ -246,7 +246,7 @@ class Transfer extends CommonDBTM {
     * @param $itemtype of the item
     * @param $ID of the item
    **/
-   function addToBeTransfer ($itemtype, $ID) {
+   function addToBeTransfer($itemtype, $ID) {
 
       if (!isset($this->needtobe_transfer[$itemtype])) {
          $this->needtobe_transfer[$itemtype] = array();
@@ -267,7 +267,7 @@ class Transfer extends CommonDBTM {
     * @param $itemtype of the item
     * @param $ID of the item
    **/
-   function addNotToBeTransfer ($itemtype, $ID) {
+   function addNotToBeTransfer($itemtype, $ID) {
 
       if (!isset($this->noneedtobe_transfer[$itemtype])) {
          $this->noneedtobe_transfer[$itemtype] = array();
@@ -1341,7 +1341,7 @@ class Transfer extends CommonDBTM {
     *
     * @return $ID of the new software (could be the same)
    **/
-   function copySingleSoftware ($ID) {
+   function copySingleSoftware($ID) {
       global $DB;
 
       if (isset($this->already_transfer['Software'][$ID])) {
@@ -1392,7 +1392,7 @@ class Transfer extends CommonDBTM {
     *
     * @return $ID of the new version (could be the same)
    **/
-   function copySingleVersion ($ID) {
+   function copySingleVersion($ID) {
       global $DB;
 
       if (isset($this->already_transfer['SoftwareVersion'][$ID])) {
@@ -2946,7 +2946,7 @@ class Transfer extends CommonDBTM {
     *
     * @return boolean item found
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $edit_form = true;

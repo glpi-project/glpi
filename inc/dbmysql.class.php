@@ -545,7 +545,7 @@ class DBmysql {
     static function optimize_tables($migration=NULL, $cron=false) {
        global $DB;
 
-       if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+       if (!is_null($migration) && method_exists($migration,'displayMessage')) {
           $migration->displayMessage("optimize - start");
        }
        $result = $DB->list_tables("glpi_%");
@@ -558,7 +558,7 @@ class DBmysql {
        // For big database to reduce delay of migration
           if ($cron || countElementsInTable($table) < 15000000) {
 
-             if (!is_null($migration) && method_exists ($migration,'displayMessage')) {
+             if (!is_null($migration) && method_exists($migration,'displayMessage')) {
                 $migration->displayMessage("optimize - $table");
              }
 
@@ -569,7 +569,7 @@ class DBmysql {
        }
        $DB->free_result($result);
 
-       if (!is_null($migration) && method_exists ($migration,'displayMessage') ){
+       if (!is_null($migration) && method_exists($migration,'displayMessage') ){
           $migration->displayMessage("optimize - end");
        }
 
@@ -739,7 +739,7 @@ class DBmysqlIterator  implements Iterator {
    }
 
 
-   public function rewind () {
+   public function rewind() {
 
       if ($this->res && $this->conn->numrows($this->res)) {
          $this->conn->data_seek($this->res,0);

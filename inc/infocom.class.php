@@ -1071,7 +1071,7 @@ class Infocom extends CommonDBChild {
 
 
 
-   static function getSearchOptionsToAdd ($itemtype) {
+   static function getSearchOptionsToAdd($itemtype) {
       global $LANG;
 
 
@@ -1457,7 +1457,7 @@ class Infocom extends CommonDBChild {
     * @param $newid ID of the item cloned
     * @param $newitemtype itemtype of the new item (= $itemtype if empty)
    **/
-   function cloneItem ($itemtype, $oldid, $newid, $newitemtype='') {
+   function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
       global $DB;
 
 

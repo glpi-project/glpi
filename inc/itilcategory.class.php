@@ -156,7 +156,7 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       $this->fields['is_helpdeskvisible'] = 1;
       $this->fields['is_request'] = 1;
       $this->fields['is_incident'] = 1;

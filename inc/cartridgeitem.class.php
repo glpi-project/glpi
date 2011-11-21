@@ -109,7 +109,7 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $CFG_GLPI;
 
       $this->fields["alarm_threshold"] = $CFG_GLPI["default_alarm_threshold"];
@@ -211,7 +211,7 @@ class CartridgeItem extends CommonDBTM {
    * @return Nothing (display)
    *
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
    // Show CartridgeItem or blank form

@@ -139,7 +139,7 @@ class Bookmark extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
 
       $this->fields["users_id"]     = Session::getLoginUserID();
       $this->fields["is_private"]   = 1;

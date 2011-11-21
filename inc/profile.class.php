@@ -410,7 +410,7 @@ class Profile extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $LANG;
 
       $this->fields["interface"] = "helpdesk";
@@ -1069,10 +1069,10 @@ class Profile extends CommonDBTM {
       }
 
 //       echo "</table>";
-// 
+//
 //       echo "<table class='tab_cadre_fixe'>";
 //       $tabstatus = Change::getAllStatusArray();
-// 
+//
 //       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][618]."</th>";
 //       echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
 //       echo "<input type='hidden' name='_cycles_change' value='1'</td>";
@@ -1080,7 +1080,7 @@ class Profile extends CommonDBTM {
 //          echo "<td class='center'>$label</td>";
 //       }
 //       echo "</tr>\n";
-// 
+//
 //       foreach ($tabstatus as $from => $label) {
 //          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
 //          foreach ($tabstatus as $dest => $label) {
@@ -1783,17 +1783,17 @@ class Profile extends CommonDBTM {
 //       $tab[111]['nosearch']      = true;
 //       $tab[111]['datatype']      = 'text';
 //       $tab[111]['massiveaction'] = false;
-// 
+//
 //       $tab[115]['table']    = $this->getTable();
 //       $tab[115]['field']    = 'show_my_change';
 //       $tab[115]['name']     = $LANG['profiles'][57];
 //       $tab[115]['datatype'] = 'bool';
-// 
+//
 //       $tab[116]['table']    = $this->getTable();
 //       $tab[116]['field']    = 'show_all_change';
 //       $tab[116]['name']     = $LANG['profiles'][55];
 //       $tab[116]['datatype'] = 'bool';
-// 
+//
 //       $tab[117]['table']    = $this->getTable();
 //       $tab[117]['field']    = 'edit_all_change';
 //       $tab[117]['name']     = $LANG['profiles'][56];

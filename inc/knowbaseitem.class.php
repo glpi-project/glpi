@@ -149,7 +149,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     *@return nothing
    **/
-   function post_getEmpty () {
+   function post_getEmpty() {
 
       if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
          $this->fields["is_faq"] = 1;
@@ -160,7 +160,7 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * @since version 0.83
    **/
-   function post_getFromDB () {
+   function post_getFromDB() {
 
       // Users
       $this->users    = KnowbaseItem_User::getUsers($this->fields['id']);
@@ -405,7 +405,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $LANG;
-      
+
       // show kb item form
       if (!Session::haveRight("knowbase","w" ) && !Session::haveRight("faq","w")) {
          return false;
@@ -431,7 +431,7 @@ class KnowbaseItem extends CommonDBTM {
                   if ($ic->getFromDB($item->getField('itilcategories_id'))) {
                      $this->fields['knowbaseitemcategories_id'] = $ic->getField('knowbaseitemcategories_id');
                   }
-                  
+
                }
             }
          }

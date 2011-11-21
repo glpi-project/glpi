@@ -205,7 +205,7 @@ class Peripheral  extends CommonDBTM {
     *
     * @return boolean item found
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $target       = $this->getFormURL();
@@ -371,7 +371,7 @@ class Peripheral  extends CommonDBTM {
     *
     * @return a SQL command which return a set of (itemtype, items_id)
     **/
-   function getSelectLinkedItem () {
+   function getSelectLinkedItem() {
 
       return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`

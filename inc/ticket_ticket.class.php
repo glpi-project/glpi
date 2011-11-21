@@ -239,7 +239,7 @@ class Ticket_Ticket extends CommonDBRelation {
     *
     * @return nothing do the change
    **/
-   static function manageLinkedTicketsOnSolved ($ID) {
+   static function manageLinkedTicketsOnSolved($ID) {
 
       $ticket = new Ticket();
 
@@ -264,5 +264,4 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
 }
-
 ?>

@@ -47,12 +47,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function canViewPrivates () {
+   function canViewPrivates() {
       return false;
    }
 
 
-   function canEditAll () {
+   function canEditAll() {
       return false;
    }
 
@@ -653,7 +653,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function showInObjectSumnary (CommonITILObject $item, $rand, $showprivate = false) {
+   function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
       global $DB, $CFG_GLPI, $LANG;
 
       $canedit = $this->can($this->fields['id'],'w');
@@ -977,5 +977,4 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 }
-
 ?>

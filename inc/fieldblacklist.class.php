@@ -107,7 +107,7 @@ class Fieldblacklist extends CommonDropdown {
 
    function prepareInputForAdd($input) {
 
-      $input = parent::prepareInputForAdd ($input);
+      $input = parent::prepareInputForAdd($input);
       return $input;
    }
 

@@ -80,7 +80,7 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
 
       $this->fields["totalsize"] = '0';
       $this->fields["freesize"]  = '0';

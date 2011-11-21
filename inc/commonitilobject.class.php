@@ -63,7 +63,7 @@ abstract class CommonITILObject extends CommonDBTM {
    const STATUS_MATRIX_FIELD  = '';
 
 
-   function post_getFromDB () {
+   function post_getFromDB() {
 
       if (!empty($this->grouplinkclass)) {
          $class = new $this->grouplinkclass();
@@ -85,7 +85,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return true if succeed else false
    **/
-   function getFromDBwithData ($ID, $purecontent) {
+   function getFromDBwithData($ID, $purecontent) {
       global $DB, $LANG;
 
       if ($this->getFromDB($ID)) {
@@ -312,7 +312,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer
    **/
-   function countActiveObjectsForUser ($users_id) {
+   function countActiveObjectsForUser($users_id) {
 
       $linkclass = new $this->userlinkclass();
       $itemtable = $this->getTable();
@@ -341,7 +341,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return integer
    **/
-   function countActiveObjectsForTech ($users_id) {
+   function countActiveObjectsForTech($users_id) {
 
       $linkclass = new $this->userlinkclass();
       $itemtable = $this->getTable();
@@ -1346,7 +1346,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getClosedStatus () {
+   static function getClosedStatus() {
       // To be overridden by class
       $tab = array();
 
@@ -1361,7 +1361,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getSolvedStatus () {
+   static function getSolvedStatus() {
       // To be overridden by class
       $tab = array();
 
@@ -1376,7 +1376,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return an array
    **/
-   static function getProcessStatus () {
+   static function getProcessStatus() {
       // To be overridden by class
       $tab = array();
 
@@ -1546,7 +1546,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   function getSearchOptionsActors () {
+   function getSearchOptionsActors() {
       global $LANG;
 
       $tab = array();

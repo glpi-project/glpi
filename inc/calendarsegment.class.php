@@ -83,7 +83,7 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Duplicate all segments from a calendar to his clone
    */
-   function cloneCalendar ($oldid, $newid) {
+   function cloneCalendar($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *

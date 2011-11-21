@@ -56,7 +56,7 @@ class State extends CommonTreeDropdown {
     * @param $lib string to add for -1 value
     * @param $value default value
    **/
-   static function dropdownBehaviour ($name, $lib="", $value=0) {
+   static function dropdownBehaviour($name, $lib="", $value=0) {
       global $DB, $LANG;
 
       $elements = array("0" => $LANG['setup'][195]);

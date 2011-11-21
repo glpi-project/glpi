@@ -861,7 +861,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   static function getSearchOptionsToAdd ($itemtype) {
+   static function getSearchOptionsToAdd($itemtype) {
       global $LANG;
 
       $tab = array();

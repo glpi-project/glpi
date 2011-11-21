@@ -73,7 +73,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
-   function updateDatasForComputer ($computers_id) {
+   function updateDatasForComputer($computers_id) {
       global $DB;
 
       $comp = new Computer();
@@ -986,7 +986,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $oldid ID of the computer to clone
     * @param $newid ID of the computer cloned
    **/
-   function cloneComputer ($oldid, $newid) {
+   function cloneComputer($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *

@@ -586,7 +586,7 @@ echo "</tr></table>";
 <?php
 $dir = opendir($path);
 $files = array();
-while ($file = readdir ($dir)) {
+while ($file = readdir($dir)) {
    if ($file != "."
        && $file != ".."
        && preg_match("/\.sql$/i",$file)) {
@@ -621,7 +621,7 @@ $dir = opendir($path);
 unset($files);
 $files = array();
 
-while ($file = readdir ($dir)) {
+while ($file = readdir($dir)) {
    if ($file != "."
        && $file != ".."
        && preg_match("/\.xml$/i",$file)) {

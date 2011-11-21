@@ -120,7 +120,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return true if succeed else false
    **/
-   function getFromDB ($ID) {
+   function getFromDB($ID) {
       global $DB;
       // Make new database object and fill variables
 
@@ -165,7 +165,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function post_getFromDB () {
+   function post_getFromDB() {
    }
 
 
@@ -178,7 +178,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return true if succeed else false
    **/
-   function find ($condition="", $order="", $limit="") {
+   function find($condition="", $order="", $limit="") {
       global $DB;
       // Make new database object and fill variables
 
@@ -225,7 +225,7 @@ class CommonDBTM extends CommonGLPI {
     *
     *@return true if succeed else false
    **/
-   function getEmpty () {
+   function getEmpty() {
       global $DB;
 
       //make an empty database object
@@ -256,7 +256,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function post_getEmpty () {
+   function post_getEmpty() {
    }
 
 
@@ -561,7 +561,7 @@ class CommonDBTM extends CommonGLPI {
     * Clean the date in the relation tables for the deleted item
     * Clear N/N Relation
    **/
-   function cleanRelationTable () {
+   function cleanRelationTable() {
       global $CFG_GLPI, $DB;
 
       // If this type have INFOCOM, clean one associated to purged item
@@ -1162,7 +1162,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function post_deleteItem () {
+   function post_deleteItem() {
    }
 
 
@@ -1171,7 +1171,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function post_purgeItem () {
+   function post_purgeItem() {
    }
 
 
@@ -1292,7 +1292,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function post_restoreItem () {
+   function post_restoreItem() {
    }
 
 
@@ -1641,7 +1641,7 @@ class CommonDBTM extends CommonGLPI {
     *     - canedit : set to false to hide all buttons
     *
    **/
-   function showFormButtons ($options=array()) {
+   function showFormButtons($options=array()) {
       global $LANG, $CFG_GLPI;
 
       // for single object like config
@@ -1742,7 +1742,7 @@ class CommonDBTM extends CommonGLPI {
     *     - canedit boolean edit mode of form ?
     *
    **/
-   function showFormHeader ($options=array()) {
+   function showFormHeader($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ID = $this->fields['id'];
@@ -2236,7 +2236,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return value of the field / false if not exists
    **/
-   function getField ($field) {
+   function getField($field) {
 
       if (array_key_exists($field,$this->fields)) {
          return $this->fields[$field];
@@ -2252,7 +2252,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return boolean
    **/
-   function isField ($field) {
+   function isField($field) {
 
       if (!isset($this->fields['id'])) {
          $this->getEmpty();
@@ -3000,19 +3000,16 @@ class CommonDBTM extends CommonGLPI {
                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
                                                                         'with_future' => true));
                      return $dates[$value];
-                  } else {
-                     return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
                   }
+                  return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
 
                case "datetime" :
                   if (isset($options['relative_dates']) && $options['relative_dates']) {
                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
                                                                         'with_future' => true));
-
                      return $dates[$value];
-                  } else {
-                     return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
                   }
+                  return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
 
                case "timestamp" :
                   $withseconds = false;

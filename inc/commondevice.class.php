@@ -114,7 +114,7 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   function displayHeader () {
+   function displayHeader() {
       Html::header($this->getTypeName(),'',"config","device",get_class($this));
    }
 

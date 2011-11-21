@@ -444,7 +444,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @param $oldid ID of the computer to clone
     * @param $newid ID of the computer cloned
    **/
-   function cloneComputer ($oldid, $newid) {
+   function cloneComputer($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *

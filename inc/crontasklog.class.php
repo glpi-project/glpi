@@ -51,7 +51,7 @@ class CronTaskLog extends CommonDBTM{
     *
     * @return integer number of events deleted
    **/
-   static function cleanOld ($id, $days) {
+   static function cleanOld($id, $days) {
       global $DB;
 
       $secs = $days * DAY_TIMESTAMP;

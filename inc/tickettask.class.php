@@ -62,12 +62,12 @@ class TicketTask  extends CommonITILTask {
    }
 
 
-   function canViewPrivates () {
+   function canViewPrivates() {
       return Session::haveRight('show_full_ticket', 1);
    }
 
 
-   function canEditAll () {
+   function canEditAll() {
       return Session::haveRight('update_tasks', 1);
    }
 

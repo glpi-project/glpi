@@ -1487,7 +1487,7 @@ class Ticket extends CommonITILObject {
     *
     * @return integer
    **/
-   function countActiveTicketsForItem ($itemtype, $items_id) {
+   function countActiveTicketsForItem($itemtype, $items_id) {
 
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
@@ -1511,7 +1511,7 @@ class Ticket extends CommonITILObject {
     *
     * @return integer
    **/
-   function countSolvedTicketsForItemLastDays ($itemtype, $items_id,$days) {
+   function countSolvedTicketsForItemLastDays($itemtype, $items_id,$days) {
 
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
@@ -3154,7 +3154,7 @@ class Ticket extends CommonITILObject {
    /**
     * @since version 0.83
    **/
-   static function getDefaultValues () {
+   static function getDefaultValues() {
 
       $users_id_requester = Session::getLoginUserID();
       // No default requester if own ticket right = tech and update_ticket right to update requester

@@ -81,7 +81,7 @@ class Location extends CommonTreeDropdown {
    }
 
 
-   static function getSearchOptionsToAdd () {
+   static function getSearchOptionsToAdd() {
       global $LANG;
 
       $tab = array();

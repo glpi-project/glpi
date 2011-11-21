@@ -299,7 +299,7 @@ class Reservation extends CommonDBChild {
    }
 
 
-   function post_purgeItem () {
+   function post_purgeItem() {
       global $DB;
 
       if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {

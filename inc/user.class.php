@@ -127,7 +127,7 @@ class User extends CommonDBTM {
    /**
     * Compute preferences for the current user mixing config and user data
    **/
-   function computePreferences () {
+   function computePreferences() {
       global $CFG_GLPI;
 
       if (isset($this->fields['id'])) {
@@ -213,7 +213,7 @@ class User extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $CFG_GLPI;
 
       $this->fields["is_active"] = 1;
@@ -2776,7 +2776,7 @@ class User extends CommonDBTM {
    /**
     * Show form for password recovery
    **/
-   static function showPasswordForgetChangeForm ($token) {
+   static function showPasswordForgetChangeForm($token) {
       global $LANG, $CFG_GLPI, $DB;
 
       // Verif token.
@@ -2829,7 +2829,7 @@ class User extends CommonDBTM {
    /**
     * Show form for password recovery
    **/
-   static function showPasswordForgetRequestForm () {
+   static function showPasswordForgetRequestForm() {
       global $LANG, $CFG_GLPI;
 
       echo "<div class='center'>";

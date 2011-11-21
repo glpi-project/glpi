@@ -105,7 +105,7 @@ class ConsumableItem extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $CFG_GLPI;
 
       $this->fields["alarm_threshold"] = $CFG_GLPI["default_alarm_threshold"];
@@ -137,7 +137,7 @@ class ConsumableItem extends CommonDBTM {
     * @return Nothing (display)
     *
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Show ConsumableItem or blank form
