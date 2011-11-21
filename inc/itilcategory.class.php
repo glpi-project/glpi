@@ -56,48 +56,49 @@ class ITILCategory extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return  array(array('name'  => $this->getForeignKeyField(),
-                          'label' => $LANG['setup'][75],
-                          'type'  => 'parent',
-                          'list'  => false),
-                    array('name'  => 'users_id',
-                          'label' => $LANG['common'][10],
-                          'type'  => 'UserDropdown',
-                          'list'  => true),
-                    array('name'  => 'groups_id',
-                          'label' => $LANG['common'][109],
-                          'type'  => 'dropdownValue',
-                          'list'  => true),
-                    array('name'  => 'knowbaseitemcategories_id',
-                          'label' => $LANG['title'][5],
-                          'type'  => 'dropdownValue',
-                          'list'  => true),
-                    array('name'  => 'is_helpdeskvisible',
-                          'label' => $LANG['tracking'][39],
-                          'type'  => 'bool',
-                          'list'  => true),
-                     array('name'  => 'is_incident',
-                          'label' => $LANG['job'][70],
-                          'type'  => 'bool',
-                          'list'  => true),
-                     array('name'  => 'is_request',
-                          'label' => $LANG['job'][71],
-                          'type'  => 'bool',
-                          'list'  => true),
-                     array('name'  => 'is_problem',
-                          'label' => $LANG['job'][72],
-                          'type'  => 'bool',
-                          'list'  => true),
-                    array('name'  => 'tickettemplates_id_demand',
-                          'label' => $LANG['job'][66],
-                          'type'  => 'dropdownValue',
-                          'list'  => true),
-                    array('name'  => 'tickettemplates_id_incident',
-                          'label' => $LANG['job'][67],
-                          'type'  => 'dropdownValue',
-                          'list'  => true),
-);
+      return array(array('name'  => $this->getForeignKeyField(),
+                         'label' => $LANG['setup'][75],
+                         'type'  => 'parent',
+                         'list'  => false),
+                   array('name'  => 'users_id',
+                         'label' => $LANG['common'][10],
+                         'type'  => 'UserDropdown',
+                         'list'  => true),
+                   array('name'  => 'groups_id',
+                         'label' => $LANG['common'][109],
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                   array('name'  => 'knowbaseitemcategories_id',
+                         'label' => $LANG['title'][5],
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                   array('name'  => 'is_helpdeskvisible',
+                         'label' => $LANG['tracking'][39],
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'is_incident',
+                         'label' => $LANG['job'][70],
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'is_request',
+                         'label' => $LANG['job'][71],
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'is_problem',
+                         'label' => $LANG['job'][72],
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'tickettemplates_id_demand',
+                         'label' => $LANG['job'][66],
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                   array('name'  => 'tickettemplates_id_incident',
+                         'label' => $LANG['job'][67],
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                  );
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -132,9 +133,9 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[75]['name']      = $LANG['job'][71];
       $tab[75]['datatype'] = 'bool';
 
-      $tab[76]['table']     = $this->getTable();
-      $tab[76]['field']     = 'is_problem';
-      $tab[76]['name']      = $LANG['job'][72];
+      $tab[76]['table']    = $this->getTable();
+      $tab[76]['field']    = 'is_problem';
+      $tab[76]['name']     = $LANG['job'][72];
       $tab[76]['datatype'] = 'bool';
 
       $tab[3]['table']    = $this->getTable();
@@ -157,10 +158,11 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    function post_getEmpty() {
+
       $this->fields['is_helpdeskvisible'] = 1;
-      $this->fields['is_request'] = 1;
-      $this->fields['is_incident'] = 1;
-      $this->fields['is_problem'] = 1;
+      $this->fields['is_request']         = 1;
+      $this->fields['is_incident']        = 1;
+      $this->fields['is_problem']         = 1;
    }
 
 

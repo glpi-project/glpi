@@ -163,8 +163,8 @@ class Group_User extends CommonDBRelation{
                echo "</td>";
             }
             echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
-                  $data["completename"].($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"")."</a>";
-            echo "&nbsp;";
+                  $data["completename"].($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"").
+                 "</a>&nbsp;";
 
             if ($data["is_dynamic"]) {
                echo "<span class='b'>&nbsp;(D)</span>";

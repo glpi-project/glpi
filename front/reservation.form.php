@@ -94,9 +94,8 @@ if (isset($_POST["update"])) {
       }
 
       for ($i=0 ; $i<$times && ($_POST['_ok']) ; $i++) {
-      
          $_POST["begin"]  = date('Y-m-d H:i:s', strtotime($begin." +".($i*$to_add)." day"));
-         $_POST["end"]  = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));         
+         $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
 
          if (Session::haveRight("reservation_central","w")
              || Session::getLoginUserID() === $_POST["users_id"]) {

@@ -49,7 +49,7 @@ class TicketTemplate extends CommonDropdown {
    // From CommonDropdown
    public $first_level_menu  = "maintain";
    public $second_level_menu = "ticket";
-   public $third_level_menu = "TicketTemplate";
+   public $third_level_menu  = "TicketTemplate";
 
    public $display_dropdowntitle  = false;
 
@@ -77,8 +77,7 @@ class TicketTemplate extends CommonDropdown {
       global $DB;
 
       if ($this->getFromDB($ID)) {
-         $ticket = new Ticket();
-         
+         $ticket       = new Ticket();
          $tth          = new TicketTemplateHiddenField();
          $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
 

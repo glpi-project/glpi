@@ -486,7 +486,7 @@ class EntityData extends CommonDBChild {
             $entities[] = $ent;
          }
       }
-      
+
       Dropdown::show('Entity',
                      array('name'               => 'entities_id_software',
                            'value'              => $entitydata->getField('entities_id_software'),
@@ -916,12 +916,10 @@ class EntityData extends CommonDBChild {
             // Numerical value
             if (is_numeric($default_value)
                 && $entdata->fields[$fieldref] != EntityData::CONFIG_PARENT) {
-               // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) num =>", $entdata->fields[$fieldval]);
                return $entdata->fields[$fieldval];
             }
             // String value
             if (!is_numeric($default_value) && $entdata->fields[$fieldref]) {
-               // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) txt =>", $entdata->fields[$fieldval]);
                return $entdata->fields[$fieldval];
             }
          }
@@ -932,8 +930,8 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            $ret = self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval, $default_value);
-            // toolbox::logDebug("getUsedConfig($fieldref, $entities_id, $fieldval, $default_value) rec =>", $ret);
+            $ret = self::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval,
+                                       $default_value);
             return $ret;
 
          }

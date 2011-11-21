@@ -28,8 +28,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
+// Since: version 0.83
 // ----------------------------------------------------------------------
 
 // Direct access to file
@@ -46,9 +45,9 @@ Session::checkLoginUser();
 if (isset($_REQUEST['users_id']) &&  $_REQUEST['users_id'] > 0) {
    echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
          "/front/planning.php?checkavailability=checkavailability&amp;users_id=".$_REQUEST['users_id']."',
-         'infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" 
+         'infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\"
          style='cursor:pointer'>
-         <img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" 
+         <img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\"
          alt=\"".$LANG['common'][75]."\" title=\"".$LANG['common'][75]."\">
          </span>";
 }

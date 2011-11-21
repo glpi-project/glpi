@@ -3044,12 +3044,14 @@ class Ticket extends CommonITILObject {
 
       $condition = "`is_helpdeskvisible`='1'";
       switch ($options['type']) {
-         case self::INCIDENT_TYPE:
+         case self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
             break;
-         case self::DEMAND_TYPE:
+
+         case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
             break;
+
          default:
             break;
       }
@@ -3541,9 +3543,10 @@ class Ticket extends CommonITILObject {
          }
          $rand = self::dropdownType('type', $opt);
          if ($ID) {
-            $params=array('type' => '__VALUE__', 'entity_restrict' => $this->fields['entities_id'],
-                          'value' => $this->fields['itilcategories_id'],
-                          'currenttype' => $this->fields['type']);
+            $params = array('type'            => '__VALUE__',
+                            'entity_restrict' => $this->fields['entities_id'],
+                            'value'           => $this->fields['itilcategories_id'],
+                            'currenttype'     => $this->fields['type']);
             Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php",
                                           $params);
@@ -3575,13 +3578,15 @@ class Ticket extends CommonITILObject {
          }
 
          switch ($values['type']) {
-            case self::INCIDENT_TYPE:
+            case self::INCIDENT_TYPE :
                $opt['condition'] .= "`is_incident`='1'";
                break;
-            case self::DEMAND_TYPE:
+
+            case self::DEMAND_TYPE :
                $opt['condition'] .= "`is_request`='1'";
                break;
-            default:
+
+            default :
                break;
          }
          echo "<span id='show_category_by_type'>";
@@ -4360,14 +4365,14 @@ class Ticket extends CommonITILObject {
       if ($foruser) {
          $query .= " LEFT JOIN `glpi_tickets_users`
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-                           AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."')";
+                            AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."')";
 
          if (Session::haveRight("show_group_ticket",'1')
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $query .= " LEFT JOIN `glpi_groups_tickets`
                            ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`
-                              AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')";
+                               AND `glpi_groups_tickets`.`type` = '".parent::REQUESTER."')";
          }
       }
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");

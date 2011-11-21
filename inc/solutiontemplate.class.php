@@ -75,23 +75,26 @@ class SolutionTemplate extends CommonDropdown {
                          'type'  => 'tinymce'));
    }
 
-
+   /**
+    * @since version 0.83
+   **/
    function getSearchOptions() {
       global $LANG;
-      
-      $tab = parent::getSearchOptions();
-      
-      $tab[4]['name']        = $LANG['knowbase'][15];
-      $tab[4]['field']       = 'content';
-      $tab[4]['table']       = $this->getTable();
 
-      $tab[3]['name']        = $LANG['job'][48];
-      $tab[3]['field']       = 'name';
-      $tab[3]['table']       = getTableForItemType('SolutionType');
-      
+      $tab = parent::getSearchOptions();
+
+      $tab[4]['name']   = $LANG['knowbase'][15];
+      $tab[4]['field']  = 'content';
+      $tab[4]['table']  = $this->getTable();
+
+      $tab[3]['name']   = $LANG['job'][48];
+      $tab[3]['field']  = 'name';
+      $tab[3]['table']  = getTableForItemType('SolutionType');
+
       return $tab;
    }
-   
+
+
    function displaySpecificTypeField($ID, $field = array()) {
 
       switch ($field['type']) {
