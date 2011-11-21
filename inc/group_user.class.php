@@ -205,8 +205,9 @@ class Group_User extends CommonDBRelation{
     * @param $group           Object
     * @param $used_ids        Array of already add users
     * @param $entityrestrict  Array of entities
+    * @param $crit            String for criteria (for default dropdown)
     */
-   private static function showAddUserForm(Group $group, $used_ids, $entityrestrict) {
+   private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit) {
       global $CFG_GLPI, $LANG, $DB;
 
       $rand = mt_rand();
@@ -228,10 +229,12 @@ class Group_User extends CommonDBRelation{
                               'used'   => $used_ids));
 
          echo "</td><td>".$LANG['common'][64]."</td><td>";
-         Dropdown::showYesNo("is_manager", 0);
+         Dropdown::showYesNo('is_manager',
+                             ($crit == 'is_manager' ? 1 : 0));
 
          echo "</td><td>".$LANG['common'][123]."</td><td>";
-         Dropdown::showYesNo("is_userdelegate", 0);
+         Dropdown::showYesNo('is_userdelegate',
+                             ($crit == 'is_userdelegate' ? 1 : 0));
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
@@ -339,7 +342,7 @@ class Group_User extends CommonDBRelation{
       $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
 
       if ($canedit) {
-         self::showAddUserForm($group, $ids, $entityrestrict);
+         self::showAddUserForm($group, $ids, $entityrestrict, $crit);
       }
 
       // Mini Search engine
