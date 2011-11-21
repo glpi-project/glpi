@@ -886,18 +886,21 @@ class Dropdown {
     * show a dropdown to selec a type
     *
     * @param $types     Array of types used (default "state_types")
-    * @param $options   Array of optional options (value, rand, emptylabel, display_emptychoice)
+    * @param $options   Array of optional options
+    *        value, rand, emptylabel, display_emptychoice, on_change
     *
     * @return integer rand for select id
     */
    static function showItemType($types='', $options=array()) {
       global $CFG_GLPI;
 
+      $params['name']        = 'itemtype';
       $params['value']       = '';
       $params['rand']        = mt_rand();
+      $params['on_change']   = '';
       //Parameters about choice 0
       //Empty choice's label
-      $params['emptylabel'] = self::EMPTY_VALUE;
+      $params['emptylabel']  = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
 
@@ -920,7 +923,12 @@ class Dropdown {
       asort($options);
 
       if (count($options)) {
-         echo "<select name='itemtype' id='itemtype".$params['rand']."'>";
+         echo "<select name='".$params['name']."' id='itemtype".$params['rand']."'";
+         if ($params['on_change']) {
+            echo " onChange='".$params['on_change']."'>";
+         } else {
+            echo ">";
+         }
          if ($params['display_emptychoice']) {
             echo "<option value='0'>".$params['emptylabel']."</option>\n";
          }
