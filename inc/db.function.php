@@ -451,7 +451,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
             $name    = $DB->result($result,0,"completename");
             $comment = "<span class='b'>".$LANG['common'][51]."&nbsp;: </span>".$name.
                        "<br><span class='b'>".$LANG['common'][25]."&nbsp;: </span>".
-                       nl2br($DB->result($result ,0, "comment"));
+                       nl2br($DB->result($result, 0, "comment"));
          }
       }
    }
@@ -840,7 +840,7 @@ function regenerateTreeCompleteName($table) {
 
          $query = "UPDATE `$table`
                    SET `completename` = '".addslashes($name)."',
-                       `level`='$level'
+                       `level` = '$level'
                    WHERE `id` = '".$data['id']."'";
          $DB->query($query);
       }

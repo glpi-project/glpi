@@ -1665,8 +1665,9 @@ function update0803to083() {
 
    // Change is_recursive index
    $query = ("UPDATE `glpi_displaypreferences`
-              SET `num`='86'
-              WHERE `itemtype`='Group' AND `num`='6'");
+              SET `num` = '86'
+              WHERE `itemtype` = 'Group'
+                    AND `num` = '6'");
    $DB->query($query);
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

@@ -862,8 +862,9 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
       echo "<td >";
-      $opt = array('value'  => $this->fields["itilcategories_id"],
-                   'entity' => $this->fields["entities_id"], 'condition' => "`is_problem`='1'");
+      $opt = array('value'     => $this->fields["itilcategories_id"],
+                   'entity'    => $this->fields["entities_id"],
+                   'condition' => "`is_problem`='1'");
       Dropdown::show('ITILCategory', $opt);
       echo "</td>";
       echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";

@@ -65,5 +65,4 @@ if ($_POST["type"]) {
 }
 
 Dropdown::show('ItilCategory', $opt);
-
 ?>

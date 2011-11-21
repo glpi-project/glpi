@@ -2272,7 +2272,7 @@ class CommonDBTM extends CommonGLPI {
       $comment = "";
       if ($this->isField('completename')) {
          $comment .= "<span class='b'>".$LANG['common'][51]."&nbsp;: </span>".
-                     $this->getField('completename')."<br>";
+                      $this->getField('completename')."<br>";
       }
 
       if ($this->isField('serial')) {
@@ -2331,7 +2331,7 @@ class CommonDBTM extends CommonGLPI {
       }
       if (($this instanceof CommonDropdown) && $this->isField('comment')) {
          $comment .= "<span class='b'>".$LANG['common'][25]."&nbsp;: </span>".
-                     nl2br($this->getField('comment'))."<br>";
+                      nl2br($this->getField('comment'))."<br>";
       }
 
       if (!empty($comment)) {
