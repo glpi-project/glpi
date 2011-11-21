@@ -244,17 +244,18 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * Show users of a group
+    * Retrieve list of member of a Group
     *
-    * @param $group the group
-   **/
-   static function showForGroup(Group $group) {
-      global $DB, $LANG, $CFG_GLPI;
-
-      $ID = $group->fields['id'];
-      if (!Session::haveRight("user","r") || !$group->can($ID,'r')) {
-         return false;
-      }
+    * @param $group     Object
+    * @param $members   Array filled on output of member (filtered)
+    * @param $ids       Array of ids (not filtered)
+    * @param $tree      String filter (is_manager, is_userdelegate)
+    * @param $tree      Boolean true to include member of sub-group
+    *
+    * @return String tab of entity for restriction
+    */
+   static function getDataForGroup(Group $group, &$members, &$ids, $crit='', $tree=0) {
+      global $DB;
 
       // Entity restriction for this group, according to user allowed entities
       if ($group->fields['is_recursive']) {
@@ -269,21 +270,14 @@ class Group_User extends CommonDBRelation{
          $entityrestrict = $group->fields['entities_id'];
       }
 
-      // Have right to manage members
-      $canedit     = ($group->can($ID, 'r') && $group->canUpdate());
-      $rand        = mt_rand();
-      //$nb_per_line = 3;
-      $user        = new User();
-      $crit        = (isset($_REQUEST['criterion']) ? $_REQUEST['criterion'] : '');
-      $tree        = (isset($_REQUEST['tree']) ? $_REQUEST['tree'] : 0);
-
       if ($tree) {
-         $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $ID)).")";
+         $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $group->getID())).")";
       } else {
-         $restrict = "='$ID'";
+         $restrict = "='".$group->getID()."'";
       }
+
       // All group members
-      $query = "SELECT `glpi_users`.`id`,
+      $query = "SELECT DISTINCT `glpi_users`.`id`,
                        `glpi_groups_users`.`id` AS linkID,
                        `glpi_groups_users`.`groups_id`,
                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
@@ -300,27 +294,52 @@ class Group_User extends CommonDBRelation{
                          `glpi_users`.`realname`,
                          `glpi_users`.`firstname`";
 
-      $used   = array();
-      $ids    = array();
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
             // Add to display list, according to criterion
             if (empty($crit) || $data[$crit]) {
-               $used[] = $data;
+               $members[] = $data;
             }
             // Add to member list (member of sub-group are not member)
-            if ($data['groups_id']==$ID) {
+            if ($data['groups_id']==$group->getID()) {
                $ids[]  = $data['id'];
             }
          }
       }
+
+      return $entityrestrict;
+   }
+
+
+   /**
+    * Show users of a group
+    *
+    * @param $group the group
+   **/
+   static function showForGroup(Group $group) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $ID = $group->fields['id'];
+      if (!Session::haveRight("user","r") || !$group->can($ID,'r')) {
+         return false;
+      }
+
+      // Have right to manage members
+      $canedit     = ($group->can($ID, 'r') && $group->canUpdate());
+      $rand        = mt_rand();
+      $user        = new User();
+      $crit        = (isset($_REQUEST['criterion']) ? $_REQUEST['criterion'] : '');
+      $tree        = (isset($_REQUEST['tree']) ? $_REQUEST['tree'] : 0);
+      $used        = array();
+      $ids         = array();
+
+      // Retrieve member list
+      $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
+
       if ($canedit) {
-         //$headerspan = $nb_per_line*2;
          self::showAddUserForm($group, $ids, $entityrestrict);
-      } else {
-         //$headerspan = $nb_per_line;
       }
 
       // Mini Search engine
@@ -411,89 +430,6 @@ class Group_User extends CommonDBRelation{
       } else {
          echo "<p class='center b'>".$LANG['search'][15]."</p>";
       }
-/*
-      if (count($used)) {
-         Session::initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
-         $items = array(0 => "is_manager",
-                        1 => "is_userdelegate",
-                        2 => "is_user");
-
-         foreach ($items as $key => $role) {
-            echo "<div id='groupuser_form$rand-$role' class='spaced'>";
-            echo "<table class='tab_cadre_fixe'>";
-            $title = $LANG['Menu'][14]." (D=".$LANG['profiles'][29].")";
-            if ($role == "is_manager") {
-               $title = $LANG['common'][64];
-            } else if ($role == "is_userdelegate") {
-               $title = $LANG['common'][123];
-            }
-            echo "<tr><th colspan='$headerspan'>".$title."</th></tr>";
-
-            $i    = 0;
-            $user = new User();
-
-            foreach ($used as $id => $data) {
-               if ((isset($data[$role]) && !$data[$role])
-                   || !$user->can($id, 'r')) {
-                  // For recursive group, could be in another (sister) entity
-                  continue;
-               }
-               Session::addToNavigateListItems('User', $data["id"]);
-               if ($i%$nb_per_line==0) {
-                  if ($i!=0) {
-                     echo "</tr>";
-                  }
-                  echo "<tr class='tab_bg_1'>";
-               }
-               if ($canedit) {
-                  echo "<td width='10'>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-                  echo "</td>";
-               }
-
-               echo "<td>";
-               echo $user->getLink();
-               if ($data["is_dynamic"]) {
-                  echo "<span class='b'>&nbsp;(D)</span>";
-               }
-
-               echo "</td>";
-               $i++;
-            }
-            while ($i%$nb_per_line!=0) {
-               echo "<td>&nbsp;</td>";
-               if ($canedit) {
-                  echo "<td>&nbsp;</td>";
-               }
-               $i++;
-            }
-            echo "</tr>";
-            echo "</table>";
-
-            if ($canedit && $i) {
-               Html::openArrowMassives("groupuser_form$rand-$role", true);
-               $actions = array('deleteuser' => $LANG['buttons'][6]);
-               if ($role == "is_manager") {
-                  $actions['unset_manager'] = $LANG['users'][20];
-               } else if ($role == "is_userdelegate") {
-                  $actions['unset_delegate'] = $LANG['users'][25];
-               } else {
-                  $actions['set_manager'] = $LANG['users'][19];
-                  $actions['set_delegate'] = $LANG['users'][24];
-               }
-               Html::closeArrowMassives($actions);
-            }
-            echo "</div>";
-         }
-      }
-      if ($canedit) {
-         echo "</form>";
-      }
-      */
    }
 
 
