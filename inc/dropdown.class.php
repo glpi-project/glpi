@@ -883,6 +883,60 @@ class Dropdown {
 
 
    /**
+    * show a dropdown to selec a type
+    *
+    * @param $types     Array of types used (default "state_types")
+    * @param $options   Array of optional options (value, rand, emptylabel, display_emptychoice)
+    *
+    * @return integer rand for select id
+    */
+   static function showItemType($types='', $options=array()) {
+      global $CFG_GLPI;
+
+      $params['value']       = '';
+      $params['rand']        = mt_rand();
+      //Parameters about choice 0
+      //Empty choice's label
+      $params['emptylabel'] = self::EMPTY_VALUE;
+      //Display emptychoice ?
+      $params['display_emptychoice'] = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      if (!is_array($types)) {
+         $types = $CFG_GLPI["state_types"];
+      }
+      $options = array();
+
+      foreach ($types as $type) {
+         if ($item = getItemForItemtype($type)) {
+            $options[$type] = $item->getTypeName($type);
+         }
+      }
+      asort($options);
+
+      if (count($options)) {
+         echo "<select name='itemtype' id='itemtype".$params['rand']."'>";
+         if ($params['display_emptychoice']) {
+            echo "<option value='0'>".$params['emptylabel']."</option>\n";
+         }
+
+         foreach ($options as $key => $val) {
+            $sel = ($key===$params['value'] ? 'selected' : '');
+            echo "<option value='".$key."' $sel>".$val."</option>";
+         }
+         echo "</select>";
+
+         return $params['rand'];
+      }
+      return 0;
+   }
+
+   /**
     * Make a select box for all items
     *
     * @param $myname select name
@@ -896,30 +950,11 @@ class Dropdown {
    **/
    static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
                                 $onlyglobal=false) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
-      if (!is_array($types)) {
-         $types = $CFG_GLPI["state_types"];
-      }
-      $rand    = mt_rand();
-      $options = array();
+      $rand    = self::showItemType($types);
 
-      foreach ($types as $type) {
-         if ($item = getItemForItemtype($type)) {
-            $options[$type] = $item->getTypeName($type);
-         }
-      }
-      asort($options);
-
-      if (count($options)) {
-         echo "<select name='itemtype' id='itemtype$rand'>";
-         echo "<option value='0'>".self::EMPTY_VALUE."</option>\n";
-
-         foreach ($options as $key => $val) {
-            echo "<option value='".$key."'>".$val."</option>";
-         }
-         echo "</select>";
-
+      if ($rand) {
          $params = array('idtable'          => '__VALUE__',
                           'value'           => $value,
                           'myname'          => $myname,
