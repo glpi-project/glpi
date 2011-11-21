@@ -343,7 +343,27 @@ class Group extends CommonTreeDropdown {
       $tab[15]['field']         = 'is_usergroup';
       $tab[15]['name']          = $LANG['search'][2]." ".$LANG['Menu'][14];
       $tab[15]['datatype']      = 'bool';
-
+      
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][64];
+      $tab[70]['itemlink_type'] = 'User';
+      $tab[70]['forcegroupby']  = true;
+      $tab[70]['joinparams']    = array('beforejoin'
+                                        => array('table'      => 'glpi_groups_users',
+                                                 'joinparams' => array('jointype' => 'child',
+                                                 'condition' => "AND NEWTABLE.`is_manager` = 1")));
+      
+      $tab[71]['table'] = 'glpi_users';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][123];
+      $tab[71]['itemlink_type'] = 'User';
+      $tab[71]['forcegroupby']  = true;
+      $tab[71]['joinparams']    = array('beforejoin'
+                                        => array('table'      => 'glpi_groups_users',
+                                                 'joinparams' => array('jointype' => 'child',
+                                                 'condition' => "AND NEWTABLE.`is_userdelegate` = 1")));
+                                                 
       return $tab;
    }
 
