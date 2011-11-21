@@ -479,7 +479,7 @@ class Computer_Device extends CommonDBTM {
    /**
     * Duplicate all device from a computer template to his clone
    **/
-   function cloneComputer ($oldid, $newid) {
+   function cloneComputer($oldid, $newid) {
       global $DB;
 
       $devtypes = self::getDeviceTypes();
@@ -533,7 +533,7 @@ class Computer_Device extends CommonDBTM {
          }
       }
 
-      if ($input['_itemtype'] != 'DeviceMemory' 
+      if ($input['_itemtype'] != 'DeviceMemory'
             && isset($this->fields['specificity'])
                && $this->fields['specificity'] == $this->input['specificity']) {
          // No change
@@ -541,9 +541,9 @@ class Computer_Device extends CommonDBTM {
       }
 
       //For memories, type can change even if specificity not
-      if ($input['_itemtype'] == 'DeviceMemory' 
+      if ($input['_itemtype'] == 'DeviceMemory'
             && (isset($this->fields['specificity'])
-               && $this->fields['specificity'] == $this->input['specificity']) 
+               && $this->fields['specificity'] == $this->input['specificity'])
                   && ((isset($this->fields['devicememories_id'])
                      && $this->fields['devicememories_id'] == $this->input['devicememories_id']))) {
          // No change
@@ -564,7 +564,7 @@ class Computer_Device extends CommonDBTM {
     *
     * @return array of Mac Addresses
    **/
-   static function getMacAddr (Computer $comp) {
+   static function getMacAddr(Computer $comp) {
       global $DB;
 
       $query = "SELECT DISTINCT `specificity`

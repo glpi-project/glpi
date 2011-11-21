@@ -290,7 +290,7 @@ class Document extends CommonDBTM {
     *
     * @return Nothing (display)
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
       if ($ID > 0) {

@@ -85,7 +85,7 @@ class SLA extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       $this->fields['resolution_time'] = DAY_TIMESTAMP;
    }
 
@@ -135,7 +135,7 @@ class SLA extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if ($ID > 0) {

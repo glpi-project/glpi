@@ -1029,8 +1029,8 @@ class Search {
 
                            // General case
                            if (strpos($data["META_$j"],"$$$$")===false) {
-                              $out = self::giveItem ($p['itemtype2'][$j], $p['field2'][$j], $data,
-                                                     $j, 1);
+                              $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
+                                                    $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
 
                            // Case of GROUP_CONCAT item : split item and multilline display
@@ -3522,7 +3522,7 @@ class Search {
     *
     * @return string to print
    **/
-   static function displayConfigItem ($itemtype, $ID, $data=array(), $num=0) {
+   static function displayConfigItem($itemtype, $ID, $data=array(), $num=0) {
 
       $searchopt = &self::getOptions($itemtype);
 
@@ -3585,14 +3585,14 @@ class Search {
     *
     * @return string to print
    **/
-   static function giveItem ($itemtype, $ID, $data, $num, $meta=0) {
+   static function giveItem($itemtype, $ID, $data, $num, $meta=0) {
       global $CFG_GLPI,$LANG;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
 
-         return self::giveItem ($data["TYPE"], $ID, $data, $num, $meta);
+         return self::giveItem($data["TYPE"], $ID, $data, $num, $meta);
       }
 
       // Plugin can override core definition for its type

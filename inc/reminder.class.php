@@ -92,7 +92,7 @@ class Reminder extends CommonDBTM {
    }
 
 
-   function post_getFromDB () {
+   function post_getFromDB() {
 
       // Users
       $this->users    = Reminder_User::getUsers($this->fields['id']);
@@ -486,7 +486,7 @@ class Reminder extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $LANG;
 
       $this->fields["name"]        = $LANG['reminder'][6];

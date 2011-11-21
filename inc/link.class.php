@@ -110,7 +110,7 @@ class Link extends CommonDBTM {
    *@return Nothing (display)
    *
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       if ($ID > 0) {

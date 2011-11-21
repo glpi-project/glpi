@@ -112,7 +112,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function displayHeader () {
+   function displayHeader() {
       if (empty($this->third_level_menu)) {
         $this->third_level_menu = $this->getType();
       }
@@ -121,7 +121,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!$this->isNewID($ID)) {
@@ -185,7 +185,7 @@ abstract class CommonDropdown extends CommonDBTM {
                      $this->fields[$field['name']]."</textarea >";
                break;
 
-            case 'integer' : 
+            case 'integer' :
                Dropdown::showInteger($field['name'], $this->fields[$field['name']]);
                break;
 

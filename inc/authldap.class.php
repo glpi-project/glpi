@@ -77,7 +77,7 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
 
       $this->fields['port']                        = '389';
       $this->fields['condition']                   = '';
@@ -763,7 +763,7 @@ class AuthLDAP extends CommonDBTM {
    function showSystemInformations($width) {
       global $LANG;
 
-      $ldap_servers = self::getLdapServers ();
+      $ldap_servers = self::getLdapServers();
 
       if (!empty($ldap_servers)) {
          echo "\n</pre></td><tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
@@ -1828,7 +1828,7 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   static function getLdapServers () {
+   static function getLdapServers() {
       return getAllDatasFromTable('glpi_authldaps', '', false, '`is_default` DESC');
    }
 

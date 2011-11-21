@@ -57,12 +57,12 @@ class ProblemTask extends CommonITILTask {
    }
 
 
-   function canViewPrivates () {
+   function canViewPrivates() {
       return true;
    }
 
 
-   function canEditAll () {
+   function canEditAll() {
       return Session::haveRight('edit_all_problem', 1);
    }
 
@@ -171,5 +171,4 @@ class ProblemTask extends CommonITILTask {
 
 
 }
-
 ?>

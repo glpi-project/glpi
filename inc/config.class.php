@@ -867,7 +867,7 @@ class Config extends CommonDBTM {
     * Display a HTML report about systeme information / configuration
     *
    **/
-   function showSystemInformations () {
+   function showSystemInformations() {
       global $DB,$LANG,$CFG_GLPI;
 
       echo "<div class='center' id='tabsbody'>";

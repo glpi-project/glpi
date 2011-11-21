@@ -65,7 +65,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $itemtype itemtype
     * @param $user_id user ID
    **/
-   static function getForTypeUser ($itemtype, $user_id) {
+   static function getForTypeUser($itemtype, $user_id) {
       global $DB;
 
       // Add default items for user

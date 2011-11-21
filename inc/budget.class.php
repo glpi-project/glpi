@@ -114,7 +114,7 @@ class Budget extends CommonDropdown{
     *
     *@return Nothing (display)
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       $use_cache = true;

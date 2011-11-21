@@ -56,12 +56,12 @@ class ChangeTask extends CommonITILTask {
    }
 
 
-   function canViewPrivates () {
+   function canViewPrivates() {
       return true;
    }
 
 
-   function canEditAll () {
+   function canEditAll() {
       return Session::haveRight('edit_all_change', 1);
    }
 
@@ -176,5 +176,4 @@ class ChangeTask extends CommonITILTask {
 
 
 }
-
 ?>

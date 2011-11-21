@@ -100,7 +100,7 @@ class Printer  extends CommonDBTM {
     *
     * @return booleen
     **/
-   function canUnrecurs () {
+   function canUnrecurs() {
       global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
@@ -307,7 +307,7 @@ class Printer  extends CommonDBTM {
     *
      *@return boolean item found
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $target       = $this->getFormURL();
@@ -526,7 +526,7 @@ class Printer  extends CommonDBTM {
     *
     * @return a SQL command which return a set of (itemtype, items_id)
     **/
-   function getSelectLinkedItem () {
+   function getSelectLinkedItem() {
 
       return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
@@ -784,5 +784,4 @@ class Printer  extends CommonDBTM {
    }
 
 }
-
 ?>

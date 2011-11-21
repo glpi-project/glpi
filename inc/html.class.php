@@ -633,7 +633,7 @@ class Html {
      *
      * @return nothing
     **/
-    static function createProgressBar ($msg="&nbsp;") {
+    static function createProgressBar($msg="&nbsp;") {
 
        echo "<div class='doaction_cadre'>".
             "<div class='doaction_progress' id='doaction_progress'></div>".
@@ -669,7 +669,7 @@ class Html {
      *
      * @return nothing
     **/
-    static function changeProgressBarPosition ($crt, $tot, $msg="") {
+    static function changeProgressBarPosition($crt, $tot, $msg="") {
 
        if (!$tot) {
           $pct = 0;
@@ -3894,7 +3894,7 @@ class Html {
     *
     * @return nothing (print a combo)
    **/
-   static function printPagerForm ($action="") {
+   static function printPagerForm($action="") {
       global $LANG, $CFG_GLPI;
 
       if ($action) {

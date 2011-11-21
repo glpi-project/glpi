@@ -181,7 +181,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     * @return booleen
    **/
-   function canUnrecurs () {
+   function canUnrecurs() {
       global $DB;
 
       $ID = $this->fields['id'];
@@ -244,7 +244,7 @@ class NetworkEquipment extends CommonDBTM {
     *
     *@return boolean item found
    **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       // Show device or blank form
@@ -555,5 +555,4 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 }
-
 ?>

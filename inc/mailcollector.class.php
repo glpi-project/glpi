@@ -90,7 +90,7 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $CFG_GLPI;
 
       $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
@@ -1094,7 +1094,7 @@ class MailCollector  extends CommonDBTM {
     * Result is stored in $this->files
     *
     */
-   function getRecursiveAttached ($mid, $path, $maxsize, $structure, $part="") {
+   function getRecursiveAttached($mid, $path, $maxsize, $structure, $part="") {
       global $LANG;
 
       if ($structure->type == 1) { // multipart
@@ -1199,7 +1199,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return array like $_FILES
     */
-   function getAttached ($mid, $path, $maxsize) {
+   function getAttached($mid, $path, $maxsize) {
 
       $this->getStructure($mid);
       $this->files     = array();

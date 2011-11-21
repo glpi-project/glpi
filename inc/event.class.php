@@ -88,7 +88,7 @@ class Event extends CommonDBTM {
     *
     * @return integer number of events deleted
     **/
-   static function cleanOld ($day) {
+   static function cleanOld($day) {
       global $DB;
 
       $secs = $day * DAY_TIMESTAMP;

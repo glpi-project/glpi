@@ -64,7 +64,7 @@ class Contract extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       global $CFG_GLPI;
 
       $this->fields["alert"] = $CFG_GLPI["default_contract_alert"];
@@ -136,7 +136,7 @@ class Contract extends CommonDBTM {
    *@return boolean item found
    *
    **/
-   function showForm ($ID,$options=array()) {
+   function showForm($ID,$options=array()) {
       global $LANG;
 
       if ($ID > 0) {
@@ -274,7 +274,7 @@ class Contract extends CommonDBTM {
    }
 
 
-   static function getSearchOptionsToAdd () {
+   static function getSearchOptionsToAdd() {
       global $LANG;
 
       $tab = array();

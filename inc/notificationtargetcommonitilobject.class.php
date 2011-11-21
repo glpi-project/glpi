@@ -197,7 +197,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
    //Get recipient
    function getRecipientAddress() {
-      return $this->getUserByField ("users_id_recipient");
+      return $this->getUserByField("users_id_recipient");
   }
 
 

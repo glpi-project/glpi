@@ -560,7 +560,7 @@ class Dropdown {
     *
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
-   static function getDeviceItemTypes () {
+   static function getDeviceItemTypes() {
       global $LANG, $CFG_GLPI;
       static $optgroup = NULL;
 
@@ -592,7 +592,7 @@ class Dropdown {
     *
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
-   static function getStandardDropdownItemTypes () {
+   static function getStandardDropdownItemTypes() {
       global $LANG, $CFG_GLPI;
       static $optgroup = NULL;
 
@@ -1243,7 +1243,7 @@ class Dropdown {
     *
     * @return the ID of the new
    **/
-   static function import ($itemtype, $input) {
+   static function import($itemtype, $input) {
 
       if (!($item = getItemForItemtype($itemtype))) {
          return false;
@@ -1548,7 +1548,7 @@ class Dropdown {
     *
     * @return the label corresponding to it, or ""
    **/
-   static function getGlobalSwitch ($value=0) {
+   static function getGlobalSwitch($value=0) {
       global $LANG;
 
       switch ($value) {
@@ -1637,5 +1637,4 @@ class Dropdown {
       echo "</select>";
    }
 }
-
 ?>

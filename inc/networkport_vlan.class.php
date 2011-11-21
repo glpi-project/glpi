@@ -168,7 +168,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       return $used;
    }
 
-   static function showForNetworkPortForm ($ID) {
+   static function showForNetworkPortForm($ID) {
       global $DB, $CFG_GLPI, $LANG;
       $port=new NetworkPort();
 

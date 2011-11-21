@@ -125,7 +125,7 @@ class Rule extends CommonDBTM {
    }
 
 
-   function post_getEmpty () {
+   function post_getEmpty() {
       $this->fields['is_active'] = 0;
    }
 

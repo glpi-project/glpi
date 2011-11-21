@@ -105,7 +105,7 @@ class Holiday extends CommonDropdown {
 
    function prepareInputForAdd($input) {
 
-      $input = parent::prepareInputForAdd ($input);
+      $input = parent::prepareInputForAdd($input);
 
       if (empty($input['end_date'])
           || $input['end_date'] == 'NULL'
