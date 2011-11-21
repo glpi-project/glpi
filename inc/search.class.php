@@ -3613,7 +3613,7 @@ class Search {
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
       $linkfield = $searchopt[$ID]["linkfield"];
-      
+
       switch ($table.'.'.$field) {
          case "glpi_users.name" :
             // USER search case
@@ -3968,7 +3968,9 @@ class Search {
                $item = NotificationTarget::getInstanceByType($data['itemtype']);
                if ($item) {
                   $events = $item->getAllEvents();
-                  return $events[$data[$NAME.$num]];
+                  if (isset($events[$data[$NAME.$num]])) {
+                     return $events[$data[$NAME.$num]];
+                  }
                }
                return '';
 
@@ -4848,11 +4850,11 @@ class Search {
                // Specific case of TreeDropdown : add under
                /// TODO clean realtable usage : for complete_entities
                if (isset($searchopt[$field_num]['realtable']) && !empty($searchopt[$field_num]['realtable'])) {
-                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['realtable']);   
+                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['realtable']);
                } else {
-                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);   
+                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
                }
-               
+
                $itemlinked      = new $itemtype_linked();
                if ($itemlinked instanceof CommonTreeDropdown) {
                   $actions['under'] = $LANG['search'][3];
