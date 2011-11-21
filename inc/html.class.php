@@ -1257,7 +1257,7 @@ class Html {
             $menu['utils']['content']['knowbase']['title']        = $LANG['knowbase'][1];
          }
          $menu['utils']['content']['knowbase']['shortcut']        = 'b';
-         
+
          $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
          $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
 
@@ -1737,7 +1737,7 @@ class Html {
 
       if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")) {
          $menu['config']['content']['dropdowns']['title']    = $LANG['setup'][0];
-         $menu['config']['content']['dropdowns']['shortcut'] = 'n';         
+         $menu['config']['content']['dropdowns']['shortcut'] = 'n';
          $menu['config']['content']['dropdowns']['page']     = '/front/dropdown.php';
 
          $menu['config']['default'] = '/front/dropdown.php';
@@ -3900,41 +3900,14 @@ class Html {
       if ($action) {
          echo "<form method='POST' action=\"$action\">";
          echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
-         echo "<select name='glpilist_limit' onChange='submit()'>";
+         Dropdown::showListLimit("submit()");
 
       } else {
          echo "<form method='POST' action =''>\n";
          echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
-         echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";
+         Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
       }
 
-      if (isset($_SESSION['glpilist_limit'])) {
-         $list_limit = $_SESSION['glpilist_limit'];
-      } else {
-         $list_limit = $CFG_GLPI['list_limit'];
-      }
-
-      for ($i=5 ; $i<20 ; $i+=5) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-      for ($i=20 ; $i<50 ; $i+=10) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-      for ($i=50 ; $i<250 ; $i+=50) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-      for ($i=250 ; $i<1000 ; $i+=250) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-      for ($i=1000 ; $i<5000 ; $i+=1000) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-      for ($i=5000 ; $i<=10000 ; $i+=5000) {
-         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
-      }
-
-      echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>";
-      echo "</select>";
       echo "<span>&nbsp;".$LANG['pager'][5]."</span>";
       echo "</form>";
    }

@@ -1590,6 +1590,52 @@ class Dropdown {
              title=\"".$LANG['buttons'][31]."\" value=\"".$LANG['buttons'][31]."\">";
    }
 
+
+   /**
+    * show dropdown to select list limit
+    *
+    * @since version 0.83
+    *
+    * @param $onchange String, optional, for ajax
+    */
+   static function showListLimit($onchange='') {
+      global $CFG_GLPI;
+
+      echo "<select name='glpilist_limit'";
+      if ($onchange) {
+         echo " onChange='$onchange'>";
+      } else {
+         echo ">";
+      }
+
+      if (isset($_SESSION['glpilist_limit'])) {
+         $list_limit = $_SESSION['glpilist_limit'];
+      } else {
+         $list_limit = $CFG_GLPI['list_limit'];
+      }
+
+      for ($i=5 ; $i<20 ; $i+=5) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+      for ($i=20 ; $i<50 ; $i+=10) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+      for ($i=50 ; $i<250 ; $i+=50) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+      for ($i=250 ; $i<1000 ; $i+=250) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+      for ($i=1000 ; $i<5000 ; $i+=1000) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+      for ($i=5000 ; $i<=10000 ; $i+=5000) {
+         echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>";
+      }
+
+      echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>";
+      echo "</select>";
+   }
 }
 
 ?>
