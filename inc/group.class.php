@@ -402,23 +402,17 @@ class Group extends CommonTreeDropdown {
     *
     * @since version 0.83
     *
-    * @param $tech   Boolean (search for tech of user)
+    * @param $types  Array of types
+    * @param $field  String field name
     * @param $start  Integer (first row to retrieve)
     * @param $res    Array result filled on ouput
     *
     * @return integer total of items
     */
-   function getDataItems($tech, $start, &$res) {
+   function getDataItems($types, $field, $start, &$res) {
       global $DB, $CFG_GLPI, $LANG;
 
       // Count the total of item
-      if ($tech) {
-         $types = $CFG_GLPI['linkgroup_tech_types'];
-         $field = 'groups_id_tech';
-      } else {
-         $types = $CFG_GLPI['linkgroup_types'];
-         $field = 'groups_id';
-      }
       $nb  = array();
       $tot = 0;
       foreach ($types as $itemtype) {
@@ -481,21 +475,39 @@ class Group extends CommonTreeDropdown {
 
       $ID = $this->fields['id'];
       if ($tech) {
+         $types = $CFG_GLPI['linkgroup_tech_types'];
          $field = 'groups_id_tech';
          $title = $LANG['common'][112];
       } else {
+         $types = $CFG_GLPI['linkgroup_types'];
          $field = 'groups_id';
          $title = $LANG['common'][111];
       }
 
+      $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
+      if (!in_array($type, $types)) {
+         $type = '';
+      }
       echo "<div class='spaced'>";
-      echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>$title</tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo $LANG['common'][17]."&nbsp;:&nbsp;";
+      Dropdown::showItemType($types, array('value'     => $type,
+                                           'name'      => 'onlytype',
+                                           'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
+      echo "</td></tr></table>";
 
       $datas  = array();
+      if ($type) {
+         $types = array($type);
+      }
       $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
-      $nb     = $this->getDataItems($tech, $start, $datas);
+      $nb     = $this->getDataItems($types, $field, $start, $datas);
       $nbcan  = 0;
 
+      echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
 
