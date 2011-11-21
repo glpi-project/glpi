@@ -785,6 +785,7 @@ class Ticket extends CommonITILObject {
 
 
          // SLA case : compute sla duration
+         $sla = new SLA();
          if ($this->fields['slas_id']>0) {
             if ($sla->getFromDB($this->fields['slas_id'])) {
                $sla->setTicketCalendar($calendars_id);
