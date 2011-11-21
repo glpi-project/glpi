@@ -398,6 +398,80 @@ class Group extends CommonTreeDropdown {
 
 
    /**
+    * get List of Computer in a group
+    *
+    * @since version 0.83
+    *
+    * @param $tech   Boolean (search for tech of user)
+    * @param $start  Integer (first row to retrieve)
+    * @param $res    Array result filled on ouput
+    *
+    * @return integer total of items
+    */
+   function getDataItems($tech, $start, &$res) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      // Count the total of item
+      if ($tech) {
+         $types = $CFG_GLPI['linkgroup_tech_types'];
+         $field = 'groups_id_tech';
+      } else {
+         $types = $CFG_GLPI['linkgroup_types'];
+         $field = 'groups_id';
+      }
+      $nb  = array();
+      $tot = 0;
+      foreach ($types as $itemtype) {
+         $nb[$itemtype] = 0;
+         if (!($item = getItemForItemtype($itemtype))) {
+            continue;
+         }
+         if (!$item->canView()) {
+            continue;
+         }
+         if (!$item->isField($field)) {
+            continue;
+         }
+         $restrict[$itemtype]
+            = "`$field`='".$this->getID()."'".
+              getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',$item->maybeRecursive());
+
+         $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
+      }
+      $max = $_SESSION['glpilist_limit'];
+      if ($start >= $tot) {
+         $start = 0;
+      }
+      $res = array();
+      foreach ($types as $itemtype) {
+         if (!($item = getItemForItemtype($itemtype))) {
+            continue;
+         }
+         if ($start >= $nb[$itemtype]) {
+            // No need to read
+            $start -= $nb[$itemtype];
+         } else {
+            $query = "SELECT `id`
+                      FROM `".$item->getTable()."`
+                      WHERE ".$restrict[$itemtype]."
+                      ORDER BY `name`
+                      LIMIT $start,$max";
+            foreach ($DB->request($query) as $data) {
+               $res[] = array('itemtype' => $itemtype,
+                              'items_id' => $data['id']);
+               $max--;
+            }
+            // For next type
+            $start = 0;
+         }
+         if (!$max) {
+            break;
+         }
+      }
+      return $tot;
+   }
+
+   /**
     * Show items for the group
     *
     * @param $tech boolean, false search groups_id, true, search groups_id_tech
@@ -406,63 +480,49 @@ class Group extends CommonTreeDropdown {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $this->fields['id'];
-
       if ($tech) {
-         $types = $CFG_GLPI['linkgroup_tech_types'];
          $field = 'groups_id_tech';
+         $title = $LANG['common'][112];
       } else {
-         $types = $CFG_GLPI['linkgroup_types'];
          $field = 'groups_id';
+         $title = $LANG['common'][111];
       }
 
       echo "<div class='spaced'>";
       echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
-      echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
-      echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
 
-      $nb = 0;
-      foreach ($types as $itemtype) {
-         if (!($item = getItemForItemtype($itemtype))) {
-            continue;
-         }
-         $item->getEmpty();
-         if (!$item->isField($field)) {
-            continue;
-         }
-         $query = "SELECT *
-                   FROM `".$item->getTable()."`
-                   WHERE `$field` = '$ID'".
-                         getEntitiesRestrictRequest(" AND ", getTableForItemType($itemtype), '', '',
-                                                     $item->maybeRecursive());
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result)>0) {
-            $type_name = $item->getTypeName();
-            $cansee    = $item->canView();
-            $canedit   = $item->canUpdate();
-
-            while ($data=$DB->fetch_array($result)) {
-               echo "<tr class='tab_bg_1'><td>";
-               if ($canedit) {
-                  echo "<input type='checkbox' name='item[$itemtype][".$data["id"]."]' value='1'>";
-                  $nb++;
-               }
-               $link = ($data["name"] ? $data["name"] : "(".$data["id"].")");
-
-               if ($cansee) {
-                  $link = "<a href='".$item->getFormURL()."?id=". $data["id"]."'>".$link."</a>";
-               }
-
-               echo "</td><td>$type_name</td><td>$link</td>";
-               echo "<td>".Dropdown::getDropdownName("glpi_entities", $data['entities_id']);
-               echo "</td></tr>";
-            }
-         }
-      }
-      echo "</table>";
+      $datas  = array();
+      $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
+      $nb     = $this->getDataItems($tech, $start, $datas);
+      $nbcan  = 0;
 
       if ($nb) {
+         Html::printAjaxPager('', $start, $nb);
+
+         echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
+         echo "<th>".$LANG['common'][17]."</th>";
+         echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
+
+         foreach ($datas as $data) {
+            if (!($item = getItemForItemtype($data['itemtype']))) {
+               continue;
+            }
+            echo "<tr class='tab_bg_1'><td>";
+            if ($item->can($data['items_id'], 'w')) {
+               echo "<input type='checkbox' name='item[".$data['itemtype']."][".$data['items_id']."]' value='1'>";
+               $nbcan++;
+            }
+            echo "</td><td>".$item->getTypeName(1);
+            echo "</td><td>".$item->getLink(1);
+            echo "</td><td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
+            echo "</td></tr>";
+         }
+         echo "</table>";
+      } else {
+         echo "<p class='center b'>".$LANG['search'][15]."</p>";
+      }
+
+      if ($nbcan) {
          Html::openArrowMassives("group_form_$field", true);
          echo $LANG['common'][35]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
