@@ -330,8 +330,8 @@ class Group_User extends CommonDBRelation{
       $canedit     = ($group->can($ID, 'r') && $group->canUpdate());
       $rand        = mt_rand();
       $user        = new User();
-      $crit        = (isset($_REQUEST['criterion']) ? $_REQUEST['criterion'] : '');
-      $tree        = (isset($_REQUEST['tree']) ? $_REQUEST['tree'] : 0);
+      $crit        = Session::getSavedOption(__CLASS__, 'criterion', '');
+      $tree        = Session::getSavedOption(__CLASS__, 'tree', 0);
       $used        = array();
       $ids         = array();
 

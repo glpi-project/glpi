@@ -901,5 +901,27 @@ class Session {
    static function setActiveTab($itemtype, $tab) {
       $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
    }
+
+   /**
+    * Get a saved option from request or session
+    * if get from request, save it
+    *
+    * @since version 0.83
+    *
+    * @param $itemtype  String name of itemtype
+    * @param $name      String name of the option
+    * @param $defvalue  Mixed default value for option
+    *
+    * @return Mixed value of the option
+    */
+   static function getSavedOption($itemtype, $name, $defvalue) {
+      if (isset($_REQUEST[$name])) {
+         return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
+      }
+      if (isset($_SESSION['glpi_saved'][$itemtype][$name])) {
+         return $_SESSION['glpi_saved'][$itemtype][$name];
+      }
+      return $defvalue;
+   }
 }
 ?>
