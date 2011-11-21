@@ -359,7 +359,7 @@ class Group_User extends CommonDBRelation{
       echo "</td><td class='center'>".Toolbox::ucfirst($LANG['entity'][7])."&nbsp;:&nbsp;";
       $crits = array(0 => Dropdown::getYesNo(0),
                      1 => Dropdown::getYesNo(1));
-      Dropdown::showFromArray('crtreeit', $crits,
+      Dropdown::showFromArray('tree', $crits,
                               array('value'     => $tree,
                                     'on_change' => 'reloadTab("start=0&tree="+this.value)'));
       echo "</td></tr></table>";
