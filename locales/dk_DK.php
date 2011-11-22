@@ -952,6 +952,7 @@ $LANG['job'][68]="Mandatory fields are not filled. Please correct:"; // en_GB st
 $LANG['job'][69]="Ce ticket me concerne"; // fr_FR string to be translated
 $LANG['job'][70]="Visible for an incident"; // en_GB string to be translated
 $LANG['job'][71]="Synlig for en forespørgsel"; 
+$LANG['job'][72]="Visible pour un problème"; // fr_FR string to be translated
 
 $LANG['joblist'][0]="Status"; 
 $LANG['joblist'][1]="Kun mine!"; 
@@ -1652,7 +1653,6 @@ $LANG['reservation'][8]="Resever";
 $LANG['reservation'][9]="Resever"; 
 $LANG['reservation'][10]="Matériels réservables"; // fr_FR string to be translated
 $LANG['reservation'][11]="Indisponible"; // fr_FR string to be translated
-$LANG['reservation'][12]="Partiellement disponible"; // fr_FR string to be translated
 $LANG['reservation'][16]="Til"; 
 $LANG['reservation'][17]="Fra"; 
 $LANG['reservation'][18]="Det ønskede emne er allerede reseveret i dette tidsrum"; 
