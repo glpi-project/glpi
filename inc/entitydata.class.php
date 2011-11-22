@@ -93,7 +93,7 @@ class EntityData extends CommonDBChild {
                                                                   'autoclose_delay',
                                                                   'inquest_config', 'inquest_rate',
                                                                   'inquest_delay', 'inquest_URL',
-                                                                  'max_closedate'));
+                                                                  'max_closedate', 'tickettemplates_id'));
 
 
    function getIndexName() {
