@@ -1013,7 +1013,7 @@ function update0803to083() {
 
    $migration->displayMessage($LANG['update'][142] . ' - Ticket templates');
 
-   $default_template = 0;
+   $default_ticket_template = 0;
 
    if (!TableExists('glpi_tickettemplates')) {
       $query = "CREATE TABLE `glpi_tickettemplates` (
@@ -1036,7 +1036,7 @@ function update0803to083() {
                 VALUES ('Default', 1)";
       $DB->query($query)
       or die("0.83 add default ticket template " . $LANG['update'][90] . $DB->error());
-      $default_template = $DB->insert_id();
+      $default_ticket_template = $DB->insert_id();
 
    }
 
@@ -1107,12 +1107,12 @@ function update0803to083() {
       or die("0.83 add table glpi_tickettemplatemandatoryfields ".$LANG['update'][90].$DB->error());
 
       /// Add mandatory fields to default template
-      if ($default_template > 0) {
+      if ($default_ticket_template > 0) {
          foreach ($DB->request('glpi_configs') as $data) {
             if ($data['is_ticket_title_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
-                         VALUES ('$default_template', 1)";
+                         VALUES ('$default_ticket_template', 1)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
                       $LANG['update'][90] . $DB->error());
@@ -1120,7 +1120,7 @@ function update0803to083() {
             if ($data['is_ticket_content_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
-                         VALUES ('$default_template', 21)";
+                         VALUES ('$default_ticket_template', 21)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
                       $LANG['update'][90] . $DB->error());
@@ -1128,20 +1128,32 @@ function update0803to083() {
             if ($data['is_ticket_category_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
-                         VALUES ('$default_template', 7)";
+                         VALUES ('$default_ticket_template', 7)";
                $DB->query($query)
                or die("0.83 add mandatory field for default ticket template ".
                       $LANG['update'][90] . $DB->error());
             }
          }
+         
+         // Update itit categories
+         $migration->migrationOneTable('glpi_itilcategories');
+         $query = "UPDATE `glpi_itilcategories` 
+                        SET `tickettemplates_id_incident` = '$default_ticket_template', 
+                            `tickettemplates_id_demand` = '$default_ticket_template'";
+         $DB->query($query)
+               or die("0.83 update default templates used by itil categories ".
+                      $LANG['update'][90] . $DB->error());                            
       }
    }
-// Keep global mandatory config
-//    $migration->dropField('glpi_configs', 'is_ticket_title_mandatory');
-//    $migration->dropField('glpi_configs', 'is_ticket_content_mandatory');
-//    $migration->dropField('glpi_configs', 'is_ticket_category_mandatory');
+   // Drop global mandatory config
+   $migration->dropField('glpi_configs', 'is_ticket_title_mandatory');
+   $migration->dropField('glpi_configs', 'is_ticket_content_mandatory');
+   $migration->dropField('glpi_configs', 'is_ticket_category_mandatory');
 
    $migration->addField('glpi_profiles', 'tickettemplate', "char", array('update' => '`sla`'));
+
+   $migration->addField("glpi_entitydatas", "tickettemplates_id", 'integer',
+                        array('value' => '-2'));
 
    $migration->displayMessage($LANG['update'][142] . ' - Tech Groups on items');
 
@@ -1558,9 +1570,9 @@ function update0803to083() {
       $query = "INSERT INTO `glpi_entitydatas`
                        (`entities_id`,`entities_id_software`,`autofill_order_date`,`autofill_delivery_date`,
                         `autofill_buy_date`, `autofill_use_date`, `autofill_warranty_date`,`inquest_config`,
-                        `tickettype`,`calendars_id`
+                        `tickettype`,`calendars_id`, `tickettemplates_id`
                         )
-                VALUES (0,0,0,0,0,0,0,1,1,0)";
+                VALUES (0,0,0,0,0,0,0,1,1,0,'$default_ticket_template')";
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
