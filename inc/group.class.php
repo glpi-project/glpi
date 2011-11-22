@@ -343,7 +343,7 @@ class Group extends CommonTreeDropdown {
       $tab[15]['field']         = 'is_usergroup';
       $tab[15]['name']          = $LANG['search'][2]." ".$LANG['Menu'][14];
       $tab[15]['datatype']      = 'bool';
-      
+
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
       $tab[70]['name']  = $LANG['common'][64];
@@ -353,7 +353,7 @@ class Group extends CommonTreeDropdown {
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
                                                  'condition' => "AND NEWTABLE.`is_manager` = 1")));
-      
+
       $tab[71]['table'] = 'glpi_users';
       $tab[71]['field'] = 'name';
       $tab[71]['name']  = $LANG['common'][123];
@@ -363,7 +363,7 @@ class Group extends CommonTreeDropdown {
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
                                                  'condition' => "AND NEWTABLE.`is_userdelegate` = 1")));
-                                                 
+
       return $tab;
    }
 
@@ -424,14 +424,20 @@ class Group extends CommonTreeDropdown {
     *
     * @param $types  Array of types
     * @param $field  String field name
+    * @param $tree   Boolean include child groups
     * @param $start  Integer (first row to retrieve)
     * @param $res    Array result filled on ouput
     *
     * @return integer total of items
     */
-   function getDataItems($types, $field, $start, &$res) {
+   function getDataItems($types, $field, $tree, $start, &$res) {
       global $DB, $CFG_GLPI, $LANG;
 
+      if ($tree) {
+         $grprestrict = "`$field` IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
+      } else {
+         $grprestrict = "`$field`='".$this->getID()."'";
+      }
       // Count the total of item
       $nb  = array();
       $tot = 0;
@@ -447,7 +453,7 @@ class Group extends CommonTreeDropdown {
             continue;
          }
          $restrict[$itemtype]
-            = "`$field`='".$this->getID()."'".
+            = $grprestrict .
               getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',$item->maybeRecursive());
 
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
@@ -485,6 +491,7 @@ class Group extends CommonTreeDropdown {
       return $tot;
    }
 
+
    /**
     * Show items for the group
     *
@@ -504,6 +511,7 @@ class Group extends CommonTreeDropdown {
          $title = $LANG['common'][111];
       }
 
+      $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
       $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
       if (!in_array($type, $types)) {
          $type = '';
@@ -517,6 +525,13 @@ class Group extends CommonTreeDropdown {
       Dropdown::showItemType($types, array('value'     => $type,
                                            'name'      => 'onlytype',
                                            'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
+      if (countElementsInTable($this->getTable(), "`groups_id`='$ID'")) {
+         echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
+         Dropdown::showYesNo('tree', $tree, -1,
+                             array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+      } else {
+         $tree = 0;
+      }
       echo "</td></tr></table>";
 
       $datas  = array();
@@ -524,7 +539,7 @@ class Group extends CommonTreeDropdown {
          $types = array($type);
       }
       $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
-      $nb     = $this->getDataItems($types, $field, $start, $datas);
+      $nb     = $this->getDataItems($types, $field, $tree, $start, $datas);
       $nbcan  = 0;
 
       echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
@@ -533,7 +548,11 @@ class Group extends CommonTreeDropdown {
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".$LANG['common'][17]."</th>";
-         echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
+         echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th>";
+         if ($tree) {
+            echo "<th>".self::getTypeName(1)."</th>";
+         }
+         echo "</tr>";
 
          foreach ($datas as $data) {
             if (!($item = getItemForItemtype($data['itemtype']))) {
@@ -547,6 +566,9 @@ class Group extends CommonTreeDropdown {
             echo "</td><td>".$item->getTypeName(1);
             echo "</td><td>".$item->getLink(1);
             echo "</td><td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
+            if ($tree) {
+               echo "</td><td>".Dropdown::getDropdownName('glpi_groups', $item->getField($field));
+            }
             echo "</td></tr>";
          }
          echo "</table>";
