@@ -536,23 +536,24 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-
       // check mandatory fields
-      if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
-         $title = trim($input['name']);
-         if (empty($title)) {
-            Session::addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
-            unset($input['name']);
-         }
-      }
+      /// TODO manage mandatories based on tickettemplate linked to type and category
 
-      if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
-         $content = trim($input['content']);
-         if (empty($content)) {
-            Session::addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
-            unset($input['content']);
-         }
-      }
+//       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
+//          $title = trim($input['name']);
+//          if (empty($title)) {
+//             Session::addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
+//             unset($input['name']);
+//          }
+//       }
+// 
+//       if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
+//          $content = trim($input['content']);
+//          if (empty($content)) {
+//             Session::addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
+//             unset($input['content']);
+//          }
+//       }
 
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
@@ -1047,37 +1048,37 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         $mandatory_ok = true;
-
-         if (!isset($input["urgency"])) {
-            Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
-            $mandatory_ok = false;
-         }
-
-         if ($CFG_GLPI["is_ticket_content_mandatory"]
-             && (!isset($input['content']) || empty($input['content']))) {
-
-            Session::addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
-            $mandatory_ok = false;
-         }
-
-         if ($CFG_GLPI["is_ticket_title_mandatory"]
-             && (!isset($input['name']) || empty($input['name']))) {
-
-            Session::addMessageAfterRedirect($LANG['help'][40], false, ERROR);
-            $mandatory_ok = false;
-         }
-
-         if ($CFG_GLPI["is_ticket_category_mandatory"]
-             && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
-
-            Session::addMessageAfterRedirect($LANG['help'][41], false, ERROR);
-            $mandatory_ok = false;
-         }
-
-         if (!$mandatory_ok) {
-            return false;
-         }
+//          $mandatory_ok = true;
+// 
+//          if (!isset($input["urgency"])) {
+//             Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
+//             $mandatory_ok = false;
+//          }
+// 
+//          if ($CFG_GLPI["is_ticket_content_mandatory"]
+//              && (!isset($input['content']) || empty($input['content']))) {
+// 
+//             Session::addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
+//             $mandatory_ok = false;
+//          }
+// 
+//          if ($CFG_GLPI["is_ticket_title_mandatory"]
+//              && (!isset($input['name']) || empty($input['name']))) {
+// 
+//             Session::addMessageAfterRedirect($LANG['help'][40], false, ERROR);
+//             $mandatory_ok = false;
+//          }
+// 
+//          if ($CFG_GLPI["is_ticket_category_mandatory"]
+//              && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
+// 
+//             Session::addMessageAfterRedirect($LANG['help'][41], false, ERROR);
+//             $mandatory_ok = false;
+//          }
+// 
+//          if (!$mandatory_ok) {
+//             return false;
+//          }
       }
 
       unset($_SESSION["helpdeskSaved"]);
@@ -3098,7 +3099,7 @@ class Ticket extends CommonITILObject {
           || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][57]."&nbsp;:".
-                     $tt->getMandatoryMark('name', $CFG_GLPI['is_ticket_title_mandatory'])."</td>";
+                     $tt->getMandatoryMark('name')."</td>";
          echo "<td><input type='text' maxlength='250' size='80' name='name'
                           value=\"".$options['name']."\"></td></tr>";
       }
@@ -3107,7 +3108,7 @@ class Ticket extends CommonITILObject {
           || $tt->isPredefinedField('content')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['joblist'][6]."&nbsp;:".
-                     $tt->getMandatoryMark('name',$CFG_GLPI['is_ticket_content_mandatory'])."</td>";
+                     $tt->getMandatoryMark('name')."</td>";
          echo "<td><textarea name='content' cols='80' rows='14'>".$options['content']."</textarea>";
          echo "</td></tr>";
       }
@@ -3229,6 +3230,14 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
+      
+      // First load default entity one
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
+         // with type and categ
+         $tt->getFromDBWithDatas($template_id, true);     
+      }
+      
+      
       if ($values['type'] && $values['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($values['itilcategories_id'])) {
@@ -3244,12 +3253,14 @@ class Ticket extends CommonITILObject {
             }
 
             if (!empty($field) && $categ->fields[$field]) {
+               // without type and categ            
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
          }
       }
 
       if (isset($options['template_preview'])) {
+         // with type and categ
          $tt->getFromDBWithDatas($options['template_preview'], true);
       }
 
@@ -3550,7 +3561,7 @@ class Ticket extends CommonITILObject {
       }
       echo "</td>";
       echo "<th>".$LANG['common'][36]."&nbsp;:";
-      echo $tt->getMandatoryMark('itilcategories_id', $CFG_GLPI['is_ticket_category_mandatory']);
+      echo $tt->getMandatoryMark('itilcategories_id');
       echo "</th>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
@@ -3567,7 +3578,7 @@ class Ticket extends CommonITILObject {
             $opt['on_change'] = 'submit()';
          }
          /// if categorie mandatory, no empty choice
-         if ($ID && $CFG_GLPI["is_ticket_category_mandatory"]) {
+         if ($ID && $tt->isMandatoryField("itilcategories_id")) {
             $opt['display_emptychoice'] = false;
          }
 
@@ -3786,7 +3797,7 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').$LANG['common'][57]."&nbsp;: ".
-                $tt->getMandatoryMark('name', $CFG_GLPI['is_ticket_title_mandatory']).
+                $tt->getMandatoryMark('name').
                 $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
@@ -3833,7 +3844,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$tt->getBeginHiddenFieldText('content').$LANG['joblist'][6]."&nbsp;: ".
-               $tt->getMandatoryMark('content', $CFG_GLPI['is_ticket_content_mandatory']).
+               $tt->getMandatoryMark('content').
                $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description

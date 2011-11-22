@@ -459,14 +459,14 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
       echo "<td>";
-      $options = array(self::CONFIG_NEVER          => $LANG['financial'][113],
+      $options = array(0                           => $LANG['financial'][113],
                        Infocom::COPY_BUY_DATE      => $LANG['setup'][283].': '.$LANG['financial'][14],
                        Infocom::COPY_ORDER_DATE    => $LANG['setup'][283].': '.$LANG['financial'][28],
                        Infocom::COPY_DELIVERY_DATE => $LANG['setup'][283].' '.$LANG['financial'][27]);
       if ($ID > 0) {
-         $options[-1] = $LANG['common'][102];
+         $options[self::CONFIG_PARENT] = $LANG['common'][102];
       }
-
+      
       Dropdown::showFromArray('autofill_warranty_date', $options,
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
@@ -722,6 +722,27 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['job'][58]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      $toadd = array();
+      if ($ID != 0) {
+         $toadd = array(self::CONFIG_PARENT => $LANG['common'][102]);
+      }
+
+      $options = array('value'      => $entdata->fields["tickettemplates_id"],
+                                               'toadd'  =>$toadd);
+      
+      Dropdown::show('TicketTemplate', $options);
+
+      if ($entdata->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
+         $tt = new TicketTemplate();
+
+         if ($tt->getFromDB(self::getUsedConfig('tickettemplates_id', $ID))) {
+            echo " - ".$tt->getLink();
+         }
+      }
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
@@ -838,6 +859,7 @@ class EntityData extends CommonDBChild {
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
          echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
+         
          if ($inquestrate == 0) {
             echo $LANG['crontask'][31];
          } else {
