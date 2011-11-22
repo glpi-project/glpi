@@ -94,10 +94,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       // Anonymous user
       $query = "SELECT `alternative_email`
                 FROM `$userlinktable`
-                WHERE `glpi_tickets_users`.`tickets_id` = '".$this->obj->fields["id"]."'
-                      AND `glpi_tickets_users`.`users_id` = 0
-                      AND `glpi_tickets_users`.`use_notification` = 1
-                      AND `glpi_tickets_users`.`type` = '$type'";
+                WHERE `$userlinktable`.`$fkfield` = '".$this->obj->fields["id"]."'
+                      AND `$userlinktable`.`users_id` = 0
+                      AND `$userlinktable`.`use_notification` = 1
+                      AND `$userlinktable`.`type` = '$type'";
       foreach ($DB->request($query) as $data) {
          if (NotificationMail::isUserAddressValid($data['alternative_email'])) {
             $this->addToAddressesList(array('email'    => $data['alternative_email'],
