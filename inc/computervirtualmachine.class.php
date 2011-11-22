@@ -326,11 +326,13 @@ class ComputerVirtualMachine extends CommonDBChild {
          Session::initNavigateListItems('ComputerVirtualMachine',
                                         $LANG['help'][25]." = ". (empty($comp->fields['name'])
                                                                    ? "($ID)" : $comp->fields['name']));
-
+         $vm = new ComputerVirtualMachine();
          foreach ($virtualmachines as $virtualmachine) {
-            $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
+            $vm->getFromDB($virtualmachine['id']);
+//             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td>$href".$virtualmachine['name']."</a></td>";
+            echo "<td>".$vm->getLink()."</td>";            
+//             echo "<td>$href".$virtualmachine['name']."</a></td>";
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',
                                            $virtualmachine['virtualmachinetypes_id']);
