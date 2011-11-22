@@ -2007,10 +2007,29 @@ class Rule extends CommonDBTM {
          switch ($item->getType()) {
             case 'Entity' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['rulesengine'][17],
-                                              countElementsInTable('glpi_ruleactions',
-                                                                   "`field` = 'entities_id'
-                                                                    AND `value` = '".$item->getID()."'"));
+                  $types = array();
+                  $collection = new RuleRightCollection();
+                  if ($collection->canList()) {
+                     $types[] = 'RuleRight';
+                  }
+                  $collection = new RuleOcsCollection();
+                  if ($collection->canList()) {
+                     $types[] = 'RuleOcs';
+                  }
+                  $collection = new RuleMailCollectorCollection();
+                  if ($collection->canList()) {
+                     $types[] = 'RuleMailCollector';
+                  }         
+                  $nb=0;
+                  if (count($types)) {
+                     $nb = countElementsInTable(array('glpi_rules','glpi_ruleactions'),
+                                                "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
+                                                AND `glpi_rules`.`sub_type` IN ('".implode("','",$types)."')
+                                                AND `glpi_ruleactions`.`field` = 'entities_id'
+                                                AND `glpi_ruleactions`.`value` = '".$item->getID()."'");
+                  }
+               
+                  return self::createTabEntry($LANG['rulesengine'][17],$nb);
                }
                return $this->getTypeName(2);
 
