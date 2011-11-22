@@ -525,7 +525,7 @@ class Group extends CommonTreeDropdown {
       Dropdown::showItemType($types, array('value'     => $type,
                                            'name'      => 'onlytype',
                                            'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
-      if (countElementsInTable($this->getTable(), "`groups_id`='$ID'")) {
+      if ($this->haveChildren()) {
          echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
          Dropdown::showYesNo('tree', $tree, -1,
                              array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
