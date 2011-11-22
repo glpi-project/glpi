@@ -425,18 +425,32 @@ class Group extends CommonTreeDropdown {
     * @param $types  Array of types
     * @param $field  String field name
     * @param $tree   Boolean include child groups
+    * @param $user   Boolean include members (users)
     * @param $start  Integer (first row to retrieve)
     * @param $res    Array result filled on ouput
     *
     * @return integer total of items
     */
-   function getDataItems($types, $field, $tree, $start, &$res) {
+   function getDataItems($types, $field, $tree, $user, $start, &$res) {
       global $DB, $CFG_GLPI, $LANG;
 
+      // include item of child groups ?
       if ($tree) {
-         $grprestrict = "`$field` IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
+         $grprestrict = "IN (".implode(',', getSonsOf('glpi_groups', $this->getID())).")";
       } else {
-         $grprestrict = "`$field`='".$this->getID()."'";
+         $grprestrict = "='".$this->getID()."'";
+      }
+      // include items of members
+      if ($user) {
+         $ufield = str_replace('groups', 'users', $field);
+         $grprestrict = "(`$field` $grprestrict
+                          OR (`$field`=0
+                              AND `$ufield` IN
+                                  (SELECT `users_id`
+                                   FROM `glpi_groups_users`
+                                   WHERE `groups_id` $grprestrict)))";
+      } else {
+         $grprestrict = "`$field` $grprestrict";
       }
       // Count the total of item
       $nb  = array();
@@ -512,6 +526,7 @@ class Group extends CommonTreeDropdown {
       }
 
       $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+      $user = Session::getSavedOption(__CLASS__, 'user', 0);
       $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
       if (!in_array($type, $types)) {
          $type = '';
@@ -519,7 +534,7 @@ class Group extends CommonTreeDropdown {
       echo "<div class='spaced'>";
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>$title</tr>";
+      echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo $LANG['common'][17]."&nbsp;:&nbsp;";
       Dropdown::showItemType($types, array('value'     => $type,
@@ -532,6 +547,13 @@ class Group extends CommonTreeDropdown {
       } else {
          $tree = 0;
       }
+      if ($this->getField('is_usergroup')) {
+         echo "</td><td class='center'>".User::getTypeName(2)."&nbsp;:&nbsp;";
+         Dropdown::showYesNo('user', $user, -1,
+                             array('on_change' => 'reloadTab("start=0&user="+this.value)'));
+      } else {
+         $user = 0;
+      }
       echo "</td></tr></table>";
 
       $datas  = array();
@@ -539,7 +561,7 @@ class Group extends CommonTreeDropdown {
          $types = array($type);
       }
       $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
-      $nb     = $this->getDataItems($types, $field, $tree, $start, $datas);
+      $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 
       echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
@@ -549,8 +571,8 @@ class Group extends CommonTreeDropdown {
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".$LANG['common'][17]."</th>";
          echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th>";
-         if ($tree) {
-            echo "<th>".self::getTypeName(1)."</th>";
+         if ($tree || $user) {
+            echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";
          }
          echo "</tr>";
 
@@ -566,8 +588,14 @@ class Group extends CommonTreeDropdown {
             echo "</td><td>".$item->getTypeName(1);
             echo "</td><td>".$item->getLink(1);
             echo "</td><td>".Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
-            if ($tree) {
-               echo "</td><td>".Dropdown::getDropdownName('glpi_groups', $item->getField($field));
+            if ($tree || $user) {
+               echo "</td><td>";
+               if ($grp = $item->getField($field)) {
+                  echo Dropdown::getDropdownName('glpi_groups', $grp);
+
+               } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
+                  echo getUserName($usr);
+               }
             }
             echo "</td></tr>";
          }
