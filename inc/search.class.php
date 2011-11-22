@@ -4038,7 +4038,7 @@ class Search {
             $out .= 'id='.$data[$NAME.$num."_2"];
             // Force solution tab if solved
             if ($data[$NAME.$num."_4"]=='solved') {
-               $out .= "&amp;forcetab=4";
+               $out .= "&amp;forcetab=Ticket$2";
             }
             $out .= "\">".$data[$NAME.$num];
             if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
