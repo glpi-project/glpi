@@ -1570,9 +1570,9 @@ function update0803to083() {
       $query = "INSERT INTO `glpi_entitydatas`
                        (`entities_id`,`entities_id_software`,`autofill_order_date`,`autofill_delivery_date`,
                         `autofill_buy_date`, `autofill_use_date`, `autofill_warranty_date`,`inquest_config`,
-                        `tickettype`,`calendars_id`, `tickettemplates_id`
+                        `tickettype`,`calendars_id`, `tickettemplates_id`, `autoclose_delay`
                         )
-                VALUES (0,0,0,0,0,0,0,1,1,0,'$default_ticket_template')";
+                VALUES (0,0,0,0,0,0,0,1,1,0,'$default_ticket_template',0)";
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
