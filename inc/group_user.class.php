@@ -356,7 +356,7 @@ class Group_User extends CommonDBRelation{
       Dropdown::showFromArray('crit', $crits,
                               array('value'     => $crit,
                                     'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
-      echo "</td><td class='center'>".Toolbox::ucfirst($LANG['entity'][7])."&nbsp;:&nbsp;";
+      echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
       $crits = array(0 => Dropdown::getYesNo(0),
                      1 => Dropdown::getYesNo(1));
       Dropdown::showFromArray('tree', $crits,

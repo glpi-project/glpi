@@ -838,6 +838,7 @@ $LANG['gmt'][2] = "h";
 $LANG['group'][0] = "Visible dans un ticket";
 $LANG['group'][1] = "Peut être notifié";
 $LANG['group'][2] = "Peut contenir";
+$LANG['group'][3] = "Sous-groupes";
 
 
 // For priority
