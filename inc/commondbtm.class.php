@@ -2426,6 +2426,16 @@ class CommonDBTM extends CommonGLPI {
             $searchOption = $this->getSearchOptionByField('field', $key);
 
             if (isset($searchOption['datatype'])
+                && (is_null($value) || $value == '' ||  $value == 'NULL')) {
+
+               switch ($searchOption['datatype']) {
+                  case 'date' :
+                  case 'datetime' :
+                     // don't use $unset', because this is not a failure
+                     unset($this->input[$key]);
+                     break;
+               }
+            } else if (isset($searchOption['datatype'])
                 && !is_null($value)
                 && $value != ''
                 && $value != 'NULL') {

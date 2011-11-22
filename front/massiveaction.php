@@ -701,11 +701,11 @@ if (isset($_POST["itemtype"])) {
                      $input = addslashes_deep($input);
                      // Import new
                      $newid = $item->import($input);
-
+                     // delete with purge for dropwn with trash (Budget)
                      // Delete old
                      if ($newid > 0) {
                         $item->delete(array('id'          => $key,
-                                            '_replace_by' => $newid));
+                                            '_replace_by' => $newid), 1);
                      }
                   }
                }
