@@ -3181,7 +3181,7 @@ class Ticket extends CommonITILObject {
           || $tt->isPredefinedField('content')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['joblist'][6]."&nbsp;:".
-                     $tt->getMandatoryMark('name')."</td>";
+                     $tt->getMandatoryMark('content')."</td>";
          echo "<td><textarea name='content' cols='80' rows='14'>".$options['content']."</textarea>";
          echo "</td></tr>";
       }
