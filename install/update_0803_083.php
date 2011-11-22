@@ -1551,13 +1551,19 @@ function update0803to083() {
    $migration->addField('glpi_plugins', 'license', 'string');
 
 
+   $migration->migrationOneTable('glpi_entitydatas');
+   $restore_root_entity_value = false;
    // create root entity if not exist with old default values
    if (countElementsInTable('glpi_entitydatas', 'entities_id=0') == 0) {
       $query = "INSERT INTO `glpi_entitydatas`
-                       (`entities_id`)
-                VALUES (0)";
+                       (`entities_id`,`entities_id_software`,`autofill_order_date`,`autofill_delivery_date`,
+                        `autofill_buy_date`, `autofill_use_date`, `autofill_warranty_date`,`inquest_config`,
+                        `tickettype`,`calendars_id`
+                        )
+                VALUES (0,0,0,0,0,0,0,1,1,0)";
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
+      $restore_root_entity_value = true;
    }
 
    // migration to new values for inherit parent (0 => -2)
@@ -1573,6 +1579,7 @@ function update0803to083() {
                  $DB->error());
       }
    }
+   
    // new default value
    $migration->changeField("glpi_entitydatas", "calendars_id", "calendars_id",
                            "int(11) NOT NULL DEFAULT '-2'");
@@ -1655,6 +1662,13 @@ function update0803to083() {
       }
       $migration->dropField("glpi_configs", 'auto_assign_mode');
       $migration->dropField("glpi_configs", 'autoclose_delay');
+   }
+
+   if ($restore_root_entity_value) {
+      $query = "UPDATE `glpi_entitydatas` SET `calendars_id` = 0 WHERE `entities_id` = 0;";
+      $DB->query($query)
+               or die ("0.83 restore root entity default value".
+                       $LANG['update'][90].$DB->error());
    }
 
 //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
