@@ -3003,11 +3003,10 @@ class Ticket extends CommonITILObject {
       $tt = new TicketTemplate();
       
       // First load default entity one
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $_SESSION["glpiactive_entity"])) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);     
       }
-            
             
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
@@ -3071,7 +3070,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
@@ -3119,9 +3118,14 @@ class Ticket extends CommonITILObject {
          default:
             break;
       }
-      Dropdown::show('ITILCategory', array('value'     => $options['itilcategories_id'],
+      $opt = array('value'     => $options['itilcategories_id'],
                                            'condition' => $condition,
-                                           'on_change' => 'submit()'));
+                                           'on_change' => 'submit()');
+      if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
+         $opt['display_emptychoice'] = false;
+      }
+      
+      Dropdown::show('ITILCategory', $opt);
       echo "</td></tr>";
 
 
