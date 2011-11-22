@@ -1204,11 +1204,13 @@ class Ticket extends CommonITILObject {
          case EntityData::AUTO_ASSIGN_HARDWARE_CATEGORY :
             if ($item!=NULL) {
                // Auto assign tech from item
-               if ($input['_users_id_assign']==0 && $item->isField('users_id_tech')) {
+               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0) 
+                   && $item->isField('users_id_tech')) {
                   $input['_users_id_assign'] = $item->getField('users_id_tech');
                }
                // Auto assign group from item
-               if ($input['_groups_id_assign']==0 && $item->isField('groups_id_tech')) {
+               if ((!isset($input['_groups_id_assign']) || $input['_groups_id_assign']==0)
+                   && $item->isField('groups_id_tech')) {
                   $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
             }
