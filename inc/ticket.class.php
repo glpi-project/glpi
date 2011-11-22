@@ -1134,15 +1134,9 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage auto assign
-      $entitydata = new EntityData();
-      $auto_assign_mode = $CFG_GLPI['auto_assign_mode'];
-      if ($entitydata->getFromDB($input['entities_id'])) {
-         $auto_assign_mode = $entitydata->getField('auto_assign_mode');
-         // Set global config value
-         if ($auto_assign_mode == -1) {
-            $auto_assign_mode = $CFG_GLPI['auto_assign_mode'];
-         }
-      }
+      
+      $auto_assign_mode = EntityData::getUsedConfig('auto_assign_mode', $input['entities_id']);
+      
       switch ($auto_assign_mode) {
          case EntityData::CONFIG_NEVER :
             break;
