@@ -839,7 +839,7 @@ class KnowbaseItem extends CommonDBTM {
          $order   = "ORDER BY `SCORE` DESC";
 
          // preliminar query to allow alternate search if no result with fulltext
-         $query_1 = "SELECT COUNT(`id`)
+         $query_1 = "SELECT COUNT(`glpi_knowbaseitems`.`id`)
                      FROM `glpi_knowbaseitems`
                      $join
                      WHERE $where_1";
@@ -994,7 +994,7 @@ class KnowbaseItem extends CommonDBTM {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
-                               "&amp;forcetab=4'>".$LANG['job'][24]."</a>";
+                               "&amp;forcetab=".$options['itemtype']."$2'>".$LANG['job'][24]."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 

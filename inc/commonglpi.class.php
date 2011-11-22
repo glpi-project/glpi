@@ -192,7 +192,7 @@ class CommonGLPI {
 
                foreach ($titles as $key => $val) {
                   if (!empty($val)) {
-                     $ong[$itemtype.'####'.$key] = $val;
+                     $ong[$itemtype.'$'.$key] = $val;
                   }
                }
             }
@@ -272,7 +272,7 @@ class CommonGLPI {
                return true;
             }
 
-            $data     = explode('####',$tab);
+            $data     = explode('$',$tab);
             $itemtype = $data[0];
             // Default set
             $tabnum   = 1;
