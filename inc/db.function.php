@@ -1518,16 +1518,18 @@ function getDbRelations() {
  * @param $field : field where apply the limit (id != entities_id)
  * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
  * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
+ * @param $complete_request : need to use a complete request and not a simple one when have acces to all entities (used for reminders)
  *
  * @return String : the WHERE clause to restrict
 **/
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',
-                                    $is_recursive=false) {
+                                    $is_recursive=false, $complete_request=false) {
 
    $query = $separator ." ( ";
 
    // !='0' needed because consider as empty
-   if ($value!='0'
+   if (!$complete_request
+       && $value!='0'
        && empty($value)
        && isset($_SESSION['glpishowallentities'])
        && $_SESSION['glpishowallentities']) {

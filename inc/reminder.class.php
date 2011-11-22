@@ -273,7 +273,8 @@ class Reminder extends CommonDBTM {
 
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true);
+         // Force complete SQL not summary when access to all entities
+         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true, true);
       }
 
       $restrict .= ") ";
@@ -282,18 +283,21 @@ class Reminder extends CommonDBTM {
 
 
    function post_addItem() {
-
-      Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
-                                    $this->fields["end"],
-                                    array('Reminder' => array($this->fields['id'])));
+      if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
+   
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                       $this->fields["end"],
+                                       array('Reminder' => array($this->fields['id'])));
+      }
    }
 
 
    function post_updateItem($history=1) {
-
-      Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
-                                    $this->fields["end"],
-                                    array('Reminder' => array($this->fields['id'])));
+      if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
+         Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
+                                       $this->fields["end"],
+                                       array('Reminder' => array($this->fields['id'])));
+      }
    }
 
 
@@ -877,7 +881,7 @@ class Reminder extends CommonDBTM {
                               OR `glpi_reminders`.`is_planned` = '0')
                          $restrict_visibility
                    ORDER BY `glpi_reminders`.`name`";
-
+         
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
 
       } else {
@@ -886,10 +890,16 @@ class Reminder extends CommonDBTM {
             return false;
          }
 
+         $restrict_user = '1';
+         // Only personal on central so do not keep it
+         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $restrict_user = "`glpi_reminders`.`users_id` <> '$users_id'";
+         }
+
          $query = "SELECT `glpi_reminders`.*
                    FROM `glpi_reminders`
                    ".self::addVisibilityJoins()."
-                   WHERE `glpi_reminders`.`users_id` <> '$users_id'
+                   WHERE $restrict_user
                          $restrict_visibility
                         AND ".self::addVisibilityRestrict()."
                         ORDER BY `glpi_reminders`.`name`";

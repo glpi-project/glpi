@@ -350,7 +350,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true);
+         // Force complete SQL not summary when access to all entities
+         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true, true);
       }
 
       $restrict .= ") ";
