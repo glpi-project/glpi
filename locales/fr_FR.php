@@ -1251,8 +1251,8 @@ $LANG['log'][63]  = "suppression d'un champ prédéfini";
 $LANG['log'][64]  = "modification du champ";
 $LANG['log'][65]  = "règle";
 $LANG['log'][66]  = "Sécurité";
-$LANG['log'][67]  = "suppression d'une cible à une note";
-$LANG['log'][68]  = "ajout d'une cible à une note";
+$LANG['log'][67]  = "suppression d'une cible";
+$LANG['log'][68]  = "ajout d'une cible";
 
 $LANG['log'][70]  = "ajout d'un port réseau";
 $LANG['log'][71]  = "ajout de plusieurs ports réseau";
