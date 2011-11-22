@@ -3919,7 +3919,9 @@ class Search {
                $item = NotificationTarget::getInstanceByType($data['itemtype']);
                if ($item) {
                   $events = $item->getAllEvents();
-                  return $events[$data[$NAME.$num]];
+                  if (isset($events[$data[$NAME.$num]])) {
+                     return $events[$data[$NAME.$num]];
+                  }
                }
                return '';
 
