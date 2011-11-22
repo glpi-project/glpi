@@ -522,10 +522,11 @@ class Dropdown {
     * @param $name select name
     * @param $value preselected value.
     * @param $restrict_to allows to display only yes or no in the dropdown (default is yes & no)
+    * @param $params Array of optional options (passed to showFromArray)
     *
     * @return rand value
    **/
-   static function showYesNo($name, $value=0, $restrict_to=-1) {
+   static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
       global $LANG;
 
       if ($restrict_to != 0) {
@@ -535,7 +536,8 @@ class Dropdown {
       if ($restrict_to != 1) {
          $options[1] = $LANG['choice'][1];
       }
-      return self::showFromArray($name, $options, array('value' => $value));
+      $params['value'] = $value;
+      return self::showFromArray($name, $options, $params);
    }
 
 
