@@ -470,6 +470,13 @@ class Group extends CommonTreeDropdown {
             = $grprestrict .
               getEntitiesRestrictRequest(" AND ", $item->getTable(), '', '',$item->maybeRecursive());
 
+         if ($item->maybeTemplate()) {
+            $restrict[$itemtype] .= " AND NOT `is_template`";
+         }
+         if ($item->maybeDeleted()) {
+            $restrict[$itemtype] .= " AND NOT `is_deleted`";
+         }
+
          $tot += $nb[$itemtype] = countElementsInTable($item->getTable(), $restrict[$itemtype]);
       }
       $max = $_SESSION['glpilist_limit'];
