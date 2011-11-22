@@ -1718,7 +1718,7 @@ CREATE TABLE `glpi_entitydatas` (
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_entitydatas` VALUES ('1','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'-1','-1','-1','-1','-1','-1','0','-1','0','-10','1',NULL,'1','0','0',NULL,'-10','-10','-10','-10','-10','1','0');
+INSERT INTO `glpi_entitydatas` VALUES ('1','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,'-1','-1','-1','-1','-1','-1','0','-1','0','-10','1',NULL,'1','0','0',NULL,'0','0','0','0','0','1','0');
 
 ### Dump table glpi_events
 

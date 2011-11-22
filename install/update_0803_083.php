@@ -1573,7 +1573,7 @@ function update0803to083() {
                         `tickettype`,`calendars_id`, `tickettemplates_id`, `autoclose_delay`, 
                         `inquest_rate`, `inquest_delay`
                         )
-                VALUES (0,0,-10,-10,-10,-10,-10,1,1,0,'$default_ticket_template',0,0,0)";
+                VALUES (0,0,0,0,0,0,0,1,1,0,'$default_ticket_template',0,0,0)";
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
