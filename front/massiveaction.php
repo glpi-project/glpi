@@ -946,8 +946,9 @@ if (isset($_POST["action"])
 
                         // Delete old
                         if ($newid > 0) {
+                           // delete with purge for dropwn with trash (Budget)
                            $item->delete(array('id'          => $key,
-                                             '_replace_by' => $newid));
+                                             '_replace_by' => $newid), 1);
                         }
                         $nbok++;
                      } else {
