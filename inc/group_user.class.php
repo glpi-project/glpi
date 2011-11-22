@@ -357,11 +357,8 @@ class Group_User extends CommonDBRelation{
                               array('value'     => $crit,
                                     'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
       echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
-      $crits = array(0 => Dropdown::getYesNo(0),
-                     1 => Dropdown::getYesNo(1));
-      Dropdown::showFromArray('tree', $crits,
-                              array('value'     => $tree,
-                                    'on_change' => 'reloadTab("start=0&tree="+this.value)'));
+      Dropdown::showYesNo('tree', $tree, -1,
+                          array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
       echo "</td></tr></table>";
 
       $number = count($used);
