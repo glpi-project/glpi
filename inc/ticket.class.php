@@ -536,8 +536,67 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-      // check mandatory fields
-      /// TODO manage mandatories based on tickettemplate linked to type and category
+      //// check mandatory fields
+      // First get ticket template associated : entity and type/category
+      $tt = new TicketTemplate();
+      
+      if (isset($input['entities_id'])) {
+         $entid = $input['entities_id'];
+      } else {
+         $entid = $this->fields['entities_id'];
+      }
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $entid)) {
+         // with type and categ
+         $tt->getFromDBWithDatas($template_id, true);     
+      }
+      
+      if (isset($input['type'])) {
+         $type = $input['type'];
+      } else {
+         $type = $this->fields['type'];
+      }      
+      
+      if (isset($input['itilcategories_id'])) {
+         $categid = $input['itilcategories_id'];
+      } else {
+         $categid = $this->fields['itilcategories_id'];
+      }      
+
+      if ($type && $categid) {
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($categid)) {
+            $field = '';
+            switch ($type) {
+               case self::INCIDENT_TYPE :
+                  $field = 'tickettemplates_id_incident';
+                  break;
+
+               case self::DEMAND_TYPE :
+                  $field = 'tickettemplates_id_demand';
+                  break;
+            }
+
+            if (!empty($field) && $categ->fields[$field]) {
+               // with type and categ            
+               $tt->getFromDBWithDatas($categ->fields[$field], true);
+            }
+         }
+      }      
+      
+      if (count($tt->mandatory)) {
+         $mandatory_missing = array();
+         $fieldsname = $tt->getAllowedFieldsNames(true);
+         foreach ($tt->mandatory as $key => $val) {
+            if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
+               $mandatory_missing[$key] = $fieldsname[$val];
+            }
+         }
+         if (count($mandatory_missing)) {
+            $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
+            Session::addMessageAfterRedirect($message, false, ERROR);
+            return false;
+         }
+      }
 
 //       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
 //          $title = trim($input['name']);
@@ -2942,6 +3001,14 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
+      
+      // First load default entity one
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
+         // with type and categ
+         $tt->getFromDBWithDatas($template_id, true);     
+      }
+            
+            
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
@@ -2957,12 +3024,14 @@ class Ticket extends CommonITILObject {
             }
 
             if (!empty($field) && $categ->fields[$field]) {
+               // without type and categ
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
          }
       }
 
       if ($ticket_template) {
+         // with type and categ
          $tt->getFromDBWithDatas($ticket_template, true);
       }
 
@@ -3034,7 +3103,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;:";
-      echo $tt->getMandatoryMark('itilcategories_id', $CFG_GLPI['is_ticket_category_mandatory']);
+      echo $tt->getMandatoryMark('itilcategories_id');
       echo "</td><td>";
 
       $condition = "`is_helpdeskvisible`='1'";
@@ -3552,6 +3621,7 @@ class Ticket extends CommonITILObject {
                             'entity_restrict' => $this->fields['entities_id'],
                             'value'           => $this->fields['itilcategories_id'],
                             'currenttype'     => $this->fields['type']);
+                            
             Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php",
                                           $params);
@@ -3577,8 +3647,10 @@ class Ticket extends CommonITILObject {
          if (!$ID) {
             $opt['on_change'] = 'submit()';
          }
-         /// if categorie mandatory, no empty choice
-         if ($ID && $tt->isMandatoryField("itilcategories_id")) {
+         /// if category mandatory, no empty choice
+         /// no empty choice is default value set on ticket creation, else yes
+         if (($ID || $values['itilcategories_id']) 
+            && $tt->isMandatoryField("itilcategories_id")) {
             $opt['display_emptychoice'] = false;
          }
 
