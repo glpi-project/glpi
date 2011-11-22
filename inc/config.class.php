@@ -533,32 +533,23 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][612] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
-      echo "</td><td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
       Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(5  => 5,
                                                                                    10 => 10,
                                                                                    15 => 15,
                                                                                    20 => 20));
       echo "&nbsp;" . $LANG['job'][22];
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][610] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
       echo "</td><td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);      
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][611] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("is_ticket_content_mandatory", $CFG_GLPI["is_ticket_content_mandatory"]);
-      echo "</td><td>".$LANG['mailgate'][7] . " (".$LANG['setup'][46].")&nbsp;:</td><td>";
+      echo "<td>".$LANG['mailgate'][7] . " (".$LANG['setup'][46].")&nbsp;:</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
-      echo "</td></tr>";
+      echo "</td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
