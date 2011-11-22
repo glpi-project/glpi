@@ -952,6 +952,7 @@ $LANG['job'][68]="必填欄位沒有填寫。請更正：";
 $LANG['job'][69]="Ce ticket me concerne"; // fr_FR string to be translated
 $LANG['job'][70]="可見事件"; 
 $LANG['job'][71]="可見請求"; 
+$LANG['job'][72]="Visible pour un problème"; // fr_FR string to be translated
 
 $LANG['joblist'][0]="狀態"; 
 $LANG['joblist'][1]="只有我的"; 
@@ -1652,7 +1653,6 @@ $LANG['reservation'][8]="預訂";
 $LANG['reservation'][9]="預訂一個項目"; 
 $LANG['reservation'][10]="Matériels réservables"; // fr_FR string to be translated
 $LANG['reservation'][11]="Indisponible"; // fr_FR string to be translated
-$LANG['reservation'][12]="Partiellement disponible"; // fr_FR string to be translated
 $LANG['reservation'][16]="對"; 
 $LANG['reservation'][17]="從"; 
 $LANG['reservation'][18]="需求的項目在該時段已經被預訂."; 
