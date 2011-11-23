@@ -641,7 +641,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<br><span class='b'>".$LANG['joblist'][6]."&nbsp;:</span><br>".$val["content"];
 
       } else {
-         $content = "span class='b'>";
+         $content = "<span class='b'>";
          if (isset($val["state"])) {
             $content .= Planning::getState($val["state"])."<br>";
          }
