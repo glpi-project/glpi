@@ -694,7 +694,7 @@ class Ticket extends CommonITILObject {
          $fieldsname = $tt->getAllowedFieldsNames(true);
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
-                  && (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL')) {
+                  && (isset($input[$key]) && (empty($input[$key]) ||$input[$key] == 'NULL'))) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
