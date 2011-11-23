@@ -536,68 +536,6 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-      //// check mandatory fields
-      // First get ticket template associated : entity and type/category
-      $tt = new TicketTemplate();
-
-      if (isset($input['entities_id'])) {
-         $entid = $input['entities_id'];
-      } else {
-         $entid = $this->fields['entities_id'];
-      }
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $entid)) {
-         // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);
-      }
-
-      if (isset($input['type'])) {
-         $type = $input['type'];
-      } else {
-         $type = $this->fields['type'];
-      }
-
-      if (isset($input['itilcategories_id'])) {
-         $categid = $input['itilcategories_id'];
-      } else {
-         $categid = $this->fields['itilcategories_id'];
-      }
-
-      if ($type && $categid) {
-         $categ = new ITILCategory();
-         if ($categ->getFromDB($categid)) {
-            $field = '';
-            switch ($type) {
-               case self::INCIDENT_TYPE :
-                  $field = 'tickettemplates_id_incident';
-                  break;
-
-               case self::DEMAND_TYPE :
-                  $field = 'tickettemplates_id_demand';
-                  break;
-            }
-
-            if (!empty($field) && $categ->fields[$field]) {
-               // with type and categ
-               $tt->getFromDBWithDatas($categ->fields[$field], true);
-            }
-         }
-      }
-
-      if (count($tt->mandatory)) {
-         $mandatory_missing = array();
-         $fieldsname = $tt->getAllowedFieldsNames(true);
-         foreach ($tt->mandatory as $key => $val) {
-            if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-         }
-         if (count($mandatory_missing)) {
-            $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
-            Session::addMessageAfterRedirect($message, false, ERROR);
-            return false;
-         }
-      }
-
 //       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
 //          $title = trim($input['name']);
 //          if (empty($title)) {
@@ -654,9 +592,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      $check_allowed_fields_for_template = false;
       if (is_numeric(Session::getLoginUserID(false)) && !Session::haveRight("update_ticket","1")) {
 
          $allowed_fields = array('id');
+         $check_allowed_fields_for_template = true;
 
          if ($this->canApprove() && isset($input["status"])) {
             $allowed_fields[] = 'status';
@@ -699,6 +639,72 @@ class Ticket extends CommonITILObject {
 
          $input = $ret;
       }
+      
+      
+      
+      //// check mandatory fields
+      // First get ticket template associated : entity and type/category
+      $tt = new TicketTemplate();
+
+      if (isset($input['entities_id'])) {
+         $entid = $input['entities_id'];
+      } else {
+         $entid = $this->fields['entities_id'];
+      }
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $entid)) {
+         // with type and categ
+         $tt->getFromDBWithDatas($template_id, true);
+      }
+
+      if (isset($input['type'])) {
+         $type = $input['type'];
+      } else {
+         $type = $this->fields['type'];
+      }
+
+      if (isset($input['itilcategories_id'])) {
+         $categid = $input['itilcategories_id'];
+      } else {
+         $categid = $this->fields['itilcategories_id'];
+      }
+
+      if ($type && $categid) {
+         $categ = new ITILCategory();
+         if ($categ->getFromDB($categid)) {
+            $field = '';
+            switch ($type) {
+               case self::INCIDENT_TYPE :
+                  $field = 'tickettemplates_id_incident';
+                  break;
+
+               case self::DEMAND_TYPE :
+                  $field = 'tickettemplates_id_demand';
+                  break;
+            }
+
+            if (!empty($field) && $categ->fields[$field]) {
+               // with type and categ
+               $tt->getFromDBWithDatas($categ->fields[$field], true);
+            }
+         }
+      }
+      
+      if (count($tt->mandatory)) {
+         $mandatory_missing = array();
+         $fieldsname = $tt->getAllowedFieldsNames(true);
+         foreach ($tt->mandatory as $key => $val) {
+            if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
+                  && (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL')) {
+               $mandatory_missing[$key] = $fieldsname[$val];
+            }
+         }
+         if (count($mandatory_missing)) {
+            $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
+            Session::addMessageAfterRedirect($message, false, ERROR);
+            return false;
+         }
+      }
+      
 
       // Manage fields from auto update : map rule actions to standard ones
       if (isset($input['_auto_update'])) {
@@ -3076,7 +3082,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      print_r($tt);
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
