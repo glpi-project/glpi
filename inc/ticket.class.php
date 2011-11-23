@@ -3082,7 +3082,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      print_r($tt);
+      
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
@@ -4822,7 +4822,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0) {
+   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0, $id_for_massaction=-1) {
       global $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
@@ -4834,6 +4834,12 @@ class Ticket extends CommonITILObject {
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
       $job = new self();
+
+      // If id is specified it will be used as massive aciton id
+      // Used when displaying ticket and wanting to delete a link data
+      if ($id_for_massaction==-1) {
+         $id_for_massaction = $id;
+      }
 
       $candelete   = Session::haveRight("delete_ticket", "1");
       $canupdate   = Session::haveRight("update_ticket", "1");
@@ -4872,10 +4878,10 @@ class Ticket extends CommonITILObject {
             if (isset($_GET["select"]) && $_GET["select"] == "all") {
                $sel = "checked";
             }
-            if (isset($_SESSION['glpimassiveactionselected'][$job->fields["id"]])) {
+            if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
                $sel = "checked";
             }
-            $first_col .= "&nbsp;<input type='checkbox' name='item[".$job->fields["id"]."]'
+            $first_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
                                   value='1' $sel>";
          }
 
