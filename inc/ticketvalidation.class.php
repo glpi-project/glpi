@@ -149,30 +149,28 @@ class TicketValidation  extends CommonDBChild {
       // Not attached to tickets -> not added
       if (!isset($input['tickets_id']) || $input['tickets_id'] <= 0) {
          return false;
-      } else {
+      }
 
 /*       if (strstr($job->fields["status"],"solved")
                   || strstr($job->fields["status"],"closed")) {
             return false;
          }*/
 
-         if (!isset($input['entities_id'])) { // Massive modif case
-            $job = new Ticket();
-            $job->getFromDB($input["tickets_id"]);
+      if (!isset($input['entities_id'])) { // Massive modif case
+         $job = new Ticket();
+         $job->getFromDB($input["tickets_id"]);
 
-            $input['entities_id'] = $job->fields["entities_id"];
-         }
-
-         $input["users_id"] = 0;
-         if (!isset($input['_auto_update'])) {
-            $input["users_id"] = Session::getLoginUserID();
-         }
-
-         $input["users_id"] = Session::getLoginUserID();
-         $input["submission_date"] = $_SESSION["glpi_currenttime"];
-         $input["status"] = 'waiting';
-
+         $input['entities_id'] = $job->fields["entities_id"];
       }
+
+      $input["users_id"] = 0;
+      if (!isset($input['_auto_update'])) {
+         $input["users_id"] = Session::getLoginUserID();
+      }
+
+      $input["submission_date"] = $_SESSION["glpi_currenttime"];
+      $input["status"]          = 'waiting';
+
       return $input;
    }
 

@@ -539,7 +539,7 @@ class Ticket extends CommonITILObject {
       //// check mandatory fields
       // First get ticket template associated : entity and type/category
       $tt = new TicketTemplate();
-      
+
       if (isset($input['entities_id'])) {
          $entid = $input['entities_id'];
       } else {
@@ -547,20 +547,20 @@ class Ticket extends CommonITILObject {
       }
       if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $entid)) {
          // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);     
+         $tt->getFromDBWithDatas($template_id, true);
       }
-      
+
       if (isset($input['type'])) {
          $type = $input['type'];
       } else {
          $type = $this->fields['type'];
-      }      
-      
+      }
+
       if (isset($input['itilcategories_id'])) {
          $categid = $input['itilcategories_id'];
       } else {
          $categid = $this->fields['itilcategories_id'];
-      }      
+      }
 
       if ($type && $categid) {
          $categ = new ITILCategory();
@@ -577,12 +577,12 @@ class Ticket extends CommonITILObject {
             }
 
             if (!empty($field) && $categ->fields[$field]) {
-               // with type and categ            
+               // with type and categ
                $tt->getFromDBWithDatas($categ->fields[$field], true);
             }
          }
-      }      
-      
+      }
+
       if (count($tt->mandatory)) {
          $mandatory_missing = array();
          $fieldsname = $tt->getAllowedFieldsNames(true);
@@ -605,7 +605,7 @@ class Ticket extends CommonITILObject {
 //             unset($input['name']);
 //          }
 //       }
-// 
+//
 //       if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
 //          $content = trim($input['content']);
 //          if (empty($content)) {
@@ -767,7 +767,11 @@ class Ticket extends CommonITILObject {
 
       //Action for send_validation rule
       if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
-         $validation = new Ticketvalidation();
+         $validation = new TicketValidation();
+         // if auto_update, tranfert it for validation
+         if (isset($this->input['_auto_update'])) {
+            $values['_auto_update'] = $this->input['_auto_update'];
+         }
          $values['tickets_id']        = $this->input['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
@@ -1108,33 +1112,33 @@ class Ticket extends CommonITILObject {
             }
          }
 //          $mandatory_ok = true;
-// 
+//
 //          if (!isset($input["urgency"])) {
 //             Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
 //             $mandatory_ok = false;
 //          }
-// 
+//
 //          if ($CFG_GLPI["is_ticket_content_mandatory"]
 //              && (!isset($input['content']) || empty($input['content']))) {
-// 
+//
 //             Session::addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
 //             $mandatory_ok = false;
 //          }
-// 
+//
 //          if ($CFG_GLPI["is_ticket_title_mandatory"]
 //              && (!isset($input['name']) || empty($input['name']))) {
-// 
+//
 //             Session::addMessageAfterRedirect($LANG['help'][40], false, ERROR);
 //             $mandatory_ok = false;
 //          }
-// 
+//
 //          if ($CFG_GLPI["is_ticket_category_mandatory"]
 //              && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
-// 
+//
 //             Session::addMessageAfterRedirect($LANG['help'][41], false, ERROR);
 //             $mandatory_ok = false;
 //          }
-// 
+//
 //          if (!$mandatory_ok) {
 //             return false;
 //          }
@@ -1194,9 +1198,9 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage auto assign
-      
+
       $auto_assign_mode = EntityData::getUsedConfig('auto_assign_mode', $input['entities_id']);
-      
+
       switch ($auto_assign_mode) {
          case EntityData::CONFIG_NEVER :
             break;
@@ -1204,7 +1208,7 @@ class Ticket extends CommonITILObject {
          case EntityData::AUTO_ASSIGN_HARDWARE_CATEGORY :
             if ($item!=NULL) {
                // Auto assign tech from item
-               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0) 
+               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0)
                    && $item->isField('users_id_tech')) {
                   $input['_users_id_assign'] = $item->getField('users_id_tech');
                }
@@ -3003,13 +3007,13 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
-      
+
       // First load default entity one
       if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $_SESSION["glpiactive_entity"])) {
          // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);     
+         $tt->getFromDBWithDatas($template_id, true);
       }
-            
+
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
@@ -3072,7 +3076,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
@@ -3126,7 +3130,7 @@ class Ticket extends CommonITILObject {
       if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
          $opt['display_emptychoice'] = false;
       }
-      
+
       Dropdown::show('ITILCategory', $opt);
       echo "</td></tr>";
 
@@ -3305,14 +3309,14 @@ class Ticket extends CommonITILObject {
 
       // Load ticket template if available :
       $tt = new TicketTemplate();
-      
+
       // First load default entity one
       if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
          // with type and categ
-         $tt->getFromDBWithDatas($template_id, true);     
+         $tt->getFromDBWithDatas($template_id, true);
       }
-      
-      
+
+
       if ($values['type'] && $values['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($values['itilcategories_id'])) {
@@ -3328,7 +3332,7 @@ class Ticket extends CommonITILObject {
             }
 
             if (!empty($field) && $categ->fields[$field]) {
-               // without type and categ            
+               // without type and categ
                $tt->getFromDBWithDatas($categ->fields[$field], false);
             }
          }
@@ -3627,7 +3631,7 @@ class Ticket extends CommonITILObject {
                             'entity_restrict' => $this->fields['entities_id'],
                             'value'           => $this->fields['itilcategories_id'],
                             'currenttype'     => $this->fields['type']);
-                            
+
             Ajax::updateItemOnSelectEvent("dropdown_type$rand", "show_category_by_type",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownTicketCategories.php",
                                           $params);
@@ -3655,7 +3659,7 @@ class Ticket extends CommonITILObject {
          }
          /// if category mandatory, no empty choice
          /// no empty choice is default value set on ticket creation, else yes
-         if (($ID || $values['itilcategories_id']) 
+         if (($ID || $values['itilcategories_id'])
             && $tt->isMandatoryField("itilcategories_id")) {
             $opt['display_emptychoice'] = false;
          }
