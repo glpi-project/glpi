@@ -832,7 +832,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          if ($this->obj->countGroups(Ticket::REQUESTER)) {
             $groups = array();
-            foreach ($this->obj->getUsers(Ticket::REQUESTER) as $gid => $tmp) {
+            foreach ($this->obj->getGroups(Ticket::REQUESTER) as $gid => $tmp) {
                $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
             }
             $this->datas['##ticket.groups##'] = implode(', ',$groups);
