@@ -2432,7 +2432,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'date' :
                   case 'datetime' :
                      // don't use $unset', because this is not a failure
-                     unset($this->input[$key]);
+                     $this->input[$key] = 'NULL';
                      break;
                }
             } else if (isset($searchOption['datatype'])
