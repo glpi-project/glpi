@@ -86,13 +86,11 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['title'][28]."</th>";
+      echo "<tr><th colspan='10'>".$LANG['title'][28]."</th>";
       if ($problem->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
-         $colspan++;
       }
       echo "</tr>";
 
@@ -110,29 +108,17 @@ class Problem_Ticket extends CommonDBRelation{
       if ($DB->numrows($result) >0) {
          Session::initNavigateListItems('Ticket',
                                         $LANG['problem'][0] ." = ". $problem->fields["name"]);
-
+         $i=0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
-            if ($canedit) {
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
-            echo "<td><a href='".Toolbox::getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
-                      $data["name"]."</a></td>";
-            if ($problem->isRecursive()) {
-               echo "<td>".Dropdown::getDropdownName('glpi_entities',$data["entities_id"])."</td>";
-            }
-            echo "</tr>";
+            Ticket::showShort($data['id'],false,HTML_OUTPUT, $i, $data['linkID']);
+            $i++;
          }
       }
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='9'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
          Dropdown::show('Ticket', array('used'        => $used,
                                         'entity'      => $problem->getEntityID(),
