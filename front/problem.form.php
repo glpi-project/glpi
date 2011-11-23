@@ -78,7 +78,15 @@ if (isset($_POST["add"])) {
    $problem->update($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
-   Html::back();
+   // Copy solution to KB redirect to KB
+   if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&itemtype=Problem&items_id=".
+                   $_POST["id"]);
+   } else {
+      Html::back();
+   }
+
+
 
 } else if (isset($_REQUEST['delete_user'])) {
    $problem_user = new Problem_User();
