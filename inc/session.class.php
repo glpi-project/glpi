@@ -557,7 +557,9 @@ class Session {
 
       if (!$force_human) { // Check cron jobs
          if (isset($_SESSION["glpicronuserrunning"])
-             && (isCommandLine() || strpos($_SERVER['PHP_SELF'],"cron.php"))) {
+             && (isCommandLine()
+                 || strpos($_SERVER['PHP_SELF'], 'cron.php')
+                 || strpos($_SERVER['REQUEST_URI'], 'crontask.php?execute'))) {
 
             return $_SESSION["glpicronuserrunning"];
          }
