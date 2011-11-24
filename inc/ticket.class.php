@@ -639,9 +639,9 @@ class Ticket extends CommonITILObject {
 
          $input = $ret;
       }
-      
-      
-      
+
+
+
       //// check mandatory fields
       // First get ticket template associated : entity and type/category
       $tt = new TicketTemplate();
@@ -688,7 +688,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       if (count($tt->mandatory)) {
          $mandatory_missing = array();
          $fieldsname = $tt->getAllowedFieldsNames(true);
@@ -704,7 +704,7 @@ class Ticket extends CommonITILObject {
             return false;
          }
       }
-      
+
 
       // Manage fields from auto update : map rule actions to standard ones
       if (isset($input['_auto_update'])) {
@@ -3082,7 +3082,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
@@ -4701,11 +4701,30 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Group' :
-            $restrict                 = "(`glpi_groups_tickets`.`groups_id` = '".$item->getID()."'
+            // Mini search engine
+            if ($item->haveChildren()) {
+               $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+               echo "<table class='tab_cadre_fixe'>";
+               echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
+               echo "<tr class='tab_bg_1'><td class='center'>";
+               echo $LANG['group'][3]."&nbsp;:&nbsp;";
+               Dropdown::showYesNo('tree', $tree, -1,
+                                   array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+            } else {
+               $tree = 0;
+            }
+            echo "</td></tr></table>";
+
+            if ($tree) {
+               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
+            } else {
+               $restrict = "='".$item->getID()."'";
+            }
+            $restrict                 = "(`glpi_groups_tickets`.`groups_id` $restrict
                                           AND `glpi_groups_tickets`.`type` = ".Ticket::REQUESTER.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
             $options['field'][0]      = 71;
-            $options['searchtype'][0] = 'equals';
+            $options['searchtype'][0] = ($tree ? 'under' : 'equals');
             $options['contains'][0]   = $item->getID();
             $options['link'][0]       = 'AND';
             break;
