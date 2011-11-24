@@ -733,25 +733,6 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   /**
-    * Form for Followup on Massive action
-   **/
-   static function showFormMassiveAction() {
-      global $LANG;
-
-      echo "&nbsp;".$LANG['common'][36]."&nbsp;: ";
-      Dropdown::show('TaskCategory');
-
-      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
-      echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
-
-      if ($this->maybePrivate()) {
-         echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
-      }
-      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-   }
-
-
    /** form for Task
     *
     * @param $ID Integer : Id of the task

@@ -178,6 +178,7 @@ class TicketTask  extends CommonITILTask {
       return parent::genericGetAlreadyPlannedInformation('TicketTask',$val);
    }
 
+
    /**
     * Display a Planning Item
     *
@@ -190,6 +191,23 @@ class TicketTask  extends CommonITILTask {
    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
       return parent::genericDisplayPlanningItem('TicketTask',$val, $who, $type, $complete);
+   }
+
+
+   /**
+    * Form for TicketTask on Massive action
+   **/
+   static function showFormMassiveAction() {
+      global $LANG;
+
+      echo "&nbsp;".$LANG['common'][36]."&nbsp;: ";
+      Dropdown::show('TaskCategory');
+
+      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
+      echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
+
+      echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
    }
 
 
