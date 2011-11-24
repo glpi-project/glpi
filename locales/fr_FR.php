@@ -2397,7 +2397,6 @@ $LANG['setup'][720] = "Informations système";
 $LANG['setup'][721] = "Informations sur le système, l'installation et la configuration";
 $LANG['setup'][722] = "A copier/coller lors d'une demande d'assistance";
 
-$LANG['setup'][731] = "Valeur de la configuration générale";
 $LANG['setup'][732] = "Domaine de messagerie";
 
 //MySQL Replicate

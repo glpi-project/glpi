@@ -466,7 +466,7 @@ class EntityData extends CommonDBChild {
       if ($ID > 0) {
          $options[self::CONFIG_PARENT] = $LANG['common'][102];
       }
-      
+
       Dropdown::showFromArray('autofill_warranty_date', $options,
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
@@ -586,46 +586,46 @@ class EntityData extends CommonDBChild {
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
-                            'inherit_global' => 1));
+                            'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][243] . "</td><td>";
       $default_value = $entitynotification->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
-                            'inherit_global' => 1));
+                            'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
       $default_value = $entitynotification->fields['use_licenses_alert'];
       Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
                                  'value'          => $default_value,
-                                 'inherit_global' => 1));
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td>" . $LANG['setup'][246] . "</td><td>";
       $default_value = $entitynotification->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
                                  'value'          => $default_value,
-                                 'inherit_global' => 1));
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][247] . "</td><td>";
       $default_value = $entitynotification->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
-                                 'inherit_global' => 1));
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "<td>" . $LANG['setup'][707] . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
-                                        'inherit_global' => 1));
+                                        'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
                                   array('max'            => 99,
-                                        'inherit_global' => 1));
+                                        'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -731,7 +731,7 @@ class EntityData extends CommonDBChild {
 
       $options = array('value'      => $entdata->fields["tickettemplates_id"],
                                                'toadd'  =>$toadd);
-      
+
       Dropdown::show('TicketTemplate', $options);
 
       if ($entdata->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
@@ -859,7 +859,7 @@ class EntityData extends CommonDBChild {
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
          echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
-         
+
          if ($inquestrate == 0) {
             echo $LANG['crontask'][31];
          } else {

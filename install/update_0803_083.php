@@ -1134,15 +1134,15 @@ function update0803to083() {
                       $LANG['update'][90] . $DB->error());
             }
          }
-         
+
          // Update itit categories
          $migration->migrationOneTable('glpi_itilcategories');
-         $query = "UPDATE `glpi_itilcategories` 
-                        SET `tickettemplates_id_incident` = '$default_ticket_template', 
+         $query = "UPDATE `glpi_itilcategories`
+                        SET `tickettemplates_id_incident` = '$default_ticket_template',
                             `tickettemplates_id_demand` = '$default_ticket_template'";
          $DB->query($query)
                or die("0.83 update default templates used by itil categories ".
-                      $LANG['update'][90] . $DB->error());                            
+                      $LANG['update'][90] . $DB->error());
       }
    }
    // Drop global mandatory config
@@ -1568,12 +1568,24 @@ function update0803to083() {
    // create root entity if not exist with old default values
    if (countElementsInTable('glpi_entitydatas', 'entities_id=0') == 0) {
       $query = "INSERT INTO `glpi_entitydatas`
-                       (`entities_id`,`entities_id_software`,`autofill_order_date`,`autofill_delivery_date`,
-                        `autofill_buy_date`, `autofill_use_date`, `autofill_warranty_date`,`inquest_config`,
-                        `tickettype`,`calendars_id`, `tickettemplates_id`, `autoclose_delay`, 
-                        `inquest_rate`, `inquest_delay`
-                        )
-                VALUES (0,0,0,0,0,0,0,1,1,0,'$default_ticket_template',0,0,0)";
+                       (`entities_id`, `entities_id_software`,
+                        `autofill_order_date`, `autofill_delivery_date`, `autofill_buy_date`,
+                        `autofill_use_date`, `autofill_warranty_date`,
+                        `inquest_config`, `inquest_rate`, `inquest_delay`
+                        `tickettype`, `calendars_id`, `tickettemplates_id`,
+                        `autoclose_delay`, 'auto_assign_mode',
+                        `cartridges_alert_repeat`, `consumables_alert_repeat`
+                        `use_licenses_alert`, `use_infocoms_alert`, `notclosed_delay`,
+                        `use_contracts_alert`, `use_reservations_alert`)
+                VALUES (0, 0,
+                        0, 0, 0,
+                        0, 0,
+                        1, 0, 0,
+                        1, 0, '$default_ticket_template',
+                        -1, -1,
+                        -1, -1,
+                        -1, -1, -1,
+                        -1, -1,)"; // -1 to keep config value - see 1647
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
@@ -1583,7 +1595,7 @@ function update0803to083() {
    $field0 = array('calendars_id', 'tickettype', 'inquest_config');
 
    foreach ($field0 as $field_0) {
-      if (FieldExists("glpi_entitydatas", $field_0)) {
+      if (FieldExists("glpi_entitydatas", $field_0) ) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = '-2'
                    WHERE `$field_0` = '0'";
@@ -1592,7 +1604,7 @@ function update0803to083() {
                  $DB->error());
       }
    }
-   
+
    // new default value
    $migration->changeField("glpi_entitydatas", "calendars_id", "calendars_id",
                            "int(11) NOT NULL DEFAULT '-2'");
@@ -1632,13 +1644,10 @@ function update0803to083() {
                            "int(11) NOT NULL DEFAULT '-2'");
 
 
-   // TODO change return config to return parent
-   //   $fieldconfig = array('cartridges_alert_repeat', 'use_licenses_alert', 'use_infocoms_alert',
-   //                     'notclosed_delay', 'consumables_alert_repeat', 'use_contracts_alert',
-   //                     'use_reservations_alert');
-
    // migration to new values for inherit config
-   $fieldconfig = array('auto_assign_mode', 'autoclose_delay');
+   $fieldconfig = array('auto_assign_mode', 'autoclose_delay', 'cartridges_alert_repeat',
+                        'consumables_alert_repeat', 'notclosed_delay', 'use_contracts_alert',
+                        'use_infocoms_alert', 'use_licenses_alert', 'use_reservations_alert');
 
    $query = "SELECT *
              FROM `glpi_configs`";
@@ -1660,6 +1669,8 @@ function update0803to083() {
 
                   $migration->changeField("glpi_entitydatas", "$field_config", "$field_config",
                                           "int(11) NOT NULL DEFAULT '-2'");
+
+                  $migration->dropField("glpi_configs", $field_config);
                }
             }
             if (FieldExists("glpi_entitydatas", "auto_assign_mode")) {
@@ -1673,12 +1684,13 @@ function update0803to083() {
             }
          }
       }
-      $migration->dropField("glpi_configs", 'auto_assign_mode');
-      $migration->dropField("glpi_configs", 'autoclose_delay');
+
    }
 
    if ($restore_root_entity_value) {
-      $query = "UPDATE `glpi_entitydatas` SET `calendars_id` = 0 WHERE `entities_id` = 0;";
+      $query = "UPDATE `glpi_entitydatas`
+                SET `calendars_id` = 0
+                WHERE `entities_id` = 0;";
       $DB->query($query)
                or die ("0.83 restore root entity default value".
                        $LANG['update'][90].$DB->error());
