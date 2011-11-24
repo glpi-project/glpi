@@ -437,7 +437,8 @@ function update0803to083() {
                       SET `begin` = ".($data['begin']=='NULL'?'NULL':"'".$data['begin']."'").",
                           `end` = ".($data['end']=='NULL'?'NULL':"'".$data['end']."'").",
                           `users_id_tech` = '".$data['users_id']."',
-                          `state` = '".$data['state']."'";
+                          `state` = '".$data['state']."'
+                      WHERE `id` = '".$data['tickettasks_id']."'";
             $DB->query($query)
             or die("0.83 migrate planning to glpi_tickettasks ". $LANG['update'][90] .$DB->error());
          }
