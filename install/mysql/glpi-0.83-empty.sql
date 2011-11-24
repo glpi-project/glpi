@@ -708,9 +708,6 @@ CREATE TABLE `glpi_configs` (
   `add_followup_on_update_ticket` tinyint(1) NOT NULL DEFAULT '1',
   `default_contract_alert` int(11) NOT NULL DEFAULT '0',
   `default_infocom_alert` int(11) NOT NULL DEFAULT '0',
-  `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '0' COMMENT 'in seconds',
-  `consumables_alert_repeat` int(11) NOT NULL DEFAULT '0' COMMENT 'in seconds',
   `keep_tickets_on_delete` tinyint(1) NOT NULL DEFAULT '1',
   `time_step` int(11) DEFAULT '5',
   `decimal_number` int(11) DEFAULT '2',
@@ -751,10 +748,6 @@ CREATE TABLE `glpi_configs` (
   `priority_matrix` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'json encoded array for Urgence / Impact to Protority',
   `urgency_mask` int(11) NOT NULL DEFAULT '62',
   `impact_mask` int(11) NOT NULL DEFAULT '62',
-  `use_infocoms_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `use_reservations_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `notclosed_delay` int(11) NOT NULL DEFAULT '0',
   `user_deleted_ldap` tinyint(1) NOT NULL DEFAULT '0',
   `auto_create_infocoms` tinyint(1) NOT NULL DEFAULT '0',
   `use_slave_for_search` tinyint(1) NOT NULL DEFAULT '0',
@@ -767,7 +760,7 @@ CREATE TABLE `glpi_configs` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50','30',' 0.83','5','0','admsys@xxxxx.fr',NULL,NULL,NULL,'SIGNATURE','0','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','10','','443','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','http://localhost/glpi/','0','','','100','*','0','0','50','1','1','0','0',';','0','50','0','0',NULL,'25',NULL,NULL,'8080',NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','1','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','1',NULL,'2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0','0','0','0','0',NULL,NULL,'0','1','0','1');
+INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50','30',' 0.83','5','0','admsys@xxxxx.fr',NULL,NULL,NULL,'SIGNATURE','0','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','10','','443','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','http://localhost/glpi/','0','','','100','*','0','0','50','1','1','0','0',';','0','50','0','0',NULL,'25',NULL,NULL,'8080',NULL,'1','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','1','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','1',NULL,'2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0',NULL,NULL,'0','1','0','1');
 
 ### Dump table glpi_consumableitems
 
@@ -1691,14 +1684,14 @@ CREATE TABLE `glpi_entitydatas` (
   `mail_domain` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entity_ldapfilter` text COLLATE utf8_unicode_ci,
   `mailing_signature` text COLLATE utf8_unicode_ci,
-  `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '-1',
-  `consumables_alert_repeat` int(11) NOT NULL DEFAULT '-1',
-  `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '-1',
-  `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '-1',
-  `use_infocoms_alert` tinyint(1) NOT NULL DEFAULT '-1',
-  `use_reservations_alert` int(11) NOT NULL DEFAULT '-1',
+  `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '-2',
+  `consumables_alert_repeat` int(11) NOT NULL DEFAULT '-2',
+  `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '-2',
+  `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '-2',
+  `use_infocoms_alert` tinyint(1) NOT NULL DEFAULT '-2',
+  `use_reservations_alert` int(11) NOT NULL DEFAULT '-2',
   `autoclose_delay` int(11) NOT NULL DEFAULT '-2',
-  `notclosed_delay` int(11) NOT NULL DEFAULT '-1',
+  `notclosed_delay` int(11) NOT NULL DEFAULT '-2',
   `calendars_id` int(11) NOT NULL DEFAULT '-2',
   `auto_assign_mode` int(11) NOT NULL DEFAULT '-2',
   `tickettype` int(11) NOT NULL DEFAULT '-2',

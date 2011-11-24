@@ -234,6 +234,7 @@ class NotificationMailSetting extends CommonDBTM {
    function showFormAlerts() {
       global $LANG, $CFG_GLPI;
 
+      // TODO see to transfert this fields in entitydata ??
       echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -241,55 +242,18 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][41]."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td >" . $LANG['setup'][246] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'  => "use_contracts_alert",
-                                 'value' => $CFG_GLPI["use_contracts_alert"]));
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][46] . "&nbsp;:</td><td>";
+      echo "<td >" . $LANG['setup'][246] . " - " . $LANG['setup'][46] . "&nbsp;:</td><td>";
       Contract::dropdownAlert("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][247] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'  => "use_infocoms_alert",
-                                 'value' => $CFG_GLPI["use_infocoms_alert"]));
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][46]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][247] . " - " .
+             $LANG['setup'][46]."&nbsp;:</td><td>";
       Alert::dropdownInfocomAlert($CFG_GLPI["default_infocom_alert"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'  => "use_licenses_alert",
-                                 'value' => $CFG_GLPI["use_licenses_alert"]));
-      echo "</td>";
-      echo "<td colspan='2'></td></tr>";
-
       echo "<tr class='tab_bg_2'>";
-      echo "<td >" . $LANG['setup'][707] . "&nbsp;:</td><td>";
-      Alert::dropdownIntegerNever('use_reservations_alert', $CFG_GLPI["use_reservations_alert"],
-                                  array('max' => 99));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td>";
-      echo "<td colspan='2'></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][708] . "&nbsp;:</td><td>";
-      Alert::dropdownIntegerNever('notclosed_delay', $CFG_GLPI["notclosed_delay"],
-                                  array('max' => 99));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
-      echo "<td colspan='2'></td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][245] . "&nbsp;: " . $LANG['setup'][244] . "&nbsp;:</td><td>";
-      Alert::dropdown(array('name'  => 'cartridges_alert_repeat',
-                            'value' => $CFG_GLPI["cartridges_alert_repeat"]));
-      echo "</td>";
       echo "<td>" . $LANG['setup'][115] . "&nbsp;:</td><td>";
       Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td >" . $LANG['setup'][245] . "&nbsp;: " . $LANG['setup'][243] . "&nbsp;:</td><td>";
-      Alert::dropdown(array('name'  => 'consumables_alert_repeat',
-                            'value' => $CFG_GLPI["consumables_alert_repeat"]));
-      echo "</td><td colspan='2'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";

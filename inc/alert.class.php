@@ -87,14 +87,14 @@ class Alert extends CommonDBTM {
          $value = $options['value'];
       }
 
-      if (isset($options['inherit_global']) && $options['inherit_global']) {
-         $times[-1] = $LANG['setup'][731];
+      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+         $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
       }
 
-      $times[0]               = $LANG['setup'][307];
-      $times[DAY_TIMESTAMP]   = $LANG['setup'][305];
-      $times[WEEK_TIMESTAMP]  = $LANG['setup'][308];
-      $times[MONTH_TIMESTAMP] = $LANG['setup'][309];
+      $times[EntityData::CONFIG_NEVER] = $LANG['setup'][307];
+      $times[DAY_TIMESTAMP]            = $LANG['setup'][305];
+      $times[WEEK_TIMESTAMP]           = $LANG['setup'][308];
+      $times[MONTH_TIMESTAMP]          = $LANG['setup'][309];
 
       Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }
@@ -109,8 +109,8 @@ class Alert extends CommonDBTM {
          $value = $options['value'];
       }
 
-      if (isset($options['inherit_global']) && $options['inherit_global']) {
-         $times[-1] = $LANG['setup'][731];
+      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+         $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
       }
 
       $times[0] = $LANG['choice'][0];
@@ -132,8 +132,8 @@ class Alert extends CommonDBTM {
          $p['toadd'][0] = $LANG['setup'][307];
       }
 
-      if (isset($options['inherit_global']) && $options['inherit_global']) {
-         $p['toadd'][-1] = $LANG['setup'][731];
+      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+         $p['toadd'][-2] = $LANG['common'][102];
       }
 
       foreach ($options as $key=>$val) {
