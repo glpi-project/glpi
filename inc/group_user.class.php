@@ -292,10 +292,10 @@ class Group_User extends CommonDBRelation{
                 INNER JOIN `glpi_profiles_users`
                         ON (`glpi_profiles_users`.`users_id`=`glpi_users`.`id`)
                 WHERE `glpi_groups_users`.`groups_id` $restrict ".
-                      getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $entityrestrict, 1);
-               "ORDER BY `glpi_users`.`name`,
-                         `glpi_users`.`realname`,
-                         `glpi_users`.`firstname`";
+                      getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $entityrestrict, 1)."
+                ORDER BY `glpi_users`.`realname`,
+                         `glpi_users`.`firstname`,
+                         `glpi_users`.`name`";
 
       $result = $DB->query($query);
 
