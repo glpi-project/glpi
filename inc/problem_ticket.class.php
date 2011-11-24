@@ -106,6 +106,8 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
+      
+         Ticket::commonListHeader(HTML_OUTPUT); 
          Session::initNavigateListItems('Ticket',
                                         $LANG['problem'][0] ." = ". $problem->fields["name"]);
          $i=0;
