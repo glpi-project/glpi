@@ -1534,6 +1534,13 @@ class Dropdown {
                      echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
                   break;
 
+               case 'Problem' :
+                  $tmp = new Problem();
+                  if ($tmp->canCreate()) {
+                     echo "<option value='add_task'>".$LANG['job'][30]."</option>";
+                  }
+                  break;
+
             }
 
             if ($item instanceof CommonTreeDropdown) {
