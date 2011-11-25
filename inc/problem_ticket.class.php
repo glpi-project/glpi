@@ -120,7 +120,7 @@ class Problem_Ticket extends CommonDBRelation{
       }
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='9'>";
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='8'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
          Dropdown::show('Ticket', array('used'        => $used,
                                         'entity'      => $problem->getEntityID(),
