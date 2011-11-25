@@ -800,10 +800,16 @@ if (isset($_POST["action"])
          break;
 
       case "add_task" :
-         $task = new TicketTask();
+         if ($_POST['itemtype'] == 'Ticket') {
+            $task  = new TicketTask();
+            $field = 'tickets_id';
+         } else if ($_POST['itemtype'] == 'Problem') {
+            $task  = new ProblemTask();
+            $field = 'problems_id';
+         }
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               $input = array('tickets_id'        => $key,
+               $input = array($field              => $key,
                               'taskcategories_id' => $_POST['taskcategories_id'],
                               'content'           => $_POST['content']);
                if ($task->can(-1,'w',$input)) {

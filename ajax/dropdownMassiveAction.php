@@ -60,7 +60,6 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
    echo '&nbsp;';
-
    switch($_POST["action"]) {
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
@@ -105,7 +104,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "add_task" :
-         TicketTask::showFormMassiveAction();
+         $tasktype = $_POST['itemtype']."Task";
+         $ttype = new $tasktype();
+         $ttype->showFormMassiveAction();
          break;
 
       case "add_actor" :
