@@ -162,11 +162,11 @@ class Log extends CommonDBTM {
 
                   // 1st case : Ticket specific dropdown case (without table)
                   if ($real_type=='Ticket'
-                      && in_array($key, array('global_validation', 'impact', 'status', 'type',
-                                              'urgency', 'priority'))) {
+                      && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
+                                              'status', 'type', 'urgency', 'priority'))) {
                      $changes = array($id_search_option,
-                                      addslashes(Ticket::getSpecificValueToDisplay($key, $oldval)),
-                                      addslashes(Ticket::getSpecificValueToDisplay($key, $values[$key])));
+                                      addslashes(Ticket::getSpecificValueToDisplay($key, $oldval, $oldvalues)),
+                                      addslashes(Ticket::getSpecificValueToDisplay($key, $values[$key], $values)));
 
                   } else if ($val2["table"] == $item->getTable()) {
                      // 2nd case : text field -> keep datas
