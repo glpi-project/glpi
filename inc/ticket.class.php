@@ -2183,9 +2183,15 @@ class Ticket extends CommonITILObject {
             return self::getTicketTypeName($value);
             break;
 
+         case 'itemtype':
+            if (class_exists($value)) {
+               return call_user_func(array($value, 'getTypeName'));
+            }
+            break;
+
          case 'items_id':
             if (isset($options['itemtype'])) {
-               if ($options['comments']) {
+               if (isset($options['comments']) && $options['comments']) {
                   $tmp = Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value,1);
                   return $tmp['name'].'&nbsp;'.
                            Html::showToolTip($tmp['comment'], array('display' => false));
