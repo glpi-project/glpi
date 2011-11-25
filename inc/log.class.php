@@ -161,39 +161,12 @@ class Log extends CommonDBTM {
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                   // 1st case : Ticket specific dropdown case (without table)
-                  if ($real_type=='Ticket' && in_array($key, array('status', 'urgency', 'impact',
-                                                                   'priority', 'global_validation'))) {
-                     switch ($key) {
-                        case 'global_validation' :
-                           $changes = array($id_search_option,
-                                            addslashes(TicketValidation::getStatus($oldval)),
-                                            addslashes(TicketValidation::getStatus($values[$key])));
-                           break;
-
-                        case 'status' :
-                           $changes = array($id_search_option,
-                                            addslashes(Ticket::getStatus($oldval)),
-                                            addslashes(Ticket::getStatus($values[$key])));
-                           break;
-
-                        case 'urgency' :
-                           $changes = array($id_search_option,
-                                            addslashes(Ticket::getUrgencyName($oldval)),
-                                            addslashes(Ticket::getUrgencyName($values[$key])));
-                           break;
-
-                        case 'impact' :
-                           $changes = array($id_search_option,
-                                            addslashes(Ticket::getImpactName($oldval)),
-                                            addslashes(Ticket::getImpactName($values[$key])));
-                           break;
-
-                        case 'priority' :
-                           $changes = array($id_search_option,
-                                            addslashes(Ticket::getPriorityName($oldval)),
-                                            addslashes(Ticket::getPriorityName($values[$key])));
-                           break;
-                     }
+                  if ($real_type=='Ticket'
+                      && in_array($key, array('global_validation', 'impact', 'status', 'type',
+                                              'urgency', 'priority'))) {
+                     $changes = array($id_search_option,
+                                      addslashes(Ticket::getSpecificValueToDisplay($key, $oldval)),
+                                      addslashes(Ticket::getSpecificValueToDisplay($key, $values[$key])));
 
                   } else if ($val2["table"] == $item->getTable()) {
                      // 2nd case : text field -> keep datas
