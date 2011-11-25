@@ -120,6 +120,26 @@ class Log extends CommonDBTM {
       foreach ($oldvalues as $key => $oldval) {
          $changes = array();
 
+         /*
+         // First: type for which getValueToDisplay is ok.
+         if (in_array($real_type, array('Entity'))) {
+
+            foreach ($searchopt as $key2 => $val2) {
+               // Linkfield or standard field not massive action enable
+               if ($key == $val2['field'] && $val2['table'] == $item->getTable()) {
+                  $changes = array($key2,
+                                   addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                       stripslashes($oldval),
+                                                                       $oldvalues)),
+                                   addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                       $values[$key],
+                                                                       $values)));
+                  break;
+               }
+            }
+            toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
+         } else
+         */
          if ($real_type == 'Infocom') {
             // Parsing $SEARCHOPTION to find infocom
             foreach ($searchopt as $key2 => $val2) {
