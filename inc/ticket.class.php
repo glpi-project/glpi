@@ -2170,7 +2170,11 @@ class Ticket extends CommonITILObject {
    }
 
    static function getSpecificValueToDisplay($field, $value, $options=array()) {
+
       switch ($field) {
+         case 'global_validation' :
+            return TicketValidation::getStatus($value);
+
          case 'status':
             return self::getStatus($value);
             break;
@@ -2190,8 +2194,9 @@ class Ticket extends CommonITILObject {
                return Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value);
             }
             break;
+
          default :
-            return parent::getSpecificValueToDisplay($field, $value);
+            return parent::getSpecificValueToDisplay($field, $value, $options);
       }
    }
 
