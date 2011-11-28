@@ -645,7 +645,7 @@ class Software extends CommonDBTM {
          $input["name"]                = $name;
          $input["manufacturers_id"]    = $manufacturer_id;
          $input["entities_id"]         = $entity;
-         $input["is_recursive"]        = $is_recursive;
+         $input["is_recursive"]        = ($is_recursive ? 1 : 0);
          // No comment
          $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
 
