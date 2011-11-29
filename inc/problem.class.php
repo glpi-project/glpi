@@ -62,7 +62,11 @@ class Problem extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][7];
+      }
       return $LANG['problem'][0];
+
    }
 
 

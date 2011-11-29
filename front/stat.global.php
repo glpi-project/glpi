@@ -55,6 +55,8 @@ if (!empty($_REQUEST["date1"])
    $_REQUEST["date2"] = $tmp;
 }
 
+$item = new $_REQUEST['itemtype']();
+
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
@@ -109,9 +111,9 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     =>$LANG['stats'][13],
+Stat::showGraph($toprint, array('title'     => $LANG['tracking'][29],
                                 'showtotal' => 1,
-                                'unit'      => $LANG['stats'][35]));
+                                'unit'      => $item->getTypeName(2)));
 
 //Temps moyen de resolution d'intervention
 $values2['avgsolved']     = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgsolvedtime", $_REQUEST["date1"],
