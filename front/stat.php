@@ -41,9 +41,13 @@ Session::checkRight("statistic", "1");
 
 //Affichage du tableau de presentation des stats
 echo "<table class='tab_cadre_fixe'>";
-echo "<tr><th>".$LANG['stats'][0]."&nbsp;:</th></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'><a href='stat.global.php'>".
-      $LANG['stats'][1]."</a></td></tr>";
+echo "<tr><th colspan='2'>".$LANG['stats'][0]."&nbsp;:</th></tr>";
+echo "<tr><th>".$LANG['Menu'][5]."</th><th>".$LANG['Menu'][7]."</th></tr>";
+
+echo "<tr class='tab_bg_1'>";
+echo "<td class='center b'><a href='stat.global.php?itemtype=Ticket'>".$LANG['stats'][1]."</a></td>";
+echo "<td class='center b'><a href='stat.global.php?itemtype=Problem'>".$LANG['stats'][1]."</a></td>";
+echo "</tr>";
 echo "<tr class='tab_bg_1'><td class='center b'><a href='stat.tracking.php'>".
       $LANG['stats'][47]."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center'><a href='stat.location.php'><span class='b'>".
