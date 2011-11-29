@@ -5855,7 +5855,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          }
          //If more than one server defined, get the most used
          else {
-            $query = "SELECT `auths_id`, COUNT(`auths_id`) ASQ cpt
+            $query = "SELECT `auths_id`, COUNT(`auths_id`) AS cpt
                       FROM `glpi_users`
                       WHERE `authtype` = '3'
                       GROUP BY `auths_id`
