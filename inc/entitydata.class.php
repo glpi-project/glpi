@@ -1159,6 +1159,22 @@ class EntityData extends CommonDBChild {
       }
       return true;
    }
+
+
+   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
+      global $LANG;
+
+      switch ($field) {
+         case 'use_licenses_alert' :
+         case 'use_contracts_alert' :
+         case 'use_infocoms_alert' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return $LANG['common'][102];
+            }
+            return Dropdown::getYesNo($values[$field]);
+      }
+      return '';
+   }
 }
 
 ?>
