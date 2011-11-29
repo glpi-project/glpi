@@ -1418,10 +1418,10 @@ class Dropdown {
             if (Session::haveRight('transfer','r')
                 && Session::isMultiEntitiesMode()
                 && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem',
-                                             'Contact', 'Contract', 'Supplier', 'Monitor',
-                                             'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-                                             'Software', 'SoftwareLicense', 'Ticket', 'Document',
-                                             'Group', 'Link'))
+                                             'Contact', 'Contract', 'Document', 'Group', 
+                                             'Link', 'Monitor', 'NetworkEquipment', 
+                                             'Peripheral', 'Phone', 'Printer', 'Problem',
+                                             'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
 
                echo "<option value='add_transfer_list'>".$LANG['buttons'][48]."</option>";

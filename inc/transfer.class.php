@@ -233,7 +233,7 @@ class Transfer extends CommonDBTM {
          }
 
          // Tickets
-         $OTHER_TYPES = array('Group', 'Link', 'Ticket');
+         $OTHER_TYPES = array('Group', 'Link', 'Ticket', 'Problem');
          foreach ($OTHER_TYPES as $itemtype) {
             $this->inittype = $itemtype;
             if (isset($items[$itemtype]) && count($items[$itemtype])) {
@@ -297,7 +297,7 @@ class Transfer extends CommonDBTM {
       // Init types :
       $types = array('CartridgeItem', 'Computer', 'ConsumableItem', 'Contact', 'Contract',
                      'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                     'Printer', 'Software', 'SoftwareLicense', 'SoftwareVersion', 'Supplier',
+                     'Printer', 'Problem', 'Software', 'SoftwareLicense', 'SoftwareVersion', 'Supplier',
                      'Ticket');
 
       foreach ($types as $t) {
@@ -1073,9 +1073,15 @@ class Transfer extends CommonDBTM {
             if ($itemtype == 'Ticket') {
                $input2 = $this->transferTicketAdditionalInformations($item->fields);
                $input  = array_merge($input,$input2);
-               $this->transferTicketTaskCategory($ID, $newID);
+               $this->transferTaskCategory($itemtype, $ID, $newID);
             }
 
+            if ($itemtype == 'Problem') {
+               $input2 = $this->transferTicketAdditionalInformations($item->fields);
+               $input  = array_merge($input,$input2);
+               $this->transferTaskCategory($itemtype, $ID, $newID);
+            }
+            
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
             Plugin::doHook("item_transfer", array('type'  => $itemtype,
@@ -2267,7 +2273,7 @@ class Transfer extends CommonDBTM {
 
                      $job->update($input);
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
-                     $this->transferTicketTaskCategory($input['id'], $input['id']);
+                     $this->transferTaskCategory('Ticket',$input['id'], $input['id']);
                   }
                   break;
 
@@ -2302,16 +2308,30 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer task categories for specified tickets
     *
+    * @param $itemtype itemtype : Problem / Ticket
     * @param $ID original ticket ID
     * @param $newID new ticket ID
    **/
-   function transferTicketTaskCategory($ID, $newID) {
+   function transferTaskCategory($itemtype, $ID, $newID) {
       global $DB;
 
-      $task=new TicketTask();
+      switch ($itemtype) {
+         case 'Ticket' :
+            $table = 'glpi_tickettasks';
+            $field = 'tickets_id';
+            $task=new TicketTask();      
+            break;
+         case 'Problem' :
+            $table = 'glpi_problemtasks';
+            $field = 'problems_id';
+            $task=new ProblemTask();
+            break;
+      
+      }
+
       $query = "SELECT *
-                FROM `glpi_tickettasks`
-                WHERE `tickets_id` = '$ID'";
+                FROM `$table`
+                WHERE `$field` = '$ID'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 0) {
@@ -2329,7 +2349,7 @@ class Transfer extends CommonDBTM {
                         $catid = $categ->import($inputcat);
                      }
                      $input['id']                = $data['id'];
-                     $input['tickets_id']        = $ID;
+                     $input[$field]        = $ID;
                      $input['taskcategories_id'] = $catid;
                      $task->update($input);
                   }
@@ -2344,7 +2364,7 @@ class Transfer extends CommonDBTM {
 
 
    /**
-    * Transfer ticket infos
+    * Transfer ticket/problem infos
     *
     * @param $data ticket data fields
    **/
