@@ -1360,7 +1360,7 @@ class Document extends CommonDBTM {
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
                   echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
                   echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
-                        src='".$CFG_GLPI["root_doc"]."/pics/delete2.png'></a>";
+                        src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
                } else {
                   echo "&nbsp;";
                }

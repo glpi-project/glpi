@@ -403,7 +403,7 @@ class Supplier extends CommonDBTM {
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                      "/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=".
-                     $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
+                     $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
                      $LANG['buttons'][6]."'></a>";
             } else {
                echo "&nbsp;";
@@ -666,7 +666,7 @@ class Supplier extends CommonDBTM {
          if ($canedit) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deletecontractsupplier=".
                    "1&amp;id=$assocID&amp;contracts_id=$cID'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
                    $LANG['buttons'][6]."'></a>";
          } else {
             echo "&nbsp;";
