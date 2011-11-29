@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="Systeem informatie"; 
 $LANG['setup'][721]="Informatie installatie en configuratie van het systeem"; 
 $LANG['setup'][722]="Copiëren en plakken in een Incident-Ticket"; 
-$LANG['setup'][731]="Waarde van de globale configuratie"; 
 $LANG['setup'][732]="Domein emailservice"; 
 $LANG['setup'][800]="MySQL repliceren"; 
 $LANG['setup'][801]="Replica MySQL inschakelen"; 

@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alertas de incidencias sen resolver dende fai";
 $LANG['setup'][720]="Info. Sistema"; 
 $LANG['setup'][721]="Información sobre a instalación e configuración do sistema"; 
 $LANG['setup'][722]="Para pegar/copiar na súa petición de soporte"; 
-$LANG['setup'][731]="Valor da configuración xeral"; 
 $LANG['setup'][732]="Dominio do servizo de correo electrónico"; 
 $LANG['setup'][800]="Replicar Mysql"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; // en_GB string to be translated

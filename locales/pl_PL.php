@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="Dane systemu"; 
 $LANG['setup'][721]="Informacje o instalacji i konfiguracji"; 
 $LANG['setup'][722]="Kopiuj/wklej do twojej odpowiedzi"; 
-$LANG['setup'][731]="Wartość globalnej konfiguracji"; 
 $LANG['setup'][732]="Domena wiadomości email"; 
 $LANG['setup'][800]="Replikuj Mysql"; 
 $LANG['setup'][801]="Włącz replikację MySQL"; 

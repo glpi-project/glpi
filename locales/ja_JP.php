@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="システム情報"; 
 $LANG['setup'][721]="システムのインストールと設定の情報"; 
 $LANG['setup'][722]="サポート依頼にコピー/貼り付けするには"; 
-$LANG['setup'][731]="グローバル設定の値"; 
 $LANG['setup'][732]="E-mailサービスのドメイン"; 
 $LANG['setup'][800]="MySQL 複製"; 
 $LANG['setup'][801]="MySQLの複製を可能にする"; 

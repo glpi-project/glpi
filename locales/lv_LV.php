@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="Sistēmas informācija"; 
 $LANG['setup'][721]="Informācija par sistēmas instalāciju un konfigurāciju"; 
 $LANG['setup'][722]="To copy/paste in your support request"; // en_GB string to be translated
-$LANG['setup'][731]="Value of the global configuration"; // en_GB string to be translated
 $LANG['setup'][732]="E-pasta servisa domēns"; 
 $LANG['setup'][800]="MySQL replikācija"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; // en_GB string to be translated
