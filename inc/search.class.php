@@ -4669,6 +4669,18 @@ class Search {
                                                             'condition'
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
+            $search[$itemtype][140]['table']         = 'glpi_items_problems';
+            $search[$itemtype][140]['field']         = 'count';
+            $search[$itemtype][140]['name']          = $LANG['stats'][15];
+            $search[$itemtype][140]['forcegroupby']  = true;
+            $search[$itemtype][140]['usehaving']     = true;
+            $search[$itemtype][140]['datatype']      = 'number';
+            $search[$itemtype][140]['massiveaction'] = false;
+            $search[$itemtype][140]['joinparams']    = array('jointype'  => "itemtype_item",
+                                                            'condition'
+                                                             => getEntitiesRestrictRequest('AND',
+                                                                                           'NEWTABLE'));
+                                                                                                                                                                                      
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {

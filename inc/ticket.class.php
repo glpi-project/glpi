@@ -4598,7 +4598,7 @@ class Ticket extends CommonITILObject {
          $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
+         echo "<tr><th colspan='9'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
@@ -4798,7 +4798,7 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
       if ($item->getID() && $item->getType()=='User') {
-         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='9'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
                 $item->getID()."\">".$LANG['joblist'][7]."</a>";
          echo "</td></tr>";
@@ -4828,7 +4828,7 @@ class Ticket extends CommonITILObject {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>";
+         echo "<tr><th colspan='9'>";
          if ($number>1) {
             echo $LANG['joblist'][28];
          } else {

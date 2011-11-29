@@ -1022,5 +1022,493 @@ class Problem extends CommonITILObject {
 
    }
 
+
+   static function getCommonSelect() {
+
+      $SELECT = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
+                       `glpi_tickets`.`entities_id` AS entityID ";
+      }
+
+      return " DISTINCT `glpi_problems`.*,
+                        `glpi_itilcategories`.`completename` AS catname
+               $SELECT";
+   }
+
+   static function getCommonLeftJoin() {
+
+      $FROM = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $FROM .= " LEFT JOIN `glpi_entities`
+                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
+      }
+
+      return " LEFT JOIN `glpi_groups_problems`
+                  ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`)
+               LEFT JOIN `glpi_problems_users`
+                  ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
+               LEFT JOIN `glpi_itilcategories`
+                  ON (`glpi_problems`.`itilcategories_id` = `glpi_itilcategories`.`id`)
+               $FROM";
+   }
+
+   static function commonListHeader($output_type=HTML_OUTPUT) {
+      global $LANG;
+
+      // New Line for Header Items Line
+      echo Search::showNewLine($output_type);
+      // $show_sort if
+      $header_num = 1;
+
+      $items = array();
+
+      $items[$LANG['joblist'][0]] = "glpi_problems.status";
+      $items[$LANG['common'][27]] = "glpi_problems.date";
+      $items[$LANG['common'][26]] = "glpi_problems.date_mod";
+
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $items[$LANG['Menu'][37]] = "glpi_entities.completename";
+      }
+
+      $items[$LANG['joblist'][2]]   = "glpi_problems.priority";
+      $items[$LANG['job'][4]]       = "glpi_problems.users_id";
+      $items[$LANG['joblist'][4]]   = "glpi_problems.users_id_assign";
+//       $items[$LANG['document'][14]] = "glpi_problems.itemtype, glpi_tickets.items_id";
+      $items[$LANG['common'][36]]   = "glpi_itilcategories.completename";
+      $items[$LANG['common'][57]]   = "glpi_problems.name";
+
+      foreach ($items as $key => $val) {
+         $issort = 0;
+         $link = "";
+         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+      }
+
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
+   }
+
+   static function showShort($id, $output_type=HTML_OUTPUT, $row_num=0, $id_for_massaction=-1) {
+      global $CFG_GLPI, $LANG;
+
+      $rand = mt_rand();
+
+      /// TODO to be cleaned. Get datas and clean display links
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $job = new self();
+
+      // If id is specified it will be used as massive aciton id
+      // Used when displaying ticket and wanting to delete a link data
+      if ($id_for_massaction==-1) {
+         $id_for_massaction = $id;
+      }
+
+      $candelete   = Session::haveRight("edit_all_problem", "1");
+      $canupdate   = Session::haveRight("edit_all_problem", "1");
+      $showprivate = Session::haveRight("show_all_problem", "1");
+      $align       = "class='center";
+      $align_desc  = "class='left";
+
+
+      $align .= "'";
+      $align_desc .= "'";
+
+      if ($job->getFromDB($id)) {
+         $item_num = 1;
+         $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+
+         echo Search::showNewLine($output_type,$row_num%2);
+
+         // First column
+         $first_col = "ID : ".$job->fields["id"];
+         if ($output_type == HTML_OUTPUT) {
+            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
+                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
+                           self::getStatus($job->fields["status"])."\">";
+         } else {
+            $first_col .= " - ".self::getStatus($job->fields["status"]);
+         }
+
+         if (($candelete || $canupdate)
+             && $output_type == HTML_OUTPUT) {
+
+            $sel = "";
+            if (isset($_GET["select"]) && $_GET["select"] == "all") {
+               $sel = "checked";
+            }
+            if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
+               $sel = "checked";
+            }
+            $first_col .= "&nbsp;<input type='checkbox' name='item[$id_for_massaction]'
+                                  value='1' $sel>";
+         }
+
+         echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
+
+         // Second column
+         if ($job->fields['status']=='closed') {
+            $second_col = $LANG['joblist'][12];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= Html::convDateTime($job->fields['closedate']);
+
+         } else if ($job->fields['status']=='solved') {
+            $second_col = $LANG['joblist'][14];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= Html::convDateTime($job->fields['solvedate']);
+
+         } else if ($job->fields['due_date']) {
+            $second_col = $LANG['sla'][5];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= Html::convDateTime($job->fields['due_date']);
+
+         } else {
+            $second_col = $LANG['joblist'][11];
+            if ($output_type == HTML_OUTPUT) {
+               $second_col .= "&nbsp;:<br>";
+            } else {
+               $second_col .= " : ";
+            }
+            $second_col .= Html::convDateTime($job->fields['date']);
+         }
+
+         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
+
+         // Second BIS column
+         $second_col = Html::convDateTime($job->fields["date_mod"]);
+         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
+
+         // Second TER column
+         if (count($_SESSION["glpiactiveentities"]) > 1) {
+            if ($job->fields['entities_id'] == 0) {
+               $second_col = $LANG['entity'][2];
+            } else {
+               $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
+            }
+            echo Search::showItem($output_type, $second_col, $item_num, $row_num,
+                                  $align." width=100");
+         }
+
+         // Third Column
+         echo Search::showItem($output_type,
+                               "<span class='b'>".parent::getPriorityName($job->fields["priority"]).
+                                 "</span>",
+                               $item_num, $row_num, "$align bgcolor='$bgcolor'");
+
+         // Fourth Column
+         $fourth_col = "";
+
+         if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
+            foreach ($job->users[parent::REQUESTER] as $d) {
+               $userdata    = getUserName($d["users_id"],2);
+               $fourth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
+               $fourth_col .= Html::showToolTip($userdata["comment"],
+                                                array('link'    => $userdata["link"],
+                                                      'display' => false));
+               $fourth_col .= "<br>";
+            }
+         }
+
+         if (isset($job->groups[parent::REQUESTER]) && count($job->groups[parent::REQUESTER])) {
+            foreach ($job->groups[parent::REQUESTER] as $d) {
+               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               $fourth_col .= "<br>";
+            }
+         }
+
+         echo Search::showItem($output_type, $fourth_col, $item_num, $row_num, $align);
+
+         // Fifth column
+         $fifth_col = "";
+
+         if (isset($job->users[parent::ASSIGN]) && count($job->users[parent::ASSIGN])) {
+            foreach ($job->users[parent::ASSIGN] as $d) {
+               $userdata = getUserName($d["users_id"], 2);
+               $fifth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
+               $fifth_col .= Html::showToolTip($userdata["comment"],
+                                               array('link'    => $userdata["link"],
+                                                     'display' => false));
+               $fifth_col .= "<br>";
+            }
+         }
+
+         if (isset($job->groups[parent::ASSIGN]) && count($job->groups[parent::ASSIGN])) {
+            foreach ($job->groups[parent::ASSIGN] as $d) {
+               $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               $fifth_col .= "<br>";
+            }
+         }
+
+
+         if ($job->fields["suppliers_id_assign"]>0) {
+            if (!empty($fifth_col)) {
+               $fifth_col .= "<br>";
+            }
+            $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
+         }
+         echo Search::showItem($output_type,$fifth_col,$item_num,$row_num,$align);
+
+         // Sixth Colum
+
+
+         // Seventh column
+         echo Search::showItem($output_type,
+                               "<span class='b'>".
+                                 Dropdown::getDropdownName('glpi_itilcategories',
+                                                           $job->fields["itilcategories_id"]).
+                               "</span>",
+                               $item_num, $row_num, $align);
+
+         // Eigth column
+         $eigth_column = "<span class='b'>".$job->fields["name"]."</span>&nbsp;";
+
+         // Add link
+         if ($job->canViewItem()) {
+            $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
+                            "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
+                                     
+            if ($output_type == HTML_OUTPUT) {
+               $eigth_column .= "&nbsp;(".$job->numberOfTasks($showprivate).")";
+            }
+         }
+
+         if ($output_type == HTML_OUTPUT) {
+            $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
+                                                        array('display' => false,
+                                                              'applyto' => "ticket".
+                                                                           $job->fields["id"]. $rand));
+         }
+
+         echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
+                               $align_desc."width='300'");
+
+         // Finish Line
+         echo Search::showEndLine($output_type);
+
+      } else {
+         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";
+      }
+   }
+
+   /**
+   * Display problems for an item
+    *
+    * Will also display problems of linked items
+    *
+    * @param $item CommonDBTM object
+    *
+    * @return nothing (display a table)
+   **/
+   static function showListForItem(CommonDBTM $item) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      if (!Session::haveRight("show_all_problem","1")) {
+         return false;
+      }
+
+      if ($item->isNewID($item->getID())) {
+         return false;
+      }
+
+      $restrict         = '';
+      $order            = '';
+      $options['reset'] = 'reset';
+
+      switch ($item->getType()) {
+         case 'User' :
+            $restrict                 = "(`glpi_problems_users`.`users_id` = '".$item->getID()."' ".
+                                       " AND `glpi_problems_users`.`type` = ".parent::REQUESTER.")";
+            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $options['reset']         = 'reset';
+            $options['field'][0]      = 4; // status
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         case 'Supplier' :
+            $restrict                 = "(`suppliers_id_assign` = '".$item->getID()."')";
+            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $options['field'][0]      = 6;
+            $options['searchtype'][0] = 'equals';
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         case 'Group' :
+            // Mini search engine
+            if ($item->haveChildren()) {
+               $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+               echo "<table class='tab_cadre_fixe'>";
+               echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
+               echo "<tr class='tab_bg_1'><td class='center'>";
+               echo $LANG['group'][3]."&nbsp;:&nbsp;";
+               Dropdown::showYesNo('tree', $tree, -1,
+                                   array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+            } else {
+               $tree = 0;
+            }
+            echo "</td></tr></table>";
+
+            if ($tree) {
+               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
+            } else {
+               $restrict = "='".$item->getID()."'";
+            }
+            $restrict                 = "(`glpi_groups_problems`.`groups_id` $restrict
+                                          AND `glpi_groups_problems`.`type` = ".Ticket::REQUESTER.")";
+            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $options['field'][0]      = 71;
+            $options['searchtype'][0] = ($tree ? 'under' : 'equals');
+            $options['contains'][0]   = $item->getID();
+            $options['link'][0]       = 'AND';
+            break;
+
+         default :
+            $restrict                 = "(`items_id` = '".$item->getID()."' AND `itemtype` = '".$item->getType()."')";
+            $order                    = '`glpi_problems`.`date_mod` DESC';
+
+//             $options['field'][0]      = 12;
+//             $options['searchtype'][0] = 'equals';
+//             $options['contains'][0]   = 'all';
+//             $options['link'][0]       = 'AND';
+// 
+//             $options['itemtype2'][0]   = $item->getType();
+//             $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
+//             $options['searchtype2'][0] = 'equals';
+//             $options['contains2'][0]   = $item->getID();
+//             $options['link2'][0]       = 'AND';
+            break;
+      }
+
+
+      $query = "SELECT ".self::getCommonSelect()."
+                FROM `glpi_problems` 
+                LEFT JOIN `glpi_items_problems` 
+                  ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
+                  self::getCommonLeftJoin()."
+                WHERE $restrict ".
+                      getEntitiesRestrictRequest("AND","glpi_problems")."
+                ORDER BY $order
+                LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      // Ticket for the item
+      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+
+      if ($number > 0) {
+         Session::initNavigateListItems('Problem', $item->getTypeName()." = ".$item->getName());
+
+         echo "<tr><th colspan='8'>";
+
+         echo $LANG['job'][21]."&nbsp;:&nbsp;".$number;
+//             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+//                    Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+
+         echo "</th></tr>";
+
+      } else {
+         echo "<tr><th>".$LANG['joblist'][20]."</th></tr>";
+      }
+
+      // Link to open a new problem
+//       if ($item->getID() && in_array($item->getType(),
+//                                      $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
+//          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
+//          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
+//               "&amp;itemtype=".$item->getType()."\">".$LANG['joblist'][7]."</a>";
+//          echo "</td></tr>";
+//       }
+//       if ($item->getID() && $item->getType()=='User') {
+//          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
+//          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
+//                 $item->getID()."\">".$LANG['joblist'][7]."</a>";
+//          echo "</td></tr>";
+//       }
+
+      // Ticket list
+      if ($number > 0) {
+         self::commonListHeader(HTML_OUTPUT);
+
+         while ($data = $DB->fetch_assoc($result)) {
+            Session::addToNavigateListItems('Problem',$data["id"]);
+            self::showShort($data["id"]);
+         }
+      }
+
+      echo "</table></div>";
+
+      // Tickets for linked items
+      if ($subquery = $item->getSelectLinkedItem()) {
+         $query = "SELECT ".self::getCommonSelect()."
+                   FROM `glpi_problems` 
+                     LEFT JOIN `glpi_items_problems` 
+                        ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
+                        self::getCommonLeftJoin()."
+                   WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
+                         getEntitiesRestrictRequest(' AND ', 'glpi_problems') . "
+                   ORDER BY `glpi_problems`.`date_mod` DESC
+                   LIMIT ".intval($_SESSION['glpilist_limit']);
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='8'>";
+         echo $LANG['joblist'][31];
+
+         echo "</th></tr>";
+         if ($number > 0) {
+            self::commonListHeader(HTML_OUTPUT);
+
+            while ($data=$DB->fetch_assoc($result)) {
+               // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+               self::showShort($data["id"]);
+            }
+         } else {
+            echo "<tr><th>".$LANG['joblist'][20]."</th></tr>";
+         }
+         echo "</table></div>";
+
+      } // Subquery for linked item
+
+   }
+
+
+   /**
+    * Number of tasks of the problem
+    *
+
+    * @return followup count
+   **/
+   function numberOfTasks() {
+      global $DB;
+
+
+
+      // Set number of followups
+      $query = "SELECT count(*)
+                FROM `glpi_problemtasks`
+                WHERE `problems_id` = '".$this->fields["id"]."'";
+      $result = $DB->query($query);
+
+      return $DB->result($result, 0, 0);
+   }
+
 }
 ?>
