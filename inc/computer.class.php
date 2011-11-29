@@ -92,6 +92,7 @@ class Computer extends CommonDBTM {
       $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
       $this->addStandardTab('RegistryKey', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Item_Problem', $ong, $options);      
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);

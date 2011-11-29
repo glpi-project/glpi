@@ -1009,7 +1009,7 @@ $LANG['job'][17] = "En retard";
 $LANG['job'][18] = "Demandeurs";
 $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
-
+$LANG['job'][21] = "Derniers problèmes";
 $LANG['job'][22] = "Minute(s)";
 $LANG['job'][23] = "Rechercher une solution";
 $LANG['job'][24] = "Utiliser comme solution";
@@ -1082,7 +1082,7 @@ $LANG['joblist'][16] = "Pas de ticket en cours.";
 $LANG['joblist'][17] = "Fermé (non résolu)";
 $LANG['joblist'][18] = "En cours (Attribué)";
 $LANG['joblist'][19] = "En cours (Planifié)";
-
+$LANG['joblist'][20] = "Pas de problème trouvé.";
 $LANG['joblist'][21] = "En cours";
 
 $LANG['joblist'][25] = "Ticket sur les éléments liés";
@@ -1091,7 +1091,7 @@ $LANG['joblist'][27] = "Courriel pour le suivi";
 $LANG['joblist'][28] = "Tickets sur les éléments liés";
 $LANG['joblist'][29] = "Urgence";
 $LANG['joblist'][30] = "Impact";
-
+$LANG['joblist'][31] = "Problèmes sur les éléments liés";
 $LANG['joblist'][32] = "Résolu";
 $LANG['joblist'][33] = "Clos";
 $LANG['joblist'][34] = "Non résolu";
@@ -2505,7 +2505,7 @@ $LANG['stats'][11] = "Nombre de tickets résolus";
 $LANG['stats'][12] = "Prise en compte";
 $LANG['stats'][13] = "Nombre de tickets";
 $LANG['stats'][14] = "Durée réelle";
-
+$LANG['stats'][15] = "Nombre de problèmes";
 $LANG['stats'][16] = "Nom du technicien";
 $LANG['stats'][17] = "Nombre de tickets clos";
 

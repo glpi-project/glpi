@@ -241,6 +241,17 @@ class Item_Problem extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Problem' :
                return $LANG['common'][96];
+            default :
+               // Direct one
+               $nb = countElementsInTable('glpi_items_problems',
+                                          " `itemtype` = '".$item->getType()."'
+                                             AND `items_id` = '".$item->getID()."'");
+               // Linked items
+               if ($subquery = $item->getSelectLinkedItem()) {
+                  $nb += countElementsInTable('glpi_items_problems',
+                                                "(`itemtype`,`items_id`) IN (" . $subquery . ")");
+               }
+               return self::createTabEntry($LANG['Menu'][7], $nb);
          }
       }
       return '';
@@ -249,9 +260,14 @@ class Item_Problem extends CommonDBRelation{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Problem') {
-         self::showForProblem($item);
-      }
+      switch ($item->getType()) {
+      
+         case 'Problem' :
+            self::showForProblem($item);
+            break;
+         default :
+            Problem::showListForItem($item);
+      } 
       return true;
    }
 }
