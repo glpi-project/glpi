@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="System informations"; // en_GB string to be translated
 $LANG['setup'][721]="Information about system installation and configuration"; // en_GB string to be translated
 $LANG['setup'][722]="To copy/paste in your support request"; // en_GB string to be translated
-$LANG['setup'][731]="Value of the global configuration"; // en_GB string to be translated
 $LANG['setup'][732]="Domain of electronic mail service"; // en_GB string to be translated
 $LANG['setup'][800]="Setari MySQL"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; // en_GB string to be translated

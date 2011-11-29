@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Riasztások megoldatlan bejelentésekre";
 $LANG['setup'][720]="Rendszer-információk"; 
 $LANG['setup'][721]="Telepítési és beállítási rendszer-információ"; 
 $LANG['setup'][722]="Másol/beilleszt a támogatási kérelemben"; 
-$LANG['setup'][731]="Globális konfigurációs érték"; 
 $LANG['setup'][732]="Email domain"; 
 $LANG['setup'][800]="Mysql replikálás"; 
 $LANG['setup'][801]="Replika engedélyezés"; 

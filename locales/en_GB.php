@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since";
 $LANG['setup'][720]="System informations"; 
 $LANG['setup'][721]="Information about system installation and configuration"; 
 $LANG['setup'][722]="To copy/paste in your support request"; 
-$LANG['setup'][731]="Value of the global configuration"; 
 $LANG['setup'][732]="Domain of electronic mail service"; 
 $LANG['setup'][800]="Mysql replicate"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; 

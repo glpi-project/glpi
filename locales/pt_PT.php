@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alertas em senhas que não tenham sido resolvidas desde";
 $LANG['setup'][720]="Informações do sistema"; 
 $LANG['setup'][721]="Informação sobre instalação do sistema e configuração"; 
 $LANG['setup'][722]="Para copiar/colar na sua área de suporte"; 
-$LANG['setup'][731]="Valor da configuração global"; 
 $LANG['setup'][732]="Domínio do serviço de email"; 
 $LANG['setup'][800]="Réplica MySql"; 
 $LANG['setup'][801]="Habilitar réplica do mysql"; 

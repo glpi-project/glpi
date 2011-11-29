@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Avvisa per le chiamate non ancora risolte dopo";
 $LANG['setup'][720]="Informazioni sul sistema"; 
 $LANG['setup'][721]="Informazioni sul sistema, l'installazione e la configurazione"; 
 $LANG['setup'][722]="Da copiare/incollare al momento della richiesta di assistenza"; 
-$LANG['setup'][731]="Valore in configurazione generale"; 
 $LANG['setup'][732]="Dominio e-mail"; 
 $LANG['setup'][800]="Replica MySQL"; 
 $LANG['setup'][801]="Attiva la replica MySQL"; 

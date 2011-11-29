@@ -2098,7 +2098,6 @@ $LANG['setup'][708]="Alerts on tickets which are not solved since"; // en_GB str
 $LANG['setup'][720]="Sistemske informacije"; 
 $LANG['setup'][721]="Informacije o sistemih inštalaciji in konfiguraciji"; 
 $LANG['setup'][722]="Kopiraj/prilepi v tvojo prošnjo za podporo"; 
-$LANG['setup'][731]="Vrednost globalne konfiguracije"; 
 $LANG['setup'][732]="Domena za elektronsko poštno storitev"; 
 $LANG['setup'][800]="Mysql repliciraj, podvoji"; 
 $LANG['setup'][801]="Enable the MySQL replicate"; // en_GB string to be translated
