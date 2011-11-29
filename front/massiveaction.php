@@ -826,7 +826,8 @@ if (isset($_POST["action"])
          break;
 
       case "add_actor" :
-         $ticket = new Ticket();
+         
+         $item = new $_POST['itemtype']();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                $input = array('id' => $key);
@@ -839,8 +840,8 @@ if (isset($_POST["action"])
                if (isset($_POST['_itil_assign'])) {
                   $input['_itil_assign'] = $_POST['_itil_assign'];
                }
-               if ($ticket->can($key,'w')) {
-                  if ($ticket->update($input)) {
+               if ($item->can($key,'w')) {
+                  if ($item->update($input)) {
                      $nbok++;
                   } else {
                      $nbko++;

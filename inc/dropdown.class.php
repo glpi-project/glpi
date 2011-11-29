@@ -1535,10 +1535,14 @@ class Dropdown {
                   break;
 
                case 'Problem' :
-                  $tmp = new Problem();
+                  $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {
                      echo "<option value='add_task'>".$LANG['job'][30]."</option>";
                   }
+                  if (Session::haveRight("edit_all_problem","1")) {
+                     echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
+                  }
+                  
                   break;
 
             }
