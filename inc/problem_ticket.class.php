@@ -161,11 +161,11 @@ class Problem_Ticket extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='9'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
+      echo "<tr><th colspan='8'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
       echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['problem'][7].
            "</a>";
       echo "</th></tr>";
-      echo "<tr><th colspan='9'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='8'>".$LANG['common'][57]."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
@@ -194,7 +194,7 @@ class Problem_Ticket extends CommonDBRelation{
       }
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='8'>";
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='7'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
          Dropdown::show('Problem', array('used'   => $used,
                                          'entity' => $ticket->getEntityID()));
