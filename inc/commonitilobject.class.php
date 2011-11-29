@@ -742,6 +742,11 @@ abstract class CommonITILObject extends CommonDBTM {
           }
       }
 
+      // Do not take into account date_mod if no update is done
+      if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
+         unset($this->updates[$key]);
+      }
+
    }
 
 
@@ -2495,7 +2500,52 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
+   /// Compute solve delay stat of the current ticket
+   function computeSolveDelayStat() {
 
+      if (isset($this->fields['id'])
+          && !empty($this->fields['date'])
+          && !empty($this->fields['solvedate'])) {
+
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+                                                          $this->fields['solvedate'])
+                                                            -$this->fields["waiting_duration"]);
+         }
+         // Not calendar defined
+         return max(0, strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["waiting_duration"]);
+      }
+      return 0;
+   }
+
+
+   /// Compute close delay stat of the current ticket
+   function computeCloseDelayStat() {
+
+      if (isset($this->fields['id'])
+          && !empty($this->fields['date'])
+          && !empty($this->fields['closedate'])) {
+
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+                                                          $this->fields['closedate'])
+                                                             -$this->fields["waiting_duration"]);
+         }
+         // Not calendar defined
+         return max(0, strtotime($this->fields['closedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["waiting_duration"]);
+      }
+      return 0;
+   }
 
 }
 ?>
