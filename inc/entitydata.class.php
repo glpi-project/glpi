@@ -581,6 +581,7 @@ class EntityData extends CommonDBChild {
 
 
       echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][244] . "</td><td>";
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
@@ -588,6 +589,12 @@ class EntityData extends CommonDBChild {
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
+      echo "<td rowspan='2'>" . $LANG['setup'][115] . "&nbsp;:</td><td rowspan='2'>";
+      Dropdown::showInteger('default_alarm_threshold',
+                            $entitynotification->fields["default_alarm_threshold"], -1, 100);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][243] . "</td><td>";
       $default_value = $entitynotification->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
@@ -595,25 +602,39 @@ class EntityData extends CommonDBChild {
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
-      $default_value = $entitynotification->fields['use_licenses_alert'];
-      Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
-                                 'value'          => $default_value,
-                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "</td>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][246] . "</td><td>";
       $default_value = $entitynotification->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "<td >".$LANG['setup'][46] . "&nbsp;:</td><td>";
+      Contract::dropdownAlert("default_contract_alert",
+                              $entitynotification->fields["default_contract_alert"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][247] . "</td><td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['setup'][247] . "</td><td>";
       $default_value = $entitynotification->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
+      echo "<td >" . $LANG['setup'][46]."&nbsp;:</td><td>";
+      Alert::dropdownInfocomAlert($entitynotification->fields["default_infocom_alert"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['setup'][264] . "</td><td>";
+      $default_value = $entitynotification->fields['use_licenses_alert'];
+      Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
+                                 'value'          => $default_value,
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][707] . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entitynotification->fields['use_reservations_alert'],

@@ -1689,6 +1689,32 @@ function update0803to083() {
 
    }
 
+   // value of config in each entity
+   $fieldconfig = array('default_contract_alert', 'default_infocom_alert', 'default_alarm_threshold');
+
+   $query = "SELECT *
+             FROM `glpi_configs`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) > 0) {
+         if ($data = $DB->fetch_assoc($result)) {
+            foreach ($fieldconfig as $field_config) {
+               if (FieldExists("glpi_configs", $field_config)
+                   && !FieldExists("glpi_entitydatas", $field_config)) {
+                  // add config fields in entitydatas
+                  $migration-> addField("glpi_entitydatas", $field_config, 'integer',
+                                        array('update' => $data[$field_config],
+                                              'value'  => ($field_config == "default_alarm_threshold"
+                                                            ? 10 : 0)));
+
+                  $migration->dropField("glpi_configs", $field_config);
+               }
+            }
+         }
+      }
+   }
+
+
    if ($restore_root_entity_value) {
       $query = "UPDATE `glpi_entitydatas`
                 SET `calendars_id` = 0
