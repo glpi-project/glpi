@@ -65,9 +65,10 @@ class Contract extends CommonDBTM {
 
 
    function post_getEmpty() {
-      global $CFG_GLPI;
 
-      $this->fields["alert"] = $CFG_GLPI["default_contract_alert"];
+      $this->fields["alert"] = EntityData::getUsedConfig("use_contracts_alert",
+                                                         $this->fields["entities_id"],
+                                                         "default_contract_alert", 0);
    }
 
 
