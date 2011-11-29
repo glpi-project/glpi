@@ -154,7 +154,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
             if ($canedit) {
                echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
                      "unassigned&amp;id=" . $line["id"] . "'>";
-               echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt=\"" .
+               echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
                      $LANG['buttons'][59] . "\" title=\"" . $LANG['buttons'][59] . "\"></a>";
             } else {
                echo "&nbsp;";

@@ -732,7 +732,7 @@ class Contract extends CommonDBTM {
          if ($canedit) {
             echo "<a href='".$CFG_GLPI["root_doc"].
                   "/front/contract.form.php?deletecontractsupplier=1&amp;id=$ID&amp;contracts_id=".
-                  $instID."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
+                  $instID."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
                   $LANG['buttons'][6]."'></a>";
          } else {
             echo "&nbsp;";
@@ -1052,7 +1052,7 @@ class Contract extends CommonDBTM {
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                      "/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;contracts_id=$cID'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete2.png' alt='".
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
                      $LANG['buttons'][6]."'></a>";
             } else {
                echo "&nbsp;";
