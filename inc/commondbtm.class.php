@@ -2953,6 +2953,7 @@ class CommonDBTM extends CommonGLPI {
       global $LANG, $CFG_GLPI;
 
       $param['comments'] = false;
+      $param['html']     = false;
       foreach ($param as $key => $val) {
          if (!isset($options[$key])) {
             $options[$key] = $val;
@@ -2995,17 +2996,24 @@ class CommonDBTM extends CommonGLPI {
 
             switch ($searchoptions['datatype']) {
                case "number" :
-                  return str_replace(' ', '&nbsp;', Html::formatNumber($value, false, 0)). $unit;
+                  if ($options['html']) {
+                     return Html::formatNumber($value, false, 0). $unit;
+                  }
+                  return $value;
 
                case "decimal" :
-                  return str_replace(' ', '&nbsp;', Html::formatNumber($value)).$unit;
-
+                  if ($options['html']) {
+                     return Html::formatNumber($value).$unit;
+                  }
+                  return $value;
 
                case "string" :
                   return $value;
 
                case "text" :
-                  $text = nl2br($value);
+                  if ($options['html']) {
+                     $text = nl2br($value);
+                  }
                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
                   }
@@ -3039,7 +3047,10 @@ class CommonDBTM extends CommonGLPI {
                   return Html::timestampToString($value,$withseconds);
 
                case "email" :
-                  return "<a href='mailto:$value'>$value</a>";
+                  if ($options['html']) {
+                     return "<a href='mailto:$value'>$value</a>";
+                  }
+                  return $value;
 
             case "weblink" :
                $orig_link = trim($value);
