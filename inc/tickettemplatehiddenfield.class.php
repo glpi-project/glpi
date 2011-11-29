@@ -92,6 +92,33 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
 
+   function post_purgeItem() {
+      global $DB;
+      
+      parent::post_purgeItem();
+
+      $ticket = new Ticket();
+      $itemtype_id = $ticket->getSearchOptionIDByField('field', 'itemtype',
+                                                       'glpi_tickets');
+      $items_id_id = $ticket->getSearchOptionIDByField('field', 'items_id',
+                                                       'glpi_tickets');
+                                                       
+      // Try to delete itemtype -> delete items_id
+      if ($this->fields['num'] == $itemtype_id) {
+        
+         $query = "SELECT `id`
+              FROM `".$this->getTable()."`
+              WHERE `".$this->items_id."` = '".$this->fields['tickettemplates_id']."'
+              AND `num` = '$items_id_id'";
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result)) {
+               $a = new TicketTemplateHiddenField();
+               $a->delete(array('id'=>$DB->result($result,0,0)));
+            }
+         }
+      }
+   }
+
    /**
     * Get hidden fields for a template
     *

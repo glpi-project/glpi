@@ -1111,7 +1111,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (isset($this->input['delete'])) {
          $this->input['_delete'] = $this->input['delete'];
-         unset($input['delete']);
+         unset($this->input['delete']);
       }
 
       // Purge
