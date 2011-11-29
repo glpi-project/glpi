@@ -387,18 +387,21 @@ class Entity extends CommonTreeDropdown {
       $tab[29]['field']         = 'use_licenses_alert';
       $tab[29]['name']          = $LANG['setup'][264];
       $tab[29]['massiveaction'] = false;
+      $tab[29]['nosearch']      = true;
       $tab[29]['joinparams']    = array('jointype' => 'child');
 
       $tab[30]['table']         = 'glpi_entitydatas';
       $tab[30]['field']         = 'use_contracts_alert';
       $tab[30]['name']          = $LANG['setup'][246];
       $tab[30]['massiveaction'] = false;
+      $tab[30]['nosearch']      = true;
       $tab[30]['joinparams']    = array('jointype' => 'child');
 
       $tab[31]['table']         = 'glpi_entitydatas';
       $tab[31]['field']         = 'use_infocoms_alert';
       $tab[31]['name']          = $LANG['setup'][247];
       $tab[31]['massiveaction'] = false;
+      $tab[31]['nosearch']      = true;
       $tab[31]['joinparams']    = array('jointype' => 'child');
 
       return $tab;

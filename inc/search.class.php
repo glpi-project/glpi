@@ -2589,7 +2589,7 @@ class Search {
                   $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
                }
             }
-            
+
             return $link." ($toadd `$table`.`$name1` $SEARCH
                             OR `$table`.`$name2` $SEARCH
                             OR CONCAT(`$table`.`$name1`, ' ',
@@ -4326,6 +4326,16 @@ class Search {
          return $out;
       }
 
+      // Get specific display if available
+      $itemtype = getItemTypeForTable($table);
+      $item     = new $itemtype();
+      $tmpdata  = array($field => $data[$NAME.$num]);
+      $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                   array('html' => true));
+      if (!empty($specific)) {
+         return $specific;
+      }
+
       return $data[$NAME.$num].$unit;
    }
 
@@ -4680,7 +4690,7 @@ class Search {
                                                             'condition'
                                                              => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
-                                                                                                                                                                                      
+
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
