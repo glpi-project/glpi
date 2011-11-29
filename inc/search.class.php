@@ -2133,6 +2133,9 @@ class Search {
                            / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2, ";
 
+         case "glpi_items_problems.count" :
+            return " COUNT(DISTINCT `glpi_items_problems`.`id`) AS ".$NAME."_".$num.", ";
+
          case "glpi_documents_items.count" :
             return " COUNT(DISTINCT `glpi_documents_items`.`id`) AS ".$NAME."_".$num.", ";
 

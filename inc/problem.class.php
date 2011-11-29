@@ -482,6 +482,15 @@ class Problem extends CommonITILObject {
       $tab[64]['name']          = $LANG['common'][101];
       $tab[64]['massiveaction'] = false;
 
+      $tab[65]['table']         = 'glpi_items_problems';
+      $tab[65]['field']         = 'count';
+      $tab[65]['name']          = $LANG['common'][96].' - '.$LANG['tracking'][29];
+      $tab[65]['forcegroupby']  = true;
+      $tab[65]['usehaving']     = true;
+      $tab[65]['datatype']      = 'number';
+      $tab[65]['massiveaction'] = false;
+      $tab[65]['joinparams']    = array('jointype' => 'child');
+
       $tab += $this->getSearchOptionsActors();
 
       $tab['analysis'] = $LANG['problem'][3];
