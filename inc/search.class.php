@@ -4018,24 +4018,6 @@ class Search {
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                      alt=\"$status\" title=\"$status\">&nbsp;$status";
 
-         case 'glpi_tickets.type' :
-            return Ticket::getTicketTypeName($data[$NAME.$num]);
-
-         case 'glpi_tickets.priority' :
-         case 'glpi_problems.priority' :
-         case 'glpi_changes.priority' :
-            return CommonITILObject::getPriorityName($data[$NAME.$num]);
-
-         case 'glpi_tickets.urgency' :
-         case 'glpi_problems.urgency' :
-         case 'glpi_changes.urgency' :
-            return CommonITILObject::getUrgencyName($data[$NAME.$num]);
-
-         case 'glpi_tickets.impact':
-         case 'glpi_problems.impact':
-         case 'glpi_changes.impact':
-            return CommonITILObject::getImpactName($data[$NAME.$num]);
-
          case 'glpi_tickets.items_id' :
             if (!empty($data[$NAME.$num."_2"])
                 && ($item = getItemForItemtype($data[$NAME.$num."_2"]))) {
@@ -4073,7 +4055,6 @@ class Search {
             break;
 
          case 'glpi_ticketvalidations.status' :
-         case "glpi_tickets.global_validation" :
             $split = explode("$$$$",$data[$NAME.$num]);
             $out   = '';
             foreach ($split as $val) {
