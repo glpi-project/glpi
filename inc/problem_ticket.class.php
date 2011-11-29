@@ -159,14 +159,13 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
+      echo "<tr><th colspan='9'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
       echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['problem'][7].
            "</a>";
       echo "</th></tr>";
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='9'>".$LANG['common'][57]."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
@@ -181,27 +180,21 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Problem', $LANG['job'][38] ." = ". $ticket->fields["name"]);
-
+      
+         Problem::commonListHeader(HTML_OUTPUT); 
+         Session::initNavigateListItems('Problem',
+                                        $LANG['job'][38] ." = ". $ticket->fields["name"]);
+         $i=0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
-            if ($canedit) {
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
-            }
-            echo "</td>";
-            echo "<td><a href='".Toolbox::getItemTypeFormURL('Problem')."?id=".$data['id']."'>".
-                      $data["name"]."</a></td>";
-            echo "</tr>";
+            Problem::showShort($data['id'],false,HTML_OUTPUT, $i, $data['linkID']);
+            $i++;
          }
       }
 
       if ($canedit) {
-         echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
+         echo "<tr class='tab_bg_2'><td class='right'  colspan='8'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
          Dropdown::show('Problem', array('used'   => $used,
                                          'entity' => $ticket->getEntityID()));
