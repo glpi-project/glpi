@@ -67,9 +67,6 @@ class NotificationMailSetting extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__ :
             $tabs[1] = $LANG['common'][12];
-            if ($CFG_GLPI['use_mailing']) {
-               $tabs[2] = $LANG['setup'][242];
-            }
             return $tabs;
       }
       return '';
@@ -83,10 +80,6 @@ class NotificationMailSetting extends CommonDBTM {
          switch ($tabnum) {
             case 1 :
                $item->showFormMailServerConfig();
-               break;
-
-            case 2 :
-               $item->showFormAlerts();
                break;
          }
       }
@@ -230,37 +223,6 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</table></form>";*/
    }
 
-
-   function showFormAlerts() {
-      global $LANG, $CFG_GLPI;
-
-      // TODO see to transfert this fields in entitydata ??
-      echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
-      echo "<input type='hidden' name='id' value='1'>";
-      echo "<table class='tab_cadre_fixe'>";
-
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][41]."</th></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td >" . $LANG['setup'][246] . " - " . $LANG['setup'][46] . "&nbsp;:</td><td>";
-      Contract::dropdownAlert("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][247] . " - " .
-             $LANG['setup'][46]."&nbsp;:</td><td>";
-      Alert::dropdownInfocomAlert($CFG_GLPI["default_infocom_alert"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][115] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input class='submit' type='submit' name='update' value=\"".$LANG['buttons'][2]."\">";
-      echo "</td></tr>";
-      echo "</table></form>";
-   }
 
 }
 ?>
