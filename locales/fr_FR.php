@@ -1038,7 +1038,7 @@ $LANG['job'][46] = "Le ticket sera ajouté dans l'entité";
 $LANG['job'][47] = "Coûts";
 $LANG['job'][48] = "Type de solution";
 $LANG['job'][49] = "Nouvelle tâche";
-$LANG['job'][50] = "Pas de tâche pour ce ticket.";
+$LANG['job'][50] = "Pas de tâche pour cet élément.";
 $LANG['job'][51] = "Approbation de la solution";
 $LANG['job'][52] = "Mise à jour d'une tâche";
 $LANG['job'][53] = "Suppression d'une tâche";
@@ -2495,21 +2495,21 @@ $LANG['stats'][0]  = "Sélectionnez les statistiques à visualiser";
 $LANG['stats'][1]  = "Globales";
 $LANG['stats'][2]  = "Aucun élément à afficher";
 $LANG['stats'][3]  = "Par Intitulé";
-$LANG['stats'][5]  = "Nombre de tickets ouverts";
+$LANG['stats'][5]  = "Nombre ouverts";
 
 $LANG['stats'][7]  = "Voir les graphiques";
 $LANG['stats'][8]  = "Délai moyen";
 $LANG['stats'][9]  = "Résolution";
 $LANG['stats'][10] = "Clôture";
-$LANG['stats'][11] = "Nombre de tickets résolus";
+$LANG['stats'][11] = "Nombre résolus";
 $LANG['stats'][12] = "Prise en compte";
 $LANG['stats'][13] = "Nombre de tickets";
 $LANG['stats'][14] = "Durée réelle";
 $LANG['stats'][15] = "Nombre de problèmes";
 $LANG['stats'][16] = "Nom du technicien";
-$LANG['stats'][17] = "Nombre de tickets clos";
+$LANG['stats'][17] = "Nombre clos";
 
-$LANG['stats'][19] = "Nombre de tickets résolus en retard";
+$LANG['stats'][19] = "Nombre résolus en retard";
 $LANG['stats'][20] = "Nom d'utilisateur";
 
 $LANG['stats'][23] = "Pas de statistiques disponibles";
@@ -2522,7 +2522,7 @@ $LANG['stats'][35] = "Ticket(s)";
 
 $LANG['stats'][44] = "Nom du fournisseur";
 $LANG['stats'][45] = "Par matériel";
-
+$LANG['stats'][46] = "Par problème";
 $LANG['stats'][47] = "Par ticket";
 $LANG['stats'][48] = "(assigné)";
 $LANG['stats'][49] = "(tâches)";

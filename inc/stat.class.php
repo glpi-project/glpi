@@ -41,30 +41,32 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Stat {
    /// TODO clean type names : technicien -> tech enterprise -> supplier
-   static function getItems($date1, $date2, $type) {
+   static function getItems($itemtype,$date1, $date2, $type) {
       global $CFG_GLPI, $DB;
+
+      $item = new $itemtype();
 
       $val = array();
 
       switch ($type) {
          case "technicien" :
-            $val = Ticket::getUsedTechBetween($date1, $date2);
+            $val = $item->getUsedTechBetween($date1, $date2);
             break;
 
          case "technicien_followup" :
-            $val = Ticket::getUsedTechTaskBetween($date1, $date2);
+            $val = $item->getUsedTechTaskBetween($date1, $date2);
             break;
 
          case "enterprise" :
-            $val = Ticket::getUsedSupplierBetween($date1, $date2);
+            $val = $item->getUsedSupplierBetween($date1, $date2);
             break;
 
          case "user" :
-            $val = Ticket::getUsedAuthorBetween($date1, $date2);
+            $val = $item->getUsedAuthorBetween($date1, $date2);
             break;
 
          case "users_id_recipient" :
-            $val = Ticket::getUsedRecipientBetween($date1, $date2);
+            $val = $item->getUsedRecipientBetween($date1, $date2);
             break;
 
          case "itilcategories_id" :
@@ -87,7 +89,7 @@ class Stat {
             break;
 
          case "type" :
-            $types = Ticket::getTypes();
+            $types = $item->getTypes();
             $val   = array();
             foreach ($types as $id => $v) {
                $tmp['id']   = $id;
@@ -97,39 +99,39 @@ class Stat {
             break;
 
          case "group" :
-            $val = Ticket::getUsedGroupBetween($date1, $date2);
+            $val = $item->getUsedGroupBetween($date1, $date2);
             break;
 
          case "groups_id_assign" :
-            $val = Ticket::getUsedAssignGroupBetween($date1, $date2);
+            $val = $item->getUsedAssignGroupBetween($date1, $date2);
             break;
 
          case "priority" :
-            $val = Ticket::getUsedPriorityBetween($date1, $date2);
+            $val = $item->getUsedPriorityBetween($date1, $date2);
             break;
 
          case "urgency" :
-            $val = Ticket::getUsedUrgencyBetween($date1, $date2);
+            $val = $item->getUsedUrgencyBetween($date1, $date2);
             break;
 
          case "impact" :
-            $val = Ticket::getUsedImpactBetween($date1, $date2);
+            $val = $item->getUsedImpactBetween($date1, $date2);
             break;
 
          case "requesttypes_id" :
-            $val = Ticket::getUsedRequestTypeBetween($date1, $date2);
+            $val = $item->getUsedRequestTypeBetween($date1, $date2);
             break;
 
          case "solutiontypes_id" :
-            $val = Ticket::getUsedSolutionTypeBetween($date1, $date2);
+            $val = $item->getUsedSolutionTypeBetween($date1, $date2);
             break;
 
          case "usertitles_id" :
-            $val = Ticket::getUsedUserTitleOrTypeBetween($date1, $date2, true);
+            $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, true);
             break;
 
          case "usercategories_id" :
-            $val = Ticket::getUsedUserTitleOrTypeBetween($date1, $date2, false);
+            $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, false);
             break;
 
          // DEVICE CASE
@@ -188,7 +190,7 @@ class Stat {
    }
 
 
-   static function getDatas($type, $date1, $date2, $start, $value, $value2="") {
+   static function getDatas($itemtype, $type, $date1, $date2, $start, $value, $value2="") {
 
       $export_data = array();
 
@@ -198,35 +200,37 @@ class Stat {
 
          for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
             //le nombre d'intervention - the number of intervention
-            $opened    = self::constructEntryValues("inter_total", $date1, $date2, $type,
+            $opened    = self::constructEntryValues($itemtype, "inter_total", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = self::constructEntryValues("inter_solved", $date1, $date2, $type,
+            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
+            $late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2, $type,
                                                   $value[$i]["id"], $value2);
             $nb_late = array_sum($late);
             $export_data['late'][$value[$i]['link']] = $nb_late;
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = self::constructEntryValues("inter_closed", $date1, $date2, $type,
+            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
 
-            //open satisfaction
-            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1,
-                                                              $date2, $type, $value[$i]["id"],
-                                                              $value2);
-            $nb_opensatisfaction = array_sum($opensatisfaction);
-            $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
+            if ($itemtype == 'Ticket') {
+               //open satisfaction
+               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction", $date1,
+                                                               $date2, $type, $value[$i]["id"],
+                                                               $value2);
+               $nb_opensatisfaction = array_sum($opensatisfaction);
+               $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
+            }
 
             //answer satisfaction
 //             $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction", $date1, $date2, $type,
@@ -240,7 +244,7 @@ class Stat {
    }
 
 
-   static function show($type, $date1, $date2, $start, $value, $value2="") {
+   static function show($itemtype, $type, $date1, $date2, $start, $value, $value2="") {
       global $LANG, $CFG_GLPI;
 
       // Set display type for export if define
@@ -276,12 +280,14 @@ class Stat {
             echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
             echo Search::showHeaderItem($output_type, "", $header_num);
 
-            echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num, '', 0, '',
+            echo Search::showHeaderItem($output_type, $LANG['tracking'][29], $header_num, '', 0, '',
                                         "colspan='4'");
-            echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '', 0,
-                                        '', "colspan='3'");
+            if ($itemtype =='Ticket') {
+               echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '', 0,
+                                          '', "colspan='3'");
+            }
             echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num, '', 0, '',
-                                        "colspan='3'");
+                                        $itemtype =='Ticket'?"colspan='3'":"colspan='2'");
             echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num, '', 0, '',
                                         "colspan='2'");
          }
@@ -302,17 +308,22 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][17], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
-         if ($output_type!=HTML_OUTPUT) {
-            $header_to_add = $LANG['satisfaction'][0].' - ';
+         if ($itemtype =='Ticket') {
+         
+            if ($output_type!=HTML_OUTPUT) {
+               $header_to_add = $LANG['satisfaction'][0].' - ';
+            }
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13], $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14], $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
          }
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
 
          if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][8].' - ';
          }
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12], $header_num);
+         if ($itemtype =='Ticket') {
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12], $header_num);
+         }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
 
@@ -335,7 +346,7 @@ class Stat {
                $link = "";
                if ($value[$i]['id']>0) {
                   $link = "<a href='stat.graph.php?id=".$value[$i]['id'].
-                            "&amp;date1=$date1&amp;date2=$date2&amp;type=$type".
+                            "&amp;date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
                             (!empty($value2)?"&amp;champ=$value2":"")."'>".
                           "<img src='".$CFG_GLPI["root_doc"]."/pics/stats_item.png' alt='' title=''>".
                           "</a>";
@@ -344,13 +355,13 @@ class Stat {
             }
 
             //le nombre d'intervention - the number of intervention
-            $opened    = self::constructEntryValues("inter_total", $date1, $date2, $type,
+            $opened    = self::constructEntryValues($itemtype, "inter_total", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = self::constructEntryValues("inter_solved", $date1, $date2, $type,
+            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             if ($nb_opened>0 && $nb_solved >0) {
@@ -359,7 +370,7 @@ class Stat {
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved_late    = self::constructEntryValues("inter_solved_late", $date1, $date2, $type,
+            $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2, $type,
                                                          $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
             if ($nb_solved>0 && $nb_solved_late >0) {
@@ -368,7 +379,7 @@ class Stat {
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = self::constructEntryValues("inter_closed", $date1, $date2, $type,
+            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2, $type,
                                                     $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
 
@@ -379,66 +390,67 @@ class Stat {
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
 
 
-            //Satisfaction open
-            $opensatisfaction    = self::constructEntryValues("inter_opensatisfaction", $date1,
-                                                              $date2, $type, $value[$i]["id"],
-                                                              $value2);
-            $nb_opensatisfaction = array_sum($opensatisfaction);
-            if ($nb_opensatisfaction>0) {
-               $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
+            if ($itemtype =='Ticket') {
+
+               //Satisfaction open
+               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction", $date1,
+                                                               $date2, $type, $value[$i]["id"],
+                                                               $value2);
+               $nb_opensatisfaction = array_sum($opensatisfaction);
+               if ($nb_opensatisfaction>0) {
+                  $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
+               }
+   
+               echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
+   
+               //Satisfaction answer
+               $answersatisfaction    = self::constructEntryValues($itemtype, "inter_answersatisfaction", $date1,
+                                                                  $date2, $type, $value[$i]["id"],
+                                                                  $value2);
+               $nb_answersatisfaction = array_sum($answersatisfaction);
+               if ($nb_answersatisfaction>0) {
+                  $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
+               }
+   
+               echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
+   
+               //Satisfaction rate
+               $satisfaction = self::constructEntryValues($itemtype, "inter_avgsatisfaction", $date1, $date2,
+                                                         $type, $value[$i]["id"], $value2);
+               foreach ($satisfaction as $key2 => $val2) {
+                  $satisfaction[$key2] *= $answersatisfaction[$key2];
+               }
+               if ($nb_answersatisfaction>0) {
+                  $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
+                  $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+               } else {
+                  $avgsatisfaction = '&nbsp;';
+               }
+               echo Search::showItem($output_type, $avgsatisfaction, $item_num, $row_num);
+
+               //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
+               $data = self::constructEntryValues($itemtype, "inter_avgtakeaccount", $date1, $date2, $type,
+                                                $value[$i]["id"], $value2);
+               foreach ($data as $key2 => $val2) {
+                  $data[$key2] *= $solved[$key2];
+               }
+   
+               if ($nb_solved>0) {
+                  $timedisplay = array_sum($data)/$nb_solved;
+               } else {
+                  $timedisplay = 0;
+               }
+   
+               if ($output_type==HTML_OUTPUT
+                  || $output_type==PDF_OUTPUT_LANDSCAPE
+                  || $output_type==PDF_OUTPUT_PORTRAIT) {
+                  $timedisplay = Html::timestampToString($timedisplay, 0);
+               }
+               echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             }
-
-            echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
-
-            //Satisfaction answer
-            $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction", $date1,
-                                                                $date2, $type, $value[$i]["id"],
-                                                                $value2);
-            $nb_answersatisfaction = array_sum($answersatisfaction);
-            if ($nb_answersatisfaction>0) {
-               $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
-            }
-
-            echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
-
-            //Satisfaction rate
-            $satisfaction = self::constructEntryValues("inter_avgsatisfaction", $date1, $date2,
-                                                       $type, $value[$i]["id"], $value2);
-            foreach ($satisfaction as $key2 => $val2) {
-               $satisfaction[$key2] *= $answersatisfaction[$key2];
-            }
-            if ($nb_answersatisfaction>0) {
-               $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
-               $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
-            } else {
-               $avgsatisfaction = '&nbsp;';
-            }
-            echo Search::showItem($output_type, $avgsatisfaction, $item_num, $row_num);
-
-
-            //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
-            $data = self::constructEntryValues("inter_avgtakeaccount", $date1, $date2, $type,
-                                               $value[$i]["id"], $value2);
-            foreach ($data as $key2 => $val2) {
-               $data[$key2] *= $solved[$key2];
-            }
-
-            if ($nb_solved>0) {
-               $timedisplay = array_sum($data)/$nb_solved;
-            } else {
-               $timedisplay = 0;
-            }
-
-            if ($output_type==HTML_OUTPUT
-                || $output_type==PDF_OUTPUT_LANDSCAPE
-                || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay = Html::timestampToString($timedisplay, 0);
-            }
-            echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-
 
             //Le temps moyen de resolution - The average time to resolv
-            $data = self::constructEntryValues("inter_avgsolvedtime", $date1, $date2, $type,
+            $data = self::constructEntryValues($itemtype, "inter_avgsolvedtime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
@@ -457,7 +469,7 @@ class Stat {
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de cloture - The average time to close
-            $data = self::constructEntryValues("inter_avgclosedtime", $date1, $date2, $type,
+            $data = self::constructEntryValues($itemtype, "inter_avgclosedtime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
@@ -476,7 +488,7 @@ class Stat {
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de l'intervention reelle - The average actiontime to resolv
-            $data = self::constructEntryValues("inter_avgactiontime", $date1, $date2, $type,
+            $data = self::constructEntryValues($itemtype, "inter_avgactiontime", $date1, $date2, $type,
                                                $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                if (isset($solved[$key2])) {
@@ -527,62 +539,72 @@ class Stat {
    static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
                                         $value2="") {
       global $DB;
-      $item = new $itemtype;      
-
+      $item = new $itemtype();    
+      $table = $item->getTable()  ;
+      $fkfield = $item->getForeignKeyField();
+      $userlinkclass = new $item->userlinkclass();
+      $userlinktable = $userlinkclass->getTable();
+      $grouplinkclass = new $item->grouplinkclass();
+      $grouplinktable = $grouplinkclass->getTable();
+      $tasktable = getTableForItemType($item->getType().'Task');
+      
+      $closed_status = $item->getClosedStatusArray();
+      $solved_status = array_merge($closed_status,$item->getSolvedStatusArray());
+      
       $query         = "";
-      $WHERE         = "WHERE NOT `".$item->getTable()."`.`is_deleted` ".
-                       getEntitiesRestrictRequest("AND", $item->getTable());
+      $WHERE         = "WHERE NOT `$table`.`is_deleted` ".
+                       getEntitiesRestrictRequest("AND", $table);
       $LEFTJOIN      = "";
-      $LEFTJOINUSER  = "LEFT JOIN `glpi_tickets_users`
-                           ON (`glpi_tickets_users`.`tickets_id` = `".$item->getTable()."`.`id`)";
-      $LEFTJOINGROUP = "LEFT JOIN `glpi_groups_tickets`
-                           ON (`glpi_groups_tickets`.`tickets_id` = `".$item->getTable()."`.`id`)";
+      $LEFTJOINUSER  = "LEFT JOIN `$userlinktable`
+                           ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
+      $LEFTJOINGROUP = "LEFT JOIN `$grouplinktable`
+                           ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
 
       switch ($param) {
          case "technicien" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
-                              AND `glpi_tickets_users`.`type`='".CommonITILObject::ASSIGN."')";
+            $WHERE .= " AND (`$userlinktable`.`users_id` = '$value'
+                              AND `$userlinktable`.`type`='".CommonITILObject::ASSIGN."')";
             break;
 
          case "technicien_followup" :
-            $WHERE .= " AND `glpi_tickettasks`.`users_id` = '$value'";
-            $LEFTJOIN = " LEFT JOIN `glpi_tickettasks`
-                              ON (`glpi_tickettasks`.`tickets_id` = `".$item->getTable()."`.`id`)";
+            $WHERE .= " AND `$tasktable`.`users_id` = '$value'";
+            $LEFTJOIN = " LEFT JOIN `$tasktable`
+                              ON (`$tasktable`.`$fkfield` = `$table`.`id`)";
             break;
 
          case "enterprise" :
-            $WHERE .= " AND `".$item->getTable()."`.`suppliers_id_assign` = '$value'";
+            $WHERE .= " AND `$table`.`suppliers_id_assign` = '$value'";
             break;
 
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
-                              AND `glpi_tickets_users`.`type` ='".CommonITILObject::REQUESTER."')";
+            $WHERE .= " AND (`$userlinktable`.`users_id` = '$value'
+                              AND `$userlinktable`.`type` ='".CommonITILObject::REQUESTER."')";
             break;
 
          case "usertitles_id" :
             $LEFTJOIN = $LEFTJOINUSER;
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
+                              ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
             $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".CommonITILObject::REQUESTER."')";
+                              AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "usercategories_id" :
             $LEFTJOIN = $LEFTJOINUSER;
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
-                              ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`)";
+                              ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
             $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                              AND `glpi_tickets_users`.`type` = '".CommonITILObject::REQUESTER."')";
+                              AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "users_id_recipient" :
-            $WHERE .= " AND `".$item->getTable()."`.`users_id_recipient` = '$value'";
+            $WHERE .= " AND `$table`.`users_id_recipient` = '$value'";
             break;
 
          case "type" :
-            $WHERE .= " AND `".$item->getTable()."`.`type` = '$value'";
+            $WHERE .= " AND `$table`.`type` = '$value'";
             break;
 
          case "itilcategories_id" :
@@ -591,26 +613,26 @@ class Stat {
                if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
                   $categories = getSonsOf("glpi_itilcategories", $value);
                   $condition  = implode("','",$categories);
-                  $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` IN ('$condition')";
+                  $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
                } else {
-                  $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` = '$value' ";
+                  $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
                }
 
             } else {
-               $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` = '$value' ";
+               $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
             }
             break;
 
          case "group" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
-                              AND `glpi_groups_tickets`.`type` = '".CommonITILObject::REQUESTER."')";
+            $WHERE .= " AND (`$grouplinktable`.`groups_id` = '$value'
+                              AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
-                              AND `glpi_groups_tickets`.`type` = '".CommonITILObject::ASSIGN."')";
+            $WHERE .= " AND (`$grouplinktable`.`groups_id` = '$value'
+                              AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
 
          case "requesttypes_id" :
@@ -618,7 +640,7 @@ class Stat {
          case "urgency" :
          case "impact" :
          case "priority" :
-            $WHERE .= " AND `".$item->getTable()."`.`$param` = '$value'";
+            $WHERE .= " AND `$table`.`$param` = '$value'";
             break;
 
 
@@ -627,8 +649,8 @@ class Stat {
             $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
             //select computers IDs that are using this device;
             $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `".$item->getTable()."`.`items_id`
-                                  AND `".$item->getTable()."`.`itemtype` = 'Computer')
+                              ON (`glpi_computers`.`id` = `$table`.`items_id`
+                                  AND `$table`.`itemtype` = 'Computer')
                           INNER JOIN `$devtable`
                               ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
                                   AND `$devtable`.`$fkname` = '$value')";
@@ -636,11 +658,11 @@ class Stat {
             break;
 
          case "comp_champ" :
-            $table = getTableForItemType($value2);
-            $champ = getForeignKeyFieldForTable($table);
+            $ftable = getTableForItemType($value2);
+            $champ = getForeignKeyFieldForTable($ftable);
             $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `".$item->getTable()."`.`items_id`
-                                  AND `".$item->getTable()."`.`itemtype` = 'Computer')";
+                              ON (`glpi_computers`.`id` = `$table`.`items_id`
+                                  AND `$table`.`itemtype` = 'Computer')";
             $WHERE .= " AND `glpi_computers`.`$champ` = '$value'
                         AND `glpi_computers`.`is_template` <> '1'";
             break;
@@ -648,185 +670,181 @@ class Stat {
 
       switch($type) {
          case "inter_total" :
-            $WHERE .= " AND ".getDateRequest("`".$item->getTable()."`.`date`",$begin,$end);
+            $WHERE .= " AND ".getDateRequest("`$table`.`date`",$begin,$end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`date`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`date`";
+                      ORDER BY `$table`.`date`";
             break;
 
          case "inter_solved" :
-            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed'
-                             OR `".$item->getTable()."`.`status` = 'solved')
-                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+                        AND `$table`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`solvedate`";
+                      ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_solved_late" :
-            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed'
-                             OR `".$item->getTable()."`.`status` = 'solved')
-                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
-                        AND `".$item->getTable()."`.`due_date` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end)."
-                        AND `".$item->getTable()."`.`solvedate` > `".$item->getTable()."`.`due_date`";
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+                        AND `$table`.`solvedate` IS NOT NULL
+                        AND `$table`.`due_date` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
+                        AND `$table`.`solvedate` > `".$item->getTable()."`.`due_date`";
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`solvedate`";
+                      ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_closed" :
-            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed')
-                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`closedate`";
+                      ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgsolvedtime" :
-            $WHERE .= " AND (`".$item->getTable()."`. `status` = 'solved'
-                             OR `".$item->getTable()."`.`status` = 'closed')
-                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+                        AND `$table`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(solve_delay_stat) AS total_visites
-                      FROM `".$item->getTable()."`
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`solvedate`";
+                      ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_avgclosedtime" :
-            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed')
-                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
+            $WHERE .= " AND  `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(close_delay_stat) AS total_visites
-                      FROM `".$item->getTable()."`
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`closedate`";
+                      ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgactiontime" :
             if ($param=="technicien_followup") {
-               $actiontime_table = "glpi_tickettasks";
+               $actiontime_table = $tasktable;
             } else {
-               $actiontime_table = $item->getTable();
+               $actiontime_table = $table;
             }
             $WHERE .= " AND `$actiontime_table`.`actiontime` > '0'
-                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
+                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`$actiontime_table`.`actiontime`) AS total_visites
-                      FROM `".$item->getTable()."`
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`solvedate`";
+                      ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_avgtakeaccount" :
-            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'solved'
-                             OR `".$item->getTable()."`.`status` = 'closed')
-                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+                        AND `$table`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT `".$item->getTable()."`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
+            $query = "SELECT `$table`.`id`,
+                             FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(`".$item->getTable()."`.`takeintoaccount_delay_stat`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             AVG(`$table`.`takeintoaccount_delay_stat`) AS total_visites
+                      FROM `$table`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`solvedate`";
+                      ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_opensatisfaction" :
-            $WHERE .= " AND `".$item->getTable()."`.`status` = 'closed'
-                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`closedate`";
+                      ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_answersatisfaction" :
-            $WHERE .= " AND `".$item->getTable()."`.`status` = 'closed'
-                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`closedate` IS NOT NULL
                         AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
+                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
-                      FROM `".$item->getTable()."`
+                             COUNT(`$table`.`id`) AS total_visites
+                      FROM `$table`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`closedate`";
+                      ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgsatisfaction" :
             $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND `".$item->getTable()."`.`status` = 'closed'
-                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
+                        AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
-                      FROM `".$item->getTable()."`
+                      FROM `$table`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `".$item->getTable()."`.`closedate`";
+                      ORDER BY `$table`.`closedate`";
             break;
 
       }

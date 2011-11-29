@@ -146,7 +146,7 @@ $available = array('avgclosed'      => $LANG['stats'][10],
 
 
 if ($_REQUEST['itemtype']=='Ticket') {
-   $available[] = array('avgtaketime'    => $LANG['stats'][12]);
+   $available['avgtaketime'] = $LANG['stats'][12];
    
    //Temps moyen de prise en compte de l'intervention
    $values2['avgtaketime']   = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgtakeaccount", $_REQUEST["date1"],

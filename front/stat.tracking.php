@@ -39,6 +39,8 @@ Html::header($LANG['Menu'][13],'',"maintain","stat");
 
 Session::checkRight("statistic", "1");
 
+$item = new $_REQUEST['itemtype']();
+
 if (empty($_REQUEST["type"])) {
    $_REQUEST["type"] = "user";
 }
@@ -66,21 +68,27 @@ if (!isset($_REQUEST["start"])) {
    $_REQUEST["start"] = 0;
 }
 
+$requester = array('user'               => array('title' => $LANG['job'][4]),
+                   'users_id_recipient' => array('title' => $LANG['common'][37]),
+                   'group'              => array('title' => $LANG['common'][35]),
+                   'usertitles_id'      => array('title' => $LANG['users'][1]),
+                   'usercategories_id'  => array('title' => $LANG['users'][2]));
+$caract = array('itilcategories_id'      => array('title' => $LANG['common'][36]),
+                'urgency'                => array('title' => $LANG['joblist'][29]),
+                'impact'                 => array('title' => $LANG['joblist'][30]),
+                'priority'               => array('title' => $LANG['joblist'][2]),
+                'solutiontypes_id'       => array('title' => $LANG['job'][48]));
+if ($_REQUEST['itemtype'] == 'Ticket') {
+   $caract['type']            = array('title' => $LANG['common'][17]);
+   $caract['requesttypes_id'] = array('title' => $LANG['job'][44]);
+}
+
+
 $items =
    array($LANG['job'][4]
-            => array('user'               => array('title' => $LANG['job'][4]),
-                     'users_id_recipient' => array('title' => $LANG['common'][37]),
-                     'group'              => array('title' => $LANG['common'][35]),
-                     'usertitles_id'      => array('title' => $LANG['users'][1]),
-                     'usercategories_id'  => array('title' => $LANG['users'][2])),
+            => $requester,
          $LANG['common'][32]
-            => array('type'                   => array('title' => $LANG['common'][17]),
-                     'itilcategories_id'      => array('title' => $LANG['common'][36]),
-                     'urgency'                => array('title' => $LANG['joblist'][29]),
-                     'impact'                 => array('title' => $LANG['joblist'][30]),
-                     'priority'               => array('title' => $LANG['joblist'][2]),
-                     'requesttypes_id'        => array('title' => $LANG['job'][44]),
-                     'solutiontypes_id'       => array('title' => $LANG['job'][48])),
+            => $caract,
          $LANG['job'][5]
             => array('technicien'          => array('title' => $LANG['job'][6]." ".
                                                                $LANG['stats'][48]),
@@ -108,6 +116,7 @@ Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
+echo "<input type='hidden' name='itemtype' value=\"". $_REQUEST["itemtype"] ."\">";
 echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\"></td>".
      "</tr>";
 
@@ -118,7 +127,7 @@ Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-$val    = Stat::getItems($_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"]);
+$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"]);
 $params = array('type'  => $_REQUEST["type"],
                 'date1' => $_REQUEST["date1"],
                 'date2' => $_REQUEST["date2"],
@@ -126,14 +135,14 @@ $params = array('type'  => $_REQUEST["type"],
 
 Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
                  "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
-                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
+                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"]."&amp;itemtype=".$_REQUEST["itemtype"],
                  'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
-   Stat::show($_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val);
+   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val);
 
 } else {
-   $data = Stat::getDatas($_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
+   $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
                           $_REQUEST['start'], $val);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
@@ -144,7 +153,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array($LANG['stats'][5] => $cleandata),
                       array('title'     => $LANG['stats'][5],
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
    }
 
@@ -156,7 +165,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][11],
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
    }
 
@@ -169,7 +178,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array($LANG['stats'][19] => $cleandata),
                       array('title'     => $LANG['stats'][19],
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
    }
 
@@ -182,20 +191,22 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][17],
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
    }
 
-   if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
-      foreach ($data['opensatisfaction'] as $key => $val) {
-         $newkey             = Html::clean($key);
-         $cleandata[$newkey] = $val;
+   if ($_REQUEST['itemtype'] == 'Ticket') {
+      if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
+         foreach ($data['opensatisfaction'] as $key => $val) {
+            $newkey             = Html::clean($key);
+            $cleandata[$newkey] = $val;
+         }
+         Stat::showGraph(array($LANG['stats'][11] => $cleandata),
+                        array('title'     => $LANG['satisfaction'][3],
+                              'showtotal' => 1,
+                              'unit'      => $item->getTypeName(2),
+                              'type'      => 'pie'));
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                      array('title'     => $LANG['satisfaction'][3],
-                            'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
-                            'type'      => 'pie'));
    }
 
 }
