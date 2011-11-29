@@ -3556,22 +3556,23 @@ class Search {
 
 
       switch ($table.".".$field) {
-         case "glpi_ocslinks.last_update" :
-         case "glpi_ocslinks.last_ocs_update" :
-         case "glpi_computers.date_mod" :
-         case "glpi_printers.date_mod" :
-         case "glpi_networkequipments.date_mod" :
-         case "glpi_peripherals.date_mod" :
-         case "glpi_phones.date_mod" :
-         case "glpi_softwares.date_mod" :
-         case "glpi_monitors.date_mod" :
-         case "glpi_documents.date_mod" :
-         case "glpi_ocsservers.date_mod" :
-         case "glpi_users.last_login" :
-         case "glpi_users.date_mod" :
-            return " class='center'";
+//          case "glpi_ocslinks.last_update" :
+//          case "glpi_ocslinks.last_ocs_update" :
+//          case "glpi_computers.date_mod" :
+//          case "glpi_printers.date_mod" :
+//          case "glpi_networkequipments.date_mod" :
+//          case "glpi_peripherals.date_mod" :
+//          case "glpi_phones.date_mod" :
+//          case "glpi_softwares.date_mod" :
+//          case "glpi_monitors.date_mod" :
+//          case "glpi_documents.date_mod" :
+//          case "glpi_ocsservers.date_mod" :
+//          case "glpi_users.last_login" :
+//          case "glpi_users.date_mod" :
+//             return " class='center'";
 
          case "glpi_tickets.priority" :
+         case "glpi_problems.priority" :
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
 
          case "glpi_tickets.due_date" :
