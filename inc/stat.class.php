@@ -524,18 +524,19 @@ class Stat {
    }
 
 
-   static function constructEntryValues($type, $begin="", $end="", $param="", $value="",
+   static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
                                         $value2="") {
       global $DB;
+      $item = new $itemtype;      
 
       $query         = "";
-      $WHERE         = "WHERE NOT `glpi_tickets`.`is_deleted` ".
-                       getEntitiesRestrictRequest("AND", "glpi_tickets");
+      $WHERE         = "WHERE NOT `".$item->getTable()."`.`is_deleted` ".
+                       getEntitiesRestrictRequest("AND", $item->getTable());
       $LEFTJOIN      = "";
       $LEFTJOINUSER  = "LEFT JOIN `glpi_tickets_users`
-                           ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)";
+                           ON (`glpi_tickets_users`.`tickets_id` = `".$item->getTable()."`.`id`)";
       $LEFTJOINGROUP = "LEFT JOIN `glpi_groups_tickets`
-                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`)";
+                           ON (`glpi_groups_tickets`.`tickets_id` = `".$item->getTable()."`.`id`)";
 
       switch ($param) {
          case "technicien" :
@@ -547,11 +548,11 @@ class Stat {
          case "technicien_followup" :
             $WHERE .= " AND `glpi_tickettasks`.`users_id` = '$value'";
             $LEFTJOIN = " LEFT JOIN `glpi_tickettasks`
-                              ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)";
+                              ON (`glpi_tickettasks`.`tickets_id` = `".$item->getTable()."`.`id`)";
             break;
 
          case "enterprise" :
-            $WHERE .= " AND `glpi_tickets`.`suppliers_id_assign` = '$value'";
+            $WHERE .= " AND `".$item->getTable()."`.`suppliers_id_assign` = '$value'";
             break;
 
          case "user" :
@@ -577,11 +578,11 @@ class Stat {
             break;
 
          case "users_id_recipient" :
-            $WHERE .= " AND `glpi_tickets`.`users_id_recipient` = '$value'";
+            $WHERE .= " AND `".$item->getTable()."`.`users_id_recipient` = '$value'";
             break;
 
          case "type" :
-            $WHERE .= " AND `glpi_tickets`.`type` = '$value'";
+            $WHERE .= " AND `".$item->getTable()."`.`type` = '$value'";
             break;
 
          case "itilcategories_id" :
@@ -590,13 +591,13 @@ class Stat {
                if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
                   $categories = getSonsOf("glpi_itilcategories", $value);
                   $condition  = implode("','",$categories);
-                  $WHERE .= " AND `glpi_tickets`.`itilcategories_id` IN ('$condition')";
+                  $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` IN ('$condition')";
                } else {
-                  $WHERE .= " AND `glpi_tickets`.`itilcategories_id` = '$value' ";
+                  $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` = '$value' ";
                }
 
             } else {
-               $WHERE .= " AND `glpi_tickets`.`itilcategories_id` = '$value' ";
+               $WHERE .= " AND `".$item->getTable()."`.`itilcategories_id` = '$value' ";
             }
             break;
 
@@ -617,7 +618,7 @@ class Stat {
          case "urgency" :
          case "impact" :
          case "priority" :
-            $WHERE .= " AND `glpi_tickets`.`$param` = '$value'";
+            $WHERE .= " AND `".$item->getTable()."`.`$param` = '$value'";
             break;
 
 
@@ -626,8 +627,8 @@ class Stat {
             $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
             //select computers IDs that are using this device;
             $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
-                                  AND `glpi_tickets`.`itemtype` = 'Computer')
+                              ON (`glpi_computers`.`id` = `".$item->getTable()."`.`items_id`
+                                  AND `".$item->getTable()."`.`itemtype` = 'Computer')
                           INNER JOIN `$devtable`
                               ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
                                   AND `$devtable`.`$fkname` = '$value')";
@@ -638,8 +639,8 @@ class Stat {
             $table = getTableForItemType($value2);
             $champ = getForeignKeyFieldForTable($table);
             $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `glpi_tickets`.`items_id`
-                                  AND `glpi_tickets`.`itemtype` = 'Computer')";
+                              ON (`glpi_computers`.`id` = `".$item->getTable()."`.`items_id`
+                                  AND `".$item->getTable()."`.`itemtype` = 'Computer')";
             $WHERE .= " AND `glpi_computers`.`$champ` = '$value'
                         AND `glpi_computers`.`is_template` <> '1'";
             break;
@@ -647,185 +648,185 @@ class Stat {
 
       switch($type) {
          case "inter_total" :
-            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`date`",$begin,$end);
+            $WHERE .= " AND ".getDateRequest("`".$item->getTable()."`.`date`",$begin,$end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`date`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`date`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`date`";
+                      ORDER BY `".$item->getTable()."`.`date`";
             break;
 
          case "inter_solved" :
-            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed'
-                             OR `glpi_tickets`.`status` = 'solved')
-                        AND `glpi_tickets`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end);
+            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed'
+                             OR `".$item->getTable()."`.`status` = 'solved')
+                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `".$item->getTable()."`.`solvedate`";
             break;
 
          case "inter_solved_late" :
-            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed'
-                             OR `glpi_tickets`.`status` = 'solved')
-                        AND `glpi_tickets`.`solvedate` IS NOT NULL
-                        AND `glpi_tickets`.`due_date` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end)."
-                        AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`due_date`";
+            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed'
+                             OR `".$item->getTable()."`.`status` = 'solved')
+                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
+                        AND `".$item->getTable()."`.`due_date` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end)."
+                        AND `".$item->getTable()."`.`solvedate` > `".$item->getTable()."`.`due_date`";
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `".$item->getTable()."`.`solvedate`";
             break;
 
          case "inter_closed" :
-            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed')
+                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`closedate`";
+                      ORDER BY `".$item->getTable()."`.`closedate`";
             break;
 
          case "inter_avgsolvedtime" :
-            $WHERE .= " AND (`glpi_tickets`. `status` = 'solved'
-                             OR `glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end);
+            $WHERE .= " AND (`".$item->getTable()."`. `status` = 'solved'
+                             OR `".$item->getTable()."`.`status` = 'closed')
+                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(solve_delay_stat) AS total_visites
-                      FROM `glpi_tickets`
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `".$item->getTable()."`.`solvedate`";
             break;
 
          case "inter_avgclosedtime" :
-            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'closed')
+                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(close_delay_stat) AS total_visites
-                      FROM `glpi_tickets`
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`closedate`";
+                      ORDER BY `".$item->getTable()."`.`closedate`";
             break;
 
          case "inter_avgactiontime" :
             if ($param=="technicien_followup") {
                $actiontime_table = "glpi_tickettasks";
             } else {
-               $actiontime_table = "glpi_tickets";
+               $actiontime_table = $item->getTable();
             }
             $WHERE .= " AND `$actiontime_table`.`actiontime` > '0'
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end);
+                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`$actiontime_table`.`actiontime`) AS total_visites
-                      FROM `glpi_tickets`
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `".$item->getTable()."`.`solvedate`";
             break;
 
          case "inter_avgtakeaccount" :
-            $WHERE .= " AND (`glpi_tickets`.`status` = 'solved'
-                             OR `glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`solvedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`solvedate`", $begin, $end);
+            $WHERE .= " AND (`".$item->getTable()."`.`status` = 'solved'
+                             OR `".$item->getTable()."`.`status` = 'closed')
+                        AND `".$item->getTable()."`.`solvedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`solvedate`", $begin, $end);
 
-            $query = "SELECT `glpi_tickets`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+            $query = "SELECT `".$item->getTable()."`.`id`,
+                             FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(`glpi_tickets`.`takeintoaccount_delay_stat`) AS total_visites
-                      FROM `glpi_tickets`
+                             AVG(`".$item->getTable()."`.`takeintoaccount_delay_stat`) AS total_visites
+                      FROM `".$item->getTable()."`
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`solvedate`";
+                      ORDER BY `".$item->getTable()."`.`solvedate`";
             break;
 
          case "inter_opensatisfaction" :
-            $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
-                        AND `glpi_tickets`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+            $WHERE .= " AND `".$item->getTable()."`.`status` = 'closed'
+                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`closedate`";
+                      ORDER BY `".$item->getTable()."`.`closedate`";
             break;
 
          case "inter_answersatisfaction" :
-            $WHERE .= " AND `glpi_tickets`.`status` = 'closed'
-                        AND `glpi_tickets`.`closedate` IS NOT NULL
+            $WHERE .= " AND `".$item->getTable()."`.`status` = 'closed'
+                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
                         AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`glpi_tickets`.`id`) AS total_visites
-                      FROM `glpi_tickets`
+                             COUNT(`".$item->getTable()."`.`id`) AS total_visites
+                      FROM `".$item->getTable()."`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`closedate`";
+                      ORDER BY `".$item->getTable()."`.`closedate`";
             break;
 
          case "inter_avgsatisfaction" :
             $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND `glpi_tickets`.`status` = 'closed'
-                        AND `glpi_tickets`.`closedate` IS NOT NULL
-                        AND ".getDateRequest("`glpi_tickets`.`closedate`", $begin, $end);
+                        AND `".$item->getTable()."`.`status` = 'closed'
+                        AND `".$item->getTable()."`.`closedate` IS NOT NULL
+                        AND ".getDateRequest("`".$item->getTable()."`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
-                      FROM `glpi_tickets`
+                      FROM `".$item->getTable()."`
                       INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        ON (`".$item->getTable()."`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
                       $LEFTJOIN
                       $WHERE
                       GROUP BY date_unix
-                      ORDER BY `glpi_tickets`.`closedate`";
+                      ORDER BY `".$item->getTable()."`.`closedate`";
             break;
 
       }

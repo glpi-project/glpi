@@ -277,11 +277,6 @@ class Change extends CommonITILObject {
       global $LANG, $CFG_GLPI;
 
       parent::pre_updateInDB();
-
-      // Do not take into account date_mod if no update is done
-      if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
-         unset($this->updates[$key]);
-      }
    }
 
 

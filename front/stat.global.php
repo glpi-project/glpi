@@ -39,6 +39,7 @@ Html::header($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
+
 if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
    $year              = date("Y")-1;
    $_REQUEST["date1"] = date("Y-m-d", mktime(1,0,0,date("m"), date("d"), $year));
@@ -59,6 +60,8 @@ echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
 Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
+echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
+
 echo "<input type='submit' class='button' value=\"". $LANG['buttons'][7] ."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
@@ -68,16 +71,16 @@ echo "</table></div>";
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']   = Stat::constructEntryValues("inter_total", $_REQUEST["date1"],
+$values['total']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_total", $_REQUEST["date1"],
                                                 $_REQUEST["date2"]);
 // Total des interventions résolues
-$values['solved']  = Stat::constructEntryValues("inter_solved", $_REQUEST["date1"],
+$values['solved']  = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved", $_REQUEST["date1"],
                                                 $_REQUEST["date2"]);
 // Total des interventions closes
-$values['closed']  = Stat::constructEntryValues("inter_closed", $_REQUEST["date1"],
+$values['closed']  = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_closed", $_REQUEST["date1"],
                                                 $_REQUEST["date2"]);
 // Total des interventions closes
-$values['late']    = Stat::constructEntryValues("inter_solved_late", $_REQUEST["date1"],
+$values['late']    = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved_late", $_REQUEST["date1"],
                                                 $_REQUEST["date2"]);
 
 $available = array('total'  => $LANG['job'][14],
@@ -111,36 +114,48 @@ Stat::showGraph($toprint, array('title'     =>$LANG['stats'][13],
                                 'unit'      => $LANG['stats'][35]));
 
 //Temps moyen de resolution d'intervention
-$values2['avgsolved']     = Stat::constructEntryValues("inter_avgsolvedtime", $_REQUEST["date1"],
+$values2['avgsolved']     = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgsolvedtime", $_REQUEST["date1"],
                                                        $_REQUEST["date2"]);
-//Temps moyen de cloture d'intervention
-$values2['avgclosed']     = Stat::constructEntryValues("inter_avgclosedtime", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"]);
-//Temps moyen d'intervention reel
-$values2['avgactiontime'] = Stat::constructEntryValues("inter_avgactiontime", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"]);
-//Temps moyen de prise en compte de l'intervention
-$values2['avgtaketime']   = Stat::constructEntryValues("inter_avgtakeaccount", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"]);
-
 // Pass to hour values
 foreach ($values2['avgsolved'] as $key => $val) {
    $values2['avgsolved'][$key] /= HOUR_TIMESTAMP;
 }
+
+//Temps moyen de cloture d'intervention
+$values2['avgclosed']     = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgclosedtime", $_REQUEST["date1"],
+                                                       $_REQUEST["date2"]);
+// Pass to hour values
 foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key] /= HOUR_TIMESTAMP;
 }
+//Temps moyen d'intervention reel
+$values2['avgactiontime'] = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgactiontime", $_REQUEST["date1"],
+                                                       $_REQUEST["date2"]);
+
+// Pass to hour values
 foreach ($values2['avgactiontime'] as $key => $val) {
    $values2['avgactiontime'][$key]/=HOUR_TIMESTAMP;
 }
-foreach ($values2['avgtaketime'] as $key => $val) {
-   $values2['avgtaketime'][$key] /= HOUR_TIMESTAMP;
-}
+
 
 $available = array('avgclosed'      => $LANG['stats'][10],
                    'avgsolved'      => $LANG['stats'][9],
-                   'avgtaketime'    => $LANG['stats'][12],
                    'avgactiontime'  => $LANG['stats'][14]);
+
+
+if ($_REQUEST['itemtype']=='Ticket') {
+   $available[] = array('avgtaketime'    => $LANG['stats'][12]);
+   
+   //Temps moyen de prise en compte de l'intervention
+   $values2['avgtaketime']   = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgtakeaccount", $_REQUEST["date1"],
+                                                         $_REQUEST["date2"]);
+   
+   // Pass to hour values
+   foreach ($values2['avgtaketime'] as $key => $val) {
+      $values2['avgtaketime'][$key] /= HOUR_TIMESTAMP;
+   }
+}
+
 
 
 echo "<div class='center'>";
@@ -171,56 +186,59 @@ Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
                                 'datatype'  => 'average'));
 
 
-///////// Satisfaction
-$values['opensatisfaction']   = Stat::constructEntryValues("inter_opensatisfaction",
-                                                           $_REQUEST["date1"], $_REQUEST["date2"]);
+if ($_REQUEST['itemtype']=='Ticket') {
 
-$values['answersatisfaction'] = Stat::constructEntryValues("inter_answersatisfaction",
-                                                           $_REQUEST["date1"], $_REQUEST["date2"]);
-
-
-$available = array('opensatisfaction'   => $LANG['satisfaction'][13],
-                   'answersatisfaction' => $LANG['satisfaction'][14]);
-echo "<div class='center'>";
-
-foreach ($available as $key => $name) {
-   echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-          ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
-}
-echo "</div>";
-
-$toprint = array();
-foreach ($available as $key => $name) {
-   if ($show_all || isset($_REQUEST['graph'][$key])) {
-      $toprint[$name] = $values[$key];
+   ///////// Satisfaction
+   $values['opensatisfaction']   = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_opensatisfaction",
+                                                            $_REQUEST["date1"], $_REQUEST["date2"]);
+   
+   $values['answersatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_answersatisfaction",
+                                                            $_REQUEST["date1"], $_REQUEST["date2"]);
+   
+   
+   $available = array('opensatisfaction'   => $LANG['satisfaction'][13],
+                     'answersatisfaction' => $LANG['satisfaction'][14]);
+   echo "<div class='center'>";
+   
+   foreach ($available as $key => $name) {
+      echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
+            ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
-}
-
-Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
-                                'showtotal' => 1,
-                                'unit'      => $LANG['stats'][35]));
-
-$values['avgsatisfaction'] = Stat::constructEntryValues("inter_avgsatisfaction", $_REQUEST["date1"],
-                                                        $_REQUEST["date2"]);
-
-$available = array('avgsatisfaction' => $LANG['satisfaction'][7]);
-echo "<div class='center'>";
-
-foreach ($available as $key => $name) {
-   echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-          ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
-}
-echo "</div>";
-
-$toprint = array();
-foreach ($available as $key => $name) {
-   if ($show_all || isset($_REQUEST['graph'][$key])) {
-      $toprint[$name] = $values[$key];
+   echo "</div>";
+   
+   $toprint = array();
+   foreach ($available as $key => $name) {
+      if ($show_all || isset($_REQUEST['graph'][$key])) {
+         $toprint[$name] = $values[$key];
+      }
    }
+   
+   Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
+                                 'showtotal' => 1,
+                                 'unit'      => $LANG['stats'][35]));
+
+
+   $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],"inter_avgsatisfaction", $_REQUEST["date1"],
+                                                         $_REQUEST["date2"]);
+   
+   $available = array('avgsatisfaction' => $LANG['satisfaction'][7]);
+   echo "<div class='center'>";
+   
+   foreach ($available as $key => $name) {
+      echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
+            ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+   }
+   echo "</div>";
+   
+   $toprint = array();
+   foreach ($available as $key => $name) {
+      if ($show_all || isset($_REQUEST['graph'][$key])) {
+         $toprint[$name] = $values[$key];
+      }
+   }
+   
+   Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
 }
-
-Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
-
 
 echo "</form>";
 Html::footer();
