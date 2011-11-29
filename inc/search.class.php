@@ -2574,7 +2574,18 @@ class Search {
                return " $link (`$table`.`id`".$SEARCH.
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            return $link." (`$table`.`$name1` $SEARCH
+            
+            $toadd = '';
+            if ($itemtype == 'Ticket') {
+               if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
+                  && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])) {
+                  $bj = $searchopt[$ID]["joinparams"]["beforejoin"];
+                  $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
+                  $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
+               }
+            }            
+            
+            return $link." ($toadd `$table`.`$name1` $SEARCH
                             OR `$table`.`$name2` $SEARCH
                             OR CONCAT(`$table`.`$name1`, ' ',
                                       `$table`.`$name2`) $SEARCH".
