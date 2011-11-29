@@ -5630,13 +5630,42 @@ class OcsServer extends CommonDBTM {
 
          $transfer->moveItems($item_to_transfer, $data['entities_id'], $transfer->fields);
       }
-      // TODO : if rules affect a new locations, update the computer. ?
-
+      //If location is update by a rule
+      self::updateLocation($line_links, $data);
+      
       // Update TAG
       self::updateTag($line_links, $line_ocs);
    }
 
+   /**
+    * Update location for a computer if needed after rule processing
+    * 
+    * @param line_links
+    * @param data
+    * 
+    * @return nothing
+    */
+   static function updateLocation($line_links, $data) {
+      //If there's a location to update
+      if (isset($data['locations_id'])) {
+         $computer = new Computer();
+         $computer->getFromDB($line_links['computers_id']);
+         $ancestors = getAncestorsOf('glpi_entities', $computer->fields['entities_id']);
 
+         $location = new Location();
+         if ($location->getFromDB($data['locations_id'])) {
+            //If location is in the same entity as the computer, or if the location is
+            //defined in a parent entity, but recursive
+            if ($location->fields['entities_id'] == $computer->fields['entities_id'] 
+               || (in_array($location->fields['entities_id'], $ancestors) && $location->fields['is_recursive'])) {
+               $tmp['locations_id'] = $data['locations_id'];
+               $tmp['id']           = $line_links['computers_id'];
+               $computer->update($tmp);
+            }
+         }
+      }
+   }
+   
    /**
     * Update TAG information in glpi_ocslinks table
     *
