@@ -109,7 +109,7 @@ class Log extends CommonDBTM {
       }
       // needed to have  $SEARCHOPTION
       list($real_type, $real_id) = $item->getLogTypeID();
-      // toolbox::logDebug("constructHistory:", $item->getType(), $real_type, $real_id);
+      // toolbox::logDebug("constructHistory:", $item->getType(), $real_type, $real_id, $oldvalues);
 
       $searchopt = Search::getOptions($real_type);
 
@@ -118,11 +118,11 @@ class Log extends CommonDBTM {
       }
       $result = 0;
 
+      // type for which getValueToDisplay() could be used (fully tested)
+      $oktype = array('Entity');
+
       foreach ($oldvalues as $key => $oldval) {
          $changes = array();
-
-         // type for which getValueToDisplay() could be used (fully tested)
-         $oktype = array('Entity');
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
@@ -147,7 +147,7 @@ class Log extends CommonDBTM {
                                                                     $oldvalues)),
                                 addslashes($item->getValueToDisplay($searchopt[$key2],
                                                                     $values)));
-                     toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
+                     // toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
                   } else {
                      // 3rd case : text field -> keep datas
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
