@@ -57,18 +57,24 @@ class Transfer extends CommonDBTM {
    /// type of initial item transfered
    var $inittype = 0;
    /// item types which have infocoms
-   var $INFOCOMS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                               'Printer', 'Software', 'SoftwareLicense');
+   // replace by $CFG_GLPI["infocom_types"]
+//    var $INFOCOMS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
+//                                'Printer', 'Software', 'SoftwareLicense');
    /// item types which have contracts
-   var $CONTRACTS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
-                                'Printer', 'Software');
+   // replace by $CFG_GLPI["contract_types"]
+//    var $CONTRACTS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
+//                                 'Printer', 'Software');
    /// item types which have tickets
-   var $TICKETS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
-                              'Printer', 'Software');
+   // replace by $CFG_GLPI["ticket_types"]
+//    var $TICKETS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
+//                               'Printer', 'Software');
+                              
    /// item types which have documents
-   var $DOCUMENTS_TYPES = array('CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
-                                'Contract', 'Document', 'Monitor', 'NetworkEquipment',
-                                'Peripheral', 'Phone', 'Printer', 'Software', 'Supplier');
+   // replace by $CFG_GLPI["document_types"]
+//    var $DOCUMENTS_TYPES = array('Budget','CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
+//                                 'Contract', 'Document', 'Entity', 'KnowbaseItem', 'Monitor', 
+//                                 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'Problem',
+//                                 'Reminder', 'Software', 'SoftwareLicense', 'Supplier','Ticket','User');
 
    var $DEVICES_TYPES = array('DeviceCase', 'DeviceControl', 'DeviceDrive', 'DeviceGraphicCard',
                               'DeviceHardDrive', 'DeviceMemory', 'DeviceMotherboard',
@@ -525,7 +531,7 @@ class Transfer extends CommonDBTM {
 
       // Tickets
       if ($this->options['keep_ticket']) {
-         foreach ($this->TICKETS_TYPES as $itemtype) {
+         foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $query = "SELECT DISTINCT `id`
                          FROM `glpi_tickets`
@@ -547,7 +553,7 @@ class Transfer extends CommonDBTM {
 
       // Contract : keep / delete + clean unused / keep unused
       if ($this->options['keep_contract']) {
-         foreach ($this->CONTRACTS_TYPES as $itemtype) {
+         foreach ($CFG_GLPI["contract_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
 
@@ -707,7 +713,7 @@ class Transfer extends CommonDBTM {
 
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
-            foreach ($this->INFOCOMS_TYPES as $itemtype) {
+            foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
                   $itemtable = getTableForItemType($itemtype);
                   // Clean DB
@@ -837,7 +843,7 @@ class Transfer extends CommonDBTM {
 
       // Document : keep / delete + clean unused / keep unused
       if ($this->options['keep_document']) {
-         foreach ($this->DOCUMENTS_TYPES as $itemtype) {
+         foreach ($CFG_GLPI["document_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
                // Clean DB
@@ -1000,7 +1006,7 @@ class Transfer extends CommonDBTM {
             $this->transferTickets($itemtype, $ID, $newID);
             // Infocoms : keep / delete
 
-            if (in_array($itemtype,$this->INFOCOMS_TYPES)) {
+            if (in_array($itemtype,$CFG_GLPI["infocom_types"])) {
                $this->transferInfocoms($itemtype, $ID, $newID);
             }
 
@@ -1030,7 +1036,7 @@ class Transfer extends CommonDBTM {
             }
 
             // Contract : keep / delete + clean unused / keep unused
-            if (in_array($itemtype,$this->CONTRACTS_TYPES)) {
+            if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
                $this->transferContracts($itemtype, $ID, $newID);
             }
 
@@ -1040,7 +1046,7 @@ class Transfer extends CommonDBTM {
             }
 
             // Document : keep / delete + clean unused / keep unused
-            if (in_array($itemtype,$this->DOCUMENTS_TYPES)) {
+            if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $this->transferDocuments($itemtype, $ID, $newID);
             }
 
@@ -2526,7 +2532,7 @@ class Transfer extends CommonDBTM {
     * @param $ID ID of the enterprise
    **/
    function transferSingleSupplier($ID) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // TODO clean system : needed ?
       $ent = new Supplier();
@@ -2556,7 +2562,7 @@ class Transfer extends CommonDBTM {
             if ($links_remaining==0) {
                // Search for infocoms
                if ($this->options['keep_infocom']) {
-                  foreach ($this->INFOCOMS_TYPES as $itemtype) {
+                  foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
                      $query = "SELECT count(*) AS CPT
                                FROM `glpi_infocoms`
                                WHERE `suppliers_id` = '$ID'
