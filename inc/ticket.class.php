@@ -2169,41 +2169,41 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-   static function getSpecificValueToDisplay($field, $value, $options=array()) {
+   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
 
       switch ($field) {
          case 'global_validation' :
-            return TicketValidation::getStatus($value);
+            return TicketValidation::getStatus($values[$field]);
 
          case 'status':
-            return self::getStatus($value);
+            return self::getStatus($values[$field]);
             break;
 
          case 'type':
-            return self::getTicketTypeName($value);
+            return self::getTicketTypeName($values[$field]);
             break;
 
          case 'itemtype':
-            if (class_exists($value)) {
-               return call_user_func(array($value, 'getTypeName'));
+            if (class_exists($values[$field])) {
+               return call_user_func(array($values[$field], 'getTypeName'));
             }
             break;
 
          case 'items_id':
-            if (isset($options['itemtype'])) {
+            if (isset($values['itemtype'])) {
                if (isset($options['comments']) && $options['comments']) {
-                  $tmp = Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value,1);
+                  $tmp = Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
+                                                   $values[$field], 1);
                   return $tmp['name'].'&nbsp;'.
                            Html::showToolTip($tmp['comment'], array('display' => false));
 
                }
-               return Dropdown::getDropdownName(getTableForItemtype($options['itemtype']),$value);
+               return Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
+                                                $values[$field]);
             }
             break;
-
-         default :
-            return parent::getSpecificValueToDisplay($field, $value, $options);
       }
+      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
    }
 
 

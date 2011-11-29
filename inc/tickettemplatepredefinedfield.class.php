@@ -183,8 +183,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
 
-      $display_options = array('itemtype'       => $itemtype_used,
-                               'relative_dates' => true,
+      $display_datas   = array('itemtype'       => $itemtype_used);
+      $display_options = array('relative_dates' => true,
                                'comments'       => true);
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
@@ -199,6 +199,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "</tr>";
 
             while ($data=$DB->fetch_assoc($result)) {
+               if (!isset($fields[$data['num']])) {
+                  // could happen when itemtype removed and items_id present
+                  continue;
+               }
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
@@ -208,7 +212,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                echo "<td>".$fields[$data['num']]."</td>";
 
                echo "<td>";
-               echo $ticket->getValueToDisplay($searchOption[$data['num']], $data['value'],
+               $display_datas[$searchOption[$data['num']]['field']] = $data['value'];
+               echo $ticket->getValueToDisplay($searchOption[$data['num']], $display_datas,
                                                $display_options);
                echo "</td>";
                $used[$data['num']] = $data['value'];
