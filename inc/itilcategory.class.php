@@ -56,7 +56,7 @@ class ITILCategory extends CommonTreeDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => $this->getForeignKeyField(),
+      $tab = array(array('name'  => $this->getForeignKeyField(),
                          'label' => $LANG['setup'][75],
                          'type'  => 'parent',
                          'list'  => false),
@@ -97,6 +97,16 @@ class ITILCategory extends CommonTreeDropdown {
                          'type'  => 'dropdownValue',
                          'list'  => true),
                   );
+
+      if (!Session::haveRight("edit_all_problem", "1")
+          && !Session::haveRight("show_all_problem", "1")
+          && !Session::haveRight("show_my_problem", "1")) {
+
+         unset($tab[7]);
+      }
+      return $tab;
+
+
    }
 
 
