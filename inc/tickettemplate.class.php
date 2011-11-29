@@ -369,7 +369,8 @@ class TicketTemplate extends CommonDropdown {
          echo "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
-               $display_options = array('comments' => true);
+               $display_options = array('comments' => true,
+                                        'html'     => true);
                echo $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
                /// Display items_id
 
