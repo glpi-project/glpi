@@ -112,6 +112,10 @@ function update0803to083() {
                   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `begin_waiting_date` datetime DEFAULT NULL,                  
+                  `waiting_duration` int(11) NOT NULL DEFAULT '0',
+                  `close_delay_stat` int(11) NOT NULL DEFAULT '0',
+                  `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
                   `notepad` LONGTEXT NULL,
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
@@ -135,6 +139,10 @@ function update0803to083() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.83 create glpi_problems " . $LANG['update'][90] . $DB->error());
       $ADDTODISPLAYPREF['Problem'] = array(21,12,19,15,3,7,18);
+   }
+   if (FieldExists('glpi_tickets','ticket_waiting_duration')) {
+     $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
+                           'integer'); 
    }
 
    if (!TableExists('glpi_problems_users')) {
