@@ -370,16 +370,13 @@ class TicketTemplate extends CommonDropdown {
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
                $display_options = array('comments' => true);
-               if ($this->isPredefinedField('itemtype')) {
-                  $display_options['itemtype'] = $ticket->fields['itemtype'];
-               }
-               echo $ticket->getValueToDisplay($num, $ticket->fields[$field], $display_options);
+               echo $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
                /// Display items_id
 
                if ($field == 'itemtype') {
                   echo "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
                   if ($num = array_search('items_id',$this->getAllowedFields())) {
-                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields['items_id'],
+                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields,
                                                            $display_options);
                   }
                }

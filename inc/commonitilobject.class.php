@@ -1524,23 +1524,24 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $field name of the field
-    * @param $value value to display
+    * @param $field     String name of the field
+    * @param $values    Array with the value to display
+    * @param $options   Array of option
     *
     * @return a string
    **/
 
-   static function getSpecificValueToDisplay($field, $value, $options=array()) {
+   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
 
       switch ($field) {
          case 'urgency':
-            return self::getUrgencyName($value);
+            return self::getUrgencyName($values[$field]);
 
          case 'impact':
-            return self::getImpactName($value);
+            return self::getImpactName($values[$field]);
 
          case 'priority':
-            return self::getPriorityName($value);
+            return self::getPriorityName($values[$field]);
       }
       return '';
    }

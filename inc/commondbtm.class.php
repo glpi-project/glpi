@@ -2922,13 +2922,13 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $field string field to display
-    * @param $value integer.string id of the search option field or field name
-    * @param $options array options array
+    * @param $field     String name of the field
+    * @param $values    Array with the value to display
+    * @param $options   Array of option
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, $value, $options=array()) {
+   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
       return '';
    }
 
@@ -2941,7 +2941,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $field_id_or_search_options integer/string/array id of the search option field
     *                                                            or field name
     *                                                            or search option array
-    * @param $value mixed value to display
+    * @param $values mixed value to display
     * @param $options array options array
     * Parameters which could be used in options array :
     *    - comments : boolean / is the comments displayed near the value (default false)
@@ -2949,7 +2949,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_or_search_options, $value, $options=array()) {
+   function getValueToDisplay($field_id_or_search_options, &$values, $options=array()) {
       global $LANG, $CFG_GLPI;
 
       $param['comments'] = false;
@@ -2977,6 +2977,16 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (count($searchoptions)) {
+         $field = $searchoptions['field'];
+
+         // Normalize option
+         if (is_array($values)) {
+            $value = $values[$field];
+         } else {
+            $value = $values;
+            $values = array($field => $value);
+         }
+
          if (isset($searchoptions['datatype'])) {
             $unit = '';
             if (isset($searchoptions['unit'])) {
@@ -3080,7 +3090,7 @@ class CommonDBTM extends CommonGLPI {
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          $item     = new $itemtype();
-         $specific = $item->getSpecificValueToDisplay($searchoptions['field'], $value, $options);
+         $specific = $item->getSpecificValueToDisplay($field, $values, $options);
          if (!empty($specific)) {
             return $specific;
          }

@@ -121,61 +121,53 @@ class Log extends CommonDBTM {
       foreach ($oldvalues as $key => $oldval) {
          $changes = array();
 
-         /*
-         // First: type for which getValueToDisplay is ok.
-         if (in_array($real_type, array('Entity'))) {
+         // type for which getValueToDisplay() could be used (fully tested)
+         $oktype = array('Entity');
 
-            foreach ($searchopt as $key2 => $val2) {
-               // Linkfield or standard field not massive action enable
-               if ($key == $val2['field'] && $val2['table'] == $item->getTable()) {
-                  $changes = array($key2,
-                                   addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                       $oldval,
-                                                                       $oldvalues)),
-                                   addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                       stripslashes($values[$key]),
-                                                                       $values)));
-                  break;
-               }
-            }
-            toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
-         }*/
-         if (!count($changes)) {
-            // Parsing $SEARCHOPTION to find changed field
-            foreach ($searchopt as $key2 => $val2) {
-               // Linkfield or standard field not massive action enable
-               if ($val2["linkfield"] == $key
-                   || ($key == $val2["field"] && $val2["table"] == $item->getTable())) {
-                  $id_search_option = $key2; // Give ID of the $SEARCHOPTION
+         // Parsing $SEARCHOPTION to find changed field
+         foreach ($searchopt as $key2 => $val2) {
+            // Linkfield or standard field not massive action enable
+            if ($val2['linkfield'] == $key
+                || ($key == $val2['field'] && $val2['table'] == $item->getTable())) {
+               $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
-                  // 1st case : Ticket specific dropdown case (without table)
-                  if ($real_type=='Ticket'
-                      && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
-                                              'status', 'type', 'urgency', 'priority'))) {
-                     $changes = array($id_search_option,
-                                      addslashes(Ticket::getSpecificValueToDisplay($key, $oldval, $oldvalues)),
-                                      addslashes(Ticket::getSpecificValueToDisplay($key, $values[$key], $values)));
+               // 1st case : Ticket specific dropdown case (without table)
+               if ($real_type=='Ticket'
+                   && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
+                                           'status', 'type', 'urgency', 'priority'))) {
+                  $changes = array($id_search_option,
+                                   addslashes(Ticket::getSpecificValueToDisplay($key, $oldvalues)),
+                                   addslashes(Ticket::getSpecificValueToDisplay($key, $values)));
 
-                  } else if ($val2["table"] == $item->getTable()) {
-                     // 2nd case : text field -> keep datas
-                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
-
+               } else if ($val2['table'] == $item->getTable()) {
+                  if (in_array($real_type, $oktype)) {
+                     // 2nd case : use getValueToDisplay();
+                     $changes = array($key2,
+                                addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                    $oldvalues)),
+                                addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                    $values)));
+                     toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
                   } else {
+                     // 3rd case : text field -> keep datas
+                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
+                  }
+
+               } else {
 //                      if ($val2['table'] == 'glpi_users_validation') {
 //                         $val2['table'] = 'glpi_users';
 //                      }
 
-                     // other cases ; link field -> get data from dropdown
-                     if ($val2["table"] != 'glpi_complete_entities') {
-                        $changes = array($id_search_option,
-                                         addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                              $oldval)),
-                                         addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                              $values[$key])));
-                     }
+                  // other cases ; link field -> get data from dropdown
+                  if ($val2['table'] != 'glpi_complete_entities') {
+                     $changes = array($id_search_option,
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval)),
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $values[$key])));
                   }
-                  break;
                }
+               break;
             }
          }
 
