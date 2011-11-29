@@ -287,13 +287,13 @@ class Html {
       // Display : clean display
       switch ($_SESSION['glpinumber_format']) {
          case 2 : // Other French
-            return str_replace(' ', '&nbsp;', number_format($number, $decimal, ', ', ' '));
+            return str_replace(' ', '&nbsp;', number_format($number, $decimal, ',', ' '));
 
          case 0 : // French
             return str_replace(' ', '&nbsp;', number_format($number, $decimal, '.', ' '));
 
          default: // English
-            return number_format($number, $decimal, '.', ', ');
+            return number_format($number, $decimal, '.', ',');
       }
    }
 
