@@ -109,6 +109,7 @@ class Log extends CommonDBTM {
       }
       // needed to have  $SEARCHOPTION
       list($real_type, $real_id) = $item->getLogTypeID();
+      // toolbox::logDebug("constructHistory:", $item->getType(), $real_type, $real_id);
 
       $searchopt = Search::getOptions($real_type);
 
@@ -129,50 +130,17 @@ class Log extends CommonDBTM {
                if ($key == $val2['field'] && $val2['table'] == $item->getTable()) {
                   $changes = array($key2,
                                    addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                       stripslashes($oldval),
+                                                                       $oldval,
                                                                        $oldvalues)),
                                    addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                       $values[$key],
+                                                                       stripslashes($values[$key]),
                                                                        $values)));
                   break;
                }
             }
             toolbox::logDebug("CHANGES for $key in", $item->getTable(), $changes);
-         } else
-         */
-         if ($real_type == 'Infocom') {
-            // Parsing $SEARCHOPTION to find infocom
-            foreach ($searchopt as $key2 => $val2) {
-               if (($val2["field"] == $key && strpos($val2['table'], 'infocoms'))
-                   || ($key == 'budgets_id' && $val2['table'] == 'glpi_budgets')
-                   || ($key == 'suppliers_id' && $val2['table'] == 'glpi_suppliers')) {
-
-                  $id_search_option = $key2; // Give ID of the $SEARCHOPTION
-                  if ($val2["table"] == "glpi_infocoms") {
-                     // 1st case : text field -> keep datas
-                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
-
-                  } else if ($val2["table"] == "glpi_suppliers") {
-                     // 2nd case ; link field -> get data from glpi_suppliers
-                     $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName("glpi_suppliers",
-                                                                           $oldval)),
-                                      addslashes(Dropdown::getDropdownName("glpi_suppliers",
-                                                                           $values[$key])));
-
-                  } else {
-                     // 3rd case ; link field -> get data from dropdown (budget)
-                     $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $oldval)),
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $values[$key])));
-                  }
-                  break; // foreach exit
-               }
-            }
-
-         } else { // Not an Infocom
+         }*/
+         if (!count($changes)) {
             // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
                // Linkfield or standard field not massive action enable
