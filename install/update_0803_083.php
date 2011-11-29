@@ -134,6 +134,7 @@ function update0803to083() {
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.83 create glpi_problems " . $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['Problem'] = array(21,12,19,15,3,7,18);
    }
 
    if (!TableExists('glpi_problems_users')) {
@@ -1572,10 +1573,10 @@ function update0803to083() {
                        (`entities_id`, `entities_id_software`,
                         `autofill_order_date`, `autofill_delivery_date`, `autofill_buy_date`,
                         `autofill_use_date`, `autofill_warranty_date`,
-                        `inquest_config`, `inquest_rate`, `inquest_delay`
+                        `inquest_config`, `inquest_rate`, `inquest_delay`,
                         `tickettype`, `calendars_id`, `tickettemplates_id`,
-                        `autoclose_delay`, 'auto_assign_mode',
-                        `cartridges_alert_repeat`, `consumables_alert_repeat`
+                        `autoclose_delay`, `auto_assign_mode`,
+                        `cartridges_alert_repeat`, `consumables_alert_repeat`,
                         `use_licenses_alert`, `use_infocoms_alert`, `notclosed_delay`,
                         `use_contracts_alert`, `use_reservations_alert`)
                 VALUES (0, 0,
@@ -1586,7 +1587,7 @@ function update0803to083() {
                         -1, -1,
                         -1, -1,
                         -1, -1, -1,
-                        -1, -1,)"; // -1 to keep config value - see 1647
+                        -1, -1)"; // -1 to keep config value - see 1647
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
