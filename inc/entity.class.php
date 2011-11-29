@@ -221,7 +221,7 @@ class Entity extends CommonTreeDropdown {
       $tab[3]['name']          = $LANG['financial'][44];
       $tab[3]['massiveaction'] = false;
       $tab[3]['joinparams']    = array('jointype' => 'child');
-      $tab[3]['datatype']      = 'string';
+      $tab[3]['datatype']      = 'text';
 
       $tab[4]['table']         = 'glpi_entitydatas';
       $tab[4]['field']         = 'website';
