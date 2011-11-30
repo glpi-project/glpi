@@ -483,6 +483,41 @@ class Entity extends CommonTreeDropdown {
       $tab[42]['nosearch']      = true;
       $tab[42]['joinparams']    = array('jointype' => 'child');
 
+      $tab[43]['table']         = 'glpi_entitydatas';
+      $tab[43]['field']         = 'inquest_config';
+      $tab[43]['name']          = $LANG['entity'][19];
+      $tab[43]['massiveaction'] = false;
+      $tab[43]['nosearch']      = true;
+      $tab[43]['joinparams']    = array('jointype' => 'child');
+
+      $tab[44]['table']         = 'glpi_entitydatas';
+      $tab[44]['field']         = 'inquest_rate';
+      $tab[44]['name']          = $LANG['entity'][21];
+      $tab[44]['massiveaction'] = false;
+      $tab[44]['joinparams']    = array('jointype' => 'child');
+      $tab[44]['datatype']      = 'number';
+
+      $tab[45]['table']         = 'glpi_entitydatas';
+      $tab[45]['field']         = 'inquest_delay';
+      $tab[45]['name']          = $LANG['entity'][20];
+      $tab[45]['massiveaction'] = false;
+      $tab[45]['joinparams']    = array('jointype' => 'child');
+      $tab[45]['datatype']      = 'number';
+
+      $tab[46]['table']         = 'glpi_entitydatas';
+      $tab[46]['field']         = 'inquest_URL';
+      $tab[46]['name']          = $LANG['common'][94];
+      $tab[46]['massiveaction'] = false;
+      $tab[46]['joinparams']    = array('jointype' => 'child');
+      $tab[46]['datatype']      = 'string';
+
+      $tab[47]['table']         = 'glpi_entitydatas'; // not a dropdown because of special value
+      $tab[47]['field']         = 'tickettemplates_id';
+      $tab[47]['name']          = $LANG['job'][58];
+      $tab[47]['massiveaction'] = false;
+      $tab[47]['nosearch']      = true;
+      $tab[47]['joinparams']    = array('jointype' => 'child');
+
       return $tab;
    }
 
