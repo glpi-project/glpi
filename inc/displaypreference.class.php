@@ -340,7 +340,7 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                   echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
-                         $CFG_GLPI["root_doc"]."/pics/delete.png' alt=\"".
+                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
                   echo "</form></td>\n";
                   echo "</tr>";
@@ -498,7 +498,7 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                   echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
-                         $CFG_GLPI["root_doc"]."/pics/delete.png' alt=\"".
+                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
                   echo "</form>";
                   echo "</td>\n";
