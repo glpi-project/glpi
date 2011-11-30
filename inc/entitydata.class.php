@@ -796,13 +796,10 @@ class EntityData extends CommonDBChild {
       Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
                                                'toadd'  =>$toadd));
 
-      if ($entdata->fields["calendars_id"] == self::CONFIG_PARENT) {
-         $calendar = new Calendar();
-
-         if ($calendar->getFromDB(self::getUsedConfig('calendars_id', $ID, '',
-                                                      'Ticket::INCIDENT_TYPE'))) {
-            echo " - ".$calendar->getLink();
-         }
+      if ($entdata->fields['tickettype'] == self::CONFIG_PARENT) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '', Ticket::INCIDENT_TYPE));
+         echo "</font>";
       }
       echo "</td></tr>";
 
