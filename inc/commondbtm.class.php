@@ -2713,6 +2713,10 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $value;
          }
       }
+      
+      if ($this->maybeTemplate() && $this->isTemplate()) { 
+         return true;
+      }
 
       $result = true;
 
