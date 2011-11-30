@@ -1172,6 +1172,37 @@ class EntityData extends CommonDBChild {
                return $LANG['common'][102];
             }
             return Dropdown::getYesNo($values[$field]);
+
+         case 'use_reservations_alert' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return $LANG['common'][102];
+
+               case 0 :
+               case self::CONFIG_NEVER :
+                  return $LANG['setup'][307];
+            }
+            return $values[$field].' '.Toolbox::ucfirst($LANG['gmt'][1]);
+
+         case 'cartridges_alert_repeat' :
+         case 'consumables_alert_repeat' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return $LANG['common'][102];
+
+               case self::CONFIG_NEVER :
+                  return $LANG['setup'][307];
+
+               case DAY_TIMESTAMP :
+                  return $LANG['setup'][305];
+
+               case WEEK_TIMESTAMP :
+                  return $LANG['setup'][308];
+
+               case MONTH_TIMESTAMP :
+                  return $LANG['setup'][309];
+            }
+
       }
       return '';
    }
