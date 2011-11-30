@@ -434,6 +434,20 @@ class Entity extends CommonTreeDropdown {
       $tab[35]['nosearch']      = true;
       $tab[35]['joinparams']    = array('jointype' => 'child');
 
+      $tab[36]['table']         = 'glpi_entitydatas'; // not a dropdown because of special value
+      $tab[36]['field']         = 'calendars_id';
+      $tab[36]['name']          = $LANG['buttons'][15];
+      $tab[36]['massiveaction'] = false;
+      $tab[36]['nosearch']      = true;
+      $tab[36]['joinparams']    = array('jointype' => 'child');
+
+      $tab[37]['table']         = 'glpi_entitydatas';
+      $tab[37]['field']         = 'tickettype';
+      $tab[37]['name']          = $LANG['entity'][28];
+      $tab[37]['massiveaction'] = false;
+      $tab[37]['nosearch']      = true;
+      $tab[37]['joinparams']    = array('jointype' => 'child');
+
       return $tab;
    }
 
