@@ -78,6 +78,9 @@ class EntityData extends CommonDBChild {
                                        'notification'    => array('admin_email', 'admin_reply',
                                                                   'admin_email_name',
                                                                   'admin_reply_name',
+                                                                  'default_alarm_threshold',
+                                                                  'default_contract_alert',
+                                                                  'default_infocom_alert',
                                                                   'mailing_signature',
                                                                   'cartridges_alert_repeat',
                                                                   'consumables_alert_repeat',
@@ -591,7 +594,8 @@ class EntityData extends CommonDBChild {
       echo "</td>";
       echo "<td rowspan='2'>" . $LANG['setup'][115] . "&nbsp;:</td><td rowspan='2'>";
       Dropdown::showInteger('default_alarm_threshold',
-                            $entitynotification->fields["default_alarm_threshold"], -1, 100);
+                            $entitynotification->fields["default_alarm_threshold"], 0, 100, 1,
+                            array('-1' => $LANG['setup'][307]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1307,6 +1311,12 @@ class EntityData extends CommonDBChild {
                return $LANG['common'][102];
             }
             return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
+
+         case 'default_contract_alert' :
+            return Contract::getAlertName($values[$field]);
+
+         case 'default_infocom_alert' :
+            return Alert::getAlertName($values[$field]);
       }
       return '';
    }

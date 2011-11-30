@@ -1397,6 +1397,21 @@ class Contract extends CommonDBTM {
     * @param $value default value
    **/
    static function dropdownAlert($myname, $value) {
+
+      Dropdown::showFromArray($myname, self::getAlertName(), array('value' => $value));
+   }
+
+
+   /**
+    * Get the possible value for contract alert
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value
+    *
+    * @return array or string
+    */
+   static function getAlertName($val=NULL) {
       global $LANG;
 
       $tmp[0]                     = Dropdown::EMPTY_VALUE;
@@ -1404,7 +1419,14 @@ class Contract extends CommonDBTM {
       $tmp[pow(2, Alert::NOTICE)] = $LANG['financial'][10];
       $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))]
                                   = $LANG['buttons'][32]." + ". $LANG['financial'][10];
-      Dropdown::showFromArray($myname, $tmp, array('value' => $value));
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
    }
 
 
