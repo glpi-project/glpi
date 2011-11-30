@@ -645,7 +645,7 @@ class CommonDBTM extends CommonGLPI {
       if ($DB->isSlave()) {
          return false;
       }
-
+      
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -2714,7 +2714,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       
-      if ($this->maybeTemplate() && $this->isTemplate()) { 
+      // Do not check for template
+      if (isset($this->input['is_template']) && $this->input['is_template']) { 
          return true;
       }
 
