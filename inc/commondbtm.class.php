@@ -2626,7 +2626,11 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $value;
          }
       }
-
+      
+      if ($this->maybeTemplate() && $this->isTemplate()) { 
+         return true;
+      }
+      
       $result = true;
 
       //Do not check unicity when creating infocoms or if checking is expliclty disabled
