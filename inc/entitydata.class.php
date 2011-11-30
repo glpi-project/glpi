@@ -1260,6 +1260,37 @@ class EntityData extends CommonDBChild {
             }
             return Ticket::getTicketTypeName($values[$field]);
 
+         case 'autofill_buy_date' :
+         case 'autofill_order_date' :
+         case 'autofill_delivery_date' :
+         case 'autofill_use_date' :
+         case 'autofill_warranty_date' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return $LANG['common'][102];
+
+               case Infocom::COPY_WARRANTY_DATE :
+                  return $LANG['setup'][283].' '.$LANG['financial'][29];
+
+               case Infocom::COPY_BUY_DATE :
+                  return $LANG['setup'][283].' '.$LANG['financial'][14];
+
+               case Infocom::COPY_ORDER_DATE :
+                  return $LANG['setup'][283].' '.$LANG['financial'][28];
+
+               case Infocom::COPY_DELIVERY_DATE :
+                  return $LANG['setup'][283].' '.$LANG['financial'][27];
+
+               default:
+                  if (strstr($values[$field], '_')) {
+                     list($type,$sid) = explode('_', $values[$field], 2);
+                     if ($type == Infocom::ON_STATUS_CHANGE) {
+                        return $LANG['financial'][112].' : '.
+                               Dropdown::getDropdownName('glpi_states', $sid);
+                     }
+                  }
+            }
+            return $LANG['financial'][113];
       }
       return '';
    }

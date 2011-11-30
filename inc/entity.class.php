@@ -448,6 +448,41 @@ class Entity extends CommonTreeDropdown {
       $tab[37]['nosearch']      = true;
       $tab[37]['joinparams']    = array('jointype' => 'child');
 
+      $tab[38]['table']         = 'glpi_entitydatas';
+      $tab[38]['field']         = 'autofill_buy_date';
+      $tab[38]['name']          = $LANG['financial'][14];
+      $tab[38]['massiveaction'] = false;
+      $tab[38]['nosearch']      = true;
+      $tab[38]['joinparams']    = array('jointype' => 'child');
+
+      $tab[39]['table']         = 'glpi_entitydatas';
+      $tab[39]['field']         = 'autofill_order_date';
+      $tab[39]['name']          = $LANG['financial'][28];
+      $tab[39]['massiveaction'] = false;
+      $tab[39]['nosearch']      = true;
+      $tab[39]['joinparams']    = array('jointype' => 'child');
+
+      $tab[40]['table']         = 'glpi_entitydatas';
+      $tab[40]['field']         = 'autofill_delivery_date';
+      $tab[40]['name']          = $LANG['financial'][27];
+      $tab[40]['massiveaction'] = false;
+      $tab[40]['nosearch']      = true;
+      $tab[40]['joinparams']    = array('jointype' => 'child');
+
+      $tab[41]['table']         = 'glpi_entitydatas';
+      $tab[41]['field']         = 'autofill_use_date';
+      $tab[41]['name']          = $LANG['financial'][76];
+      $tab[41]['massiveaction'] = false;
+      $tab[41]['nosearch']      = true;
+      $tab[41]['joinparams']    = array('jointype' => 'child');
+
+      $tab[42]['table']         = 'glpi_entitydatas';
+      $tab[42]['field']         = 'autofill_warranty_date';
+      $tab[42]['name']          = $LANG['financial'][29];
+      $tab[42]['massiveaction'] = false;
+      $tab[42]['nosearch']      = true;
+      $tab[42]['joinparams']    = array('jointype' => 'child');
+
       return $tab;
    }
 
