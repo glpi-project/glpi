@@ -112,7 +112,7 @@ function update0803to083() {
                   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
                   `solution` text COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
-                  `begin_waiting_date` datetime DEFAULT NULL,                  
+                  `begin_waiting_date` datetime DEFAULT NULL,
                   `waiting_duration` int(11) NOT NULL DEFAULT '0',
                   `close_delay_stat` int(11) NOT NULL DEFAULT '0',
                   `solve_delay_stat` int(11) NOT NULL DEFAULT '0',
@@ -142,7 +142,7 @@ function update0803to083() {
    }
    if (FieldExists('glpi_tickets','ticket_waiting_duration')) {
      $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
-                           'integer'); 
+                           'integer');
    }
 
    if (!TableExists('glpi_problems_users')) {
@@ -1643,15 +1643,15 @@ function update0803to083() {
    }
    // new default value
    $migration->changeField("glpi_entitydatas", "autofill_buy_date", "autofill_buy_date",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           'string', array('value' => '-2'));
    $migration->changeField("glpi_entitydatas", "autofill_delivery_date", "autofill_delivery_date",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           'string', array('value' => '-2'));
    $migration->changeField("glpi_entitydatas", "autofill_warranty_date", "autofill_warranty_date",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           'string', array('value' => '-2'));
    $migration->changeField("glpi_entitydatas", "autofill_order_date", "autofill_order_date",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           'string', array('value' => '-2'));
    $migration->changeField("glpi_entitydatas", "autofill_use_date", "autofill_use_date",
-                           "int(11) NOT NULL DEFAULT '-2'");
+                           'string', array('value' => '-2'));
 
 
    // migration to new values for inherit config
