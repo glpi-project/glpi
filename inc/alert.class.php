@@ -159,12 +159,34 @@ class Alert extends CommonDBTM {
    }
 
 
-   static function dropdownInfocomAlert($value) {
+   /**
+    * Get the possible value for infocom alert
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value
+    *
+    * @return array or string
+    */
+   static function getAlertName($val=NULL) {
       global $LANG;
 
       $tmp[0] = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, self::END)] = $LANG['financial'][80];
-      Dropdown::showFromArray("default_infocom_alert", $tmp, array('value' => $value));
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+
+
+   static function dropdownInfocomAlert($value) {
+
+      Dropdown::showFromArray("default_infocom_alert", self::getAlertName(), array('value' => $value));
    }
 
 

@@ -518,6 +518,27 @@ class Entity extends CommonTreeDropdown {
       $tab[47]['nosearch']      = true;
       $tab[47]['joinparams']    = array('jointype' => 'child');
 
+      $tab[48]['table']         = 'glpi_entitydatas';
+      $tab[48]['field']         = 'default_contract_alert';
+      $tab[48]['name']          = $LANG['setup'][246].' - '.$LANG['setup'][46];
+      $tab[48]['massiveaction'] = false;
+      $tab[48]['nosearch']      = true;
+      $tab[48]['joinparams']    = array('jointype' => 'child');
+
+      $tab[49]['table']         = 'glpi_entitydatas';
+      $tab[49]['field']         = 'default_infocom_alert';
+      $tab[49]['name']          = $LANG['setup'][247].' - '.$LANG['setup'][46];
+      $tab[49]['massiveaction'] = false;
+      $tab[49]['nosearch']      = true;
+      $tab[49]['joinparams']    = array('jointype' => 'child');
+
+      $tab[50]['table']         = 'glpi_entitydatas';
+      $tab[50]['field']         = 'default_alarm_threshold';
+      $tab[50]['name']          = $LANG['setup'][115] ;
+      $tab[50]['massiveaction'] = false;
+      $tab[50]['nosearch']      = true;
+      $tab[50]['datatype']      = 'number';
+
       return $tab;
    }
 
