@@ -1593,7 +1593,7 @@ class Ticket extends CommonDBTM {
       if (empty($input["name"])) {
          $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
-         $input["name"] = utf8_substr($input['name'],0,70);
+         $input["name"] = addslashes(utf8_substr(stripslashes($input['name']),0,70));
       }
 
       //// Manage SLA assignment
