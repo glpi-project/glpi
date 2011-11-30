@@ -369,13 +369,15 @@ class Entity extends CommonTreeDropdown {
       $tab[26]['field']         = 'cartridges_alert_repeat';
       $tab[26]['name']          = $LANG['setup'][244];
       $tab[26]['joinparams']    = array('jointype' => 'child');
-      $tab[26]['datatype']      = 'timestamp';
+      $tab[26]['massiveaction'] = false;
+      $tab[26]['nosearch']      = true;
 
       $tab[27]['table']         = 'glpi_entitydatas';
       $tab[27]['field']         = 'consumables_alert_repeat';
       $tab[27]['name']          = $LANG['setup'][243];
       $tab[27]['joinparams']    = array('jointype' => 'child');
-      $tab[27]['datatype']      = 'timestamp';
+      $tab[27]['massiveaction'] = false;
+      $tab[27]['nosearch']      = true;
 
       $tab[28]['table']         = 'glpi_entitydatas';
       $tab[28]['field']         = 'notepad';
@@ -403,6 +405,13 @@ class Entity extends CommonTreeDropdown {
       $tab[31]['massiveaction'] = false;
       $tab[31]['nosearch']      = true;
       $tab[31]['joinparams']    = array('jointype' => 'child');
+
+      $tab[32]['table']         = 'glpi_entitydatas';
+      $tab[32]['field']         = 'use_reservations_alert';
+      $tab[32]['name']          = $LANG['setup'][707];
+      $tab[32]['massiveaction'] = false;
+      $tab[32]['nosearch']      = true;
+      $tab[32]['joinparams']    = array('jointype' => 'child');
 
       return $tab;
    }
