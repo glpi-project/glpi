@@ -767,19 +767,23 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
-                       'emptylabel' => $LANG['common'][102]);
+                       'emptylabel' => $LANG['sla'][10]);
 
-      if ($ID==0) {
-         $options['emptylabel'] = $LANG['sla'][10];
+      if ($ID) {
+         $options['toadd'] = array(self::CONFIG_PARENT => $LANG['common'][102]);
       }
       Dropdown::show('Calendar', $options);
 
       if ($entdata->fields["calendars_id"] == self::CONFIG_PARENT) {
+         echo "<font class='green'>&nbsp;&nbsp;";
          $calendar = new Calendar();
-
-         if ($calendar->getFromDB(self::getUsedConfig('calendars_id', $ID))) {
+         $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
+         if (!$cid) {
+            echo " - ".$LANG['sla'][10];
+         } else if ($calendar->getFromDB($cid)) {
             echo " - ".$calendar->getLink();
          }
+         echo "</font>";
       }
       echo "</td></tr>";
 
