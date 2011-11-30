@@ -804,10 +804,7 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td  colspan='2'>".$LANG['setup'][52]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      $autoassign = array(self::CONFIG_PARENT                  => $LANG['common'][102],
-                          self::CONFIG_NEVER                   => $LANG['choice'][0],
-                          self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
-                          self::AUTO_ASSIGN_CATEGORY_HARDWARE  => $LANG['setup'][50]);
+      $autoassign = self::getAutoAssignMode();
 
       if ($ID == 0) {
          unset($autoassign[self::CONFIG_PARENT]);
@@ -1160,6 +1157,30 @@ class EntityData extends CommonDBChild {
       return true;
    }
 
+   /**
+    * get value for auto_assign_mode
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value
+    *
+    * @return array or string
+    */
+   static function getAutoAssignMode($val=NULL) {
+      global $LANG;
+      $tab = array(self::CONFIG_PARENT                  => $LANG['common'][102],
+                   self::CONFIG_NEVER                   => $LANG['choice'][0],
+                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
+                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => $LANG['setup'][50]);
+
+      if (is_null($val)) {
+         return $tab;
+      }
+      if (isset($tab[$val])) {
+         return $tab[$val];
+      }
+      return NOT_AVAILABLE;
+   }
 
    static function getSpecificValueToDisplay($field, &$values, $options=array()) {
       global $LANG;
@@ -1179,7 +1200,6 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case 0 :
-               case self::CONFIG_NEVER :
                   return $LANG['setup'][307];
             }
             return $values[$field].' '.Toolbox::ucfirst($LANG['gmt'][1]);
@@ -1202,7 +1222,26 @@ class EntityData extends CommonDBChild {
                case MONTH_TIMESTAMP :
                   return $LANG['setup'][309];
             }
+            break;
 
+         case 'notclosed_delay' :   // 0 means never
+            if ($values[$field] == 0) {
+               return $LANG['setup'][307];
+            }
+            // nobreak;
+
+         case 'autoclose_delay' :   // 0 means immediatly
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return $LANG['common'][102];
+
+               case self::CONFIG_NEVER :
+                  return $LANG['setup'][307];
+            }
+            return $values[$field].' '.Toolbox::ucfirst($LANG['calendar'][12]);
+
+         case 'auto_assign_mode' :
+            return self::getAutoAssignMode($values[$field]);
       }
       return '';
    }
