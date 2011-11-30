@@ -2627,7 +2627,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       
-      if ($this->maybeTemplate() && $this->isTemplate()) { 
+      // Do not check for template
+      if (isset($this->input['is_template']) && $this->input['is_template']) { 
          return true;
       }
       
