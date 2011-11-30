@@ -1243,6 +1243,23 @@ class EntityData extends CommonDBChild {
 
          case 'auto_assign_mode' :
             return self::getAutoAssignMode($values[$field]);
+
+         case 'calendars_id' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return $LANG['common'][102];
+
+               case 0 :
+                  return $LANG['sla'][10];
+            }
+            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+
+         case 'tickettype' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return $LANG['common'][102];
+            }
+            return Ticket::getTicketTypeName($values[$field]);
+
       }
       return '';
    }
