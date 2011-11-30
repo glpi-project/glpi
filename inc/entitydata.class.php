@@ -756,11 +756,15 @@ class EntityData extends CommonDBChild {
       Dropdown::show('TicketTemplate', $options);
 
       if ($entdata->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
-         $tt = new TicketTemplate();
-
-         if ($tt->getFromDB(self::getUsedConfig('tickettemplates_id', $ID))) {
-            echo " - ".$tt->getLink();
+         echo "<font class='green'>&nbsp;&nbsp;";
+         $tt  = new TicketTemplate();
+         $tid = self::getUsedConfig('tickettemplates_id', $ID);
+         if (!$tid) {
+            echo Dropdown::EMPTY_VALUE;
+         } else if ($tt->getFromDB($tid)) {
+            echo "- ".$tt->getLink();
          }
+         echo "</font>";
       }
       echo "</td></tr>";
 
@@ -779,9 +783,9 @@ class EntityData extends CommonDBChild {
          $calendar = new Calendar();
          $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
          if (!$cid) {
-            echo " - ".$LANG['sla'][10];
+            echo "- ".$LANG['sla'][10];
          } else if ($calendar->getFromDB($cid)) {
-            echo " - ".$calendar->getLink();
+            echo "- ".$calendar->getLink();
          }
          echo "</font>";
       }
@@ -1291,6 +1295,18 @@ class EntityData extends CommonDBChild {
                   }
             }
             return $LANG['financial'][113];
+
+         case 'inquest_config' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return $LANG['common'][102];
+            }
+            return TicketSatisfaction::getTypeInquestName($values[$field]);
+
+         case 'tickettemplates_id' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return $LANG['common'][102];
+            }
+            return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
       }
       return '';
    }
