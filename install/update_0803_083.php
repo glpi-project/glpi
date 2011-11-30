@@ -1329,13 +1329,11 @@ function update0803to083() {
                                          'show_full_ticket'          => '1',
                                          'show_all_problem'          => '1',
                                          'show_planning'             => '1',
-                                         'show_group_planning'       => '1',
-                                         'show_all_planning'         => '1',
                                          'statistic'                 => '1',
+                                         'tickettemplate'            => '1',
                                          'password_update'           => '1',
                                          'helpdesk_hardware'         => '3',
                                          'helpdesk_item_type'        => addslashes('["Computer","Software","Phone"]'),
-                                         'show_group_ticket'         => '1',
                                          'create_validation'         => '1',
                                          'update_own_followups'      => '1',
                                          'create_ticket_on_login'    => '1'),
@@ -1360,7 +1358,7 @@ function update0803to083() {
                   PRIMARY KEY (`id`),
                   KEY `reminders_id` (`reminders_id`),
                   KEY `users_id` (`users_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_uncode_ci";
 
       $DB->query($query)
       or die("0.83 add table glpi_reminders_users ".$LANG['update'][90].$DB->error());
