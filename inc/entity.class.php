@@ -434,8 +434,8 @@ class Entity extends CommonTreeDropdown {
       $tab[35]['nosearch']      = true;
       $tab[35]['joinparams']    = array('jointype' => 'child');
 
-      $tab[36]['table']         = 'glpi_entitydatas'; // not a dropdown because of special value
-      $tab[36]['field']         = 'calendars_id';
+      $tab[36]['table']         = 'glpi_entitydatas';
+      $tab[36]['field']         = 'calendars_id';        // not a dropdown because of special value
       $tab[36]['name']          = $LANG['buttons'][15];
       $tab[36]['massiveaction'] = false;
       $tab[36]['nosearch']      = true;
@@ -511,8 +511,8 @@ class Entity extends CommonTreeDropdown {
       $tab[46]['joinparams']    = array('jointype' => 'child');
       $tab[46]['datatype']      = 'string';
 
-      $tab[47]['table']         = 'glpi_entitydatas'; // not a dropdown because of special value
-      $tab[47]['field']         = 'tickettemplates_id';
+      $tab[47]['table']         = 'glpi_entitydatas';
+      $tab[47]['field']         = 'tickettemplates_id';  // not a dropdown because of special value
       $tab[47]['name']          = $LANG['job'][58];
       $tab[47]['massiveaction'] = false;
       $tab[47]['nosearch']      = true;
@@ -534,10 +534,16 @@ class Entity extends CommonTreeDropdown {
 
       $tab[50]['table']         = 'glpi_entitydatas';
       $tab[50]['field']         = 'default_alarm_threshold';
-      $tab[50]['name']          = $LANG['setup'][115] ;
+      $tab[50]['name']          = $LANG['setup'][115];
       $tab[50]['massiveaction'] = false;
       $tab[50]['nosearch']      = true;
       $tab[50]['datatype']      = 'number';
+
+      $tab[51]['table']         = 'glpi_entitydatas';
+      $tab[51]['field']         = 'entities_id_software';   // not a dropdown because of special value
+      $tab[51]['name']          = $LANG['software'][10];
+      $tab[51]['massiveaction'] = false;
+      $tab[51]['nosearch']      = true;
 
       return $tab;
    }

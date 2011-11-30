@@ -1317,6 +1317,13 @@ class EntityData extends CommonDBChild {
 
          case 'default_infocom_alert' :
             return Alert::getAlertName($values[$field]);
+
+         case 'entities_id_software' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return $LANG['common'][102];
+            }
+            return Dropdown::getDropdownName('glpi_entities', $values[$field]);
+
       }
       return '';
    }
