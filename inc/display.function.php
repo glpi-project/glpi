@@ -2319,7 +2319,8 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][24]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      Ticket::dropdownMyDevices(getLoginUserID(), $_SESSION["glpiactive_entity"]);
+      Ticket::dropdownMyDevices(getLoginUserID(), $_SESSION["glpiactive_entity"], 
+                                $itemtype, $items_id);
       Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0,
                                  $_SESSION["glpiactive_entity"]);
       echo "</td></tr>";
