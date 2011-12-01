@@ -113,7 +113,8 @@ class Profile_User extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
-         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
+         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
+                                        'value'  => $_SESSION['glpiactive_entity']));
          echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
          echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
