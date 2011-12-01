@@ -826,7 +826,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = 'NULL';
       }
-      
+
       // solve_delay_stat : use delay between opendate and solvedate
       if (in_array("solvedate",$this->updates)) {
          $this->updates[]                  = "solve_delay_stat";
@@ -1636,8 +1636,11 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return a string
    **/
 
-   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, $options=array()) {
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
       switch ($field) {
          case 'urgency':
             return self::getUrgencyName($values[$field]);
@@ -2715,8 +2718,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</table>";
       echo "</div>";
    }
-   
-   
+
+
    /** Get users_ids of itil object between 2 dates
     *
     * @param $date1 date : begin date
@@ -2759,15 +2762,15 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       return $tab;
-   }   
-   
-   
+   }
+
+
    /** Get recipient of itil object  between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
     *
-    * @return array contains the distinct recipents which have itil object 
+    * @return array contains the distinct recipents which have itil object
    **/
    function getUsedRecipientBetween($date1='', $date2='') {
       global $DB;
@@ -2801,8 +2804,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       return $tab;
-   }   
-   
+   }
+
    /** Get groups which have tickets between 2 dates
     *
     * @param $date1 date : begin date
@@ -2843,8 +2846,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       return $tab;
-   }   
-   
+   }
+
    /** Get recipient of tickets between 2 dates
     *
     * @param $date1 date : begin date
@@ -2855,10 +2858,10 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function getUsedUserTitleOrTypeBetween($date1='', $date2='', $title=true) {
       global $DB;
-      
+
       $linkclass = new $this->userlinkclass();
       $linktable = $linkclass->getTable();
-            
+
       if ($title) {
          $table = "glpi_usertitles";
          $field = "usertitles_id";
@@ -2892,8 +2895,8 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       return $tab;
-   }   
-   
+   }
+
 
    /**
     * Get priorities of tickets between 2 dates
@@ -3224,7 +3227,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $linkclass = new $this->grouplinkclass();
       $linktable = $linkclass->getTable();
-      
+
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
@@ -3254,6 +3257,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   
+
 }
 ?>

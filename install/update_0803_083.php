@@ -1701,7 +1701,7 @@ function update0803to083() {
                         `cartridges_alert_repeat`, `consumables_alert_repeat`,
                         `use_licenses_alert`, `use_infocoms_alert`, `notclosed_delay`,
                         `use_contracts_alert`, `use_reservations_alert`)
-                VALUES (0, 0,
+                VALUES (0, -10,
                         0, 0, 0,
                         0, 0,
                         1, 0, 0,

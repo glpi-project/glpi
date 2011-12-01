@@ -4639,7 +4639,7 @@ class OcsServer extends CommonDBTM {
                //Software might be created in another entity, depending on the entity's configuration
                $target_entity = EntityData::getUsedConfig('entities_id_software', $entity);
                //Do not change software's entity except if the dictionnary explicity changes it
-               if ($target_entity == -2) {
+               if ($target_entity < 0) {  // CONFIG_NEVER
                   $target_entity = $entity;
                }
 
@@ -5632,17 +5632,17 @@ class OcsServer extends CommonDBTM {
       }
       //If location is update by a rule
       self::updateLocation($line_links, $data);
-      
+
       // Update TAG
       self::updateTag($line_links, $line_ocs);
    }
 
    /**
     * Update location for a computer if needed after rule processing
-    * 
+    *
     * @param line_links
     * @param data
-    * 
+    *
     * @return nothing
     */
    static function updateLocation($line_links, $data) {
@@ -5656,7 +5656,7 @@ class OcsServer extends CommonDBTM {
          if ($location->getFromDB($data['locations_id'])) {
             //If location is in the same entity as the computer, or if the location is
             //defined in a parent entity, but recursive
-            if ($location->fields['entities_id'] == $computer->fields['entities_id'] 
+            if ($location->fields['entities_id'] == $computer->fields['entities_id']
                || (in_array($location->fields['entities_id'], $ancestors) && $location->fields['is_recursive'])) {
                $tmp['locations_id'] = $data['locations_id'];
                $tmp['id']           = $line_links['computers_id'];
@@ -5665,7 +5665,7 @@ class OcsServer extends CommonDBTM {
          }
       }
    }
-   
+
    /**
     * Update TAG information in glpi_ocslinks table
     *
