@@ -2023,8 +2023,11 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, $options=array()) {
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
       switch ($field) {
          case 'global_validation' :
             return TicketValidation::getStatus($values[$field]);

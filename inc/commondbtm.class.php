@@ -645,7 +645,7 @@ class CommonDBTM extends CommonGLPI {
       if ($DB->isSlave()) {
          return false;
       }
-      
+
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -2713,9 +2713,9 @@ class CommonDBTM extends CommonGLPI {
             $p[$key] = $value;
          }
       }
-      
+
       // Do not check for template
-      if (isset($this->input['is_template']) && $this->input['is_template']) { 
+      if (isset($this->input['is_template']) && $this->input['is_template']) {
          return true;
       }
 
@@ -2928,12 +2928,12 @@ class CommonDBTM extends CommonGLPI {
     * @since version 0.83
     *
     * @param $field     String name of the field
-    * @param $values    Array with the value to display
+    * @param $values    Array with the value to display or a Single value
     * @param $options   Array of option
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, $options=array()) {
       return '';
    }
 
@@ -2954,7 +2954,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   function getValueToDisplay($field_id_or_search_options, &$values, $options=array()) {
+   function getValueToDisplay($field_id_or_search_options, $values, $options=array()) {
       global $LANG, $CFG_GLPI;
 
       $param['comments'] = false;

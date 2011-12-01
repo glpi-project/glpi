@@ -479,7 +479,7 @@ class EntityData extends CommonDBChild {
       echo "<td> " . $LANG['software'][10] . "&nbsp;: </td>";
       echo "<td>";
 
-      $toadd = array();
+      $toadd = array(self::CONFIG_NEVER => $LANG['common'][110]); // Keep software in PC entity
       if ($ID > 0) {
          $toadd[self::CONFIG_PARENT] = $LANG['common'][102];
       }
@@ -497,6 +497,12 @@ class EntityData extends CommonDBChild {
                            'entity'             => $entities,
                            'display_rootentity' => true,
                            'comments'           => false));
+      if ($entitydata->fields['entities_id_software'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;$tid";
+         echo self::getSpecificValueToDisplay('entities_id_software', $tid);
+         echo "</font>";
+      }
       echo "</td><td colspan='2'></td></tr>";
 
       if ($canedit) {
@@ -1191,9 +1197,12 @@ class EntityData extends CommonDBChild {
       return NOT_AVAILABLE;
    }
 
-   static function getSpecificValueToDisplay($field, &$values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, $options=array()) {
       global $LANG;
 
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
       switch ($field) {
          case 'use_licenses_alert' :
          case 'use_contracts_alert' :
@@ -1319,6 +1328,9 @@ class EntityData extends CommonDBChild {
             return Alert::getAlertName($values[$field]);
 
          case 'entities_id_software' :
+            if ($values[$field] == self::CONFIG_NEVER) {
+               return $LANG['common'][110];
+            }
             if ($values[$field] == self::CONFIG_PARENT) {
                return $LANG['common'][102];
             }
