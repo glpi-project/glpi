@@ -258,8 +258,9 @@ class RuleMailCollector extends Rule {
                         if ($profile) {
                            $entities = array();
                            if (isset($params['_users_id_requester'])) { // Not set when testing
+                              // Retrieve only the "top" entities
                               $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
-                                                                                    $profile, true);
+                                                                                    $profile);
                            }
 
                            //Case 2 : check if there's only one profile for this user
@@ -280,6 +281,10 @@ class RuleMailCollector extends Rule {
                                     $user->getFromDB($params['_users_id_requester']);
 
                                     $tmpid = $user->getField('entities_id');
+
+                                    // Retrieve all the entities (pref could be set on a child)
+                                    $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
+                                                                                          $profile, true);
 
                                     // If an entity is defined in user's preferences,
                                     // and this entity allowed for this profile, use this one
