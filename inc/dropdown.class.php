@@ -72,7 +72,7 @@ class Dropdown {
       $table = $item->getTable();
 
       $params['name']        = $item->getForeignKeyField();
-      $params['value']       = '';
+      $params['value']       = ($itemtype=='Entity' ? $_SESSION['glpiactive_entity'] : '');
       $params['comments']    = true;
       $params['entity']      = -1;
       $params['entity_sons'] = false;
@@ -1418,8 +1418,8 @@ class Dropdown {
             if (Session::haveRight('transfer','r')
                 && Session::isMultiEntitiesMode()
                 && in_array($itemtype, array('CartridgeItem', 'Computer', 'ConsumableItem',
-                                             'Contact', 'Contract', 'Document', 'Group', 
-                                             'Link', 'Monitor', 'NetworkEquipment', 
+                                             'Contact', 'Contract', 'Document', 'Group',
+                                             'Link', 'Monitor', 'NetworkEquipment',
                                              'Peripheral', 'Phone', 'Printer', 'Problem',
                                              'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
@@ -1542,7 +1542,7 @@ class Dropdown {
                   if (Session::haveRight("edit_all_problem","1")) {
                      echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
                   }
-                  
+
                   break;
 
             }
