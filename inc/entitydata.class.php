@@ -499,7 +499,7 @@ class EntityData extends CommonDBChild {
                            'comments'           => false));
       if ($entitydata->fields['entities_id_software'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
-         echo "<font class='green'>&nbsp;&nbsp;$tid";
+         echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('entities_id_software', $tid);
          echo "</font>";
       }
