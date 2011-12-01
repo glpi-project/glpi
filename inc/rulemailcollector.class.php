@@ -259,7 +259,7 @@ class RuleMailCollector extends Rule {
                            $entities = array();
                            if (isset($params['_users_id_requester'])) { // Not set when testing
                               $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
-                                                                                    $profile);
+                                                                                    $profile, true);
                            }
 
                            //Case 2 : check if there's only one profile for this user
@@ -279,9 +279,12 @@ class RuleMailCollector extends Rule {
                                     $user = new User;
                                     $user->getFromDB($params['_users_id_requester']);
 
-                                    //If an entity is defined in user's preferences, use this one
-                                    //else do not set the rule as matched
-                                    if (is_integer($user->getField('entities_id'))) {
+                                    $tmpid = $user->getField('entities_id');
+
+                                    // If an entity is defined in user's preferences,
+                                    // and this entity allowed for this profile, use this one
+                                    // else do not set the rule as matched
+                                    if (in_array($tmpid, $entities)) {
                                        $output['entities_id'] = $user->fields['entities_id'];
                                     }
                                  }
