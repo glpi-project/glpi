@@ -577,17 +577,32 @@ class Profile_User extends CommonDBTM {
    }
 
 
-   static function getEntitiesForProfileByUser($users_id, $profiles_id) {
+   /**
+    * retrieve the entities allowed to a user for a profile
+    *
+    * @param $users_id     Integer  ID of the user
+    * @param $profiles_id  Integer  ID of the profile
+    * @param $child        Boolean  when true, include child entity when recursive right
+    *
+    * @return Array of entity ID
+    */
+   static function getEntitiesForProfileByUser($users_id, $profiles_id, $child=false) {
       global $DB;
 
-      $query = "SELECT `entities_id`
+      $query = "SELECT `entities_id`, `is_recursive`
                 FROM `glpi_profiles_users`
                 WHERE `users_id` = '$users_id'
                       AND `profiles_id` = '$profiles_id'";
 
       $entities = array();
       foreach ($DB->request($query) as $data) {
-         $entities[$data['entities_id']] = $data['entities_id'];
+         if ($child && $data['is_recursive']) {
+            foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
+               $entities[$id] = $id;
+            }
+         } else {
+            $entities[$data['entities_id']] = $data['entities_id'];
+         }
       }
       return $entities;
    }
