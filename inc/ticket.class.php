@@ -862,7 +862,9 @@ class Ticket extends CommonDBTM {
             $values['_auto_update'] = true;
          }
 
-         if ($validation->can(-1, 'w', $values)) {
+         if (!is_numeric(getLoginUserID(false))
+             || $validation->can(-1, 'w', $values)) {
+
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
