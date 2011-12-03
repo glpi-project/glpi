@@ -2645,7 +2645,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $unicity the unicity criterion that failed to match
     * @param $doubles the items that are already present in DB
    **/
-   function getUncityErrorMessage($message, $unicity, $doubles) {
+   function getUnicityErrorMessage($message, $unicity, $doubles) {
       global $LANG;
 
       if ($unicity['action_refuse']) {
@@ -2785,7 +2785,7 @@ class CommonDBTM extends CommonGLPI {
                         }
 
                         $doubles      = getAllDatasFromTable($this->table, "1 $where $where_global");
-                        $message_text = $this->getUncityErrorMessage($message, $fields, $doubles);
+                        $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
                            $show_other_messages = ($fields['action_refuse']?true:false);
