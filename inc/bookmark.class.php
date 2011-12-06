@@ -198,8 +198,8 @@ class Bookmark extends CommonDBTM {
       echo "<table class='tab_cadre_report' width='".self::WIDTH."px'>";
       echo "<tr><th>&nbsp;</th><th>";
       if ($ID>0) {
-         
-         printf(__('%s - ID %s'),$this->getTypeName(1),$ID);
+         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+         printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
       } else {
          _e('New card');
       }

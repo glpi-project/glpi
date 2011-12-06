@@ -1812,8 +1812,8 @@ class CommonDBTM extends CommonGLPI {
          echo $LANG['common'][87];
 
       } else {
-         //TRANS: First string is the Itemtype name and the second the ID of the item
-         printf(__('%s - ID %s'),$this->getTypeName(1),$ID);
+         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+         printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
       }
 
       if (isset($this->fields["entities_id"])
