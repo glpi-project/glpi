@@ -396,7 +396,7 @@ class IPNetwork extends CommonDropdown {
          }
       }
 
-      $WHERE .= "`version`='$version' $WHERE";
+      $WHERE = "`version`='$version' $WHERE";
 
       if ($entityID < 0) {
          $entityID = $_SESSION['glpiactive_entity'];
