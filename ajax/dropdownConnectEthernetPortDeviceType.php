@@ -55,7 +55,7 @@ if (class_exists($_POST["itemtype"])) {
               'update_item'
                   => array('value_fieldname' => 'item',
                            'to_update'       => "results_item_$rand",
-                           'url'             => $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",
+                           'url'             => $CFG_GLPI["root_doc"]."/ajax/dropdownConnectEthernetPort.php",
                            'moreparams'      => array('current'  => $_POST['current'],
                                                       'itemtype' => $_POST['itemtype'],
                                                       'myname'   => $_POST['myname'])));

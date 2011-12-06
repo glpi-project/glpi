@@ -55,18 +55,24 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
              LEFT JOIN `glpi_networkports`
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
                    AND `glpi_networkports`.`itemtype` = '".$_POST["itemtype"]."'
-                   AND `glpi_networkports`.`items_id` = `$table`.`id`)
+                   AND `glpi_networkports`.`items_id` = `$table`.`id`
+                   AND `glpi_networkports`.`type` = 'NetworkPortEthernet')
+             LEFT JOIN `glpi_networkportethernets`
+               ON (`glpi_networkportethernets`.`id` = `glpi_networkports`.`id`)
              LEFT JOIN `glpi_networkports_networkports`
                ON (`glpi_networkports_networkports`.`networkports_id_1` = `glpi_networkports`.`id`
                    OR `glpi_networkports_networkports`.`networkports_id_2`=`glpi_networkports`.`id`)
              LEFT JOIN `glpi_netpoints`
-               ON (`glpi_netpoints`.`id`=`glpi_networkports`.`netpoints_id`)
+               ON (`glpi_netpoints`.`id`=`glpi_networkportethernets`.`netpoints_id`)
              WHERE `glpi_networkports_networkports`.`id` IS NULL
                    AND `glpi_networkports`.`id` IS NOT NULL
                    AND `glpi_networkports`.`id` <> '".$_POST['current']."'
                    AND `$table`.`is_deleted` = '0'
                    AND `$table`.`is_template` = '0'
              ORDER BY `glpi_networkports`.`id`";
+
+   echo __FILE__." ".__LINE__." : $query<br>\n";
+
    $result = $DB->query($query);
 
    echo "<br>";
