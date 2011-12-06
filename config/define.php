@@ -28,7 +28,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","0.83");
+define("GLPI_VERSION","0.84");
 define("GLPI_DEMO_MODE","0");
 
 
@@ -36,11 +36,11 @@ define("GLPI_DEMO_MODE","0");
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
 $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce|english names|
       array('bg_BG' => array('Български',            'bg_BG.php','bg',    'bg','bulgarian'),
-            'ca_CA' => array('Català',               'ca_CA.php','ca',    'ca','catalan'),
+            'ca_CA' => array('Català',               'ca_CA.php','ca',    'ca','catalan'), // ca_ES
             'cs_CZ' => array('Čeština',              'cs_CZ.php','cs',    'cs','czech'),
             'de_DE' => array('Deutsch',              'de_DE.php','de',    'de','german'),
-            'dk_DK' => array('Dansk',                'dk_DK.php','da',    'da','danish'),
-            'ee_ET' => array('Eesti',                'ee_ET.php','en',    'et','estonian'),
+            'dk_DK' => array('Dansk',                'dk_DK.php','da',    'da','danish'), // da_DK
+            'ee_ET' => array('Eesti',                'ee_ET.php','en',    'et','estonian'), // et_EE
             'en_GB' => array('English',              'en_GB.php','en',    'en','english'),
             'es_AR' => array('Español (Argentina)',  'es_AR.php','es',    'es','spanish'),
             'es_ES' => array('Español (España)',     'es_ES.php','es',    'es','spanish'),
@@ -49,15 +49,15 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'eu_ES' => array('Euskara',              'eu_ES.php','en',    'en','basque'),
             'fr_FR' => array('Français',             'fr_FR.php','fr',    'fr','french'),
             'gl_ES' => array('Galego',               'gl_ES.php','es',    'gl','galician'),
-            'el_EL' => array('Ελληνικά',             'el_EL.php','el_GR', 'el','greek'),
-            'he_HE' => array('עברית',                'he_HE.php','he',    'he','hebrew'),
+            'el_EL' => array('Ελληνικά',             'el_EL.php','el_GR', 'el','greek'), // el_GR
+            'he_HE' => array('עברית',                'he_HE.php','he',    'he','hebrew'), // he_IL
             'hr_HR' => array('Hrvatski',             'hr_HR.php','hr',    'hr','croatian'),
             'hu_HU' => array('Magyar',               'hu_HU.php','hu',    'hu','hungarian'),
             'it_IT' => array('Italiano',             'it_IT.php','it',    'it','italian'),
             'lv_LV' => array('Latviešu',             'lv_LV.php','lv',    'lv','latvian'),
             'lt_LT' => array('Lietuvių',             'lt_LT.php','lt',    'lt','lithuanian'),
             'nl_NL' => array('Nederlands',           'nl_NL.php','nl',    'nl','dutch'),
-            'no_NB' => array('Norsk (Bokmål)',       'no_NB.php','no_NB', 'nb','norwegian'),
+            'no_NB' => array('Norsk (Bokmål)',       'no_NB.php','no_NB', 'nb','norwegian'), // nb_NO
             'no_NN' => array('Norsk (Nynorsk)',      'no_NN.php','no_NN', 'nn','norwegian'),
             'fa_IR' => array('فارسی',                'fa_IR.php','fa',    'fa','persian'),
             'pl_PL' => array('Polski',               'pl_PL.php','pl',    'pl','polish'),
@@ -69,7 +69,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'sl_SI' => array('Slovenščina',          'sl_SI.php','sl',    'sl','slovenian slovene'),
             'sv_SE' => array('Svenska',              'sv_SE.php','sv_SE', 'sv','swedish'),
             'tr_TR' => array('Türkçe',               'tr_TR.php','tr',    'tr','turkish'),
-            'ua_UA' => array('Українська',           'ua_UA.php','ukr',   'en','ukrainian'),
+            'ua_UA' => array('Українська',           'ua_UA.php','ukr',   'en','ukrainian'), // uk_UA
             'ja_JP' => array('日本語',                'ja_JP.php','ja',    'ja','japanese'),
             'zh_CN' => array('简体中文',              'zh_CN.php','zh_CN', 'zh','chinese'),
             'zh_TW' => array('繁體中文',              'zh_TW.php','zh_TW', 'zh','chinese'),);

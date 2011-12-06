@@ -87,8 +87,11 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment,
           LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
 
 if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
+   $query .= "LEFT JOIN `glpi_networkportethernets`
+                  ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)";
    $query .= "LEFT JOIN `glpi_networkports`
-                  ON (`glpi_netpoints`.`id` = `glpi_networkports`.`netpoints_id`
+                  ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`id`
+                      AND `glpi_networkports`.`type` = 'Ethernet'
                       AND `glpi_networkports`.`itemtype`";
 
    if ($_POST["devtype"] == 'NetworkEquipment') {
@@ -101,7 +104,7 @@ if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
          $where .= " AND `glpi_netpoints`.`locations_id` = '".$_POST["locations_id"]."' ";
       }
    }
-   $where .= " AND `glpi_networkports`.`netpoints_id` IS NULL ";
+   $where .= " AND `glpi_networkportethernets`.`netpoints_id` IS NULL ";
 
 } else if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
    $location_restrict = true;
@@ -112,6 +115,7 @@ $query .= $where ."
           ORDER BY `glpi_locations`.`completename`,
                    `glpi_netpoints`.`name`
           $LIMIT";
+
 $result = $DB->query($query);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."' size='1'>";

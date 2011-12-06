@@ -51,6 +51,8 @@ if (isset($_POST["action"])) {
 
       case "assign_vlan" :
          Dropdown::show('Vlan');
+         echo "&nbsp;" . $LANG['Internet'][58] .
+              "&nbsp;: <input type='checkbox' name='tagged' value='1'>";
          echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
                $LANG['buttons'][2]."'>";
          break;
