@@ -117,7 +117,7 @@ echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"". $_REQUEST["itemtype"] ."\">";
-echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\"></td>".
+echo "<input type='submit' class='button' name='submit' value=\"".__s('Update')."\"></td>".
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";

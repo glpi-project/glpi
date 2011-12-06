@@ -59,7 +59,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
 Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='button' name='submit' value=\"".$LANG['buttons'][7]."\"></td></tr>\n";
+echo "<input type='submit' class='button' name='submit' value=\"".__s('Update')."\"></td></tr>\n";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:&nbsp;</td><td>";
 Html::showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";

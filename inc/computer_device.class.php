@@ -207,9 +207,9 @@ class Computer_Device extends CommonDBTM {
       echo "<tr><th colspan='$global_colspan'>".Toolbox::ucfirst($LANG['log'][18])."</th></tr>";
       echo "<tr><th>".$LANG['reports'][12]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['buttons'][8]."</th>";
-      echo "<th>".$LANG['buttons'][35]."</th>";
-      echo "<th>".$LANG['buttons'][6]."</th>";
+      echo "<th>".__('Add')."</th>";
+      echo "<th>".__('Delete all')."</th>";
+      echo "<th>".__('Delete')."</th>";
       echo "<th colspan='".($global_colspan-4)."'>".""."</th></tr>";
       $nb = 0;
 
@@ -348,13 +348,13 @@ class Computer_Device extends CommonDBTM {
             echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
             echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
             echo "<input type='submit' class='submit' name='updateall' value='".
-               $LANG['buttons'][7]."'></td></tr>";
+               __s('Update')."'></td></tr>";
          }
 
          echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
          echo $LANG['devices'][0]."&nbsp;: ";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</tr></table></form>";
 
       } else {

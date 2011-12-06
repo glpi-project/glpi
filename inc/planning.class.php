@@ -175,8 +175,8 @@ class Planning {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                         "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12]."\"
-             title=\"".$LANG['buttons'][12]."\"></a>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
+             title=\"".__s('Previous')."\"></a>";
       echo "</td>";
       echo "<td>";
       if (Session::haveRight("show_all_planning","1")) {
@@ -232,7 +232,7 @@ class Planning {
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";
-      echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\">";
+      echo "<input type='submit' class='button' name='submit' value=\"".__s('Update')."\">";
       echo "</td>\n";
 
       echo "<td>";
@@ -256,8 +256,8 @@ class Planning {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                      "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11]."\"
-             title=\"".$LANG['buttons'][11]."\"></a>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
+             title=\"".__s('Next')."\"></a>";
       echo "</td>";
       echo "</tr>";
       echo "</table></form></div>\n";
@@ -298,11 +298,11 @@ class Planning {
       echo "<th colspan='3'>".getUserName($who)."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['buttons'][33]." : </td>\n";
+      echo "<td>".__('Start')."</td>\n";
       echo "<td>";
       Html::showDateFormItem("begin", $begin, false);
       echo "</td>\n";
-      echo "<td>".$LANG['buttons'][32]." : </td>\n";
+      echo "<td>".__('End')."</td>\n";
       echo "<td>";
       Html::showDateFormItem("end", $end, false);
       echo "</td>\n";
@@ -310,7 +310,7 @@ class Planning {
       echo "<td rowspan='2' class='center'>";
       echo "<input type='hidden' name='users_id' value=\"$who\">";
       echo "<input type='submit' class='button' name='checkavailability' value=\"".
-             $LANG['buttons'][7] ."\">";
+             __s('Update') ."\">";
       echo "</td>\n";
 
       echo "</tr>";
