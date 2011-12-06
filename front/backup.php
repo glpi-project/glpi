@@ -255,7 +255,8 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
-         echo $LANG['backup'][22]." ".Html::formatNumber($offset, false, 0)."<br>";
+         echo printf(__("Unable to find the byte %s"),Html::formatNumber($offset, false, 0));
+         echo "<br>";
          return false;
       }
       Html::glpi_flush();
@@ -289,7 +290,9 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    }
 
    if ($DB->error) {
-      echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+      echo "<hr>";
+      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      echo "<br>".$DB->error()."<hr>";
    }
 
    fclose($fileHandle);
@@ -380,7 +383,9 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    }
 
    if ($DB->error()) {
-      echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+      echo "<hr>";
+      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      echo "<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;
    fclose($fileHandle);
@@ -396,7 +401,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $filename  = $path . "/glpi-".GLPI_VERSION."-$time_file.$filetype";
 
    if (!isset($_GET["duree"]) && is_file($filename)) {
-      echo "<div class='center'>".$LANG['backup'][21]."</div>";
+      echo "<div class='center'>".__('The file already exists')."</div>";
 
    } else {
       init_time(); //initialise le temps
@@ -458,7 +463,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
             echo "<div class='center spaced'>".
                  "<a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
                     "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
-                    $LANG['backup'][24]."</a>";
+                    __('Automatic redirection, else click')."</a>";
             echo "<script language='javascript' type='text/javascript'>".
                   "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
@@ -523,7 +528,8 @@ if (isset($_GET["file"])
       if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
          echo "<div class='center'>".
               "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
-                    "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][24]."</a>";
+                    "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">";
+         echo __('Automatic redirection, else click')."</a>";
          echo "<script language='javascript' type='text/javascript'>".
                "window.location=\"backup.php?file=".
                 $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
@@ -562,12 +568,12 @@ echo "<div class='center'><table class='tab_glpi'><tr><td>".
      "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".$LANG['common'][28]."\">".
      "</td>";
 echo "<td><a class='icon_consol b'
-           href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
-                                           'backup.php?dump=dump')\">".$LANG['backup'][0].
+           href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
+                                           'backup.php?dump=dump')\">".__('SQL Dump').
      "</a>&nbsp;</td>";
 echo "<td><a class='icon_consol b'
-           href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
-                                           'backup.php?xmlnow=xmlnow')\">".$LANG['backup'][1].
+           href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
+                                           'backup.php?xmlnow=xmlnow')\">".__('XML Dump').
       "</a>&nbsp;</td>";
 
 echo "</tr></table>";
@@ -579,7 +585,7 @@ echo "</tr></table>";
 <table class='tab_cadre' cellpadding="5">
 <tr class='center'>
 <th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
-<th><u><i><?php echo $LANG['backup'][11]; ?></i></u></th>
+<th><u><i><?php _e('Size'); ?></i></u></th>
 <th><u><i><?php echo $LANG['common'][27]; ?></i></u></th>
 <th colspan='3'>&nbsp;</th>
 </tr>
@@ -603,15 +609,17 @@ if (count($files)) {
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
            "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-           "<td>&nbsp;".
-           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+           "<td>&nbsp;";
+           $string = sprintf(__('Delete this file %s ?'),$file);
+           echo "<a href=\"javascript:confirmAction('$string',
                                                'backup.php?delfile=$file')\">".$LANG['buttons'][6].
            "</a>&nbsp;</td>".
-           "<td>&nbsp;".
-           "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][16])."',
+           "<td>&nbsp;";
+           $string = sprintf(__s('Replace the current database with the backup file %s ?'),$file);
+           echo "<a href=\"javascript:confirmAction('$string',
                                                'backup.php?file=$file&amp;donotcheckversion=1')\">".
            $LANG['buttons'][21]."</a>&nbsp;</td>".
-           "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
+           "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
            "</td></tr>";
    }
 }
@@ -639,12 +647,13 @@ if (count($files)) {
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-            "<td>&nbsp;".
-             "<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+            "<td>&nbsp;";
+            $string = sprintf(__s('Delete this file %s ?'),$file);
+            echo "<a href=\"javascript:confirmAction('$string',
                                                  'backup.php?delfile=$file')\">".$LANG['buttons'][6].
              "</a>&nbsp;</td>".
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
-            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
+            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
             "</td></tr>";
    }
 }

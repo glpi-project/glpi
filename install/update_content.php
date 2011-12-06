@@ -268,7 +268,9 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
    }
 
    if ($DB->error()) {
-      echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+      echo "<hr>";
+      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      echo "<br>".$DB->error()."<hr>";
    }
 
    $offsettable = -1;
@@ -385,7 +387,7 @@ if ($offsettable>=0 && $complete_utf8) {
    if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8)) {
       echo "<br><a href='update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=".
                  "$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt'>".
-                 $LANG['backup'][24]."</a>";
+                 __('Automatic redirection, else click')."</a>";
       echo "<script language='javascript' type='text/javascript'>
              window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
              "$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
