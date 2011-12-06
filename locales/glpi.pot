@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 14:11+0100\n"
+"POT-Creation-Date: 2011-12-06 14:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,13 +70,30 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: inc/bookmark.class.php:202
+#. TRANS: First string is the Itemtype name and the second the ID of the item
+#: inc/bookmark.class.php:202 inc/commondbtm.class.php:1814
 #, php-format
 msgid "%s - ID %s"
 msgstr ""
 
-#: inc/bookmark.class.php:205
+#: inc/bookmark.class.php:204
 msgid "New card"
+msgstr ""
+
+#: inc/bookmark.class.php:529
+msgid "Bookmarks"
+msgstr ""
+
+#: inc/bookmark.class.php:531
+msgid "Default view"
+msgstr ""
+
+#: inc/bookmark.class.php:593
+msgid "You have not recorded any bookmarks yet"
+msgstr ""
+
+#: inc/bookmark.class.php:615 inc/bookmark.class.php:616
+msgid "Save as bookmark"
 msgstr ""
 
 #: inc/html.class.php:2264 inc/html.class.php:2632

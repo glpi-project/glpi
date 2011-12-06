@@ -198,9 +198,10 @@ class Bookmark extends CommonDBTM {
       echo "<table class='tab_cadre_report' width='".self::WIDTH."px'>";
       echo "<tr><th>&nbsp;</th><th>";
       if ($ID>0) {
-         echo $LANG['bookmark'][1] . " - " . $LANG['common'][2]." $ID";
+         
+         printf(__('%s - ID %s'),$this->getTypeName(1),$ID);
       } else {
-         echo $LANG['bookmark'][4];
+         _e('New card');
       }
       echo "</th></tr>";
 
@@ -366,7 +367,7 @@ class Bookmark extends CommonDBTM {
 
             // Display message
             if ($partial_load) {
-               Session::addMessageAfterRedirect($LANG['bookmark'][2], false, ERROR);
+               Session::addMessageAfterRedirect('Partial load of the bookmark.', false, ERROR);
             }
             // add reset value
             $query_tab['reset'] = 'reset';
@@ -525,9 +526,9 @@ class Bookmark extends CommonDBTM {
 
          echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
          echo "<tr>";
-         echo "<th class='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
+         echo "<th class='center' colspan='3'>".__('Bookmarks')."</th>";
          echo "<th width='20px'>&nbsp;</th>";
-         echo "<th>".$LANG['bookmark'][6]."</th></tr>";
+         echo "<th>".__('Default view')."</th></tr>";
 
          if ($DB->numrows($result)) {
             $current_type      = -1;
@@ -588,7 +589,9 @@ class Bookmark extends CommonDBTM {
             Html::closeArrowMassives(array('delete_several' => $LANG['buttons'][6]));
 
          } else {
-            echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";
+            echo "<tr class='tab_bg_1'><td colspan='5'>";
+            _e('You have not recorded any bookmarks yet');
+            echo "</td></tr></table>";
          }
          echo '</form>';
       }
@@ -609,8 +612,8 @@ class Bookmark extends CommonDBTM {
               rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
               (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"
-             alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" class='calendrier'>";
+             title=\"".__s('Save as bookmark')."\"
+             alt=\"".__s('Save as bookmark')."\" class='calendrier'>";
       echo "</a>";
    }
 

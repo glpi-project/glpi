@@ -43,14 +43,14 @@ $LANG['backup'][22]="Unable to find the byte";
 $LANG['backup'][23]="Mysql error starting from"; 
 $LANG['backup'][24]="Automatic redirection, else click"; 
 
-/// TODO Before is ok for migration to gettext
-
 $LANG['bookmark'][1]="bookmark"; 
 $LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="You have not recorded any bookmarks yet."; 
 $LANG['bookmark'][4]="New bookmark"; 
 $LANG['bookmark'][5]="Public bookmarks"; 
 $LANG['bookmark'][6]="Default view"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['buttons'][0]="Search"; 
 $LANG['buttons'][2]="Post"; 
