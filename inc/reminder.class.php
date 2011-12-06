@@ -814,8 +814,8 @@ class Reminder extends CommonDBTM {
 
       switch ($type) {
          case "in" :
-            //TRANS: First is the start time of a planned item, second is the end and third is its name
-            printf(__('From %s to %s : %s'),date("H:i",strtotime($val["begin"])),
+            //TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+            printf(__('From %1$s to %2$s: %3$s'),date("H:i",strtotime($val["begin"])),
                                             date("H:i",strtotime($val["end"])),
                                             Html::resume_text($val["name"],80)) ;
             
@@ -826,14 +826,14 @@ class Reminder extends CommonDBTM {
             break;
 
          case "begin" :
-            //TRANS: First is the start time of a planned item, second is its name
-            printf(__('Start at %s: %s'),date("H:i",strtotime($val["begin"])),
+            //TRANS: %1$s is the start time of a planned item, %1$s is its name
+            printf(__('Start at %1$s: %2$s'),date("H:i",strtotime($val["begin"])),
                                          Html::resume_text($val["name"],80)) ;
             break;
 
          case "end" :
-            //TRANS: First is the end time of a planned item and second is its name
-            printf(__('End at %s: %s'),date("H:i",strtotime($val["end"])),
+            //TRANS: %1$s is the end time of a planned item and %2$s is its name
+            printf(__('End at %1$s: %2$s'),date("H:i",strtotime($val["end"])),
                                          Html::resume_text($val["name"],80)) ;
             break;
       }

@@ -603,8 +603,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       switch ($type) {
          case "in" :
-            //TRANS: First is the start time of a planned item, second is the end 
-            printf(__('From %s to %s :'),date("H:i",strtotime($val["begin"])),
+            //TRANS: %1$s is the start time of a planned item, %2$s is the end 
+            printf(__('From %1$s to %2$s :'),date("H:i",strtotime($val["begin"])),
                                             date("H:i",strtotime($val["end"]))) ;   
             break;
 
@@ -623,8 +623,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "<br>";
-      //TRANS: %s is name of the item, %d is its ID
-      printf(__('%s (#%d)'),Html::resume_text($val["name"],80),$val[$parenttype_fk]);
+      //TRANS: %1$s is name of the item, %2$d is its ID
+      printf(__('%1$s (#%2$d)'),Html::resume_text($val["name"],80),$val[$parenttype_fk]);
 
       if (!empty($val["device"])) {
          echo "<br>".$val["device"];
