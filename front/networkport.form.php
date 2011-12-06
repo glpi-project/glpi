@@ -174,7 +174,7 @@ if (isset($_POST["add"])) {
 
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
          foreach ($_POST["del_port"] as $port_id => $val) {
-            $npv->assignVlan($port_id,$_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'));
+            $npv->assignVlan($port_id, $_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'));
          }
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
@@ -185,7 +185,7 @@ if (isset($_POST["add"])) {
    $npv->check(-1,'w',$_POST);
 
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
-      $npv->assignVlan($_POST["networkports_id"],$_POST["vlans_id"],
+      $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],
                        (isset($_POST['tagged']) ? '1' : '0'));
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }

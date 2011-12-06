@@ -613,21 +613,21 @@ class Computer_Device extends CommonDBTM {
          }
       }
 
-      if ($input['_itemtype'] != 'DeviceMemory' 
+      if ($input['_itemtype'] != 'DeviceMemory'
           && isset($this->fields['specificity'])
           && $this->fields['specificity'] == $this->input['specificity']) {
          // No change
          return false;
       }
 
-	
+
 
       //For memories, type can change even if specificity not
-      if ($input['_itemtype'] == 'DeviceMemory' 
-            && (isset($this->fields['specificity'])
-               && $this->fields['specificity'] == $this->input['specificity']) 
-                  && ((isset($this->fields['devicememories_id'])
-                     && $this->fields['devicememories_id'] == $this->input['devicememories_id']))) {
+      if ($input['_itemtype'] == 'DeviceMemory'
+          && (isset($this->fields['specificity'])
+              && $this->fields['specificity'] == $this->input['specificity'])
+          && (isset($this->fields['devicememories_id'])
+               && $this->fields['devicememories_id'] == $this->input['devicememories_id'])) {
          // No change
          return false;
       }
@@ -659,11 +659,14 @@ class Computer_Device extends CommonDBTM {
       $DB->query($query);
    }
 
+
    /**
     * Select a device from its link (device<->computer) id
     *
-    * $deviceType the device type
-    * $compDevID the link ID
+    * @since version 0.84
+    *
+    * @param $deviceType the device type
+    * @param $compDevID the link ID
    **/
    function getDeviceFromComputerDeviceID($deviceType, $compDevID) {
 

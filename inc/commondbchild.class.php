@@ -272,13 +272,13 @@ abstract class CommonDBChild extends CommonDBTM {
       $item = self::getItemFromArray($input);
 
       // Invalidate the element if it is not attached to an item although it must
-      if (($this->mustBeAttached) && ($item == false)) {
+      if ($this->mustBeAttached && ($item == false)) {
          Session::addMessageAfterRedirect($LANG['common'][117], INFO, true);
          return false;
       }
 
       // Set its entity according to the item, if it should
-      if (($this->inheritEntityFromItem) && ($item == true)) {
+      if ($this->inheritEntityFromItem && ($item == true)) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
       }
@@ -297,14 +297,14 @@ abstract class CommonDBChild extends CommonDBTM {
 
       // TODO : must we apply this filter for the update ?
       // Return invalidate the element if it must be attached but it won't
-      if (($this->mustBeAttached) && ($item === false)) {
+      if ($this->mustBeAttached && ($item === false)) {
          Session::addMessageAfterRedirect($LANG['common'][117], INFO, true);
          return false;
       }
 
       // TODO : must we apply this filter for the update ?
       // If the entity is inherited from the item, then set it
-      if (($this->inheritEntityFromItem) && ($item === true)) {
+      if ($this->inheritEntityFromItem && ($item === true)) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
       }
