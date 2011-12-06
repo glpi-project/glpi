@@ -333,14 +333,12 @@ class NotificationTarget extends CommonDBChild {
             echo "</td><td class='center'>";
 
             if (count($this->notification_targets)) {
-               echo "<input type='submit' class='submit' name='mailing_add' value='".
-                     $LANG['buttons'][8]." >>'>";
+               echo "<input type='submit' class='submit' name='mailing_add' value='>>'>";
             }
             echo "<br><br>";
 
             if (!empty($options)) {
-               echo "<input type='submit' class='submit' name='mailing_delete' value='<< ".
-                     $LANG['buttons'][6]."'>";
+               echo "<input type='submit' class='submit' name='mailing_delete' value='<<'>";
             }
             echo "</td><td>";
 

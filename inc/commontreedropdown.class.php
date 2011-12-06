@@ -376,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo "<input type='hidden' name='is_recursive' value='1'>";
          }
          echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form></div>\n";
       }

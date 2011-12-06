@@ -136,7 +136,7 @@ class Ticket_Ticket extends CommonDBRelation {
                                "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID".
                                "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
                                <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                                alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+                                alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
                }
             }
             echo '<br>';

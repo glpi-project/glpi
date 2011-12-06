@@ -565,7 +565,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
                              $this->fields["id"]."\">
                             <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".
-                              $LANG['buttons'][14]."'></a></td>";
+                              __s('Update')."'></a></td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
@@ -586,7 +586,7 @@ class Bookmark extends CommonDBTM {
             echo "</table></div>";
 
             Html::openArrowMassives("form_load_bookmark$rand");
-            Html::closeArrowMassives(array('delete_several' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('delete_several' => __s('Delete')));
 
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>";

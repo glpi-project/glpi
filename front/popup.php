@@ -55,7 +55,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "test_rule" :
-         Html::popHeader($LANG['buttons'][50], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Test'), $_SERVER['PHP_SELF']);
          include "rule.test.php";
          break;
 
@@ -109,7 +109,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          Html::popHeader($LANG['mailing'][138], $_SERVER['PHP_SELF']);
          break;
    }
-   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][60]."</a>";
+   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Close')."</a>";
    echo "</div>";
    Html::popFooter();
 }

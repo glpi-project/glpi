@@ -1616,7 +1616,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
                      "' title=\"".$LANG['reservation'][6]."\">
                      <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                      alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }
             echo '<br>';
          }
@@ -1938,9 +1938,9 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($canedit) {
                echo "&nbsp;<a href='".$this->getFormURL()."?delete_user=delete_user&amp;id=".
                      $d['id']. "&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                     "' title=\"".$LANG['buttons'][6]."\">
+                     "' title=\"".__s('Delete')."\">
                      <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                      alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }
             echo "<br>";
 
@@ -2165,7 +2165,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($ID && $this->canAdminActors()) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                     onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
@@ -2180,7 +2180,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_observer = mt_rand();
 
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                     onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\"
                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
 
@@ -2204,7 +2204,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_assign = mt_rand();
 
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                     onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\"
                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }

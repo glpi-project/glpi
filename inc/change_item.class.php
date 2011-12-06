@@ -218,13 +218,13 @@ class Change_Item extends CommonDBRelation{
                                 ($change->fields['is_recursive']?-1:$change->fields['entities_id']),
                                 $types);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
 
          Html::openArrowMassives("itemchange_form$rand", true);
          echo "<input type='hidden' name='changes_id' value='$instID'>";
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __s('Delete')));
 
       } else {
          echo "</table>";

@@ -210,7 +210,7 @@ class NetworkAlias extends FQDNLabel {
                   //echo "<a href='#' onclick='javascript:reloadTab(\"remove_alias=" .
                   //     $alias->getID() . "\") ; return false;'>&nbsp;";
                   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                     $LANG['buttons'][6] . "\" title=\"" . $LANG['buttons'][6] . "\"></a>";
+                     __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
                   echo "</td></tr>";
                } else {
                   echo "</li>\n";
@@ -256,7 +256,7 @@ class NetworkAlias extends FQDNLabel {
       echo "<tr><td class='center'>".
            "<a href='' onClick=\"var w = window.open('".$alias->getFormURL()."?networknames_id=" .
              $networkNameID ."&amp;popup=1&amp;rand=1' ,'glpipopup', 'height=400, ".
-             "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][8].
+             "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".__('Add').
            "</a></td></tr>\n";
       echo "\n</table>";
       echo "</div>\n";

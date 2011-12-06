@@ -558,7 +558,7 @@ class CartridgeItem extends CommonDBTM {
          echo "<td class='tab_bg_2 center b'>";
          echo "<a href='".$CFG_GLPI['root_doc'].
                 "/front/cartridgeitem.form.php?deletetype=deletetype&amp;id=$ID&amp;tID=$instID'>";
-         echo $LANG['buttons'][6]."</a></td></tr>";
+         echo __('Delete')."</a></td></tr>";
          $used[$pmid] = $pmid;
          $i++;
       }
@@ -567,7 +567,7 @@ class CartridgeItem extends CommonDBTM {
          echo "<input type='hidden' name='tID' value='$instID'>";
          Dropdown::show('PrinterModel', array('used' => $used));
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='addtype' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div></form>";

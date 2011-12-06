@@ -603,31 +603,37 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       switch ($type) {
          case "in" :
-            echo date("H:i",strtotime($val["begin"]))."/".date("H:i",strtotime($val["end"])).": ";
+            //TRANS: First is the start time of a planned item, second is the end 
+            printf(__('From %s to %s :'),date("H:i",strtotime($val["begin"])),
+                                            date("H:i",strtotime($val["end"]))) ;   
             break;
 
          case "through" :
             break;
 
          case "begin" :
-            echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
+            //TRANS: %s is the start time of a planned item
+            printf(__('Start at %s:'),date("H:i",strtotime($val["begin"]))) ;
             break;
 
          case "end" :
-            echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
+            //TRANS: %s is the end time of a planned item
+            printf(__('End at %s:'),date("H:i",strtotime($val["end"]))) ;
             break;
       }
 
-      echo "<br>- #".$val[$parenttype_fk]." ";
-      echo Html::resume_text($val["name"],80). " ";
+      echo "<br>";
+      //TRANS: %s is name of the item, %d is its ID
+      printf(__('%s (#%d)'),Html::resume_text($val["name"],80),$val[$parenttype_fk]);
 
       if (!empty($val["device"])) {
-         echo "<br>- ".$val["device"];
+         echo "<br>".$val["device"];
       }
 
       if ($who<=0) { // show tech for "show all and show group"
-         echo "<br>- ";
-         echo $LANG['common'][95]." ".getUserName($val["users_id"]);
+         echo "<br>";
+         //TRANS: %s is user name
+         printf(__('By %s'), getUserName($val["users_id"]));
       }
 
       echo "</a>";
@@ -973,7 +979,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
       }
-      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
    }
 
 
