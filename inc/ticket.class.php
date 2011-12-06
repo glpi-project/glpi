@@ -1897,6 +1897,16 @@ class Ticket extends CommonITILObject {
                                           => array('table'      => 'glpi_ticketfollowups',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      $tab += $this->getSearchOptionsStats();
+
+      $tab[150]['table']         = $this->getTable();
+      $tab[150]['field']         = 'takeintoaccount_delay_stat';
+      $tab[150]['name']          = $LANG['stats'][24];
+      $tab[150]['datatype']      = 'timestamp';
+      $tab[150]['forcegroupby']  = true;
+      $tab[150]['massiveaction'] = false;
+
+
       if (Session::haveRight("show_all_ticket","1")
           || Session::haveRight("show_assign_ticket","1")
           || Session::haveRight("own_ticket","1")) {

@@ -574,6 +574,8 @@ class Problem extends CommonITILObject {
       $tab[24]['datatype']      = 'text';
       $tab[24]['massiveaction'] = false;
 
+      $tab += $this->getSearchOptionsStats();
+
       return $tab;
    }
 
