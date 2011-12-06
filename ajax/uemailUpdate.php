@@ -52,6 +52,10 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $emails        = $user->getAllEmails();
    }
 
+   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])) {
+      $default_email = $_REQUEST['alternative_email'];
+   }   
+
    echo $LANG['job'][19].'&nbsp;:&nbsp;';
 
    $default_notif = true;
