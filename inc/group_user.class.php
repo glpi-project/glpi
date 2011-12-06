@@ -397,7 +397,8 @@ class Group_User extends CommonDBRelation{
             $data = $used[$i];
             $user->getFromDB($data["id"]);
             Session::addToNavigateListItems('User', $data["id"]);
-            echo "\n<tr class='tab_bg_1'>";
+
+            echo "\n<tr class='tab_bg_".($user->isDeleted() ? '1_2' : '1')."'>";
             if ($canedit) {
                echo "<td width='10'>";
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
