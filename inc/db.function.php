@@ -230,15 +230,15 @@ function getPlural($string) {
 function getSingular($string) {
 
    $rules = array(//'plural' => 'singular'
-                  'ches$'          => 'ch',
-                  'shes$'          => 'sh',
-                  'sses$'          => 'ss', // Case like addresses
-                  'cases$'         => 'case', // Case like cases
-                  '([aeiou])ses$'  => '\1s', // Case like aliases
-                  'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
-                  'lias$'          => 'lias', // Special case (aliases) when getSingular is called on already singular form
-                  'ies$'           => 'y', // special case : category
-                  's$'             => ''); // Add at the end if not exists
+                  'ches$'             => 'ch',
+                  'shes$'             => 'sh',
+                  'sses$'             => 'ss', // Case like addresses
+//                   'cases$'            => 'case', // Case like cases
+                  '([aeiou]{2})ses$' => '\1s', // Case like aliases
+                  'ss$'               => 'ss', // Special case (addresses) when getSingular is called on already singular form
+                  'lias$'             => 'lias', // Special case (aliases) when getSingular is called on already singular form
+                  'ies$'              => 'y', // special case : category
+                  's$'                => ''); // Add at the end if not exists
 
    foreach ($rules as  $plural => $singular) {
       $string = preg_replace("/$plural/", "$singular", $string, -1, $count);
@@ -248,6 +248,8 @@ function getSingular($string) {
    }
    return $string;
 }
+
+
 
 /**
  * Is a table used for devices
