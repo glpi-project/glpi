@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 17:08+0100\n"
+"POT-Creation-Date: 2011-12-06 18:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -353,10 +353,10 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-#. TRANS: First string is the Itemtype name and the second the ID of the item
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:202 inc/commondbtm.class.php:1816
 #, php-format
-msgid "%s - ID %s"
+msgid "%1$s - ID %2$d"
 msgstr ""
 
 #: inc/bookmark.class.php:204
@@ -449,10 +449,10 @@ msgstr ""
 msgid "Last"
 msgstr ""
 
-#. TRANS: First is the start time of a planned item, second is the end
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #: inc/commonitiltask.class.php:607
 #, php-format
-msgid "From %s to %s :"
+msgid "From %1$s to %2$s :"
 msgstr ""
 
 #. TRANS: %s is the start time of a planned item
@@ -467,10 +467,10 @@ msgstr ""
 msgid "End at %s:"
 msgstr ""
 
-#. TRANS: %s is name of the item, %d is its ID
+#. TRANS: %1$s is name of the item, %2$d is its ID
 #: inc/commonitiltask.class.php:627
 #, php-format
-msgid "%s (#%d)"
+msgid "%1$s (#%2$d)"
 msgstr ""
 
 #. TRANS: %s is user name
@@ -710,22 +710,22 @@ msgstr ""
 msgid "Public bookmarks"
 msgstr ""
 
-#. TRANS: First is the start time of a planned item, second is the end and third is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
 #: inc/reminder.class.php:818
 #, php-format
-msgid "From %s to %s : %s"
+msgid "From %1$s to %2$s: %3$s"
 msgstr ""
 
-#. TRANS: First is the start time of a planned item, second is its name
+#. TRANS: %1$s is the start time of a planned item, %1$s is its name
 #: inc/reminder.class.php:830
 #, php-format
-msgid "Start at %s: %s"
+msgid "Start at %1$s: %2$s"
 msgstr ""
 
-#. TRANS: First is the end time of a planned item and second is its name
+#. TRANS: %1$s is the end time of a planned item and %2$s is its name
 #: inc/reminder.class.php:836
 #, php-format
-msgid "End at %s: %s"
+msgid "End at %1$s: %2$s"
 msgstr ""
 
 #: inc/reservation.class.php:672
