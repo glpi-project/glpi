@@ -117,7 +117,6 @@ if ($pot && $po) {
             
             }
       }
-   
      // Standard replacement
      $content = preg_replace('/charset=CHARSET/','charset=UTF-8',$content);
    
@@ -145,11 +144,10 @@ function search_in_dict($string) {
       $string = $reg[2];
       $right   = $reg[3];
    }
-   
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search same case
-         if (strcmp($val,$string)) {
+         if (strcmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          } 
       }
@@ -158,7 +156,7 @@ function search_in_dict($string) {
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search non case sensitive
-         if (strcasecmp($val,$string)) {
+         if (strcasecmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          } 
       }
