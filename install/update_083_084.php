@@ -104,8 +104,8 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
                    FROM `glpi_devicenetworkcards` as device,
                         `glpi_computers_devicenetworkcards` as link
                    WHERE link.`computers_id` = ".$portInformation['items_id']."
-                   AND device.`id` = link.`devicenetworkcards_id`
-                   AND link.`specificity` = '".$portInformation['mac']."'";
+                         AND device.`id` = link.`devicenetworkcards_id`
+                         AND link.`specificity` = '".$portInformation['mac']."'";
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
@@ -197,7 +197,7 @@ function update083to084() {
                   KEY `name` (`name`),
                   KEY `fqdn` (`fqdn`),
                   KEY `is_recursive` (`is_recursive`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.84 create glpi_fqdns " . $LANG['update'][90] . $DB->error());
 
       $fqdn = new FQDN();
@@ -235,7 +235,7 @@ function update083to084() {
                   KEY `textual` (`name`),
                   KEY `binary` (`binary_0`, `binary_1`, `binary_2`, `binary_3`),
                   KEY `item` (`items_id`,`itemtype`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_ipaddresses " . $LANG['update'][90] .$DB->error());
    }
@@ -252,7 +252,7 @@ function update083to084() {
                  PRIMARY KEY (`id`),
                  KEY `essid` (`essid`),
                  KEY `name` (`name`)
-                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_wifinetworks " . $LANG['update'][90] . $DB->error());
 
@@ -262,34 +262,34 @@ function update083to084() {
    // Adding IPNetwork table
    if (!TableExists('glpi_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipnetworks` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                 `version` tinyint unsigned DEFAULT '0',
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `address_0`  int unsigned NOT NULL DEFAULT '0',
-                 `address_1`  int unsigned NOT NULL DEFAULT '0',
-                 `address_2`  int unsigned NOT NULL DEFAULT '0',
-                 `address_3`  int unsigned NOT NULL DEFAULT '0',
-                 `netmask` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `netmask_0`  int unsigned NOT NULL DEFAULT '0',
-                 `netmask_1`  int unsigned NOT NULL DEFAULT '0',
-                 `netmask_2`  int unsigned NOT NULL DEFAULT '0',
-                 `netmask_3`  int unsigned NOT NULL DEFAULT '0',
-                 `gateway` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `gateway_0`  int unsigned NOT NULL DEFAULT '0',
-                 `gateway_1`  int unsigned NOT NULL DEFAULT '0',
-                 `gateway_2`  int unsigned NOT NULL DEFAULT '0',
-                 `gateway_3`  int unsigned NOT NULL DEFAULT '0',
-                 `comment` text COLLATE utf8_unicode_ci,
-                 PRIMARY KEY (`id`),
-                 KEY `network_definition` (`entities_id`,`address`,`netmask`),
-                 KEY `address` (`address_0`, `address_1`, `address_2`, `address_3`),
-                 KEY `netmask` (`netmask_0`, `netmask_1`, `netmask_2`, `netmask_3`),
-                 KEY `gateway` (`gateway_0`, `gateway_1`, `gateway_2`, `gateway_3`),
-                 KEY `name` (`name`)
-                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `version` tinyint unsigned DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `address_0`  int unsigned NOT NULL DEFAULT '0',
+                  `address_1`  int unsigned NOT NULL DEFAULT '0',
+                  `address_2`  int unsigned NOT NULL DEFAULT '0',
+                  `address_3`  int unsigned NOT NULL DEFAULT '0',
+                  `netmask` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `netmask_0`  int unsigned NOT NULL DEFAULT '0',
+                  `netmask_1`  int unsigned NOT NULL DEFAULT '0',
+                  `netmask_2`  int unsigned NOT NULL DEFAULT '0',
+                  `netmask_3`  int unsigned NOT NULL DEFAULT '0',
+                  `gateway` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `gateway_0`  int unsigned NOT NULL DEFAULT '0',
+                  `gateway_1`  int unsigned NOT NULL DEFAULT '0',
+                  `gateway_2`  int unsigned NOT NULL DEFAULT '0',
+                  `gateway_3`  int unsigned NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `network_definition` (`entities_id`,`address`,`netmask`),
+                  KEY `address` (`address_0`, `address_1`, `address_2`, `address_3`),
+                  KEY `netmask` (`netmask_0`, `netmask_1`, `netmask_2`, `netmask_3`),
+                  KEY `gateway` (`gateway_0`, `gateway_1`, `gateway_2`, `gateway_3`),
+                  KEY `name` (`name`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_ipnetworks " . $LANG['update'][90] . $DB->error());
 
@@ -341,21 +341,20 @@ function update083to084() {
    // Adding NetworkName table
    if (!TableExists('glpi_networknames')) {
       $query = "CREATE TABLE `glpi_networknames` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `items_id` int(11) NOT NULL DEFAULT '0',
-                 `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `comment` text COLLATE utf8_unicode_ci,
-                 `fqdns_id` int(11) NOT NULL DEFAULT '0',
-                 `ip_addresses` TEXT COLLATE utf8_unicode_ci
-                          COMMENT 'caching value of IPAddress',
-                 PRIMARY KEY (`id`),
-                 KEY `FQDN` (`name`,`fqdns_id`),
-                 KEY `name` (`name`),
-                 KEY `item` (`items_id`, `itemtype`),
-                 KEY `fqdns_id` (`fqdns_id`)
-                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `fqdns_id` int(11) NOT NULL DEFAULT '0',
+                  `ip_addresses` TEXT COLLATE utf8_unicode_ci COMMENT 'caching value of IPAddress',
+                  PRIMARY KEY (`id`),
+                  KEY `FQDN` (`name`,`fqdns_id`),
+                  KEY `name` (`name`),
+                  KEY `item` (`items_id`, `itemtype`),
+                  KEY `fqdns_id` (`fqdns_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networknames " . $LANG['update'][90] . $DB->error());
 
@@ -369,15 +368,15 @@ function update083to084() {
    // Adding NetworkAlias table
    if (!TableExists('glpi_networkaliases')) {
       $query = "CREATE TABLE `glpi_networkaliases` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `networknames_id` int(11) NOT NULL DEFAULT '0',
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `fqdns_id` int(11) NOT NULL DEFAULT '0',
-                 `comment` text COLLATE utf8_unicode_ci,
-                 PRIMARY KEY (`id`),
-                 KEY `name` (`name`),
-                 KEY `networknames_id` (`networknames_id`)
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `networknames_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `fqdns_id` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `networknames_id` (`networknames_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkaliases " . $LANG['update'][90] . $DB->error());
@@ -437,19 +436,19 @@ function update083to084() {
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
       $query = "CREATE TABLE `glpi_networkportethernets` (
-                 `id` int(11) NOT NULL,
-                 `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                 `netpoints_id` int(11) NOT NULL DEFAULT '0',
-                 `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'T, LX, SX',
-                 `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
-                 PRIMARY KEY (`id`),
-                 KEY `card` (`computers_devicenetworkcards_id`),
-                 KEY `netpoint` (`netpoints_id`),
-                 KEY `mac` (`mac`),
-                 KEY `type` (`type`),
-                 KEY `speed` (`speed`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  `id` int(11) NOT NULL,
+                  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'T, LX, SX',
+                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
+                  PRIMARY KEY (`id`),
+                  KEY `card` (`computers_devicenetworkcards_id`),
+                  KEY `netpoint` (`netpoints_id`),
+                  KEY `mac` (`mac`),
+                  KEY `type` (`type`),
+                  KEY `speed` (`speed`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkportethernets " . $LANG['update'][90] . $DB->error());
 
@@ -461,21 +460,21 @@ function update083to084() {
   // Adding NetworkPortWifi table
    if (!TableExists('glpi_networkportwifis')) {
       $query = "CREATE TABLE `glpi_networkportwifis` (
-                 `id` int(11) NOT NULL,
-                 `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                 `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
-                 `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
-                                       COMMENT 'only usefull in case of Managed node',
-                 `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
-                           COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
-                 `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
-                        COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
-                 PRIMARY KEY (`id`),
-                 KEY `card` (`computers_devicenetworkcards_id`),
-                 KEY `essid` (`wifinetworks_id`),
-                 KEY `version` (`version`),
-                 KEY `mode` (`mode`)
+                  `id` int(11) NOT NULL,
+                  `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
+                  `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
+                                        COMMENT 'only usefull in case of Managed node',
+                  `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
+                            COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
+                  `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
+                         COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
+                  PRIMARY KEY (`id`),
+                  KEY `card` (`computers_devicenetworkcards_id`),
+                  KEY `essid` (`wifinetworks_id`),
+                  KEY `version` (`version`),
+                  KEY `mode` (`mode`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkportwifis " . $LANG['update'][90] . $DB->error());
@@ -488,8 +487,8 @@ function update083to084() {
    // Adding NetworkPortLocal table
    if (!TableExists('glpi_networkportlocals')) {
       $query = "CREATE TABLE `glpi_networkportlocals` (
-                 `id` int(11) NOT NULL,
-                 PRIMARY KEY (`id`)
+                  `id` int(11) NOT NULL,
+                  PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkportlocals " . $LANG['update'][90] . $DB->error());
@@ -501,12 +500,12 @@ function update083to084() {
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
       $query = "CREATE TABLE `glpi_networkportaggregates` (
-                 `id` int(11) NOT NULL,
-                 `networkports_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-                                   COMMENT 'array of associated networkports_id',
-                 `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 PRIMARY KEY (`id`),
-                 KEY `mac` (`mac`)
+                  `id` int(11) NOT NULL,
+                  `networkports_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+                                    COMMENT 'array of associated networkports_id',
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `mac` (`mac`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkportaggregates " . $LANG['update'][90] . $DB->error());
@@ -517,12 +516,12 @@ function update083to084() {
    // Adding NetworkPortAlias table
    if (!TableExists('glpi_networkportaliases')) {
       $query = "CREATE TABLE `glpi_networkportaliases` (
-                 `id` int(11) NOT NULL,
-                 `networkports_id` int(11) NOT NULL,
-                 `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 PRIMARY KEY (`id`),
-                 KEY `networkports_id` (`networkports_id`),
-                 KEY `mac` (`mac`)
+                  `id` int(11) NOT NULL,
+                  `networkports_id` int(11) NOT NULL,
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `networkports_id` (`networkports_id`),
+                  KEY `mac` (`mac`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.84 create glpi_networkportaliases " . $LANG['update'][90] . $DB->error());
