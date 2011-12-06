@@ -1654,6 +1654,37 @@ abstract class CommonITILObject extends CommonDBTM {
       return '';
    }
 
+   function getSearchOptionsStats() {
+      global $LANG;
+
+      $tab = array();
+      $tab['stats'] = $LANG['Menu'][13];
+      
+      $tab[151]['table']         = $this->getTable();
+      $tab[151]['field']         = 'solve_delay_stat';
+      $tab[151]['name']          = $LANG['stats'][21];
+      $tab[151]['datatype']      = 'timestamp';
+      $tab[151]['forcegroupby']  = true;
+      $tab[151]['massiveaction'] = false;
+
+      $tab[152]['table']         = $this->getTable();
+      $tab[152]['field']         = 'close_delay_stat';
+      $tab[152]['name']          = $LANG['stats'][22];
+      $tab[152]['datatype']      = 'timestamp';
+      $tab[152]['forcegroupby']  = true;
+      $tab[152]['massiveaction'] = false;
+
+      $tab[153]['table']         = $this->getTable();
+      $tab[153]['field']         = 'waiting_duration';
+      $tab[153]['name']          = $LANG['stats'][25];
+      $tab[153]['datatype']      = 'timestamp';
+      $tab[153]['forcegroupby']  = true;
+      $tab[153]['massiveaction'] = false;
+
+
+
+      return $tab;
+   }   
 
    function getSearchOptionsActors() {
       global $LANG;

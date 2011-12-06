@@ -2511,9 +2511,11 @@ $LANG['stats'][17] = "Nombre clos";
 
 $LANG['stats'][19] = "Nombre résolus en retard";
 $LANG['stats'][20] = "Nom d'utilisateur";
-
+$LANG['stats'][21] = "Délai de résolution";
+$LANG['stats'][22] = "Délai de clôture";
 $LANG['stats'][23] = "Pas de statistiques disponibles";
-
+$LANG['stats'][24] = "Délai de prise en compte";
+$LANG['stats'][25] = "Délai en attente";
 $LANG['stats'][26] = "Durée réelle de traitement du ticket";
 
 $LANG['stats'][33] = "Min(s)";
