@@ -424,11 +424,11 @@ class NetworkName extends FQDNLabel {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".FQDN::getTypeName()."&nbsp;:</td><td>";
-     Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
-                    array('value'       => $name->fields["fqdns_id"],
-                          'name'        => 'NetworkName_fqdns_id',
-                          'entity'      => $name->getEntityID(),
-                          'displaywith' => array('view')));
+      Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
+                     array('value'       => $name->fields["fqdns_id"],
+                           'name'        => 'NetworkName_fqdns_id',
+                           'entity'      => $name->getEntityID(),
+                           'displaywith' => array('view')));
       echo "</td></tr>\n";
       echo "</tr>\n";
    }

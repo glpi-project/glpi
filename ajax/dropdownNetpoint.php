@@ -88,8 +88,8 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment,
 
 if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
    $query .= "LEFT JOIN `glpi_networkportethernets`
-                  ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)";
-   $query .= "LEFT JOIN `glpi_networkports`
+                  ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
+              LEFT JOIN `glpi_networkports`
                   ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`id`
                       AND `glpi_networkports`.`type` = 'Ethernet'
                       AND `glpi_networkports`.`itemtype`";
@@ -160,5 +160,4 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
                                  "comment_".$_POST["myname"].$_POST["rand"],
                                  $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
 }
-
 ?>

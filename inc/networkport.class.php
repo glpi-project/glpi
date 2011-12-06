@@ -61,8 +61,8 @@ class NetworkPort extends CommonDBChild {
    **/
    static function getNetworkPortInstantiations() {
 
-      return array('NetworkPortLocal', 'NetworkPortEthernet', 'NetworkPortWifi',
-                   'NetworkPortAlias', 'NetworkPortAggregate');
+      return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortEthernet',
+                   'NetworkPortLocal', 'NetworkPortWifi');
    }
 
 
@@ -150,11 +150,11 @@ class NetworkPort extends CommonDBChild {
       }
 
       $this->input_for_instantiation = array();
-      $this->input_for_NetworkName = array();
+      $this->input_for_NetworkName   = array();
 
       foreach ($input as $field => $value) {
          if (array_key_exists($field, $this->fields)) {
-             continue;
+            continue;
          }
          if (preg_match('/^NetworkName_/',$field)) {
             $networkName_field = preg_replace('/^NetworkName_/','',$field);
@@ -166,7 +166,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       if ((count($this->input_for_NetworkName) == 0)
-          || (empty($this->input_for_NetworkName['name']))) {
+          || empty($this->input_for_NetworkName['name'])) {
          unset($this->input_for_NetworkName);
       }
 
@@ -189,7 +189,7 @@ class NetworkPort extends CommonDBChild {
    function updateDependencies($history=1) {
 
       $instantiation = $this->getInstantiation();
-      if (($instantiation !== false) && (count($this->input_for_instantiation)  > 0)) {
+      if (($instantiation !== false) && (count($this->input_for_instantiation) > 0)) {
          $this->input_for_instantiation['id'] = $this->getID();
          if ($instantiation->isNewID($instantiation->getID())) {
             $instantiation->add($this->input_for_instantiation, $history);
@@ -349,18 +349,18 @@ class NetworkPort extends CommonDBChild {
          echo "<td class='tab_bg_2 center' width='50%'>";
          echo $LANG['Internet'][37] .
               "&nbsp;: <input type='checkbox' name='several' value='1'></td>\n";
-         echo "</tr><tr><td class='tab_bg_2 center' colspan='2'>\n";
+         echo "</tr>";
+
+         echo "<tr><td class='tab_bg_2 center' colspan='2'>\n";
          echo "<input type='submit' name='create' value=\"" . $LANG['buttons'][8] .
               "\" class='submit'>\n";
          echo "</td></tr></table></div></form>\n";
       }
 
-
       if ($canedit && $withtemplate != 2) {
          $checkbox_column = true;
-         echo "\n<form id='networking_ports$rand' name='networking_ports$rand'
-                       method='post'  action='" . $CFG_GLPI["root_doc"] .
-              "/front/networkport.form.php'>\n";
+         echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
+                  action='" . $CFG_GLPI["root_doc"] ."/front/networkport.form.php'>\n";
       } else {
          $checkbox_column = false;
       }
@@ -414,13 +414,13 @@ class NetworkPort extends CommonDBChild {
                   if ($withtemplate != 2 && $canedit) {
                      echo "<td class='center' width='20'>";
                      echo "<input type='checkbox' name='del_port[".$netport->fields["id"].
-                        "]' value='1'>";
+                            "]' value='1'>";
                      echo "</td>\n";
                   }
                   echo "<td class='center'><span class='b'>";
                   if ($canedit && $withtemplate != 2) {
-                     echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
-                        $netport->fields["id"] . "\">";
+                     echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=".
+                            $netport->fields["id"] . "\">";
                   }
                   echo $netport->fields["logical_number"];
                   if ($canedit && $withtemplate != 2) {
@@ -478,8 +478,8 @@ class NetworkPort extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         $input = array('itemtype' => $options["itemtype"],
-                        'items_id' => $options["items_id"],
+         $input = array('itemtype'           => $options["itemtype"],
+                        'items_id'           => $options["items_id"],
                         'instantiation_type' => $options['instantiation_type']);
          // Create item
          $this->check(-1, 'w', $input);
@@ -513,7 +513,7 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
          echo "<input type='hidden' name='instantiation_type' value='" .
-              $this->fields["instantiation_type"]."'>\n";
+                $this->fields["instantiation_type"]."'>\n";
       }
 
       $this->displayRecursiveItems($recursiveItems, "Link");
@@ -526,7 +526,7 @@ class NetworkPort extends CommonDBChild {
       echo "<td rowspan='$colspan'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='$colspan' class='middle'>";
       echo "<textarea cols='45' rows='$colspan' name='comment' >" .
-           $this->fields["comment"] . "</textarea>";
+             $this->fields["comment"] . "</textarea>";
       echo "</td></tr>\n";
 
       if (!$options['several']) {
@@ -554,8 +554,8 @@ class NetworkPort extends CommonDBChild {
 
       $instantiation = $this->getInstantiation();
       if ($instantiation !== false) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>" .
-            $instantiation->getTypeName() . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><th colspan='4'>" .$instantiation->getTypeName() .
+              "</th></tr>\n";
          $instantiation->showForm($this, $options, $recursiveItems);
          unset($instantiation);
       }
@@ -728,21 +728,22 @@ class NetworkPort extends CommonDBChild {
    /**
     * Clone the current NetworkPort when the item is clone
     *
+    * @since version 0.84
+    *
     * @param $itemtype the type of the item that was clone
     * @param $old_items_id the id of the item that was clone
     * @param $new_items_id the id of the item after beeing cloned
-    *
    **/
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
 
       $np = new NetworkPort();
       // ADD Ports
       $query = "SELECT `id`
-                  FROM `glpi_networkports`
-                 WHERE `items_id` = '".$old_items_id."'
-                   AND `itemtype` = '".$itemtype."';";
+                FROM `glpi_networkports`
+                WHERE `items_id` = '".$old_items_id."'
+                      AND `itemtype` = '".$itemtype."';";
 
-      $result=$DB->query($query);
+      $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
 
          while ($data=$DB->fetch_array($result)) {
@@ -750,7 +751,7 @@ class NetworkPort extends CommonDBChild {
             $np->getFromDB($data["id"]);
             unset($np->fields["id"]);
             $np->fields["items_id"] = $new_items_id;
-            $portid = $np->addToDB();
+            $portid                 = $np->addToDB();
 
             $instantiation = $np->getInstantiation();
             if ($instantiation !== false) {
@@ -762,13 +763,12 @@ class NetworkPort extends CommonDBChild {
             foreach ($DB->request($npv->getTable(),
                                   array($npv->items_id_1 => $data["id"])) as $vlan) {
 
-               $input=array($npv->items_id_1 => $portid,
-                            $npv->items_id_2 => $vlan['vlans_id']);
-               if (isset($vlan['tagged']))
+               $input = array($npv->items_id_1 => $portid,
+                              $npv->items_id_2 => $vlan['vlans_id']);
+               if (isset($vlan['tagged'])) {
                   $input['tagged'] = $vlan['tagged'];
-
+               }
                $npv->add($input);
-
             }
          }
       }

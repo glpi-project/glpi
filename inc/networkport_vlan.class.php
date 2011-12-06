@@ -110,24 +110,25 @@ class NetworkPort_Vlan extends CommonDBRelation {
    function assignVlan($port, $vlan, $tagged) {
       global $DB;
 
-      $query = "INSERT INTO
-                `glpi_networkports_vlans` (`networkports_id`,`vlans_id`,`tagged`)
+      $query = "INSERT INTO `glpi_networkports_vlans`
+                       (`networkports_id`,`vlans_id`,`tagged`)
                 VALUES ('$port','$vlan','$tagged')";
       $DB->query($query);
 
       $np = new NetworkPort();
       if ($contact_id=$np->getContact($port)) {
          if ($np->getFromDB($contact_id)) {
-            $vlans=self::getVlansForNetworkPort($port);
+            $vlans = self::getVlansForNetworkPort($port);
             if (!in_array($vlan,$vlans)) {
-               $query = "INSERT INTO
-                        `glpi_networkports_vlans` (`networkports_id`,`vlans_id`,`tagged`)
+               $query = "INSERT INTO `glpi_networkports_vlans`
+                                (`networkports_id`,`vlans_id`,`tagged`)
                         VALUES ('$contact_id','$vlan','$tagged')";
                $DB->query($query);
             }
          }
       }
    }
+
 
    static function showForNetworkPort($ID, $canedit, $withtemplate) {
       global $DB, $CFG_GLPI, $LANG;
@@ -141,6 +142,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                 LEFT JOIN `glpi_vlans`
                         ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
                 WHERE `networkports_id` = '$ID'";
+
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          echo "\n<table>";
@@ -150,10 +152,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
             Html::showToolTip($LANG['common'][114]."&nbsp;: ".$line['vlantag']."<br>
                               ".$LANG['common'][25] ."&nbsp;: ".$line['vlancomment']);
 
-            if ((isset($line["tagged"])) && ($line["tagged"] == 1))
+            if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
                echo "&nbsp;- ".$LANG['Internet'][58];
-            else
+            } else {
                echo "&nbsp;- ".$LANG['Internet'][59];
+            }
 
             echo "</td>\n<td>";
             if ($canedit) {
@@ -173,8 +176,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
       return $used;
    }
 
+
    static function showForNetworkPortForm ($ID) {
       global $DB, $CFG_GLPI, $LANG;
+
       $port=new NetworkPort();
 
       if ($ID && $port->can($ID,'w')) {
@@ -185,17 +190,19 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][90] . "</th></tr>\n";
+
          echo "<tr class='tab_bg_2'><td colspan='2'>";
-         $used=self::showForNetworkPort($ID, true,0);
+         $used = self::showForNetworkPort($ID, true,0);
          echo "</td></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td>";
-         echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
-         Dropdown::show('Vlan', array('used' => $used));
+         echo "<tr class='tab_bg_2'><td>".$LANG['networking'][55] . "&nbsp;:&nbsp;";
+         Dropdown::show('Vlan',
+                        array('used' => $used));
          echo "</td><td rowspan='2'>";
-         echo "<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
-                     "' class='submit'>";
+         echo "<input type='submit' name='assign_vlan' value=\"".$LANG['buttons'][3]."\"
+                class='submit'>";
          echo "</td></tr>";
+
          echo "<tr class='tab_bg_2'><td>";
          echo $LANG['Internet'][58]."&nbsp;: <input type='checkbox' name='tagged' value='1'>";
          echo "</td></tr>";
@@ -203,6 +210,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "</table></form>";
       }
    }
+
 
    static function getVlansForNetworkPort($portID) {
       global $DB;
