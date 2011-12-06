@@ -203,7 +203,7 @@ class UserEmail  extends CommonDBChild {
          echo "<div id='emailadd$users_id'>";
          // No email display field
          if ($count == 0) {
-            echo "<input type='text' size='40' name='_useremails[-100]'>";
+            echo "<input type='text' size='40' name='_useremails[-100]' value=''>";
          }
          echo "</div>";
       }
