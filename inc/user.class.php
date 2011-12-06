@@ -281,16 +281,9 @@ class User extends CommonDBTM {
          $DB->query($query);
       }
 
-      // Delete private reminder
+      // Delete own reminders
       $query = "DELETE
                 FROM `glpi_reminders`
-                WHERE `users_id` = '".$this->fields['id']."'
-                      AND `is_private` = '1'";
-      $DB->query($query);
-
-      // Set no user to public reminder
-      $query = "UPDATE `glpi_reminders`
-                SET `users_id` = '0'
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
 
