@@ -233,8 +233,8 @@ function getSingular($string) {
                   'ches$'          => 'ch',
                   'shes$'          => 'sh',
                   'sses$'          => 'ss', // Case like addresses
-                  'cases$'          => 'case', // Case like cases
-                  '([aeiou])ses$'  => '\1s', // Case like aliases
+//                   'cases$'          => 'case', // Case like cases
+                  '([aeiou]{2})ses$' => '\1s', // Case like aliases
                   'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
                   'alias$'           => 'alias', // Special case (aliases) when getSingular is called on already singular form
                   'ies$'           => 'y', // special case : category
