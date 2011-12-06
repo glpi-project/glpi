@@ -43,7 +43,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      return _n('Wifi', 'Wifi', $nb);
+      return _n('Wifi port', 'Wifi ports', $nb);
    }
 
 
@@ -167,7 +167,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'mode';
-      $tab[11]['name']          = __('Wifimode');
+      $tab[11]['name']          = __('Wifi mode');
       $tab[11]['massiveaction'] = false;
 
       $tab[12]['table']         = $this->getTable();
