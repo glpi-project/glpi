@@ -586,7 +586,7 @@ class Bookmark extends CommonDBTM {
             echo "</table></div>";
 
             Html::openArrowMassives("form_load_bookmark$rand");
-            Html::closeArrowMassives(array('delete_several' => __s('Delete')));
+            Html::closeArrowMassives(array('delete_several' => __('Delete')));
 
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>";

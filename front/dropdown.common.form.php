@@ -117,7 +117,7 @@ if (isset($_POST["add"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
    $dropdown->showForm($_GET["id"]);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
    echo "</div>";
    Html::popFooter();
 

@@ -436,7 +436,7 @@ class Computer_Item extends CommonDBRelation{
                      echo "<a href=\"".$CFG_GLPI["root_doc"].
                             "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
                             "disconnect=1&amp;withtemplate=".$withtemplate."\">";
-                     echo $LANG['buttons'][10]."</a></td>";
+                     echo __('Disconnect')."</a></td>";
                   }
                   echo "</tr>";
                }
@@ -472,7 +472,7 @@ class Computer_Item extends CommonDBRelation{
                   }
                   self::dropdownConnect($itemtype, 'Computer', "items_id",
                                         $comp->fields["entities_id"], $withtemplate, $used);
-                  echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
+                  echo "<input type='submit' name='connect' value=\"".__s('Connect')."\"
                          class='submit'>";
                   echo "</form>";
                }
@@ -543,7 +543,7 @@ class Computer_Item extends CommonDBRelation{
             echo "<td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
                echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
-                      $LANG['buttons'][10]."</a>";
+                      __('Disconnect')."</a>";
             } else {
                echo "&nbsp;";
             }
@@ -565,7 +565,7 @@ class Computer_Item extends CommonDBRelation{
                self::dropdownConnect('Computer', $item->getType(), "computers_id",
                                      $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
+            echo "<input type='submit' name='connect' value=\"".__s('Connect')."\"
                    class='submit'>";
             echo "</form>";
          } else {
@@ -588,7 +588,7 @@ class Computer_Item extends CommonDBRelation{
                self::dropdownConnect('Computer', $item->getType(), "computers_id",
                                      $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
+            echo "<input type='submit' name='connect' value=\"".__s('Connect')."\"
                    class='submit'>";
             echo "</form>";
          } else {

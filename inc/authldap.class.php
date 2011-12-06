@@ -396,7 +396,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</table>";
 
          Html::openArrowMassives("ldap_replicates_form", true);
-         Html::closeArrowMassives(array('delete_replicate' => __s('Delete')));
+         Html::closeArrowMassives(array('delete_replicate' => __('Delete')));
 
          echo "</div></form>";
       }

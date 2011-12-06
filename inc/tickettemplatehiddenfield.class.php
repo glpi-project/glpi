@@ -226,7 +226,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
          if ($canedit) {
             Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __s('Delete')));
+            Html::closeArrowMassives(array('delete' => __('Delete')));
          }
          echo "</form>";
 

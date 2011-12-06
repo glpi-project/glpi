@@ -519,7 +519,7 @@ class TicketValidation  extends CommonDBChild {
       echo "<br>".$LANG['common'][25]."&nbsp;: ";
       echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
-      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
    }
 
 

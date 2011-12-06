@@ -277,7 +277,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
          if ($canedit) {
             Html::openArrowMassives("tickettemplatepredefinedfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => __s('Delete')));
+            Html::closeArrowMassives(array('delete' => __('Delete')));
          }
          echo "</form>";
 

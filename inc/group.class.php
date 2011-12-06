@@ -621,7 +621,7 @@ class Group extends CommonTreeDropdown {
                                        'used'      => array($this->fields["id"]),
                                        'condition' => ($tech ? '`is_assign`' : '`is_itemgroup`')));
          echo "&nbsp;";
-         Html::closeArrowMassives(array('changegroup' => $LANG['buttons'][20]));
+         Html::closeArrowMassives(array('changegroup' => __('Move')));
       }
 
       echo "</form></div>";

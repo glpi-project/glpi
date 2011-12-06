@@ -369,7 +369,7 @@ class Ocslink extends CommonDBTM {
          if ($header) {
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
             echo "<input class='submit' type='submit' name='unlock' value='" .
-                  $LANG['buttons'][38] . "'></td></tr>";
+                  __s('Unlock') . "'></td></tr>";
          } else {
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
             echo $LANG['ocsng'][15]."</td></tr>";

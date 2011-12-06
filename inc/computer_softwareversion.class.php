@@ -428,7 +428,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                                'softwares_id' => $softwares_id));
                echo "&nbsp;<input type='submit' name='moveinstalls' value='".
                      __s('Move')."' class='submit'>&nbsp;";
-               Html::closeArrowMassives(array('deleteinstalls' => __s('Delete')));
+               Html::closeArrowMassives(array('deleteinstalls' => __('Delete')));
 
                echo "</form>";
             }
@@ -661,9 +661,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openArrowMassives("lic_form$cat$rand", true);
 
             if (isset($cat)) {
-               Html::closeArrowMassives(array('massuninstall' => __s('Uninstall')));
+               Html::closeArrowMassives(array('massuninstall' => __('Uninstall')));
             } else {
-               Html::closeArrowMassives(array('massinstall' => __s('Install')));
+               Html::closeArrowMassives(array('massinstall' => __('Install')));
             }
 
          }

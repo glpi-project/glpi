@@ -186,7 +186,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
                               "disconnect&amp;id=".$contact->fields['id']."\">" .
-                              $LANG['buttons'][10] . "</a>";
+                              __('Disconnect') . "</a>";
                      } else {
                         "&nbsp;";
                      }

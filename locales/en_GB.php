@@ -50,7 +50,6 @@ $LANG['bookmark'][4]="New bookmark";
 $LANG['bookmark'][5]="Public bookmarks"; 
 $LANG['bookmark'][6]="Default view"; 
 
-/// TODO Before is ok for migration to gettext
 
 $LANG['buttons'][0]="Search"; 
 $LANG['buttons'][2]="Post"; 
@@ -110,6 +109,9 @@ $LANG['buttons'][58]="Update";
 $LANG['buttons'][59]="Dissociate"; 
 $LANG['buttons'][60]="Close window"; 
 $LANG['buttons'][61]="Regenerate"; 
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['calendar'][0]="YYYY-MM-DD"; 
 $LANG['calendar'][1]="DD-MM-YYYY"; 

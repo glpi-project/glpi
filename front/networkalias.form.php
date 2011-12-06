@@ -92,7 +92,7 @@ if (isset($_GET['popup'])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
    $alias->showForm($_GET["id"], $options);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
    echo "</div>";
    Html::popFooter();
 

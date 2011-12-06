@@ -72,7 +72,7 @@ if (isset($_SESSION["ocs_link"])) {
 
       unset($_SESSION["ocs_link"]);
       echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
-      echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
+      echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
    }
 }
 

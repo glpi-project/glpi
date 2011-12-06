@@ -352,7 +352,7 @@ class NetworkPort extends CommonDBChild {
          echo "</tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>\n";
-         echo "<input type='submit' name='create' value=\"" . $LANG['buttons'][8] .
+         echo "<input type='submit' name='create' value=\"" . __s('Add') .
               "\" class='submit'>\n";
          echo "</td></tr></table></div></form>\n";
       }

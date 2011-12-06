@@ -893,12 +893,12 @@ class Document extends CommonDBTM {
          echo "</td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='adddocumentitem' value='".
-                $LANG['buttons'][8]."' class='submit'>";
+                __s('Add')."' class='submit'>";
          echo "</td></tr>";
          echo "</table>";
 
          Html::openArrowMassives("document_form$rand", true);
-         Html::closeArrowMassives(array('deletedocumentitem' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('deletedocumentitem' => __('Delete')));
 
       } else {
          echo "</table>";
@@ -1359,7 +1359,7 @@ class Document extends CommonDBTM {
                   echo "<a href='".$CFG_GLPI["root_doc"];
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
                   echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
-                  echo "<img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\"
+                  echo "<img title=\"".__s('Delete')."\" alt=\"".__s('Delete')."\"
                         src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
                } else {
                   echo "&nbsp;";

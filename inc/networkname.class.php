@@ -473,13 +473,13 @@ class NetworkName extends FQDNLabel {
                   echo "<a href='" . $address->getFormURL(). "?remove_address=unaffect&id=" .
                          $address->getID() . "'>&nbsp;".
                          "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/sub_dropdown.png\" alt=\"" . $LANG['buttons'][59] . "\" title=\"" .
-                           $LANG['buttons'][59] . "\"></a>";
+                           "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') . "\" title=\"" .
+                           __s('Dissociate') . "\"></a>";
                   echo "<a href='" . $address->getFormURL(). "?remove_address=purge&id=" .
                          $address->getID() . "'>&nbsp;".
                          "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/delete.png\" alt=\"" . $LANG['buttons'][22] . "\" title=\"" .
-                           $LANG['buttons'][22] . "\"></a>";
+                           "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
+                           __s('Purge') . "\"></a>";
                   echo "</td>";
                   echo "<td>".str_replace('$$$$', '<br>',
                                           nl2br($address->fields['ip_addresses'])) . "</td>";
@@ -532,10 +532,10 @@ class NetworkName extends FQDNLabel {
       Dropdown::show('NetworkName', array('name'      => 'addressID',
                                           'condition' => '`items_id`=0'));
       echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-      echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+      echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
              "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'>";
       echo "</a>&nbsp;\n";
-      echo "<input type='submit' name='assign_address' value='" . $LANG['buttons'][3] .
+      echo "<input type='submit' name='assign_address' value='" . __s('Associate') .
              "' class='submit'>";
       echo "</td></tr>";
 

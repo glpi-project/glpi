@@ -125,7 +125,7 @@ class Group_User extends CommonDBRelation{
                                           'used'      => $used,
                                           'condition' => '`is_usergroup`'));
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='addgroup' value=\"".__s('Add')."\"
                    class='submit'>";
          } else {
             echo $LANG['common'][49];
@@ -191,7 +191,7 @@ class Group_User extends CommonDBRelation{
       if ($canedit) {
          if (count($used)) {
             Html::openArrowMassives("groupuser_form$rand", true);
-            Html::closeArrowMassives(array('deletegroup' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('deletegroup' => __('Delete')));
          }
          echo "</form>";
       }
@@ -238,7 +238,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\"
+         echo "<input type='submit' name='adduser' value=\"".__s('Add')."\"
                 class='submit'>";
          echo "</td></tr>";
          echo "</table></div></form>";
@@ -426,10 +426,10 @@ class Group_User extends CommonDBRelation{
                              'set_delegate'   => $LANG['users'][24],
                              'unset_manager'  => $LANG['users'][20],
                              'unset_delegate' => $LANG['users'][25],
-                             'deleteuser'     => $LANG['buttons'][6]);
+                             'deleteuser'     => __('Delete'));
             Dropdown::showFromArray('action', $actions);
             echo "&nbsp;";
-            Html::closeArrowMassives(array('do' => $LANG['buttons'][2]));
+            Html::closeArrowMassives(array('do' => __('Post')));
          }
          echo "</div>";
       } else {

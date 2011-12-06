@@ -348,7 +348,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    }
 
    echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>";
+                __s('Post')."'>";
    if ($USE_TABLE) {
       echo "</td></tr></table>";
    }

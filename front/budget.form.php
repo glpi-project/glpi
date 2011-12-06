@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
 
    if (isset($_GET['popup'])) {
-      echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+      echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
       echo "</div>";
 
       Html::popFooter();

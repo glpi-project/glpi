@@ -224,7 +224,7 @@ class Change_Item extends CommonDBRelation{
 
          Html::openArrowMassives("itemchange_form$rand", true);
          echo "<input type='hidden' name='changes_id' value='$instID'>";
-         Html::closeArrowMassives(array('delete' => __s('Delete')));
+         Html::closeArrowMassives(array('delete' => __('Delete')));
 
       } else {
          echo "</table>";

@@ -219,13 +219,13 @@ class Item_Problem extends CommonDBRelation{
                                 ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
                                 $types);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
 
          Html::openArrowMassives("itemproblem_form$rand", true);
          echo "<input type='hidden' name='problems_id' value='$instID'>";
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __('Delete')));
 
       } else {
          echo "</table>";

@@ -2846,7 +2846,7 @@ class Html {
       if (count($actions)) {
          foreach($actions as $name => $label) {
             if (!empty($name)) {
-               echo "<input type='submit' name='$name' value=\"$label\" class='submit'>&nbsp;";
+               echo "<input type='submit' name='$name' value=\"".addslashes($label)."\" class='submit'>&nbsp;";
             }
          }
       }

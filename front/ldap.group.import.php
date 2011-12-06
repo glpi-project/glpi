@@ -72,7 +72,7 @@ if (isset($_GET['next'])) {
          Html::displayProgressBar(400, 100);
 
          echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
+         echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
       }
    }
 
@@ -107,7 +107,7 @@ if (isset($_GET['next'])) {
       if (!AuthLdap::testLDAPConnection($_SESSION["ldap_server"])) {
          unset($_SESSION["ldap_server"]);
          echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG['buttons'][13]."</a></div>";
+         echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".__('Back')."</a></div>";
 
       } else {
          if (!isset($_SESSION["ldap_group_filter"])) {

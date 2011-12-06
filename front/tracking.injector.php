@@ -92,7 +92,7 @@ if (isset($_POST['add'])) {
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br>";
       Html::displayMessageAfterRedirect();
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-      echo $LANG['buttons'][13]."</a>";
+      echo __('Back')."</a>";
 
       echo "</div>";
 

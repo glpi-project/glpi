@@ -139,7 +139,7 @@ class Change_Problem extends CommonDBRelation{
                                         'entity'      => $problem->getEntityID(),
                                         'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
 
@@ -147,7 +147,7 @@ class Change_Problem extends CommonDBRelation{
 
       if ($canedit) {
          Html::openArrowMassives("changeproblem_form$rand", true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __('Delete')));
       }
       echo "</form>";
    }
@@ -215,7 +215,7 @@ class Change_Problem extends CommonDBRelation{
          Dropdown::show('Problem', array('used'   => $used,
                                          'entity' => $change->getEntityID()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
 
@@ -223,7 +223,7 @@ class Change_Problem extends CommonDBRelation{
 
       if ($canedit) {
          Html::openArrowMassives("changeproblem_form$rand", true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __('Delete')));
       }
       echo "</form>";
    }
