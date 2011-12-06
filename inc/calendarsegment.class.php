@@ -306,12 +306,12 @@ class CalendarSegment extends CommonDBChild {
          echo "<input type='hidden' name='is_recursive' value='".$calendar->fields['is_recursive']."'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', $LANG['calendarDay']);
-         echo "</td><td class='center'>".$LANG['buttons'][33]."&nbsp;: ";
+         echo "</td><td class='center'>".__('Start');
          Dropdown::showHours("begin",date('H').":00");
-         echo "</td><td class='center'>".$LANG['buttons'][32]."&nbsp;: ";
+         echo "</td><td class='center'>".__('End');
          Dropdown::showHours("end",(date('H')+1).":00");
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";
@@ -319,8 +319,8 @@ class CalendarSegment extends CommonDBChild {
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['calendar'][7]."</th>";
-      echo "<th>".$LANG['buttons'][33]."</th>";
-      echo "<th>".$LANG['buttons'][32]."</th>";
+      echo "<th>".__('Start')."</th>";
+      echo "<th>".__('End')."</th>";
       echo "</tr>";
 
       $query = "SELECT *
@@ -353,7 +353,7 @@ class CalendarSegment extends CommonDBChild {
 
       if ($canedit) {
          Html::openArrowMassives("calendarsegment_form$rand", true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __s('Delete')));
       }
       echo "</form>";
    }

@@ -422,11 +422,11 @@ class Plugin extends CommonDBTM {
             switch ($plug['state']) {
                case self::ACTIVATED :
                   echo "<td><a href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
-                             $LANG['buttons'][42]."</a></td>";
+                             __('Disable')."</a></td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                            $LANG['buttons'][5]."</a>";
+                            __('Uninstall')."</a>";
                   } else {
                      echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
                   }
@@ -446,9 +446,9 @@ class Plugin extends CommonDBTM {
                         $do_install = $function();
                      }
                      if ($plug['state']==self::NOTUPDATED) {
-                        $msg = $LANG['buttons'][58];
+                        $msg = __('Update');
                      } else {
-                        $msg = $LANG['buttons'][4];
+                        $msg = __('Install');
                      }
                      if ($do_install) {
                         echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".$msg.
@@ -467,7 +467,7 @@ class Plugin extends CommonDBTM {
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
                         echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                               $LANG['buttons'][5]."</a>";
+                               __('Uninstall')."</a>";
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
                         echo "&nbsp;";
@@ -493,7 +493,7 @@ class Plugin extends CommonDBTM {
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                            $LANG['buttons'][5]."</a>";
+                            __('Uninstall')."</a>";
                   } else {
                      echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
                   }
@@ -505,13 +505,13 @@ class Plugin extends CommonDBTM {
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (function_exists($function) && $function()) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
-                                $LANG['buttons'][41]."</a>";
+                                __('Enable')."</a>";
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                            $LANG['buttons'][5]."</a>";
+                            __('Uninstall')."</a>";
                   } else {
                      echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
                   }
@@ -522,7 +522,7 @@ class Plugin extends CommonDBTM {
                default :
                   echo "<td colspan='2'>";
                   echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
-                         $LANG['buttons'][53]."</a>";
+                         __('Clean')."</a>";
                   echo "</td>";
                   break;
             }

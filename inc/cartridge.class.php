@@ -553,7 +553,7 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
+                     $data["id"]."&amp;tID=$tID'>".__s('Delete')."</a>";
             } else {
                 echo "&nbsp;";
             }
@@ -597,7 +597,7 @@ class Cartridge extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2'>";
-         echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\"
+         echo "<input type='submit' name='add_several' value=\"".__s('Add')."\"
                 class='submit'>";
          echo "<input type='hidden' name='tID' value='$ID'>\n";
          echo "<span class='small_space'>";
@@ -730,7 +730,7 @@ class Cartridge extends CommonDBTM {
             } else {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
+                      "&amp;tID=".$data["tID"]."'>".__s('Delete')."</a>";
             }
             echo "</span></td></tr>";
          }
@@ -741,7 +741,7 @@ class Cartridge extends CommonDBTM {
          echo "<input type='hidden' name='pID' value='$instID'>";
 
          if (CartridgeItem::dropdownForPrinter($printer)) {
-            echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"
+            echo "&nbsp;<input type='submit' name='install' value=\"".__s('Install')."\"
                          class='submit'>";
          }
          echo "</form></td><td class='tab_bg_2 center'>&nbsp;";

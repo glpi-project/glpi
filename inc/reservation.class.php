@@ -387,7 +387,7 @@ class Reservation extends CommonDBChild {
          }
 
          $all = "<a href='reservation.php?reservationitems_id=&amp;mois_courant=".
-                  "$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
+                  "$mois_courant&amp;annee_courante=$annee_courante'>".__('Show all')."</a>";
 
       } else {
          $type = "";
@@ -418,12 +418,12 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center'>";
       echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
-             "\" title=\"".$LANG['buttons'][12]."\"></a></td>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+             "\" title=\"".__s('Previous')."\"></a></td>";
       echo "<td class='b'>".$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</td>";
       echo "<td><a href='reservation.php".$str_suivant."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
-             "\" title=\"".$LANG['buttons'][11]."\"></a></td></tr></table>\n";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+             "\" title=\"".__s('Next')."\"></a></td></tr></table>\n";
 
       // test
       echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
@@ -661,18 +661,18 @@ class Reservation extends CommonDBChild {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>\n";
 
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
-         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\"".__s('Purge')."\" class='submit'>";
          if ($resa->fields["group"] > 0) {
-            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".$LANG['buttons'][35];
+            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".__s('Delete all rehearsals');
          }
          echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
          echo "</td></tr>\n";
       }
       echo "</table></form></div>\n";

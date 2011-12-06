@@ -63,10 +63,10 @@ class Holiday extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'begin_date',
-                         'label' => $LANG['buttons'][33],
+                         'label' => __('Start'),
                          'type'  => 'date'),
                    array('name'  => 'end_date',
-                         'label' => $LANG['buttons'][32],
+                         'label' => __('End'),
                          'type'  => 'date'),
                    array('name'  => 'is_perpetual',
                          'label' => $LANG['calendar'][3],
@@ -86,12 +86,12 @@ class Holiday extends CommonDropdown {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'begin_date';
-      $tab[11]['name']     = $LANG['buttons'][33];
+      $tab[11]['name']     = __('Start');
       $tab[11]['datatype'] = 'date';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'end_date';
-      $tab[12]['name']     = $LANG['buttons'][32];
+      $tab[12]['name']     = __('End');
       $tab[12]['datatype'] = 'date';
 
       $tab[13]['table']    = $this->getTable();

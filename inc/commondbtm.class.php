@@ -1664,6 +1664,7 @@ class CommonDBTM extends CommonGLPI {
          if ($ID<=0 || $params['withtemplate']==2) {
             echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          } else {
+            //TRANS : means update / actualize
             echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
          }
 

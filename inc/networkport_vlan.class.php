@@ -163,7 +163,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
                      "unassigned&amp;id=" . $line["id"] . "'>";
                echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                     $LANG['buttons'][59] . "\" title=\"" . $LANG['buttons'][59] . "\"></a>";
+                     __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
             } else {
                echo "&nbsp;";
             }
@@ -199,7 +199,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          Dropdown::show('Vlan',
                         array('used' => $used));
          echo "</td><td rowspan='2'>";
-         echo "<input type='submit' name='assign_vlan' value=\"".$LANG['buttons'][3]."\"
+         echo "<input type='submit' name='assign_vlan' value=\"".__s('Associate')."\"
                 class='submit'>";
          echo "</td></tr>";
 

@@ -3004,7 +3004,7 @@ class Transfer extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 top' colspan='4'>";
          echo "<div class='center'>";
          Dropdown::show('Entity', array('name' => 'to_entity'));
-         echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG['buttons'][48]."\"
+         echo "&nbsp;<input type='submit' name='transfer' value=\"".__s('Forward')."\"
                       class='submit'></div>";
          echo "</td></tr>";
       }
@@ -3026,12 +3026,12 @@ class Transfer extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      $keep  = array(0 => $LANG['buttons'][6],
-                     1 => $LANG['buttons'][49]);
+      $keep  = array(0 => __('Delete'),
+                     1 => __('Preserve'));
 
-      $clean = array(0 => $LANG['buttons'][49],
-                     1 => $LANG['buttons'][6],
-                     2 => $LANG['buttons'][22]);
+      $clean = array(0 => __('Preserve'),
+                     1 => __('Delete'),
+                     2 => __('Purge'));
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][38]."&nbsp;:</td><td>";
@@ -3048,16 +3048,16 @@ class Transfer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG['networking'][6]."&nbsp;:</td><td>";
-      $options = array(0 => $LANG['buttons'][6],
-                       1 => $LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
-                       2 => $LANG['buttons'][49]." - ".$LANG['buttons'][9] );
+      $options = array(0 => __('Delete'),
+                       1 => __('Disconnect') ,
+                       2 => __('Forward') );
       $params['value'] = $this->fields['keep_networklink'];
       Dropdown::showFromArray('keep_networklink',$options,$params);
       echo "</td>";
       echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][28]."&nbsp;:</td><td>";
-      $options = array(0 => $LANG['buttons'][6],
-                       1 => $LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
-                       2 => $LANG['buttons'][49]." - ".$LANG['buttons'][48] );
+      $options = array(0 => __('Delete'),
+                       1 => __('Disconnect') ,
+                       2 => __('Forward') );
       $params['value'] = $this->fields['keep_ticket'];
       Dropdown::showFromArray('keep_ticket',$options,$params);
       echo "</td></tr>";

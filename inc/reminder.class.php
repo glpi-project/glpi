@@ -605,7 +605,7 @@ class Reminder extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td >".__('Calendar')."</td>";
       echo "<td class='center'>";
 
       if ($canedit) {
@@ -814,22 +814,30 @@ class Reminder extends CommonDBTM {
 
       switch ($type) {
          case "in" :
-            echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
+            //TRANS: First is the start time of a planned item, second is the end and third is its name
+            printf(__('From %s to %s : %s'),date("H:i",strtotime($val["begin"])),
+                                            date("H:i",strtotime($val["end"])),
+                                            Html::resume_text($val["name"],80)) ;
+            
             break;
 
          case "through" :
+            echo Html::resume_text($val["name"],80);
             break;
 
          case "begin" :
-            echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
+            //TRANS: First is the start time of a planned item, second is its name
+            printf(__('Start at %s: %s'),date("H:i",strtotime($val["begin"])),
+                                         Html::resume_text($val["name"],80)) ;
             break;
 
          case "end" :
-            echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
+            //TRANS: First is the end time of a planned item and second is its name
+            printf(__('End at %s: %s'),date("H:i",strtotime($val["end"])),
+                                         Html::resume_text($val["name"],80)) ;
             break;
       }
 
-      echo Html::resume_text($val["name"],80);
       echo $users_id;
       echo "</a>";
 
@@ -923,7 +931,7 @@ class Reminder extends CommonDBTM {
          echo "<span class='reminder_right'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
-               $LANG['buttons'][8]."\"></a></span>";
+               __s('Add')."\"></a></span>";
       }
 
       echo "</div></th></tr>\n";
@@ -1278,7 +1286,7 @@ class Reminder extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("remindervisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('deletevisibility' => __s('Delete')));
          echo "</form>";
       }
 

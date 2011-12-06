@@ -84,8 +84,8 @@ class Ajax {
    static function displaySearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI, $LANG;
 
-      echo "<input title=\"".$LANG['buttons'][0]." (".$CFG_GLPI['ajax_wildcard']." ".
-           $LANG['search'][1].")\" type='text' ondblclick=\"this.value='".
+      //TRANS: %s is the character used as wildcard in ajax search
+      echo "<input title=\"".sprintf(__s('Search (%s for all)'),$CFG_GLPI["ajax_wildcard"])."\" type='text' ondblclick=\"this.value='".
            $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
 
