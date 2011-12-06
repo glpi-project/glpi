@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 14:28+0100\n"
+"POT-Creation-Date: 2011-12-06 16:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: index.php:114 install/update.php:434 install/update.php:450
+#: index.php:114 inc/authldap.class.php:891 inc/authldap.class.php:1579
+#: inc/html.class.php:1974 inc/knowbaseitem.class.php:781
+#: inc/ocsserver.class.php:4030 install/update.php:434 install/update.php:450
 msgid "Post"
 msgstr ""
 
@@ -74,14 +76,135 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+#: front/find_num.php:84 inc/authldap.class.php:2335
+#: inc/dropdown.class.php:751 inc/html.class.php:1976 inc/html.class.php:2155
+#: inc/html.class.php:2159 inc/knowbaseitem.class.php:760
+#: inc/search.class.php:1676
+msgid "Search"
+msgstr ""
+
+#. TRANS : means update / actualize
+#: front/report.infocom.conso.php:62 front/report.infocom.php:63
+#: front/report.reservation.php:55 front/stat.global.php:67
+#: front/stat.graph.php:287 front/stat.item.php:73 front/stat.location.php:103
+#: front/stat.tracking.php:120 inc/auth.class.php:1070
+#: inc/authldap.class.php:339 inc/authldap.class.php:445
+#: inc/authldap.class.php:547 inc/authldap.class.php:575
+#: inc/bookmark.class.php:242 inc/commondbtm.class.php:1668
+#: inc/commondbtm.class.php:1678 inc/commondbtm.class.php:1702
+#: inc/commondbtm.class.php:2881 inc/commonitilactor.class.php:194
+#: inc/computer_device.class.php:351 inc/dropdown.class.php:1377
+#: inc/entitydata.class.php:268 inc/entitydata.class.php:271
+#: inc/entitydata.class.php:362 inc/entitydata.class.php:365
+#: inc/entitydata.class.php:515 inc/entitydata.class.php:518
+#: inc/entitydata.class.php:670 inc/entitydata.class.php:673
+#: inc/entitydata.class.php:931 inc/entitydata.class.php:934
+#: inc/infocom.class.php:1058 inc/knowbaseitem.class.php:520
+#: inc/ocsserver.class.php:393 inc/ocsserver.class.php:503
+#: inc/ocsserver.class.php:552 inc/planning.class.php:235
+#: inc/planning.class.php:313 inc/plugin.class.php:449
+#: inc/profile.class.php:605 inc/profile.class.php:755
+#: inc/profile.class.php:991 inc/profile.class.php:1110
+#: inc/profile.class.php:1288 inc/reservation.class.php:675
+#: inc/ticket.class.php:3931 inc/ticket.class.php:3946 inc/user.class.php:1820
+#: inc/user.class.php:2817 inc/user.class.php:2845
+msgid "Update"
+msgstr ""
+
+#: front/stat.graph.php:262 front/stat.graph.php:263 inc/html.class.php:3706
+#: inc/html.class.php:3707 inc/html.class.php:3826 inc/html.class.php:3827
+#: inc/planning.class.php:178 inc/planning.class.php:179
+#: inc/reservation.class.php:421 inc/reservation.class.php:422
+msgid "Previous"
+msgstr ""
+
+#: front/stat.graph.php:272 front/stat.graph.php:273 inc/html.class.php:3723
+#: inc/html.class.php:3724 inc/html.class.php:3872 inc/html.class.php:3873
+#: inc/planning.class.php:259 inc/planning.class.php:260
+#: inc/reservation.class.php:425 inc/reservation.class.php:426
+msgid "Next"
+msgstr ""
+
+#. TRANS: %s is the character used as wildcard in ajax search
+#: inc/ajax.class.php:88
+#, php-format
+msgid "Search (%s for all)"
+msgstr ""
+
+#: inc/authldap.class.php:393 inc/authldap.class.php:471
+#: inc/rulecollection.class.php:724
+msgid "Test"
+msgstr ""
+
+#: inc/authldap.class.php:399 inc/bookmark.class.php:244
+#: inc/calendar_holiday.class.php:147 inc/calendarsegment.class.php:356
+#: inc/cartridge.class.php:556 inc/cartridge.class.php:733
+#: inc/commondbtm.class.php:1695 inc/computer_device.class.php:212
+#: inc/computer_softwareversion.class.php:431 inc/contract.class.php:736
+#: inc/contract.class.php:923 inc/contract.class.php:1056
+#: inc/dropdown.class.php:1350 inc/dropdown.class.php:1397
+#: inc/knowbaseitem.class.php:1372 inc/reminder.class.php:1289
+#: inc/rulecollection.class.php:421 inc/ticket.class.php:3426
+#: inc/ticket.class.php:3940 inc/transfer.class.php:3029
+#: inc/transfer.class.php:3033 inc/transfer.class.php:3051
+#: inc/transfer.class.php:3058
+msgid "Delete"
+msgstr ""
+
+#: inc/authldap.class.php:1013 inc/authldap.class.php:1076
+#: inc/authldap.class.php:1316 inc/authldap.class.php:1359
+#: inc/dropdown.class.php:1532 inc/ocsserver.class.php:2854
+#: inc/ocsserver.class.php:2947
+msgid "Import"
+msgstr ""
+
+#: inc/authldap.class.php:1310 inc/html.class.php:2831
+#: inc/ocsserver.class.php:2367 inc/ocsserver.class.php:2547
+#: inc/ocsserver.class.php:2581 inc/ocsserver.class.php:2845
+#: inc/ocsserver.class.php:2954
+msgid "Check all"
+msgstr ""
+
+#: inc/authldap.class.php:1313 inc/html.class.php:2834
+#: inc/ocsserver.class.php:2370 inc/ocsserver.class.php:2550
+#: inc/ocsserver.class.php:2584 inc/ocsserver.class.php:2848
+#: inc/ocsserver.class.php:2958
+msgid "Uncheck all"
+msgstr ""
+
+#: inc/authldap.class.php:2501 inc/ocsserver.class.php:426
+#: inc/transfer.class.php:3030 inc/transfer.class.php:3032
+msgid "Preserve"
+msgstr ""
+
+#: inc/authldap.class.php:2504 inc/plugin.class.php:425
+#: inc/search.class.php:1120
+msgid "Disable"
+msgstr ""
+
 #. TRANS: First string is the Itemtype name and the second the ID of the item
-#: inc/bookmark.class.php:202 inc/commondbtm.class.php:1814
+#: inc/bookmark.class.php:202 inc/commondbtm.class.php:1816
 #, php-format
 msgid "%s - ID %s"
 msgstr ""
 
 #: inc/bookmark.class.php:204
 msgid "New card"
+msgstr ""
+
+#: inc/bookmark.class.php:234 inc/calendar_holiday.class.php:139
+#: inc/calendarsegment.class.php:314 inc/cartridge.class.php:600
+#: inc/commondbtm.class.php:1665 inc/computer_device.class.php:210
+#: inc/computer_device.class.php:357
+#: inc/computer_softwareversion.class.php:557 inc/contract.class.php:759
+#: inc/contract.class.php:915 inc/contract.class.php:1081
+#: inc/dropdown.class.php:209 inc/html.class.php:2143 inc/html.class.php:2147
+#: inc/html.class.php:2621 inc/html.class.php:2622 inc/infocom.class.php:612
+#: inc/knowbaseitem.class.php:523 inc/reminder.class.php:934
+#: inc/reservation.class.php:664 inc/ticket.class.php:3884
+#: inc/ticket.class.php:3951 inc/ticket.class.php:3978
+#: inc/ticket.class.php:3979 inc/ticket.class.php:4393
+msgid "Add"
 msgstr ""
 
 #: inc/bookmark.class.php:529
@@ -100,21 +223,245 @@ msgstr ""
 msgid "Save as bookmark"
 msgstr ""
 
-#: inc/calendar.class.php:49 inc/entitydata.class.php:781
+#: inc/calendar.class.php:49 inc/entity.class.php:439
+#: inc/entitydata.class.php:781 inc/reminder.class.php:608
 msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/entitydata.class.php:268 inc/entitydata.class.php:271
-#: inc/entitydata.class.php:362 inc/entitydata.class.php:365
-#: inc/entitydata.class.php:515 inc/entitydata.class.php:518
-#: inc/entitydata.class.php:670 inc/entitydata.class.php:673
-msgid "Update"
+#: inc/calendar_holiday.class.php:91 inc/calendarsegment.class.php:309
+#: inc/calendarsegment.class.php:322 inc/contract.class.php:245
+#: inc/contract.class.php:255 inc/contract.class.php:265
+#: inc/holiday.class.php:66 inc/holiday.class.php:89 inc/html.class.php:3703
+#: inc/html.class.php:3704 inc/html.class.php:3821 inc/html.class.php:3822
+#: inc/planning.class.php:301
+msgid "Start"
+msgstr ""
+
+#: inc/calendar_holiday.class.php:92 inc/calendarsegment.class.php:311
+#: inc/calendarsegment.class.php:323 inc/contract.class.php:247
+#: inc/contract.class.php:257 inc/contract.class.php:267
+#: inc/contract.class.php:1418 inc/crontask.class.php:1063
+#: inc/holiday.class.php:69 inc/holiday.class.php:94 inc/html.class.php:3726
+#: inc/html.class.php:3727 inc/html.class.php:3878 inc/html.class.php:3879
+#: inc/planning.class.php:305 inc/search.class.php:3881
+msgid "End"
+msgstr ""
+
+#. TRANS : %s is the name of the calendar (used for headings of a list)
+#: inc/calendar_holiday.class.php:111
+#, php-format
+msgid "Calendar = %s"
+msgstr ""
+
+#: inc/cartridge.class.php:744 inc/computer_softwareversion.class.php:548
+#: inc/computer_softwareversion.class.php:666
+#: inc/computer_softwareversion.class.php:858 inc/dropdown.class.php:1454
+#: inc/plugin.class.php:451
+msgid "Install"
+msgstr ""
+
+#: inc/commondbtm.class.php:1683 inc/dropdown.class.php:1387
+#: inc/ticket.class.php:3928
+msgid "Restore"
+msgstr ""
+
+#: inc/commondbtm.class.php:1686 inc/commondbtm.class.php:1692
+#: inc/commondbtm.class.php:3155 inc/dropdown.class.php:1386
+#: inc/dropdown.class.php:1399 inc/infocom.class.php:1062
+#: inc/reservation.class.php:670 inc/ticket.class.php:3936
+#: inc/transfer.class.php:3034
+msgid "Purge"
+msgstr ""
+
+#. TRANS: %s is the template name
+#: inc/commondbtm.class.php:1804
+#, php-format
+msgid "Add based on template %s"
+msgstr ""
+
+#: inc/commondropdown.class.php:406
+msgid "Confirm"
+msgstr ""
+
+#: inc/commondropdown.class.php:409 inc/commondropdown.class.php:438
+msgid "Cancel"
+msgstr ""
+
+#: inc/commondropdown.class.php:436
+msgid "Replace"
+msgstr ""
+
+#: inc/computer_device.class.php:211
+msgid "Delete all"
+msgstr ""
+
+#: inc/computer_softwareversion.class.php:430 inc/dropdown.class.php:1550
+#: inc/rulecollection.class.php:424
+msgid "Move"
+msgstr ""
+
+#: inc/computer_softwareversion.class.php:664
+#: inc/computer_softwareversion.class.php:768 inc/plugin.class.php:429
+#: inc/plugin.class.php:470 inc/plugin.class.php:496 inc/plugin.class.php:514
+msgid "Uninstall"
+msgstr ""
+
+#: inc/contract.class.php:1419 inc/search.class.php:3884
+msgid "Notice"
+msgstr ""
+
+#: inc/contract.class.php:1421 inc/search.class.php:3887
+msgid "End + Notice"
+msgstr ""
+
+#: inc/crontask.class.php:465 inc/crontask.class.php:466
+#: inc/crontask.class.php:526 inc/crontask.class.php:527
+#: inc/knowbaseitem.class.php:527 inc/search.class.php:1680
+msgid "Blank"
+msgstr ""
+
+#: inc/crontask.class.php:522
+msgid "Execute"
+msgstr ""
+
+#. TRANS: %s is the number of starts
+#: inc/crontask.class.php:883
+#, php-format
+msgid "%s starts"
+msgstr ""
+
+#. TRANS: %s is the number of stops
+#: inc/crontask.class.php:886
+#, php-format
+msgid "%s stops"
+msgstr ""
+
+#: inc/dropdown.class.php:769 inc/entity.class.php:567 inc/html.class.php:2178
+#: inc/reservation.class.php:390 inc/ticket.class.php:4471
+#: inc/ticket.class.php:4648 inc/ticket.class.php:4652
+msgid "Show all"
+msgstr ""
+
+#: inc/dropdown.class.php:1405 inc/dropdown.class.php:1453
+msgid "Connect"
+msgstr ""
+
+#: inc/dropdown.class.php:1406 inc/transfer.class.php:3052
+#: inc/transfer.class.php:3059
+msgid "Disconnect"
+msgstr ""
+
+#: inc/dropdown.class.php:1432 inc/transfer.class.php:3007
+#: inc/transfer.class.php:3053 inc/transfer.class.php:3060
+msgid "Forward"
+msgstr ""
+
+#: inc/dropdown.class.php:1463
+msgid "Unlock the locked field for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1464
+msgid "Unlock the locked monitor for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1465
+msgid "Unlock the locked device for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1466
+msgid "Unlock the locked printer for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1467
+msgid "Unlock the locked software for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1468
+msgid "Unlock the locked IP for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1469
+msgid "Unlock the locked volume for OCSNG"
+msgstr ""
+
+#: inc/dropdown.class.php:1481
+msgid "Duplicate"
+msgstr ""
+
+#: inc/dropdown.class.php:1526
+msgid "Reset last run"
+msgstr ""
+
+#: inc/dropdown.class.php:1560
+msgid "Forward and Merge"
+msgstr ""
+
+#: inc/dropdown.class.php:1630
+msgid "Current page in landscape PDF"
+msgstr ""
+
+#: inc/dropdown.class.php:1631
+msgid "Current page in portrait PDF"
+msgstr ""
+
+#: inc/dropdown.class.php:1632
+msgid "Current page in SLK"
+msgstr ""
+
+#: inc/dropdown.class.php:1633
+msgid "Current page in CSV"
+msgstr ""
+
+#: inc/dropdown.class.php:1634
+msgid "All pages in landscape PDF"
+msgstr ""
+
+#: inc/dropdown.class.php:1635
+msgid "All pages in portrait PDF"
+msgstr ""
+
+#: inc/dropdown.class.php:1636
+msgid "All pages in SLK"
+msgstr ""
+
+#: inc/dropdown.class.php:1637
+msgid "All pages in CSV"
+msgstr ""
+
+#: inc/dropdown.class.php:1640
+msgid "Export"
+msgstr ""
+
+#: inc/html.class.php:561 inc/html.class.php:563 inc/user.class.php:2889
+#: inc/user.class.php:2930 install/install.php:244 install/install.php:317
+msgid "Back"
 msgstr ""
 
 #: inc/html.class.php:2264 inc/html.class.php:2632
 msgid "Load a bookmark"
+msgstr ""
+
+#: inc/infocom.class.php:616
+msgid "Show"
+msgstr ""
+
+#: inc/knowbaseitem.class.php:777
+msgid "Browse"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:166
+msgid "Dissociate"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:202
+msgid "Associate"
+msgstr ""
+
+#: inc/ocsserver.class.php:2386 inc/ocsserver.class.php:2409
+#: inc/plugin.class.php:525
+msgid "Clean"
 msgstr ""
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
@@ -152,10 +499,33 @@ msgstr ""
 msgid "Inventory Number"
 msgstr ""
 
+#: inc/plugin.class.php:508 inc/rulecollection.class.php:426
+#: inc/search.class.php:1121
+msgid "Enable"
+msgstr ""
+
 #: inc/profile.class.php:710 inc/profile.class.php:1827
 msgid "Public bookmarks"
 msgstr ""
 
-#: install/install.php:244 install/install.php:317
-msgid "Back"
+#. TRANS: First is the start time of a planned item, second is the end and third is its name
+#: inc/reminder.class.php:818
+#, php-format
+msgid "From %s to %s : %s"
+msgstr ""
+
+#. TRANS: First is the start time of a planned item, second is its name
+#: inc/reminder.class.php:830
+#, php-format
+msgid "Start at %s: %s"
+msgstr ""
+
+#. TRANS: First is the end time of a planned item and second is its name
+#: inc/reminder.class.php:836
+#, php-format
+msgid "End at %s: %s"
+msgstr ""
+
+#: inc/reservation.class.php:672
+msgid "Delete all rehearsals"
 msgstr ""

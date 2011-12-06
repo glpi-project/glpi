@@ -418,12 +418,12 @@ class RuleCollection extends CommonDBTM {
 
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
-         echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+         echo "<option value='delete'>".__('Delete')."</option>";
 
          if ($this->orderby=="ranking") {
-            echo "<option value='move_rule'>".$LANG['buttons'][20]."</option>";
+            echo "<option value='move_rule'>".__('Move')."</option>";
          }
-         echo "<option value='activate_rule'>".$LANG['buttons'][41]."</option>";
+         echo "<option value='activate_rule'>".__('Enable')."</option>";
          echo "</select>\n";
 
          $params = array('action'          => '__VALUE__',
@@ -721,7 +721,7 @@ class RuleCollection extends CommonDBTM {
          $rule->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-         echo "<input type='submit' name='test_all_rules' value='" . $LANG['buttons'][50] .
+         echo "<input type='submit' name='test_all_rules' value='" . __s('Test') .
                 "' class='submit'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "</td></tr>\n";

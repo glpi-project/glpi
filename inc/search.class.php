@@ -1117,8 +1117,8 @@ class Search {
                                             "<a href=\"".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
                                               "&amp;update=update\" "."title=\"".
-                                              ($data["ACTIVE"]?$LANG['buttons'][42]
-                                                              :$LANG['buttons'][41])."\">".
+                                              ($data["ACTIVE"]?__s('Disable')
+                                                              :__s('Enable'))."\">".
                                               "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
                                                 ($data["ACTIVE"]?"moins":"plus").".png\" alt=''
                                                 title=''></a>",
@@ -1673,11 +1673,11 @@ class Search {
 
       // Display submit button
       echo "<td width='80' class='center'>";
-      echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
+      echo "<input type='submit' value=\"".__s('Search')."\" class='submit' >";
       echo "</td><td>";
       Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
       echo "<a href='$target?reset=reset' >";
-      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
+      echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
       echo "</td></tr></table>\n";
@@ -3878,13 +3878,13 @@ class Search {
          case "glpi_contracts.alert" :
             switch ($data[$NAME.$num]) {
                case pow(2,Alert::END) :
-                  return $LANG['buttons'][32];
+                  return __('End');
 
                case pow(2,Alert::NOTICE) :
-                  return $LANG['financial'][10];
+                  return __('Notice');
 
                case pow(2,Alert::END) + pow(2,Alert::NOTICE) :
-                  return $LANG['buttons'][32]." + ".$LANG['financial'][10];
+                  return __('End + Notice');
             }
             return "";
 

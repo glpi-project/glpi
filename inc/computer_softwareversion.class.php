@@ -427,8 +427,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                SoftwareVersion::dropdown(array('name'         => 'versionID',
                                                'softwares_id' => $softwares_id));
                echo "&nbsp;<input type='submit' name='moveinstalls' value='".
-                     $LANG['buttons'][20]."' class='submit'>&nbsp;";
-               Html::closeArrowMassives(array('deleteinstalls' => $LANG['buttons'][6]));
+                     __s('Move')."' class='submit'>&nbsp;";
+               Html::closeArrowMassives(array('deleteinstalls' => __s('Delete')));
 
                echo "</form>";
             }
@@ -545,7 +545,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo $LANG['Menu'][4]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
-         echo "<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\" class='submit'>";
+         echo "<input type='submit' name='install' value=\"".__s('Install')."\" class='submit'>";
          echo "</form>";
          echo "</td>";
          echo "<td class='cneter' clospan='2'>";
@@ -554,7 +554,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo $LANG['software'][11]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
-         echo "<input type='submit' name='add' value=\"" .$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
          echo "</form>";
          echo "</td></tr>\n";
       }
@@ -661,9 +661,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openArrowMassives("lic_form$cat$rand", true);
 
             if (isset($cat)) {
-               Html::closeArrowMassives(array('massuninstall' => $LANG['buttons'][5]));
+               Html::closeArrowMassives(array('massuninstall' => __s('Uninstall')));
             } else {
-               Html::closeArrowMassives(array('massinstall' => $LANG['buttons'][4]));
+               Html::closeArrowMassives(array('massinstall' => __s('Install')));
             }
 
          }
@@ -765,7 +765,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo " - <a href='" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php".
               "?uninstall=uninstall&amp;id=$ID&amp;computers_id=$computers_id'>";
-         echo "<span class='b'>" . $LANG['buttons'][5] . "</span></a>";
+         echo "<span class='b'>" . __('Uninstall') . "</span></a>";
       }
       echo "</td><td>";
 
@@ -855,7 +855,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo " - <a href='".$CFG_GLPI["root_doc"] ."/front/computer_softwareversion.form.php".
                "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id'>";
-         echo "<span class='b'>" . $LANG['buttons'][4] . "</span></a>";
+         echo "<span class='b'>" .__('Install')."</span></a>";
       }
 
       echo "</td></td><td class='b'>" . $data["name"] . " -&nbsp;".$data["serial"]."&nbsp; ";

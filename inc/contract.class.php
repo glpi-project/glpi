@@ -242,9 +242,9 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][60]."&nbsp;:</td>";
-      echo "<td colspan='3'>". $LANG['buttons'][33]."&nbsp;:&nbsp;";
+      echo "<td colspan='3'>". __('Start');
       Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
-      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;";
+      echo "<span class='small_space'>".__('End')."</span>";
       Dropdown::showHours("week_end_hour", $this->fields["week_end_hour"]);
       echo "</td></tr>";
 
@@ -252,9 +252,9 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][61]."&nbsp;:</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
-      echo "<span class='small_space'>".$LANG['buttons'][33]."</span>&nbsp;:&nbsp;";
+      echo "<span class='small_space'>".__('Start')."</span>";
       Dropdown::showHours("saturday_begin_hour", $this->fields["saturday_begin_hour"]);
-      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;";
+      echo "<span class='small_space'>".__('End')."</span>";
       Dropdown::showHours("saturday_end_hour", $this->fields["saturday_end_hour"]);
       echo "</td></tr>";
 
@@ -262,9 +262,9 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][62]."&nbsp;:</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
-      echo "<span class='small_space'>".$LANG['buttons'][33]."</span>&nbsp;:&nbsp;";
+      echo "<span class='small_space'>".__('Start')."</span>";
       Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
-      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;";
+      echo "<span class='small_space'>".__('End')."</span>";
       Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
       echo "</td></tr>";
 
@@ -733,7 +733,7 @@ class Contract extends CommonDBTM {
             echo "<a href='".$CFG_GLPI["root_doc"].
                   "/front/contract.form.php?deletecontractsupplier=1&amp;id=$ID&amp;contracts_id=".
                   $instID."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                  $LANG['buttons'][6]."'></a>";
+                  __s('Delete')."'></a>";
          } else {
             echo "&nbsp;";
          }
@@ -756,7 +756,7 @@ class Contract extends CommonDBTM {
                                  'entity'       => $this->fields["entities_id"],
                                  'entity_sons'  => $this->fields["is_recursive"]));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='addcontractsupplier' value=\"".__s('Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
@@ -912,7 +912,7 @@ class Contract extends CommonDBTM {
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"]);
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='additem' value=\"".__s('Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
@@ -920,7 +920,7 @@ class Contract extends CommonDBTM {
 
          Html::openArrowMassives("contract_form$rand", true);
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
-         Html::closeArrowMassives(array('deleteitem' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('deleteitem' => __s('Delete')));
 
       } else {
          echo "</table>";
@@ -1053,7 +1053,7 @@ class Contract extends CommonDBTM {
                echo "<a href='".$CFG_GLPI["root_doc"].
                      "/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;contracts_id=$cID'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                     $LANG['buttons'][6]."'></a>";
+                     __s('Delete')."'></a>";
             } else {
                echo "&nbsp;";
             }
@@ -1078,7 +1078,7 @@ class Contract extends CommonDBTM {
             self::dropdown(array('entity' => $item->getEntityID(),
                                  'used'   => $contracts));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='additem' value=\"".__s('Add')."\"
                    class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -1415,10 +1415,10 @@ class Contract extends CommonDBTM {
       global $LANG;
 
       $tmp[0]                     = Dropdown::EMPTY_VALUE;
-      $tmp[pow(2, Alert::END)]    = $LANG['buttons'][32];
-      $tmp[pow(2, Alert::NOTICE)] = $LANG['financial'][10];
+      $tmp[pow(2, Alert::END)]    = __('End');
+      $tmp[pow(2, Alert::NOTICE)] = __('Notice');
       $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))]
-                                  = $LANG['buttons'][32]." + ". $LANG['financial'][10];
+                                  = __('End + Notice');
 
       if (is_null($val)) {
          return $tmp;

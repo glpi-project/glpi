@@ -390,7 +390,7 @@ class OcsServer extends CommonDBTM {
       echo "</table>\n";
 
       echo "<p class='submit'>";
-      echo "<input type='submit' name='update_server' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update_server' class='submit' value=\"".__s('Update')."\">";
       echo "</p></form></div>\n";
    }
 
@@ -423,7 +423,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
-      Dropdown::showFromArray("deconnection_behavior", array(''       => $LANG['buttons'][49],
+      Dropdown::showFromArray("deconnection_behavior", array(''       => __('Preserve'),
                                                              "trash"  => $LANG['ocsconfig'][49],
                                                              "delete" => $LANG['profiles'][54]),
                               array('value' => $this->fields["deconnection_behavior"]));
@@ -500,7 +500,7 @@ class OcsServer extends CommonDBTM {
       echo "<br>" . $LANG['ocsconfig'][13];
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
-             $LANG['buttons'][2] . "'></p>";
+             __s('Update') . "'></p>";
       echo "</form></div>";
    }
 
@@ -549,7 +549,7 @@ class OcsServer extends CommonDBTM {
       echo "</table><br>".$LANG['ocsconfig'][58];
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
-             $LANG['buttons'][2] . "'></p>";
+             __s('Update') . "'></p>";
       echo "</form></div>";
    }
 
@@ -2364,10 +2364,10 @@ class OcsServer extends CommonDBTM {
          if ($canedit) {
             echo "<a href='".$target."?check=all' ".
                   "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
-                  $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
+                  __('Check all') . "</a>&nbsp;/&nbsp;\n";
             echo "<a href='".$target."?check=none' ".
                   "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
-                  $LANG['buttons'][19] . "</a>\n";
+                  __('Uncheck all') . "</a>\n";
          }
          echo "<table class='tab_cadre'>";
          echo "<tr><th>" . $LANG['common'][1] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
@@ -2383,7 +2383,7 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value=\"".
-                   $LANG['buttons'][53]."\">";
+                   __s('Clean')."\">";
          }
          echo "</td></tr>\n";
 
@@ -2406,7 +2406,7 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value=\"".
-                   $LANG['buttons'][53]."\">";
+                   __s('Clean')."\">";
          }
          echo "</td></tr>";
          echo "</table></form>\n";
@@ -2544,10 +2544,10 @@ class OcsServer extends CommonDBTM {
             echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
             echo "<a href='".$target."?check=all' ".
                    "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
-                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
+                   __('Check all') . "</a>&nbsp;/&nbsp;\n";
             echo "<a href='".$target."?check=none' ".
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
-                   $LANG['buttons'][19] . "</a>\n";
+                   __('Uncheck all') . "</a>\n";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input class='submit' type='submit' name='update_ok' value=\"".
@@ -2578,10 +2578,10 @@ class OcsServer extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<a href='".$target."?check=all' ".
                    "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
-                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
+                   __('Check all') . "</a>&nbsp;/&nbsp;\n";
             echo "<a href='".$target."?check=none' ".
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
-                   $LANG['buttons'][19] . "</a></td></tr>\n";
+                   __('Uncheck all') . "</a></td></tr>\n";
             echo "</table></form>\n";
             Html::printPager($start, $numrows, $target, $parameters);
 
@@ -2842,16 +2842,16 @@ class OcsServer extends CommonDBTM {
             echo "<form method='post' name='ocsng_form' id='ocsng_form' action='$target'>";
             if (!$tolinked) {
                echo "<a href='".$target."?check=all&amp;start=$start' onclick= ".
-                     "\"if ( markCheckboxes('ocsng_form') ) return false;\">" .$LANG['buttons'][18].
+                     "\"if ( markCheckboxes('ocsng_form') ) return false;\">" .__('Check all').
                      "</a>&nbsp;/&nbsp;<a href='".$target."?check=none&amp;start=".
                      "$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
-                     $LANG['buttons'][19] . "</a>\n";
+                     __('Uncheck all') . "</a>\n";
             }
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
             echo "<input class='submit' type='submit' name='import_ok' value=\"".
-                   $LANG['buttons'][37]."\">";
+                   __s('Import')."\">";
             echo "</td></tr>\n";
 
             echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][5]." / ";
@@ -2944,18 +2944,18 @@ class OcsServer extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
             echo "<input class='submit' type='submit' name='import_ok' value=\"".
-                   $LANG['buttons'][37]."\">\n";
+                   __s('Import')."\">\n";
             echo "<input type=hidden name='ocsservers_id' value='$ocsservers_id'>";
             echo "</td></tr>";
             echo "</table></form>\n";
 
             if (!$tolinked) {
                echo "<a href='".$target."?check=all&amp;start=$start' onclick=".
-                      "\"if ( markCheckboxes('ocsng_form') ) return false;\">".$LANG['buttons'][18].
+                      "\"if ( markCheckboxes('ocsng_form') ) return false;\">".__('Check all').
                     "</a>&nbsp;/&nbsp;".
                     "<a href='".$target."?check=none&amp;start=".
                       "$start' onclick=\"if (unMarkCheckboxes('ocsng_form')) return false;\">" .
-                      $LANG['buttons'][19] . "</a>\n";
+                      __('Uncheck all') . "</a>\n";
             }
 
             Html::printPager($start, $numrows, $target, $parameters);
@@ -4027,7 +4027,7 @@ class OcsServer extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ocs_showservers' value=\"".
-                $LANG['buttons'][2]."\"></td></tr>";
+                __('Post')."\"></td></tr>";
          echo "</table></div></form>\n";
 
       } else if ($DB->numrows($result) == 1) {

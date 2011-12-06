@@ -336,7 +336,7 @@ class AuthLDAP extends CommonDBTM {
       echo"</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
       echo "</table></form></div>";
    }
@@ -390,13 +390,13 @@ class AuthLDAP extends CommonDBTM {
             echo "<td class='center'>".$ldap_replicate["host"]."&nbsp;: ".$ldap_replicate["port"];
             echo "</td><td class='center'>";
             echo "<input type='submit' name='test_ldap_replicate[".$ldap_replicate["id"]."]'
-                  class='submit' value='" . $LANG['buttons'][50] . "'></td>";
+                  class='submit' value='" . __s('Test') . "'></td>";
             echo"</tr>";
          }
          echo "</table>";
 
          Html::openArrowMassives("ldap_replicates_form", true);
-         Html::closeArrowMassives(array('delete_replicate' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete_replicate' => __s('Delete')));
 
          echo "</div></form>";
       }
@@ -442,7 +442,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
       echo "</table></form></div>";
    }
@@ -468,7 +468,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
          echo "<input type='submit' name='test_ldap' class='submit' value=\"".
-                $LANG['buttons'][2]."\">";
+                __s('Test')."\">";
          echo "</td></tr>";
          echo "</table></div></form>";
       }
@@ -544,7 +544,7 @@ class AuthLDAP extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
       echo "</table></div></form>";
    }
@@ -572,7 +572,7 @@ class AuthLDAP extends CommonDBTM {
              size='100'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
       echo "</table></div></form>";
    }
@@ -888,7 +888,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input class=submit type='submit' name='change_ldap_filter' value=\"".
-             $LANG['buttons'][2]."\"></td></tr>";
+             __s('Post')."\"></td></tr>";
       echo "</table></form></div>";
    }
 
@@ -1010,7 +1010,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
                    $_SERVER['PHP_SELF']."'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?$LANG['buttons'][37]
+            echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
                                                               :$LANG['ldap'][15])."</th>";
             $num = 0;
             echo Search::showHeaderItem(HTML_OUTPUT, $LANG['Menu'][14], $num,
@@ -1073,7 +1073,7 @@ class AuthLDAP extends CommonDBTM {
             if ($_SESSION['ldap_import']['mode']) {
                $textbutton = $LANG['ldap'][15];
             } else {
-               $textbutton = $LANG['buttons'][37];
+               $textbutton = __('Import');
             }
             Html::closeArrowMassives(array($form_action => $textbutton));
             echo "</form>";
@@ -1307,13 +1307,13 @@ class AuthLDAP extends CommonDBTM {
             echo "<form method='post' id='ldap_form' name='ldap_form'  action='$target'>";
             echo "<a href='".$target . "?check=all'
                    onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" .
-                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;";
+                   __('Check all') . "</a>&nbsp;/&nbsp;";
             echo "<a href='".$target . "?check=none'
                    onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
-                   $LANG['buttons'][19] . "</a>";
+                   __('Uncheck all') . "</a>";
 
             echo "<table class='tab_cadre'>";
-            echo "<tr><th>" . $LANG['buttons'][37]. "</th>";
+            echo "<tr><th>" . __('Import'). "</th>";
             $header_num = 0;
             echo Search::showHeaderItem(HTML_OUTPUT, $LANG['common'][35], $header_num,
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
@@ -1356,7 +1356,7 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
             echo "<input class='submit' type='submit' name='".$form_action."' value='".
-                   $LANG['buttons'][37] . "'>";
+                   __s('Import') . "'>";
             echo "</td></tr>";
             echo "</table></form></div>";
             Html::printPager($start, $numrows, $target, $parameters);
@@ -1576,7 +1576,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ldap_showusers' value=\"".
-               $LANG['buttons'][2] . "\"></td></tr>";
+               __s('Post') . "\"></td></tr>";
 
       } else {
          //No ldap server
@@ -2332,7 +2332,7 @@ class AuthLDAP extends CommonDBTM {
          if ($_SESSION['ldap_import']['authldaps_id']) {
             echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
             echo "<input class='submit' type='submit' name='search' value=\"".
-                   $LANG['buttons'][0]."\">";
+                   __s('Search')."\">";
             echo "</td></tr>";
          } else {
             echo "<tr class='tab_bg_2'><td colspan='4' class='center'>".$LANG['ldap'][42]."</td></tr>";
@@ -2498,10 +2498,10 @@ class AuthLDAP extends CommonDBTM {
    static function dropdownUserDeletedActions($value=0) {
       global $LANG;
 
-      $options[0] = $LANG['buttons'][49]; //DO nothing
+      $options[0] = __('Preserve'); //DO nothing
       $options[1] = $LANG['ldap'][47];    //Put user in trash
       $options[2] = $LANG['ldap'][46];    //Delete all user dynamic habilitations and groups
-      $options[3] = $LANG['buttons'][42]; //Deactivate the user
+      $options[3] = __('Disable'); //Deactivate the user
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }

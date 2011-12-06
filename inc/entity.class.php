@@ -436,7 +436,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[36]['table']         = 'glpi_entitydatas';
       $tab[36]['field']         = 'calendars_id';        // not a dropdown because of special value
-      $tab[36]['name']          = $LANG['buttons'][15];
+      $tab[36]['name']          = __s('Calendar');
       $tab[36]['massiveaction'] = false;
       $tab[36]['nosearch']      = true;
       $tab[36]['joinparams']    = array('jointype' => 'child');
@@ -564,7 +564,7 @@ class Entity extends CommonTreeDropdown {
       echo "<span class='b'>".$LANG['entity'][10]." ( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".$LANG['entity'][11].")</span><br>";
       echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
-             $LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
+             __s('Show all')."\">".str_replace(" ","&nbsp;",__s('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
 

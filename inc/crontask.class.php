@@ -462,8 +462,8 @@ class CronTask extends CommonDBTM{
       } else {
          echo Html::convDateTime($this->fields['lastrun']);
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetdate=1'>";
-         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".$LANG['buttons'][16]."\" title=\"".
-                $LANG['buttons'][16]."\"></a>";
+         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".__s('Blank')."\" title=\"".
+                __s('Blank')."\"></a>";
       }
       echo "</td></tr>";
 
@@ -519,12 +519,12 @@ class CronTask extends CommonDBTM{
 
       if ($launch) {
          echo " - <a href='".GLPI_ROOT."/front/crontask.php?execute=".$this->fields["name"]."'>".
-                   $LANG['buttons'][57]."</a>";
+                   __('Execute')."</a>";
       }
       if ($tmpstate == self::STATE_RUNNING) {
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetstate=1'>";
-         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".$LANG['buttons'][16]."\" title=\"".
-                $LANG['buttons'][16]."\"></a>";
+         echo "<img src='".GLPI_ROOT."/pics/reset.png' alt=\"".__s('Blank')."\" title=\"".
+                __s('Blank')."\"></a>";
       }
       echo "</td></tr>";
 
@@ -879,7 +879,11 @@ class CronTask extends CommonDBTM{
          echo $nbstart;
       } else {
          // This should not appen => task crash ?
-         echo $LANG['crontask'][48]." = $nbstart<br>".$LANG['buttons'][32]." = $nbstop";
+         //TRANS: %s is the number of starts
+         printf(__('%s starts'),$nbstart);
+         echo "<br>";
+         //TRANS: %s is the number of stops
+         printf(__('%s stops'),$nbstop);
       }
       echo "</td></tr>";
 
@@ -1056,7 +1060,7 @@ class CronTask extends CommonDBTM{
                      break;
 
                   case CronTaskLog::STATE_STOP :
-                     echo "<td>".$LANG['buttons'][32]."</td>";
+                     echo "<td>".__('End')."</td>";
                      break;
 
                   default :

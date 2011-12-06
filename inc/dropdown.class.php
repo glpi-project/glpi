@@ -206,7 +206,7 @@ class Dropdown {
               && $item->canCreate()
               && !isset($_GET['popup'])) {
 
-               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+               echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
                      $params['rand']."' ,'glpipopup', 'height=400, ".
@@ -748,7 +748,7 @@ class Dropdown {
          echo "</optgroup>";
       }
       echo "</select>&nbsp;";
-      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][0]."\" class='submit' ";
+      echo "<input type='submit' name='add' value=\"".__s('Search')."\" class='submit' ";
       echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
       echo ">&nbsp;</td></tr>";
       echo "</table><br>";
@@ -766,7 +766,7 @@ class Dropdown {
       echo "<p><a href=\"javascript:showHideDiv('list_nav','img_nav','";
       echo GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
       echo "<img alt='' name='img_nav' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;";
-      echo $LANG['buttons'][40]."</a></p>";
+      echo __('Show all')."</a></p>";
 
       echo "<div id='list_nav' style='display:none;'>";
 
@@ -1347,11 +1347,11 @@ class Dropdown {
          echo "<select name='massiveaction' id='massiveaction'>";
 
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
-         echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+         echo "<option value='delete'>".__('Delete')."</option>";
          echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
          echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
          // Interest of this massive action ?
-//          echo "<option value='move'>".$LANG['buttons'][20]."</option>";
+//          echo "<option value='move'>".__('Move')."</option>";
          echo "</select>";
 
          $params = array('action'  => '__VALUE__',
@@ -1374,7 +1374,7 @@ class Dropdown {
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
                  || ($itemtype == 'Ticket' && Session::haveRight('update_ticket',1)))) {
 
-            echo "<option value='update'>".$LANG['buttons'][14]."</option>";
+            echo "<option value='update'>".__('Update')."</option>";
          }
 
          if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
@@ -1383,8 +1383,8 @@ class Dropdown {
 
          if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
             if ($isadmin) {
-               echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
-               echo "<option value='restore'>".$LANG['buttons'][21]."</option>";
+               echo "<option value='purge'>".__('Purge')."</option>";
+               echo "<option value='restore'>".__('Restore')."</option>";
             }
 
          } else {
@@ -1394,16 +1394,16 @@ class Dropdown {
                     || ($itemtype == 'Ticket' && Session::haveRight('delete_ticket',1)))) {
 
                if ($item->maybeDeleted()) {
-                  echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+                  echo "<option value='delete'>".__('Delete')."</option>";
                } else {
-                  echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
+                  echo "<option value='purge'>".__('Purge')."</option>";
                }
             }
             if ($isadmin && in_array($itemtype, array('Phone', 'Printer', 'Peripheral',
                                                       'Monitor'))) {
 
-               echo "<option value='connect'>".$LANG['buttons'][9]."</option>";
-               echo "<option value='disconnect'>".$LANG['buttons'][10]."</option>";
+               echo "<option value='connect'>".__('Connect')."</option>";
+               echo "<option value='disconnect'>".__('Disconnect')."</option>";
             }
 
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
@@ -1429,7 +1429,7 @@ class Dropdown {
                                              'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
 
-               echo "<option value='add_transfer_list'>".$LANG['buttons'][48]."</option>";
+               echo "<option value='add_transfer_list'>".__('Forward')."</option>";
             }
 
             switch ($itemtype) {
@@ -1450,8 +1450,8 @@ class Dropdown {
 
                case 'Computer' :
                   if ($isadmin) {
-                     echo "<option value='connect_to_computer'>".$LANG['buttons'][9]."</option>";
-                     echo "<option value='install'>".$LANG['buttons'][4]."</option>";
+                     echo "<option value='connect_to_computer'>".__('Connect')."</option>";
+                     echo "<option value='install'>".__('Install')."</option>";
 
                      if ($CFG_GLPI['use_ocs_mode']) {
 
@@ -1460,20 +1460,13 @@ class Dropdown {
                            echo "<option value='force_ocsng_update'>".$LANG['ldap'][11]."</option>";
                         }
 
-                        echo "<option value='unlock_ocsng_field'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][16]."</option>";
-                        echo "<option value='unlock_ocsng_monitor'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][30]."</option>";
-                        echo "<option value='unlock_ocsng_peripheral'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][32]."</option>";
-                        echo "<option value='unlock_ocsng_printer'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][34]."</option>";
-                        echo "<option value='unlock_ocsng_software'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][52]."</option>";
-                        echo "<option value='unlock_ocsng_ip'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][50]."</option>";
-                        echo "<option value='unlock_ocsng_disk'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][55]."</option>";
+                        echo "<option value='unlock_ocsng_field'>".__('Unlock the locked field for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_monitor'>".__('Unlock the locked monitor for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_peripheral'>".__('Unlock the locked device for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_printer'>".__('Unlock the locked printer for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_software'>".__('Unlock the locked software for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_ip'>".__('Unlock the locked IP for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_disk'>".__('Unlock the locked volume for OCSNG')."</option>";
                      }
                   }
                   break;
@@ -1485,7 +1478,7 @@ class Dropdown {
                   break;
 
                case 'Calendar' :
-                  echo "<option value='duplicate'>".$LANG['buttons'][54]."</option>";
+                  echo "<option value='duplicate'>".__('Duplicate')."</option>";
                   break;
 
                case 'Contact' :
@@ -1530,13 +1523,13 @@ class Dropdown {
                   break;
 
                case 'CronTask' :
-                  echo "<option value='reset'>".$LANG['buttons'][16]." (".$LANG['crontask'][40].")";
+                  echo "<option value='reset'>".__('Reset last run');
                   echo "</option>";
                   break;
 
                case 'NotImportedEmail':
                      echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
-                     echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
+                     echo "<option value='import_email'>".__('Import')."</option>";
                   break;
 
                case 'Problem' :
@@ -1554,7 +1547,7 @@ class Dropdown {
 
             if ($item instanceof CommonTreeDropdown) {
                if ($isadmin) {
-                  echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
+                  echo "<option value='move_under'>".__('Move')."</option>";
                }
             }
 
@@ -1564,7 +1557,7 @@ class Dropdown {
                 && $item->maybeRecursive()) {
 
                if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
-                  echo "<option value='merge'>".$LANG['buttons'][48]." - ".$LANG['software'][48];
+                  echo "<option value='merge'>".__('Forward and Merge');
                   echo "</option>";
                }
             }
@@ -1634,21 +1627,17 @@ class Dropdown {
       global $LANG, $CFG_GLPI;
 
       echo "<select name='display_type'>";
-      echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][27]." ".
-             $LANG['common'][68]."</option>";
-      echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][27]." ".
-             $LANG['common'][69]."</option>";
-      echo "<option value='".SYLK_OUTPUT."'>".$LANG['buttons'][28]."</option>";
-      echo "<option value='".CSV_OUTPUT."'>".$LANG['buttons'][44]."</option>";
-      echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][29]." ".
-             $LANG['common'][68]."</option>";
-      echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][29]." ".
-             $LANG['common'][69]."</option>";
-      echo "<option value='-".SYLK_OUTPUT."'>".$LANG['buttons'][30]."</option>";
-      echo "<option value='-".CSV_OUTPUT."'>".$LANG['buttons'][45]."</option>";
+      echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".__('Current page in landscape PDF')."</option>";
+      echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".__('Current page in portrait PDF')."</option>";
+      echo "<option value='".SYLK_OUTPUT."'>".__('Current page in SLK')."</option>";
+      echo "<option value='".CSV_OUTPUT."'>".__('Current page in CSV')."</option>";
+      echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".__('All pages in landscape PDF')."</option>";
+      echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".__('All pages in portrait PDF')."</option>";
+      echo "<option value='-".SYLK_OUTPUT."'>".__('All pages in SLK')."</option>";
+      echo "<option value='-".CSV_OUTPUT."'>".__('All pages in CSV')."</option>";
       echo "</select>&nbsp;";
       echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-             title=\"".$LANG['buttons'][31]."\" value=\"".$LANG['buttons'][31]."\">";
+             title=\"".__s('Export')."\" value=\"".__s('Export')."\">";
    }
 
 

@@ -88,8 +88,8 @@ class Calendar_Holiday extends CommonDBRelation {
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['buttons'][33]."</th>";
-      echo "<th>".$LANG['buttons'][32]."</th>";
+      echo "<th>".__('Start')."</th>";
+      echo "<th>".__('End')."</th>";
       echo "<th>".$LANG['calendar'][3]."</th>";
       echo "</tr>";
 
@@ -105,8 +105,10 @@ class Calendar_Holiday extends CommonDBRelation {
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Holiday',
-                                        $LANG['buttons'][15] ." = ". $calendar->fields["name"]);
+         
+         Session::initNavigateListItems('Holiday', 
+               //TRANS : %s is the name of the calendar (used for headings of a list)
+               sprintf(__('Calendar = %s'),$calendar->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             Session::addToNavigateListItems('Holiday', $data["id"]);
@@ -134,7 +136,7 @@ class Calendar_Holiday extends CommonDBRelation {
          Dropdown::show('Holiday', array('used'   => $used,
                                          'entity' => $calendar->fields["entities_id"]));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
 
@@ -142,7 +144,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       if ($canedit) {
          Html::openArrowMassives("calendarholiday_form$rand",true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __s('Delete')));
       }
       echo "</form>";
    }

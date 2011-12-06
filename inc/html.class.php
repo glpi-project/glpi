@@ -558,9 +558,9 @@ class Html {
       global $LANG;
 
       if (isset($_SERVER['HTTP_REFERER'])) {
-         echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG['buttons'][13]."</a>";
+         echo "<a href='".$_SERVER['HTTP_REFERER']."'>".__('Back')."</a>";
       } else {
-         echo "<a href='javascript:history.back();'>".$LANG['buttons'][13]."</a>";
+         echo "<a href='javascript:history.back();'>".__('Back')."</a>";
       }
    }
 
@@ -1971,9 +1971,9 @@ class Html {
       echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
       echo "<div id='boutonRecherche'>";
       echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title=\"".
-             $LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"></div>";
+             __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
       echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
-             $LANG['buttons'][0]."' onfocus=\"this.value='';\"></div>";
+             __s('Search')."' onfocus=\"this.value='';\"></div>";
       echo "</form>";
 
       echo "<div class='sep'></div>\n";
@@ -2140,11 +2140,11 @@ class Html {
          if (isset($links['add'])) {
             echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
-                   $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a>";
+                   __s('Add')."\" alt=\"". __s('Add')."\"></a>";
 
          } else {
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".
-                   $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\">";
+                    __s('Add')."\" alt=\"". __s('Add')."\">";
          }
          echo "</li>";
 
@@ -2152,11 +2152,11 @@ class Html {
          if (isset($links['search'])) {
             echo "<li><a href='".$CFG_GLPI["root_doc"].$links['search']."'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title=\"".
-                   $LANG['buttons'][0]."\" alt=\"".$LANG['buttons'][0]."\"></a></li>";
+                    __s('Search')."\" alt=\"".__s('Search')."\"></a></li>";
 
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title=\"".
-                       $LANG['buttons'][0]."\" alt=\"".$LANG['buttons'][0]."\"></li>";
+                       __s('Search')."\" alt=\"".__s('Search')."\"></li>";
          }
          // Links
          if (count($links)>0) {
@@ -2175,7 +2175,7 @@ class Html {
 
                   case "showall" :
                      echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                $LANG['buttons'][40]."\" alt=\"".$LANG['buttons'][40]."\" src='".
+                                __s('Show all')."\" alt=\"".__s('Show all')."\" src='".
                                 $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a></li>";
                      break;
 
@@ -2618,8 +2618,8 @@ class Html {
 
       if (Session::haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
          echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".$LANG['buttons'][8].
-                "\" alt=\"".$LANG['buttons'][8]."\"></a></li>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
+                "\" alt=\"".__s('Add')."\"></a></li>";
       }
 
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
@@ -2828,10 +2828,10 @@ class Html {
       echo "<tr><td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''></td>";
       echo "<td class='center'>";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
-             href='#'>".$LANG['buttons'][18]."</a></td>";
+             href='#'>".__('Check all')."</a></td>";
       echo "<td>/</td><td class='center'>";
       echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
-             href='#'>".$LANG['buttons'][19]."</a></td>";
+             href='#'>".__('Uncheck all')."</a></td>";
       echo "<td class='left' width='".$width."'>";
    }
 
@@ -3700,11 +3700,11 @@ class Html {
       // Back and fast backward button
       if (!$start==0) {
          echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][33].
-                "\" title=\"".$LANG['buttons'][33]."\"></a></th>";
+               <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
+                "\" title=\"".__s('Start')."\"></a></th>";
          echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
-                "\" title=\"".$LANG['buttons'][12]."\"></th>";
+               <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+                "\" title=\"".__s('Previous')."\"></th>";
       }
 
       echo "<td width='50%' class='tab_bg_2'>";
@@ -3720,11 +3720,11 @@ class Html {
       // Forward and fast forward button
       if ($forward<$numrows) {
          echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
-                "\" title=\"".$LANG['buttons'][11]."\"></a></th>";
+               <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+                "\" title=\"".__s('Next')."\"></a></th>";
          echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".$LANG['buttons'][32].
-                "\" title=\"".$LANG['buttons'][32]."\"></th>";
+               <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
+                "\" title=\"".__s('End')."\"></th>";
       }
 
       // End pager
@@ -3818,13 +3818,13 @@ class Html {
       if (!$start==0) {
          echo "<th class='left'>";
          echo "<a href='$target?$parameters&amp;start=0'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][33].
-               "\" title=\"".$LANG['buttons'][33]."\">";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
+               "\" title=\"".__s('Start')."\">";
          echo "</a></th>";
          echo "<th class='left'>";
          echo "<a href='$target?$parameters&amp;start=$back'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
-               "\" title=\"".$LANG['buttons'][12]."\">";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+               "\" title=\"".__s('Previous')."\">";
          echo "</a></th>";
       }
 
@@ -3869,14 +3869,14 @@ class Html {
       if ($forward<$numrows) {
          echo "<th class='right'>";
          echo "<a href='$target?$parameters&amp;start=$forward'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
-               "\" title=\"".$LANG['buttons'][11]."\">";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+               "\" title=\"".__s('Next')."\">";
          echo "</a></th>\n";
 
          echo "<th class='right'>";
          echo "<a href='$target?$parameters&amp;start=$end'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".$LANG['buttons'][32].
-                "\" title=\"".$LANG['buttons'][32]."\">";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
+                "\" title=\"".__s('End')."\">";
          echo "</a></th>\n";
       }
       // End pager

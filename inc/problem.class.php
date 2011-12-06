@@ -1435,7 +1435,7 @@ class Problem extends CommonITILObject {
 
          echo $LANG['job'][21]."&nbsp;:&nbsp;".$number;
 //             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-//                    Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+//                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 
