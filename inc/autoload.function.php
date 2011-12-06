@@ -90,7 +90,7 @@ function __($str){
 function __s($str){
    global $TRANSLATE;
 
-   return  "__".addslashes($TRANSLATE->_($str));
+   return  "__s".addslashes($TRANSLATE->_($str));
 }
 
 function _e($str){
