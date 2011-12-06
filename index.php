@@ -111,7 +111,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</fieldset>";
    echo '<p><span>';
-   echo '<input type="submit" name="submit" value="'.$LANG['buttons'][2].'" class="submit"/>';
+   echo '<input type="submit" name="submit" value="'.__s('Post').'" class="submit"/>';
    echo '</span></p>';
    echo "</form>";
 

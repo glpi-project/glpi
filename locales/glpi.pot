@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 14:20+0100\n"
+"POT-Creation-Date: 2011-12-06 14:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: index.php:114 install/update.php:434 install/update.php:450
+msgid "Post"
+msgstr ""
 
 #. TRANS: %s is the number of the byte
 #: front/backup.php:259
@@ -96,6 +100,19 @@ msgstr ""
 msgid "Save as bookmark"
 msgstr ""
 
+#: inc/calendar.class.php:49 inc/entitydata.class.php:781
+msgid "Calendar"
+msgid_plural "Calendars"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/entitydata.class.php:268 inc/entitydata.class.php:271
+#: inc/entitydata.class.php:362 inc/entitydata.class.php:365
+#: inc/entitydata.class.php:515 inc/entitydata.class.php:518
+#: inc/entitydata.class.php:670 inc/entitydata.class.php:673
+msgid "Update"
+msgstr ""
+
 #: inc/html.class.php:2264 inc/html.class.php:2632
 msgid "Load a bookmark"
 msgstr ""
@@ -137,4 +154,8 @@ msgstr ""
 
 #: inc/profile.class.php:710 inc/profile.class.php:1827
 msgid "Public bookmarks"
+msgstr ""
+
+#: install/install.php:244 install/install.php:317
+msgid "Back"
 msgstr ""

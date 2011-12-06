@@ -46,10 +46,7 @@ class Calendar extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][42];
-      }
-      return $LANG['buttons'][15];
+      return _n('Calendar','Calendars',$nb);
    }
 
 

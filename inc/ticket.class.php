@@ -3423,7 +3423,7 @@ class Ticket extends CommonITILObject {
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
-                    $LANG['buttons'][6]."'>";
+                    __s('Delete')."'>";
             }
             echo "</span>";
 
@@ -3881,7 +3881,7 @@ class Ticket extends CommonITILObject {
          if ($canupdate) {
             echo "&nbsp;";
             echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
-                       title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                       title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                        class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
 
@@ -3925,30 +3925,30 @@ class Ticket extends CommonITILObject {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='restore' value='".
-                      $LANG['buttons'][21]."'></td>";
+                      __s('Restore')."'></td>";
                } else {
                   echo "<input type='submit' class='submit' name='update' value='".
-                      $LANG['buttons'][7]."'></td>";
+                      __s('Update')."'></td>";
                }
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='purge' value='".
-                         $LANG['buttons'][22]."' ".
+                         __s('Purge')."' ".
                          Html::addConfirmationOnAction($LANG['common'][50]).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
-                         $LANG['buttons'][6]."'></td>";
+                         __s('Delete')."'></td>";
                }
 
             } else {
                echo "<td class='tab_bg_2 center' colspan='3'>";
                echo "<input type='submit' class='submit' name='update' value='".
-                      $LANG['buttons'][7]."'>";
+                      __s('Update')."'>";
             }
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
             if ($tt->isField('id') && $tt->fields['id'] > 0) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
@@ -3975,8 +3975,8 @@ class Ticket extends CommonITILObject {
       global $LANG, $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
-             $LANG['buttons'][8]."\" onClick=\"if (nbfiles<maxfiles){
+      echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
+             __s('Add')."\" onClick=\"if (nbfiles<maxfiles){
                            var row = Ext.get('uploadfiles');
                            row.createChild('<input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
@@ -4390,7 +4390,7 @@ class Ticket extends CommonITILObject {
       if ($foruser) {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
                 $LANG['profiles'][5]."&nbsp;<img src='".$CFG_GLPI["root_doc"].
-                "/pics/menu_add.png' title=\"". $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8].
+                "/pics/menu_add.png' title=\"". __s('Add')."\" alt=\"".__s('Add').
                 "\"></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -4468,7 +4468,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='9'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
+                Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";
 
          self::commonListHeader(HTML_OUTPUT);
@@ -4645,11 +4645,11 @@ class Ticket extends CommonITILObject {
          if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
          } else {
             echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
+                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
          }
          echo "</th></tr>";
 

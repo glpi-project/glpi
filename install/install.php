@@ -241,7 +241,7 @@ function step3($host, $user, $password, $update) {
       echo "<input type='hidden' name='update' value='".$update."'>";
       echo "<input type='hidden' name='install' value='Etape_1'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-            $LANG['buttons'][13]."'></p>";
+            __s('Back')."'></p>";
       echo "</form>";
 
    } else {
@@ -314,7 +314,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       echo "<input type='hidden' name='update' value='no'>";
       echo "<input type='hidden' name='install' value='Etape_2'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-             $LANG['buttons'][13]."'></p>";
+            __s('Back')."'></p>";
       echo "</form>";
    }
 
