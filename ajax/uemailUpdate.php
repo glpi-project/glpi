@@ -59,6 +59,10 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $default_notif = $_REQUEST['use_notification'];
    }
 
+   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])) {
+      $default_email = $_REQUEST['alternative_email'];
+   }  
+   
    $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
 
    echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
