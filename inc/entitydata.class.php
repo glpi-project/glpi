@@ -265,10 +265,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -359,10 +359,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -512,10 +512,10 @@ class EntityData extends CommonDBChild {
 
          if ($entitydata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entitydata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -667,10 +667,10 @@ class EntityData extends CommonDBChild {
 
          if ($entitynotification->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entitynotification->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -778,7 +778,7 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
                        'emptylabel' => $LANG['sla'][10]);
@@ -928,10 +928,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
          }
 
          echo "</td></tr>";

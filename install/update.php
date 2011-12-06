@@ -431,7 +431,7 @@ function showLocationUpdateForm() {
             "<input type='text' name='car_sep' value='".$_POST['car_sep']."'></p>";
       echo "<p>".$LANG['update'][135].": ".
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
-      echo "<input type='submit' class='submit' name='new_location' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' class='submit' name='new_location' value=\"".__s('Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</form>";
       echo "</div>";
@@ -447,7 +447,7 @@ function showLocationUpdateForm() {
       echo "<div align='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<input type='submit' class='submit' name='validate_location' value='".
-             $LANG['buttons'][2]."'>";
+             __s('Post')."'>";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</div>";
       echo "</form>";

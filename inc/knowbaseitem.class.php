@@ -517,14 +517,14 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<br><br>";
          if ($ID>0) {
-            echo "<input type='submit' class='submit' name='update' value=\"".$LANG['buttons'][7]."\">";
+            echo "<input type='submit' class='submit' name='update' value=\"".__s('Update')."\">";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-            echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\">";
+            echo "<input type='submit' class='submit' name='add' value=\"".__s('Add')."\">";
          }
 
          echo "<span class='big_space'>";
-         echo "<input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\"></span>";
+         echo "<input type='reset' class='submit' value=\"".__s('Blank')."\"></span>";
          echo "</p></form></div>";
          return true;
       }
@@ -757,7 +757,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
-      echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit'></td></tr>";
+      echo "<td><input type='submit' value=\"".__s('Search')."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['itemtype']) && isset($options['items_id'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
@@ -774,11 +774,11 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<td><form method=get action='".$params["target"]."'>";
          echo "<table border='0' class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='2'>".__s('Browse')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
-         echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit'></td>";
+         echo "</td><td><input type='submit' value=\"".__s('Post')."\" class='submit'></td>";
          echo "</tr></table></form></td>";
       }
       echo "</tr></table></div>";
@@ -1369,7 +1369,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("knowbaseitemvisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('deletevisibility' => __s('Delete')));
          echo "</form>";
       }
 
