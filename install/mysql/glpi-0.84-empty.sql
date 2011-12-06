@@ -3710,6 +3710,7 @@ CREATE TABLE `glpi_plugins` (
   `state` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PLUGIN_* constant',
   `author` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `homepage` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `license` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
