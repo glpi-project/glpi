@@ -609,11 +609,11 @@ class Infocom extends CommonDBChild {
                     AND `itemtype` = '$itemtype'";
 
       $add    = "add";
-      $text   = $LANG['buttons'][8];
+      $text   = __('Add');
       $result = $DB->query($query);
       if ($DB->result($result,0,0)>0) {
          $add = "";
-         $text = $LANG['buttons'][23];
+         $text = __('Show');
       } else if (!Session::haveRight("infocom","w")) {
          return false;
       }
@@ -1055,11 +1055,11 @@ class Infocom extends CommonDBChild {
                echo "<tr>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='hidden' name='id' value='".$ic->fields['id']."'>";
-               echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+               echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                       class='submit'>";
                echo "</td>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\"
+               echo "<input type='submit' name='delete' value=\"".__s('Purge')."\"
                       class='submit'>";
                echo "</td></tr>";
                echo "</table></div></form>";

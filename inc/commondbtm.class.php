@@ -1662,9 +1662,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
 
          if ($ID<=0 || $params['withtemplate']==2) {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          } else {
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
          }
 
       } else {
@@ -1674,31 +1674,31 @@ class CommonDBTM extends CommonGLPI {
 
          if ($params['candel']) {
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."'>\n";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
             echo "</td>\n";
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
 
             if ($this->isDeleted()) {
-               echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\"
+               echo "<input type='submit' name='restore' value=\"".__s('Restore')."\"
                       class='submit'>";
                echo "<span class='small_space'>
-                     <input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\"
+                     <input type='submit' name='purge' value=\"".__s('Purge')."\"
                       class='submit'>
                      </span>";
 
             } else {
                if (!$this->maybeDeleted()) {
-                  echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][22]."\"
+                  echo "<input type='submit' name='delete' value=\"".__s('Purge')."\"
                          class='submit' ".Html::addConfirmationOnAction($LANG['common'][50]).">";
                } else {
-                  echo "<input type='submit' name='delete' value='" . $LANG['buttons'][6] ."'
+                  echo "<input type='submit' name='delete' value='" . __s('Delete') ."'
                          class='submit'>";
                }
             }
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
                    class='submit'>";
          }
       }
@@ -1799,11 +1799,12 @@ class CommonDBTM extends CommonGLPI {
           && !$this->isNewID($ID)) {
 
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
-         echo $LANG['buttons'][8]." - ".$LANG['common'][13]."&nbsp;: ".$this->fields["template_name"];
+         //TRANS: %s is the template name
+         printf(__('Add based on template %s'),$this->fields["template_name"]);
 
       } else if (!empty($params['withtemplate']) && $params['withtemplate'] == 1) {
          echo "<input type='hidden' name='is_template' value='1'>\n";
-         echo $LANG['common'][6]."&nbsp;: ";
+         __e('Template Name');
          Html::autocompletionTextField($this, "template_name", array('size' => 25));
 
       } else if ($this->isNewID($ID)) {
@@ -2876,7 +2877,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($canedit) {
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
       }
       echo "</td></tr>";
       echo "</table></div>";
@@ -3150,7 +3151,7 @@ class CommonDBTM extends CommonGLPI {
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
                echo "<a href=\"$target?id=" . $data["id"]."&amp;purge=purge&amp;withtemplate=1\">".
-                      $LANG['buttons'][6] . "</a></td>";
+                      __s('Purge') . "</a></td>";
             } else {
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";

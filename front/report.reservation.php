@@ -52,7 +52,7 @@ User::dropdown(array('name'   => 'id',
 
 echo "</td>";
 echo "<td rowspan='2' class='center'><input type='submit' class='button' name='submit' value='".
-      $LANG['buttons'][7] ."'></td></tr>";
+      __s('Update')."'></td></tr>";
 echo "</table></form>";
 
 if ($_GET["id"] > 0) {

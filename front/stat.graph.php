@@ -259,8 +259,8 @@ echo "<tr><td>";
 if ($prev > 0) {
    echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
           $_POST["date2"]."&amp;id=$prev\">
-          <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12]."\"
-           title=\"".$LANG['buttons'][12]."\"></a>";
+          <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
+           title=\"".__s('Previous')."\"></a>";
 }
 echo "</td>";
 
@@ -269,8 +269,8 @@ echo "<td>";
 if ($next > 0) {
    echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
           $_POST["date2"]."&amp;id=$next\">
-          <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11]."\"
-           title=\"".$LANG['buttons'][11]."\"></a>";
+          <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
+           title=\"".__s('Next')."\"></a>";
 }
 echo "</td>";
 echo "</tr>";
@@ -284,7 +284,7 @@ echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td>
 Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
-echo "<input type='submit' class='button' value=\"".$LANG['buttons'][7]."\"></td></tr>";
+echo "<input type='submit' class='button' value=\"".__s('Update')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
 Html::showDateFormItem("date2", $_POST["date2"]);
