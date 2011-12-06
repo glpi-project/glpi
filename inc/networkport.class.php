@@ -36,13 +36,34 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPort class
+/// NetworkPort class : There is two parts for a given NetworkPort. The first one, generic, only
+/// contains the link to the item, the name, and the type of network port. All specific
+/// characteristics are owned by the instanciation of the network port : NetworkPortInstantiation.
+/// Whenever a port is display (through its form or though item port listing), the NetworkPort class
+/// load its instantiation from the instantiation database to display the elements.
+/// Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
+/// port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
+/// version.
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
    public $itemtype  = 'itemtype';
    public $items_id  = 'items_id';
    public $dohistory = true;
+
+
+   /**
+    * \brief get the list of available network port type.
+    *
+    * @since version 0.84
+    *
+    * @return array of available type of network ports
+   **/
+   static function getNetworkPortInstantiations() {
+
+      return array('NetworkPortLocal', 'NetworkPortEthernet', 'NetworkPortWifi',
+                   'NetworkPortAlias', 'NetworkPortAggregate');
+   }
 
 
    static function getTypeName($nb=0) {
@@ -77,38 +98,122 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function post_updateItem($history=1) {
+   /**
+    * \brief get the instantiation of the current NetworkPort
+    * The instantiation rely on the instantiation_type field and the id of the NetworkPort. If the
+    * network port exists, but not its instantiation, then, the instantiation will be empty.
+    *
+    * @since version 0.84
+    *
+    * @return the instantiation object or false if the type of instantiation is not known
+   **/
+   function getInstantiation() {
 
-      // Only netpoint updates : ip and mac may be different.
-      $tomatch = array("netpoints_id");
-      $updates = array_intersect($this->updates, $tomatch);
-
-      if (count($updates)) {
-         $save_ID = $this->fields["id"];
-         $n       = new NetworkPort_NetworkPort();
-
-         if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
-            $this->updateInDB($updates);
+      if (!empty($this->fields['instantiation_type'])) {
+         $instantiation = new $this->fields['instantiation_type']();
+         if (!$instantiation->getFromDB($this->getID())) {
+            $instantiation->getEmpty();
          }
-
-         $this->fields["id"] = $save_ID;
+         return $instantiation;
       }
+      return false;
    }
 
 
-   function prepareInputForUpdate($input) {
+   /**
+    * \brief split input fields when validating a port
+    *
+    * The form of the NetworkPort can contain the details of the NetworkPortInstantiation as well as
+    * NetworkName elements (if no more than one name is attached to this port). Feilds from both
+    * NetworkPortInstantiation and NetworkName must not be process by the NetworkPort::add or
+    * NetworkPort::update. But they must be kept for adding or updating these elements. This is
+    * done after creating or updating the current port. Otherwise, its ID may not be known (in case
+    * of new port).
+    * To keep the unused fields, we check each field key. If it is owned by NetworkPort (ie :
+    * exists inside the $this->fields array), then they remain inside $input. If they are prefix by
+    * "Networkname_", then they are added to $this->input_for_NetworkName. Else, they are for the
+    * instantiation and added to $this->input_for_instantiation.
+    *
+    * This method must be call before NetworkPort::add or NetworkPort::update in case of NetworkPort
+    * form. Otherwise, the entry of the database may contain wrong values.
+    *
+    * @since version 0.84
+    *
+    * @see updateDependencies for the update
+   **/
+   function splitInputForElements($input) {
 
-      // Is a preselected mac adress selected ?
-      if (isset($input['pre_mac']) && !empty($input['pre_mac'])) {
-         $input['mac'] = $input['pre_mac'];
-         unset($input['pre_mac']);
+      if (isset($this->input_for_instantiation)
+          || isset($this->input_for_NetworkName)
+          || !isset($input)) {
+         return;
       }
+
+      $this->input_for_instantiation = array();
+      $this->input_for_NetworkName = array();
+
+      foreach ($input as $field => $value) {
+         if (array_key_exists($field, $this->fields)) {
+             continue;
+         }
+         if (preg_match('/^NetworkName_/',$field)) {
+            $networkName_field = preg_replace('/^NetworkName_/','',$field);
+            $this->input_for_NetworkName[$networkName_field] = $value;
+         } else {
+            $this->input_for_instantiation[$field] = $value;
+         }
+         unset($input[$field]);
+      }
+
+      if ((count($this->input_for_NetworkName) == 0)
+          || (empty($this->input_for_NetworkName['name']))) {
+         unset($this->input_for_NetworkName);
+      }
+
       return $input;
+   }
+
+
+   /**
+    * \brief update all related elements after adding or updating an element
+    *
+    * splitInputForElements() prepare the data for adding or updating NetworkPortInstantiation and
+    * NetworkName. This method will update NetworkPortInstantiation and NetworkName. I must be call
+    * after NetworkPort::add or NetworkPort::update otherwise, the networkport ID will not be known
+    * and the dependencies won't have a valid items_id field.
+    *
+    * @since version 0.84
+    *
+    * @see splitInputForElements() for preparing the input
+   **/
+   function updateDependencies($history=1) {
+
+      $instantiation = $this->getInstantiation();
+      if (($instantiation !== false) && (count($this->input_for_instantiation)  > 0)) {
+         $this->input_for_instantiation['id'] = $this->getID();
+         if ($instantiation->isNewID($instantiation->getID())) {
+            $instantiation->add($this->input_for_instantiation, $history);
+         } else {
+            $instantiation->update($this->input_for_instantiation, $history);
+         }
+      }
+
+      if (isset($this->input_for_NetworkName)) {
+         $network_name = new NetworkName();
+         if (isset($this->input_for_NetworkName['id'])) {
+            $network_name->update($this->input_for_NetworkName, $history);
+         } else {
+            $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
+            $this->input_for_NetworkName['items_id'] = $this->getID();
+            $network_name->add($this->input_for_NetworkName, $history);
+         }
+      }
    }
 
 
    function prepareInputForAdd($input) {
 
+      // TODO : should use the CommonDBChild::prepareInputForAdd facility
       // Not attached to itemtype -> not added
       if (!isset($input['itemtype'])
           || empty($input['itemtype'])
@@ -122,11 +227,13 @@ class NetworkPort extends CommonDBChild {
          unset($input["logical_number"]);
       }
 
+      // TODO : should use the CommonDBChild::prepareInputForAdd facility
       if ($item->getFromDB($input['items_id'])) {
          $input['entities_id']  = $item->getEntityID();
          $input['is_recursive'] = intval($item->isRecursive());
          return $input;
       }
+
       // Item not found
       return false;
    }
@@ -135,27 +242,28 @@ class NetworkPort extends CommonDBChild {
    function pre_deleteItem() {
 
       $nn = new NetworkPort_NetworkPort();
-      if ($nn->getFromDBForNetworkPort($this->fields["id"])) {
-         $nn->delete($nn->fields);
-      }
+      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
+
       return true;
    }
 
 
    function cleanDBonPurge() {
-      global $DB;
 
-      $query = "DELETE
-                FROM `glpi_networkports_networkports`
-                WHERE `networkports_id_1` = '".$this->fields['id']."'
-                      OR `networkports_id_2` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
+      $instantiation = $this->getInstantiation();
+      if ($instantiation !== false) {
+         $instantiation->cleanDBonItemDelete ($this->getType(), $this->getID());
+         unset($instantiation);
+      }
 
-      $query = "DELETE
-                FROM `glpi_networkports_vlans`
-                WHERE `networkports_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
-   }
+      $nn = new NetworkPort_NetworkPort();
+      $nn->cleanDBonItemDelete ($this->getType(), $this->getID());
+
+      $nv = new NetworkPort_Vlan();
+      $nv->cleanDBonItemDelete ($this->getType(), $this->getID());
+
+      NetworkName::unaffectAddressesOfItem($this->getID(), $this->getType());
+  }
 
 
    /**
@@ -179,8 +287,10 @@ class NetworkPort extends CommonDBChild {
       global $LANG;
 
       $ong = array();
+      $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('NetworkPortInstantiation', $ong, $options);
 
       return $ong;
    }
@@ -194,74 +304,6 @@ class NetworkPort extends CommonDBChild {
     * @return true on success
    **/
    function resetConnections($ID) {
-   }
-
-
-   /**
-    * Make a select box for  connected port
-    *
-    * Parameters which could be used in options array :
-    *    - name : string / name of the select (default is networkports_id)
-    *    - comments : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
-    *
-    * @param $ID ID of the current port to connect
-    * @param $options possible options
-    *
-    * @return nothing (print out an HTML select box)
-   **/
-   static function dropdownConnect($ID,$options=array()) {
-      global $LANG, $CFG_GLPI;
-
-      $p['name']        = 'networkports_id';
-      $p['comments']    = 1;
-      $p['entity']      = -1;
-      $p['entity_sons'] = false;
-
-     if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
-
-      // Manage entity_sons
-      if (!($p['entity']<0) && $p['entity_sons']) {
-         if (is_array($p['entity'])) {
-            echo "entity_sons options is not available with array of entity";
-         } else {
-            $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
-         }
-      }
-
-      $rand = mt_rand();
-      echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
-      foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
-         if ($item = getItemForItemtype($itemtype)) {
-            echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
-         } else {
-            unset($CFG_GLPI["networkport_types"][$key]);
-         }
-      }
-      echo "</select>";
-
-      $params = array('itemtype'        => '__VALUE__',
-                      'entity_restrict' => $p['entity'],
-                      'current'         => $ID,
-                      'comments'        => $p['comments'],
-                      'myname'          => $p['name']);
-
-      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",
-                                    $params);
-
-      echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
-
-      return $rand;
    }
 
 
@@ -283,230 +325,141 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
+      $netport = new self();
       $canedit = $item->can($items_id, 'w');
 
       // Show Add Form
       if ($canedit
           && (empty($withtemplate) || $withtemplate !=2)) {
-         echo "\n<div class='firstbloc'><table class='tab_cadre_fixe'>";
-         echo "<tr><td class='tab_bg_2 center b'>";
-         echo "<a href='" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype'>
-               ".$LANG['networking'][19]."</a></td>\n";
-         echo "<td class='tab_bg_2 center b' width='50%'>";
-         echo "<a href='" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$items_id&amp;itemtype=$itemtype&amp;several=1'>
-               ".$LANG['networking'][46]."</a></td>\n";
-         echo "</tr></table></div>\n";
-      }
 
-      Session::initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
-
-      $query = "SELECT `id`
-                FROM `glpi_networkports`
-                WHERE `items_id` = '$items_id'
-                      AND `itemtype` = '$itemtype'
-                ORDER BY `name`,
-                         `logical_number`";
-
-      if ($result = $DB->query($query)) {
-         echo "<div class='spaced'>";
-
-         if ($DB->numrows($result) != 0) {
-            $colspan = 9;
-
-            if ($withtemplate != 2) {
-               if ($canedit) {
-                  $colspan++;
-                  echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                        action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>\n";
-               }
+         echo "\n<form method='get' action='" . $netport->getFormURL() ."'>\n";
+         echo "<input type='hidden' name='items_id' value='".$item->getID()."'>\n";
+         echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
+         echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
+         echo "<tr><td class='tab_bg_2 center'>\n";
+         echo $LANG['Internet'][36]."&nbsp;: <select name='instantiation_type'>\n";
+         foreach (self::getNetworkPortInstantiations() as $network_type) {
+            echo "\t<option value='$network_type'";
+            if ($network_type == "NetworkPortEthernet") {
+               echo " selected";
             }
-
-            echo "<table class='tab_cadre_fixe'>\n";
-
-            echo "<tr><th colspan='$colspan'>\n";
-            if ($DB->numrows($result)==1) {
-               echo $LANG['networking'][12];
-            } else {
-               echo $LANG['networking'][11];
-            }
-            echo "&nbsp;:&nbsp;".$DB->numrows($result)."</th></tr>\n";
-
-            echo "<tr>";
-            if ($withtemplate != 2 && $canedit) {
-               echo "<th>&nbsp;</th>\n";
-            }
-            echo "<th>#</th>\n";
-            echo "<th>" . $LANG['common'][16] . "</th>\n";
-            echo "<th>" . $LANG['networking'][51] . "</th>\n";
-            echo "<th>" . $LANG['networking'][14] . "<br>" . $LANG['networking'][15] . "</th>\n";
-            echo "<th>" . $LANG['networking'][60] . "&nbsp;/&nbsp;" . $LANG['networking'][61]."<br>"
-                        . $LANG['networking'][59] . "</th>\n";
-            echo "<th>" . $LANG['networking'][56] . "</th>\n";
-            echo "<th>" . $LANG['common'][65] . "</th>\n";
-            echo "<th>" . $LANG['networking'][17] . "&nbsp;:</th>\n";
-            echo "<th>" . $LANG['networking'][14] . "<br>" . $LANG['networking'][15] . "</th></tr>\n";
-
-            $i = 0;
-            $netport = new NetworkPort();
-
-            while ($devid = $DB->fetch_row($result)) {
-               $netport->getFromDB(current($devid));
-               Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
-
-               echo "<tr class='tab_bg_1'>\n";
-               if ($withtemplate != 2 && $canedit) {
-                  echo "<td class='center' width='20'>";
-                  echo "<input type='checkbox' name='del_port[".$netport->fields["id"]."]' value='1'>";
-                  echo "</td>\n";
-               }
-               echo "<td class='center'><span class='b'>";
-               if ($canedit && $withtemplate != 2) {
-                  echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
-                        $netport->fields["id"] . "\">";
-               }
-               echo $netport->fields["logical_number"];
-               if ($canedit && $withtemplate != 2) {
-                  echo "</a>";
-               }
-               echo "</span>";
-               Html::showToolTip($netport->fields['comment']);
-               echo "</td>\n";
-               echo "<td>" . $netport->fields["name"] . "</td>\n";
-               echo "<td>".Dropdown::getDropdownName("glpi_netpoints",
-                                                     $netport->fields["netpoints_id"])."</td>\n";
-               echo "<td>" .$netport->fields["ip"]. "<br>" .$netport->fields["mac"] . "</td>\n";
-               echo "<td>" .$netport->fields["netmask"]. "&nbsp;/&nbsp;".
-                            $netport->fields["subnet"]."<br>".$netport->fields["gateway"]."</td>\n";
-               // VLANs
-               echo "<td>";
-               NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
-               echo "</td>\n";
-               echo "<td>".Dropdown::getDropdownName("glpi_networkinterfaces",
-                                                     $netport->fields["networkinterfaces_id"])."</td>\n";
-               echo "<td width='300' class='tab_bg_2'>";
-               self::showConnection($item, $netport, $withtemplate);
-               echo "</td>\n";
-               echo "<td class='tab_bg_2'>";
-               if ($netport->getContact($netport->fields["id"])) {
-                  echo $netport->fields["ip"] . "<br>";
-                  echo $netport->fields["mac"];
-               }
-               echo "</td></tr>\n";
-            }
-            echo "</table>\n";
-
-            if ($canedit && $withtemplate != 2) {
-               Html::openArrowMassives("networking_ports$rand", true);
-               Dropdown::showForMassiveAction('NetworkPort');
-               $actions = array();
-               Html::closeArrowMassives($actions);
-            }
-
-            if ($canedit && $withtemplate != 2) {
-               echo "</form>";
-            }
-
-         } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr>";
-            echo "</table>";
+            echo ">".call_user_func(array($network_type, 'getTypeName'))."</option>\n";
          }
-         echo "</div>";
-      }
-   }
-
-
-   /**
-    * Display a connection of a networking port
-    *
-    * @param $device1 the device of the port
-    * @param $netport to be displayed
-    * @param $withtemplate
-   **/
-   static function showConnection(& $device1, & $netport, $withtemplate = '') {
-      global $CFG_GLPI, $LANG;
-
-      if (!$device1->can($device1->fields["id"], 'r')) {
-         return false;
+         echo "</select></td>\n";
+         echo "<td class='tab_bg_2 center' width='50%'>";
+         echo $LANG['Internet'][37] .
+              "&nbsp;: <input type='checkbox' name='several' value='1'></td>\n";
+         echo "</tr><tr><td class='tab_bg_2 center' colspan='2'>\n";
+         echo "<input type='submit' name='create' value=\"" . $LANG['buttons'][8] .
+              "\" class='submit'>\n";
+         echo "</td></tr></table></div></form>\n";
       }
 
-      $contact = new NetworkPort_NetworkPort();
-      $canedit = $device1->can($device1->fields["id"], 'w');
-      $ID      = $netport->fields["id"];
 
-      if ($contact_id = $contact->getOppositeContact($ID)) {
-         $netport->getFromDB($contact_id);
-
-         if ($device2 = getItemForItemtype($netport->fields["itemtype"])) {
-
-            if ($device2->getFromDB($netport->fields["items_id"])) {
-               echo "\n<table width='100%'>\n";
-               echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
-               echo "<td><span class='b'>";
-
-               if ($device2->can($device2->fields["id"], 'r')) {
-                  echo $netport->getLink();
-                  echo "</span>\n";
-                  Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".$LANG['networking'][25] . " <span class='b'>".$device2->getLink();
-                  echo "</span>";
-
-                  if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
-                     echo "<br>(". Dropdown::getDropdownName("glpi_entities",
-                                                            $device2->getEntityID()) .")";
-                  }
-
-                  // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
-                  if ($canedit || $device2->can($device2->fields["id"], 'w')) {
-                     echo "</td>\n<td class='right'><span class='b'>";
-
-                     if ($withtemplate != 2) {
-                        echo "<a href=\"".$netport->getFormURL()."?disconnect=".
-                              "disconnect&amp;id=".$contact->fields['id']."\">" .
-                              $LANG['buttons'][10] . "</a>";
-                     } else {
-                        "&nbsp;";
-                     }
-
-                     echo "</span>";
-                  }
-
-               } else {
-                  if (rtrim($netport->fields["name"]) != "") {
-                     echo $netport->fields["name"];
-                  } else {
-                     echo $LANG['common'][0];
-                  }
-                  echo "</span> " . $LANG['networking'][25] . " <span class='b'>";
-                  echo $device2->getName();
-                  echo "</span><br>(" .Dropdown::getDropdownName("glpi_entities",
-                                                                 $device2->getEntityID()) .")";
-               }
-
-               echo "</td></tr></table>\n";
-            }
-         }
-
+      if ($canedit && $withtemplate != 2) {
+         $checkbox_column = true;
+         echo "\n<form id='networking_ports$rand' name='networking_ports$rand'
+                       method='post'  action='" . $CFG_GLPI["root_doc"] .
+              "/front/networkport.form.php'>\n";
       } else {
-         echo "\n<table width='100%'><tr>";
+         $checkbox_column = false;
+      }
 
-         if ($canedit) {
-            echo "<td class='left'>";
+      $is_active_network_port = false;
+      foreach (self::getNetworkPortInstantiations() as $portType) {
+         Session::initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
 
-            if ($withtemplate != 2 && $withtemplate != 1) {
-               self::dropdownConnect($ID, array('name'        => 'dport',
-                                                'entity'      => $device1->fields["entities_id"],
-                                                'entity_sons' => $device1->isRecursive()));
-            } else {
-               echo "&nbsp;";
-            }
+         $query = "SELECT `id`
+                   FROM `glpi_networkports`
+                   WHERE `items_id` = '$items_id'
+                         AND `itemtype` = '$itemtype'
+                         AND `instantiation_type` = '$portType'
+                   ORDER BY `name`,
+                            `logical_number`";
 
-            echo "</td>\n";
+         if ($result = $DB->query($query)) {
+            echo "<div class='spaced'>";
+
+            $number_port = $DB->numrows($result);
+
+            if ($number_port != 0) {
+               $is_active_network_port = true;
+               $colspan = 3 + call_user_func(array($portType, 'getShowForItemNumberColums'))
+                            + ($checkbox_column ? 1 : 0);
+
+               echo "<table class='tab_cadre_fixe'>\n";
+
+               echo "<tr><th colspan='$colspan'>\n";
+               echo NetworkPort::getTypeName($number_port).
+                    " (".call_user_func(array($portType, 'getTypeName')).")";
+               echo "&nbsp;:&nbsp;$number_port</th></tr>\n";
+
+               echo "<tr>";
+               if ($withtemplate != 2 && $canedit) {
+                  echo "<th>&nbsp;</th>\n";
+               }
+               echo "<th>#</th>\n";
+               echo "<th>" . $LANG['common'][16] . "</th>\n";
+               echo "<th>" . NetworkName::getTypeName() . "</th>\n";
+                     call_user_func(array($portType, 'showForItemHeader'));
+                echo "</tr>\n";
+
+               $i = 0;
+
+               while ($devid = $DB->fetch_row($result)) {
+                  $netport->getFromDB(current($devid));
+                  Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
+
+                  echo "<tr class='tab_bg_1'>\n";
+                  if ($withtemplate != 2 && $canedit) {
+                     echo "<td class='center' width='20'>";
+                     echo "<input type='checkbox' name='del_port[".$netport->fields["id"].
+                        "]' value='1'>";
+                     echo "</td>\n";
+                  }
+                  echo "<td class='center'><span class='b'>";
+                  if ($canedit && $withtemplate != 2) {
+                     echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=" .
+                        $netport->fields["id"] . "\">";
+                  }
+                  echo $netport->fields["logical_number"];
+                  if ($canedit && $withtemplate != 2) {
+                     echo "</a>";
+                  }
+                  echo "</span>";
+                  Html::showToolTip($netport->fields['comment']);
+                  echo "</td>\n";
+                  echo "<td>" . $netport->fields["name"] . "</td>\n";
+                  echo "<td>";
+                  NetworkName::showForItem($netport, false, $canedit, $withtemplate);
+                  echo "</td>\n";
+
+                  $instantiation = $netport->getInstantiation();
+                  if ($instantiation !== false) {
+                     $instantiation->showForItem($netport, $item, $withtemplate);
+                     unset($instantiation);
+                  }
+
+                  echo "</tr>\n";
+               }
+               echo "</table>\n";
+
+           }
+            echo "</div>";
          }
+      }
 
-         echo "<td><div id='not_connected_display$ID'>" . $LANG['connect'][1] . "</div></td>";
-         echo "</tr></table>\n";
+      if (!$is_active_network_port) {
+         echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr>";
+         echo "</table>";
+      }
+
+      if ($canedit && $withtemplate != 2) {
+         Html::openArrowMassives("networking_ports$rand", true);
+         Dropdown::showForMassiveAction('NetworkPort');
+         $actions = array();
+         Html::closeArrowMassives($actions);
+         echo "</form>";
       }
    }
 
@@ -526,28 +479,19 @@ class NetworkPort extends CommonDBChild {
          $this->check($ID,'r');
       } else {
          $input = array('itemtype' => $options["itemtype"],
-                        'items_id' => $options["items_id"]);
+                        'items_id' => $options["items_id"],
+                        'instantiation_type' => $options['instantiation_type']);
          // Create item
          $this->check(-1, 'w', $input);
       }
 
-      $type = $this->fields['itemtype'];
-      $link = NOT_AVAILABLE;
-
-      if ($item = getItemForItemtype($this->fields['itemtype'])) {
-         $type = $item->getTypeName();
-
-         if ($item->getFromDB($this->fields["items_id"])) {
-            $link = $item->getLink();
-         } else {
-            return false;
-         }
-
-      } else {
-         // item is mandatory (for entity)
+      $recursiveItems = $this->recursivelyGetItems();
+      if (count($recursiveItems) == 0) {
          return false;
       }
+      $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
+      // TODO : is it usefull ?
       // Ajout des infos deja remplies
       if (isset($_POST) && !empty($_POST)) {
          foreach ($netport->fields as $key => $val) {
@@ -558,35 +502,31 @@ class NetworkPort extends CommonDBChild {
       }
       $this->showTabs();
 
-      $options['entities_id'] = $item->getField('entities_id');
+      $options['entities_id'] = $lastItem->getField('entities_id');
       $this->showFormHeader($options);
 
-      $show_computer_mac = false;
-      if ((!empty($this->fields['itemtype']) || !$options['several'])
-          && $this->fields['itemtype'] == 'Computer') {
-         $show_computer_mac = true;
-      }
-
-      echo "<tr class='tab_bg_1'><td>$type&nbsp;:</td>\n<td>";
+      echo "<tr class='tab_bg_1'><td>";
+      $this->displayRecursiveItems($recursiveItems, 'Type');
+      echo "&nbsp;:</td>\n<td>";
 
       if (!($ID>0)) {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+         echo "<input type='hidden' name='instantiation_type' value='" .
+              $this->fields["instantiation_type"]."'>\n";
       }
 
-      echo $link. "</td>\n";
-      $colspan = 9;
-
-      if ($show_computer_mac) {
-         $colspan += 2;
-      }
+      $this->displayRecursiveItems($recursiveItems, "Link");
+      echo "</td>\n";
+      $colspan = 2;
 
       if (!$options['several']) {
          $colspan ++;
       }
       echo "<td rowspan='$colspan'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='$colspan' class='middle'>";
-      echo "<textarea cols='45' rows='11' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<textarea cols='45' rows='$colspan' name='comment' >" .
+           $this->fields["comment"] . "</textarea>";
       echo "</td></tr>\n";
 
       if (!$options['several']) {
@@ -612,252 +552,18 @@ class NetworkPort extends CommonDBChild {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-      Dropdown::show('NetworkInterface', array('value' => $this->fields["networkinterfaces_id"]));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
-      Html::autocompletionTextField($this, "ip");
-      echo "</td></tr>\n";
-
-      // Show device MAC adresses
-      if ($show_computer_mac) {
-
-         $comp = new Computer();
-         $comp->getFromDB($this->fields['items_id']);
-         $macs = Computer_Device::getMacAddr($comp);
-
-         if (count($macs) > 0) {
-            echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
-            echo "<select name='pre_mac'>\n";
-            echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>\n";
-
-            foreach ($macs as $key => $val) {
-               echo "<option value='" . $val . "' >$val</option>\n";
-            }
-
-            echo "</select></td></tr>\n";
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2' class='center'>" . $LANG['networking'][57];
-            echo "</td></tr>\n";
-         }
+      $instantiation = $this->getInstantiation();
+      if ($instantiation !== false) {
+         echo "<tr class='tab_bg_1'><th colspan='4'>" .
+            $instantiation->getTypeName() . "</th></tr>\n";
+         $instantiation->showForm($this, $options, $recursiveItems);
+         unset($instantiation);
       }
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
-      Html::autocompletionTextField($this, "mac");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . "&nbsp;:</td>\n<td>";
-      Html::autocompletionTextField($this, "netmask");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][59] . "&nbsp;:</td>\n<td>";
-      Html::autocompletionTextField($this, "gateway");
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][61] . "&nbsp;:</td>\n<td>";
-      Html::autocompletionTextField($this, "subnet");
-      echo "</td></tr>\n";
-
-      if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
-         echo "<td>";
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $item->fields['locations_id'], 1, $item->getEntityID(),
-                                    $this->fields["itemtype"]);
-         echo "</td></tr>\n";
-      }
+      NetworkName::showFormForNetworkPort($this->getID());
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
-   }
-
-
-   /**
-    * Get an Object ID by his IP address (only if one result is found in the entity)
-    *
-    * @param $value the ip address
-    * @param $type type to search : MAC or IP
-    * @param $entity the entity to look for
-    *
-    * @return an array containing the object ID
-    *         or an empty array is no value of serverals ID where found
-   **/
-   static function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
-      global $DB;
-
-      switch ($type) {
-         case "MAC" :
-            $field = "mac";
-            break;
-
-         default :
-            $field = "ip";
-      }
-
-      //Try to get all the object (not deleted, and not template)
-      //with a network port having the specified IP, in a given entity
-      $query = "SELECT `gnp`.`items_id`,
-                       `gnp`.`id` AS portID,
-                       `gnp`.`itemtype` AS itemtype
-                FROM `glpi_networkports` AS gnp
-                LEFT JOIN `glpi_computers` AS gc
-                     ON (`gnp`.`items_id` = `gc`.`id`
-                         AND `gc`.`entities_id` = '$entity'
-                         AND `gc`.`is_deleted` = '0'
-                         AND `gc`.`is_template` = '0'
-                         AND `itemtype` = 'Computer')
-                LEFT JOIN `glpi_printers` AS gp
-                     ON (`gnp`.`items_id` = `gp`.`id`
-                         AND `gp`.`entities_id` = '$entity'
-                         AND `gp`.`is_deleted` = '0'
-                         AND `gp`.`is_template` = '0'
-                         AND `itemtype` = 'Printer')
-                LEFT JOIN `glpi_networkequipments` AS gn
-                     ON (`gnp`.`items_id` = `gn`.`id`
-                         AND `gn`.`entities_id` = '$entity'
-                         AND `gn`.`is_deleted` = '0'
-                         AND `gn`.`is_template` = '0'
-                         AND `itemtype` = 'NetworkEquipment')
-                LEFT JOIN `glpi_phones` AS gph
-                     ON (`gnp`.`items_id` = `gph`.`id`
-                         AND `gph`.`entities_id` = '$entity'
-                         AND `gph`.`is_deleted` = '0'
-                         AND `gph`.`is_template` = '0'
-                         AND `itemtype` = 'Phone')
-                LEFT JOIN `glpi_peripherals` AS gpe
-                     ON (`gnp`.`items_id` = `gpe`.`id`
-                         AND `gpe`.`entities_id` = '$entity'
-                         AND `gpe`.`is_deleted` = '0'
-                         AND `gpe`.`is_template` = '0'
-                         AND `itemtype` = 'Peripheral')
-                WHERE `gnp`.`$field` = '" . $value . "'";
-
-      $result = $DB->query($query);
-
-      //3 possibilities :
-      //0 found : no object with a network port have this ip.
-                  //Look into networkings object to see if,maybe, one have it
-      //1 found : one object have a network port with the ip -> good, possible to link
-      //2 found : one object have a network port with this ip, and the port is link to another one
-                  //-> get the object by removing the port connected to a network device
-      switch ($DB->numrows($result)) {
-         case 0 :
-            //No result found with the previous request.
-            //Try to look for IP in the glpi_networkequipments table directly
-            $query = "SELECT `id`
-                      FROM `glpi_networkequipments`
-                      WHERE UPPER(`$field`) = UPPER('$value')
-                            AND `entities_id` = '$entity'";
-            $result = $DB->query($query);
-            if ($DB->numrows($result) == 1) {
-               return array("id"       => $DB->result($result, 0, "id"),
-                            "itemtype" => 'NetworkEquipment');
-            }
-            return array();
-
-         case 1 :
-            $port = $DB->fetch_array($result);
-            return array("id"       => $port["items_id"],
-                         "itemtype" => $port["itemtype"]);
-
-         case 2 :
-            //2 ports found with the same IP
-            //We can face different configurations :
-            //the 2 ports aren't linked -> can do nothing (how to know which one is the good one)
-            //the 2 ports are linked but no ports are connected on a network device
-            //(for example 2 computers connected)-> can do nothin (how to know which one is the good one)
-            //the 2 ports are linked and one port in connected on a network device
-            //-> use the port not connected on the network device as the good one
-            $port1 = $DB->fetch_array($result);
-            $port2 = $DB->fetch_array($result);
-            //Get the 2 ports informations and try to see if one port is connected on a network device
-            $network_port = -1;
-            if ($port1["itemtype"] == 'NetworkEquipment') {
-               $network_port = 1;
-            } else if ($port2["itemtype"] == 'NetworkEquipment') {
-               $network_port = 2;
-            }
-            //If one port is connected on a network device
-            if ($network_port != -1) {
-               //If the 2 ports are linked each others
-               $query = "SELECT `id`
-                         FROM `glpi_networkports_networkports`
-                         WHERE (`networkports_id_1` = '".$port1["portID"]."'
-                                AND `networkports_id_2` = '".$port2["portID"]."')
-                               OR (`networkports_id_1` = '".$port2["portID"]."'
-                                   AND `networkports_id_2` = '".$port1["portID"]."')";
-               $query = $DB->query($query);
-               if ($DB->numrows($query) == 1) {
-                  return array("id"       => ($network_port == 1 ? $port2["items_id"]
-                                                                 : $port1["items_id"]),
-                               "itemtype" => ($network_port == 1 ? $port2["itemtype"]
-                                                                 : $port1["itemtype"]));
-               }
-            }
-            return array();
-
-         default :
-            return array();
-      }
-   }
-
-
-   /**
-    * Look for a computer or a network device with a fully qualified domain name in an entity
-    *
-    * @param fqdn fully qualified domain name
-    * @param entity the entity
-    *
-    * @return an array with the ID and itemtype or an empty array if no unique object is found
-   **/
-   static function getUniqueObjectIDByFQDN($fqdn, $entity) {
-
-      $types = array('Computer', 'NetworkEquipment', 'Printer');
-
-      foreach ($types as $itemtype) {
-         $result = $this->getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
-
-         if (!empty($result)) {
-            return $result;
-         }
-      }
-
-      return array();
-   }
-
-
-   /**
-    * Look for a specific type of device with a fully qualified domain name in an entity
-    *
-    * @param fqdn fully qualified domain name
-    * @param $itemtype the type of object to look for
-    * @param entity the entity
-    *
-    * @return an array with the ID and itemtype or an empty array if no unique object is found
-   **/
-   static function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
-      global $DB;
-
-      if ($item = getItemForItemtype($itemtype)) {
-
-         $query = "SELECT `obj.id`
-                   FROM " . $item->getTable() . " AS obj,
-                        `glpi_domains` AS gdd
-                   WHERE `obj.entities_id` = '$entity'
-                         AND `obj`.`domains_id` = `gdd`.`id`
-                         AND LOWER('$fqdn') = (CONCAT(LOWER(`obj`.`name`), '.' ,
-                                                      LOWER(`gdd`.`name`)))";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) == 1) {
-            $datas = $DB->fetch_array($result);
-            return array("id"       => $datas["id"],
-                         "itemtype" => $itemtype);
-         }
-      }
-      return array();
    }
 
 
@@ -1016,6 +722,56 @@ class NetworkPort extends CommonDBChild {
       $tab[21]['massiveation'] = false;
 
       return $tab;
+   }
+
+
+   /**
+    * Clone the current NetworkPort when the item is clone
+    *
+    * @param $itemtype the type of the item that was clone
+    * @param $old_items_id the id of the item that was clone
+    * @param $new_items_id the id of the item after beeing cloned
+    *
+   **/
+   static function cloneItem($itemtype, $old_items_id, $new_items_id) {
+
+      $np = new NetworkPort();
+      // ADD Ports
+      $query = "SELECT `id`
+                  FROM `glpi_networkports`
+                 WHERE `items_id` = '".$old_items_id."'
+                   AND `itemtype` = '".$itemtype."';";
+
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0) {
+
+         while ($data=$DB->fetch_array($result)) {
+
+            $np->getFromDB($data["id"]);
+            unset($np->fields["id"]);
+            $np->fields["items_id"] = $new_items_id;
+            $portid = $np->addToDB();
+
+            $instantiation = $np->getInstantiation();
+            if ($instantiation !== false) {
+               $instantiation->add(array('id' => $portid));
+               unset($instantiation);
+            }
+
+            $npv = new NetworkPort_Vlan();
+            foreach ($DB->request($npv->getTable(),
+                                  array($npv->items_id_1 => $data["id"])) as $vlan) {
+
+               $input=array($npv->items_id_1 => $portid,
+                            $npv->items_id_2 => $vlan['vlans_id']);
+               if (isset($vlan['tagged']))
+                  $input['tagged'] = $vlan['tagged'];
+
+               $npv->add($input);
+
+            }
+         }
+      }
    }
 
 

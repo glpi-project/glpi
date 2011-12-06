@@ -35,6 +35,8 @@ if (!defined('GLPI_ROOT')) {
 // _ before the link table name => no clean cache on this relation
 // Table's names are in alphabetic order - Please respect it
 
+/// TODO add new network relations
+
 $RELATION = array("glpi_authldaps"
                         => array('glpi_configs'            => 'authldaps_id_extra',
                                  'glpi_authldapreplicates' => 'authldaps_id',

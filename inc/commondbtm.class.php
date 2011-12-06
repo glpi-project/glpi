@@ -575,25 +575,10 @@ class CommonDBTM extends CommonGLPI {
 
       // If this type have NETPORT, clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['networkport_types'])) {
-         $query = "SELECT `id`
-                   FROM `glpi_networkports`
-                   WHERE (`items_id` = '".$this->fields['id']."'
-                          AND `itemtype` = '".$this->getType()."')";
-         $result = $DB->query($query);
-
-         while ($data = $DB->fetch_array($result)) {
-            $q = "DELETE
-                  FROM `glpi_networkports_networkports`
-                  WHERE (`networkports_id_1` = '".$data["id"]."'
-                         OR `networkports_id_2` = '".$data["id"]."')";
-            $result2 = $DB->query($q);
-         }
-
-         $query = "DELETE
-                   FROM `glpi_networkports`
-                   WHERE (`items_id` = '".$this->fields['id']."'
-                          AND `itemtype` = '".$this->getType()."')";
-         $result = $DB->query($query);
+         // If we don't use delete, then cleanDBonPurge() is not call and the NetworkPorts are not
+         // clean properly
+         $networkPortObject = new NetworkPort();
+         $networkPortObject->cleanDBonItemDelete($this->getType(), $this->getID());
       }
 
       // If this type is RESERVABLE clean one associated to purged item
@@ -2542,13 +2527,11 @@ class CommonDBTM extends CommonGLPI {
                      break;
 
                   case 'ip' :
-                     $pattern  = "\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
-                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
-                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
-                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
-                     if (!preg_match("/$pattern/", $value, $regs)) {
+                     $address = new IPAddress();
+                     if (!$address->setAddressFromString($value))
                         $unset = true;
-                     }
+                     else if (!$address->is_ipv4())
+                        $unset = true;
                      break;
 
                   case 'mac' :
@@ -2556,6 +2539,8 @@ class CommonDBTM extends CommonGLPI {
                      if (empty($regs)) {
                         $unset = true;
                      }
+                     // Define the MAC address to lower to reduce complexity of SQL queries
+                     $this->input[$key] = strtolower ($value);                     
                      break;
 
                   case 'date' :

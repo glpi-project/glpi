@@ -129,12 +129,13 @@ class Plugin extends CommonDBTM {
    *
    * @param $name Name of hook to use
    * @param $forcelang force a specific lang
+   * @param $coretrytoload lang trying to be load from core
    *
    * @return nothing
    */
-   static function loadLang($name, $forcelang='') {
+   static function loadLang($name, $forcelang='', $coretrytoload = '') {
       // $LANG needed : used when include lang file
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI,$LANG,$TRANSLATE;
 
       $trytoload = 'en_GB';
       if (isset($_SESSION['glpilanguage'])) {
@@ -150,20 +151,52 @@ class Plugin extends CommonDBTM {
          $trytoload = $CFG_GLPI["language"];
       }
 
+      if (empty($coretrytoload)) {
+            $coretrytoload = $trytoload;
+      }
+
       $dir = GLPI_ROOT . "/plugins/$name/locales/";
 
       if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
          include ($dir.$CFG_GLPI["languages"][$trytoload][1]);
-
       } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
          include ($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
-
       } else if (file_exists($dir . "en_GB.php")) {
          include ($dir . "en_GB.php");
-
       } else if (file_exists($dir . "fr_FR.php")) {
          include ($dir . "fr_FR.php");
       }
+      
+      // New localisation system
+      if (file_exists($dir.$trytoload.".mo")) {
+         $TRANSLATE->addTranslation(
+            array(
+               'content' => $dir.$trytoload.".mo",
+               'locale'  => $coretrytoload
+            )
+         );         
+      } else if (file_exists($dir.$CFG_GLPI["language"].".mo")) {
+         $TRANSLATE->addTranslation(
+            array(
+               'content' => $dir.$CFG_GLPI["language"].".mo",
+               'locale'  => $coretrytoload
+            )
+         ); 
+      } else if (file_exists($dir."en_GB.mo")) {
+         $TRANSLATE->addTranslation(
+            array(
+               'content' => $dir."en_GB.mo",
+               'locale'  => $coretrytoload
+            )
+         ); 
+      } else if (file_exists($dir."fr_FR.mo")) {
+         $TRANSLATE->addTranslation(
+            array(
+               'content' => $dir."fr_FR.mo",
+               'locale'  => $coretrytoload
+            )
+         ); 
+      }      
    }
 
 

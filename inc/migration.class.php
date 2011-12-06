@@ -393,7 +393,29 @@ class Migration {
       }
    }
 
+   /**
+    * Copy table for migration
+    *
+    * @since version 0.84
+    * @param $oldtable The name of the table already inside the database
+    * @param $newtable The copy of the old table
+   **/
+   function copyTable($oldtable, $newtable) {
+      global $LANG, $DB;
 
+      if (!TableExists("$newtable") && TableExists("$oldtable")) {
+         $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
+         $DB->query($query)
+         or die($this->version." create $newtable " . $LANG['update'][90] . $DB->error());
+
+         $query = "INSERT INTO `$newtable`
+                          (SELECT *
+                           FROM `$oldtable`)";
+         $DB->query($query)
+         or die($this->version." copy from $oldtable to $newtable " . $LANG['update'][90] .
+                $DB->error());
+      }
+   }
 
    /**
     * Execute migration for only one table

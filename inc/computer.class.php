@@ -385,28 +385,7 @@ class Computer extends CommonDBTM {
          }
 
          // ADD Ports
-         $query = "SELECT `id`
-                   FROM `glpi_networkports`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
-         if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
-               $np  = new NetworkPort();
-               $npv = new NetworkPort_Vlan();
-               $np->getFromDB($data["id"]);
-               unset($np->fields["id"]);
-               unset($np->fields["ip"]);
-               unset($np->fields["mac"]);
-               unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"] = $this->fields['id'];
-               $portid = $np->addToDB();
-               foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id' => $data["id"])) as $vlan) {
-                  $npv->assignVlan($portid, $vlan['vlans_id']);
-               }
-            }
-         }
+         NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // Add connected devices
          $query = "SELECT *

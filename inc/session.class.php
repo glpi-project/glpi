@@ -486,7 +486,7 @@ class Session {
     * @return nothing (make an include)
    **/
    static function loadLanguage($forcelang='') {
-      global $LANG, $CFG_GLPI;
+      global $LANG, $CFG_GLPI, $TRANSLATE;
 
       $file = "";
 
@@ -506,27 +506,48 @@ class Session {
       if (!empty($forcelang)) {
          $trytoload = $forcelang;
       }
+      
       // If not set try default lang file
       if (empty($trytoload)) {
          $trytoload = $CFG_GLPI["language"];
       }
-
+      
       if (isset($CFG_GLPI["languages"][$trytoload][1])) {
          $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+         $newfile = "/locales/$trytoload.mo";
       }
+
+      $newtrytoload = $trytoload;
 
       if (empty($file) || !is_file(GLPI_ROOT . $file)) {
          $trytoload = 'en_GB';
          $file = "/locales/en_GB.php";
       }
 
+      if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
+//          $trytoload = 'en_GB';
+         $newfile = "/locales/en_GB.mo";
+      }
+
       include (GLPI_ROOT . $file);
+      
+      
+      /// TODO permit to load and use simple dictionnary.
+      /// After usage (notifcation) load old one
+      // New localization system : 
+      $TRANSLATE = new Zend_Translate (
+          array(
+              'adapter' => 'gettext',
+              'content' => GLPI_ROOT.$newfile,
+              'locale'  => $trytoload
+          )
+      );
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
          if (count($_SESSION['glpi_plugins'])) {
             foreach ($_SESSION['glpi_plugins'] as $plug) {
-               Plugin::loadLang($plug, $forcelang);
+               Plugin::loadLang($plug, $forcelang, $trytoload);
             }
          }
       }
@@ -540,9 +561,11 @@ class Session {
             }
          }
       }
+      
+      $TRANSLATE->setLocale($trytoload);
+            
       return $trytoload;
    }
-
 
    /**
     * Get the Login User ID or return cron user ID for cron jobs

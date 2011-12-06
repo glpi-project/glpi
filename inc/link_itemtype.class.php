@@ -44,7 +44,7 @@ class Link_ItemType extends CommonDBTM{
    /**
     * Print the HTML array for device on link
     *
-    *@param $links : Link
+    *@param $link : Link
     *
     *@return Nothing (display)
    **/
