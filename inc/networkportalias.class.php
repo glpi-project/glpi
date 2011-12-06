@@ -41,15 +41,18 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortAlias extends NetworkPortInstantiation {
 
+
    static function getTypeName($nb=0) {
       global $LANG;
 
      return $LANG['Internet'][34];
    }
 
+
    static function getShowForItemNumberColums() {
       return 3;
    }
+
 
    static function showForItemHeader() {
       global $LANG;
@@ -59,22 +62,22 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       echo "<th>" . $LANG['networking'][56] . "</th>\n";
    }
 
+
    function prepareInput($input) {
 
       // Try to get mac address from the instantiation ...
 
-      if ((!isset($input['mac'])) && (isset($input['networkports_id']))) {
+      if (!isset($input['mac']) && isset($input['networkports_id'])) {
          $networkPort = new NetworkPort();
          if ($networkPort->getFromDB($input['networkports_id'])) {
-
             $networkPortInstaciation = $networkPort->getInstantiation();
-
-            $input['mac'] = $networkPortInstaciation->getField('mac');
+            $input['mac']            = $networkPortInstaciation->getField('mac');
          }
       }
 
       return $input;
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -86,6 +89,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       return parent::prepareInputForAdd($input);
    }
 
+
    function prepareInputForUpdate($input) {
 
       $input = $this->prepareInput($input);
@@ -96,34 +100,26 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       return parent::prepareInputForUpdate($input);
    }
 
+
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-      global $LANG;
 
       echo "<td>".$this->showNetworkPortForItem()."</td>\n";
-
       echo "<td>".$this->fields["mac"]."</td>\n";
-
       echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit,
-                                           $withtemplate);
+      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
       echo "</td>\n";
    }
 
 
    function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG, $DB;
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       echo "<tr class='tab_bg_1'>";
-
       $this->showMacField($netport, $options, $recursiveItems);
-
       $this->showNetworkPortSelector($lastItem, false);
-
       echo "</tr>";
    }
 
 }
-
 ?>

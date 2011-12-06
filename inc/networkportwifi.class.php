@@ -41,17 +41,16 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortWifi extends NetworkPortInstantiation {
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
-      return $LANG['Internet'][33];
+   static function getTypeName($nb=0) {
+      return _n('Wifi', 'Wifi', $nb);
    }
 
+
    function getNetworkCardInterestingFields() {
-
       return array('link.`specificity`' => 'mac');
-
   }
+
 
    function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG;
@@ -60,18 +59,15 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>\n";
-
          $this->showNetworkCardField($netport, $options, $recursiveItems);
-
          echo "<td>" . WifiNetwork::getTypeName() . "&nbsp:</td><td>";
          Dropdown::show('WifiNetwork', array('value'  => $this->fields["wifinetworks_id"]));
          echo "</td>";
-
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>\n";
-
-         echo "<td>" . $LANG['Internet'][56] . "&nbsp:</td><td><select name='mode'>";
+         echo "<td>" . __('Wifi mode') . "</td>";
+         echo "<td><select name='mode'>";
          echo "<option value=''></option>";
          foreach (WifiNetwork::getWifiCardModes() as $value => $name) {
             echo "<option value='$value'";
@@ -81,8 +77,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
             echo ">$name</option>";
          }
          echo "</select></td>\n";
-
-         echo "<td>" . $LANG['Internet'][57] . "&nbsp:</td><td><select name='version'>";
+         echo "<td>" . __('Wifi protocol version') . "</td><td><select name='version'>";
          echo "<option value=''></option>";
          foreach (WifiNetwork::getWifiCardVersion() as $value) {
             echo "<option value='$value'";
@@ -92,7 +87,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
             echo ">$value</option>";
          }
          echo "</select></td>\n";
-
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>\n";
@@ -101,34 +95,32 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       }
    }
 
+
    static function getShowForItemNumberColums() {
-
       return 7;
-
    }
 
 
    static function showForItemHeader() {
       global $LANG;
 
-      echo "<th>" . $LANG['common'][65] . "</th>\n";
-      echo "<th>" . $LANG['networking'][15] . "</th>\n";
-      echo "<th>" . $LANG['Internet'][24] . "</th>\n";
-      echo "<th>" . $LANG['Internet'][56] . "</th>\n";
-      echo "<th>" . $LANG['Internet'][57] . "</th>\n";
-      echo "<th>" . $LANG['networking'][56] . "</th>\n";
-      echo "<th>" . $LANG['networking'][17] . "&nbsp;:</th>\n";
+      echo "<th>" . __('Interface') . "</th>\n";
+      echo "<th>" . __('MAC') . "</th>\n";
+      echo "<th>" . __('ESSID') . "</th>\n";
+      echo "<th>" . __('Wifi mode') . "</th>\n";
+      echo "<th>" . __('Wifi protocol version') . "</th>\n";
+      echo "<th>" . __('VLAN') . "</th>\n";
+      echo "<th>" . __('Connected to')."</th>\n";
    }
 
 
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-      global $LANG;
 
       // Network card associated with this wifi port
       echo "<td>";
       $compdev = new Computer_Device();
-      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                             $this->fields['computers_devicenetworkcards_id']);
+      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
+                                                   $this->fields['computers_devicenetworkcards_id']);
       if ($device) {
          echo $device->getLink();
       } else {
@@ -161,25 +153,26 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       echo "</td>\n";
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';
-      $tab[10]['name']          = $LANG['networking'][15];
+      $tab[10]['name']          = __('MAC');
       $tab[10]['massiveaction'] = false;
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'mode';
-      $tab[11]['name']          = $LANG['Internet'][56];
+      $tab[11]['name']          = __('Wifimode');
       $tab[11]['massiveaction'] = false;
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'version';
-      $tab[12]['name']          = $LANG['Internet'][57];
+      $tab[12]['name']          = __('Wifi protocol version');
       $tab[12]['massiveaction'] = false;
 
       $tab[13]['table']         = 'glpi_wifinetworks';
@@ -188,9 +181,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $tab[13]['massiveaction'] = false;
 
       return $tab;
-
    }
 
 }
-
 ?>

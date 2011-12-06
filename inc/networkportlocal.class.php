@@ -41,18 +41,20 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortLocal extends NetworkPortInstantiation {
 
+
    static function getTypeName($nb=0) {
       global $LANG;
 
      return $LANG['Internet'][31];
    }
 
+
    static function showForItemHeader() {
    }
+
 
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
    }
 
 }
-
 ?>

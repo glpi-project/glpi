@@ -42,29 +42,36 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortAggregate extends NetworkPortInstantiation {
 
+
    static function getTypeName($nb=0) {
       global $LANG;
 
      return $LANG['Internet'][35];
    }
 
+
    function prepareInputForAdd($input) {
+
       if ((isset($input['networkports_id'])) && is_array($input['networkports_id'])) {
          $input['networkports_id'] = exportArrayToDB($input['networkports_id']);
       }
       return parent::prepareInputForAdd($input);
    }
 
+
    function prepareInputForUpdate($input) {
+
       if ((isset($input['networkports_id'])) && is_array($input['networkports_id'])) {
          $input['networkports_id'] = exportArrayToDB($input['networkports_id']);
       }
       return parent::prepareInputForAdd($input);
    }
+
 
    static function getShowForItemNumberColums() {
       return 3;
    }
+
 
    static function showForItemHeader() {
       global $LANG;
@@ -72,48 +79,37 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       echo "<th>" . $LANG['Internet'][45] . "</th>\n";
       echo "<th>" . $LANG['networking'][15] . "</th>\n";
       echo "<th>" . $LANG['networking'][56] . "</th>\n";
-
    }
 
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-      global $LANG;
 
-      if ((isset($this->fields['networkports_id']))
-          && (is_string($this->fields['networkports_id']))) {
+   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
+
+      if (isset($this->fields['networkports_id'])
+          && is_string($this->fields['networkports_id'])) {
          $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
       }
 
-
       echo "<td>".$this->showNetworkPortForItem()."</td>\n";
-
       echo "<td>".$this->fields["mac"]."</td>\n";
-
       echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit,
-                                           $withtemplate);
+      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
       echo "</td>\n";
    }
 
 
    function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG, $DB;
 
-      if ((isset($this->fields['networkports_id']))
-          && (is_string($this->fields['networkports_id']))) {
+      if (isset($this->fields['networkports_id'])
+          && is_string($this->fields['networkports_id'])) {
          $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
       }
-
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       echo "<tr class='tab_bg_1'>";
-
       $this->showMacField($netport, $options, $recursiveItems);
-
       $this->showNetworkPortSelector($lastItem, true);
-
       echo "</tr>";
    }
 }
-
 ?>
