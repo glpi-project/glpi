@@ -670,6 +670,11 @@ class Dropdown {
                                  'Domain'             => Domain::getTypeName(2),
                                  'Network'            => Network::getTypeName(2),
                                  'Vlan'               => Vlan::getTypeName(2)),
+                        
+                        $LANG['Internet'][0]
+                        => array('IPNetwork'          => IPNetwork::getTypeName(2),
+                                 'FQDN'               => FQDN::getTypeName(2),
+                                 'WifiNetwork'        => WifiNetwork::getTypeName(2)),
 
                         $LANG['Menu'][4]
                         => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),

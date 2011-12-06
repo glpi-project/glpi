@@ -149,20 +149,21 @@ class RuleTicket extends Rule {
                   } else {
                      $regexvalue = $action->fields["value"];
                   }
+                  /// TODO : check, because, previous version also propose deleted and template items
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
-                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue, "IP",
-                                                                                 $output["entities_id"]);
-                        break;
-
-                     case "affectbyfqdn" :
-                        $result= NetworkPort::getUniqueObjectIDByFQDN($regexvalue,
+                        $result = IPAddress::getUniqueItemByIPAddress($regexvalue, 
                                                                       $output["entities_id"]);
                         break;
 
+                     case "affectbyfqdn" :
+                        $result= FQDNLabel::getUniqueItemByFQDN($regexvalue,
+                                                                $output["entities_id"]);
+                        break;
+
                      case "affectbymac" :
-                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",
-                                                                                 $output["entities_id"]);
+                        $result = NetworkPortInstantiation::getUniqueItemByMac($regexvalue,
+                                                                               $output["entities_id"]);
                         break;
 
                      default:

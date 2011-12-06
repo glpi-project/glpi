@@ -48,10 +48,8 @@ class Phone extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][34];
-      }
-      return $LANG['help'][35];
+      //TRANS: Test of comment for translation (mark : //TRANS)
+      return _n('Phone','Phones',$nb);
    }
 
 
@@ -106,30 +104,7 @@ class Phone extends CommonDBTM {
          $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
-         $query = "SELECT `id`
-                   FROM `glpi_networkports`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."'";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
-               $np  = new NetworkPort();
-               $npv = new NetworkPort_Vlan();
-               $np->getFromDB($data["id"]);
-               unset($np->fields["id"]);
-               unset($np->fields["ip"]);
-               unset($np->fields["mac"]);
-               unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$this->fields['id'];
-               $portid = $np->addToDB();
-
-               foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id' => $data["id"])) as $vlan) {
-                  $npv->assignVlan($portid, $vlan['vlans_id']);
-               }
-            }
-         }
+         NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
          $query = "SELECT `contracts_id`
@@ -247,7 +222,7 @@ class Phone extends CommonDBTM {
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>".__('Status')."</td>";
       echo "<td>";
       Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
@@ -414,38 +389,38 @@ class Phone extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
       $tab[4]['table'] = 'glpi_phonetypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name'] = $LANG['common'][17];
+      $tab[4]['name'] = __('Type');
 
       $tab[40]['table'] = 'glpi_phonemodels';
       $tab[40]['field'] = 'name';
-      $tab[40]['name']  = $LANG['common'][22];
+      $tab[40]['name']  = __('Model');
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = $LANG['state'][0];
+      $tab[31]['name']  = __('Status');
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = $LANG['common'][19];
+      $tab[5]['name']      = __('Serial Number');
       $tab[5]['datatype']  = 'string';
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = $LANG['common'][20];
+      $tab[6]['name']      = __('Inventory Number');
       $tab[6]['datatype']  = 'string';
 
       $tab[7]['table']     = $this->getTable();

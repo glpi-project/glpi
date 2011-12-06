@@ -79,6 +79,26 @@ function isPluginItemType($classname) {
    return false;
 }
 
+/// Translation functions
+
+function __($str){
+   global $TRANSLATE;
+
+   return  "__".$TRANSLATE->_($str);
+}
+
+function _e($str){
+   global $TRANSLATE;
+
+   echo "_e".$TRANSLATE->_($str);
+}
+
+function _n($sing,$plural,$nb){
+   global $TRANSLATE;
+
+   return  "_n".$TRANSLATE->plural($sing,$plural,$nb);
+}
+
 
 function __autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
@@ -115,6 +135,14 @@ function __autoload($classname) {
       if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
          include_once(GLPI_EZC_BASE);
          ezcBase::autoload($classname);
+         return true;
+      }
+      // Is Zend class ?
+      if (preg_match('/^Zend/',$classname,$matches)) {
+         set_include_path(get_include_path() . PATH_SEPARATOR . GLPI_ZEND_PATH);
+         require_once ("Zend/Loader.php");
+         
+         Zend_Loader::loadClass($classname);
          return true;
       }
       $item = strtolower($classname);

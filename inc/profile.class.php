@@ -669,6 +669,12 @@ class Profile extends CommonDBTM {
       self::dropdownNoneReadWrite("peripheral", $this->fields["peripheral"], 1, 1, 1);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['Internet'][0]."&nbsp;:</td><td>";
+      self::dropdownNoneReadWrite("internet", $this->fields["internet"], 1, 1, 1);
+      echo "</td>\n";
+      echo "<td colspan='4'>&nbsp;</td></tr>";
+
       // Gestion / Management
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][26]."</th></tr>";
 
@@ -1381,6 +1387,11 @@ class Profile extends CommonDBTM {
       $tab[29]['table']    = $this->getTable();
       $tab[29]['field']    = 'notes';
       $tab[29]['name']     = $LANG['title'][37];
+      $tab[29]['datatype'] = 'right';
+
+      $tab[29]['table']    = $this->getTable();
+      $tab[29]['field']    = 'internet';
+      $tab[29]['name']     = $LANG['Internet'][0];
       $tab[29]['datatype'] = 'right';
 
       $tab['management'] = $LANG['Menu'][26];

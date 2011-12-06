@@ -42,6 +42,115 @@ abstract class CommonDBChild extends CommonDBTM {
    // if true, will write a event in the history of parent for add/delete
    public $dohistory = false;
 
+   /// Drop the element if it is not attached to an item
+   /// since version 0.84
+   public $mustBeAttached = false;
+   /// If it is attached, inherit entity from the item
+   /// since version 0.84
+   public $inheritEntityFromItem = false;
+   // TODO : thinking of factorizing the CommonDBTM::can* methods as checking the item ability
+   // may be use for most CommonDBChild
+
+   /**
+    * Get the item associated with the current object. Rely on getItemFromArray()
+    *
+    * @since version 0.84
+    *
+    * @return object of the concerned item or false on error
+   **/
+   function getItem() {
+      return $this->getItemFromArray($this->fields);
+   }
+
+
+   /**
+    * Get the item associated with the elements inside the array (for instance : add method)
+    *
+    * @since version 0.84
+    *
+    * @param $array the array containing the item information (type and id) may be $this->field
+    *
+    * @return object of the concerned item or false on error
+   **/
+   function getItemFromArray($array) {
+
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         if (isset($array[$this->itemtype])) {
+            $type = $array[$this->itemtype];
+         } else {
+            $type = '';
+         }
+      } else {
+         $type = $this->itemtype;
+      }
+
+      if (class_exists($type) && isset($array[$this->items_id])) {
+         $item = new $type();
+         if ($item->getFromDB($array[$this->items_id])) {
+            return $item;
+         }
+         unset($item);
+      }
+
+      return false;
+   }
+
+
+   /**
+    * \brief recursively display the items of this
+    *
+    * @param $recursiveItems array of the items of the current elements (see recursivelyGetItems())
+    * @param $elementToDisplay what to display : 'Type', 'Name', 'Link'
+    *
+   **/
+   static function displayRecursiveItems($recursiveItems, $elementToDisplay) {
+
+      if (!is_array($recursiveItems)) {
+         return;
+      }
+
+      switch ($elementToDisplay) {
+      case 'Type' :
+         $masterItem = $recursiveItems[count($recursiveItems) - 1];
+         echo $masterItem->getTypeName();
+         break;
+
+      case 'Name':
+      case 'Link':
+         $items_elements  = array();
+         foreach ($recursiveItems as $item) {
+            if ($elementToDisplay == 'Name') {
+               $items_elements[] = $item->getName();
+            } else {
+               $items_elements[] = $item->getLink();
+            }
+         }
+         echo implode(' &lt; ', $items_elements);
+         break;
+      }
+
+   }
+
+
+   /**
+    * Get all the items associated with the current object by recursive requests
+    *
+    * @since version 0.84
+    *
+    * @return an array containing all the items
+   **/
+   function recursivelyGetItems() {
+
+      $item = $this->getItem();
+      if ($item !== false) {
+         if ($item instanceof CommonDBChild) {
+            return array_merge(array($item), $item->recursivelyGetItems());
+         }
+         return array($item);
+      }
+      return array();
+   }
+
 
    /**
    * Get the ID of entity assigned to the object
@@ -54,6 +163,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (parent::isEntityAssign()) {
          return parent::getEntityID();
       }
+
+      // TODO : may be usefull to use $this->getItem
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
@@ -77,6 +188,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (parent::isEntityAssign()) {
          return true;
       }
+
+      // TODO : may be usefull to use $this->getItem
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
@@ -104,6 +217,8 @@ abstract class CommonDBChild extends CommonDBTM {
          return true;
       }
 
+      // TODO : may be usefull to use $this->getItem
+
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
       } else {
@@ -130,6 +245,8 @@ abstract class CommonDBChild extends CommonDBTM {
           return parent::isRecursive();
       }
 
+      // TODO : may be usefull to use $this->getItem
+
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
       } else {
@@ -147,6 +264,56 @@ abstract class CommonDBChild extends CommonDBTM {
 
 
    /**
+    * @since version 0.84
+   **/
+   function prepareInputForAdd($input) {
+      global $LANG;
+
+      $item = self::getItemFromArray($input);
+
+      // Invalidate the element if it is not attached to an item although it must
+      if (($this->mustBeAttached) && ($item == false)) {
+         Session::addMessageAfterRedirect($LANG['common'][117], INFO, true);
+         return false;
+      }
+
+      // Set its entity according to the item, if it should
+      if (($this->inheritEntityFromItem) && ($item == true)) {
+         $input['entities_id']  = $item->getEntityID();
+         $input['is_recursive'] = intval($item->isRecursive());
+      }
+
+      return $input;
+   }
+
+
+   /**
+    * @since version 0.84
+   **/
+   function prepareInputForUpdate($input) {
+      global $LANG;
+
+      $item = self::getItemFromArray($input);
+
+      // TODO : must we apply this filter for the update ?
+      // Return invalidate the element if it must be attached but it won't
+      if (($this->mustBeAttached) && ($item === false)) {
+         Session::addMessageAfterRedirect($LANG['common'][117], INFO, true);
+         return false;
+      }
+
+      // TODO : must we apply this filter for the update ?
+      // If the entity is inherited from the item, then set it
+      if (($this->inheritEntityFromItem) && ($item === true)) {
+         $input['entities_id']  = $item->getEntityID();
+         $input['is_recursive'] = intval($item->isRecursive());
+      }
+
+      return $input;
+   }
+
+
+   /**
     * Actions done after the ADD of the item in the database
     *
     * @return nothing
@@ -156,6 +323,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
+
+      // TODO : may be usefull to use $this->getItem
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
@@ -189,6 +358,8 @@ abstract class CommonDBChild extends CommonDBTM {
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
+
+      // TODO : may be usefull to use $this->getItem
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];

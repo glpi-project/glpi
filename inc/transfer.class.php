@@ -2875,7 +2875,7 @@ class Transfer extends CommonDBTM {
    **/
    function transferNetworkLink($itemtype, $ID, $newID, $ocs_computer=false) {
       global $DB;
-
+      /// TODO manage with new network system
       $np = new NetworkPort();
       $nn = new NetworkPort_NetworkPort();
 

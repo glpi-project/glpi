@@ -233,10 +233,10 @@ function getSingular($string) {
                   'ches$'          => 'ch',
                   'shes$'          => 'sh',
                   'sses$'          => 'ss', // Case like addresses
-                  'cases$'          => 'case', // Case like cases
+                  'cases$'         => 'case', // Case like cases
                   '([aeiou])ses$'  => '\1s', // Case like aliases
                   'ss$'            => 'ss', // Special case (addresses) when getSingular is called on already singular form
-                  'alias$'           => 'alias', // Special case (aliases) when getSingular is called on already singular form
+                  'lias$'          => 'lias', // Special case (aliases) when getSingular is called on already singular form
                   'ies$'           => 'y', // special case : category
                   's$'             => ''); // Add at the end if not exists
 
@@ -662,6 +662,21 @@ function getSonsOf($table,$IDf) {
    }
 
    return $id_found;
+}
+
+
+/**
+ * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
+ *
+ * @since version 0.84
+ *
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the father
+ *
+ * @return array of IDs of the sons and the ancestors
+**/
+function getSonsAndAncestorsOf($table, $IDf) {
+   return getAncestorsOf($table, $IDf) + getSonsOf($table, $IDf);
 }
 
 
