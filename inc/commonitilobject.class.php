@@ -2077,7 +2077,9 @@ abstract class CommonITILObject extends CommonDBTM {
                                 'allow_email'
                                         => ($type==self::REQUESTER || $type==self::OBSERVER),
                                 'use_notification'
-                                        => $options["_users_id_".$typename."_notif"]['use_notification']);
+                                        => $options["_users_id_".$typename."_notif"]['use_notification'],
+                                'alternative_email'
+                                        => $options["_users_id_".$typename."_notif"]['alternative_email']);
 
          $params['toupdate'] = array('value_fieldname' => 'value',
                                      'to_update'       => "notif_".$typename."_$rand",
