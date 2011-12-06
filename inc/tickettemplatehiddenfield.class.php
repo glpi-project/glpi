@@ -218,7 +218,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'  => $used));
-            echo "&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8].
+            echo "&nbsp;<input type='submit' name='add' value=\"".__s('Add').
                          "\" class='submit'>";
             echo "</td></tr>";
          }
@@ -226,7 +226,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
          if ($canedit) {
             Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
-            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('delete' => __s('Delete')));
          }
          echo "</form>";
 

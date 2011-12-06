@@ -223,8 +223,8 @@ class UserEmail  extends CommonDBChild {
       if ($canedit) {
 
          echo "&nbsp;<script type='text/javascript'>var nbemails=1; </script>";
-         echo "<span id='addemailbutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
-               $LANG['buttons'][8].
+         echo "<span id='addemailbutton'><img title=\"".__s('Add')."\" alt=\"".
+               __s('Add').
                "\" onClick=\"var row = Ext.get('emailadd$users_id');
                              row.createChild('<input type=\'text\' size=\'40\' ".
                                                "name=\'_useremails[-'+nbemails+']\'><br>');

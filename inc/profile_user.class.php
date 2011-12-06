@@ -119,7 +119,7 @@ class Profile_User extends CommonDBTM {
          echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
          Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";
@@ -196,7 +196,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit) {
          Html::openArrowMassives("entityuser_form$rand",true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __s('Delete')));
       }
       echo "</form></div>";
    }
@@ -241,7 +241,7 @@ class Profile_User extends CommonDBTM {
          echo "</td><td class='tab_bg_2 center'>".$LANG['profiles'][28]."&nbsp;:&nbsp;";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div>";
       }
@@ -340,7 +340,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit) {
          Html::openArrowMassives("entityuser_form$rand", true);
-         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete' => __s('Delete')));
          echo "</form>";
       }
       echo "</div>";
@@ -417,8 +417,8 @@ class Profile_User extends CommonDBTM {
                         Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value='".
-                              $LANG['buttons'][20]."' class='submit'>&nbsp;";
-                        Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+                              __s('Move')."' class='submit'>&nbsp;";
+                        Html::closeArrowMassives(array('delete' => __s('Delete')));
                      }
                      echo "</div></form></td></tr>\n";
                   }
@@ -499,8 +499,8 @@ class Profile_User extends CommonDBTM {
                   Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                   Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
                   echo "&nbsp;<input type='submit' name='moveentity' value='".
-                               $LANG['buttons'][20]."' class='submit'>&nbsp;";
-                  Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+                               __s('Move')."' class='submit'>&nbsp;";
+                  Html::closeArrowMassives(array('delete' => __s('Delete')));
                }
                echo "</div></form></td></tr>\n";
             }

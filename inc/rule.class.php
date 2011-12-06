@@ -278,7 +278,7 @@ class Rule extends CommonDBTM {
                   "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType().
                   "&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400,".
                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
-                  $LANG['buttons'][50]."</a>";
+                  __('Test')."</a>";
             echo "</td></tr>\n";
          }
       }
@@ -449,7 +449,7 @@ class Rule extends CommonDBTM {
       if ($canedit && $nb>0) {
          Html::openArrowMassives("actionsform", true);
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         Html::closeArrowMassives(array('delete_action' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete_action' => __s('Delete')));
       }
       if ($canedit) {
          echo "</form>";
@@ -482,7 +482,7 @@ class Rule extends CommonDBTM {
       echo "</span></td>\n";
       echo "<td class='tab_bg_2 left' width='80px'>";
       echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_action' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "<input type='submit' name='add_action' value=\"".__s('Add')."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></div>";
    }
@@ -510,7 +510,7 @@ class Rule extends CommonDBTM {
       echo "</span></td>\n";
       echo "<td class='tab_bg_2' width='80px'>";
       echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_criteria' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "<input type='submit' name='add_criteria' value=\"".__s('Add')."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></div>";
    }
@@ -578,7 +578,7 @@ class Rule extends CommonDBTM {
       if ($canedit && $maxsize>0) {
          Html::openArrowMassives("criteriasform", true);
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
-         Html::closeArrowMassives(array('delete_criteria' => $LANG['buttons'][6]));
+         Html::closeArrowMassives(array('delete_criteria' => __s('Delete')));
       }
       echo "</form></div>\n";
    }
@@ -1652,7 +1652,7 @@ class Rule extends CommonDBTM {
          $this->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-         echo "<input type='submit' name='test_rule' value=\"".$LANG['buttons'][50]."\"
+         echo "<input type='submit' name='test_rule' value=\"".__s('Test')."\"
                 class='submit'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
@@ -1793,7 +1793,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\"".__s('Add')."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></form>";
    }
@@ -1863,7 +1863,7 @@ class Rule extends CommonDBTM {
          if ($canedit) {
             Html::openArrowMassives($formname, true);
             echo "<input type='hidden' name='action' value='delete'>";
-            Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('massiveaction' => __s('Delete')));
             echo "</form>";
          }
       }
