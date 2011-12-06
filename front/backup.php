@@ -255,6 +255,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
+         //TRANS: %s is the number of the byte
          echo printf(__("Unable to find the byte %s"),Html::formatNumber($offset, false, 0));
          echo "<br>";
          return false;
@@ -291,6 +292,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($DB->error) {
       echo "<hr>";
+      //TRANS: %s is the SQL query which generates the error
       printf(__("Mysql error starting from %s"),"[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
@@ -384,6 +386,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    if ($DB->error()) {
       echo "<hr>";
+      //TRANS: %s is the SQL query which generates the error
       printf(__("Mysql error starting from %s"),"[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
@@ -610,11 +613,13 @@ if (count($files)) {
            "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;";
+           //TRANS: %s is the filename
            $string = sprintf(__('Delete this file %s ?'),$file);
            echo "<a href=\"javascript:confirmAction('$string',
                                                'backup.php?delfile=$file')\">".$LANG['buttons'][6].
            "</a>&nbsp;</td>".
            "<td>&nbsp;";
+           //TRANS: %s is the filename
            $string = sprintf(__s('Replace the current database with the backup file %s ?'),$file);
            echo "<a href=\"javascript:confirmAction('$string',
                                                'backup.php?file=$file&amp;donotcheckversion=1')\">".
@@ -648,6 +653,7 @@ if (count($files)) {
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
+            //TRANS: %s is the filename
             $string = sprintf(__s('Delete this file %s ?'),$file);
             echo "<a href=\"javascript:confirmAction('$string',
                                                  'backup.php?delfile=$file')\">".$LANG['buttons'][6].
