@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-06 11:56+0100\n"
+"POT-Creation-Date: 2011-12-06 13:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,54 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: front/backup.php:258
+#, php-format
+msgid "Unable to find the byte %s"
+msgstr ""
+
+#: front/backup.php:294 front/backup.php:387 install/update_content.php:272
+#, php-format
+msgid "Mysql error starting from %s"
+msgstr ""
+
+#: front/backup.php:404
+msgid "The file already exists"
+msgstr ""
+
+#: front/backup.php:466 front/backup.php:532 install/update_content.php:390
+msgid "Automatic redirection, else click"
+msgstr ""
+
+#: front/backup.php:571 front/backup.php:575
+msgid "Backup the database ?"
+msgstr ""
+
+#: front/backup.php:572
+msgid "SQL Dump"
+msgstr ""
+
+#: front/backup.php:576
+msgid "XML Dump"
+msgstr ""
+
+#: front/backup.php:588
+msgid "Size"
+msgstr ""
+
+#: front/backup.php:613 front/backup.php:651
+#, php-format
+msgid "Delete this file %s ?"
+msgstr ""
+
+#: front/backup.php:618
+#, php-format
+msgid "Replace the current database with the backup file %s ?"
+msgstr ""
+
+#: front/backup.php:622 front/backup.php:656
+msgid "Download"
+msgstr ""
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: inc/phone.class.php:52

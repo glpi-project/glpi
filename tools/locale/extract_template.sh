@@ -7,7 +7,7 @@ copyright='INDEPNET Development Team'
 
 #xgettext *.php */*.php -copyright-holder='$copyright' --package-name=$soft --package-version=$version --msgid-bugs-address=$email -o locales/en_GB.po -L PHP --from-code=UTF-8 --force-po  -i --keyword=_n:1,2 --keyword=__ --keyword=_e
 
-xgettext *.php */*.php -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po  --keyword=_n:1,2 --keyword=__ --keyword=_e
+xgettext *.php */*.php -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po  --keyword=_n:1,2 --keyword=__s --keyword=__ --keyword=_e
 
 
 ### for using tx :

@@ -87,6 +87,12 @@ function __($str){
    return  "__".$TRANSLATE->_($str);
 }
 
+function __s($str){
+   global $TRANSLATE;
+
+   return  "__".addslashes($TRANSLATE->_($str));
+}
+
 function _e($str){
    global $TRANSLATE;
 
