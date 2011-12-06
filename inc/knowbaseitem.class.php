@@ -1369,7 +1369,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("knowbaseitemvisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => __s('Delete')));
+         Html::closeArrowMassives(array('deletevisibility' => __('Delete')));
          echo "</form>";
       }
 

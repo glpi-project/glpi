@@ -267,7 +267,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -401,7 +401,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='6' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -443,7 +443,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update_auth' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -506,7 +506,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -645,7 +645,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='7' class='center'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -840,13 +840,13 @@ class Config extends CommonDBTM {
          }
 
          echo "</td><td colspan='3'>";
-         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".$LANG['buttons'][61];
+         echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -912,7 +912,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\"></td>";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\"></td>";
       echo "</tr>";
 
       echo "</table>";

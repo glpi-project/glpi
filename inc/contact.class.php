@@ -400,7 +400,7 @@ class Contact extends CommonDBTM{
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1".
                      "&amp;id=$ID&amp;contacts_id=$instID'>
-                     <span class='b'>".$LANG['buttons'][6]."</span></a>";
+                     <span class='b'>".__('Delete')."</span></a>";
             } else {
                echo "&nbsp;";
             }
@@ -424,7 +424,7 @@ class Contact extends CommonDBTM{
                                              'entity_sons' => $this->fields["is_recursive"]));
 
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value='".
-                               $LANG['buttons'][8]."' class='submit'>";
+                               __s('Add')."' class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }

@@ -110,7 +110,7 @@ class SlaLevel extends RuleTicket {
          echo "</td><td class='center'>".$LANG['common'][60]."&nbsp;: ";
          Dropdown::showYesNo("is_active",array('value'=>1));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";
@@ -166,7 +166,7 @@ class SlaLevel extends RuleTicket {
             }
 
             Html::openArrowMassives("slalevel_form$rand",true);
-            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('delete' => __('Delete')));
 
             echo "</table></div>";
          }

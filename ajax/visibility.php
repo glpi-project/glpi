@@ -98,7 +98,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
    }
 
    if ($display) {
-      echo "&nbsp;<input type='submit' name='addvisibility' value=\"".$LANG['buttons'][8]."\"
+      echo "&nbsp;<input type='submit' name='addvisibility' value=\"".__s('Add')."\"
                    class='submit'>";
    }
 }

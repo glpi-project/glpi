@@ -320,7 +320,7 @@ class Supplier extends CommonDBTM {
          $ret .= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
                    $this->fields['id']."'>
                   <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt=\"".
-                   $LANG['buttons'][14]."\" title=\"".$LANG['buttons'][14]."\"></a>";
+                   __s('Update')."\" title=\"".__s('Update')."\"></a>";
       }
       return $ret;
    }
@@ -404,7 +404,7 @@ class Supplier extends CommonDBTM {
                echo "<a href='".$CFG_GLPI["root_doc"].
                      "/front/contact.form.php?deletecontactsupplier=1&amp;id=$ID&amp;contacts_id=".
                      $data["id"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                     $LANG['buttons'][6]."'></a>";
+                     __s('Delete')."'></a>";
             } else {
                echo "&nbsp;";
             }
@@ -438,7 +438,7 @@ class Supplier extends CommonDBTM {
                                  'entity_sons' => $this->fields["is_recursive"]));
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addcontactsupplier' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='addcontactsupplier' value=\"".__s('Add')."\"
                    class='submit'>";
             echo "</td></tr>";
          }
@@ -667,7 +667,7 @@ class Supplier extends CommonDBTM {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deletecontractsupplier=".
                    "1&amp;id=$assocID&amp;contracts_id=$cID'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                   $LANG['buttons'][6]."'></a>";
+                   __s('Delete')."'></a>";
          } else {
             echo "&nbsp;";
          }
@@ -692,7 +692,7 @@ class Supplier extends CommonDBTM {
                                     'entity_sons'  => $this->fields["is_recursive"],
                                     'nochecklimit' => true));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\"
+            echo "<input type='submit' name='addcontractsupplier' value=\"".__s('Add')."\"
                    class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td></tr>";

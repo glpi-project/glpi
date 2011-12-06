@@ -183,7 +183,7 @@ class Netpoint extends CommonDropdown {
 
          $item = new Netpoint();
          if ($item->canCreate()) {
-            echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+            echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                   "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;' ".
                   "onClick=\"var w = window.open('".$item->getFormURL().
                   "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
@@ -347,7 +347,7 @@ class Netpoint extends CommonDropdown {
             Html::openArrowMassives("massiveaction_form", true);
             echo "<input type='hidden' name='itemtype' value='Netpoint'>";
             echo "<input type='hidden' name='action' value='delete'>";
-            Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('massiveaction' => __('Delete')));
 
             echo "</form>\n";
          }
@@ -362,7 +362,7 @@ class Netpoint extends CommonDropdown {
          Html::autocompletionTextField($item, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
 
@@ -379,7 +379,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\"
+         echo "<td><input type='submit' name='execute' value=\"".__s('Add')."\"
                     class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";

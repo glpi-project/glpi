@@ -88,7 +88,7 @@ if (isset($_SESSION["ocs_import"]["id"])) {
       unset($_SESSION["ocs_import"]);
 
       echo "<div class='center b'><br>";
-      echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
+      echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
       $display_list = false;
    }
 }

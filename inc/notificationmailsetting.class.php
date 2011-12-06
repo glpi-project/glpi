@@ -218,7 +218,7 @@ class NotificationMailSetting extends CommonDBTM {
 
       /*
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input class='submit' type='submit' name='update' value='".$LANG['buttons'][2]."'>";
+      echo "<input class='submit' type='submit' name='update' value='".__s('Update')."'>";
       echo "</td></tr>";
       echo "</table></form>";*/
    }

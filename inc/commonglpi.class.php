@@ -439,20 +439,20 @@ class CommonGLPI {
 
          if ($first > 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][55].
-                       "\" title=\"".$LANG['buttons'][55]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+                       "\" title=\"".__s('First')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       $LANG['buttons'][55]."\" title=\"".$LANG['buttons'][55]."\"></li>";
+                       __s('First')."\" title=\"".__s('First')."\"></li>";
          }
 
          if ($prev > 0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
-                       "\" title=\"".$LANG['buttons'][12]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+                       "\" title=\"".__s('Previous')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       $LANG['buttons'][12]."\" title=\"".$LANG['buttons'][12]."\"></li>";
+                       __s('Previous')."\" title=\"".__s('Previous')."\"></li>";
          }
 
          if ($current !== false) {
@@ -461,20 +461,20 @@ class CommonGLPI {
 
          if ($next > 0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
-                       "\" title=\"".$LANG['buttons'][11]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+                       "\" title=\"".__s('Next')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       $LANG['buttons'][11]."\" title=\"".$LANG['buttons'][11]."\"></li>";
+                       __s('Next')."\" title=\"".__s('Next')."\"></li>";
          }
 
          if ($last > 0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".$LANG['buttons'][56].
-                       "\" title=\"".$LANG['buttons'][56]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+                       "\" title=\"".__s('Last')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       $LANG['buttons'][56]."\" title=\"".$LANG['buttons'][56]."\"></li>";
+                       __s('Last')."\" title=\"".__s('Last')."\"></li>";
          }
          echo "</ul></div>";
          echo "<div class='sep'></div>";

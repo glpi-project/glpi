@@ -46,7 +46,7 @@ if (isset($_POST["action"])) {
    switch($_POST["action"]) {
       case "delete" :
          echo "&nbsp;<input type='submit' name='delete_several' class='submit' value='".
-               $LANG['buttons'][2]."'>";
+              __s('Delete')."'>";
          break;
 
       case "assign_vlan" :
@@ -54,19 +54,19 @@ if (isset($_POST["action"])) {
          echo "&nbsp;" . $LANG['Internet'][58] .
               "&nbsp;: <input type='checkbox' name='tagged' value='1'>";
          echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
-               $LANG['buttons'][2]."'>";
+               __s('Associate')."'>";
          break;
 
       case "unassign_vlan" :
          Dropdown::show('Vlan');
          echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value='".
-               $LANG['buttons'][2]."'>";
+               __s('Dissociate')."'>";
          break;
 
       case "move" :
          Dropdown::show($_POST['itemtype'], array('name' => 'device'));
          echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".
-                      $LANG['buttons'][2]."\">";
+                     __s('Move')."\">";
          break;
    }
 }

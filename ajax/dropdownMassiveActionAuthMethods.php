@@ -63,7 +63,7 @@ if ($_POST["authtype"] > 0) {
          break;
    }
 
-   echo "&nbsp;<input type='submit' name='$name' class='submit' value=\"".$LANG['buttons'][2]."\">";
+   echo "&nbsp;<input type='submit' name='$name' class='submit' value=\"".__s('Post')."\">";
 }
 
 ?>

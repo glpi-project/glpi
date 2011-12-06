@@ -1286,7 +1286,7 @@ class Reminder extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("remindervisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => __s('Delete')));
+         Html::closeArrowMassives(array('deletevisibility' => __('Delete')));
          echo "</form>";
       }
 

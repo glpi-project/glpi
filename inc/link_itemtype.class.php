@@ -87,7 +87,7 @@ class Link_ItemType extends CommonDBTM{
          echo "<td class='center b'>";
          echo "<a href='".$CFG_GLPI["root_doc"].
                 "/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
-                ".$LANG['buttons'][6]."</a></td></tr>";
+                ".__('Delete')."</a></td></tr>";
          $used[$itemtype] = $itemtype;
          $i++;
       }
@@ -96,7 +96,7 @@ class Link_ItemType extends CommonDBTM{
          echo "<input type='hidden' name='links_id' value='$links_id'>";
          Dropdown::dropdownTypes("itemtype",'',$CFG_GLPI["link_types"],$used);
          echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"".
-                            $LANG['buttons'][8]."\" class='submit'>";
+                            __s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div></form>";

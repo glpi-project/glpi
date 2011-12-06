@@ -171,8 +171,8 @@ class RuleAction extends CommonDBChild {
                    'affectbyfqdn'        => $LANG['rulesengine'][47],
                    'affectbymac'         => $LANG['rulesengine'][49],
                    'compute'             => $LANG['rulesengine'][38],
-                   'send'                => $LANG['buttons'][26],
-                   'add_validation'      => $LANG['buttons'][26]);
+                   'send'                => __('Send'),
+                   'add_validation'      => __('Send'));
    }
 
 

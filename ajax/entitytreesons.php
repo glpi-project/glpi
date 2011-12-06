@@ -81,10 +81,10 @@ if (isset($_REQUEST['node'])) {
             if ($DB->result($result2,0,0) >0) {
                $path['leaf']     = false;
                $path['cls']      = 'folder';
-               $path['text']    .= "&nbsp;<a title=\"".$LANG['buttons'][40]."\" href='".
+               $path['text']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                            $CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".
                                            $ID."&amp;is_recursive=1'>".
-                                   "<img alt=\"".$LANG['buttons'][40]."\" src='".
+                                   "<img alt=\"".__s('Show all')."\" src='".
                                      $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
                $path['expanded'] = isset($ancestors[$ID]);
             }
@@ -119,10 +119,10 @@ if (isset($_REQUEST['node'])) {
                if ($DB->result($result2,0,0) >0) {
                   $path['leaf']     = false;
                   $path['cls']      = 'folder';
-                  $path['text']    .= "&nbsp;<a title=\"".$LANG['buttons'][40]."\" href='".
+                  $path['text']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                               $CFG_GLPI["root_doc"]."/front/".$target.
                                               "?active_entity=".$row['id']."&amp;is_recursive=1'>".
-                                       "<img alt=\"".$LANG['buttons'][40]."\" src='".
+                                       "<img alt=\"".__s('Show all')."\" src='".
                                          $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
                   $path['expanded'] = isset($ancestors[$row['id']]);
                } else {

@@ -167,7 +167,7 @@ class SLA extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['buttons'][15]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
       echo "<td>";
 
       Dropdown::show('Calendar', array('value'      => $this->fields["calendars_id"],
@@ -215,7 +215,7 @@ class SLA extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_calendars';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['buttons'][15];
+      $tab[4]['name']  = __('Calendar');
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';

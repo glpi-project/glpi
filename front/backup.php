@@ -616,14 +616,14 @@ if (count($files)) {
            //TRANS: %s is the filename
            $string = sprintf(__('Delete this file %s ?'),$file);
            echo "<a href=\"javascript:confirmAction('$string',
-                                               'backup.php?delfile=$file')\">".$LANG['buttons'][6].
+                                               'backup.php?delfile=$file')\">".__('Delete').
            "</a>&nbsp;</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__s('Replace the current database with the backup file %s ?'),$file);
            echo "<a href=\"javascript:confirmAction('$string',
                                                'backup.php?file=$file&amp;donotcheckversion=1')\">".
-           $LANG['buttons'][21]."</a>&nbsp;</td>".
+           __('Restore')."</a>&nbsp;</td>".
            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
            "</td></tr>";
    }
@@ -656,7 +656,7 @@ if (count($files)) {
             //TRANS: %s is the filename
             $string = sprintf(__s('Delete this file %s ?'),$file);
             echo "<a href=\"javascript:confirmAction('$string',
-                                                 'backup.php?delfile=$file')\">".$LANG['buttons'][6].
+                                                 'backup.php?delfile=$file')\">".__('Delete').
              "</a>&nbsp;</td>".
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
             "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".

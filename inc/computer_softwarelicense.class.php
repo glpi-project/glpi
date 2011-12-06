@@ -228,7 +228,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                           'entity_sons' => $license->fields['is_recursive']));
 
          echo "</td>";
-         echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></form>";
@@ -372,8 +372,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                     'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
-                     $LANG['buttons'][20]."\" class='submit'>&nbsp;";
-               Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+                     __s('Move')."\" class='submit'>&nbsp;";
+               Html::closeArrowMassives(array('delete' => __('Delete')));
 
                echo "</form>";
             }

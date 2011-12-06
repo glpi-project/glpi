@@ -61,7 +61,7 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
       unset($_SESSION["ocs_update"]);
       $display_list = false;
       echo "<div class='center b'><br>";
-      echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
+      echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
    }
 }
 

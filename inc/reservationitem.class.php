@@ -249,7 +249,7 @@ class ReservationItem extends CommonDBTM {
          echo "</textarea></td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table></form></div>";
@@ -329,7 +329,7 @@ class ReservationItem extends CommonDBTM {
       }
       if ($ok) {
          echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
-         echo "<input type='submit' value=\"".$LANG['buttons'][8]."\" class='submit'></td></tr>\n";
+         echo "<input type='submit' value=\"".__s('Add')."\" class='submit'></td></tr>\n";
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";

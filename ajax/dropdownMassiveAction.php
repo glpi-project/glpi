@@ -64,7 +64,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>\n";
+                      __s('Activate')."'>\n";
          break;
 
       case 'move_under' :
@@ -72,13 +72,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          Dropdown::show($_POST['itemtype'], array('name'     => 'parent',
                                                   'comments' => 0));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>\n";
+                      __s('Move')."'>\n";
          break;
 
       case 'merge' :
          echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>\n";
+                      __s('Merge')."'>\n";
          break;
 
       case "move_rule" :
@@ -96,7 +96,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                               'name'            => "ranking",
                               'entity_restrict' => $condition));
          echo "<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>\n";
+                __s('Move')."'>\n";
          break;
 
       case "add_followup" :
@@ -130,7 +130,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
          echo "<input type='text' name='tickets_id_1' value='' size='10'>\n";
          echo "<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>";
+                __s('Post')."'>";
 
          break;
 
@@ -147,7 +147,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                                        $paramsmassaction);
          echo "<span id='show_massiveaction_field'>";
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'></span>\n";
+                      __s('Post')."'></span>\n";
          break;
 
       case "compute_software_category" :
@@ -162,7 +162,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "delete_email" :
       case 'reset':
          echo "<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>\n";
+                __s('Post')."'>\n";
          break;
 
       case "unlock_ocsng_field" :
@@ -170,7 +170,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $fields       += OcsServer::getLockableFields();
          Dropdown::showFromArray("field", $fields);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Post')."'>";
          break;
 
       case "unlock_ocsng_monitor" :
@@ -180,20 +180,20 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "unlock_ocsng_disk" :
       case "unlock_ocsng_ip" :
          echo "<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>";
+                __s('Unlock')."'>";
          break;
 
       case "install" :
          Software::dropdownSoftwareToInstall("softwareversions_id",
                                              $_SESSION["glpiactive_entity"], 1);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][4]."'>";
+                      __s('Install')."'>";
          break;
 
       case "connect" :
          Computer_Item::dropdownConnect('Computer', $_POST["itemtype"], "connect_item");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Connect')."'>";
          break;
 
       case "connect_to_computer" :
@@ -201,18 +201,18 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                                 array('Monitor', 'Peripheral', 'Phone',  'Printer'),
                                 true);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Connect')."'>";
          break;
 
       case "disconnect" :
          echo "<input type='submit' name='massiveaction' class='submit' value='".
-                $LANG['buttons'][2]."'>";
+                __s('Disconnect')."'>";
          break;
 
       case "add_group" :
          Dropdown::show('Group', array('condition' => '`is_usergroup`'));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                     __s('Add')."'>";
          break;
 
       case "add_userprofile" :
@@ -222,37 +222,37 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          echo ".&nbsp;".$LANG['profiles'][28]."&nbsp;:&nbsp;";
          Dropdown::showYesNo("is_recursive", 0);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Add')."'>";
          break;
 
       case "add_document" :
          Document::dropdown(array('name' => 'docID'));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Add')."'>";
          break;
 
       case "add_contract" :
          Contract::dropdown(array('name' => "contractID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Add')."'>";
          break;
 
       case "add_contact" :
          Dropdown::show('Contact', array('name' => "contactID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Add')."'>";
          break;
 
       case "add_enterprise" :
          Dropdown::show('Supplier', array('name' => "supplierID"));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Add')."'>";
          break;
 
       case "import_email" :
          Dropdown::show('Entity');
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Import')."'>";
          break;
 
       case "duplicate" :
@@ -260,7 +260,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
             Dropdown::show('Entity');
          }
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                      $LANG['buttons'][2]."'>";
+                      __s('Duplicate')."'>";
          break;
 
       case "update" :
