@@ -1712,8 +1712,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['name']          = $LANG['common'][35];
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
-      $tab[71]['joinparams']    = array('beforejoin'
-                                        => array('table' => getTableForItemType($this->grouplinkclass),
+      $tab[71]['condition']     = 'is_requester';
+      $tab[71]['joinparams']    = array('beforejoin' =>
+                                           array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
                                                          => array('jointype'  => 'child',
                                                                   'condition' => 'AND NEWTABLE.`type` ' .
@@ -1746,6 +1747,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
       $tab[65]['forcegroupby']  = true;
       $tab[65]['massiveaction'] = false;
+      $tab[65]['condition']     = 'is_requester';
       $tab[65]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
@@ -1781,6 +1783,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['massiveaction'] = false;
+      $tab[8]['condition']     = 'is_assign';
       $tab[8]['joinparams']    = array('beforejoin'
                                        => array('table' => getTableForItemType($this->grouplinkclass),
                                                 'joinparams'
