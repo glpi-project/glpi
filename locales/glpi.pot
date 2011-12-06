@@ -1,0 +1,54 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-12-06 11:56+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#. TRANS: Test of comment for translation (mark : //TRANS)
+#: inc/phone.class.php:52
+msgid "Phone"
+msgid_plural "Phones"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/phone.class.php:225 inc/phone.class.php:414
+msgid "Status"
+msgstr ""
+
+#: inc/phone.class.php:392
+msgid "Name"
+msgstr ""
+
+#: inc/phone.class.php:399
+msgid "ID"
+msgstr ""
+
+#: inc/phone.class.php:406
+msgid "Type"
+msgstr ""
+
+#: inc/phone.class.php:410
+msgid "Model"
+msgstr ""
+
+#: inc/phone.class.php:418
+msgid "Serial Number"
+msgstr ""
+
+#: inc/phone.class.php:423
+msgid "Inventory Number"
+msgstr ""
