@@ -245,8 +245,7 @@ class Dropdown {
    static function getDropdownName($table, $id, $withcomment=0) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $itemtype = getItemTypeForTable($table);
-      $item     = new $itemtype();
+      $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table,$id,$withcomment);
