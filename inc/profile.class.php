@@ -433,7 +433,7 @@ class Profile extends CommonDBTM {
 
       $onfocus = "";
       $new = false;
-      $rowspan = 4;
+      $rowspan = 5;
       if ($ID > 0) {
          $rowspan++;
          $this->check($ID,'r');

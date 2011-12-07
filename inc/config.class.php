@@ -549,7 +549,7 @@ class Config extends CommonDBTM {
       echo "<td>".$LANG['mailgate'][7] . " (".$LANG['setup'][46].")&nbsp;:</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
-      echo "</td><td>&nbsp;</td></tr>";
+      echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
