@@ -667,6 +667,24 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'itilcategories_id');
 
+   // Update Itemtype datas in tables 
+   $itemtype_tables = array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences");
+
+   $typestochange = array ('TicketSolutionTemplate' => 'SolutionTemplate',
+                           'TicketSolutionType'     => 'SolutionType',
+                           'TicketCategory'         => 'ITILCategory',);
+                           
+   foreach ($itemtype_tables as $table) {
+
+      foreach ($typestochange as $key => $val) {
+         $query = "UPDATE `$table`
+                     SET `itemtype` = '$val'
+                     WHERE `itemtype` = '$key'";
+         $DB->query($query)
+         or die("0.83 update itemtype of table $table for $val ".$LANG['update'][90].$DB->error());
+      }
+   }
+
 
    $migration->displayMessage($LANG['update'][141] . ' - Add various fields'); // Updating schema
 
