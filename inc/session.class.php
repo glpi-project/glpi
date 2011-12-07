@@ -316,6 +316,16 @@ class Session {
          }
          // Active entity loading
          $_SESSION["glpiactive_entity"]           = $active;
+         $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName("glpi_entities", $active);
+         $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
+         if ($is_recursive) {
+            $_SESSION["glpiactive_entity_name"]      .= " (".$LANG['entity'][7].")";
+            $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
+         }
+         if ($ID=="all") {
+            $_SESSION["glpiactive_entity_name"]      .= " (".$LANG['buttons'][40].")";
+            $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
+         }
          
          if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])) {
             $_SESSION['glpishowallentities'] = 1;
