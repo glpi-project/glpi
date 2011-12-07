@@ -173,6 +173,11 @@ class UserEmail  extends CommonDBChild {
       }
       $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
 
+      // To be sure not to load bad datas from glpi_useremails table
+      if ($users_id == 0) {
+         $users_id = -99;
+      }
+
       $count = 0;
 
       // Display emails
