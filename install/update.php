@@ -118,22 +118,6 @@ set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
 $DB = new DB();
 
-//Load language
-if (!function_exists('loadLang')) {
-
-   function loadLang($LANGuage) {
-      global $LANG;
-
-      $file = GLPI_ROOT ."/locales/".$LANGuage.".php";
-
-      if (file_exists($file)) {
-         include($file);
-      } else {
-         include(GLPI_ROOT ."/locales/en_GB.php");
-      }
-   }
-
-}
 
 /* ----------------------------------------------------------------- */
 
@@ -820,11 +804,7 @@ $HEADER_LOADED = true;
 
 Session::start();
 
-if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {
-   $_SESSION["glpilanguage"] = "en_GB";
-}
-
-loadLang($_SESSION["glpilanguage"]);
+Session::loadLanguage();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

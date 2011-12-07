@@ -489,6 +489,8 @@ class Session {
          } else if (isset($CFG_GLPI["default_language"])) {
             // Default config in GLPI < 0.72 : keep it for upgrade process
             $_SESSION["glpilanguage"] = $CFG_GLPI["default_language"];
+         } else {
+            $_SESSION["glpilanguage"] = "en_GB";
          }
       }
 
