@@ -75,10 +75,15 @@ abstract class FQDNLabel extends CommonDBChild {
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
     * @param $label the label to check
+    * @param $canBeEmpty true if empty label is valid (name of NetworkName or NetworkAlias)
     **/
-   static function checkFQDNLabel($label) {
+   static function checkFQDNLabel($label, $canBeEmpty = false) {
 
-      if (empty($label) || (strlen($label) >= 63)) {
+      if (empty($label)) {
+         return $canBeEmpty;
+      }
+
+      if (strlen($label) >= 63) {
          return false;
       }
 
@@ -127,7 +132,7 @@ abstract class FQDNLabel extends CommonDBChild {
 
          $input['name'] = strtolower ( $input['name'] ) ;
 
-         if (!self::checkFQDNLabel($input['name'])) {
+         if (!self::checkFQDNLabel($input['name'], true)) {
             Session::addMessageAfterRedirect($LANG['Internet'][11]." (".$input['name'].")",
                                              false, ERROR);
             return false;
