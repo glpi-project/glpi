@@ -222,7 +222,7 @@ class Group_User extends CommonDBRelation{
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['setup'][603]."</tr>";
-         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<tr class='tab_bg_2'><td class='center'>";
 
          User::dropdown(array('right'  => "all",
                               'entity' => $entityrestrict,
