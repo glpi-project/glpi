@@ -245,8 +245,7 @@ class Dropdown {
    static function getDropdownName($table, $id, $withcomment=0) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $itemtype = getItemTypeForTable($table);
-      $item     = new $itemtype();
+      $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table,$id,$withcomment);
@@ -670,7 +669,7 @@ class Dropdown {
                                  'Domain'             => Domain::getTypeName(2),
                                  'Network'            => Network::getTypeName(2),
                                  'Vlan'               => Vlan::getTypeName(2)),
-                        
+
                         $LANG['Internet'][0]
                         => array('IPNetwork'          => IPNetwork::getTypeName(2),
                                  'FQDN'               => FQDN::getTypeName(2),
