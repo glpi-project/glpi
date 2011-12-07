@@ -90,18 +90,6 @@ function choose_language() {
 }
 
 
-// load language
-function loadLang($LANGuage) {
-   global $LANG;
-
-   $file = GLPI_ROOT ."/locales/".$LANGuage.".php";
-
-   if (file_exists($file)) {
-      include($file);
-   } else {
-      include(GLPI_ROOT ."/locales/en_GB.php");
-   }
-}
 
 
 function acceptLicence() {
@@ -504,15 +492,11 @@ if (is_writable(GLPI_SESSION_DIR)) {
 Session::start();
 error_reporting(0); // we want to check system before affraid the user.
 
-if (!isset($_SESSION["glpilanguage"]) || empty($_SESSION["glpilanguage"])) {
-   $_SESSION["glpilanguage"] = "en_GB";
-}
-
 if (isset($_POST["language"])) {
    $_SESSION["glpilanguage"] = $_POST["language"];
 }
 
-loadLang($_SESSION["glpilanguage"]);
+Session::loadLanguage();
 
 if (!isset($_POST["install"])) {
    $_SESSION = array();
