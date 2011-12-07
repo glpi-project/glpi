@@ -783,7 +783,12 @@ class Dropdown {
          echo "<tr><th>$label</th></tr>\n";
 
          foreach ($dp as $key => $val) {
-            echo "<tr class='tab_bg_1'><td><a href='".Toolbox::getItemTypeSearchURL($key)."'>";
+            $class="class='tab_bg_4'";
+            $itemtype = new $key();
+            if ($itemtype->isEntityAssign()) {
+               $class="class='tab_bg_2'";
+            }
+            echo "<tr $class><td><a href='".Toolbox::getItemTypeSearchURL($key)."'>";
             echo "$val</a></td></tr>\n";
             $i++;
          }
