@@ -529,8 +529,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      // set last updater
-      if ($lastupdater=Session::getLoginUserID(true)) {
+      // set last updater if interactive user
+      $lastupdater = Session::getLoginUserID(false);
+      if (is_numeric($lastupdater)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
@@ -858,8 +859,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
       }
 
-      // set last updater
-      if ($lastupdater = Session::getLoginUserID(true)) {
+      // set last updater if interactive user
+      $lastupdater = Session::getLoginUserID(false);
+      if (is_numeric($lastupdater)) {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
@@ -1659,7 +1661,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab = array();
       $tab['stats'] = $LANG['Menu'][13];
-      
+
       $tab[151]['table']         = $this->getTable();
       $tab[151]['field']         = 'solve_delay_stat';
       $tab[151]['name']          = $LANG['stats'][21];
@@ -1684,7 +1686,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       return $tab;
-   }   
+   }
 
    function getSearchOptionsActors() {
       global $LANG;
@@ -2534,7 +2536,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $query = "UPDATE `".$this->getTable()."`
                    SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
-         if ($lastupdater=Session::getLoginUserID(true)) {
+         // set last updater if interactive user
+         $lastupdater = Session::getLoginUserID(false);
+         if (is_numeric($lastupdater)) {
             $query .= ", `users_id_lastupdater` = '$lastupdater' ";
          }
 
