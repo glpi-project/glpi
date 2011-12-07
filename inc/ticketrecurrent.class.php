@@ -334,6 +334,7 @@ class TicketRecurrent extends CommonDropdown {
       // Compute next creation date
       $tr = new self();
       if ($tr->getFromDB($data['id'])) {
+         $input = array();
          $input['id']                 = $data['id'];
          $input['next_creation_date'] = $tr->computeNextCreationDate($data['begin_date'],
                                                                      $data['periodicity'],
