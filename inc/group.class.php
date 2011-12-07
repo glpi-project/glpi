@@ -204,8 +204,8 @@ class Group extends CommonTreeDropdown {
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='6' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
-      echo "<td class='middle' rowspan='6'>";
+      echo "<td rowspan='8' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td class='middle' rowspan='8'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -235,7 +235,7 @@ class Group extends CommonTreeDropdown {
       echo "<td colspan='2' class='b'>".$LANG['group'][1]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       dropdown::showYesNo('is_notify', $this->fields['is_notify']);
-      echo "</td></tr>";
+      echo "</td><td></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b' colspan='4'>".$LANG['group'][2]."</td>";

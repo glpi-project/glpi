@@ -875,7 +875,7 @@ class Problem extends CommonITILObject {
       echo "</table>";
       echo "</th></tr>";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['joblist'][0]."&nbsp;: </th>";
       echo "<td>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
@@ -923,7 +923,7 @@ class Problem extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
-      echo "<td colspan='3'>";
+      echo "<td colspan='5'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
@@ -953,7 +953,7 @@ class Problem extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
-      echo "<td colspan='3'>";
+      echo "<td colspan='5'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
