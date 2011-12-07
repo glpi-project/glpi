@@ -164,11 +164,6 @@ class NetworkPort extends CommonDBChild {
          unset($input[$field]);
       }
 
-      if ((count($this->input_for_NetworkName) == 0)
-          || empty($this->input_for_NetworkName['name'])) {
-         unset($this->input_for_NetworkName);
-      }
-
       return $input;
    }
 
@@ -196,8 +191,9 @@ class NetworkPort extends CommonDBChild {
             $instantiation->update($this->input_for_instantiation, $history);
          }
       }
+      unset($this->input_for_instantiation);
 
-      if (isset($this->input_for_NetworkName)) {
+      if (count($this->input_for_NetworkName) > 0) {
          $network_name = new NetworkName();
          if (isset($this->input_for_NetworkName['id'])) {
             $network_name->update($this->input_for_NetworkName, $history);
@@ -207,6 +203,8 @@ class NetworkPort extends CommonDBChild {
             $network_name->add($this->input_for_NetworkName, $history);
          }
       }
+      unset($this->input_for_NetworkName);
+
    }
 
 
