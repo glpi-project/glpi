@@ -606,7 +606,7 @@ class Reminder extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
-      echo "<td class='center'>";
+      echo "<td class='center' >";
 
       if ($canedit) {
          echo "<script type='text/javascript' >\n";
@@ -652,7 +652,7 @@ class Reminder extends CommonDBTM {
          echo "<div id='viewplan'>\n";
          echo "</div>\n";
       }
-      echo "</td></tr>\n";
+      echo "</td><td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".Toolbox::ucfirst($LANG['mailing'][117])."&nbsp;:&nbsp;</td>".
            "<td colspan='3'>";

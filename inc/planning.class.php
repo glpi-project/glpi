@@ -426,9 +426,9 @@ class Planning {
          }
          echo "</tr>";
       }
-      echo "<tr><td colspan='$colnumber'>&nbsp;</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='$colnumber'>&nbsp;</td></tr>";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['profiles'][34]."</th>";
       echo "<td class='available' colspan=8>".$LANG['reservation'][4]."</td>";
       echo "<td class='notavailable' colspan=8>".$LANG['reservation'][11]."</td>";

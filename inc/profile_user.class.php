@@ -437,7 +437,7 @@ class Profile_User extends CommonDBTM {
                         "</span>";
                   echo "</a></td></tr>\n";
 
-                  echo "<tr><td>";
+                  echo "<tr class='tab_bg_2'><td>";
                   echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand.
                          "_$temp' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
                   echo "<div class='center' id='entity$temp$rand' style='display:none;'>\n";
@@ -506,7 +506,7 @@ class Profile_User extends CommonDBTM {
             }
 
          } else {
-            echo "<tr><td class='tab_bg_1 center'>".$LANG['profiles'][33]."</td></tr>\n";
+            echo "<tr class='tab_bg_2'><td class='center'>".$LANG['profiles'][33]."</td></tr>\n";
          }
       }
       echo "</table></div>\n";
