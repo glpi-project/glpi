@@ -1344,13 +1344,12 @@ class AuthLDAP extends CommonDBTM {
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
                   Dropdown::showYesNo("toimport_recursive[" .$group_dn . "]", 0);
-                  echo "</td>";
                }
                else {
                   echo "<td><input type='hidden' name=\"toimport_recursive[".$group_dn."]\"
-                             value='0'></td>";
+                             value='0'>";
                }
-               echo "<td><input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".
+               echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".
                       $search_type."\"></td></tr>";
             }
 
