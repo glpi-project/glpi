@@ -431,8 +431,10 @@ class Migration {
          $fields = array();
          $values = array();
          foreach ($input as $field => $value) {
-            $fields[] = "`$field`";
-            $values[] = "'$value'";
+            if (FieldExists($table, $field)) {
+               $fields[] = "`$field`";
+               $values[] = "'$value'";
+            }
          }
          $query = "INSERT INTO `$table` (" . implode(', ', $fields) . ") values (" .
                   implode(', ', $values) . ")";
