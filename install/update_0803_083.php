@@ -51,14 +51,14 @@ function update0803to083() {
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks',*/ 'glpi_entities_knowbaseitems', 'glpi_entities_reminders',
                           'glpi_groups_problems', 'glpi_groups_knowbaseitems', 'glpi_groups_reminders',
-                          'glpi_knwobaseitems_profiles',  'glpi_knwobaseitems_users',
+                          'glpi_knowbaseitems_profiles',  'glpi_knowbaseitems_users',
                           'glpi_items_problems', 'glpi_problems',
                           'glpi_problemtasks', 'glpi_problems_ticket', 'glpi_problems_users',
                           'glpi_profiles_reminders', 'glpi_reminders_users',
                           'glpi_ticketrecurrents',
                           'glpi_tickettemplates', 'glpi_tickettemplatehiddenfields',
                           'glpi_tickettemplatemandatoryfields',
-                          'glpi_tickettemplatepredefinedfields');
+                          'glpi_tickettemplatepredefinedfields', 'glpi_useremails');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
