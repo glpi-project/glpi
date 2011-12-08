@@ -2560,7 +2560,7 @@ class Ticket extends CommonITILObject {
             }
          }
          echo "<div id='tracking_my_devices'>";
-         echo $LANG['tracking'][1]."&nbsp;:&nbsp;<select id='my_items' name='_my_items'>";
+         echo "<select id='my_items' name='_my_items'>";
          echo "<option value=''>--- ";
          echo $LANG['help'][30]." ---</option>$my_devices</select></div>";
 
@@ -2583,11 +2583,12 @@ class Ticket extends CommonITILObject {
     * @param $itemtype preselected value.for item type
     * @param $items_id preselected value for item ID
     * @param $admin is an admin access ?
+    * @param $users_id user ID used to display my devices
     * @param $entity_restrict Restrict to a defined entity
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownAllDevices($myname, $itemtype, $items_id=0, $admin=0,
+   static function dropdownAllDevices($myname, $itemtype, $items_id=0, $admin=0,$users_id=0,
                                       $entity_restrict=-1) {
       global $LANG, $CFG_GLPI, $DB;
 
@@ -2601,8 +2602,7 @@ class Ticket extends CommonITILObject {
          echo "<div id='tracking_all_devices'>";
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
-            if (!$admin
-                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+            if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
                echo $LANG['tracking'][2]."&nbsp;: ";
             }
 
@@ -3052,7 +3052,7 @@ class Ticket extends CommonITILObject {
             echo "<td>";
             self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
                                     $options['itemtype'], $options['items_id']);
-            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
+            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0, $options['_users_id_requester'],
                                      $_SESSION["glpiactive_entity"]);
             echo "<span id='item_ticket_selection_information'></span>";
 
@@ -3708,7 +3708,7 @@ class Ticket extends CommonITILObject {
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
-                                  1, $this->fields["entities_id"]);
+                                  1, $dev_user_id, $this->fields["entities_id"]);
          if ($ID) {
             echo "</div>";
          }
