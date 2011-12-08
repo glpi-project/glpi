@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------
 
 if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ]\n");
+   die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ] [ --fr ]\n");
 }
 
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
@@ -57,7 +57,7 @@ Session::start();
 
 // Init debug variable
 $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-$_SESSION['glpilanguage']  = "en_GB";
+$_SESSION['glpilanguage']  = (in_array('--fr', $_SERVER['argv']) ? 'fr_FR' : 'en_GB');
 
 Session::loadLanguage();
 
