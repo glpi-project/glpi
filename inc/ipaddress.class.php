@@ -689,18 +689,19 @@ class IPAddress extends CommonDBChild {
          return false;
       }
 
-      for ($i = 3 ; $i >= 0 ; ++$i) {
+      for ($i = 3 ; $i >= 0 ; --$i) {
          $address[$i] += $value;
          if ($address[$i] < 0) {
-            $address[$i] += 0x100000000;
+            $address[$i] += (0x80000000 * 2);
             $value        = -1; // For next value for right to left ...
          } else if ($address[$i] > 0xffffffff) {
-            $address[$i] -= 0x100000000;
+            $address[$i] -= (0x80000000 * 2);
             $value        = 1; // For next value for right to left ...
          } else {
             break;
          }
       }
+
       return true;
    }
 
@@ -720,7 +721,7 @@ class IPAddress extends CommonDBChild {
    static function convertNegativeIntegerToPositiveFloat($value) {
 
       if (intval($value) && ($value < 0)) {
-         $value = floatval($value) + floatval(0x100000000);
+         $value = floatval($value) + floatval(0x80000000 * 2);
       }
       return $value;
    }
