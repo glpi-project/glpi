@@ -2098,7 +2098,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // display opened tickets for user
          if ($type == self::REQUESTER
-             && $options["_users_id_".$typename] > 0) {
+             && $options["_users_id_".$typename] > 0
+             && $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
 
             $options2['field'][0]      = 4; // users_id
             $options2['searchtype'][0] = 'equals';
