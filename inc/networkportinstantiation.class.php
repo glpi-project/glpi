@@ -66,7 +66,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options the option given to NetworkPort::showForm
     * @param $recursiveItems list of the items on which this port is attached
    **/
-   function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG;
 
       echo "<tr><td colspan='4' class='center'>".$LANG['Internet'][44]."</td></tr>";

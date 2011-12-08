@@ -52,7 +52,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
   }
 
 
-   function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG;
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];

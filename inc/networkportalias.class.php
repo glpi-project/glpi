@@ -111,7 +111,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    }
 
 
-   function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 

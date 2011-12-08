@@ -553,7 +553,7 @@ class NetworkPort extends CommonDBChild {
       if ($instantiation !== false) {
          echo "<tr class='tab_bg_1'><th colspan='4'>" .$instantiation->getTypeName() .
               "</th></tr>\n";
-         $instantiation->showForm($this, $options, $recursiveItems);
+         $instantiation->showInstantiationForm($this, $options, $recursiveItems);
          unset($instantiation);
       }
 

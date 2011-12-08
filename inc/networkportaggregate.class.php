@@ -97,7 +97,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
-   function showForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       if (isset($this->fields['networkports_id'])
           && is_string($this->fields['networkports_id'])) {
