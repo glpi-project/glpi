@@ -91,7 +91,7 @@ if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
                   ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
               LEFT JOIN `glpi_networkports`
                   ON (`glpi_networkports`.`id` = `glpi_networkportethernets`.`id`
-                      AND `glpi_networkports`.`type` = 'Ethernet'
+                      AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet'
                       AND `glpi_networkports`.`itemtype`";
 
    if ($_POST["devtype"] == 'NetworkEquipment') {
