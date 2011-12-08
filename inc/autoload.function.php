@@ -79,6 +79,8 @@ function isPluginItemType($classname) {
    return false;
 }
 
+
+
 /// Translation functions
 
 function __($str){
@@ -87,11 +89,13 @@ function __($str){
    return  "__".$TRANSLATE->_($str);
 }
 
+
 function __s($str){
    global $TRANSLATE;
 
    return  "__s".addslashes($TRANSLATE->_($str));
 }
+
 
 function _e($str){
    global $TRANSLATE;
@@ -99,10 +103,11 @@ function _e($str){
    echo "_e".$TRANSLATE->_($str);
 }
 
-function _n($sing,$plural,$nb){
+
+function _n($sing, $plural, $nb){
    global $TRANSLATE;
 
-   return  "_n".$TRANSLATE->plural($sing,$plural,$nb);
+   return "_n".$TRANSLATE->plural($sing, $plural, $nb);
 }
 
 
@@ -147,7 +152,7 @@ function __autoload($classname) {
       if (preg_match('/^Zend/',$classname,$matches)) {
          set_include_path(get_include_path() . PATH_SEPARATOR . GLPI_ZEND_PATH);
          require_once ("Zend/Loader.php");
-         
+
          Zend_Loader::loadClass($classname);
          return true;
       }
