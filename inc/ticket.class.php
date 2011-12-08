@@ -3005,12 +3005,12 @@ class Ticket extends CommonITILObject {
             $condition .= " AND `is_request`='1'";
             break;
 
-         default:
+         default :
             break;
       }
-      $opt = array('value'     => $options['itilcategories_id'],
-                                           'condition' => $condition,
-                                           'on_change' => 'submit()');
+      $opt = array('value' => $options['itilcategories_id'],
+                                       'condition' => $condition,
+                                       'on_change' => 'submit()');
       if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
          $opt['display_emptychoice'] = false;
       }

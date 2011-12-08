@@ -54,46 +54,45 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       $tab = array(array('name'  => $this->getForeignKeyField(),
-                         'label' => $LANG['setup'][75],
+                         'label' => __('As child of'),
                          'type'  => 'parent',
                          'list'  => false),
                    array('name'  => 'users_id',
-                         'label' => $LANG['common'][10],
+                         'label' => __('Technician in charge of the hardware'),
                          'type'  => 'UserDropdown',
                          'list'  => true),
                    array('name'  => 'groups_id',
-                         'label' => $LANG['common'][109],
+                         'label' => __('Group in charge of the hardware'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'knowbaseitemcategories_id',
-                         'label' => $LANG['title'][5],
+                         'label' => __('Knowledge base'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'is_helpdeskvisible',
-                         'label' => $LANG['tracking'][39],
+                         'label' => __s('Visible in the simplified interface'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'is_incident',
-                         'label' => $LANG['job'][70],
+                         'label' => __('Visible for an incident'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'is_request',
-                         'label' => $LANG['job'][71],
+                         'label' => __('Visible for a request'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'is_problem',
-                         'label' => $LANG['job'][72],
+                         'label' => __('Visible for a problem'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'tickettemplates_id_demand',
-                         'label' => $LANG['job'][66],
+                         'label' => __('Template for a request'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'tickettemplates_id_incident',
-                         'label' => $LANG['job'][67],
+                         'label' => __('Template for an incident'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                   );
@@ -111,46 +110,45 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
-      $tab[70]['name']  = $LANG['common'][10];
+      $tab[70]['name']  = __('Technician in charge of the hardware');
 
       $tab[71]['table'] = 'glpi_groups';
       $tab[71]['field'] = 'completename';
-      $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['name']  = __('Group');
 
       $tab[72]['table']     = 'glpi_tickettemplates';
       $tab[72]['field']     = 'name';
       $tab[72]['linkfield'] = 'tickettemplates_id_demand';
-      $tab[72]['name']      = $LANG['job'][66];
+      $tab[72]['name']      = __('Template for a request');
 
       $tab[73]['table']     = 'glpi_tickettemplates';
       $tab[73]['field']     = 'name';
       $tab[73]['linkfield'] = 'tickettemplates_id_incident';
-      $tab[73]['name']      = $LANG['job'][67];
+      $tab[73]['name']      = __('Template for an incident');
 
       $tab[74]['table']     = $this->getTable();
       $tab[74]['field']     = 'is_incident';
-      $tab[74]['name']      = $LANG['job'][70];
+      $tab[74]['name']      = __('Visible for an incident');
       $tab[74]['datatype'] = 'bool';
 
       $tab[75]['table']     = $this->getTable();
       $tab[75]['field']     = 'is_request';
-      $tab[75]['name']      = $LANG['job'][71];
+      $tab[75]['name']      = __('Visible for a request');
       $tab[75]['datatype'] = 'bool';
 
       $tab[76]['table']    = $this->getTable();
       $tab[76]['field']    = 'is_problem';
-      $tab[76]['name']     = $LANG['job'][72];
+      $tab[76]['name']     = __('Visible for a problem');
       $tab[76]['datatype'] = 'bool';
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'is_helpdeskvisible';
-      $tab[3]['name']     = $LANG['tracking'][39];
+      $tab[3]['name']     = __s('Visible in the simplified interface');
       $tab[3]['datatype'] = 'bool';
 
       return $tab;
@@ -158,12 +156,7 @@ class ITILCategory extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['dropdown'][3];
-      }
-      return $LANG['setup'][79];
+      return _n('Category of ticket', 'Categories of tickets', $nb);
    }
 
 
@@ -182,7 +175,7 @@ class ITILCategory extends CommonTreeDropdown {
     * @param $withname boolean : also display name ?
    **/
    function getLinks($withname=false) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ret = '';
 
@@ -192,11 +185,11 @@ class ITILCategory extends CommonTreeDropdown {
       }
 
       if ($this->fields['knowbaseitemcategories_id']) {
-         $title = $LANG['knowbase'][1];
+         $title = __('FAQ');
 
          if (isset($_SESSION['glpiactiveprofile'])
              && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-            $title = $LANG['Menu'][19];
+            $title = __('Knowledge base');
          }
 
          $ret .= "<a href='".$CFG_GLPI["root_doc"].
