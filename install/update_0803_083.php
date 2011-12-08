@@ -667,13 +667,13 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'itilcategories_id');
 
-   // Update Itemtype datas in tables 
+   // Update Itemtype datas in tables
    $itemtype_tables = array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences");
 
    $typestochange = array ('TicketSolutionTemplate' => 'SolutionTemplate',
                            'TicketSolutionType'     => 'SolutionType',
                            'TicketCategory'         => 'ITILCategory',);
-                           
+
    foreach ($itemtype_tables as $table) {
 
       foreach ($typestochange as $key => $val) {
@@ -1731,6 +1731,13 @@ function update0803to083() {
       $DB->query($query)
       or die ("0.83 add entities_id 0 in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
       $restore_root_entity_value = true;
+   } else {
+      $query = "UPDATE `glpi_entitydatas`
+                SET `tickettemplates_id` = '$default_ticket_template'
+                WHERE `entities_id` = 0
+                      AND `tickettemplates_id` = -2";
+      $DB->query($query)
+      or die ("0.83 update toot entity in glpi_entitydatas ".$LANG['update'][90]. $DB->error());
    }
 
    // migration to new values for inherit parent (0 => -2)
