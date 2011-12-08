@@ -282,6 +282,8 @@ class NetworkName extends FQDNLabel {
                    WHERE `id` = '".$this->getID()."'";
          $DB->query($query);
 
+         unset($this->IPs);
+
       }
    }
 

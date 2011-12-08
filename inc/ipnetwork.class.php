@@ -165,16 +165,13 @@ class IPNetwork extends CommonDropdown {
       if (!isset($this->fields["network"]) || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {
-            Session::addMessageAfterRedirect($LANG['Internet'][19], false, ERROR);
-            return false;
+            return array('error' => $LANG['Internet'][19], 'input' => false);
          }
          if (!$address->setAddressFromString($network[0])) {
-            Session::addMessageAfterRedirect($LANG['Internet'][20], false, ERROR);
-            return false;
+            return array('error' => $LANG['Internet'][20], 'input' => false);
          }
          if (!$netmask->setNetmaskFromString($network[1], $address->getVersion())) {
-            Session::addMessageAfterRedirect($LANG['Internet'][21], false, ERROR);
-            return false;
+            return array('error' => $LANG['Internet'][21], 'input' => false);
          }
 
          // After checking that address and netmask are valid, modify the address to be the "real"
@@ -197,8 +194,7 @@ class IPNetwork extends CommonDropdown {
          $sameNetworks = self::searchNetworks("equals", $params, $entity);
          // Check unicity !
          if ($sameNetworks && count($sameNetworks) > 0) {
-            Session::addMessageAfterRedirect($LANG['Internet'][22], false, ERROR);
-            return false;
+            return array('error' => $LANG['Internet'][22], 'input' => false);
          }
          $networkUpdate = true;
          // Then, update $input to reflect the network and the netmask
@@ -212,6 +208,7 @@ class IPNetwork extends CommonDropdown {
          $netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
       }
 
+      $returnValue = array();
       // If the gateway has been altered, or the network informations (address or netmask) changed,
       // then, we must revalidate the gateway !
       if (!isset($this->fields["gateway"])
@@ -222,7 +219,7 @@ class IPNetwork extends CommonDropdown {
          if (!empty($input["gateway"])) {
             if (!$gateway->setAddressFromString($input["gateway"])
                 || (!self::checkIPFromNetwork($gateway, $address, $netmask))){
-               Session::addMessageAfterRedirect($LANG['Internet'][23], false, ERROR);
+               $returnValue['error'] = $LANG['Internet'][23];
 
                if (!empty($this->fields["gateway"])) {
                   if (!$gateway->setAddressFromString($this->fields["gateway"])
@@ -236,13 +233,23 @@ class IPNetwork extends CommonDropdown {
          }
          $input = $gateway->setArrayFromAddress($input, "", "gateway", "gateway");
       }
-      return $input;
+
+      $returnValue['input'] = $input;
+
+      return $returnValue;
    }
 
 
    function prepareInputForAdd($input) {
 
-      $input = $this->prepareInput($input);
+      $preparedInput = $this->prepareInput($input);
+
+      if (isset($preparedInput['error'])) {
+         Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
+      }
+
+      $input = $preparedInput['input'];
+
       if (is_array($input)) {
          return parent::prepareInputForAdd($input);
       }
@@ -252,7 +259,14 @@ class IPNetwork extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
 
-      $input = $this->prepareInput($input);
+      $preparedInput = $this->prepareInput($input);
+
+      if (isset($preparedInput['error'])) {
+         Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
+      }
+
+      $input = $preparedInput['input'];
+
       if (is_array($input)) {
          return parent::prepareInputForUpdate($input);
       }
@@ -379,7 +393,7 @@ class IPNetwork extends CommonDropdown {
             for ($i = $startIndex ; $i < 4 ; ++$i) {
                $WHERE .= " AND (`".$addressDB[$i]."` & '".$netmaskPa[$i]."')=
                                ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')
-                           AND ('".$netmaskPa[$i]."' = `".$netmaskDB[$i]."`";
+                           AND ('".$netmaskPa[$i]."' = `".$netmaskDB[$i]."`)";
             }
          } else {
             for ($i = $startIndex ; $i < 4 ; ++$i) {
@@ -434,7 +448,7 @@ class IPNetwork extends CommonDropdown {
                $WHERE .= " AND `id` <> '".$condition["exclude IDs"][0]."'";
             }
          } else {
-            $WHERE .= " AND`id` <> '".$condition["exclude IDs"]."'";
+            $WHERE .= " AND `id` <> '".$condition["exclude IDs"]."'";
          }
       }
 

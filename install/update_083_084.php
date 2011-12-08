@@ -209,10 +209,11 @@ function update083to084() {
          $domainName = $domain['name'];
          // We ensure that domains have at least 1 dote to be sure it is not a Windows workgroup
          if ((strpos($domainName, '.') !== false) && (FQDN::checkFQDN($domainName))) {
-            $fqdn->add(array('entities_id' => 0,
-                             'name'        => $domainName,
-                             'fqdn'        => $domainName,
-                             'comment'     => $domain['comment']));
+            $migration->insertInTable($fqdn->getTable(),
+                                      array('entities_id' => 0,
+                                            'name'        => $domainName,
+                                            'fqdn'        => $domainName,
+                                            'comment'     => $domain['comment']));
          }
       }
       $ADDTODISPLAYPREF['FQDN'] = array(11);
