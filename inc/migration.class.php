@@ -418,6 +418,30 @@ class Migration {
    }
 
    /**
+    * Insert an entry inside a table
+    *
+    * @since version 0.84
+    * @param $table The table to alter
+    * @param $input The elements to add inside the table
+   **/
+   function insertInTable($table, $input) {
+      global $LANG, $DB;
+
+      if (TableExists("$table") && is_array($input) && (count($input) > 0)) {
+         $fields = array();
+         $values = array();
+         foreach ($input as $field => $value) {
+            $fields[] = "`$field`";
+            $values[] = "'$value'";
+         }
+         $query = "INSERT INTO `$table` (" . implode(', ', $fields) . ") values (" .
+                  implode(', ', $values) . ")";
+         $DB->query($query)
+         or die($this->version." insert in $table " . $LANG['update'][90] . $DB->error());
+      }
+   }
+
+   /**
     * Execute migration for only one table
     *
     * @param $table
