@@ -52,6 +52,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
       //   But each gethostbyaddr() may reach several milliseconds. With very large number of
       //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
       //$computerName = gethostbyaddr($IP);
+      /// TODO moyo : with several private networks gethostbyaddr may get wrong informations
       $computerName = $IP;
       if ($computerName != $IP) {
          $position = strpos($computerName, ".");
