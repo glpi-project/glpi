@@ -250,17 +250,16 @@ class Computer_Device extends CommonDBTM {
             $numberOfPreviousItem = $deviceFromSQL['NB'];
 
             $query = "SELECT `id`,
-                            `$fk`
-                            $specif_text
+                             `$fk`
+                             $specif_text
                       FROM `$linktable`
                       WHERE `computers_id` = '$ID'
-                        AND `$fk` = '".$deviceFromSQL[$fk]."'
-                      ORDER BY id";
+                            AND `$fk` = '".$deviceFromSQL[$fk]."'
+                      ORDER BY `id`";
 
             $first = true;
 
             foreach ($DB->request($query) as $data) {
-
                Session::addToNavigateListItems($itemtype, $data[$fk]);
 
                if ($device->getFromDB($data[$fk])) {
@@ -287,12 +286,11 @@ class Computer_Device extends CommonDBTM {
 
                      echo "</td><td class='center' $rowspan><input type='checkbox' " .
                           " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
-
                   }
 
                   echo "<td class='center'>";
-                  echo "<input type='checkbox' name='remove_" .
-                       $itemtype."_".$data['id']."' value='1'>";
+                  echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
+                         value='1'>";
                   echo "</td>";
                   $spec = $device->getFormData();
 
@@ -308,17 +306,16 @@ class Computer_Device extends CommonDBTM {
                         } else if ($canedit) {
                            // Specificity
                            echo "<td class='right' colspan='$colspan'>" .
-                                $spec['label'][$i]."&nbsp;: ";
+                                  $spec['label'][$i]."&nbsp;: ";
                            echo "<input type='text' name='value_" . $itemtype . "_" .
-                                $data['id'] . "' value='" . $data['specificity'] .
-                                "' size='".$spec['size']."'>";
+                                  $data['id'] . "' value='" . $data['specificity'] .
+                                  "' size='".$spec['size']."'>";
                            if (isset($specificity_units[$device->getType()])) {
                               echo '&nbsp;'.$specificity_units[$device->getType()];
                            }
                            echo "</td>";
 
                         } else {
-
                            echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
                            echo $data['specificity'];
 
@@ -327,11 +324,9 @@ class Computer_Device extends CommonDBTM {
                            }
 
                            echo "</td>";
-
                         }
                      }
                   } else {
-
                      echo "<td colspan='60'>&nbsp;</td>";
                   }
 
@@ -348,7 +343,7 @@ class Computer_Device extends CommonDBTM {
             echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
             echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
             echo "<input type='submit' class='submit' name='updateall' value='".
-               __s('Update')."'></td></tr>";
+                   __s('Update')."'></td></tr>";
          }
 
          echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
@@ -363,30 +358,37 @@ class Computer_Device extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * \brief Remove one link between a computer and a device
     * For instance, usefull to remove one network card of some type from the computer
     *
-    * $itemtype the type of the device to remove
-    * $compDevID the id of the link between the computer and the device
+    * @since version 0.84
+    *
+    * @param $itemtype the type of the device to remove
+    * @param $compDevID the id of the link between the computer and the device
    **/
    private function removeDevice($itemtype, $compDevID) {
       global $DB;
 
       $linktable = getTableForItemType('Computer_'.$itemtype);
 
-      $query = "DELETE FROM `$linktable`
+      $query = "DELETE
+                FROM `$linktable`
                 WHERE `id` = '$compDevID'";
 
       $DB->query($query);
    }
 
+
    /**
     * \brief Remove all links between a computer and a device.
     * For instance, remove all network cards of some type from a computer
     *
-    * $itemtype the type of the device to remove
-    * $devID the id of the device to remove from the computer
+    * @since version 0.84
+    *
+    * @param $itemtype the type of the device to remove
+    * @param $devID the id of the device to remove from the computer
    **/
    private function removeDevices($itemtype, $devID) {
       global $DB;
@@ -394,21 +396,25 @@ class Computer_Device extends CommonDBTM {
       $linktable = getTableForItemType('Computer_'.$itemtype);
       $fk        = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
-      $query = "DELETE FROM `$linktable`
+      $query = "DELETE
+                FROM `$linktable`
                 WHERE `$fk` = '$devID'
-                  AND `computers_id` = '".$this->fields["computers_id"]."'";
+                      AND `computers_id` = '".$this->fields["computers_id"]."'";
 
       $DB->query($query);
    }
 
+
    /**
     * Add one or more link to a given device
+    *
+    * @since version 0.84
     *
     * @param $newNumber number of links to add
     * @param $itemtype itemtype of device
     * @param $compDevID computer device ID
    **/
-   private function addDevices($newNumber, $itemtype,$compDevID) {
+   private function addDevices($newNumber, $itemtype, $compDevID) {
       global $DB;
 
       $linktable = getTableForItemType('Computer_'.$itemtype);
@@ -423,9 +429,9 @@ class Computer_Device extends CommonDBTM {
       }
 
       $query = "SELECT `id`
-                 FROM `$linktable`
-                 WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                       AND `$fk` = '".$this->fields[$fk]."'";
+                FROM `$linktable`
+                WHERE `computers_id` = '".$this->fields["computers_id"]."'
+                      AND `$fk` = '".$this->fields[$fk]."'";
 
       if (count($specif_fields)) {
          foreach ($specif_fields as $field => $name) {
@@ -447,6 +453,7 @@ class Computer_Device extends CommonDBTM {
          }
       }
    }
+
 
 
    /**
@@ -499,18 +506,21 @@ class Computer_Device extends CommonDBTM {
          $data = explode("_",$key);
          if (count($data) == 3) {
             switch ($data[0]) {
-            case 'quantity':
-               $this->addDevices($val, $data[1],$data[2]);
-               break;
-            case 'value':
-               $this->updateSpecificity($val,$data[1],$data[2]);
-               break;
-            case 'remove':
-               $this->removeDevice($data[1], $data[2]);
-               break;
-            case 'removeall':
-               $this->removeDevices($data[1], $data[2]);
-               break;
+               case 'quantity' :
+                  $this->addDevices($val, $data[1],$data[2]);
+                  break;
+
+               case 'value' :
+                  $this->updateSpecificity($val,$data[1],$data[2]);
+                  break;
+
+               case 'remove' :
+                  $this->removeDevice($data[1], $data[2]);
+                  break;
+
+               case 'removeall' :
+                  $this->removeDevices($data[1], $data[2]);
+                  break;
             }
          }
       }

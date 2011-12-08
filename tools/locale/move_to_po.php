@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -62,9 +60,9 @@ if (!is_readable(GLPI_ROOT . "/locales/".$_GET['lang'].".php")) {
    exit();
 }
 include (GLPI_ROOT . "/locales/en_GB.php");
-$REFLANG=$LANG;
+$REFLANG = $LANG;
 
-$lf = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".php", "r");
+$lf     = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".php", "r");
 $lf_new = fopen(GLPI_ROOT . "/locales/temp.php", "w+");
 
 while (($content = fgets($lf, 4096)) !== false) {
@@ -93,37 +91,38 @@ $po  = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".po", "w+");
 if ($pot && $po) {
    while (($content = fgets($pot, 4096)) !== false) {
       if (preg_match('/^msgid "(.*)"$/',$content,$reg)) {
-            $current_string = $reg[1];
+         $current_string = $reg[1];
       }
-      if (preg_match('/^msgid_plural "(.*)"$/',$content,$reg)) {
-            $current_string_plural = $reg[1];
-      }
-      
-      if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
-            if (strlen($reg[1]) == 0) { //Singular
-               $translation = search_in_dict($current_string);
-               $content = "msgstr \"$translation\"\n";
-            } else {
 
-               switch ($reg[1]) {
-                  case "0" : // Singular
-                     $translation = search_in_dict($current_string);
-                     break;
-                  case "1" : // Plural
-                     $translation = search_in_dict($current_string_plural);
-                     break;
-               }
-               $content = "msgstr[".$reg[1]."] \"$translation\"\n";
-            
+      if (preg_match('/^msgid_plural "(.*)"$/',$content,$reg)) {
+         $current_string_plural = $reg[1];
+      }
+
+      if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
+         if (strlen($reg[1]) == 0) { //Singular
+            $translation = search_in_dict($current_string);
+            $content     = "msgstr \"$translation\"\n";
+
+         } else {
+            switch ($reg[1]) {
+               case "0" : // Singular
+                  $translation = search_in_dict($current_string);
+                  break;
+
+               case "1" : // Plural
+                  $translation = search_in_dict($current_string_plural);
+                  break;
             }
+            $content = "msgstr[".$reg[1]."] \"$translation\"\n";
+         }
       }
      // Standard replacement
      $content = preg_replace('/charset=CHARSET/','charset=UTF-8',$content);
-   
+
      if (preg_match('/Plural-Forms/',$content)) {
          $content = "\"Plural-Forms: nplurals=2; plural=(n != 1)\\n\"\n";
      }
-      
+
       if (fwrite($po, $content) === FALSE) {
          echo "unable to write in po file";
          exit;
@@ -134,6 +133,7 @@ if ($pot && $po) {
 fclose($pot);
 fclose($po);
 
+
 function search_in_dict($string) {
    global $REFLANG, $LANG;
 
@@ -142,27 +142,26 @@ function search_in_dict($string) {
    if (preg_match("/($ponctmatch)(.*)($ponctmatch)$/U",$string,$reg)) {
       $left   = $reg[1];
       $string = $reg[2];
-      $right   = $reg[3];
+      $right  = $reg[3];
    }
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search same case
          if (strcmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
-         } 
+         }
       }
    }
-   
+
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search non case sensitive
          if (strcasecmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
-         } 
+         }
       }
    }
-   
+
    return "";
 }
-
 ?>
