@@ -1733,7 +1733,7 @@ function update0803to083() {
       $restore_root_entity_value = true;
    } else {
       $query = "UPDATE `glpi_entitydatas`
-                SET `tickettemplates_id` = '$default_ticket_template',
+                SET `tickettemplates_id` = '$default_ticket_template'
                 WHERE `entities_id` = 0
                       AND `tickettemplates_id` = -2";
       $DB->query($query)
@@ -1741,7 +1741,7 @@ function update0803to083() {
               $LANG['update'][90]. $DB->error());
 
       $query = "UPDATE `glpi_entitydatas`
-                SET `entities_id_software` = -10,
+                SET `entities_id_software` = -10
                 WHERE `entities_id` = 0
                       AND `entities_id_software` = -2";
       $DB->query($query)
