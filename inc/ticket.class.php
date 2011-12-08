@@ -3944,7 +3944,7 @@ class Ticket extends CommonITILObject {
                }
 
             } else {
-               echo "<td class='tab_bg_2 center' colspan='3'>";
+               echo "<td class='tab_bg_2 center' colspan='4'>";
                echo "<input type='submit' class='submit' name='update' value='".
                       $LANG['buttons'][7]."'>";
             }
