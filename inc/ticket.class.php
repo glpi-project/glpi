@@ -3437,7 +3437,7 @@ class Ticket extends CommonITILObject {
             if ($this->fields['status'] != 'closed') {
                echo "<td>";
                echo "<span id='sla_action'>";
-               echo "<a href='#' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
+               echo "<a class='pointer' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
                                                                        $LANG['sla'][14]),
                                              "cleanhide('sla_action');cleandisplay('sla_choice');").
                      ">".$LANG['sla'][12].'</a>';
