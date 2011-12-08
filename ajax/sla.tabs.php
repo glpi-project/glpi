@@ -56,7 +56,7 @@ if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
          $slalevel->showForSLA($sla);
          $rule = new RuleTicket();
          $rule->showAndAddRuleForm($sla);
-         Ticket::showListForItem('Sla', $_POST["id"]);
+         Ticket::showListForItem('SLA', $_POST["id"]);
          Plugin::displayAction($sla, $_REQUEST['glpi_tab']);
          break;
 
@@ -66,7 +66,7 @@ if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
          break;
 
       case 6:
-         Ticket::showListForItem('Sla', $_POST["id"]);
+         Ticket::showListForItem('SLA', $_POST["id"]);
          break;
 
       default :

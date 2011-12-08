@@ -5292,7 +5292,7 @@ class Ticket extends CommonDBTM {
       $order            = '';
       $options['reset'] = 'reset';
 
-      if ($itemtype == 'Sla') {
+      if ($itemtype == 'SLA') {
          $restrict                 = "(`slas_id` = '$items_id')";
          $order                    = '`glpi_tickets`.`due_date` DESC';
          $options['field'][0]      = 30;
