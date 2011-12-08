@@ -420,17 +420,10 @@ function update083to084() {
    }
    $migration->displayWarning("You can delete glpi_networkinterfaces table if you have no need
                               of them.", true);
-   $dropFields = array();
+
    foreach (array('ip', 'gateway', 'mac', 'netmask', 'netpoints_id', 'networkinterfaces_id',
                   'subnet') as $field) {
-      if (FieldExists('glpi_networkports', $field)) {
-         $dropFields[] = "DROP $field";
-      }
-   }
-   if (count($dropFields) > 0) {
-      $query = "ALTER TABLE `glpi_networkports` ".implode(', ', $dropFields);
-      $DB->query($query)
-      or die("0.84 drop unused glpi_networkports fields " . $LANG['update'][90] . $DB->error());
+      $migration->dropField('glpi_networkports', $field);
    }
 
    // Adding NetworkPortEthernet table
