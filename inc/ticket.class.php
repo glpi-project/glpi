@@ -3671,7 +3671,7 @@ class Ticket extends CommonITILObject {
                 $tt->getEndHiddenFieldText('itemtype');
       echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";                  
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";                  
       echo "</th>";
       echo "<td rowspan='2'>";
       echo $tt->getBeginHiddenFieldValue('itemtype');
