@@ -853,7 +853,7 @@ $LANG['help'][8]  = "Informez-moi des suites données";
 
 $LANG['help'][14] = "Envoyer message";
 
-$LANG['help'][18] = "Votre demande a bien été enregistrée, son traitement est en cours.";
+$LANG['help'][18] = "Votre ticket a bien été enregistré, son traitement est en cours.";
 $LANG['help'][19] = "Merci d'avoir utilisé notre système d'assistance.";
 
 $LANG['help'][22] = "Rechercher votre numéro de matériel";
