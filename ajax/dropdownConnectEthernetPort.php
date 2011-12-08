@@ -56,7 +56,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
                    AND `glpi_networkports`.`itemtype` = '".$_POST["itemtype"]."'
                    AND `glpi_networkports`.`items_id` = `$table`.`id`
-                   AND `glpi_networkports`.`type` = 'NetworkPortEthernet')
+                   AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet')
              LEFT JOIN `glpi_networkportethernets`
                ON (`glpi_networkportethernets`.`id` = `glpi_networkports`.`id`)
              LEFT JOIN `glpi_networkports_networkports`
