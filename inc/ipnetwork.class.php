@@ -413,8 +413,11 @@ class IPNetwork extends CommonDropdown {
       $WHERE = "`version`='$version' $WHERE";
 
       if ($entityID < 0) {
-         // TODO glpiactive_entity not defined during migration...
-         $entityID = $_SESSION['glpiactive_entity'];
+         if (isset($_SESSION['glpiactive_entity'])) {
+            $entityID = $_SESSION['glpiactive_entity'];
+         } else {
+            $entityID = 0; // Case of migration ...
+         }
       }
       $entitiesID = array();
       switch ($relation) {
