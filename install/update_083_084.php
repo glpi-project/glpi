@@ -33,16 +33,20 @@
 // ----------------------------------------------------------------------
 
 function createNetworkNamesFromItems($itemtype, $itemtable) {
-   global $DB;
+   global $DB, $migration;
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT `ip`, `id`, `entities_id`
              FROM `$itemtable`";
+
    $networkName = new NetworkName();
+   $IPaddress = new IPAddress();
+
    foreach ($DB->request($query) as $entry) {
       if (empty($entry["ip"])) {
          continue;
       }
+
       $IP = $entry["ip"];
       // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
       //   But each gethostbyaddr() may reach several milliseconds. With very large number of
@@ -64,22 +68,36 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
          }
 
       } else {
-         $name     = 'glpi-migration-'.str_replace('.','-',$computerName);
+         $name     = '';
          $domainID = 0;
       }
 
-      $input = array('name'     => $name,
-                     'IPs'      => $IP,
-                     'fqdns_id' => $domainID,
-                     'items_id' => $entry['id'],
-                     'itemtype' => $itemtype);
-      $networkName->add($input);
+      if ($IPaddress->setAddressFromString($IP)) {
+
+         $input = array('name'         => $name,
+                        'ip_addresses' => $IPaddress->getTextual(),
+                        'fqdns_id'     => $domainID,
+                        'entities_id'  => $entry['entities_id'],
+                        'items_id'     => $entry['id'],
+                        'itemtype'     => $itemtype);
+
+         $networkNameID = $migration->insertInTable($networkName->getTable(), $input);
+
+         $input = $IPaddress->setArrayFromAddress(array('entities_id'  => $entry['entities_id'],
+                                                        'itemtype' => $networkName->getType(),
+                                                        'items_id' => $networkNameID),
+                                                  "version", "name", "binary");
+
+         $migration->insertInTable($IPaddress->getTable(), $input);
+      } else {
+         fwrite($GLOBALS['migration_log_file'], "Invalid address during migration : $IP\n");
+      }
    }
 }
 
 
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
-   global $DB;
+   global $DB, $migration;
 
    $query = "SELECT `name`, `id`, ";
 
@@ -118,7 +136,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
             }
          }
       }
-      $port->add($input);
+      $migration->insertInTable($port->getTable(), $input);
    }
 }
 
@@ -129,15 +147,9 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
  * @return bool for success (will die for most error)
 **/
 function update083to084() {
-   global $DB, $LANG, $migration, $CFG_GLPI;
+   global $DB, $LANG, $migration;
 
-   // TODO : study why CommonDBTM::add is not usable
-   // Must add that, otherwise, the CommonDBTM::add method will fail ...
-   $CFG_GLPI["auto_create_infocoms"] = false;
-   $CFG_GLPI["names_format"]         = false;
-   $CFG_GLPI["is_ids_visible"]       = false;
-
-   $migration_log_file = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
+   $GLOBALS['migration_log_file'] = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
@@ -299,7 +311,8 @@ function update083to084() {
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = "SELECT DISTINCTROW INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) AS address,
                      `netmask`, `gateway`
-                FROM `origin_glpi_networkports`";
+                FROM `origin_glpi_networkports`
+                ORDER BY `gateway` DESC";
       $address = new IPAddress();
       $netmask = new IPNetmask();
       $gateway = new IPAddress();
@@ -323,12 +336,13 @@ function update083to084() {
          if (is_array($preparedInput['input'])) {
             $input = $preparedInput['input'];
             if (isset($preparedInput['error'])) {
-               fwrite($migration_log_file, "Migration of $networkName network warning : " .
-                                            $preparedInput['error']."\n");
+               fwrite($GLOBALS['migration_log_file'],
+                      "Migration of $networkName network warning : " .
+                      $preparedInput['error']."\n");
             }
             $migration->insertInTable($network->getTable(), $input);
          } else if (isset($preparedInput['error'])) {
-            fwrite($migration_log_file, "Migration of $networkName network error : " .
+            fwrite($GLOBALS['migration_log_file'], "Migration of $networkName network error : " .
                                         $preparedInput['error']."\n");
          }
       }
@@ -483,7 +497,7 @@ function update083to084() {
       $DB->query($query)
       or die("0.84 create glpi_networkportlocals " . $LANG['update'][90] . $DB->error());
 
-      $port = new NetworkPortWifi();
+      $port = new NetworkPortLocal();
       updateNetworkPortInstantiation($port, array(), false);
    }
 
@@ -571,7 +585,7 @@ function update083to084() {
    }
 
 
-   fclose($migration_log_file);
+   fclose($GLOBALS['migration_log_file']);
 
    // must always be at the end
    $migration->executeMigration();

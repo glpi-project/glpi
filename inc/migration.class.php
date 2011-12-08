@@ -440,6 +440,8 @@ class Migration {
                   implode(', ', $values) . ")";
          $DB->query($query)
          or die($this->version." insert in $table " . $LANG['update'][90] . $DB->error());
+
+         return $DB->insert_id();
       }
    }
 
