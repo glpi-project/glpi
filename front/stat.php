@@ -42,16 +42,31 @@ Session::checkRight("statistic", "1");
 //Affichage du tableau de presentation des stats
 echo "<table class='tab_cadre_fixe'>";
 echo "<tr><th colspan='2'>".$LANG['stats'][0]."&nbsp;:</th></tr>";
-echo "<tr><th>".$LANG['Menu'][5]."</th><th>".$LANG['Menu'][7]."</th></tr>";
+echo "<tr><th>".$LANG['Menu'][5]."</th>";
+if (Session::haveRight("edit_all_problem", "1")
+    || Session::haveRight("show_all_problem", "1")
+    || Session::haveRight("show_my_problem", "1")) {
+   echo "<th>".$LANG['Menu'][7]."</th>";
+}
+echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center b'><a href='stat.global.php?itemtype=Ticket'>".$LANG['stats'][1]."</a></td>";
-echo "<td class='center b'><a href='stat.global.php?itemtype=Problem'>".$LANG['stats'][1]."</a></td>";
+if (Session::haveRight("edit_all_problem", "1")
+    || Session::haveRight("show_all_problem", "1")
+    || Session::haveRight("show_my_problem", "1")) {
+   echo "<td class='center b'><a href='stat.global.php?itemtype=Problem'>".$LANG['stats'][1]."</a></td>";
+}
 echo "</tr>";
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center b'><a href='stat.tracking.php?itemtype=Ticket'>".$LANG['stats'][47]."</a>";
-echo "<td class='center b'><a href='stat.tracking.php?itemtype=Problem'>".$LANG['stats'][46]."</a>";
-echo "</td></tr>";
+if (Session::haveRight("edit_all_problem", "1")
+    || Session::haveRight("show_all_problem", "1")
+    || Session::haveRight("show_my_problem", "1")) {
+   echo "<td class='center b'><a href='stat.tracking.php?itemtype=Problem'>".$LANG['stats'][46].
+        "</a></td>";
+}
+echo "</tr>";
 echo "<tr class='tab_bg_1'><td class='center'><a href='stat.location.php?itemtype=Ticket'><span class='b'>".
       $LANG['stats'][3]."</span></a><br> (".$LANG['common'][15].", ".$LANG['common'][17].", ".
       $LANG['computers'][9].", ".$LANG['devices'][4].", ".$LANG['computers'][36].", ".
