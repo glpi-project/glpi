@@ -181,12 +181,11 @@ hr {
 
 
 /* ################--------------- Tabs ---------------#################### */
-/* TODO improve display */
+
 .alltab {
    font-size:14px; 
    text-align:center; 
-   background-color:#CC9900;
-   padding: 5px;
+   padding: 10px;
    font-weight: bold;
 }
 
