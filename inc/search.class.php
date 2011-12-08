@@ -2095,11 +2095,13 @@ class Search {
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   $addaltemail = "";
-                  if ($itemtype == 'Ticket'
+                  if ($itemtype == 'Ticket' || $itemtype == 'Problem'
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
-                      && $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users') { // For tickets_users
+                      && ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users'
+                           || $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')) { // For tickets_users
 
-                     $ticket_user_table = "glpi_tickets_users_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
+                     $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'].
+                                          "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
                      $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
                                                                   ' ',
                                                                   `$ticket_user_table`.`alternative_email`)
@@ -2583,7 +2585,10 @@ class Search {
             $toadd = '';
             if ($itemtype == 'Ticket' || $itemtype == 'Problem') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
-                  && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])) {
+                  && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
+                  && ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_tickets_users'
+                        || $searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users')
+                  ) {
                   $bj = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
                   $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
