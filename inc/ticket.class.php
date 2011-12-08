@@ -1743,7 +1743,7 @@ class Ticket extends CommonITILObject {
       $tab[64]['linkfield']     = 'users_id_lastupdater';
       $tab[64]['name']          = $LANG['common'][101];
       $tab[64]['massiveaction'] = false;
-
+      
       $tab += $this->getSearchOptionsActors();
 
       $tab['sla'] = $LANG['sla'][1];
@@ -2008,6 +2008,7 @@ class Ticket extends CommonITILObject {
          $tab[44]['name']     = $LANG['job'][42];
          $tab[44]['datatype'] = 'decimal';
       }
+
 
       // Filter search fields for helpdesk
       if (Session::getLoginUserID(true) === Session::getLoginUserID(false) // no filter for cron
@@ -3668,7 +3669,11 @@ class Ticket extends CommonITILObject {
 
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
                 $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
-                $tt->getEndHiddenFieldText('itemtype')."</th>";
+                $tt->getEndHiddenFieldText('itemtype');
+      echo "<img title=\"".$LANG['buttons'][23]."\" alt=\"".$LANG['buttons'][23]."\"
+                  onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";                
+      echo "</th>";
       echo "<td rowspan='2'>";
       echo $tt->getBeginHiddenFieldValue('itemtype');
 
@@ -3695,12 +3700,19 @@ class Ticket extends CommonITILObject {
                $dev_user_id = $user_id_single['users_id'];
             }
          }
+         if ($ID) {
+            echo "<div id='tickethardwareselection$ID' style='display:none'>";
+         }
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
+         if ($ID) {
+            echo "</div>";
+         }
+         
          echo "<span id='item_ticket_selection_information'></span>";
 
       } else {
