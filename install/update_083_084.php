@@ -137,6 +137,8 @@ function update083to084() {
    $CFG_GLPI["names_format"]         = false;
    $CFG_GLPI["is_ids_visible"]       = false;
 
+   $migration_log_file = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
+
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
@@ -303,38 +305,32 @@ function update083to084() {
       $gateway = new IPAddress();
       $network = new IPNetwork();
       foreach ($DB->request($query) as $entry) {
-         if (empty($entry["address"]) || empty($entry["netmask"])) {
-            continue;
+
+         if ($entry['gateway'] == '0.0.0.0') {
+            $entry['gateway'] = '';
          }
-         // But check their validity, first
-         if (!$address->setAddressFromString($entry["address"])) {
-            echo "Invalid address : ".$entry["address"]."<br>\n";
-            continue;
-         }
-         if (!$netmask->setNetmaskFromString($entry["netmask"], $address->getVersion())) {
-            echo "Invalid netmask [".$entry["address"]."] : ".$entry["netmask"]."<br>\n";
-            continue;
-         }
-         // Extract their gateway
-         if (!empty($entry['gateway'])) {
-            if (!$gateway->setAddressFromString($entry["gateway"])) {
-               $entry['gateway'] = "";
-            }
-            // And define it if its is included inside the network
-            if (!IPNetwork::checkIPFromNetwork($gateway, $address, $netmask)) {
-               $entry['gateway'] = "";
-            }
-         } else {
-            $entry['gateway'] = "";
-         }
-         $network->fields = array("entities_id" => 0);
-         $networkName     = $entry["address"]."/".$entry["netmask"].
-                            (empty($entry['gateway']) ? "" : " - ".$entry['gateway']);
-         $input           = array('entities_id' => 0,
+
+         $networkName   = $entry["address"]."/".$entry["netmask"].
+                          (empty($entry['gateway']) ? "" : " - ".$entry['gateway']);
+
+         $input         = array('entities_id' => 0,
                                   'name'        => $networkName,
                                   'network'     => $entry["address"]."/".$entry["netmask"],
                                   'gateway'     => $entry["gateway"]);
-         $network->add($input);
+
+         $preparedInput = $network->prepareInput($input);
+
+         if (is_array($preparedInput['input'])) {
+            $input = $preparedInput['input'];
+            if (isset($preparedInput['error'])) {
+               fwrite($migration_log_file, "Migration of $networkName network warning : " .
+                                            $preparedInput['error']."\n");
+            }
+            $migration->insertInTable($network->getTable(), $input);
+         } else if (isset($preparedInput['error'])) {
+            fwrite($migration_log_file, "Migration of $networkName network error : " .
+                                        $preparedInput['error']."\n");
+         }
       }
       $ADDTODISPLAYPREF['IPNetwork'] = array(10, 11, 12, 13);
    }
@@ -573,6 +569,9 @@ function update083to084() {
          }
       }
    }
+
+
+   fclose($migration_log_file);
 
    // must always be at the end
    $migration->executeMigration();
