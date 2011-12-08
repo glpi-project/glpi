@@ -42,9 +42,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-     return $LANG['Internet'][32];
+     return __('Ethernet');
    }
 
 
@@ -59,7 +57,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
+         echo "<tr class='tab_bg_1'><td>" . __('Network outlet') . "</td>\n";
          echo "<td>";
          Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
                                     $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
@@ -98,18 +96,16 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
-      global $LANG;
 
-      echo "<th>" . $LANG['common'][65] . "</th>\n";
-      echo "<th>" . $LANG['networking'][15] . "</th>\n";
-      echo "<th>" . $LANG['networking'][51] . "</th>\n";
-      echo "<th>" . $LANG['networking'][56] . "</th>\n";
-      echo "<th>" . $LANG['networking'][17] . "</th>\n";
+      echo "<th>" . __('Interface') . "</th>\n";
+      echo "<th>" . __('MAC') . "</th>\n";
+      echo "<th>" . __('Network outlet') . "</th>\n";
+      echo "<th>" . __('VLAN') . "</th>\n";
+      echo "<th>" . __('Connected to') . "</th>\n";
    }
 
 
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-      global $LANG;
 
       echo "<td>";
       $compdev = new Computer_Device();
@@ -146,7 +142,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $withtemplate
    **/
    static function showConnection(&$device1, &$netport, $withtemplate='') {
-      global $CFG_GLPI, $LANG;
 
       if (!$device1->can($device1->fields["id"], 'r')) {
          return false;
@@ -170,7 +165,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   echo $netport->getLink();
                   echo "</span>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".$LANG['networking'][25] . " <span class='b'>";
+                  echo "&nbsp;".__('on') . " <span class='b'>";
                   echo $device2->getLink();
                   echo "</span>";
 
@@ -198,9 +193,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   if (rtrim($netport->fields["name"]) != "") {
                      echo $netport->fields["name"];
                   } else {
-                     echo $LANG['common'][0];
+                     echo __('Without name');
                   }
-                  echo "</span> " . $LANG['networking'][25] . " <strong>";
+                  echo "</span> " . __('on') . " <strong>";
                   echo $device2->getName();
                   echo "</span><br>(" .Dropdown::getDropdownName("glpi_entities",
                                                                  $device2->getEntityID()) .")";
@@ -227,7 +222,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             echo "</td>\n";
          }
 
-         echo "<td><div id='not_connected_display$ID'>" . $LANG['connect'][1] . "</div></td>";
+         echo "<td><div id='not_connected_display$ID'>" . __('Not connected.') . "</div></td>";
          echo "</tr></table>\n";
       }
    }
@@ -310,7 +305,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';
-      $tab[10]['name']          = $LANG['networking'][15];
+      $tab[10]['name']          = __('MAC');
       $tab[10]['massiveaction'] = false;
 
       $tab[11]['table']         = $this->getTable();

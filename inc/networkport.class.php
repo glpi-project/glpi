@@ -43,7 +43,6 @@ if (!defined('GLPI_ROOT')) {
 /// load its instantiation from the instantiation database to display the elements.
 /// Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
 /// port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
-/// version.
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild

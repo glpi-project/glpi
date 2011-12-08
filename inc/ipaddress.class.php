@@ -51,7 +51,7 @@ if (!defined('GLPI_ROOT')) {
 /// it), the item must call updateDatabase() with the array of addresses. This method add new
 /// addresses, remove unused addresses and return an array of the addresses attached to the item,
 /// for the item to update its own IP Address cache field
-/// \since version 0.84
+/// @since version 0.84
 /// \warning textual (ie. human readable) representation is not unique for IPv6 addresses :
 /// 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
 class IPAddress extends CommonDBChild {
