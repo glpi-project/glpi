@@ -181,12 +181,11 @@ hr {
 
 
 /* ################--------------- Tabs ---------------#################### */
-/* TODO improve display */
+
 .alltab {
    font-size:14px; 
    text-align:center; 
-   background-color:#CC9900;
-   padding: 5px;
+   padding: 10px;
    font-weight: bold;
 }
 
@@ -214,7 +213,7 @@ hr {
 }
 
 #page {
-   margin-top:25px;
+   margin-top:15px;
 }
 
 
@@ -1194,8 +1193,8 @@ div#header {
    -moz-border-radius: 0px 0px 8px 8px;
    -webkit-border-radius: 0px 0px 8px 8px;
    border-radius: 0px 0px 8px 8px;
-   -moz-box-shadow: 0px 7px 10px #011E3A;
-   -webkit-box-shadow: 0px 7px 10px #011E3A;
+   -moz-box-shadow: 0px 7px 10px #4D4D4D;
+   -webkit-box-shadow: 0px 7px 10px #4D4D4D;
    box-shadow: 0px 7px 10px #011E3A;
    padding-bottom: 8px;
 }
