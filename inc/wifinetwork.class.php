@@ -49,15 +49,14 @@ class WifiNetwork extends CommonDropdown {
 
 
    static function getWifiCardModes() {
-      global $LANG;
 
-      return array('ad-hoc'    => $LANG['Internet'][46],
-                   'managed'   => $LANG['Internet'][47],
-                   'master'    => $LANG['Internet'][48],
-                   'repeater'  => $LANG['Internet'][49],
-                   'secondary' => $LANG['Internet'][50],
-                   'monitor'   => $LANG['Internet'][51],
-                   'auto'      => $LANG['Internet'][52]);
+      return array('ad-hoc'    => __('Ad-hoc'),
+                   'managed'   => __('Managed'),
+                   'master'    => __('Master'),
+                   'repeater'  => __('Repeater'),
+                   'secondary' => __('Secondary'),
+                   'monitor'   => __('Monitor'),
+                   'auto'      => __('Automatic'));
    }
 
 
@@ -80,6 +79,7 @@ class WifiNetwork extends CommonDropdown {
 
 
    function defineTabs($options=array()) {
+
       $ong  = array();
       $this->addStandardTab('NetworkPort',$ong, $options);
 
@@ -91,7 +91,7 @@ class WifiNetwork extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'essid',
-                         'label' => $LANG['Internet'][24],
+                         'label' => __('ESSID'),
                          'type'  => 'text',
                          'list'  => true),
                    array('name'  => 'mode',
@@ -119,25 +119,19 @@ class WifiNetwork extends CommonDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'essid';
-      $tab[10]['name']     = $LANG['Internet'][24];
+      $tab[10]['name']     = __('ESSID');
 
       return $tab;
    }
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Internet'][14];
-      }
-      return $LANG['Internet'][13];
+      return _n('Wifi network', 'Wifi networks', $nb);
    }
 
 }

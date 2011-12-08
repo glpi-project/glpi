@@ -44,9 +44,11 @@ if (!defined('GLPI_ROOT')) {
 /// checked) with binary format of parameters.
 /// \anchor ipAddressToNetwork We have to notice that checking regarding an IP address is the same
 /// thing than checking regarding a network with all bits of the netmask set to 1
-/// \since 0.84
+/// @since 0.84
 class IPNetwork extends CommonDropdown {
+
    public $dohistory = true;
+
 
    function canCreate() {
       return Session::haveRight('internet', 'w');
@@ -59,23 +61,17 @@ class IPNetwork extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb > 1) {
-         return $LANG['Internet'][16];
-      }
-      return $LANG['Internet'][15];
+      return _n('IP network', 'IP networks', $nb);
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'version';
-      $tab[10]['name']     = $LANG['Internet'][17];
+      $tab[10]['name']     = __('IP version');
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'address';
@@ -87,7 +83,7 @@ class IPNetwork extends CommonDropdown {
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'gateway';
-      $tab[13]['name']     = $LANG['networking'][59];
+      $tab[13]['name']     = __('Gateway');
 
       return $tab;
    }
@@ -149,7 +145,7 @@ class IPNetwork extends CommonDropdown {
                          'list'     => true,
                          'comment' => $LANG['Internet'][18]),
                    array('name'  => 'gateway',
-                         'label' => $LANG['networking'][59],
+                         'label' => __('Gateway'),
                          'type'  => 'text',
                          'list'  => true));
    }
@@ -194,7 +190,8 @@ class IPNetwork extends CommonDropdown {
          $sameNetworks = self::searchNetworks("equals", $params, $entity);
          // Check unicity !
          if ($sameNetworks && count($sameNetworks) > 0) {
-            return array('error' => $LANG['Internet'][22], 'input' => false);
+            return array('error' => __('Network already defined in visible entities'),
+                         'input' => false);
          }
          $networkUpdate = true;
          // Then, update $input to reflect the network and the netmask
@@ -488,7 +485,6 @@ class IPNetwork extends CommonDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('NetworkName',$ong, $options);
