@@ -175,9 +175,9 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
-         $input['alert'] = $CFG_GLPI["default_infocom_alert"];
          if ($item = getItemForItemtype($input['itemtype'])) {
             if ($item->getFromDB($input['items_id'])) {
+               $input['alert']        = EntityData::getUsedConfig('default_infocom_alert', $item->getEntityID());
                $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
                return $input;
