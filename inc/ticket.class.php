@@ -3049,7 +3049,7 @@ class Ticket extends CommonITILObject {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['help'][24]."&nbsp;: ".$tt->getMandatoryMark('itemtype')."</td>";
             echo "<td>";
-            self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"], 
+            self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
                                     $options['itemtype'], $options['items_id']);
             self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
                                      $_SESSION["glpiactive_entity"]);
@@ -4564,7 +4564,7 @@ class Ticket extends CommonITILObject {
             $options['link'][0]       = 'AND';
             break;
 
-         case 'Sla' :
+         case 'SLA' :
             $restrict                 = "(`slas_id` = '".$item->getID()."')";
             $order                    = '`glpi_tickets`.`due_date` DESC';
             $options['field'][0]      = 30;
