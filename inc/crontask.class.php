@@ -1267,7 +1267,7 @@ class CronTask extends CommonDBTM{
       // Crontasks running for more than 1 hour or 2 frequency
       $query = "SELECT *
                 FROM `glpi_crontasks`
-                WHERE `state` = '2'
+                WHERE `state` = '".self::STATE_RUNNING."'
                       AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
                            OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))";
       $crontasks = array();
