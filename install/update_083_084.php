@@ -32,11 +32,27 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+function logNetworkPortError($id, $itemtype, $items_id, $error) {
+   global $migration_log_file;
+
+   fwrite($migration_log_file, $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
+}
+
+function logMessage($msg, $andDisplay) {
+   global $migration, $migration_log_file;
+
+   fwrite($migration_log_file, "$msg\n");
+
+   if ($andDisplay) {
+      $migration->displayMessage ($msg);
+   }
+}
+
 function createNetworkNamesFromItems($itemtype, $itemtable) {
    global $DB, $migration;
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
-   $query = "SELECT `ip`, `id`, `entities_id`
+   $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
              FROM `$itemtable`";
 
    $networkName = new NetworkName();
@@ -69,7 +85,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
          }
 
       } else {
-         $name     = '';
+         $name     = str_replace('.','-',$computerName);
          $domainID = 0;
       }
 
@@ -91,7 +107,8 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
          $migration->insertInTable($IPaddress->getTable(), $input);
       } else {
-         fwrite($GLOBALS['migration_log_file'], "Invalid address during migration : $IP\n");
+         logNetworkPortError($entry["id"], $entry["itemtype"], $entry["items_id"],
+                             "invalid IP address ($IP)");
       }
    }
 }
@@ -161,13 +178,11 @@ function update083to084() {
    $migration->addField('glpi_profiles', 'internet', 'char', array('after'  => 'networking',
                                                                    'update' => '`networking`'));
 
-   // Fix internet access right as it was unknown since now and we need it for at least IPAddress
-   $_SESSION["glpiactiveprofile"]['internet'] = 'w';
-
    $backup_tables = false;
    $newtables     = array('glpi_fqdns', 'glpi_ipaddresses', 'glpi_ipnetworks',
                           'glpi_networkaliases', 'glpi_networknames', 'glpi_networkportaggregates',
-                          'glpi_networkportethernets', 'glpi_networkportlocals',
+                          'glpi_networkportdialups', 'glpi_networkportethernets',
+                          'glpi_networkportlocals', 'glpi_networkportmigrations',
                           'glpi_networkportwifis', 'glpi_wifinetworks');
 
    foreach ($newtables as $new_table) {
@@ -198,6 +213,8 @@ function update083to084() {
       $migration->displayWarning("You can remove ".implode(', ', $originTables).
                                  " tables if have no need of them.", true);
 
+
+   logMessage($LANG['install'][4]. " - glpi_fqdns", true);
 
    // Adding FQDN table
    if (!TableExists('glpi_fqdns')) {
@@ -234,6 +251,8 @@ function update083to084() {
       $ADDTODISPLAYPREF['FQDN'] = array(11);
    }
 
+   logMessage($LANG['install'][4]. " - glpi_ipaddresses", true);
+
    // Adding IPAddress table
    if (!TableExists('glpi_ipaddresses')) {
       $query = "CREATE TABLE `glpi_ipaddresses` (
@@ -256,6 +275,8 @@ function update083to084() {
       or die("0.84 create glpi_ipaddresses " . $LANG['update'][90] .$DB->error());
    }
 
+   logMessage($LANG['install'][4]. " - glpi_wifinetworks", true);
+
    // Adding WifiNetwork table
    if (!TableExists('glpi_wifinetworks')) {
       $query = "CREATE TABLE `glpi_wifinetworks` (
@@ -274,6 +295,8 @@ function update083to084() {
 
       $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
    }
+
+   logMessage($LANG['install'][4]. " - glpi_ipnetworks", true);
 
    // Adding IPNetwork table
    if (!TableExists('glpi_ipnetworks')) {
@@ -311,7 +334,7 @@ function update083to084() {
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = "SELECT DISTINCTROW INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) AS address,
-                     `netmask`, `gateway`
+                     `netmask`, `gateway`, `entities_id`
                 FROM `origin_glpi_networkports`
                 ORDER BY `gateway` DESC";
       $address = new IPAddress();
@@ -320,35 +343,63 @@ function update083to084() {
       $network = new IPNetwork();
       foreach ($DB->request($query) as $entry) {
 
-         if ($entry['gateway'] == '0.0.0.0') {
-            $entry['gateway'] = '';
+         $address = $entry['address'];
+         $netmask = $entry['netmask'];
+         $gateway = $entry['gateway'];
+
+         if ((empty($address)) || ($address == '0.0.0.0') || (empty($netmask))
+             || ($netmask == '0.0.0.0') || ($netmask == '255.255.255.255')) {
+            continue;
          }
 
-         $networkName   = $entry["address"]."/".$entry["netmask"].
+         if ($gateway == '0.0.0.0') {
+            $gateway = '';
+         }
+
+         $networkName   = $address."/".$netmask.
                           (empty($entry['gateway']) ? "" : " - ".$entry['gateway']);
 
-         $input         = array('entities_id' => 0,
-                                  'name'        => $networkName,
-                                  'network'     => $entry["address"]."/".$entry["netmask"],
-                                  'gateway'     => $entry["gateway"]);
+         $input         = array('entities_id' => $entry['entities_id'],
+                                'name'        => $networkName,
+                                'network'     => $address."/".$netmask,
+                                'gateway'     => $entry["gateway"]);
 
          $preparedInput = $network->prepareInput($input);
 
          if (is_array($preparedInput['input'])) {
             $input = $preparedInput['input'];
             if (isset($preparedInput['error'])) {
-               fwrite($GLOBALS['migration_log_file'],
-                      "Migration of $networkName network warning : " .
-                      $preparedInput['error']."\n");
+               $query = "SELECT id, items_id, itemtype
+                         FROM origin_glpi_networkports
+                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
+                         AND `netmask`='".$entry['netmask']."'
+                         AND `gateway`='".$entry['gateway']."'
+                         AND `entities_id`='".$entry['entities_id']."'";
+               $result = $DB->query($query);
+               foreach ($DB->request($query) as $data) {
+                  logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
+                                      "network warning - " . $preparedInput['error']);
+               }
             }
             $migration->insertInTable($network->getTable(), $input);
          } else if (isset($preparedInput['error'])) {
-            fwrite($GLOBALS['migration_log_file'], "Migration of $networkName network error : " .
-                                        $preparedInput['error']."\n");
+            $query = "SELECT id, items_id, itemtype
+                      FROM origin_glpi_networkports
+                      WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
+                      AND `netmask`='".$entry['netmask']."'
+                      AND `gateway`='".$entry['gateway']."'
+                      AND `entities_id`='".$entry['entities_id']."'";
+            $result = $DB->query($query);
+            foreach ($DB->request($query) as $data) {
+               logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
+                                   "network error - " . $preparedInput['error']);
+            }
          }
       }
       $ADDTODISPLAYPREF['IPNetwork'] = array(10, 11, 12, 13);
    }
+
+   logMessage($LANG['install'][4]. " - glpi_networknames", true);
 
    // Adding NetworkName table
    if (!TableExists('glpi_networknames')) {
@@ -377,6 +428,8 @@ function update083to084() {
 
    }
 
+   logMessage($LANG['install'][4]. " - glpi_networkaliases", true);
+
    // Adding NetworkAlias table
    if (!TableExists('glpi_networkaliases')) {
       $query = "CREATE TABLE `glpi_networkaliases` (
@@ -394,10 +447,14 @@ function update083to084() {
       or die("0.84 create glpi_networkaliases " . $LANG['update'][90] . $DB->error());
    }
 
+   logMessage($LANG['install'][4]. " - glpi_networkinterfaces", true);
+
    // Update NetworkPorts
    $migration->addField('glpi_networkports', 'instantiation_type', 'string',
                         array('after'  => 'name',
                               'update' => "'NetworkPortEthernet'"));
+
+   logMessage($LANG['install'][4]. " - glpi_networkports", true);
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT *
@@ -416,7 +473,17 @@ function update083to084() {
          case 'Wifi' :
             $instantiation_type = "NetworkPortWifi";
             break;
-      }
+
+         case 'Dialup' :
+            $instantiation_type = "NetworkPortDialup";
+            break;
+
+
+         default:
+            $instantiation_type = "NetworkPortMigration";
+            break;
+
+       }
       if (isset($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
                    SET `instantiation_type` = '$instantiation_type'
@@ -437,6 +504,8 @@ function update083to084() {
                   'subnet') as $field) {
       $migration->dropField('glpi_networkports', $field);
    }
+
+   logMessage($LANG['install'][4]. " - glpi_networkportethernets", true);
 
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
@@ -462,6 +531,8 @@ function update083to084() {
                                                   '`netpoints_id`' => 'netpoints_id'), true);
    }
 
+   logMessage($LANG['install'][4]. " - glpi_networkportwifis", true);
+
   // Adding NetworkPortWifi table
    if (!TableExists('glpi_networkportwifis')) {
       $query = "CREATE TABLE `glpi_networkportwifis` (
@@ -476,6 +547,7 @@ function update083to084() {
                   `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
                          COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
                   PRIMARY KEY (`id`),
+                  KEY `mac` (`mac`),
                   KEY `card` (`computers_devicenetworkcards_id`),
                   KEY `essid` (`wifinetworks_id`),
                   KEY `version` (`version`),
@@ -488,6 +560,7 @@ function update083to084() {
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
    }
 
+   logMessage($LANG['install'][4]. " - glpi_networkportlocals", true);
 
    // Adding NetworkPortLocal table
    if (!TableExists('glpi_networkportlocals')) {
@@ -501,6 +574,50 @@ function update083to084() {
       $port = new NetworkPortLocal();
       updateNetworkPortInstantiation($port, array(), false);
    }
+
+   logMessage($LANG['install'][4]. " - glpi_networkportdilups", true);
+
+   // Adding NetworkPortDialup table
+   if (!TableExists('glpi_networkportdialups')) {
+      $query = "CREATE TABLE `glpi_networkportdialups` (
+                  `id` int(11) NOT NULL,
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `mac` (`mac`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query)
+      or die("0.84 create glpi_networkportdialups " . $LANG['update'][90] . $DB->error());
+
+      $port = new NetworkPortDialup();
+      updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
+   }
+
+   logMessage($LANG['install'][4]. " - glpi_networkportmigrations", true);
+
+   // Adding NetworkPortMigration table
+   if (!TableExists('glpi_networkportmigrations')) {
+      $query = "CREATE TABLE `glpi_networkportmigrations` (
+                  `id` int(11) NOT NULL,
+                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `networkinterfaces_id` int(11) NOT NULL DEFAULT '0',
+                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `mac` (`mac`),
+                  KEY `networkinterfaces_id` (`networkinterfaces_id`),
+                  KEY `netpoints_id` (`netpoints_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query)
+      or die("0.84 create glpi_networkportmigrations " . $LANG['update'][90] . $DB->error());
+
+      $port = new NetworkPortMigration();
+      updateNetworkPortInstantiation($port, array("LOWER(`mac`)"           => 'mac',
+                                                  '`netpoints_id`'         => 'netpoints_id',
+                                                  '`networkinterfaces_id`' =>
+                                                  'networkinterfaces_id'),
+                                            true);
+   }
+
+   logMessage($LANG['install'][4]. " - glpi_networkportaggregates", true);
 
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
@@ -517,6 +634,8 @@ function update083to084() {
 
       // New element, so, we don't need to create items
    }
+
+   logMessage($LANG['install'][4]. " - glpi_networkportaliases", true);
 
    // Adding NetworkPortAlias table
    if (!TableExists('glpi_networkportaliases')) {

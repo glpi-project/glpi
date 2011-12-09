@@ -184,10 +184,13 @@ class IPNetwork extends CommonDropdown {
 
          if (isset($this->fields["entities_id"])) {
             $entity = $this->fields["entities_id"];
+         } elseif (isset($input["entities_id"])) {
+            $entity = $input["entities_id"];
          } else {
             $entity = -1;
          }
-         $sameNetworks = self::searchNetworks("equals", $params, $entity);
+         // TODO : what is the best way ? recursive or not ?
+         $sameNetworks = self::searchNetworks("equals", $params, $entity, false);
          // Check unicity !
          if ($sameNetworks && count($sameNetworks) > 0) {
             return array('error' => __('Network already defined in visible entities'),
@@ -277,18 +280,22 @@ class IPNetwork extends CommonDropdown {
     *
     * @param $IP (see \ref parameterType) given IP
     * @param $entityID scope of the search (parents and childrens are check)
+    * @param $recursive set to false to only search in current entity, otherwise, all visible
+    *                   entities will be search
     * @param $fields list of fields to return in the result (default : only ID of the networks)
     *
     * @return list of networks (see searchNetworks())
    **/
-   static function searchNetworksContainingIP($IP, $entityID = -1, $fields = "") {
+   static function searchNetworksContainingIP($IP, $entityID = -1, $recursive = true,
+                                              $fields = "") {
 
       return self::searchNetworks(array("relation" => "contains",
                                         "address"  => $IP,
                                         "netmask"  => array(0xffffffff, 0xffffffff,
                                                             0xffffffff, 0xffffffff),
                                         "fields"   => $fields),
-                                  $entityID);
+                                  $entityID,
+                                  $recursive);
    }
 
 
@@ -307,6 +314,8 @@ class IPNetwork extends CommonDropdown {
     * @param $condition array of elements to select the good arrays (see Parameters above)
     * @param $entityID the entity on which the selection should occur (-1 => the current active
     *                  entity)
+    * @param $recursive set to false to only search in current entity, otherwise, all visible
+    *                   entities will be search
     * @param $version version of IP to look (only use when using arrays or string as input for
     *                 address or netmask
     * @return array of networks found. If we want request several field, the return value will be
@@ -316,7 +325,8 @@ class IPNetwork extends CommonDropdown {
     *          further. (ie. 0.0.0.0 is the further of whatever network if you lool for ones that
     *          contains the current network.
    **/
-   static function searchNetworks($relation, $condition, $entityID = -1, $version = 0) {
+   static function searchNetworks($relation, $condition, $entityID = -1, $recursive = true,
+                                  $version = 0) {
       global $DB;
 
       if (empty($relation)) {
@@ -410,27 +420,29 @@ class IPNetwork extends CommonDropdown {
       $WHERE = "`version`='$version' $WHERE";
 
       if ($entityID < 0) {
-         if (isset($_SESSION['glpiactive_entity'])) {
-            $entityID = $_SESSION['glpiactive_entity'];
-         } else {
-            $entityID = 0; // Case of migration ...
-         }
+         $entityID = $_SESSION['glpiactive_entity'];
       }
       $entitiesID = array();
       switch ($relation) {
          case "is contained by" :
             $ORDER_ORIENTATION = 'ASC';
-            $entitiesID        = getSonsOf('glpi_entities', $entityID);
+            if ($recursive) {
+               $entitiesID = getSonsOf('glpi_entities', $entityID);
+            }
             break;
 
          case "contains" :
             $ORDER_ORIENTATION = 'DESC';
-            $entitiesID        = getAncestorsOf('glpi_entities', $entityID);
+            if ($recursive) {
+               $entitiesID = getAncestorsOf('glpi_entities', $entityID);
+            }
           break;
 
          case "equals" :
             $ORDER_ORIENTATION = '';
-            $entitiesID        = getSonsAndAncestorsOf('glpi_entities', $entityID);
+            if ($recursive) {
+               $entitiesID = getSonsAndAncestorsOf('glpi_entities', $entityID);
+            }
             break;
       }
 
@@ -487,7 +499,8 @@ class IPNetwork extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('NetworkName',$ong, $options);
+      // This is very very slow on very big database ...
+      //$this->addStandardTab('NetworkName',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 
       return $ong;

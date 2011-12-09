@@ -58,10 +58,15 @@ class NetworkPort extends CommonDBChild {
     *
     * @return array of available type of network ports
    **/
-   static function getNetworkPortInstantiations() {
+   static function getNetworkPortInstantiations( $onlySelectableOnes = true ) {
 
-      return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortEthernet',
-                   'NetworkPortLocal', 'NetworkPortWifi');
+      $instantiations = array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortEthernet',
+                                'NetworkPortLocal', 'NetworkPortDialup', 'NetworkPortWifi');
+      if ( !$onlySelectableOnes ) {
+         $instantiations[] = 'NetworkPortMigration';
+      }
+
+      return $instantiations;
    }
 
 
@@ -362,7 +367,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       $is_active_network_port = false;
-      foreach (self::getNetworkPortInstantiations() as $portType) {
+      foreach (self::getNetworkPortInstantiations(false) as $portType) {
          Session::initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
 
          $query = "SELECT `id`

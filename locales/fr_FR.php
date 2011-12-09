@@ -989,12 +989,12 @@ $LANG['install'][105] = "L'extension mbstring de votre parseur PHP n'est pas ins
 $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
 $LANG['Internet'][0] = "Internet";
-$LANG['Internet'][1] = "Domaines internet"; 
-$LANG['Internet'][2] = "Domaine internet"; 
-$LANG['Internet'][3] = "Adresses IP"; 
-$LANG['Internet'][4] = "Adresse IP"; 
-$LANG['Internet'][5] = "Masque de sous-réseau"; 
-$LANG['Internet'][6] = "Masques de sous-réseau"; 
+$LANG['Internet'][1] = "Domaines internet";
+$LANG['Internet'][2] = "Domaine internet";
+$LANG['Internet'][3] = "Adresses IP";
+$LANG['Internet'][4] = "Adresse IP";
+$LANG['Internet'][5] = "Masque de sous-réseau";
+$LANG['Internet'][6] = "Masques de sous-réseau";
 $LANG['Internet'][7] = "FQDN";
 $LANG['Internet'][8]="Fully Qualified Domain Name (Nom de domaine complètement qualifié). Utilisez la notation classique (labels séparés par des points). Par exemple : indepnet.net";
 $LANG['Internet'][9]="Nom de domaine internet non valide";
@@ -1048,6 +1048,8 @@ $LANG['Internet'][56]="Mode wifi";
 $LANG['Internet'][57]="Version du protocol wifi";
 $LANG['Internet'][58]="Taggé";
 $LANG['Internet'][59]="Non Taggé";
+$LANG['Internet'][60]="Connexion par ligne commutée - Dialup";
+$LANG['Internet'][61]="Non défini - héritage de la migration";
 
 $LANG['job'][1]  = "Incident";
 $LANG['job'][2]  = "Demande";
