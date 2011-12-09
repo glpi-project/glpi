@@ -437,10 +437,10 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][36]."&nbsp;:&nbsp;</td><td>";
       $modes = array();
       if ($this->fields['allowmode']&self::MODE_INTERNAL) {
-         $modes[self::MODE_INTERNAL] = $this->getModeName(self::MODE_INTERNAL);
+         $modes[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
       }
       if ($this->fields['allowmode']&self::MODE_EXTERNAL) {
-         $modes[self::MODE_EXTERNAL] = $this->getModeName(self::MODE_EXTERNAL);
+         $modes[self::MODE_EXTERNAL] = self::getModeName(self::MODE_EXTERNAL);
       }
       Dropdown::showFromArray('mode', $modes, array('value' => $this->fields['mode']));
       echo "</td></tr>";
