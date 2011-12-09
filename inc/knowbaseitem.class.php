@@ -593,7 +593,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($edit) {
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          if ($editFAQ) {
             if ($isFAQ) {
                echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
