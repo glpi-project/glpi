@@ -1108,13 +1108,14 @@ class CronTask extends CommonDBTM{
       $tab[3]['name']          = $LANG['joblist'][6];
       $tab[3]['nosearch']      = true;
       $tab[3]['nosort']        = true;
-      $tab[2]['massiveaction'] = false;
+      $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'state';
       $tab[4]['name']          = $LANG['joblist'][0];
       $tab[4]['searchtype']    = array('equals');
-
+      $tab[4]['massiveaction'] = false;
+      
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
       $tab[5]['name']          = $LANG['crontask'][36];
