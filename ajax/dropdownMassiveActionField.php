@@ -121,7 +121,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             $options[CronTask::MODE_EXTERNAL] = CronTask::getModeName(CronTask::MODE_EXTERNAL);
             Dropdown::showFromArray('mode', $options);
             break;
-
+         
+         case "glpi_crontasks.state" :
+            CronTask::dropdownState('state');
+            break;
+            
          default :
             // Specific plugin Type case
             $plugdisplay = false;
