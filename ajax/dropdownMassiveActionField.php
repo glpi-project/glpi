@@ -114,7 +114,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Dropdown::showLanguages("language", array('display_none' => true,
                                                       'emptylabel'   => $LANG['setup'][46]));
             break;
-
+            
+         case "glpi_crontasks.mode" :
+            $options = array();
+            $options[CronTask::MODE_INTERNAL] = CronTask::getModeName(CronTask::MODE_INTERNAL);
+            $options[CronTask::MODE_EXTERNAL] = CronTask::getModeName(CronTask::MODE_EXTERNAL);
+            Dropdown::showFromArray('mode', $options);
+            break;
 
          default :
             // Specific plugin Type case
