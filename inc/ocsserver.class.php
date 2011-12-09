@@ -424,8 +424,8 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior", array(''       => __('Preserve'),
-                                                             "trash"  => $LANG['ocsconfig'][49],
-                                                             "delete" => $LANG['profiles'][54]),
+                                                             "trash"  => $LANG['buttons'][6],
+                                                             "delete" => $LANG['buttons'][22]),
                               array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
