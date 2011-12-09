@@ -781,7 +781,8 @@ class Ticket extends CommonITILObject {
          $values['tickets_id']        = $this->input['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
-         if ($validation->can(-1, 'w', $values)) {
+         if (!is_numeric(Session::getLoginUserID(false))
+             || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
@@ -1278,7 +1279,8 @@ class Ticket extends CommonITILObject {
          $values['tickets_id']        = $this->fields['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
-         if ($validation->can(-1, 'w', $values)) {
+         if (!is_numeric(Session::getLoginUserID(false))
+             || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
