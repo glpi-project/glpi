@@ -53,7 +53,8 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
-             FROM `$itemtable`";
+             FROM `$itemtable`
+             WHERE `ip` <> ''";
 
    $networkName = new NetworkName();
    $IPaddress = new IPAddress();

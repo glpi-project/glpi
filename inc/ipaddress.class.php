@@ -548,6 +548,9 @@ class IPAddress extends CommonDBChild {
                $expanded[] = str_pad($singleton, 4, "0", STR_PAD_LEFT);
             }
          }
+         if (count($expanded) != 8) {
+            return false;
+         }
          $binary = array();
          for ($i = 0 ; $i < 4 ; $i++) {
             $binary[$i] = hexdec($expanded[2 * $i + 0].$expanded[2 * $i + 1]);
