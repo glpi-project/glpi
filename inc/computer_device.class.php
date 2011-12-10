@@ -630,8 +630,6 @@ class Computer_Device extends CommonDBTM {
          return false;
       }
 
-
-
       //For memories, type can change even if specificity not
       if ($input['_itemtype'] == 'DeviceMemory'
           && (isset($this->fields['specificity'])
@@ -641,7 +639,6 @@ class Computer_Device extends CommonDBTM {
          // No change
          return false;
       }
-
 
       $linktable = getTableForItemType('Computer_'.$input['_itemtype']);
       $this->forceTable($linktable);

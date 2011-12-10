@@ -202,6 +202,8 @@ class Group_User extends CommonDBRelation{
    /**
     * Show form to add a user in current group
     *
+    * @since version 0.83
+    *
     * @param $group           Object
     * @param $used_ids        Array of already add users
     * @param $entityrestrict  Array of entities
@@ -211,8 +213,8 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI, $LANG, $DB;
 
       $rand = mt_rand();
-      $res = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
-      $nb  = ($res ? $DB->result($res,0,"CPT") : 0);
+      $res  = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
+      $nb   = ($res ? $DB->result($res,0,"CPT") : 0);
 
       if ($nb) {
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
@@ -249,14 +251,16 @@ class Group_User extends CommonDBRelation{
    /**
     * Retrieve list of member of a Group
     *
+    * @since version 0.83
+    *
     * @param $group     Object
     * @param $members   Array filled on output of member (filtered)
     * @param $ids       Array of ids (not filtered)
-    * @param $tree      String filter (is_manager, is_userdelegate)
+    * @param $crit      String filter (is_manager, is_userdelegate)
     * @param $tree      Boolean true to include member of sub-group
     *
     * @return String tab of entity for restriction
-    */
+   **/
    static function getDataForGroup(Group $group, &$members, &$ids, $crit='', $tree=0) {
       global $DB;
 
@@ -292,7 +296,8 @@ class Group_User extends CommonDBRelation{
                 INNER JOIN `glpi_profiles_users`
                         ON (`glpi_profiles_users`.`users_id`=`glpi_users`.`id`)
                 WHERE `glpi_groups_users`.`groups_id` $restrict ".
-                      getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $entityrestrict, 1)."
+                      getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '',
+                                                 $entityrestrict, 1)."
                 ORDER BY `glpi_users`.`realname`,
                          `glpi_users`.`firstname`,
                          `glpi_users`.`name`";
@@ -319,6 +324,8 @@ class Group_User extends CommonDBRelation{
    /**
     * Show users of a group
     *
+    * @since v ersion 0.83
+    *
     * @param $group the group
    **/
    static function showForGroup(Group $group) {
@@ -330,13 +337,13 @@ class Group_User extends CommonDBRelation{
       }
 
       // Have right to manage members
-      $canedit     = ($group->can($ID, 'r') && $group->canUpdate());
-      $rand        = mt_rand();
-      $user        = new User();
-      $crit        = Session::getSavedOption(__CLASS__, 'criterion', '');
-      $tree        = Session::getSavedOption(__CLASS__, 'tree', 0);
-      $used        = array();
-      $ids         = array();
+      $canedit = ($group->can($ID, 'r') && $group->canUpdate());
+      $rand    = mt_rand();
+      $user    = new User();
+      $crit    = Session::getSavedOption(__CLASS__, 'criterion', '');
+      $tree    = Session::getSavedOption(__CLASS__, 'tree', 0);
+      $used    = array();
+      $ids     = array();
 
       // Retrieve member list
       $entityrestrict = self::getDataForGroup($group, $used, $ids, $crit, $tree);
@@ -367,7 +374,7 @@ class Group_User extends CommonDBRelation{
 
       $number = count($used);
       $start  = (isset($_REQUEST['start']) ? $_REQUEST['start'] : 0);
-      if ($start>=$number) {
+      if ($start >= $number) {
          $start = 0;
       }
 
@@ -404,7 +411,7 @@ class Group_User extends CommonDBRelation{
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
                echo "</td>";
             }
-            echo "<td class='left'>".$user->getLink();
+            echo "<td>".$user->getLink();
             if ($data["is_dynamic"]) {
                echo "<span class='b'>&nbsp;(D)</span>";
             }

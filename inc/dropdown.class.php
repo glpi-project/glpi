@@ -896,12 +896,14 @@ class Dropdown {
    /**
     * show a dropdown to selec a type
     *
+    * @since version 0.83
+    *
     * @param $types     Array of types used (default "state_types")
     * @param $options   Array of optional options
-    *        value, rand, emptylabel, display_emptychoice, on_change
+    *        name, value, rand, emptylabel, display_emptychoice, on_change
     *
     * @return integer rand for select id
-    */
+   **/
    static function showItemType($types='', $options=array()) {
       global $CFG_GLPI;
 
@@ -955,6 +957,7 @@ class Dropdown {
       return 0;
    }
 
+
    /**
     * Make a select box for all items
     *
@@ -971,8 +974,7 @@ class Dropdown {
                                 $onlyglobal=false) {
       global $CFG_GLPI;
 
-      $rand    = self::showItemType($types);
-
+      $rand = self::showItemType($types);
       if ($rand) {
          $params = array('idtable'          => '__VALUE__',
                           'value'           => $value,
@@ -1651,7 +1653,7 @@ class Dropdown {
     * @since version 0.83
     *
     * @param $onchange String, optional, for ajax
-    */
+   **/
    static function showListLimit($onchange='') {
       global $CFG_GLPI;
 
@@ -1690,5 +1692,6 @@ class Dropdown {
       echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>";
       echo "</select>";
    }
+
 }
 ?>

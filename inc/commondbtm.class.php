@@ -2504,9 +2504,9 @@ class CommonDBTM extends CommonGLPI {
                      break;
                }
             } else if (isset($searchOption['datatype'])
-                && !is_null($value)
-                && $value != ''
-                && $value != 'NULL') {
+                       && !is_null($value)
+                       && $value != ''
+                       && $value != 'NULL') {
 
                switch ($searchOption['datatype']) {
                   case 'integer' :
@@ -2543,7 +2543,7 @@ class CommonDBTM extends CommonGLPI {
                         $unset = true;
                      }
                      // Define the MAC address to lower to reduce complexity of SQL queries
-                     $this->input[$key] = strtolower ($value);                     
+                     $this->input[$key] = strtolower ($value);
                      break;
 
                   case 'date' :

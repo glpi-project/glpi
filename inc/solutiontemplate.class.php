@@ -75,6 +75,7 @@ class SolutionTemplate extends CommonDropdown {
                          'type'  => 'tinymce'));
    }
 
+
    /**
     * @since version 0.83
    **/

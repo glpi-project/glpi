@@ -326,7 +326,7 @@ class Session {
             $_SESSION["glpiactive_entity_name"]      .= " (".$LANG['buttons'][40].")";
             $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
          }
-         
+
          if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])) {
             $_SESSION['glpishowallentities'] = 1;
          } else {
@@ -509,12 +509,12 @@ class Session {
       if (!empty($forcelang)) {
          $trytoload = $forcelang;
       }
-      
+
       // If not set try default lang file
       if (empty($trytoload)) {
          $trytoload = $CFG_GLPI["language"];
       }
-      
+
       if (isset($CFG_GLPI["languages"][$trytoload][1])) {
          $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
          $newfile = "/locales/$trytoload.mo";
@@ -533,11 +533,11 @@ class Session {
       }
 
       include (GLPI_ROOT . $file);
-      
-      
+
+
       /// TODO permit to load and use simple dictionnary.
       /// After usage (notifcation) load old one
-      // New localization system : 
+      // New localization system :
       $TRANSLATE = new Zend_Translate (
           array(
               'adapter' => 'gettext',
@@ -564,9 +564,9 @@ class Session {
             }
          }
       }
-      
+
       $TRANSLATE->setLocale($trytoload);
-            
+
       return $trytoload;
    }
 
@@ -930,6 +930,7 @@ class Session {
       $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
    }
 
+
    /**
     * Get a saved option from request or session
     * if get from request, save it
@@ -941,15 +942,18 @@ class Session {
     * @param $defvalue  Mixed default value for option
     *
     * @return Mixed value of the option
-    */
+   **/
    static function getSavedOption($itemtype, $name, $defvalue) {
+
       if (isset($_REQUEST[$name])) {
          return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
       }
+
       if (isset($_SESSION['glpi_saved'][$itemtype][$name])) {
          return $_SESSION['glpi_saved'][$itemtype][$name];
       }
       return $defvalue;
    }
+
 }
 ?>

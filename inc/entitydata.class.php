@@ -760,8 +760,8 @@ class EntityData extends CommonDBChild {
          $toadd = array(self::CONFIG_PARENT => $LANG['common'][102]);
       }
 
-      $options = array('value'      => $entdata->fields["tickettemplates_id"],
-                                               'toadd'  =>$toadd);
+      $options = array('value' => $entdata->fields["tickettemplates_id"],
+                       'toadd' =>$toadd);
 
       Dropdown::show('TicketTemplate', $options);
 
