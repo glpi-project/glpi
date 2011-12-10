@@ -418,7 +418,7 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * getlist of Computers in a group
+    * get list of Computers in a group
     *
     * @since version 0.83
     *
