@@ -4871,7 +4871,8 @@ class Search {
 
                // Specific case of TreeDropdown : add under
                /// TODO clean realtable usage : for complete_entities
-               if (isset($searchopt[$field_num]['realtable']) && !empty($searchopt[$field_num]['realtable'])) {
+               if (isset($searchopt[$field_num]['realtable'])
+                   && !empty($searchopt[$field_num]['realtable'])) {
                   $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['realtable']);
                } else {
                   $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);

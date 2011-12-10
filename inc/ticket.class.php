@@ -694,7 +694,7 @@ class Ticket extends CommonITILObject {
          $fieldsname = $tt->getAllowedFieldsNames(true);
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
-                  && (isset($input[$key]) && (empty($input[$key]) ||$input[$key] == 'NULL'))) {
+                && (isset($input[$key]) && (empty($input[$key]) ||$input[$key] == 'NULL'))) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
@@ -3010,9 +3010,10 @@ class Ticket extends CommonITILObject {
          default :
             break;
       }
-      $opt = array('value' => $options['itilcategories_id'],
-                                       'condition' => $condition,
-                                       'on_change' => 'submit()');
+      $opt = array('value'     => $options['itilcategories_id'],
+                   'condition' => $condition,
+                   'on_change' => 'submit()');
+
       if ($options['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
          $opt['display_emptychoice'] = false;
       }
@@ -3550,7 +3551,7 @@ class Ticket extends CommonITILObject {
          /// if category mandatory, no empty choice
          /// no empty choice is default value set on ticket creation, else yes
          if (($ID || $values['itilcategories_id'])
-            && $tt->isMandatoryField("itilcategories_id")) {
+             && $tt->isMandatoryField("itilcategories_id")) {
             $opt['display_emptychoice'] = false;
          }
 
@@ -3583,7 +3584,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$tt->getBeginHiddenFieldText('status').$LANG['joblist'][0]."&nbsp;:".
-                $tt->getMandatoryMark('status').$tt->getEndHiddenFieldText('status')."</th>";
+             $tt->getMandatoryMark('status'). $tt->getEndHiddenFieldText('status')."</th>";
       echo "<td width='40%'>";
       echo $tt->getBeginHiddenFieldValue('status');
       if ($canupdate) {
@@ -3595,8 +3596,8 @@ class Ticket extends CommonITILObject {
 
       echo "</td>";
       echo "<th class='left'>".$tt->getBeginHiddenFieldText('requesttypes_id').$LANG['job'][44].
-                "&nbsp;:".$tt->getMandatoryMark('requesttypes_id').
-                $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
+             "&nbsp;:".$tt->getMandatoryMark('requesttypes_id').
+             $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
@@ -3669,11 +3670,11 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
-                $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
-                $tt->getEndHiddenFieldText('itemtype');
+             $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
+             $tt->getEndHiddenFieldText('itemtype');
       echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";                  
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       echo "</th>";
       echo "<td rowspan='2'>";
       echo $tt->getBeginHiddenFieldValue('itemtype');
@@ -3704,7 +3705,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "<div id='tickethardwareselection$ID' style='display:none'>";
          }
-         
+
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
@@ -3714,7 +3715,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "</div>";
          }
-         
+
          echo "<span id='item_ticket_selection_information'></span>";
 
       } else {
@@ -3781,8 +3782,7 @@ class Ticket extends CommonITILObject {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').$LANG['common'][57]."&nbsp;: ".
-                $tt->getMandatoryMark('name').
-                $tt->getEndHiddenFieldText('name')."</th>";
+             $tt->getMandatoryMark('name'). $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldText('name');
@@ -3828,8 +3828,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".$tt->getBeginHiddenFieldText('content').$LANG['joblist'][6]."&nbsp;: ".
-               $tt->getMandatoryMark('content').
-               $tt->getEndHiddenFieldText('content')."</th>";
+             $tt->getMandatoryMark('content'). $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldText('content');

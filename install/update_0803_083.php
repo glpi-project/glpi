@@ -667,13 +667,13 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_tickets');
    $migration->addKey('glpi_tickets', 'itilcategories_id');
 
-   // Update Itemtype datas in tables 
+   // Update Itemtype datas in tables
    $itemtype_tables = array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences");
 
    $typestochange = array ('TicketSolutionTemplate' => 'SolutionTemplate',
                            'TicketSolutionType'     => 'SolutionType',
                            'TicketCategory'         => 'ITILCategory',);
-                           
+
    foreach ($itemtype_tables as $table) {
 
       foreach ($typestochange as $key => $val) {
@@ -1162,14 +1162,14 @@ function update0803to083() {
             }
          }
 
-         // Update itit categories
+         // Update itil categories
          $migration->migrationOneTable('glpi_itilcategories');
          $query = "UPDATE `glpi_itilcategories`
-                        SET `tickettemplates_id_incident` = '$default_ticket_template',
-                            `tickettemplates_id_demand` = '$default_ticket_template'";
+                   SET `tickettemplates_id_incident` = '$default_ticket_template',
+                       `tickettemplates_id_demand` = '$default_ticket_template'";
          $DB->query($query)
-               or die("0.83 update default templates used by itil categories ".
-                      $LANG['update'][90] . $DB->error());
+         or die("0.83 update default templates used by itil categories ".$LANG['update'][90] .
+                $DB->error());
       }
    }
    // Drop global mandatory config

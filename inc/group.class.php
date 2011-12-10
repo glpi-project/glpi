@@ -344,25 +344,25 @@ class Group extends CommonTreeDropdown {
       $tab[15]['name']          = $LANG['search'][2]." ".$LANG['Menu'][14];
       $tab[15]['datatype']      = 'bool';
 
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = $LANG['common'][64];
+      $tab[70]['table']         = 'glpi_users';
+      $tab[70]['field']         = 'name';
+      $tab[70]['name']          = $LANG['common'][64];
       $tab[70]['itemlink_type'] = 'User';
       $tab[70]['forcegroupby']  = true;
       $tab[70]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
-                                                 'condition' => "AND NEWTABLE.`is_manager` = 1")));
+                                                 'condition'  => "AND NEWTABLE.`is_manager` = 1")));
 
-      $tab[71]['table'] = 'glpi_users';
-      $tab[71]['field'] = 'name';
-      $tab[71]['name']  = $LANG['common'][123];
+      $tab[71]['table']         = 'glpi_users';
+      $tab[71]['field']         = 'name';
+      $tab[71]['name']          = $LANG['common'][123];
       $tab[71]['itemlink_type'] = 'User';
       $tab[71]['forcegroupby']  = true;
       $tab[71]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
-                                                 'condition' => "AND NEWTABLE.`is_userdelegate` = 1")));
+                                                 'condition'  => "AND NEWTABLE.`is_userdelegate` = 1")));
 
       return $tab;
    }
@@ -418,7 +418,7 @@ class Group extends CommonTreeDropdown {
 
 
    /**
-    * get List of Computer in a group
+    * getlist of Computers in a group
     *
     * @since version 0.83
     *
@@ -430,7 +430,7 @@ class Group extends CommonTreeDropdown {
     * @param $res    Array result filled on ouput
     *
     * @return integer total of items
-    */
+   **/
    function getDataItems($types, $field, $tree, $user, $start, &$res) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -445,10 +445,9 @@ class Group extends CommonTreeDropdown {
          $ufield = str_replace('groups', 'users', $field);
          $grprestrict = "(`$field` $grprestrict
                           OR (`$field`=0
-                              AND `$ufield` IN
-                                  (SELECT `users_id`
-                                   FROM `glpi_groups_users`
-                                   WHERE `groups_id` $grprestrict)))";
+                              AND `$ufield` IN (SELECT `users_id`
+                                                FROM `glpi_groups_users`
+                                                WHERE `groups_id` $grprestrict)))";
       } else {
          $grprestrict = "`$field` $grprestrict";
       }
@@ -519,7 +518,7 @@ class Group extends CommonTreeDropdown {
     * Show items for the group
     *
     * @param $tech boolean, false search groups_id, true, search groups_id_tech
-    */
+   **/
    function showItems($tech) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -591,7 +590,8 @@ class Group extends CommonTreeDropdown {
             }
             echo "<tr class='tab_bg_1'><td>";
             if ($item->can($data['items_id'], 'w')) {
-               echo "<input type='checkbox' name='item[".$data['itemtype']."][".$data['items_id']."]' value='1'>";
+               echo "<input type='checkbox' name='item[".$data['itemtype']."][".$data['items_id']."]'
+                      value='1'>";
                $nbcan++;
             }
             echo "</td><td>".$item->getTypeName(1);
