@@ -212,8 +212,8 @@ class Stat {
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2, $type,
-                                                  $value[$i]["id"], $value2);
+            $late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2,
+                                                  $type, $value[$i]["id"], $value2);
             $nb_late = array_sum($late);
             $export_data['late'][$value[$i]['link']] = $nb_late;
 
@@ -225,9 +225,9 @@ class Stat {
 
             if ($itemtype == 'Ticket') {
                //open satisfaction
-               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction", $date1,
-                                                               $date2, $type, $value[$i]["id"],
-                                                               $value2);
+               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction",
+                                                                 $date1, $date2, $type,
+                                                                 $value[$i]["id"], $value2);
                $nb_opensatisfaction = array_sum($opensatisfaction);
                $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
             }
@@ -283,8 +283,8 @@ class Stat {
             echo Search::showHeaderItem($output_type, $LANG['tracking'][29], $header_num, '', 0, '',
                                         "colspan='4'");
             if ($itemtype =='Ticket') {
-               echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '', 0,
-                                          '', "colspan='3'");
+               echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '',
+                                           0, '', "colspan='3'");
             }
             echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num, '', 0, '',
                                         $itemtype =='Ticket'?"colspan='3'":"colspan='2'");
@@ -309,20 +309,23 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
          if ($itemtype =='Ticket') {
-
             if ($output_type!=HTML_OUTPUT) {
                $header_to_add = $LANG['satisfaction'][0].' - ';
             }
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13], $header_num);
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14], $header_num);
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13],
+                                        $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14],
+                                       $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107],
+                                        $header_num);
          }
 
          if ($output_type!=HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][8].' - ';
          }
          if ($itemtype =='Ticket') {
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12], $header_num);
+            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12],
+                                        $header_num);
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
@@ -370,8 +373,8 @@ class Stat {
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2, $type,
-                                                         $value[$i]["id"], $value2);
+            $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1,
+                                                         $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
             if ($nb_solved>0 && $nb_solved_late >0) {
                $nb_solved_late .= ' ('.round($nb_solved_late*100/$nb_solved).'%)';
@@ -393,9 +396,9 @@ class Stat {
             if ($itemtype =='Ticket') {
 
                //Satisfaction open
-               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction", $date1,
-                                                               $date2, $type, $value[$i]["id"],
-                                                               $value2);
+               $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction",
+                                                                 $date1, $date2, $type,
+                                                                 $value[$i]["id"], $value2);
                $nb_opensatisfaction = array_sum($opensatisfaction);
                if ($nb_opensatisfaction>0) {
                   $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
@@ -404,19 +407,21 @@ class Stat {
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
 
                //Satisfaction answer
-               $answersatisfaction    = self::constructEntryValues($itemtype, "inter_answersatisfaction", $date1,
-                                                                  $date2, $type, $value[$i]["id"],
-                                                                  $value2);
+               $answersatisfaction    = self::constructEntryValues($itemtype,
+                                                                   "inter_answersatisfaction",
+                                                                   $date1, $date2, $type,
+                                                                   $value[$i]["id"], $value2);
                $nb_answersatisfaction = array_sum($answersatisfaction);
                if ($nb_answersatisfaction>0) {
-                  $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
+                  $nb_answersatisfaction
+                        .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
                }
 
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
 
                //Satisfaction rate
-               $satisfaction = self::constructEntryValues($itemtype, "inter_avgsatisfaction", $date1, $date2,
-                                                         $type, $value[$i]["id"], $value2);
+               $satisfaction = self::constructEntryValues($itemtype, "inter_avgsatisfaction", $date1,
+                                                          $date2, $type, $value[$i]["id"], $value2);
                foreach ($satisfaction as $key2 => $val2) {
                   $satisfaction[$key2] *= $answersatisfaction[$key2];
                }
@@ -429,8 +434,8 @@ class Stat {
                echo Search::showItem($output_type, $avgsatisfaction, $item_num, $row_num);
 
                //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
-               $data = self::constructEntryValues($itemtype, "inter_avgtakeaccount", $date1, $date2, $type,
-                                                $value[$i]["id"], $value2);
+               $data = self::constructEntryValues($itemtype, "inter_avgtakeaccount", $date1, $date2,
+                                                  $type, $value[$i]["id"], $value2);
                foreach ($data as $key2 => $val2) {
                   $data[$key2] *= $solved[$key2];
                }
@@ -450,8 +455,8 @@ class Stat {
             }
 
             //Le temps moyen de resolution - The average time to resolv
-            $data = self::constructEntryValues($itemtype, "inter_avgsolvedtime", $date1, $date2, $type,
-                                               $value[$i]["id"], $value2);
+            $data = self::constructEntryValues($itemtype, "inter_avgsolvedtime", $date1, $date2,
+                                               $type, $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
             }
@@ -461,16 +466,16 @@ class Stat {
             } else {
                $timedisplay = 0;
             }
-            if ($output_type==HTML_OUTPUT
-                || $output_type==PDF_OUTPUT_LANDSCAPE
-                || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == HTML_OUTPUT
+                || $output_type == PDF_OUTPUT_LANDSCAPE
+                || $output_type == PDF_OUTPUT_PORTRAIT) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de cloture - The average time to close
-            $data = self::constructEntryValues($itemtype, "inter_avgclosedtime", $date1, $date2, $type,
-                                               $value[$i]["id"], $value2);
+            $data = self::constructEntryValues($itemtype, "inter_avgclosedtime", $date1, $date2,
+                                               $type, $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
             }
@@ -488,8 +493,8 @@ class Stat {
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
 
             //Le temps moyen de l'intervention reelle - The average actiontime to resolv
-            $data = self::constructEntryValues($itemtype, "inter_avgactiontime", $date1, $date2, $type,
-                                               $value[$i]["id"], $value2);
+            $data = self::constructEntryValues($itemtype, "inter_avgactiontime", $date1, $date2,
+                                               $type, $value[$i]["id"], $value2);
             foreach ($data as $key2 => $val2) {
                if (isset($solved[$key2])) {
                   $data[$key2] *= $solved[$key2];
@@ -549,16 +554,16 @@ class Stat {
       $grouplinktable = $grouplinkclass->getTable();
       $tasktable      = getTableForItemType($item->getType().'Task');
 
-      $closed_status = $item->getClosedStatusArray();
-      $solved_status = array_merge($closed_status,$item->getSolvedStatusArray());
+      $closed_status  = $item->getClosedStatusArray();
+      $solved_status  = array_merge($closed_status,$item->getSolvedStatusArray());
 
-      $query         = "";
-      $WHERE         = "WHERE NOT `$table`.`is_deleted` ".
+      $query          = "";
+      $WHERE          = "WHERE NOT `$table`.`is_deleted` ".
                              getEntitiesRestrictRequest("AND", $table);
-      $LEFTJOIN      = "";
-      $LEFTJOINUSER  = "LEFT JOIN `$userlinktable`
+      $LEFTJOIN       = "";
+      $LEFTJOINUSER   = "LEFT JOIN `$userlinktable`
                            ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
-      $LEFTJOINGROUP = "LEFT JOIN `$grouplinktable`
+      $LEFTJOINGROUP  = "LEFT JOIN `$grouplinktable`
                            ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
 
       switch ($param) {

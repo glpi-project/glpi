@@ -45,7 +45,7 @@ if (empty($_REQUEST["showgraph"])) {
 }
 
 if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
-   $year = date("Y")-1;
+   $year              = date("Y")-1;
    $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
    $_REQUEST["date2"] = date("Y-m-d");
 }
@@ -54,7 +54,7 @@ if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
     && strcmp($_REQUEST["date2"], $_REQUEST["date1"]) < 0) {
 
-   $tmp = $_REQUEST["date1"];
+   $tmp               = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
    $_REQUEST["date2"] = $tmp;
 }
@@ -101,6 +101,7 @@ echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value='". $_REQUEST['itemtype'] ."'>";
 echo "<input type='submit' class='button' name='submit' value='".__s('Update')."'></td></tr>";
+
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 Html::showDateFormItem("date2",$_REQUEST["date2"]);
 echo "</td><td class='center'>";
@@ -120,7 +121,8 @@ if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = Stat::getItems($_REQUEST['itemtype'], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["dropdown"]);
+   $val = Stat::getItems($_REQUEST['itemtype'], $_REQUEST["date1"], $_REQUEST["date2"],
+                         $_REQUEST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_REQUEST["dropdown"],
                    'date1'    => $_REQUEST["date1"],
@@ -132,7 +134,8 @@ if (!($item instanceof CommonDevice)) {
    $type = "device";
    $field = $_REQUEST["dropdown"];
 
-   $val = Stat::getItems($_REQUEST['itemtype'], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["dropdown"]);
+   $val = Stat::getItems($_REQUEST['itemtype'], $_REQUEST["date1"], $_REQUEST["date2"],
+                         $_REQUEST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_REQUEST["dropdown"],
                    'date1'    => $_REQUEST["date1"],
@@ -141,16 +144,16 @@ if (!($item instanceof CommonDevice)) {
 }
 
 Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
-                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;itemtype=".$_REQUEST['itemtype']."&amp;dropdown=".
-                     $_REQUEST["dropdown"],
+                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
+                     "&amp;itemtype=".$_REQUEST['itemtype']."&amp;dropdown=".$_REQUEST["dropdown"],
                  'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
-   Stat::show($_REQUEST['itemtype'], $type, $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val,
-              $_REQUEST["dropdown"]);
+   Stat::show($_REQUEST['itemtype'], $type, $_REQUEST["date1"], $_REQUEST["date2"],
+              $_REQUEST['start'], $val, $_REQUEST["dropdown"]);
 } else {
-   $data = Stat::getDatas($_REQUEST['itemtype'], $type, $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val,
-                          $_REQUEST["dropdown"]);
+   $data = Stat::getDatas($_REQUEST['itemtype'], $type, $_REQUEST["date1"], $_REQUEST["date2"],
+                          $_REQUEST['start'], $val, $_REQUEST["dropdown"]);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {

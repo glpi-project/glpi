@@ -50,7 +50,7 @@ if (empty($_REQUEST["showgraph"])) {
 }
 
 if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
-   $year = date("Y")-1;
+   $year              = date("Y")-1;
    $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
    $_REQUEST["date2"] = date("Y-m-d");
 }
@@ -59,7 +59,7 @@ if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
     && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
 
-   $tmp = $_REQUEST["date1"];
+   $tmp               = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
    $_REQUEST["date2"] = $tmp;
 }
@@ -73,29 +73,31 @@ $requester = array('user'               => array('title' => $LANG['job'][4]),
                    'group'              => array('title' => $LANG['common'][35]),
                    'usertitles_id'      => array('title' => $LANG['users'][1]),
                    'usercategories_id'  => array('title' => $LANG['users'][2]));
-$caract = array('itilcategories_id'      => array('title' => $LANG['common'][36]),
-                'urgency'                => array('title' => $LANG['joblist'][29]),
-                'impact'                 => array('title' => $LANG['joblist'][30]),
-                'priority'               => array('title' => $LANG['joblist'][2]),
-                'solutiontypes_id'       => array('title' => $LANG['job'][48]));
+
+$caract    = array('itilcategories_id'  => array('title' => $LANG['common'][36]),
+                   'urgency'            => array('title' => $LANG['joblist'][29]),
+                   'impact'             => array('title' => $LANG['joblist'][30]),
+                   'priority'           => array('title' => $LANG['joblist'][2]),
+                'solutiontypes_id'      => array('title' => $LANG['job'][48]));
+
 if ($_REQUEST['itemtype'] == 'Ticket') {
    $caract['type']            = array('title' => $LANG['common'][17]);
    $caract['requesttypes_id'] = array('title' => $LANG['job'][44]);
 }
 
 
-$items =
-   array($LANG['job'][4]
-            => $requester,
-         $LANG['common'][32]
-            => $caract,
-         $LANG['job'][5]
-            => array('technicien'          => array('title' => $LANG['job'][6]." ".
-                                                               $LANG['stats'][48]),
-                     'technicien_followup' => array('title' => $LANG['job'][6]." ".
-                                                               $LANG['stats'][49]),
-                     'groups_id_assign'    => array('title' => $LANG['common'][35]),
-                     'enterprise'          => array('title' => $LANG['financial'][26])));
+$items = array($LANG['job'][4]      => $requester,
+               $LANG['common'][32]  => $caract,
+               $LANG['job'][5]      => array('technicien'
+                                                   => array('title' => $LANG['job'][6]." ".
+                                                                       $LANG['stats'][48]),
+                                             'technicien_followup'
+                                                   => array('title' => $LANG['job'][6]." ".
+                                                                       $LANG['stats'][49]),
+                                             'groups_id_assign'
+                                                   => array('title' => $LANG['common'][35]),
+                                             'enterprise'
+                                                   => array('title' => $LANG['financial'][26])));
 
 $INSELECT = "";
 foreach ($items as $label => $tab) {
@@ -127,7 +129,8 @@ Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"]);
+$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
+                         $_REQUEST["type"]);
 $params = array('type'  => $_REQUEST["type"],
                 'date1' => $_REQUEST["date1"],
                 'date2' => $_REQUEST["date2"],
@@ -135,15 +138,17 @@ $params = array('type'  => $_REQUEST["type"],
 
 Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
                  "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
-                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"]."&amp;itemtype=".$_REQUEST["itemtype"],
+                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"].
+                     "&amp;itemtype=".$_REQUEST["itemtype"],
                  'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
-   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val);
+   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
+              $_REQUEST['start'], $val);
 
 } else {
-   $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
-                          $_REQUEST['start'], $val);
+   $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"],
+                          $_REQUEST["date2"], $_REQUEST['start'], $val);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {
