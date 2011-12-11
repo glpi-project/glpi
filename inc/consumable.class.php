@@ -386,7 +386,7 @@ class Consumable extends CommonDBTM {
       }
       $canedit = $consitem->can($tID,'w');
 
-      $query = "SELECT count(*) AS COUNT
+      $query = "SELECT COUNT(*)
                 FROM `glpi_consumables`
                 WHERE (`consumableitems_id` = '$tID')";
 
@@ -504,7 +504,7 @@ class Consumable extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`, `itemtype`, `items_id`
+      $query = "SELECT COUNT(*) AS count, `consumableitems_id`, `itemtype`, `items_id`
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NOT NULL
                       AND `consumableitems_id` IN (SELECT `id`
@@ -517,11 +517,12 @@ class Consumable extends CommonDBTM {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
-               $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]] = $data["COUNT"];
+               $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
+                  = $data["count"];
             }
          }
       }
-      $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`
+      $query = "SELECT COUNT(*) AS count, `consumableitems_id`
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NULL
                       AND `consumableitems_id` IN (SELECT `id`
@@ -534,7 +535,7 @@ class Consumable extends CommonDBTM {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
-               $new[$data["consumableitems_id"]] = $data["COUNT"];
+               $new[$data["consumableitems_id"]] = $data["count"];
             }
          }
       }

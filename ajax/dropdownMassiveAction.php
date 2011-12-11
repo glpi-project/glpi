@@ -105,7 +105,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "add_task" :
          $tasktype = $_POST['itemtype']."Task";
-         $ttype = new $tasktype();
+         $ttype    = new $tasktype();
          $ttype->showFormMassiveAction();
          break;
 

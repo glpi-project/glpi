@@ -289,7 +289,7 @@ class Fieldblacklist extends CommonDropdown {
    static function isFieldBlacklisted($itemtype, $entities_id, $field, $value) {
       global $DB;
 
-      $query = "SELECT count(*) AS cpt
+      $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_fieldblacklists`
                 WHERE `itemtype` = '$itemtype'
                       AND `field` = '$field'

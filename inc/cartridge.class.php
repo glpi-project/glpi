@@ -418,12 +418,12 @@ class Cartridge extends CommonDBTM {
       }
       $canedit = $cartitem->can($tID,'r');
 
-      $query = "SELECT count(*) AS COUNT
+      $query = "SELECT COUNT(*) AS count
                 FROM `glpi_cartridges`
                 WHERE (`cartridgeitems_id` = '$tID')";
 
       if ($result = $DB->query($query)) {
-         $total  = $DB->result($result, 0, "COUNT");
+         $total  = $DB->result($result, 0, "count");
 //          $unused = self::getUnusedNumber($tID);
 //          $used   = self::getUsedNumber($tID);
 //          $old    = self::getOldNumber($tID);

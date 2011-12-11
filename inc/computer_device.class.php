@@ -235,7 +235,7 @@ class Computer_Device extends CommonDBTM {
          $linktable = getTableForItemType('Computer_'.$itemtype);
          $fk        = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
-         $query = "SELECT COUNT(*) AS NB,
+         $query = "SELECT COUNT(*) AS nb,
                           `$fk`
                    FROM `$linktable`
                    WHERE `computers_id` = '$ID'
@@ -243,11 +243,11 @@ class Computer_Device extends CommonDBTM {
 
          foreach ($DB->request($query) as $deviceFromSQL) {
 
-            if ($numberOfPreviousItem * $deviceFromSQL['NB'] > 1) {
+            if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
                echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
             }
 
-            $numberOfPreviousItem = $deviceFromSQL['NB'];
+            $numberOfPreviousItem = $deviceFromSQL['nb'];
 
             $query = "SELECT `id`,
                              `$fk`
@@ -266,8 +266,8 @@ class Computer_Device extends CommonDBTM {
                   echo "<tr class='tab_bg_2'>";
 
                   if ($first) {
-                     if ($deviceFromSQL['NB'] > 1)
-                        $rowspan = "rowspan='".$deviceFromSQL['NB']."'";
+                     if ($deviceFromSQL['nb'] > 1)
+                        $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
                      else
                         $rowspan = "";
                      echo "<td $rowspan>";

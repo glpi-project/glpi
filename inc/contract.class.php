@@ -540,7 +540,7 @@ class Contract extends CommonDBTM {
 
       // No recursive contract, not in local management
       // contrats echus depuis moins de 30j
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
                       getEntitiesRestrictRequest("AND","glpi_contracts")."
@@ -552,7 +552,7 @@ class Contract extends CommonDBTM {
       $contract0 = $DB->result($result,0,0);
 
       // contrats  echeance j-7
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
                       getEntitiesRestrictRequest("AND","glpi_contracts")."
@@ -564,7 +564,7 @@ class Contract extends CommonDBTM {
       $contract7 = $DB->result($result, 0, 0);
 
       // contrats echeance j -30
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
                       getEntitiesRestrictRequest("AND","glpi_contracts")."
@@ -576,7 +576,7 @@ class Contract extends CommonDBTM {
       $contract30 = $DB->result($result,0,0);
 
       // contrats avec préavis echeance j-7
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
                       getEntitiesRestrictRequest("AND","glpi_contracts")."
@@ -591,7 +591,7 @@ class Contract extends CommonDBTM {
       $contractpre7 = $DB->result($result,0,0);
 
       // contrats avec préavis echeance j -30
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0'".
                       getEntitiesRestrictRequest("AND","glpi_contracts")."

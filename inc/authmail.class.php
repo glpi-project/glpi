@@ -242,7 +242,7 @@ class AuthMail extends CommonDBTM {
       global $DB;
 
       //Get all the pop/imap servers
-      $sql = "SELECT count(*)
+      $sql = "SELECT COUNT(*)
               FROM `glpi_authmails`";
       $result = $DB->query($sql);
 

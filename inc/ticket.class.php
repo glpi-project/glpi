@@ -694,7 +694,8 @@ class Ticket extends CommonITILObject {
          $fieldsname = $tt->getAllowedFieldsNames(true);
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
-                && (isset($input[$key]) && (empty($input[$key]) ||$input[$key] == 'NULL'))) {
+                && (isset($input[$key])
+                    && (empty($input[$key]) || $input[$key] == 'NULL'))) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
@@ -1327,7 +1328,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set number of followups
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '".$this->fields["id"]."'
                       $RESTRICT";
@@ -1353,7 +1354,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set number of followups
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '".$this->fields["id"]."'
                       $RESTRICT";
@@ -4736,7 +4737,8 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0, $id_for_massaction=-1) {
+   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0,
+                             $id_for_massaction=-1) {
       global $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
@@ -4751,7 +4753,7 @@ class Ticket extends CommonITILObject {
 
       // If id is specified it will be used as massive aciton id
       // Used when displaying ticket and wanting to delete a link data
-      if ($id_for_massaction==-1) {
+      if ($id_for_massaction == -1) {
          $id_for_massaction = $id;
       }
 

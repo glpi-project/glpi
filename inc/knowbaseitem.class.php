@@ -423,8 +423,10 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($canedit) {
          // Load ticket solution
-         if (empty($ID) && isset($options['itemtype']) && isset($options['items_id'])
-            && !empty($options['itemtype']) && !empty($options['items_id'])) {
+         if (empty($ID)
+             && isset($options['itemtype']) && !empty($options['itemtype'])
+             && isset($options['items_id']) && !empty($options['items_id'])) {
+
             $item = new $options['itemtype']();
             if ($item->getFromDB($options['items_id'])) {
                $this->fields['name']   = $item->getField('name');

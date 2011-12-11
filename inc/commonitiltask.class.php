@@ -603,9 +603,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       switch ($type) {
          case "in" :
-            //TRANS: %1$s is the start time of a planned item, %2$s is the end 
+            //TRANS: %1$s is the start time of a planned item, %2$s is the end
             printf(__('From %1$s to %2$s :'),date("H:i",strtotime($val["begin"])),
-                                            date("H:i",strtotime($val["end"]))) ;   
+                                            date("H:i",strtotime($val["end"]))) ;
             break;
 
          case "through" :
@@ -965,7 +965,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
-    * Form for TicketTask on Massive action
+    * Form for Ticket or Problem Task on Massive action
    **/
    function showFormMassiveAction() {
       global $LANG;

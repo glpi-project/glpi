@@ -632,7 +632,7 @@ class Auth {
       $methods[0]             = Dropdown::EMPTY_VALUE;
       $methods[self::DB_GLPI] = $LANG['login'][32];
 
-      $sql = "SELECT count(*) AS cpt
+      $sql = "SELECT COUNT(*) AS cpt
               FROM `glpi_authldaps`";
       $result = $DB->query($sql);
 
@@ -641,7 +641,7 @@ class Auth {
          $methods[self::EXTERNAL] = $LANG['setup'][67];
       }
 
-      $sql = "SELECT count(*) AS cpt
+      $sql = "SELECT COUNT(*) AS cpt
               FROM `glpi_authmails`";
       $result = $DB->query($sql);
 

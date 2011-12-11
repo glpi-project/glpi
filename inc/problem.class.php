@@ -191,16 +191,16 @@ class Problem extends CommonITILObject {
                if (Session::haveRight('observe_ticket','1')) {
                   $ong[4] = $LANG['Menu'][13];
                }
-               return $ong;           
+               return $ong;
          }
       }
-      
+
       switch ($item->getType()) {
          case __CLASS__ :
             return array (1 => $LANG['problem'][3],         // Analysis
                            2 => $LANG['jobresolution'][2],// Solution
-                           4 => $LANG['Menu'][13]); // Stats 
-      }      
+                           4 => $LANG['Menu'][13]); // Stats
+      }
       return '';
    }
 
@@ -231,7 +231,7 @@ class Problem extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-                  
+
             }
       }
       return true;
@@ -1052,8 +1052,9 @@ class Problem extends CommonITILObject {
 
       return " DISTINCT `glpi_problems`.*,
                         `glpi_itilcategories`.`completename` AS catname
-               $SELECT";
+                        $SELECT";
    }
+
 
    static function getCommonLeftJoin() {
 
@@ -1071,6 +1072,7 @@ class Problem extends CommonITILObject {
                   ON (`glpi_problems`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
    }
+
 
    static function commonListHeader($output_type=HTML_OUTPUT) {
       global $LANG;
@@ -1099,13 +1101,14 @@ class Problem extends CommonITILObject {
 
       foreach ($items as $key => $val) {
          $issort = 0;
-         $link = "";
+         $link   = "";
          echo Search::showHeaderItem($output_type,$key,$header_num,$link);
       }
 
       // End Line for column headers
       echo Search::showEndLine($output_type);
    }
+
 
    static function showShort($id, $output_type=HTML_OUTPUT, $row_num=0, $id_for_massaction=-1) {
       global $CFG_GLPI, $LANG;
@@ -1122,7 +1125,7 @@ class Problem extends CommonITILObject {
 
       // If id is specified it will be used as massive aciton id
       // Used when displaying ticket and wanting to delete a link data
-      if ($id_for_massaction==-1) {
+      if ($id_for_massaction == -1) {
          $id_for_massaction = $id;
       }
 
@@ -1132,13 +1135,12 @@ class Problem extends CommonITILObject {
       $align       = "class='center";
       $align_desc  = "class='left";
 
-
-      $align .= "'";
+      $align      .= "'";
       $align_desc .= "'";
 
       if ($job->getFromDB($id)) {
          $item_num = 1;
-         $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+         $bgcolor  = $_SESSION["glpipriority_".$job->fields["priority"]];
 
          echo Search::showNewLine($output_type,$row_num%2);
 
@@ -1166,7 +1168,7 @@ class Problem extends CommonITILObject {
                                   value='1' $sel>";
          }
 
-         echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
 
          // Second column
          if ($job->fields['status']=='closed') {
@@ -1280,7 +1282,7 @@ class Problem extends CommonITILObject {
             }
             $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
-         echo Search::showItem($output_type,$fifth_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 
          // Sixth Colum
 
@@ -1298,9 +1300,10 @@ class Problem extends CommonITILObject {
 
          // Add link
          if ($job->canViewItem()) {
-            $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
-                            "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
-                                     
+            $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".
+                              $CFG_GLPI["root_doc"].
+                              "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
+
             if ($output_type == HTML_OUTPUT) {
                $eigth_column .= "&nbsp;(".$job->numberOfTasks($showprivate).")";
             }
@@ -1310,7 +1313,8 @@ class Problem extends CommonITILObject {
             $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
                                                         array('display' => false,
                                                               'applyto' => "ticket".
-                                                                           $job->fields["id"]. $rand));
+                                                                           $job->fields["id"].
+                                                                           $rand));
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
@@ -1323,6 +1327,7 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";
       }
    }
+
 
    /**
    * Display problems for an item
@@ -1406,7 +1411,7 @@ class Problem extends CommonITILObject {
 //             $options['searchtype'][0] = 'equals';
 //             $options['contains'][0]   = 'all';
 //             $options['link'][0]       = 'AND';
-// 
+//
 //             $options['itemtype2'][0]   = $item->getType();
 //             $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
 //             $options['searchtype2'][0] = 'equals';
@@ -1417,10 +1422,10 @@ class Problem extends CommonITILObject {
 
 
       $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_problems` 
-                LEFT JOIN `glpi_items_problems` 
+                FROM `glpi_problems`
+                LEFT JOIN `glpi_items_problems`
                   ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
-                  self::getCommonLeftJoin()."
+                self::getCommonLeftJoin()."
                 WHERE $restrict ".
                       getEntitiesRestrictRequest("AND","glpi_problems")."
                 ORDER BY $order
@@ -1476,10 +1481,10 @@ class Problem extends CommonITILObject {
       // Tickets for linked items
       if ($subquery = $item->getSelectLinkedItem()) {
          $query = "SELECT ".self::getCommonSelect()."
-                   FROM `glpi_problems` 
-                     LEFT JOIN `glpi_items_problems` 
+                   FROM `glpi_problems`
+                   LEFT JOIN `glpi_items_problems`
                         ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
-                        self::getCommonLeftJoin()."
+                   self::getCommonLeftJoin()."
                    WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
                          getEntitiesRestrictRequest(' AND ', 'glpi_problems') . "
                    ORDER BY `glpi_problems`.`date_mod` DESC
@@ -1518,10 +1523,8 @@ class Problem extends CommonITILObject {
    function numberOfTasks() {
       global $DB;
 
-
-
       // Set number of followups
-      $query = "SELECT count(*)
+      $query = "SELECT COUNT(*)
                 FROM `glpi_problemtasks`
                 WHERE `problems_id` = '".$this->fields["id"]."'";
       $result = $DB->query($query);
