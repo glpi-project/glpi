@@ -80,13 +80,11 @@ if (isset($_POST["add"])) {
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&itemtype=Problem&items_id=".
-                   $_POST["id"]);
+      Html::redirect($CFG_GLPI["root_doc"].
+                     "/front/knowbaseitem.form.php?id=new&itemtype=Problem&items_id=". $_POST["id"]);
    } else {
       Html::back();
    }
-
-
 
 } else if (isset($_REQUEST['delete_user'])) {
    $problem_user = new Problem_User();

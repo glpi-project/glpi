@@ -68,11 +68,11 @@ class Transfer extends CommonDBTM {
    // replace by $CFG_GLPI["ticket_types"]
 //    var $TICKETS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
 //                               'Printer', 'Software');
-                              
+
    /// item types which have documents
    // replace by $CFG_GLPI["document_types"]
 //    var $DOCUMENTS_TYPES = array('Budget','CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
-//                                 'Contract', 'Document', 'Entity', 'KnowbaseItem', 'Monitor', 
+//                                 'Contract', 'Document', 'Entity', 'KnowbaseItem', 'Monitor',
 //                                 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'Problem',
 //                                 'Reminder', 'Software', 'SoftwareLicense', 'Supplier','Ticket','User');
 
@@ -1081,7 +1081,7 @@ class Transfer extends CommonDBTM {
                $input  = array_merge($input,$input2);
                $this->transferTaskCategory($itemtype, $ID, $newID);
             }
-            
+
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
             Plugin::doHook("item_transfer", array('type'  => $itemtype,
@@ -1252,7 +1252,7 @@ class Transfer extends CommonDBTM {
 
                   } else {
                      // Not already transfer cartype
-                     $query = "SELECT count(*) AS CPT
+                     $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_cartridges`
                                WHERE `glpi_cartridges`.`cartridgeitems_id`
                                           = '".$data['cartridgeitems_id']."'
@@ -1262,7 +1262,7 @@ class Transfer extends CommonDBTM {
                      $result_search = $DB->query($query);
 
                      // Is the carttype will be completly transfer ?
-                     if ($DB->result($result_search,0,'CPT')==0) {
+                     if ($DB->result($result_search,0,'cpt')==0) {
                         // Yes : transfer
                         $need_clean_process = false;
                         $this->transferItem('CartridgeItem', $data['cartridgeitems_id'],
@@ -1323,12 +1323,12 @@ class Transfer extends CommonDBTM {
                // CLean process
                if ($need_clean_process && $this->options['clean_cartridgeitem']) {
                   // Clean carttype
-                  $query2 = "SELECT COUNT(*) AS CPT
+                  $query2 = "SELECT COUNT(*) AS cpt
                              FROM `glpi_cartridges`
                              WHERE `cartridgeitems_id` = '" . $data['cartridgeitems_id'] . "'";
                   $result2 = $DB->query($query2);
 
-                  if ($DB->result($result2, 0, 'CPT') == 0) {
+                  if ($DB->result($result2, 0, 'cpt') == 0) {
                      if ($this->options['clean_cartridgeitem']==1) { // delete
                         $carttype->delete(array('id' => $data['cartridgeitems_id']));
                      }
@@ -1719,7 +1719,7 @@ class Transfer extends CommonDBTM {
 
                               if (isset($this->item_search[$dtype])) {
                                  // No items to transfer -> exists links
-                                 $query_search = "SELECT count(*) AS CPT
+                                 $query_search = "SELECT COUNT(*) AS cpt
                                                   FROM `glpi_contracts_items`
                                                   WHERE `contracts_id` = '$item_ID'
                                                         AND `itemtype` = '$dtype'
@@ -1727,7 +1727,7 @@ class Transfer extends CommonDBTM {
                                                              NOT IN ".$this->item_search[$dtype];
                                  $result_search = $DB->query($query_search);
 
-                                 if ($DB->result($result_search,0,'CPT')>0) {
+                                 if ($DB->result($result_search,0,'cpt')>0) {
                                     $canbetransfer = false;
                                  }
 
@@ -1805,12 +1805,12 @@ class Transfer extends CommonDBTM {
 
                   // If clean and unused ->
                   if ($need_clean_process && $this->options['clean_contract']) {
-                     $query = "SELECT COUNT(*) AS CPT
+                     $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_contracts_items`
                                WHERE `contracts_id` = '$item_ID'";
 
                      if ($result_remaining=$DB->query($query)) {
-                        if ($DB->result($result_remaining,0,'CPT')==0) {
+                        if ($DB->result($result_remaining,0,'cpt')==0) {
                            if ($this->options['clean_contract']==1) {
                               $contract->delete(array('id' => $item_ID));
                            }
@@ -1887,7 +1887,7 @@ class Transfer extends CommonDBTM {
                               $dtype = $data_type['itemtype'];
                               if (isset($this->item_search[$dtype])) {
                                  // No items to transfer -> exists links
-                                 $query_search = "SELECT count(*) AS CPT
+                                 $query_search = "SELECT COUNT(*) AS cpt
                                                   FROM `glpi_documents_items`
                                                   WHERE `documents_id` = '$item_ID'
                                                         AND `itemtype` = '$dtype'
@@ -1901,7 +1901,7 @@ class Transfer extends CommonDBTM {
                                  }
 
                                  $result_search = $DB->query($query_search);
-                                 if ($DB->result($result_search,0,'CPT')>0) {
+                                 if ($DB->result($result_search,0,'cpt')>0) {
                                     $canbetransfer = false;
                                  }
 
@@ -1977,12 +1977,12 @@ class Transfer extends CommonDBTM {
 
                   // If clean and unused ->
                   if ($need_clean_process && $this->options['clean_document']) {
-                     $query = "SELECT COUNT(*) AS CPT
+                     $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_documents_items`
                                WHERE `documents_id` = '$item_ID'";
 
                      if ($result_remaining = $DB->query($query)) {
-                        if ($DB->result($result_remaining,0,'CPT') == 0) {
+                        if ($DB->result($result_remaining,0,'cpt') == 0) {
                            if ($this->options['clean_document'] == 1) {
                               $document->delete(array('id' => $item_ID));
                            }
@@ -2088,7 +2088,7 @@ class Transfer extends CommonDBTM {
                         } else { // Not yet tranfer
                            // Can be managed like a non global one ?
                            // = all linked computers need to be transfer (so not copy)
-                           $query = "SELECT count(*) AS CPT
+                           $query = "SELECT COUNT(*) AS cpt
                                      FROM `glpi_computers_items`
                                      WHERE `itemtype` = '".$link_type."'
                                            AND `items_id` = '$item_ID'
@@ -2097,7 +2097,7 @@ class Transfer extends CommonDBTM {
                            $result_search = $DB->query($query);
 
                            // All linked computers need to be transfer -> use unique transfer system
-                           if ($DB->result($result_search,0,'CPT') == 0) {
+                           if ($DB->result($result_search,0,'cpt') == 0) {
                               $need_clean_process = false;
                               $this->transferItem($link_type,$item_ID,$item_ID);
                               $newID = $item_ID;
@@ -2163,13 +2163,13 @@ class Transfer extends CommonDBTM {
                      }
                      // If clean and not linked dc -> delete
                      if ($need_clean_process && $clean) {
-                        $query = "SELECT COUNT(*) AS CPT
+                        $query = "SELECT COUNT(*) AS cpt
                                   FROM `glpi_computers_items`
                                   WHERE `items_id` = '$item_ID'
                                         AND `itemtype` = '".$link_type."'";
 
                         if ($result_dc=$DB->query($query)) {
-                           if ($DB->result($result_dc,0,'CPT') == 0) {
+                           if ($DB->result($result_dc,0,'cpt') == 0) {
                               if ($clean == 1) {
                                  $link_item->delete(array('id' => $item_ID));
                               }
@@ -2319,14 +2319,14 @@ class Transfer extends CommonDBTM {
          case 'Ticket' :
             $table = 'glpi_tickettasks';
             $field = 'tickets_id';
-            $task=new TicketTask();      
+            $task=new TicketTask();
             break;
          case 'Problem' :
             $table = 'glpi_problemtasks';
             $field = 'problems_id';
             $task=new ProblemTask();
             break;
-      
+
       }
 
       $query = "SELECT *
@@ -2572,25 +2572,25 @@ class Transfer extends CommonDBTM {
             $links_remaining = 0;
             // All linked items need to be transfer so transfer enterprise ?
             // Search for contract
-            $query = "SELECT count(*) AS CPT
+            $query = "SELECT COUNT(*) AS cpt
                       FROM `glpi_contracts_suppliers`
                       WHERE `suppliers_id` = '$ID'
                             AND `contracts_id` NOT IN ".$this->item_search['Contract'];
             $result_search   = $DB->query($query);
-            $links_remaining = $DB->result($result_search, 0, 'CPT');
+            $links_remaining = $DB->result($result_search, 0, 'cpt');
 
             if ($links_remaining==0) {
                // Search for infocoms
                if ($this->options['keep_infocom']) {
                   foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
-                     $query = "SELECT count(*) AS CPT
+                     $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_infocoms`
                                WHERE `suppliers_id` = '$ID'
                                      AND `itemtype` = '$itemtype'
                                      AND `items_id` NOT IN ".$this->item_search[$itemtype];
 
                      if ($result_search = $DB->query($query)) {
-                        $links_remaining += $DB->result($result_search,0,'CPT');
+                        $links_remaining += $DB->result($result_search,0,'cpt');
                      }
 
                   }
@@ -2676,7 +2676,7 @@ class Transfer extends CommonDBTM {
                      $canbetransfer = true;
                      // Transfer enterprise : is the contact used for another enterprise ?
                      if ($ID==$newID) {
-                        $query_search = "SELECT count(*) AS CPT
+                        $query_search = "SELECT COUNT(*) AS cpt
                                          FROM `glpi_contacts_suppliers`
                                          WHERE `contacts_id` = '$item_ID'
                                                AND `suppliers_id`
@@ -2684,7 +2684,7 @@ class Transfer extends CommonDBTM {
                                                AND `suppliers_id`
                                                     NOT IN ".$this->item_recurs['Supplier'];
                         $result_search = $DB->query($query_search);
-                        if ($DB->result($result_search,0,'CPT') >0) {
+                        if ($DB->result($result_search,0,'cpt') >0) {
                            $canbetransfer = false;
                         }
                      }
@@ -2757,12 +2757,12 @@ class Transfer extends CommonDBTM {
 
                   // If clean and unused ->
                   if ($need_clean_process && $this->options['clean_contact']) {
-                     $query = "SELECT COUNT(*) AS CPT
+                     $query = "SELECT COUNT(*) AS cpt
                                FROM `glpi_contacts_suppliers`
                                WHERE `contacts_id` = '$item_ID'";
 
                      if ($result_remaining = $DB->query($query)) {
-                        if ($DB->result($result_remaining,0,'CPT') == 0) {
+                        if ($DB->result($result_remaining,0,'cpt') == 0) {
                            if ($this->options['clean_contact'] == 1) {
                               $contact->delete(array('id' => $item_ID));
                            }

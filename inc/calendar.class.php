@@ -92,7 +92,7 @@ class Calendar extends CommonDropdown {
          $calhol->cloneCalendar($oldID, $newID);
          $calseg = new CalendarSegment();
          $calseg->cloneCalendar($oldID, $newID);
-   
+
          $this->updateDurationCache($newID);
          return true;
       }
@@ -130,7 +130,7 @@ class Calendar extends CommonDropdown {
    function isHoliday($date) {
       global $DB;
 
-      $query = "SELECT COUNT(*) AS CPT
+      $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_calendars_holidays`
                 INNER JOIN `glpi_holidays`
                      ON (`glpi_calendars_holidays`.`holidays_id` = `glpi_holidays`.`id`)
@@ -145,7 +145,7 @@ class Calendar extends CommonDropdown {
                               )
                           )";
       if ($result=$DB->query($query)) {
-         return $DB->result($result, 0, 'CPT');
+         return $DB->result($result, 0, 'cpt');
       }
       return false;
    }
@@ -174,7 +174,7 @@ class Calendar extends CommonDropdown {
       $timeend    = strtotime($end);
       $datestart  = date('Y-m-d',$timestart);
       $dateend    = date('Y-m-d',$timeend);
-      // Need to finish at the closing day : set hour to midnight :  
+      // Need to finish at the closing day : set hour to midnight :
       /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
       $timerealend = strtotime($dateend.' 23:59:59');
 

@@ -1391,7 +1391,7 @@ class Document extends CommonDBTM {
 
          if ($withtemplate<2) {
             $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
-            $q = "SELECT count(*)
+            $q = "SELECT COUNT(*)
                   FROM `glpi_documents`
                   WHERE `is_deleted` = '0'
                   $limit";

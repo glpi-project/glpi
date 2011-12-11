@@ -388,7 +388,7 @@ class Event extends CommonDBTM {
     static function getCountLogin() {
        global $DB;
 
-       $query = "SELECT count(*)
+       $query = "SELECT COUNT(*)
                  FROM `glpi_events`
                  WHERE `message` LIKE '%logged in%'";
 

@@ -2585,20 +2585,19 @@ class Search {
             $toadd = '';
             if ($itemtype == 'Ticket' || $itemtype == 'Problem') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
-                  && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
-                  && ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_tickets_users'
-                        || $searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users')
-                  ) {
-                  $bj = $searchopt[$ID]["joinparams"]["beforejoin"];
+                   && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
+                   && ($searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_tickets_users'
+                       || $searchopt[$ID]["joinparams"]["beforejoin"]["table"] == 'glpi_problems_users')) {
+
+                  $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
-                  $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
+                  $toadd     = "`$linktable`.`alternative_email` $SEARCH OR ";
                }
             }
 
             return $link." ($toadd `$table`.`$name1` $SEARCH
                             OR `$table`.`$name2` $SEARCH
-                            OR CONCAT(`$table`.`$name1`, ' ',
-                                      `$table`.`$name2`) $SEARCH".
+                            OR CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH".
                             self::makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
 
 //          case "glpi_groups.name" :
@@ -4673,10 +4672,9 @@ class Search {
             $search[$itemtype][140]['datatype']      = 'number';
             $search[$itemtype][140]['massiveaction'] = false;
             $search[$itemtype][140]['joinparams']    = array('jointype'  => "itemtype_item",
-                                                            'condition'
-                                                             => getEntitiesRestrictRequest('AND',
-                                                                                           'NEWTABLE'));
-
+                                                             'condition'
+                                                              => getEntitiesRestrictRequest('AND',
+                                                                                            'NEWTABLE'));
          }
 
          if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
