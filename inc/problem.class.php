@@ -197,9 +197,9 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case __CLASS__ :
-            return array (1 => $LANG['problem'][3],         // Analysis
-                           2 => $LANG['jobresolution'][2],// Solution
-                           4 => $LANG['Menu'][13]); // Stats
+            return array(1 => $LANG['problem'][3],         // Analysis
+                         2 => $LANG['jobresolution'][2],    // Solution
+                         4 => $LANG['Menu'][13]);           // Stats
       }
       return '';
    }
@@ -228,10 +228,10 @@ class Problem extends CommonITILObject {
                   }
                   $item->showSolutionForm($_POST['load_kb_sol']);
                   break;
+
                case 4 :
                   $item->showStats();
                   break;
-
             }
       }
       return true;

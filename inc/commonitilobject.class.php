@@ -749,7 +749,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Set begin waiting date if needed
       if (($key=array_search('status',$this->updates)) !== false
-          && ($this->fields['status'] == 'waiting' || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
+          && ($this->fields['status'] == 'waiting'
+              || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
+
          $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
@@ -760,10 +762,11 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Manage come back to waiting state
-      if ($key=array_search('status',$this->updates) !== false
+      if (($key=array_search('status',$this->updates)) !== false
           && ($this->oldvalues['status'] == 'waiting'
                // From solved to another state than closed
-              || (in_array($this->fields["status"], $this->getSolvedStatusArray()) && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
+              || (in_array($this->fields["status"], $this->getSolvedStatusArray())
+                  && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
 
          // Compute ticket waiting time use calendar if exists
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
@@ -1714,7 +1717,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['name']          = $LANG['common'][35];
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
-      $tab[71]['condition']     = 'is_requester';      
+      $tab[71]['condition']     = 'is_requester';
       $tab[71]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
@@ -1749,7 +1752,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
       $tab[65]['forcegroupby']  = true;
       $tab[65]['massiveaction'] = false;
-      $tab[65]['condition']     = 'is_requester';      
+      $tab[65]['condition']     = 'is_requester';
       $tab[65]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
@@ -1785,7 +1788,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['massiveaction'] = false;
-      $tab[8]['condition']     = 'is_assign';      
+      $tab[8]['condition']     = 'is_assign';
       $tab[8]['joinparams']    = array('beforejoin'
                                        => array('table' => getTableForItemType($this->grouplinkclass),
                                                 'joinparams'
@@ -2693,6 +2696,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return 0;
    }
 
+
    function showStats() {
       global $LANG;
 
@@ -2703,8 +2707,10 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
+
       echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
+
       echo "<tr class='tab_bg_2'><td>".$LANG['sla'][5]."&nbsp;:</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
@@ -2717,6 +2723,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
+
       echo "<tr><th colspan='2'>".$LANG['common'][100]."</th></tr>";
 
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
@@ -2776,21 +2783,21 @@ abstract class CommonITILObject extends CommonDBTM {
       $linkclass = new $this->userlinkclass();
       $linktable = $linkclass->getTable();
 
-
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id, `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
-                     ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
-                         AND `$linktable`.`type` = '".self::REQUESTER."')
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
+                      AND `$linktable`.`type` = '".self::REQUESTER."')
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
@@ -2808,7 +2815,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   /** Get recipient of itil object  between 2 dates
+   /** Get recipient of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -2818,7 +2825,6 @@ abstract class CommonITILObject extends CommonDBTM {
    function getUsedRecipientBetween($date1='', $date2='') {
       global $DB;
 
-
       $query = "SELECT DISTINCT `glpi_users`.`id` AS user_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
@@ -2827,11 +2833,12 @@ abstract class CommonITILObject extends CommonDBTM {
                 LEFT JOIN `glpi_users`
                      ON (`glpi_users`.`id` = `".$this->getTable()."`.`users_id_recipient`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
@@ -2849,7 +2856,8 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
-   /** Get groups which have tickets between 2 dates
+
+   /** Get groups which have itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -2865,16 +2873,16 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
-                     ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
-                         AND `$linktable`.`type` = '".self::REQUESTER."')
-                LEFT JOIN `glpi_groups`
-                     ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
+                      AND `$linktable`.`type` = '".self::REQUESTER."')
+                LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`completename`";
 
@@ -2891,7 +2899,8 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
-   /** Get recipient of tickets between 2 dates
+
+   /** Get recipient of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -2916,15 +2925,16 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_users`.`$field`
                 FROM `".$this->getTable()."`
                 INNER JOIN `$linktable`
-                     ON (`".$this->getTable()."`.`id` = `$linktable`.`".$this->getForeignKeyField()."`)
+                  ON (`".$this->getTable()."`.`id` = `$linktable`.`".$this->getForeignKeyField()."`)
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
                 LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1)||!empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .=" ORDER BY `glpi_users`.`$field`";
 
@@ -2942,7 +2952,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get priorities of tickets between 2 dates
+    * Get priorities of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -2955,11 +2965,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `priority`
                 FROM `".$this->getTable()."`
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `priority`";
 
@@ -2978,7 +2989,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get urgencies of tickets between 2 dates
+    * Get urgencies of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -2991,11 +3002,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `urgency`
                 FROM `".$this->getTable()."`
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`",$date1,$date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `urgency`";
 
@@ -3015,7 +3027,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get impacts of tickets between 2 dates
+    * Get impacts of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -3028,11 +3040,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `impact`
                 FROM `".$this->getTable()."`
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `impact`";
       $result = $DB->query($query);
@@ -3051,7 +3064,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Get request types of tickets between 2 dates
+    * Get request types of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -3064,11 +3077,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `requesttypes_id`
                 FROM `".$this->getTable()."`
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `requesttypes_id`";
 
@@ -3084,8 +3098,9 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
    /**
-    * Get solution types of tickets between 2 dates
+    * Get solution types of itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -3098,11 +3113,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `solutiontypes_id`
                 FROM `".$this->getTable()."`
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `solutiontypes_id`";
 
@@ -3118,7 +3134,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return $tab;
    }
-
 
 
    /** Get users which have intervention assigned to  between 2 dates
@@ -3140,15 +3155,16 @@ abstract class CommonITILObject extends CommonDBTM {
                                 `glpi_users`.`firstname` AS firstname
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
-                           ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
-                               AND `$linktable`.`type` = '".self::ASSIGN."')
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
+                      AND `$linktable`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `$linktable`.`users_id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
                 getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1)||!empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
@@ -3186,18 +3202,19 @@ abstract class CommonITILObject extends CommonDBTM {
                                 `glpi_users`.`firstname` AS firstname
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$tasktable`
-                     ON (`".$this->getTable()."`.`id` = `$tasktable`.`".$this->getForeignKeyField()."`)
+                  ON (`".$this->getTable()."`.`id` = `$tasktable`.`".$this->getForeignKeyField()."`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `$tasktable`.`users_id`)
                 LEFT JOIN `glpi_profiles_users`
-                     ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+                  ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 LEFT JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                  ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .="     AND `glpi_profiles`.`own_ticket` = 1
                      AND `$tasktable`.`users_id` <> '0'
@@ -3219,7 +3236,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-   /** Get enterprises which have followup assigned to between 2 dates
+   /** Get enterprises which have itil object assigned to between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -3235,11 +3252,12 @@ abstract class CommonITILObject extends CommonDBTM {
                 LEFT JOIN `glpi_suppliers`
                      ON (`glpi_suppliers`.`id` = `".$this->getTable()."`.`suppliers_id_assign`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY name";
 
@@ -3257,8 +3275,7 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
 
-
-   /** Get groups assigned to tickets between 2 dates
+   /** Get groups assigned to itil object between 2 dates
     *
     * @param $date1 date : begin date
     * @param $date2 date : end date
@@ -3274,16 +3291,16 @@ abstract class CommonITILObject extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`completename`
                 FROM `".$this->getTable()."`
                 LEFT JOIN `$linktable`
-                     ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
-                         AND `$linktable`.`type` = '".self::ASSIGN."')
-                LEFT JOIN `glpi_groups`
-                     ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
+                      AND `$linktable`.`type` = '".self::ASSIGN."')
+                LEFT JOIN `glpi_groups` ON (`$linktable`.`groups_id` = `glpi_groups`.`id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
-                getEntitiesRestrictRequest("AND", $this->getTable());
+                      getEntitiesRestrictRequest("AND", $this->getTable());
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`".$this->getTable()."`.`date`", $date1, $date2)."
-                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1, $date2).") ";
+                          OR ".getDateRequest("`".$this->getTable()."`.`closedate`", $date1,
+                                              $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`completename`";
 
@@ -3298,8 +3315,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       return $tab;
    }
-
-
 
 }
 ?>
