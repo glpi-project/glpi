@@ -1132,11 +1132,8 @@ class Problem extends CommonITILObject {
       $candelete   = Session::haveRight("edit_all_problem", "1");
       $canupdate   = Session::haveRight("edit_all_problem", "1");
       $showprivate = Session::haveRight("show_all_problem", "1");
-      $align       = "class='center";
-      $align_desc  = "class='left";
-
-      $align      .= "'";
-      $align_desc .= "'";
+      $align       = "class='center'";
+      $align_desc  = "class='left'";
 
       if ($job->getFromDB($id)) {
          $item_num = 1;
