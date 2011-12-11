@@ -2308,6 +2308,8 @@ class Transfer extends CommonDBTM {
    /**
     * Transfer task categories for specified tickets
     *
+    * @since version 0.83
+    *
     * @param $itemtype itemtype : Problem / Ticket
     * @param $ID original ticket ID
     * @param $newID new ticket ID
@@ -2319,14 +2321,14 @@ class Transfer extends CommonDBTM {
          case 'Ticket' :
             $table = 'glpi_tickettasks';
             $field = 'tickets_id';
-            $task=new TicketTask();
+            $task  = new TicketTask();
             break;
+
          case 'Problem' :
             $table = 'glpi_problemtasks';
             $field = 'problems_id';
-            $task=new ProblemTask();
+            $task  = new ProblemTask();
             break;
-
       }
 
       $query = "SELECT *
@@ -2349,7 +2351,7 @@ class Transfer extends CommonDBTM {
                         $catid = $categ->import($inputcat);
                      }
                      $input['id']                = $data['id'];
-                     $input[$field]        = $ID;
+                     $input[$field]              = $ID;
                      $input['taskcategories_id'] = $catid;
                      $task->update($input);
                   }

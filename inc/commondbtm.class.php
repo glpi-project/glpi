@@ -2977,7 +2977,7 @@ class CommonDBTM extends CommonGLPI {
          if (is_array($values)) {
             $value = $values[$field];
          } else {
-            $value = $values;
+            $value  = $values;
             $values = array($field => $value);
          }
 

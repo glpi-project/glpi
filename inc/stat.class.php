@@ -309,7 +309,7 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
          if ($itemtype =='Ticket') {
-         
+
             if ($output_type!=HTML_OUTPUT) {
                $header_to_add = $LANG['satisfaction'][0].' - ';
             }
@@ -400,9 +400,9 @@ class Stat {
                if ($nb_opensatisfaction>0) {
                   $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
                }
-   
+
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
-   
+
                //Satisfaction answer
                $answersatisfaction    = self::constructEntryValues($itemtype, "inter_answersatisfaction", $date1,
                                                                   $date2, $type, $value[$i]["id"],
@@ -411,9 +411,9 @@ class Stat {
                if ($nb_answersatisfaction>0) {
                   $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
                }
-   
+
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
-   
+
                //Satisfaction rate
                $satisfaction = self::constructEntryValues($itemtype, "inter_avgsatisfaction", $date1, $date2,
                                                          $type, $value[$i]["id"], $value2);
@@ -434,13 +434,13 @@ class Stat {
                foreach ($data as $key2 => $val2) {
                   $data[$key2] *= $solved[$key2];
                }
-   
+
                if ($nb_solved>0) {
                   $timedisplay = array_sum($data)/$nb_solved;
                } else {
                   $timedisplay = 0;
                }
-   
+
                if ($output_type==HTML_OUTPUT
                   || $output_type==PDF_OUTPUT_LANDSCAPE
                   || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -539,21 +539,22 @@ class Stat {
    static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
                                         $value2="") {
       global $DB;
-      $item = new $itemtype();    
-      $table = $item->getTable()  ;
-      $fkfield = $item->getForeignKeyField();
-      $userlinkclass = new $item->userlinkclass();
-      $userlinktable = $userlinkclass->getTable();
+
+      $item           = new $itemtype();
+      $table          = $item->getTable();
+      $fkfield        = $item->getForeignKeyField();
+      $userlinkclass  = new $item->userlinkclass();
+      $userlinktable  = $userlinkclass->getTable();
       $grouplinkclass = new $item->grouplinkclass();
       $grouplinktable = $grouplinkclass->getTable();
-      $tasktable = getTableForItemType($item->getType().'Task');
-      
+      $tasktable      = getTableForItemType($item->getType().'Task');
+
       $closed_status = $item->getClosedStatusArray();
       $solved_status = array_merge($closed_status,$item->getSolvedStatusArray());
-      
+
       $query         = "";
       $WHERE         = "WHERE NOT `$table`.`is_deleted` ".
-                       getEntitiesRestrictRequest("AND", $table);
+                             getEntitiesRestrictRequest("AND", $table);
       $LEFTJOIN      = "";
       $LEFTJOINUSER  = "LEFT JOIN `$userlinktable`
                            ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
@@ -670,7 +671,7 @@ class Stat {
 
       switch($type) {
          case "inter_total" :
-            $WHERE .= " AND ".getDateRequest("`$table`.`date`",$begin,$end);
+            $WHERE .= " AND ".getDateRequest("`$table`.`date`", $begin, $end);
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m')
                                  AS date_unix,
@@ -906,7 +907,7 @@ class Stat {
    }
 
 
- 
+
 
    /** Get groups assigned to tickets between 2 dates
     *

@@ -179,15 +179,14 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
-
          Problem::commonListHeader(HTML_OUTPUT);
          Session::initNavigateListItems('Problem',
                                         $LANG['job'][38] ." = ". $ticket->fields["name"]);
-         $i=0;
+         $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'],false,HTML_OUTPUT, $i, $data['linkID']);
+            Problem::showShort($data['id'], false, HTML_OUTPUT, $i, $data['linkID']);
             $i++;
          }
       }
@@ -210,7 +209,6 @@ class Problem_Ticket extends CommonDBRelation{
       }
       echo "</form>";
    }
-
 
 }
 ?>
