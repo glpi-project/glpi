@@ -140,9 +140,10 @@ function update0803to083() {
       $DB->query($query) or die("0.83 create glpi_problems " . $LANG['update'][90] . $DB->error());
       $ADDTODISPLAYPREF['Problem'] = array(21,12,19,15,3,7,18);
    }
-   if (FieldExists('glpi_tickets','ticket_waiting_duration')) {
+
+   if (FieldExists('glpi_tickets', 'ticket_waiting_duration')) {
      $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
-                           'integer');
+                             'integer');
    }
 
    if (!TableExists('glpi_problems_users')) {

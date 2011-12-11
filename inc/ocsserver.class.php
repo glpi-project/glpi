@@ -5637,8 +5637,11 @@ class OcsServer extends CommonDBTM {
       self::updateTag($line_links, $line_ocs);
    }
 
+
    /**
     * Update location for a computer if needed after rule processing
+    *
+    * @since version 0.83
     *
     * @param line_links
     * @param data
@@ -5646,18 +5649,21 @@ class OcsServer extends CommonDBTM {
     * @return nothing
     */
    static function updateLocation($line_links, $data) {
+
       //If there's a location to update
       if (isset($data['locations_id'])) {
-         $computer = new Computer();
+         $computer  = new Computer();
          $computer->getFromDB($line_links['computers_id']);
          $ancestors = getAncestorsOf('glpi_entities', $computer->fields['entities_id']);
 
-         $location = new Location();
+         $location  = new Location();
          if ($location->getFromDB($data['locations_id'])) {
             //If location is in the same entity as the computer, or if the location is
             //defined in a parent entity, but recursive
             if ($location->fields['entities_id'] == $computer->fields['entities_id']
-               || (in_array($location->fields['entities_id'], $ancestors) && $location->fields['is_recursive'])) {
+                || (in_array($location->fields['entities_id'], $ancestors)
+                    && $location->fields['is_recursive'])) {
+
                $tmp['locations_id'] = $data['locations_id'];
                $tmp['id']           = $line_links['computers_id'];
                $computer->update($tmp);
@@ -5665,6 +5671,7 @@ class OcsServer extends CommonDBTM {
          }
       }
    }
+
 
    /**
     * Update TAG information in glpi_ocslinks table

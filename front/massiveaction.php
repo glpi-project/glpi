@@ -826,7 +826,6 @@ if (isset($_POST["action"])
          break;
 
       case "add_actor" :
-
          $item = new $_POST['itemtype']();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
