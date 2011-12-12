@@ -57,8 +57,7 @@ class NetworkPort extends CommonDBChild {
 
    function canCreate() {
 
-      if (isset($this->fields['itemtype'])) {
-         $item = new $this->fields['itemtype']();
+      if (isset($this->fields['itemtype']) && $item=getItemForItemtype($this->fields['itemtype'])) {
          return $item->canCreate();
       }
 
