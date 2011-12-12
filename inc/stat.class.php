@@ -70,6 +70,25 @@ class Stat {
             $val = $item->getUsedRecipientBetween($date1, $date2);
             break;
 
+         case 'group_tree' :
+            // Get all groups
+            $query = "SELECT DISTINCT `id`, `completename`
+                      FROM `glpi_groups`".
+                      getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
+                            AND `groups_id`='$parent'
+                      ORDER BY name";
+
+            $result = $DB->query($query);
+            $val    = array();
+            if ($DB->numrows($result) >=1) {
+               while ($line = $DB->fetch_assoc($result)) {
+                  $tmp['id']   = $line["id"];
+                  $tmp['link'] = $line["completename"];
+                  $val[]       = $tmp;
+               }
+            }
+            break;
+
          case "itilcategories_tree" :
             $cond = "AND `itilcategories_id`='$parent'";
             // nobreak
@@ -656,6 +675,15 @@ class Stat {
             } else {
                $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
             }
+            break;
+
+         case 'group_tree' :
+            $groups     = getSonsOf("glpi_groups", $value);
+            $condition  = implode("','",$groups);
+
+            $LEFTJOIN = $LEFTJOINGROUP;
+            $WHERE .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
+                              AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "group" :
