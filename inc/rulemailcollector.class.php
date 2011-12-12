@@ -43,6 +43,7 @@ class RuleMailCollector extends Rule {
    public $orderby  = "name";
    public $can_sort = true;
 
+
    /**
     * Constructor
    **/
@@ -71,6 +72,7 @@ class RuleMailCollector extends Rule {
    function maxActionsCount() {
       return 1;
    }
+
 
    function getTitleRule($target) {
    }
@@ -281,8 +283,9 @@ class RuleMailCollector extends Rule {
                                     $tmpid = $user->getField('entities_id');
 
                                     // Retrieve all the entities (pref could be set on a child)
-                                    $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
-                                                                                          $profile, true);
+                                    $entities
+                                       = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
+                                                                                   $profile, true);
 
                                     // If an entity is defined in user's preferences,
                                     // and this entity allowed for this profile, use this one
