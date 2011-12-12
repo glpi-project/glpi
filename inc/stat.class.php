@@ -702,7 +702,7 @@ class Stat {
                         AND `$table`.`solvedate` IS NOT NULL
                         AND `$table`.`due_date` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
-                        AND `$table`.`solvedate` > `".$item->getTable()."`.`due_date`";
+                        AND `$table`.`solvedate` > `$table`.`due_date`";
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
@@ -835,7 +835,7 @@ class Stat {
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`".$item->getTable()."`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
                       FROM `$table`
