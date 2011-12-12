@@ -570,6 +570,23 @@ class Session {
       return $trytoload;
    }
 
+
+   /**
+    * Detect cron mode or interactive
+    *
+    * @since version 0.84
+    *
+    * @return Boolean
+    */
+   static function isCron() {
+
+      return (isset($_SESSION["glpicronuserrunning"])
+              && (isCommandLine()
+                  || strpos($_SERVER['PHP_SELF'], 'cron.php')
+                  || strpos($_SERVER['REQUEST_URI'], 'crontask.php?execute')));
+
+   }
+
    /**
     * Get the Login User ID or return cron user ID for cron jobs
     *
@@ -581,14 +598,8 @@ class Session {
    **/
    static function getLoginUserID($force_human=true) {
 
-      if (!$force_human) { // Check cron jobs
-         if (isset($_SESSION["glpicronuserrunning"])
-             && (isCommandLine()
-                 || strpos($_SERVER['PHP_SELF'], 'cron.php')
-                 || strpos($_SERVER['REQUEST_URI'], 'crontask.php?execute'))) {
-
-            return $_SESSION["glpicronuserrunning"];
-         }
+      if (!$force_human && self::isCron()) { // Check cron jobs
+         return $_SESSION["glpicronuserrunning"];
       }
       if (isset($_SESSION["glpiID"])) {
          return $_SESSION["glpiID"];
@@ -889,7 +900,7 @@ class Session {
                                            $reset=false) {
 
       // Do not display of cron jobs messages in user interface
-      if (self::getLoginUserID() === self::getLoginUserID(false)) {
+      if (!self::isCron()) {
          if (!empty($msg)) {
 
             if ($reset) {

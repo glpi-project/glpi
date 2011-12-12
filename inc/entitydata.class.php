@@ -147,7 +147,7 @@ class EntityData extends CommonDBChild {
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       }
 
-      if (is_numeric(Session::getLoginUserID(false))) { // Filter input for connected
+      if (!Session::isCron()) { // Filter input for connected
          return $this->checkRightDatas($input);
       }
       // for cron
