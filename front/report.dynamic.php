@@ -60,7 +60,6 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
             $params = unserialize(stripslashes($_GET["item_type_param"]));
             switch ($params["type"]) {
                case "comp_champ" :
-               // TODO MoYo to check 2 functions
                   $val = Stat::getItems($_GET["itemtype"], $params["date1"], $params["date2"],
                                         $params["dropdown"]);
                   Stat::show($_GET["itemtype"], $params["type"], $params["date1"], $params["date2"],
@@ -68,7 +67,6 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
                   break;
 
                case "device" :
-               // TODO MoYo to check 2 functions
                   $val = Stat::getItems($_GET["itemtype"], $params["date1"], $params["date2"],
                                         $params["dropdown"]);
                   Stat::show($_GET["itemtype"], $params["type"], $params["date1"], $params["date2"],
@@ -76,11 +74,11 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
                   break;
 
                default :
-               // TODO MoYo to check 2 functions
-                  $val = Stat::getItems($_GET["itemtype"], $params["date1"], $params["date2"],
-                                        $params["type"]);
+                  $val2 = (isset($params['value2']) ? $params['value2'] : 0);
+                  $val  = Stat::getItems($_GET["itemtype"], $params["date1"], $params["date2"],
+                                         $params["type"], $val2);
                   Stat::show($_GET["itemtype"], $params["type"], $params["date1"], $params["date2"],
-                             $params["start"], $val);
+                             $params["start"], $val, $val2);
             }
          } else if (isset($_GET["type"]) && $_GET["type"] == "hardwares") {
             Stat::showItems("",$_GET["date1"], $_GET["date2"], $_GET['start']);

@@ -66,6 +66,7 @@ $cleantarget = preg_replace("/&/","&amp;",$cleantarget);
 $next  = 0;
 $prev  = 0;
 $title = "";
+$cond  = '';
 
 switch($_GET["type"]) {
    case "technicien" :
@@ -108,11 +109,15 @@ switch($_GET["type"]) {
       $title = $LANG['stats'][20]."&nbsp;: ".getUserName($_GET["id"],1);
       break;
 
+   case "itilcategories_tree" :
+      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $cond = "`itilcategories_id`='$parent'";
+      // nobreak;
    case "itilcategories_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_itilcategories", $_GET["id"], '', 'completename');
-      $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], '', 'completename');
+      $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
+      $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
       $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_itilcategories",
                                                                         $_GET["id"]);
       break;
@@ -414,53 +419,53 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
    $values['opensatisfaction']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_opensatisfaction",
                                                             $_REQUEST["date1"], $_REQUEST["date2"],
                                                             $_GET["type"], $val1, $val2);
-   
+
    $values['answersatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_answersatisfaction",
                                                             $_REQUEST["date1"], $_REQUEST["date2"],
                                                             $_GET["type"], $val1, $val2);
-   
-   
+
+
    $available = array('opensatisfaction'   => $LANG['satisfaction'][13],
                      'answersatisfaction' => $LANG['satisfaction'][14]);
    echo "<div class='center'>";
-   
+
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
             ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
-   
+
    $toprint = array();
    foreach ($available as $key => $name) {
       if ($show_all || isset($_REQUEST['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
-   
+
    Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
                                  'showtotal' => 1,
                                  'unit'      => $LANG['stats'][35]));
-   
+
    $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsatisfaction", $_REQUEST["date1"],
                                                          $_REQUEST["date2"], $_GET["type"], $val1,
                                                          $val2);
-   
+
    $available = array('avgsatisfaction' => $LANG['satisfaction'][7]);
    echo "<div class='center'>";
-   
+
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
             ($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
-   
+
    $toprint = array();
    foreach ($available as $key => $name) {
       if ($show_all || isset($_REQUEST['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
-   
+
    Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
 
 }
