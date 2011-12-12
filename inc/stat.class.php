@@ -71,11 +71,13 @@ class Stat {
             break;
 
          case 'group_tree' :
+         case 'groups_tree_assign' :
             // Get all groups
-            $query = "SELECT DISTINCT `id`, `name`
+            $query = "SELECT `id`, `name`
                       FROM `glpi_groups`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
                             AND `groups_id`='$parent'
+                            AND ".($type=='group_tree' ? '`is_requester`' : '`is_assign`')."
                       ORDER BY name";
 
             $result = $DB->query($query);
@@ -299,6 +301,7 @@ class Stat {
          $subname = '';
          switch ($type) {
             case 'group_tree' :
+            case 'groups_tree_assign' :
                $subname = Dropdown::getDropdownName('glpi_groups', $value2);
                break;
 
@@ -682,12 +685,14 @@ class Stat {
             break;
 
          case 'group_tree' :
+         case 'groups_tree_assign' :
+            $grptype    = ($param=='group_tree' ? CommonITILObject::REQUESTER : CommonITILObject::ASSIGN);
             $groups     = getSonsOf("glpi_groups", $value);
             $condition  = implode("','",$groups);
 
             $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
-                              AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+                              AND `$grouplinktable`.`type` = '$grptype')";
             break;
 
          case "group" :

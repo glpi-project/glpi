@@ -103,6 +103,8 @@ $items =
                      'technicien_followup' => array('title' => $LANG['job'][6]." ".
                                                                $LANG['stats'][49]),
                      'groups_id_assign'    => array('title' => $LANG['common'][35]),
+                     'groups_tree_assign'  => array('title' => $LANG['common'][35].
+                                                               " (".$LANG['entity'][7].")"),
                      'enterprise'          => array('title' => $LANG['financial'][26])));
 
 $INSELECT = "";
