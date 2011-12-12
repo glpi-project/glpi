@@ -152,7 +152,7 @@ function __autoload($classname) {
       // Is Zend class ?
       if (preg_match('/^Zend/',$classname,$matches)) {
          set_include_path(get_include_path() . PATH_SEPARATOR . GLPI_ZEND_PATH);
-         require_once("/Zend/Loader.php");
+         require_once("Zend/Loader.php");
 
          Zend_Loader::loadClass($classname);
          return true;
