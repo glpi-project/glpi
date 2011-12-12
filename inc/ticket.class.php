@@ -3345,7 +3345,7 @@ class Ticket extends CommonITILObject {
       }
       echo "</th></tr>";
       echo "<tr>";
-      echo "<th class='left' colspan='2'>";
+      echo "<td class='left' colspan='2'>";
 
       echo "<table>";
       echo "<tr>";
@@ -3373,9 +3373,9 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
       echo "</table>";
-      echo "</th>";
+      echo "</td>";
 
-      echo "<th class='left' colspan='2'>";
+      echo "<td class='left' colspan='2'>";
       echo "<table>";
 
       if ($ID) {
@@ -3474,7 +3474,7 @@ class Ticket extends CommonITILObject {
          echo "</td></tr></table>";
       }
 
-      echo "</th></tr>";
+      echo "</td></tr>";
 
       if ($ID) {
          switch ($this->fields["status"]) {
