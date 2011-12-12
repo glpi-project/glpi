@@ -72,7 +72,7 @@ class Stat {
 
          case 'group_tree' :
             // Get all groups
-            $query = "SELECT DISTINCT `id`, `completename`
+            $query = "SELECT DISTINCT `id`, `name`
                       FROM `glpi_groups`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
                             AND `groups_id`='$parent'
@@ -83,7 +83,7 @@ class Stat {
             if ($DB->numrows($result) >=1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line["id"];
-                  $tmp['link'] = $line["completename"];
+                  $tmp['link'] = $line["name"];
                   $val[]       = $tmp;
                }
             }
@@ -95,7 +95,7 @@ class Stat {
          case "itilcategories_id" :
             // Get all ticket categories for tree merge management
             $query = "SELECT DISTINCT `glpi_itilcategories`.`id`,
-                             `glpi_itilcategories`.`completename` AS category
+                             `glpi_itilcategories`.`".($cond?'name':'completename')."` AS category
                       FROM `glpi_itilcategories`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_itilcategories", '', '', true)."
                             $cond
@@ -296,6 +296,16 @@ class Stat {
          }
 
          echo Search::showHeader($output_type, $end_display-$start+1, $nbcols);
+         $subname = '';
+         switch ($type) {
+            case 'group_tree' :
+               $subname = Dropdown::getDropdownName('glpi_groups', $value2);
+               break;
+
+            case 'itilcategories_tree' :
+               $subname = Dropdown::getDropdownName('glpi_itilcategories', $value2);
+               break;
+         }
 
          if ($output_type==HTML_OUTPUT) { // HTML display
             echo Search::showNewLine($output_type);
@@ -311,7 +321,7 @@ class Stat {
             } else {
                echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
             }
-            echo Search::showHeaderItem($output_type, "", $header_num);
+            echo Search::showHeaderItem($output_type, '', $header_num);
 
             echo Search::showHeaderItem($output_type, $LANG['tracking'][29], $header_num, '', 0, '',
                                         "colspan='4'");
@@ -328,7 +338,7 @@ class Stat {
          echo Search::showNewLine($output_type);
          $header_num    = 1;
          $header_to_add = '';
-         echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+         echo Search::showHeaderItem($output_type, $subname, $header_num);
 
          if ($output_type==HTML_OUTPUT) { // HTML display
             echo Search::showHeaderItem($output_type, "", $header_num);
