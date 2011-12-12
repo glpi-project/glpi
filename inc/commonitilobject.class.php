@@ -530,9 +530,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater if interactive user
-      $lastupdater = Session::getLoginUserID(false);
-      if (is_numeric($lastupdater)) {
-         $input['users_id_lastupdater'] = $lastupdater;
+      if (!Session::isCron()) {
+         $input['users_id_lastupdater'] = Session::getLoginUserID();
       }
 
       if (isset($input["status"])
@@ -863,9 +862,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater if interactive user
-      $lastupdater = Session::getLoginUserID(false);
-      if (is_numeric($lastupdater)) {
-         $input['users_id_lastupdater'] = $lastupdater;
+      if (!Session::isCron()) {
+         $input['users_id_lastupdater'] = Session::getLoginUserID();
       }
 
       // No Auto set Import for external source
@@ -2541,9 +2539,8 @@ abstract class CommonITILObject extends CommonDBTM {
                    SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
          // set last updater if interactive user
-         $lastupdater = Session::getLoginUserID(false);
-         if (is_numeric($lastupdater)) {
-            $query .= ", `users_id_lastupdater` = '$lastupdater' ";
+         if (!Session::isCron()) {
+            $query .= ", `users_id_lastupdater` = '".Session::getLoginUserID()."' ";
          }
 
          $query .= "WHERE `id` = '$ID'";

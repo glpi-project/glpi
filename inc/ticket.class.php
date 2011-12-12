@@ -556,7 +556,7 @@ class Ticket extends CommonITILObject {
       $this->getFromDB($input['id']);
 
       // Security checks
-      if (is_numeric(Session::getLoginUserID(false)) && !Session::haveRight("assign_ticket","1")) {
+      if (!Session::isCron() && !Session::haveRight("assign_ticket","1")) {
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
              && $input['_itil_assign']['_type'] == 'user') {
@@ -593,7 +593,7 @@ class Ticket extends CommonITILObject {
       }
 
       $check_allowed_fields_for_template = false;
-      if (is_numeric(Session::getLoginUserID(false)) && !Session::haveRight("update_ticket","1")) {
+      if (!Session::isCron() && !Session::haveRight("update_ticket","1")) {
 
          $allowed_fields = array('id');
          $check_allowed_fields_for_template = true;
@@ -782,7 +782,7 @@ class Ticket extends CommonITILObject {
          $values['tickets_id']        = $this->input['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
-         if (!is_numeric(Session::getLoginUserID(false))
+         if (Session::isCron()
              || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
@@ -1280,7 +1280,7 @@ class Ticket extends CommonITILObject {
          $values['tickets_id']        = $this->fields['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
-         if (!is_numeric(Session::getLoginUserID(false))
+         if (!Session::isCron()
              || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
@@ -2013,7 +2013,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Filter search fields for helpdesk
-      if (Session::getLoginUserID(true) === Session::getLoginUserID(false) // no filter for cron
+      if (!Session::isCron() // no filter for cron
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tokeep = array('common');
          if (Session::haveRight('validate_ticket',1) || Session::haveRight('create_validation',1)) {
