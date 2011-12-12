@@ -1280,7 +1280,7 @@ class Ticket extends CommonITILObject {
          $values['tickets_id']        = $this->fields['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
 
-         if (!Session::isCron()
+         if (Session::isCron()
              || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
