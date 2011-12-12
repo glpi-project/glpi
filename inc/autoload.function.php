@@ -82,6 +82,7 @@ function isPluginItemType($classname) {
 
 
 /// Translation functions
+/// since version 0.84
 
 function __($str){
    global $TRANSLATE;
@@ -151,7 +152,7 @@ function __autoload($classname) {
       // Is Zend class ?
       if (preg_match('/^Zend/',$classname,$matches)) {
          set_include_path(get_include_path() . PATH_SEPARATOR . GLPI_ZEND_PATH);
-         require_once ("Zend/Loader.php");
+         require_once("/Zend/Loader.php");
 
          Zend_Loader::loadClass($classname);
          return true;
@@ -162,7 +163,7 @@ function __autoload($classname) {
    // No errors for missing classes due to implementation
    if (!in_array($item,$CFG_GLPI['missingclasses'])){
       if (file_exists("$dir$item.class.php")) {
-         include_once ("$dir$item.class.php");
+         include_once("$dir$item.class.php");
          if (isset($_SESSION['glpi_use_mode'])
              && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             $DEBUG_AUTOLOAD[] = $classname;

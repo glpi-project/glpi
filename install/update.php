@@ -430,8 +430,7 @@ function showLocationUpdateForm() {
       echo "<p>".$LANG['update'][136]."</p>";
       echo "<div align='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-      echo "<input type='submit' class='submit' name='validate_location' value='".
-             __s('Post')."'>";
+      echo "<input type='submit' class='submit' name='validate_location' value=\"".__s('Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</div>";
       echo "</form>";
