@@ -38,6 +38,7 @@ function logNetworkPortError($id, $itemtype, $items_id, $error) {
    fwrite($migration_log_file, $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
 }
 
+
 function logMessage($msg, $andDisplay) {
    global $migration, $migration_log_file;
 
@@ -48,6 +49,7 @@ function logMessage($msg, $andDisplay) {
    }
 }
 
+
 function createNetworkNamesFromItems($itemtype, $itemtable) {
    global $DB, $migration;
 
@@ -57,7 +59,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
              WHERE `ip` <> ''";
 
    $networkName = new NetworkName();
-   $IPaddress = new IPAddress();
+   $IPaddress   = new IPAddress();
 
    foreach ($DB->request($query) as $entry) {
       if (empty($entry["ip"])) {
@@ -101,9 +103,9 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
          $networkNameID = $migration->insertInTable($networkName->getTable(), $input);
 
-         $input = $IPaddress->setArrayFromAddress(array('entities_id'  => $entry['entities_id'],
-                                                        'itemtype' => $networkName->getType(),
-                                                        'items_id' => $networkNameID),
+         $input = $IPaddress->setArrayFromAddress(array('entities_id'   => $entry['entities_id'],
+                                                        'itemtype'      => $networkName->getType(),
+                                                        'items_id'      => $networkNameID),
                                                   "version", "name", "binary");
 
          $migration->insertInTable($IPaddress->getTable(), $input);
@@ -373,9 +375,9 @@ function update083to084() {
                $query = "SELECT id, items_id, itemtype
                          FROM origin_glpi_networkports
                          WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
-                         AND `netmask`='".$entry['netmask']."'
-                         AND `gateway`='".$entry['gateway']."'
-                         AND `entities_id`='".$entry['entities_id']."'";
+                               AND `netmask` = '".$entry['netmask']."'
+                               AND `gateway` = '".$entry['gateway']."'
+                               AND `entities_id` = '".$entry['entities_id']."'";
                $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
                   logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
@@ -387,9 +389,9 @@ function update083to084() {
             $query = "SELECT id, items_id, itemtype
                       FROM origin_glpi_networkports
                       WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
-                      AND `netmask`='".$entry['netmask']."'
-                      AND `gateway`='".$entry['gateway']."'
-                      AND `entities_id`='".$entry['entities_id']."'";
+                            AND `netmask` = '".$entry['netmask']."'
+                            AND `gateway` = '".$entry['gateway']."'
+                            AND `entities_id` = '".$entry['entities_id']."'";
             $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
                logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
@@ -529,7 +531,8 @@ function update083to084() {
 
       $port = new NetworkPortEthernet();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)"   => 'mac',
-                                                  '`netpoints_id`' => 'netpoints_id'), true);
+                                                  '`netpoints_id`' => 'netpoints_id'),
+                                     true);
    }
 
    logMessage($LANG['install'][4]. " - glpi_networkportwifis", true);
@@ -615,7 +618,7 @@ function update083to084() {
                                                   '`netpoints_id`'         => 'netpoints_id',
                                                   '`networkinterfaces_id`' =>
                                                   'networkinterfaces_id'),
-                                            true);
+                                     true);
    }
 
    logMessage($LANG['install'][4]. " - glpi_networkportaggregates", true);

@@ -161,13 +161,16 @@ class IPNetwork extends CommonDropdown {
       if (!isset($this->fields["network"]) || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {
-            return array('error' => $LANG['Internet'][19], 'input' => false);
+            return array('error' => $LANG['Internet'][19],
+                         'input' => false);
          }
          if (!$address->setAddressFromString($network[0])) {
-            return array('error' => $LANG['Internet'][20], 'input' => false);
+            return array('error' => $LANG['Internet'][20],
+                         'input' => false);
          }
          if (!$netmask->setNetmaskFromString($network[1], $address->getVersion())) {
-            return array('error' => $LANG['Internet'][21], 'input' => false);
+            return array('error' => $LANG['Internet'][21],
+                         'input' => false);
          }
 
          // After checking that address and netmask are valid, modify the address to be the "real"
@@ -184,7 +187,7 @@ class IPNetwork extends CommonDropdown {
 
          if (isset($this->fields["entities_id"])) {
             $entity = $this->fields["entities_id"];
-         } elseif (isset($input["entities_id"])) {
+         } else if (isset($input["entities_id"])) {
             $entity = $input["entities_id"];
          } else {
             $entity = -1;
@@ -286,16 +289,14 @@ class IPNetwork extends CommonDropdown {
     *
     * @return list of networks (see searchNetworks())
    **/
-   static function searchNetworksContainingIP($IP, $entityID = -1, $recursive = true,
-                                              $fields = "") {
+   static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true, $fields="") {
 
       return self::searchNetworks(array("relation" => "contains",
                                         "address"  => $IP,
                                         "netmask"  => array(0xffffffff, 0xffffffff,
                                                             0xffffffff, 0xffffffff),
                                         "fields"   => $fields),
-                                  $entityID,
-                                  $recursive);
+                                  $entityID, $recursive);
    }
 
 
@@ -325,8 +326,8 @@ class IPNetwork extends CommonDropdown {
     *          further. (ie. 0.0.0.0 is the further of whatever network if you lool for ones that
     *          contains the current network.
    **/
-   static function searchNetworks($relation, $condition, $entityID = -1, $recursive = true,
-                                  $version = 0) {
+   static function searchNetworks($relation, $condition, $entityID=-1, $recursive=true,
+                                  $version=0) {
       global $DB;
 
       if (empty($relation)) {

@@ -2098,14 +2098,14 @@ class Search {
                   if ($itemtype == 'Ticket' || $itemtype == 'Problem'
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                       && ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users'
-                           || $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')) { // For tickets_users
+                          || $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')) { // For tickets_users
 
                      $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'].
                                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
-                     $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
-                                                                  ' ',
-                                                                  `$ticket_user_table`.`alternative_email`)
-                                                  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+                     $addaltemail       = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
+                                                                        ' ',
+                                                                        `$ticket_user_table`.`alternative_email`)
+                                                        SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
                   }
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.", $addaltemail";

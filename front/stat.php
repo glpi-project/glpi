@@ -40,7 +40,7 @@ Html::header($LANG['Menu'][13],'',"maintain","stat");
 Session::checkRight("statistic", "1");
 
 $show_problem = Session::haveRight("edit_all_problem", "1")
-    || Session::haveRight("show_all_problem", "1");
+                || Session::haveRight("show_all_problem", "1");
 
 //Affichage du tableau de presentation des stats
 echo "<table class='tab_cadre_fixe'>";

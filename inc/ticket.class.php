@@ -2604,7 +2604,8 @@ class Ticket extends CommonITILObject {
          echo "<div id='tracking_all_devices'>";
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
-            if ($users_id && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+            if ($users_id
+                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
                echo $LANG['tracking'][2]."&nbsp;: ";
             }
 
@@ -2618,8 +2619,8 @@ class Ticket extends CommonITILObject {
                if (strcmp($type,$itemtype)==0) {
                   $found_type = true;
                }
-               echo "<option value='".$type."' ".(strcmp($type,$itemtype)==0?" selected":"").">".$label;
-               echo "</option>\n";
+               echo "<option value='".$type."' ".(strcmp($type,$itemtype)==0?" selected":"").">".
+                      $label."</option>\n";
             }
             echo "</select>";
 
@@ -2702,7 +2703,8 @@ class Ticket extends CommonITILObject {
       echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
       echo "<td class='b'>";
       echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
-                                   $this->fields["cost_fixed"], $this->fields["cost_material"],false);
+                                   $this->fields["cost_fixed"], $this->fields["cost_material"],
+                                   false);
       echo "</td></tr>\n";
 
       $options['candel']  = false;
@@ -2896,7 +2898,8 @@ class Ticket extends CommonITILObject {
       $tt = new TicketTemplate();
 
       // First load default entity one
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $_SESSION["glpiactive_entity"])) {
+      if ($template_id = EntityData::getUsedConfig('tickettemplates_id',
+                                                   $_SESSION["glpiactive_entity"])) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
       }
@@ -3055,7 +3058,8 @@ class Ticket extends CommonITILObject {
             echo "<td>";
             self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
                                     $options['itemtype'], $options['items_id']);
-            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0, $options['_users_id_requester'],
+            self::dropdownAllDevices("itemtype", $options['itemtype'], $options['items_id'], 0,
+                                     $options['_users_id_requester'],
                                      $_SESSION["glpiactive_entity"]);
             echo "<span id='item_ticket_selection_information'></span>";
 
@@ -3441,9 +3445,9 @@ class Ticket extends CommonITILObject {
             if ($this->fields['status'] != 'closed') {
                echo "<td>";
                echo "<span id='sla_action'>";
-               echo "<a class='pointer' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
-                                                                       $LANG['sla'][14]),
-                                             "cleanhide('sla_action');cleandisplay('sla_choice');").
+               echo "<a class='pointer' ".
+                      Html::addConfirmationOnAction(array($LANG['sla'][13], $LANG['sla'][14]),
+                                                    "cleanhide('sla_action');cleandisplay('sla_choice');").
                      ">".$LANG['sla'][12].'</a>';
                echo "</span>";
                echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:&nbsp;";

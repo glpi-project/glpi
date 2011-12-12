@@ -58,10 +58,10 @@ class NetworkPort extends CommonDBChild {
     *
     * @return array of available type of network ports
    **/
-   static function getNetworkPortInstantiations( $onlySelectableOnes = true ) {
+   static function getNetworkPortInstantiations($onlySelectableOnes = true) {
 
-      $instantiations = array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortEthernet',
-                                'NetworkPortLocal', 'NetworkPortDialup', 'NetworkPortWifi');
+      $instantiations = array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
+                              'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
       if ( !$onlySelectableOnes ) {
          $instantiations[] = 'NetworkPortMigration';
       }
