@@ -393,10 +393,12 @@ class Migration {
       }
    }
 
+
    /**
     * Copy table for migration
     *
     * @since version 0.84
+    *
     * @param $oldtable The name of the table already inside the database
     * @param $newtable The copy of the old table
    **/
@@ -417,12 +419,16 @@ class Migration {
       }
    }
 
+
    /**
     * Insert an entry inside a table
     *
     * @since version 0.84
+    *
     * @param $table The table to alter
     * @param $input The elements to add inside the table
+    *
+    * @return id of the last item inserted by mysql
    **/
    function insertInTable($table, $input) {
       global $LANG, $DB;
@@ -436,8 +442,9 @@ class Migration {
                $values[] = "'$value'";
             }
          }
-         $query = "INSERT INTO `$table` (" . implode(', ', $fields) . ") values (" .
-                  implode(', ', $values) . ")";
+         $query = "INSERT INTO `$table`
+                          (" . implode(', ', $fields) . ")
+                   VALUES (" .implode(', ', $values) . ")";
          $DB->query($query)
          or die($this->version." insert in $table " . $LANG['update'][90] . $DB->error());
 
@@ -445,12 +452,12 @@ class Migration {
       }
    }
 
+
    /**
     * Execute migration for only one table
     *
     * @param $table
    **/
-
    function migrationOneTable($table) {
       global $DB, $LANG;
 

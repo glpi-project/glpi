@@ -42,9 +42,7 @@ class NetworkPortMigration extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-     return $LANG['Internet'][61];
+     return _s('Not defined. Inherit from migration');
    }
 
 
@@ -56,7 +54,6 @@ class NetworkPortMigration extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
-      global $LANG;
 
       echo "<th>" . __('MAC') . "</th>\n";
       echo "<th>" . __('Network outlet') . "</th>\n";
@@ -67,10 +64,8 @@ class NetworkPortMigration extends NetworkPortInstantiation {
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
 
       echo "<td>".$this->fields["mac"]."</td>\n";
-
       echo "<td>".Dropdown::getDropdownName("glpi_netpoints",
                                             $this->fields["netpoints_id"])."</td>\n";
-
       echo "<td>".Dropdown::getDropdownName("glpi_networkinterfaces",
                                             $this->fields["networkinterfaces_id"])."</td>\n";
   }
@@ -89,8 +84,8 @@ class NetworkPortMigration extends NetworkPortInstantiation {
          echo "</td>";
          echo "<td>" . NetworkInterface::getTypeName() . "</td>\n";
          echo "<td>";
-         Dropdown::show('NetworkInterface', array('value' =>
-                                                  $this->fields["networkinterfaces_id"]));
+         Dropdown::show('NetworkInterface',
+                        array('value' => $this->fields["networkinterfaces_id"]));
          echo "</td>";
          echo "</tr>\n";
       }

@@ -432,7 +432,7 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       $onfocus = "";
-      $new = false;
+      $new     = false;
       $rowspan = 5;
       if ($ID > 0) {
          $rowspan++;

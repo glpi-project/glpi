@@ -43,9 +43,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-     return $LANG['Internet'][60];
+     return _s('Connection by dial line - Dialup');
    }
 
 
@@ -55,14 +53,11 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
-      global $LANG;
-
-      echo "<th>" . $LANG['networking'][15] . "</th>\n";
+      echo "<th>" . __('MAC') . "</th>\n";
    }
 
 
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-
       echo "<td>".$this->fields["mac"]."</td>\n";
    }
 

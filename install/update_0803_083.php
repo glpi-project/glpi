@@ -676,11 +676,10 @@ function update0803to083() {
                            'TicketCategory'         => 'ITILCategory',);
 
    foreach ($itemtype_tables as $table) {
-
       foreach ($typestochange as $key => $val) {
          $query = "UPDATE `$table`
-                     SET `itemtype` = '$val'
-                     WHERE `itemtype` = '$key'";
+                   SET `itemtype` = '$val'
+                   WHERE `itemtype` = '$key'";
          $DB->query($query)
          or die("0.83 update itemtype of table $table for $val ".$LANG['update'][90].$DB->error());
       }

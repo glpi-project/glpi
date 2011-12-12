@@ -77,7 +77,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       // Try to get mac address from the instantiation ...
       if (!empty($input['mac'])) {
-         $input['mac'] = strtolower ($input['mac']) ;
+         $input['mac'] = strtolower($input['mac']) ;
       }
 
       return $input;
