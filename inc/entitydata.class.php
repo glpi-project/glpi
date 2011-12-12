@@ -812,7 +812,8 @@ class EntityData extends CommonDBChild {
 
       if ($entdata->fields['tickettype'] == self::CONFIG_PARENT) {
          echo "<font class='green'>&nbsp;&nbsp;";
-         echo Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '', Ticket::INCIDENT_TYPE));
+         echo Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '',
+                                                            Ticket::INCIDENT_TYPE));
          echo "</font>";
       }
       echo "</td></tr>";
@@ -1172,6 +1173,7 @@ class EntityData extends CommonDBChild {
       return true;
    }
 
+
    /**
     * get value for auto_assign_mode
     *
@@ -1183,6 +1185,7 @@ class EntityData extends CommonDBChild {
     */
    static function getAutoAssignMode($val=NULL) {
       global $LANG;
+
       $tab = array(self::CONFIG_PARENT                  => $LANG['common'][102],
                    self::CONFIG_NEVER                   => $LANG['choice'][0],
                    self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
@@ -1196,6 +1199,7 @@ class EntityData extends CommonDBChild {
       }
       return NOT_AVAILABLE;
    }
+
 
    static function getSpecificValueToDisplay($field, $values, $options=array()) {
       global $LANG;
@@ -1298,7 +1302,7 @@ class EntityData extends CommonDBChild {
                case Infocom::COPY_DELIVERY_DATE :
                   return $LANG['setup'][283].' '.$LANG['financial'][27];
 
-               default:
+               default :
                   if (strstr($values[$field], '_')) {
                      list($type,$sid) = explode('_', $values[$field], 2);
                      if ($type == Infocom::ON_STATUS_CHANGE) {

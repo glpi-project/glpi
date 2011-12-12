@@ -1476,7 +1476,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Can I change recusvive flag to false
+    * Can I change recursive flag to false
     * check if there is "linked" object in another entity
     *
     * May be overloaded if needed
@@ -1879,6 +1879,7 @@ class CommonDBTM extends CommonGLPI {
       return (empty($ID) || $ID<=0);
    }
 
+
    /**
     * is the current object a new  one
     *
@@ -1893,6 +1894,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return true;
    }
+
 
    /**
     * Check right on an item
@@ -2179,7 +2181,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Is the object may be recursive
+    * Is the object may be private
     *
     * @return boolean
    **/
@@ -2404,6 +2406,8 @@ class CommonDBTM extends CommonGLPI {
     * Print out an HTML "<select>" for a dropdown
     *
     * This should be overloaded in Class
+    *
+    * @param $options possible options
     * Parameters which could be used in options array :
     *    - name : string / name of the select (default is depending itemtype)
     *    - value : integer / preselected value (default 0)
@@ -2415,7 +2419,6 @@ class CommonDBTM extends CommonGLPI {
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *
-    * @param $options possible options
     * @return nothing display the dropdown
    **/
    static function dropdown($options=array()) {
@@ -2503,6 +2506,7 @@ class CommonDBTM extends CommonGLPI {
                      $this->input[$key] = 'NULL';
                      break;
                }
+
             } else if (isset($searchOption['datatype'])
                        && !is_null($value)
                        && $value != ''
@@ -2625,6 +2629,7 @@ class CommonDBTM extends CommonGLPI {
    function getUnallowedFieldsForUnicity() {
       return array('alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id', 'notepad');
    }
+
 
    /**
     * Build an unicity error message
@@ -3083,7 +3088,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                   break;
 
-               case "language":
+               case "language" :
                   if (isset($CFG_GLPI['languages'][$value])) {
                      return $CFG_GLPI['languages'][$value][0];
                   }
@@ -3104,7 +3109,7 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   static function listTemplates($itemtype, $target, $add = 0) {
+   static function listTemplates($itemtype, $target, $add=0) {
       global $DB, $CFG_GLPI, $LANG;
 
       if (!($item = getItemForItemtype($itemtype))) {
@@ -3120,11 +3125,14 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $query = "SELECT * FROM `".$item->getTable()."`
+      $query = "SELECT *
+                FROM `".$item->getTable()."`
                 WHERE `is_template` = '1' ";
+
       if ($item->isEntityAssign()) {
          $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
-                  $_SESSION['glpiactive_entity'], $item->maybeRecursive());
+                                              $_SESSION['glpiactive_entity'],
+                                              $item->maybeRecursive());
       }
       $query .= " ORDER by `template_name`";
 
@@ -3169,14 +3177,16 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
    /**
     * Specificy a plugin itemtype for which entities_id and is_recursive should be forwarded
+    *
+    * @since 0.83
     *
     * @param $for_itemtype change of entity for this itemtype will be forwarder
     * @param $to_itemtype change of entity will affect this itemtype
     *
     * @return nothing
-    * @since 0.83
    **/
    static function addForwardEntity($for_itemtype, $to_itemtype) {
       self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;

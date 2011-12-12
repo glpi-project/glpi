@@ -186,7 +186,8 @@ class Alert extends CommonDBTM {
 
    static function dropdownInfocomAlert($value) {
 
-      Dropdown::showFromArray("default_infocom_alert", self::getAlertName(), array('value' => $value));
+      Dropdown::showFromArray("default_infocom_alert", self::getAlertName(),
+                              array('value' => $value));
    }
 
 
