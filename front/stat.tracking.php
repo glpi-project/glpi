@@ -49,6 +49,10 @@ if (empty($_REQUEST["showgraph"])) {
    $_REQUEST["showgraph"] = 0;
 }
 
+if (empty($_REQUEST["value2"])) {
+   $_REQUEST["value2"] = 0;
+}
+
 if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
    $year = date("Y")-1;
    $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
@@ -74,6 +78,8 @@ $requester = array('user'               => array('title' => $LANG['job'][4]),
                    'usertitles_id'      => array('title' => $LANG['users'][1]),
                    'usercategories_id'  => array('title' => $LANG['users'][2]));
 $caract = array('itilcategories_id'      => array('title' => $LANG['common'][36]),
+                'itilcategories_tree'    => array('title' => $LANG['common'][36].
+                                                             " (".$LANG['entity'][7].")"),
                 'urgency'                => array('title' => $LANG['joblist'][29]),
                 'impact'                 => array('title' => $LANG['joblist'][30]),
                 'priority'               => array('title' => $LANG['joblist'][2]),
@@ -123,23 +129,27 @@ echo "<input type='submit' class='button' name='submit' value=\"". $LANG['button
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 Html::showDateFormItem("date2", $_REQUEST["date2"]);
 echo "</td><td class='center'>";
+echo "<input type='hidden' name='value2' value='".$_REQUEST["value2"]."'>";
 Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"]);
-$params = array('type'  => $_REQUEST["type"],
-                'date1' => $_REQUEST["date1"],
-                'date2' => $_REQUEST["date2"],
-                'start' => $_REQUEST["start"]);
+$val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"], $_REQUEST["value2"]);
+$params = array('type'   => $_REQUEST["type"],
+                'date1'  => $_REQUEST["date1"],
+                'date2'  => $_REQUEST["date2"],
+                'value2' => $_REQUEST["value2"],
+                'start'  => $_REQUEST["start"]);
 
 Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
-                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
-                     $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"]."&amp;itemtype=".$_REQUEST["itemtype"],
+                 "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
+                 "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"].
+                 "&amp;itemtype=".$_REQUEST["itemtype"]."&amp;value2=".$_REQUEST['value2'],
                  'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
-   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val);
+   Stat::show($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],
+              $_REQUEST['start'], $val, $_REQUEST['value2']);
 
 } else {
    $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"], $_REQUEST["date2"],

@@ -41,13 +41,14 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Stat {
    /// TODO clean type names : technicien -> tech enterprise -> supplier
-   static function getItems($itemtype,$date1, $date2, $type) {
+   static function getItems($itemtype,$date1, $date2, $type, $parent=0) {
       global $CFG_GLPI, $DB;
 
       $item = new $itemtype();
 
       $val = array();
 
+      $cond = '';
       switch ($type) {
          case "technicien" :
             $val = $item->getUsedTechBetween($date1, $date2);
@@ -69,12 +70,16 @@ class Stat {
             $val = $item->getUsedRecipientBetween($date1, $date2);
             break;
 
+         case "itilcategories_tree" :
+            $cond = "AND `itilcategories_id`='$parent'";
+            // nobreak
          case "itilcategories_id" :
             // Get all ticket categories for tree merge management
             $query = "SELECT DISTINCT `glpi_itilcategories`.`id`,
                              `glpi_itilcategories`.`completename` AS category
                       FROM `glpi_itilcategories`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_itilcategories", '', '', true)."
+                            $cond
                       ORDER BY category";
 
             $result = $DB->query($query);
@@ -277,7 +282,16 @@ class Stat {
             echo Search::showNewLine($output_type);
             $header_num = 1;
 
-            echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+            if ($output_type==HTML_OUTPUT && strstr($type, '_tree') && $value2) {
+               // HTML display
+               $link = $_SERVER['PHP_SELF'].
+                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
+                       "&amp;value2=0";
+               $link = "<a href='$link'>".$LANG['buttons'][13]."</a>";
+               echo Search::showHeaderItem($output_type, $link, $header_num);
+            } else {
+               echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+            }
             echo Search::showHeaderItem($output_type, "", $header_num);
 
             echo Search::showHeaderItem($output_type, $LANG['tracking'][29], $header_num, '', 0, '',
@@ -309,7 +323,7 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
          if ($itemtype =='Ticket') {
-         
+
             if ($output_type!=HTML_OUTPUT) {
                $header_to_add = $LANG['satisfaction'][0].' - ';
             }
@@ -340,7 +354,16 @@ class Stat {
             $row_num++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
-            echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
+            if ($output_type==HTML_OUTPUT && strstr($type, '_tree')) {
+               // HTML display
+               $link = $_SERVER['PHP_SELF'].
+                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
+                       "&amp;value2=".$value[$i]['id'];
+               $link = "<a href='$link'>".$value[$i]['link']."</a>";
+               echo Search::showItem($output_type, $link, $item_num, $row_num);
+            } else {
+               echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
+            }
 
             if ($output_type==HTML_OUTPUT) { // HTML display
                $link = "";
@@ -400,9 +423,9 @@ class Stat {
                if ($nb_opensatisfaction>0) {
                   $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
                }
-   
+
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
-   
+
                //Satisfaction answer
                $answersatisfaction    = self::constructEntryValues($itemtype, "inter_answersatisfaction", $date1,
                                                                   $date2, $type, $value[$i]["id"],
@@ -411,9 +434,9 @@ class Stat {
                if ($nb_answersatisfaction>0) {
                   $nb_answersatisfaction .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
                }
-   
+
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
-   
+
                //Satisfaction rate
                $satisfaction = self::constructEntryValues($itemtype, "inter_avgsatisfaction", $date1, $date2,
                                                          $type, $value[$i]["id"], $value2);
@@ -434,13 +457,13 @@ class Stat {
                foreach ($data as $key2 => $val2) {
                   $data[$key2] *= $solved[$key2];
                }
-   
+
                if ($nb_solved>0) {
                   $timedisplay = array_sum($data)/$nb_solved;
                } else {
                   $timedisplay = 0;
                }
-   
+
                if ($output_type==HTML_OUTPUT
                   || $output_type==PDF_OUTPUT_LANDSCAPE
                   || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -539,7 +562,7 @@ class Stat {
    static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
                                         $value2="") {
       global $DB;
-      $item = new $itemtype();    
+      $item = new $itemtype();
       $table = $item->getTable()  ;
       $fkfield = $item->getForeignKeyField();
       $userlinkclass = new $item->userlinkclass();
@@ -547,10 +570,10 @@ class Stat {
       $grouplinkclass = new $item->grouplinkclass();
       $grouplinktable = $grouplinkclass->getTable();
       $tasktable = getTableForItemType($item->getType().'Task');
-      
+
       $closed_status = $item->getClosedStatusArray();
       $solved_status = array_merge($closed_status,$item->getSolvedStatusArray());
-      
+
       $query         = "";
       $WHERE         = "WHERE NOT `$table`.`is_deleted` ".
                        getEntitiesRestrictRequest("AND", $table);
@@ -605,6 +628,12 @@ class Stat {
 
          case "type" :
             $WHERE .= " AND `$table`.`type` = '$value'";
+            break;
+
+         case "itilcategories_tree" :
+            $categories = getSonsOf("glpi_itilcategories", $value);
+            $condition  = implode("','",$categories);
+            $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
             break;
 
          case "itilcategories_id" :
@@ -906,7 +935,7 @@ class Stat {
    }
 
 
- 
+
 
    /** Get groups assigned to tickets between 2 dates
     *
