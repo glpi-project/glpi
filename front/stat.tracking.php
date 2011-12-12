@@ -75,6 +75,8 @@ if (!isset($_REQUEST["start"])) {
 $requester = array('user'               => array('title' => $LANG['job'][4]),
                    'users_id_recipient' => array('title' => $LANG['common'][37]),
                    'group'              => array('title' => $LANG['common'][35]),
+                   'group_tree'         => array('title' => $LANG['common'][35].
+                                                            " (".$LANG['entity'][7].")"),
                    'usertitles_id'      => array('title' => $LANG['users'][1]),
                    'usercategories_id'  => array('title' => $LANG['users'][2]));
 $caract = array('itilcategories_id'      => array('title' => $LANG['common'][36]),

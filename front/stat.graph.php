@@ -132,11 +132,15 @@ switch($_GET["type"]) {
       $title = $LANG['common'][17]."&nbsp;: ".Ticket::getTicketTypeName($_GET["id"]);
       break;
 
+   case 'group_tree' :
+      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $cond = "`itilcategories_id`='$parent'";
+      // nobreak;
    case "group" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_groups", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_groups", $_GET["id"]);
+      $next  = getNextItem("glpi_groups", $_GET["id"], $cond);
+      $prev  = getPreviousItem("glpi_groups", $_GET["id"], $cond);
       $title = $LANG['common'][35]."&nbsp;: ".Dropdown::getDropdownName("glpi_groups", $_GET["id"]);
       break;
 
