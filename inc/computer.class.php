@@ -58,12 +58,7 @@ class Computer extends CommonDBTM {
     * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][0];
-      }
-      return $LANG['help'][25];
+         return _n('Computer', 'Computers', $nb);
    }
 
 
@@ -92,7 +87,7 @@ class Computer extends CommonDBTM {
       $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
       $this->addStandardTab('RegistryKey', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Item_Problem', $ong, $options);      
+      $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);

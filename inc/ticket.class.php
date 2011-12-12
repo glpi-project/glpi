@@ -2808,23 +2808,23 @@ class Ticket extends CommonITILObject {
 
 
       // Set default values...
-      $values = array('_users_id_requester_notif' => array('use_notification' => ($email==""?0:1)),
-                      'nodelegate'                => 1,
-                      '_users_id_requester'       => 0,
-                      'name'                      => '',
-                      'content'                   => '',
-                      'itilcategories_id'         => 0,
-                      'urgency'                   => 3,
-                      'itemtype'                  => '',
-                      'items_id'                  => 0,
-                      'plan'                      => array(),
-                      'global_validation'         => 'none',
-                      'due_date'                  => 'NULL',
-                      'slas_id'                   => 0,
-                      '_add_validation'           => 0,
-                      'type'                      => EntityData::getUsedConfig('tickettype',
-                                                                               $_SESSION['glpiactive_entity']),
-                      '_right'                    => "id");
+      $values = array('_users_id_requester_notif'  => array('use_notification' => ($email==""?0:1)),
+                      'nodelegate'                 => 1,
+                      '_users_id_requester'        => 0,
+                      'name'                       => '',
+                      'content'                    => '',
+                      'itilcategories_id'          => 0,
+                      'urgency'                    => 3,
+                      'itemtype'                   => '',
+                      'items_id'                   => 0,
+                      'plan'                       => array(),
+                      'global_validation'          => 'none',
+                      'due_date'                   => 'NULL',
+                      'slas_id'                    => 0,
+                      '_add_validation'            => 0,
+                      'type'              => EntityData::getUsedConfig('tickettype',
+                                                                       $_SESSION['glpiactive_entity']),
+                      '_right'                     => "id");
 
 
       // Restore saved value or override with page parameter

@@ -109,5 +109,4 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
 
    echo "<input type='submit' name='connect' value=\"".__s('Connect')."\" class='submit'>";
 }
-
 ?>
