@@ -3343,7 +3343,7 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</th></tr>";
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td class='left' colspan='2'>";
 
       echo "<table>";
