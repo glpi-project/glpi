@@ -104,8 +104,10 @@ abstract class CommonDBChild extends CommonDBTM {
     *
    **/
    static function displayRecursiveItems($recursiveItems, $elementToDisplay) {
+      global $LANG;
 
-      if (!is_array($recursiveItems)) {
+      if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
+         echo $LANG['common'][124];
          return;
       }
 

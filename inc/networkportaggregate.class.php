@@ -104,11 +104,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
          $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
       }
 
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
-
       echo "<tr class='tab_bg_1'>";
-      $this->showMacField($netport, $options, $recursiveItems);
-      $this->showNetworkPortSelector($lastItem, true);
+      $this->showMacField($netport, $options);
+      $this->showNetworkPortSelector($recursiveItems, true);
       echo "</tr>";
    }
 }

@@ -54,15 +54,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG;
 
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
-
       if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>" . __('Network outlet') . "</td>\n";
-         echo "<td>";
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
-                                    $netport->fields["itemtype"]);
-         echo "</td>";
+         echo "<tr class='tab_bg_1'>";
+         $this->showNetpointField($netport, $options, $recursiveItems);
          $this->showNetworkCardField($netport, $options, $recursiveItems);
          echo "</tr>\n";
       }
@@ -85,7 +79,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>\n";
-      $this->showMacField($netport, $options, $recursiveItems);
+      $this->showMacField($netport, $options);
       echo "</tr>\n";
   }
 

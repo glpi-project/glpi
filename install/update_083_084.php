@@ -32,17 +32,18 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-function logNetworkPortError($id, $itemtype, $items_id, $error) {
+function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration_log_file;
 
-   fwrite($migration_log_file, $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
+   fwrite($migration_log_file, $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " .
+                               $error . "\n");
 }
 
 
 function logMessage($msg, $andDisplay) {
    global $migration, $migration_log_file;
 
-   fwrite($migration_log_file, "$msg\n");
+   fwrite($migration_log_file, "** $msg\n");
 
    if ($andDisplay) {
       $migration->displayMessage ($msg);
@@ -88,7 +89,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
          }
 
       } else {
-         $name     = str_replace('.','-',$computerName);
+         $name     = "migration-"str_replace('.','-',$computerName);
          $domainID = 0;
       }
 
@@ -110,8 +111,8 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
          $migration->insertInTable($IPaddress->getTable(), $input);
       } else {
-         logNetworkPortError($entry["id"], $entry["itemtype"], $entry["items_id"],
-                             "invalid IP address ($IP)");
+         logNetworkPortError('invalid IP address', $entry["id"], $entry["itemtype"],
+                             $entry["items_id"], "$IP");
       }
    }
 }
@@ -380,8 +381,8 @@ function update083to084() {
                                AND `entities_id` = '".$entry['entities_id']."'";
                $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
-                  logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
-                                      "network warning - " . $preparedInput['error']);
+                  logNetworkPortError('network warning', $data['id'], $data['itemtype'],
+                                      $data['items_id'], $preparedInput['error']);
                }
             }
             $migration->insertInTable($network->getTable(), $input);
@@ -394,8 +395,8 @@ function update083to084() {
                             AND `entities_id` = '".$entry['entities_id']."'";
             $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
-               logNetworkPortError($data['id'], $data['itemtype'], $data['items_id'],
-                                   "network error - " . $preparedInput['error']);
+               logNetworkPortError('network error', $data['id'], $data['itemtype'],
+                                   $data['items_id'], $preparedInput['error']);
             }
          }
       }

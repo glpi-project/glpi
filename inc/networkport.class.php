@@ -487,10 +487,12 @@ class NetworkPort extends CommonDBChild {
       }
 
       $recursiveItems = $this->recursivelyGetItems();
-      if (count($recursiveItems) == 0) {
-         return false;
+      if (count($recursiveItems) > 0) {
+         $lastItem = $recursiveItems[count($recursiveItems) - 1];
+         $lastItem_entities_id = $lastItem->getField('entities_id');
+      } else {
+         $lastItem_entities_id = $_SESSION['glpiactive_entity'];
       }
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       // TODO : is it usefull ?
       // Ajout des infos deja remplies
@@ -503,7 +505,7 @@ class NetworkPort extends CommonDBChild {
       }
       $this->showTabs();
 
-      $options['entities_id'] = $lastItem->getField('entities_id');
+      $options['entities_id'] = $lastItem_entities_id;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>";
