@@ -73,15 +73,10 @@ class NetworkPortMigration extends NetworkPortInstantiation {
 
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
-
       if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>" . __('Network outlet') . "</td>\n";
-         echo "<td>";
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
-                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
-                                    $netport->fields["itemtype"]);
-         echo "</td>";
+         echo "<tr class='tab_bg_1'>";
+         $this->showNetpointField($netport, $options, $recursiveItems);
+
          echo "<td>" . NetworkInterface::getTypeName() . "</td>\n";
          echo "<td>";
          Dropdown::show('NetworkInterface',
@@ -91,7 +86,7 @@ class NetworkPortMigration extends NetworkPortInstantiation {
       }
 
       echo "<tr class='tab_bg_1'>";
-      $this->showMacField($netport, $options, $recursiveItems);
+      $this->showMacField($netport, $options);
       echo "</tr>";
    }
 

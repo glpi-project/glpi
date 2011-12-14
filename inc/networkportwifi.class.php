@@ -55,8 +55,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG;
 
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
-
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>\n";
          $this->showNetworkCardField($netport, $options, $recursiveItems);
@@ -90,7 +88,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>\n";
-         $this->showMacField($netport, $options, $recursiveItems);
+         $this->showMacField($netport, $options);
          echo "</tr>\n";
       }
    }

@@ -223,53 +223,56 @@ class NetworkPortInstantiation extends CommonDBChild {
    function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG, $DB;
 
-      $lastItem = $recursiveItems[count($recursiveItems) - 1];
+      echo "<td>" . $LANG['devices'][3] . "&nbsp;:</td>\n</td>";
+      echo "<td>";
 
-      // Network card association is only available for computers
-      if (($lastItem->getType() == 'Computer') && (!$options['several'])) {
-         echo "<td>" . $LANG['devices'][3] . "&nbsp;:</td>\n</td>";
-         echo "<td>";
+      if (count($recursiveItems)  > 0) {
 
-         // Query each link to network cards
-         $query = "SELECT link.`id` AS link_id,
-                          device.`designation` AS name";
+         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-         // $deviceFields contains the list of fields to update
-         $deviceFields = array();
-         foreach ($this->getNetworkCardInterestingFields() as $SQL_field => $form_field) {
-            $deviceFields[] = $form_field;
-            $query         .= ", $SQL_field AS $form_field";
-         }
-         $query .= " FROM `glpi_devicenetworkcards` AS device,
-                          `glpi_computers_devicenetworkcards` AS link
-                     WHERE link.`computers_id` = ".$lastItem->getID()."
-                     AND device.`id` = link.`devicenetworkcards_id`";
-         // TODO : add checking the type of network card !
+         // Network card association is only available for computers
+         if (($lastItem->getType() == 'Computer') && (!$options['several'])) {
 
-         // Add the javascript to update each field
-         echo "\n<script type=\"text/javascript\">
+            // Query each link to network cards
+            $query = "SELECT link.`id` AS link_id,
+                             device.`designation` AS name";
+
+            // $deviceFields contains the list of fields to update
+            $deviceFields = array();
+            foreach ($this->getNetworkCardInterestingFields() as $SQL_field => $form_field) {
+               $deviceFields[] = $form_field;
+               $query         .= ", $SQL_field AS $form_field";
+            }
+            $query .= " FROM `glpi_devicenetworkcards` AS device,
+                             `glpi_computers_devicenetworkcards` AS link
+                        WHERE link.`computers_id` = ".$lastItem->getID()."
+                        AND device.`id` = link.`devicenetworkcards_id`";
+            // TODO : add checking the type of network card !
+
+            // Add the javascript to update each field
+            echo "\n<script type=\"text/javascript\">
    var deviceAttributs = [];\n";
 
-         $deviceNames = array(0 => ""); // First option : no network card
-         foreach ($DB->request($query) as $availableDevice) {
-            $linkID               = $availableDevice['link_id'];
-            $deviceNames[$linkID] = $availableDevice['name'];
-            if (isset($availableDevice['mac'])) {
-               $deviceNames[$linkID] .= ' - '.$availableDevice['mac'];
+            $deviceNames = array(0 => ""); // First option : no network card
+            foreach ($DB->request($query) as $availableDevice) {
+               $linkID               = $availableDevice['link_id'];
+               $deviceNames[$linkID] = $availableDevice['name'];
+               if (isset($availableDevice['mac'])) {
+                  $deviceNames[$linkID] .= ' - '.$availableDevice['mac'];
+               }
+
+               // get fields that must be copied from those of the network card
+               $deviceInformations = array();
+               foreach ($deviceFields as $field) {
+                  $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
+               }
+
+               // Fill the javascript array
+               echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
             }
 
-            // get fields that must be copied from those of the network card
-            $deviceInformations = array();
-            foreach ($deviceFields as $field) {
-               $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
-            }
-
-            // Fill the javascript array
-            echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
-         }
-
-         // And add the javascript function that updates the other fields
-         echo "
+            // And add the javascript function that updates the other fields
+            echo "
    function updateForm(devID) {
       for (var fieldName in deviceAttributs[devID]) {
          var field=document.getElementsByName(fieldName)[0];
@@ -280,17 +283,20 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 </script>\n";
 
-         if (count($deviceNames) > 0) {
-            Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames,
-                                    array('value'
-                                             => $this->fields['computers_devicenetworkcards_id'],
-                                          'on_change'
-                                             => 'updateForm(this.options[this.selectedIndex].value)'));
+            if (count($deviceNames) > 0) {
+               $options = array('value' => $this->fields['computers_devicenetworkcards_id'],
+                                'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
+               Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames, $options);
+            } else {
+               echo $LANG['networking'][62];
+            }
          } else {
-            echo $LANG['networking'][62];
+            echo $LANG['networking'][63];
          }
-         echo "</td>";
+      } else {
+         echo $LANG['common'][124];
       }
+      echo "</td>";
    }
 
 
@@ -300,15 +306,39 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $netport the port that owns this instantiation (usefull, for instance to get network
     *                 port attributs
     * @param $options the option given to NetworkPort::showForm
-    * @param $recursiveItems list of the items on which this port is attached
    **/
-   function showMacField(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showMacField(NetworkPort $netport, $options=array()) {
       global $LANG;
 
       // Show device MAC adresses
       echo "<td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
       Html::autocompletionTextField($this, "mac");
       echo "</td>\n";
+   }
+
+
+   /**
+    * Display the Netpoint field. Used by Ethernet, and Migration
+    *
+    * @param $netport the port that owns this instantiation (usefull, for instance to get network
+    *                 port attributs
+    * @param $options the option given to NetworkPort::showForm
+    * @param $recursiveItems list of the items on which this port is attached
+   **/
+   function showNetpointField(NetworkPort $netport, $options=array(), $recursiveItems) {
+      global $LANG;
+
+      echo "<td>" . __('Network outlet') . "&nbsp;: </td>\n";
+      echo "<td>";
+      if (count($recursiveItems) > 0) {
+         $lastItem = $recursiveItems[count($recursiveItems) - 1];
+         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
+                                    $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
+                                    $netport->fields["itemtype"]);
+      } else {
+         echo $LANG['common'][124];
+      }
+      echo "</td>";
    }
 
 
@@ -356,8 +386,14 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $multiple NetworkPortAlias are based on one NetworkPort wherever NetworkPortAggregate
     *                  are based on several NetworkPort.
    **/
-   function showNetworkPortSelector($lastItem, $multiple) {
+   function showNetworkPortSelector($recursiveItems, $multiple) {
       global $LANG, $DB;
+
+      if (count($recursiveItems) == 0) {
+         return;
+      }
+
+      $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       echo "<td>" . $LANG['Internet'][45] . "&nbsp;:</td><td>\n";
 
