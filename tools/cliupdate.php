@@ -110,12 +110,20 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (!TableExists("glpi_configs")) {
+if (TableExists("glpi_config")) {
+   $config_table = 'glpi_config';
+   $language_field = 'default_language';
+} else {
+   $config_table = 'glpi_configs';
+   $language_field = 'language';
+}
+
+if (!TableExists($config_table)) {
    die("Bad schema\n");
 }
 
-$query = "SELECT `version`, `language`
-          FROM `glpi_configs`";
+$query = "SELECT `version`, `$language_field`
+          FROM `$config_table`";
 
 $result          = $DB->query($query) or die("get current version ".$DB->error());
 $current_version = trim($DB->result($result,0,0));
@@ -176,7 +184,7 @@ switch ($current_version) {
 if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   $query = "UPDATE `glpi_configs`
+   $query = "UPDATE `$config_table`
              SET `version` = '".GLPI_VERSION."',
                  `founded_new_version` = ''";
    $DB->query($query) or die($LANG['update'][90].$DB->error());

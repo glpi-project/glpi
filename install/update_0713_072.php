@@ -889,7 +889,7 @@ function update0713to072() {
    }
 
    if (FieldExists("glpi_config","cut")) {
-      $query = "UPDATE glpi_config`
+      $query = "UPDATE `glpi_config`
                 SET `cut` = ROUND(`cut`/50)*50";
       $DB->query($query)
       or die("0.72 update config cut value to prepare update " . $LANG['update'][90].$DB->error());
