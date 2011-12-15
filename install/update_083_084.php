@@ -89,7 +89,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
          }
 
       } else {
-         $name     = "migration-"str_replace('.','-',$computerName);
+         $name     = "migration-".str_replace('.','-',$computerName);
          $domainID = 0;
       }
 
