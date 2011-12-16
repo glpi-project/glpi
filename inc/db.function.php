@@ -1197,15 +1197,17 @@ function TableExists($tablename) {
 /**
  * Verify if a DB field exists
  *
- *@param $table string : Name of the table we want to verify.
- *@param $field string : Name of the field we want to verify.
+ * @param $table     String : Name of the table we want to verify.
+ * @param $field     String : Name of the field we want to verify.
+ * @param $usecache  Boolean : if use field list cache (default true)
+ * @
  *
  *@return bool : true if exists, false elseway.
 **/
-function FieldExists($table, $field) {
+function FieldExists($table, $field, $usecache=true) {
    global $DB;
 
-   if ($fields = $DB->list_fields($table)) {
+   if ($fields = $DB->list_fields($table, $usecache)) {
       if (isset($fields[$field])) {
          return true;
       }
