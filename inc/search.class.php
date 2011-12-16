@@ -4086,7 +4086,9 @@ class Search {
 
          case 'glpi_fieldunicities.fields':
             $values  = explode(',',$data[$NAME.$num]);
-            $item    = new $data['ITEMTYPE']();
+            if (!($item = getItemForItemtype($data['ITEMTYPE']))) {
+               continue;
+            }            
             $message = array();
             foreach ($values as $field) {
                $table = getTableNameForForeignKeyField($field);
