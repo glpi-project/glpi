@@ -693,9 +693,9 @@ class Config extends CommonDBTM {
                             5, $CFG_GLPI['list_limit_max'], 5);
       echo "</td><td>" . $LANG['setup'][128] ."&nbsp;:</td>";
       echo "<td>";
-      $date_formats = array(0 => $LANG['calendar'][0],
-                            1 => $LANG['calendar'][1],
-                            2 => $LANG['calendar'][2]);
+      $date_formats = array(0 => __('YYYY-MM-DD'),
+                            1 => __('DD-MM-YYYY'),
+                            2 => __('MM-DD-YYYY'));
       Dropdown::showFromArray('date_format', $date_formats, array('value' => $data["date_format"]));
       echo "</td></tr>";
 

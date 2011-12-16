@@ -42,10 +42,7 @@ class Holiday extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['calendar'][11];
-      }
-      return $LANG['calendar'][4];
+      return _n('Close time','Close times',$nb);
    }
 
 
@@ -69,7 +66,7 @@ class Holiday extends CommonDropdown {
                          'label' => __('End'),
                          'type'  => 'date'),
                    array('name'  => 'is_perpetual',
-                         'label' => $LANG['calendar'][3],
+                         'label' => __('Recurrent'),
                          'type'  => 'bool'));
    }
 
@@ -96,7 +93,7 @@ class Holiday extends CommonDropdown {
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'is_perpetual';
-      $tab[13]['name']     = $LANG['calendar'][3];
+      $tab[13]['name']     = __('Recurrent');
       $tab[13]['datatype'] = 'bool';
 
       return $tab;

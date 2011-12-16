@@ -90,7 +90,7 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
-      echo "<th>".$LANG['calendar'][3]."</th>";
+      echo "<th>".__('Recurrent')."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_calendars_holidays`.`id` AS linkID,
@@ -177,11 +177,11 @@ class Calendar_Holiday extends CommonDBRelation {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['calendar'][11],
+                  return self::createTabEntry(__('Close times'),
                                               countElementsInTable($this->getTable(),
                                                                    "calendars_id = '".$item->getID()."'"));
                }
-               return $LANG['calendar'][11];
+               return __('Close times');
          }
       }
       return '';
