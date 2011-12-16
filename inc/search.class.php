@@ -2095,7 +2095,7 @@ class Search {
             if ($itemtype != 'User') {
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   $addaltemail = "";
-                  if ($itemtype == 'Ticket' || $itemtype == 'Problem'
+                  if (($itemtype == 'Ticket' || $itemtype == 'Problem')
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                       && ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users'
                           || $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')) { // For tickets_users
