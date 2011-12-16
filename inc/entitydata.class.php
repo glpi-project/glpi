@@ -653,11 +653,11 @@ class EntityData extends CommonDBChild {
       echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td></tr>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
+      echo "<tr class='tab_bg_1'><td >" . __('Alerts on tickets which are not solved since (day(s))') . "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td>";
+      echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
       if ($canedit) {
@@ -839,7 +839,7 @@ class EntityData extends CommonDBChild {
 
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][18]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
       echo "<td colspan='2'>";
       $autoclose = array(self::CONFIG_PARENT => $LANG['common'][102],
                          self::CONFIG_NEVER  => $LANG['setup'][307]);
@@ -850,15 +850,13 @@ class EntityData extends CommonDBChild {
       Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 99, 1,
                             $autoclose);
 
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
-
       if ($entdata->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
          $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id'],
                                                '', EntityData::CONFIG_NEVER);
 
-         echo "<font class='green'>&nbsp;&nbsp;";
+         echo "<br><font class='green'>&nbsp;&nbsp;";
          if ($autoclose_mode >= 0) {
-            echo $autoclose_mode." ".$LANG['calendar'][12];
+            printf(_n('%d day','%d days',$autoclose_mode),$autoclose_mode);
          } else {
             echo $autoclose[$autoclose_mode];
          }
@@ -892,18 +890,23 @@ class EntityData extends CommonDBChild {
          $inquestconfig = self::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_rate');
-         echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
+         echo "<tr><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
             echo $LANG['crontask'][31];
          } else {
-            echo $typeinquest[$inquestconfig];
-            echo " - " .self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+            echo $typeinquest[$inquestconfig].'<br>';
+            $inqconf = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                             'inquest_delay');
-            echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])." - ";
-            echo $inquestrate."%";
+                                          
+            printf(_n('%d day','%d days',$inqconf),$inqconf);
+            echo "<br>";
+            //TRANS: %d is the percentage. %% to display %
+            printf(__('%d%%'),$inquestrate);
+            
             if ($inquestconfig == 2) {
-               echo " - ".self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+               echo "<br>";
+               echo self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                               'inquest_URL');
             }
          }
@@ -1260,7 +1263,7 @@ class EntityData extends CommonDBChild {
                case self::CONFIG_NEVER :
                   return $LANG['setup'][307];
             }
-            return $values[$field].' '.Toolbox::ucfirst($LANG['calendar'][12]);
+            return sprintf(_n('%d day','%d days',$values[$field]),$values[$field]);
 
          case 'auto_assign_mode' :
             return self::getAutoAssignMode($values[$field]);

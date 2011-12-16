@@ -3189,79 +3189,79 @@ class Html {
 
       $dates = array();
       if ($params['with_time']) {
-         $dates['NOW'] = $LANG['calendar'][16];
+         $dates['NOW'] = __('Now');
          if ($params['with_days']) {
-            $dates['TODAY'] = $LANG['calendar'][27];
+            $dates['TODAY'] = __('Today');
          }
       } else {
-         $dates['NOW'] = $LANG['calendar'][27];
+         $dates['NOW'] = __('Today');
       }
 
       if ($params['with_specific_date']) {
-         $dates[0] = $LANG['calendar'][17];
+         $dates[0] = __('Specify a date');
       }
 
       if ($params['with_time']) {
          for ($i=1 ; $i<=24 ; $i++) {
-            $dates['-'.$i.'HOUR'] = "- $i ".$LANG['gmt'][1];
+            $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour','- %d hours',$i),$i);
          }
       }
 
       for ($i=1 ; $i<=7 ; $i++) {
-         $dates['-'.$i.'DAY'] = "- $i ".$LANG['calendar'][12];
+         $dates['-'.$i.'DAY'] = sprintf(_n('- %d day','- %d days',$i),$i);
       }
 
       if ($params['with_days']) {
-         $dates['LASTSUNDAY']    = $LANG['calendar'][18];
-         $dates['LASTMONDAY']    = $LANG['calendar'][19];
-         $dates['LASTTUESDAY']   = $LANG['calendar'][20];
-         $dates['LASTWEDNESDAY'] = $LANG['calendar'][21];
-         $dates['LASTTHURSDAY']  = $LANG['calendar'][22];
-         $dates['LASTFRIDAY']    = $LANG['calendar'][23];
-         $dates['LASTSATURDAY']  = $LANG['calendar'][24];
+         $dates['LASTSUNDAY']    = __('last Sunday');
+         $dates['LASTMONDAY']    = __('last Monday');
+         $dates['LASTTUESDAY']   = __('last Tuesday');
+         $dates['LASTWEDNESDAY'] = __('last Wednesday');
+         $dates['LASTTHURSDAY']  = __('last Thursday');
+         $dates['LASTFRIDAY']    = __('last Friday');
+         $dates['LASTSATURDAY']  = __('last Saturday');
       }
 
       for ($i=1 ; $i<=10 ; $i++) {
-         $dates['-'.$i.'WEEK'] = "- $i ".$LANG['calendar'][13];
+         $dates['-'.$i.'WEEK'] = sprintf(_n('- %d week','- %d weeks',$i),$i);
       }
 
       if ($params['with_days']) {
-         $dates['BEGINMONTH']  = $LANG['calendar'][25];
+         $dates['BEGINMONTH']  = __('Beginning of the month');
       }
 
       for ($i=1 ; $i<=12 ; $i++) {
-         $dates['-'.$i.'MONTH'] = "- $i ".$LANG['calendar'][14];
+         $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month','- %d monhs',$i),$i);
       }
 
       if ($params['with_days']) {
-         $dates['BEGINYEAR']  = $LANG['calendar'][26];
+         $dates['BEGINYEAR']  = __('Beginning of the year');
       }
 
       for ($i=1 ; $i<=10 ; $i++) {
-         $dates['-'.$i.'YEAR'] = "- $i ".$LANG['calendar'][15];
+         $dates['-'.$i.'YEAR'] = sprintf(_n('- %d year','- %d years',$i),$i);
       }
 
       if ($params['with_future']) {
          if ($params['with_time']) {
             for ($i=1 ; $i<=24 ; $i++) {
-               $dates[$i.'HOUR'] = "+ $i ".$LANG['gmt'][1];
+               $dates[$i.'HOUR'] = sprintf(_n('+ %d hour','- %d hours',$i),$i);
             }
          }
 
          for ($i=1 ; $i<=7 ; $i++) {
-            $dates[$i.'DAY'] = "+ $i ".$LANG['calendar'][12];
+            $dates[$i.'DAY'] = sprintf(_n('+ %d day','- %d days',$i),$i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'WEEK'] = "+ $i ".$LANG['calendar'][13];
+            $dates[$i.'WEEK'] = sprintf(_n('+ %d week','- %d weeks',$i),$i);
          }
 
          for ($i=1 ; $i<=12 ; $i++) {
-            $dates[$i.'MONTH'] = "+ $i ".$LANG['calendar'][14];
+            $dates[$i.'MONTH'] = sprintf(_n('+ %d month','- %d months',$i),$i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'YEAR'] = "+ $i ".$LANG['calendar'][15];
+            $dates[$i.'YEAR'] = sprintf(_n('+ %d year','- %d years',$i),$i);
          }
       }
       return $dates;
