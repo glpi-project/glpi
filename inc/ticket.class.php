@@ -3315,7 +3315,7 @@ class Ticket extends CommonITILObject {
             $this->fields["entities_id"] = $this->userentities[0];
          }
       }
-
+      
       if (!isset($options['template_preview'])) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
                $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
@@ -4076,6 +4076,7 @@ class Ticket extends CommonITILObject {
 
          case "rejected" : // on affiche les tickets rejetés
             $query .= "WHERE ($search_assign)
+                             AND `status` <> 'closed'            
                              AND `global_validation` = 'rejected' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
