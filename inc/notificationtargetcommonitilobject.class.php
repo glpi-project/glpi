@@ -520,11 +520,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
                                                                               $options['entities_id']);
             $item       = new $objettype();
-            $objettypes = getPlural($objettype);
+            $objettypes = Toolbox::strtolower(getPlural($objettype));
             $items      = array();
             foreach ($options['items'] as $object) {
                $item->getFromDB($object['id']);
                $tmp = $this->getDatasForObject($item, true);
+               
                $this->datas[$objettypes][] = $tmp;
             }
          }
@@ -554,51 +555,51 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $objettype = strtolower($item->getType());
 
-      $datas["##$objettype.title##"]        = $this->obj->getField('name');
-      $datas["##$objettype.content##"]      = $this->obj->getField('content');
-      $datas["##$objettype.description##"]  = $this->obj->getField('content');
+      $datas["##$objettype.title##"]        = $item->getField('name');
+      $datas["##$objettype.content##"]      = $item->getField('content');
+      $datas["##$objettype.description##"]  = $item->getField('content');
 
-      $datas["##$objettype.id##"]           = sprintf("%07d",$this->obj->getField("id"));
+      $datas["##$objettype.id##"]           = sprintf("%07d",$item->getField("id"));
       $datas["##$objettype.url##"]          = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".$objettype."_".
-                                                        $this->obj->getField("id"));
+                                                        $item->getField("id"));
 
       $datas["##$objettype.urlapprove##"]   = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".$objettype."_".
-                                                        $this->obj->getField("id")."_4");
+                                                        $item->getField("id")."_4");
 
 
       $datas["##$objettype.entity##"]       = Dropdown::getDropdownName('glpi_entities',
                                                                         $this->getEntity());
 
-      $datas["##$objettype.storestatus##"]  = $this->obj->getField('status');
-      $datas["##$objettype.status##"]       = CommonITILObject::getGenericStatus($item->getType(),$this->obj->getField('status'));
+      $datas["##$objettype.storestatus##"]  = $item->getField('status');
+      $datas["##$objettype.status##"]       = CommonITILObject::getGenericStatus($item->getType(),$item->getField('status'));
 
       $datas["##$objettype.urgency##"]
-                           = CommonITILObject::getUrgencyName($this->obj->getField('urgency'));
+                           = CommonITILObject::getUrgencyName($item->getField('urgency'));
       $datas["##$objettype.impact##"]
-                           = CommonITILObject::getImpactName($this->obj->getField('impact'));
+                           = CommonITILObject::getImpactName($item->getField('impact'));
       $datas["##$objettype.priority##"]
-                           = CommonITILObject::getPriorityName($this->obj->getField('priority'));
+                           = CommonITILObject::getPriorityName($item->getField('priority'));
       $datas["##$objettype.time##"]
-                           = CommonITILObject::getActionTime($this->obj->getField('actiontime'));
+                           = CommonITILObject::getActionTime($item->getField('actiontime'));
 
-      $datas["##$objettype.creationdate##"] = Html::convDateTime($this->obj->getField('date'));
-      $datas["##$objettype.closedate##"]    = Html::convDateTime($this->obj->getField('closedate'));
-      $datas["##$objettype.solvedate##"]    = Html::convDateTime($this->obj->getField('solvedate'));
-      $datas["##$objettype.duedate##"]      = Html::convDateTime($this->obj->getField('due_date'));
+      $datas["##$objettype.creationdate##"] = Html::convDateTime($item->getField('date'));
+      $datas["##$objettype.closedate##"]    = Html::convDateTime($item->getField('closedate'));
+      $datas["##$objettype.solvedate##"]    = Html::convDateTime($item->getField('solvedate'));
+      $datas["##$objettype.duedate##"]      = Html::convDateTime($item->getField('due_date'));
 
       $datas["##$objettype.category##"] = '';
-      if ($this->obj->getField('itilcategories_id')) {
+      if ($item->getField('itilcategories_id')) {
          $datas["##$objettype.category##"]
                               = Dropdown::getDropdownName('glpi_itilcategories',
-                                                          $this->obj->getField('itilcategories_id'));
+                                                          $item->getField('itilcategories_id'));
       }
 
       $datas["##$objettype.authors##"] = '';
-      if ($this->obj->countUsers(CommonITILObject::REQUESTER)) {
+      if ($item->countUsers(CommonITILObject::REQUESTER)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::REQUESTER) as $tmpusr) {
+         foreach ($item->getUsers(CommonITILObject::REQUESTER) as $tmpusr) {
             $uid = $tmpusr['users_id'];
             $user_tmp = new User();
             if ($uid && $user_tmp->getFromDB($uid)) {
@@ -628,16 +629,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.openbyuser##"] = '';
-      if ($this->obj->getField('users_id_recipient')) {
+      if ($item->getField('users_id_recipient')) {
          $user_tmp = new User();
-         $user_tmp->getFromDB($this->obj->getField('users_id_recipient'));
+         $user_tmp->getFromDB($item->getField('users_id_recipient'));
          $datas["##$objettype.openbyuser##"] = $user_tmp->getName();
       }
 
       $datas["##$objettype.assigntousers##"] = '';
-      if ($this->obj->countUsers(CommonITILObject::ASSIGN)) {
+      if ($item->countUsers(CommonITILObject::ASSIGN)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getUsers(CommonITILObject::ASSIGN) as $tmp) {
             $uid = $tmp['users_id'];
             $user_tmp = new User();
             if ($user_tmp->getFromDB($uid)) {
@@ -648,16 +649,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.assigntosupplier##"] = '';
-      if ($this->obj->getField('suppliers_id_assign')) {
+      if ($item->getField('suppliers_id_assign')) {
          $datas["##$objettype.assigntosupplier##"]
                         = Dropdown::getDropdownName('glpi_suppliers',
-                                                    $this->obj->getField('suppliers_id_assign'));
+                                                    $item->getField('suppliers_id_assign'));
       }
 
       $datas["##$objettype.groups##"] = '';
-      if ($this->obj->countGroups(CommonITILObject::REQUESTER)) {
+      if ($item->countGroups(CommonITILObject::REQUESTER)) {
          $groups = array();
-         foreach ($this->obj->getGroups(CommonITILObject::REQUESTER) as $tmp) {
+         foreach ($item->getGroups(CommonITILObject::REQUESTER) as $tmp) {
             $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
@@ -665,9 +666,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.observergroups##"] = '';
-      if ($this->obj->countGroups(CommonITILObject::OBSERVER)) {
+      if ($item->countGroups(CommonITILObject::OBSERVER)) {
          $groups = array();
-         foreach ($this->obj->getGroups(CommonITILObject::OBSERVER) as $tmp) {
+         foreach ($item->getGroups(CommonITILObject::OBSERVER) as $tmp) {
             $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
@@ -675,9 +676,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.observerusers##"] = '';
-      if ($this->obj->countUsers(CommonITILObject::OBSERVER)) {
+      if ($item->countUsers(CommonITILObject::OBSERVER)) {
          $users = array();
-         foreach ($this->obj->getUsers(CommonITILObject::OBSERVER) as $tmp) {
+         foreach ($item->getUsers(CommonITILObject::OBSERVER) as $tmp) {
             $uid = $tmp['users_id'];
             $user_tmp = new User();
             if ($uid && $user_tmp->getFromDB($uid)) {
@@ -690,9 +691,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.assigntogroups##"] = '';
-      if ($this->obj->countGroups(CommonITILObject::ASSIGN)) {
+      if ($item->countGroups(CommonITILObject::ASSIGN)) {
          $groups = array();
-         foreach ($this->obj->getGroups(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getGroups(CommonITILObject::ASSIGN) as $tmp) {
             $gid = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
@@ -700,17 +701,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       $datas["##$objettype.solution.type##"]='';
-      if ($this->obj->getField('solutiontypes_id')) {
+      if ($item->getField('solutiontypes_id')) {
          $datas["##$objettype.solution.type##"]
                               = Dropdown::getDropdownName('glpi_solutiontypes',
-                                                          $this->obj->getField('solutiontypes_id'));
+                                                          $item->getField('solutiontypes_id'));
       }
 
       $datas["##$objettype.solution.description##"]
-                     = Toolbox::unclean_cross_side_scripting_deep($this->obj->getField('solution'));
+                     = Toolbox::unclean_cross_side_scripting_deep($item->getField('solution'));
 
       // Use list_limit_max or load the full history ?
-      foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
+      foreach (Log::getHistoryData($item,0,$CFG_GLPI['list_limit_max']) as $data) {
          $tmp = array();
          $tmp["##$objettype.log.date##"]    = $data['date_mod'];
          $tmp["##$objettype.log.user##"]    = $data['user_name'];
