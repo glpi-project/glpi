@@ -2565,13 +2565,13 @@ class AuthLDAP extends CommonDBTM {
 
          $values = array();
          for ($i=1 ; $i < 16 ; $i++) {
-            $values[$i] = $i.' '.Toolbox::ucfirst($LANG['calendar'][12]);
+            $values[$i] = sprintf(_n('%d day','%d days',$i),$i);
          }
          for ($i=3 ; $i < 9 ; $i++) {
-            $values[$i*7] = $i.' '.$LANG['ldap'][56];
+            $values[$i*7] = sprintf(_n('%d week','%d weeks',$i),$i);
          }
          for ($i=3 ; $i < 13 ; $i++) {
-            $values[$i*28] = $i.' '.Toolbox::ucfirst($LANG['financial'][57]);
+            $values[$i*28] = sprintf(_n('%d month','%d months',$i),$i);
          }
 
          Dropdown::showFromArray('days', $values, array('value' => $default));

@@ -59,10 +59,10 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
 
    if ($_REQUEST['inquest_config']>0 ) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
-      echo "<tr class='tab_bg_1'><td width='50%'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after (day(s))')."</td>";
       echo "<td>";
       Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1);
-      echo "&nbsp;".Toolbox::ucfirst($LANG['calendar'][12])."</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='1'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='1'>";
