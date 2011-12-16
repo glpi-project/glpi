@@ -3514,7 +3514,10 @@ class OcsServer extends CommonDBTM {
                      $line2 = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
                         $network["designation"] = $line2["DESCRIPTION"];
-                        if (!in_array($line2["MACADDR"],$mac_already_imported)) {
+
+                        // MAC must be unique, except for wmware (internal/external use same MAC)
+                        if (preg_match('/^vm(k|nic)([0-9]+)$/', $line2['DESCRIPTION'])
+                            || !in_array($line2['MACADDR'], $mac_already_imported)) {
                            $mac_already_imported[] = $line2["MACADDR"];
 
                            if (!in_array(stripslashes($prevalue.$network["designation"]),
