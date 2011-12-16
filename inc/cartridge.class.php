@@ -566,13 +566,11 @@ class Cartridge extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2'>";
-         echo "<input type='submit' name='add_several' value=\"".__s('Add')."\"
-                class='submit'>";
          echo "<input type='hidden' name='tID' value='$ID'>\n";
-         echo "<span class='small_space'>";
          Dropdown::showInteger('to_add',1,1,100);
-         echo "</span>&nbsp;";
-         echo $LANG['cartridges'][16]."</td></tr>";
+         echo " <input type='submit' name='add_several' value=\"".__s('Add cartridges')."\"
+                class='submit'>";
+         echo "</td></tr>";
          echo "</table></form></div>";
       }
    }
@@ -621,15 +619,15 @@ class Cartridge extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ($old==0) {
-         echo "<tr><th colspan='5'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='5'>".__('Used cartridges')."</th></tr>";
       } else {
-         echo "<tr><th colspan='7'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='7'>".__('Worn cartridges')."</th></tr>";
       }
-      echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][12]."</th>";
-      echo "<th>".$LANG['cartridges'][24]."</th>";
+      echo "<tr><th>".$LANG['common'][2]."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
+      echo "<th>".__('Add date')."</th>";
       echo "<th>".$LANG['consumables'][26]."</th>";
       if ($old!=0) {
-         echo "<th>".$LANG['search'][9]."</th><th>".$LANG['cartridges'][39]."</th>";
+         echo "<th>".$LANG['search'][9]."</th><th>".__('Printer counter')."</th>";
       }
 
       echo "<th>&nbsp;</th></tr>";
@@ -695,11 +693,11 @@ class Cartridge extends CommonDBTM {
             if (is_null($date_out)) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
+                      "&amp;tID=".$data["tID"]."'>".__('End of life')."</a>";
             } else {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".__s('Delete')."</a>";
+                      "&amp;tID=".$data["tID"]."'>".__('Delete')."</a>";
             }
             echo "</span></td></tr>";
          }
@@ -722,11 +720,13 @@ class Cartridge extends CommonDBTM {
                $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
-            echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41].":<br>";
-            echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42].":<br>";
+            echo "<td class='center'>".__('Average Time in stock')."<br>";
+            $time_stock = round($stock_time/$number/60/60/24/30.5,1);
+            echo sprintf(_n('%d month', '%d months',$time_stock),$time_stock)."</td>";
+            echo "<td class='center'>".__('Average Time in use')."<br>";
+            $time_use = round($use_time/$number/60/60/24/30.5,1);
+            echo sprintf(_n('%d month', '%d months',$time_use),$time_use)."</td>";
+            echo "<td class='center'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td>&nbsp;</td></tr>";
          }

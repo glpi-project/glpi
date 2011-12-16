@@ -168,7 +168,6 @@ $LANG['calendarM'][9]="October";
 $LANG['calendarM'][10]="November"; 
 $LANG['calendarM'][11]="December"; 
 
-/// TODO Before is ok for migration to gettext
 
 $LANG['cartridges'][0]="Cartridge"; 
 $LANG['cartridges'][1]="Cartridge Model"; 
@@ -196,6 +195,8 @@ $LANG['cartridges'][39]="Printer counter";
 $LANG['cartridges'][40]="Average Time in stock"; 
 $LANG['cartridges'][41]="Average Time in use"; 
 $LANG['cartridges'][42]="Average number of printed pages"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['central'][1]="For security reasons, please change the password for the default users"; 
 $LANG['central'][2]="Last"; 
