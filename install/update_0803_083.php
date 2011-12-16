@@ -882,7 +882,7 @@ function update0803to083() {
                }
                $query2 = "INSERT INTO `glpi_useremails`
                                  (`users_id`, `is_default`, `is_dynamic`, `email`)
-                          VALUES ('".$data['id']."','1','$is_dynamic','".$data['email']."')";
+                          VALUES ('".$data['id']."','1','$is_dynamic','".addslashes($data['email'])."')";
                $DB->query($query2)
                or die("0.83 move emails to  glpi_useremails ". $LANG['update'][90] . $DB->error());
             }
