@@ -459,7 +459,9 @@ class Planning {
       // Define some constants
       $date = explode("-",$when);
       $time = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-
+      
+      $daysinweek = Toolbox::getDaysOfWeekArray();
+       
       // Check bisextile years
       list($current_year, $current_month, $current_day) = explode("-", $when);
       if (($current_year%4)==0) {
@@ -514,18 +516,18 @@ class Planning {
       switch ($type) {
          case "month" :
             for ($i=1 ; $i<=7 ; $i++) {
-               echo "<th width='12%'>".$LANG['calendarDay'][$i%7]."</th>";
+               echo "<th width='12%'>".$daysinweek[$i%7]."</th>";
             }
             break;
 
          case "week" :
             for ($i=1 ; $i<=7 ; $i++, $tbegin+=DAY_TIMESTAMP) {
-               echo "<th width='12%'>".$LANG['calendarDay'][$i%7]." ".date('d', $tbegin)."</th>";
+               echo "<th width='12%'>".$daysinweek[$i%7]." ".date('d', $tbegin)."</th>";
             }
             break;
 
          case "day" :
-            echo "<th width='12%'>".$LANG['calendarDay'][$dayofweek%7]."</th>";
+            echo "<th width='12%'>".$daysinweek[$dayofweek%7]."</th>";
             break;
       }
       echo "</tr>\n";
