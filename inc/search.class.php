@@ -2684,10 +2684,10 @@ class Search {
             return "";
 
          case "glpi_profiles.interface" :
-            if (stristr('central',$val)) {
+            if (stristr(Profile::getInterfaceName('central'),$val)) {
                return $link." `$table`.`$field`='central'";
             }
-            if (stristr('helpdesk',$val)) {
+            if (stristr(Profile::getInterfaceName('helpdesk'),$val)) {
                return $link." `$table`.`$field`='helpdesk'";
             }
             return "";
