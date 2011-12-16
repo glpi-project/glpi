@@ -579,6 +579,21 @@ class Document extends CommonDBTM {
          if ($this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
+         
+         // Reminder Case
+         $query = "SELECT *
+                   FROM `glpi_documents_items`
+                   LEFT JOIN `glpi_reminders`
+                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
+                            AND `glpi_documents_items`.`itemtype` = 'Reminder')
+                   ".Reminder::addVisibilityJoins()."                            
+                   WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                         AND ".Reminder::addVisibilityRestrict();
+         $result = $DB->query($query);
+         if ($DB->numrows($result)>0) {
+            return true;
+         }
+                  
          if (Session::haveRight("faq","r")) {
             // Check if it is a FAQ document
             $query = "SELECT *
