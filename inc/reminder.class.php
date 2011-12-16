@@ -826,7 +826,7 @@ class Reminder extends CommonDBTM {
             break;
 
          case "begin" :
-            //TRANS: %1$s is the start time of a planned item, %1$s is its name
+            //TRANS: %1$s is the start time of a planned item, %2$s is its name
             printf(__('Start at %1$s: %2$s'),date("H:i",strtotime($val["begin"])),
                                          Html::resume_text($val["name"],80)) ;
             break;

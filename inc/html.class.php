@@ -325,22 +325,45 @@ class Html {
       $out   = $sign;
 
       if ($units['day']>0) {
-         $out .= " ".$units['day']."&nbsp;".Toolbox::ucfirst($LANG['calendar'][12]);
+         if ($display_sec) {
+            //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes,  %4$d number of seconds
+            return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)', 
+                           $units['day'], $units['hour'], $units['minute'], 
+                           $units['second']);
+         }
+         //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
+         return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s)', 
+               $units['day'], $units['hour'], $units['minute']);
       }
 
       if ($units['hour']>0) {
-         $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
+         if ($display_sec) {
+            //TRANS: %1$d number of hours,   %2$d number of minutes,  %3$d number of seconds
+            return sprintf('%1$d hour(s) %2$d minute(s) %3$d second(s)', 
+                           $units['hour'], $units['minute'], 
+                           $units['second']);
+         }
+         //TRANS: %1$d number of hours,   %2$d number of minutes
+         return sprintf('%1$d hour(s) %2$d minute(s)', 
+               $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
-         $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
+         if ($display_sec) {
+            //TRANS:  %1$d number of minutes,  %2$d number of seconds
+            return sprintf('%1$d minute(s) %2$d second(s)', 
+                           $units['minute'], $units['second']);
+         }
+         //TRANS: %1$d number of minutes
+         return sprintf('%1$d minute(s)', $units['minute']);
+
       }
 
       if ($display_sec) {
-         $out.=" ".$units['second']."&nbsp;".$LANG['stats'][34];
+         //TRANS:  %1$d number of seconds
+         return sprintf('%1$d second(s)', $units['second']);
       }
-
-      return $out;
+      return '';
    }
 
 
