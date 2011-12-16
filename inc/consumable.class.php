@@ -645,6 +645,7 @@ class Consumable extends CommonDBTM {
 
          switch ($item->getType()) {
             case 'ConsumableItem' :
+               self::showAddForm($item);
                self::showForConsumableItem($item);
                self::showForConsumableItem($item, 1);
                return true;
