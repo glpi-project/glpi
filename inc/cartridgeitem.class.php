@@ -50,10 +50,7 @@ class CartridgeItem extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['cartridges'][2];
-      }
-      return $LANG['cartridges'][1];
+      return _n('Cartridge model','Cartridge models',$nb);
    }
 
 
@@ -504,8 +501,9 @@ class CartridgeItem extends CommonDBTM {
          if ($DB->numrows($result)) {
             echo "<select name='tID' size=1>";
             while ($data= $DB->fetch_assoc($result)) {
-               echo "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]."
-                     (".$data["cpt"]." ".$LANG['cartridges'][13].") - ".$data["location"]."</option>";
+               //TRANS: %1$s is the name of the cartrige type, $2$s the reference, $3$d the number of free cartridges for the reference, %4$s the location
+               echo "<option value='".$data["tID"]."'>".sprintf(__('%1$s - %2$s (%3$d) - %4$s'),
+                                                   $data["name"],$data["ref"],$data["cpt"],$data["location"])."</option>";
             }
             echo "</select>";
             return true;
@@ -545,7 +543,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='3'>".__('Models of compatible printers')."</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
       $used = array();

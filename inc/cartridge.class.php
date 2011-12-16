@@ -52,10 +52,7 @@ class Cartridge extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][21];
-      }
-      return $LANG['cartridges'][0];
+      return _n('Cartridge','Cartridges',$nb);
    }
 
 
@@ -168,7 +165,7 @@ class Cartridge extends CommonDBTM {
          }
 
       } else {
-         Session::addMessageAfterRedirect($LANG['cartridges'][34], false, ERROR);
+         Session::addMessageAfterRedirect(__('No free cartridge'), false, ERROR);
       }
       return false;
    }
@@ -226,6 +223,7 @@ class Cartridge extends CommonDBTM {
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
       global $DB, $LANG;
 
+      /// TODO to be more useful permit to have several columns and display number in it
       // Get total
       $total = self::getTotalNumber($tID);
       $out = "";
@@ -239,57 +237,28 @@ class Cartridge extends CommonDBTM {
          }
 
          if (!$nohtml) {
-            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total";
-            $out .= "<span class='b very_small_space'>";
-            if ($unused>1) {
-               $out .= $LANG['cartridges'][13];
-            } else {
-               $out .= $LANG['cartridges'][20];
-            }
-            $out .= "&nbsp;:&nbsp;$unused</span>";
-            $out .= "<br>";
-            $out .= "<span>";
-            if ($used>1) {
-               $out .= $LANG['cartridges'][14];
-            } else {
-               $out .= $LANG['cartridges'][21];
-            }
-            $out .= "&nbsp;:&nbsp;$used</span>";
-            $out .= "<span class='very_small_space'>";
-            if ($old>1) {
-               $out .= $LANG['cartridges'][15];
-            } else {
-               $out .= $LANG['cartridges'][22];
-            }
-            $out .= "&nbsp;:&nbsp;$old</span></div>";
+            $out .= "<table $highlight width='100%'><tr><td>";
+            $out .= __('Total')."</td><td>$total";
+            $out .= "</td><td class='b'>";
+            $out .= _n('New','New',$unused);
+            $out .= "</td><td class='b'>$unused</td><tr>";
+            $out .= "<tr><td>";
+            $out .= _n('Used','Used',$used);
+            $out .= "</td><td>$used</span></td><td>";
+            $out .= _n('Worn','Worn',$old);
+            $out .= "</td><td>$old</span></td></tr></table>";
 
          } else {
-            $out .= $LANG['common'][33]." : $total  ";
-            if ($unused>1) {
-               $out .= $LANG['cartridges'][13];
-            } else {
-               $out .= $LANG['cartridges'][20];
-            }
-            $out .= " : $unused   ";
-            if ($used>1) {
-               $out .= $LANG['cartridges'][14];
-            } else {
-               $out .= $LANG['cartridges'][21];
-            }
-            $out .= " : $used   ";
-            if ($old>1) {
-               $out .= $LANG['cartridges'][15];
-            } else {
-               $out .= $LANG['cartridges'][22];
-            }
-            $out .= " : $old ";
+            //TRANS : for display cartridges count : %1$d is the total number, %2$d the new one, %3$d the used one, %4$d worn one
+            $out .= sprintf(__('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
+                        $total,$unused,$used,$old);
          }
 
       } else {
          if (!$nohtml) {
-            $out .= "<div class='tab_bg_1_2'><i>".$LANG['cartridges'][9]."</i></div>";
+            $out .= "<div class='tab_bg_1_2'><i>".__('No cartridge')."</i></div>";
          } else {
-            $out .= $LANG['cartridges'][9];
+            $out .= __('No cartridge');
          }
       }
       return $out;
@@ -392,12 +361,12 @@ class Cartridge extends CommonDBTM {
       global $LANG;
 
       if (is_null($date_use) || empty($date_use)) {
-         return $LANG['cartridges'][20];
+         return __('New','New',1);
       }
       if (is_null($date_out) || empty($date_out)) {
-         return $LANG['cartridges'][21];
+         return __('Used','Used',1);
       }
-      return $LANG['cartridges'][22];
+      return __('Worn','Worn',1);
    }
 
 
@@ -433,16 +402,16 @@ class Cartridge extends CommonDBTM {
             echo "<tr><th colspan='7'>".self::getCount($tID,-1)."</th>";
             echo "<th colspan='2'>&nbsp;</th></tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."</th>";
+            echo "<tr><th colspan='8'>".__('Worn cartridges')."</th>";
             echo "<th colspan='2'>&nbsp;</th></tr>";
          }
          $i = 0;
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-         echo "<th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
+         echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<th>".__('Used on')."</th><th>".$LANG['search'][9]."</th>";
 
          if ($show_old) {
-            echo "<th>".$LANG['cartridges'][39]."</th>";
+            echo "<th>".__('Printer counter')."</th>";
          }
 
          echo "<th>".$LANG['financial'][3]."</th>";
@@ -564,12 +533,12 @@ class Cartridge extends CommonDBTM {
                 $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
+            echo "<td class='center'>".__('Average time in stock')."<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
             echo "<td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41]."&nbsp;:<br>";
+            echo "<td class='center'>".__('Average time in use')."<br>";
             echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42]."&nbsp;:<br>";
+            echo "<td class='center'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='3'>&nbsp;</td></tr>";
          }
@@ -841,6 +810,7 @@ class Cartridge extends CommonDBTM {
             return true;
 
          case 'CartridgeItem' :
+            self::showAddForm($item);
             self::showForCartridgeItem($item);
             self::showForCartridgeItem($item, 1);
             return true;
