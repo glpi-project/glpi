@@ -4080,6 +4080,8 @@ class Ticket extends CommonITILObject {
 
          case "rejected" : // on affiche les tickets rejetés
             $query .= "WHERE ($search_assign)
+                             AND `status` <> 'solved'
+                             AND `status` <> 'closed'
                              AND `global_validation` = 'rejected' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
