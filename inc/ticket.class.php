@@ -387,23 +387,24 @@ class Ticket extends CommonITILObject {
                return self::createTabEntry($title, $nb);
             }
          }
-         switch ($item->getType()) {
-            case __CLASS__ :
-               $ong = array();
-               $ong[1] = $LANG['job'][47];
-               $ong[2] = $LANG['jobresolution'][2];
-               // enquete si statut clos
-               if ($item->fields['status'] == 'closed') {
-                  $ong[3] = $LANG['satisfaction'][0];
-               }
-               if (Session::haveRight('observe_ticket','1')) {
-                  $ong[4] = $LANG['Menu'][13];
-               }
-               return $ong;
+      }
+      // Not check show_all_ticket for Ticket itself      
+      switch ($item->getType()) {
+         case __CLASS__ :
+            $ong = array();
+            $ong[1] = $LANG['job'][47];
+            $ong[2] = $LANG['jobresolution'][2];
+            // enquete si statut clos
+            if ($item->fields['status'] == 'closed') {
+               $ong[3] = $LANG['satisfaction'][0];
+            }
+            if (Session::haveRight('observe_ticket','1')) {
+               $ong[4] = $LANG['Menu'][13];
+            }
+            return $ong;
 
-            default :
-               return $LANG['title'][28];
-         }
+         default :
+            return $LANG['title'][28];
       }
       return '';
    }
