@@ -206,20 +206,20 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas = parent::getDatasForObject($item, $simple);
 
       // Specific datas
-      $datas["##ticket.costfixed"]    = $this->obj->getField('cost_fixed');
-      $datas["##ticket.costmaterial"] = $this->obj->getField('cost_material');
-      $datas["##ticket.costtime"]     = $this->obj->getField('cost_time');
+      $datas["##ticket.costfixed"]    = $item->getField('cost_fixed');
+      $datas["##ticket.costmaterial"] = $item->getField('cost_material');
+      $datas["##ticket.costtime"]     = $item->getField('cost_time');
 
       $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
                                                                "/index.php?redirect=ticket_".
-                                                               $this->obj->getField("id")."_TicketValidation");
+                                                               $item->getField("id")."_TicketValidation");
 
       $datas['##ticket.globalvalidation##']
-                  = TicketValidation::getStatus($this->obj->getField('global_validation'));
-      $datas['##ticket.type##']  = Ticket::getTicketTypeName($this->obj->getField('type'));
+                  = TicketValidation::getStatus($item->getField('global_validation'));
+      $datas['##ticket.type##']  = Ticket::getTicketTypeName($item->getField('type'));
       $datas['##ticket.requesttype##']
                   = Dropdown::getDropdownName('glpi_requesttypes',
-                                                $this->obj->getField('requesttypes_id'));
+                                                $item->getField('requesttypes_id'));
 
       $autoclose_value = EntityData::getUsedConfig('autoclose_delay', $this->getEntity(),
                                                    '', EntityData::CONFIG_NEVER);
@@ -233,13 +233,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
       $datas['##ticket.sla##'] = '';
-      if ($this->obj->getField('slas_id')) {
+      if ($item->getField('slas_id')) {
          $datas['##ticket.sla##']
-                     = Dropdown::getDropdownName('glpi_slas', $this->obj->getField('slas_id'));
+                     = Dropdown::getDropdownName('glpi_slas', $item->getField('slas_id'));
       }
 
       // is ticket deleted
-      $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($this->obj->getField('is_deleted'));
+      $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
 
 
       //Tags associated with the object linked to the ticket
@@ -254,63 +254,65 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##ticket.item.group##']         = '';
       $datas['##ticket.item.model##']         = '';
 
-      if ($this->target_object != null) {
-
+      if (isset($item->fields['itemtype'])
+          && ($hardware = getItemForItemtype($item->fields['itemtype']))
+          && isset($item->fields["items_id"])
+          && $hardware->getFromDB($item->fields["items_id"])) {
          //Object type
-         $datas['##ticket.itemtype##']  = $this->target_object->getTypeName();
+         $datas['##ticket.itemtype##']  = $hardware->getTypeName();
 
          //Object name
-         $datas['##ticket.item.name##'] = $this->target_object->getField('name');
+         $datas['##ticket.item.name##'] = $hardware->getField('name');
 
          //Object serial
-         if ($this->target_object->isField('serial')) {
-            $datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
+         if ($hardware->isField('serial')) {
+            $datas['##ticket.item.serial##'] = $hardware->getField('serial');
          }
 
          //Object contact
-         if ($this->target_object->isField('contact')) {
-            $datas['##ticket.item.contact##'] = $this->target_object->getField('contact');
+         if ($hardware->isField('contact')) {
+            $datas['##ticket.item.contact##'] = $hardware->getField('contact');
          }
 
          //Object contact num
-         if ($this->target_object->isField('contact_num')) {
+         if ($hardware->isField('contact_num')) {
             $datas['##ticket.item.contactnumber##']
-                        = $this->target_object->getField('contact_num');
+                        = $hardware->getField('contact_num');
          }
 
          //Object otherserial
-         if ($this->target_object->isField('otherserial')) {
+         if ($hardware->isField('otherserial')) {
             $datas['##ticket.item.otherserial##']
-                        = $this->target_object->getField('otherserial');
+                        = $hardware->getField('otherserial');
          }
 
          //Object location
-         if ($this->target_object->isField('locations_id')) {
+         if ($hardware->isField('locations_id')) {
             $datas['##ticket.item.location##']
                         = Dropdown::getDropdownName('glpi_locations',
-                                                      $this->target_object->getField('locations_id'));
+                                                      $hardware->getField('locations_id'));
          }
 
          //Object user
-         if ($this->obj->getField('users_id')) {
+         if ($hardware->getField('users_id')) {
             $user_tmp = new User();
-            if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
+            if ($user_tmp->getFromDB($hardware->getField('users_id'))) {
                $datas['##ticket.item.user##'] = $user_tmp->getName();
             }
          }
 
          //Object group
-         if ($this->obj->getField('groups_id')) {
+         if ($hardware->getField('groups_id')) {
             $datas['##ticket.item.group##']
                         = Dropdown::getDropdownName('glpi_groups',
-                                                      $this->target_object->getField('groups_id'));
+                                                      $hardware->getField('groups_id'));
          }
 
          $modeltable = getSingular($this->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
 
-         if ($this->target_object->isField($modelfield)) {
-            $datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
+         if ($hardware->isField($modelfield)) {
+            $datas['##ticket.item.model##'] = $hardware->getField($modelfield);
          }
 
       }
@@ -318,7 +320,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // Get tasks, followups, log, validation, satisfaction, linked tickets
       if (!$simple) {
          // Linked tickets
-         $linked_tickets         = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
+         $linked_tickets         = Ticket_Ticket::getLinkedTicketsTo($item->getField('id'));
          $datas['linkedtickets'] = array();
          if (count($linked_tickets)) {
             $linkedticket = new Ticket();
@@ -341,7 +343,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberoflinkedtickets##'] = count($datas['linkedtickets']);
 
-         $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+         $restrict = "`tickets_id`='".$item->getField('id')."'";
          $problems = getAllDatasFromTable('glpi_problems_tickets',$restrict);
          $datas['problems'] = array();
          if (count($problems)) {
@@ -363,7 +365,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
 
-         $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+         $restrict = "`tickets_id`='".$item->getField('id')."'";
          if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
             $restrict .= " AND `is_private` = '0'";
          }
@@ -421,7 +423,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          //Validation infos
-         $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+         $restrict = "`tickets_id`='".$item->getField('id')."'";
 
          if (isset($options['validation_id']) && $options['validation_id']) {
             $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
@@ -463,16 +465,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##satisfaction.satisfaction##'] = '';
          $datas['##satisfaction.description##']  = '';
 
-         if ($inquest->getFromDB($this->obj->getField('id'))) {
+         if ($inquest->getFromDB($item->getField('id'))) {
             // internal inquest
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
                            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                       $this->obj->getField("id")."_10");
+                                       $item->getField("id")."_10");
             // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##']
-                           = EntityData::generateLinkSatisfaction($this->obj);
+                           = EntityData::generateLinkSatisfaction($item);
             }
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
