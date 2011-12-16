@@ -3532,7 +3532,7 @@ class OcsServer extends CommonDBTM {
                                                                  '_no_history'  => !$dohistory));
                                  self::addToOcsArray($computers_id,
                                                      array($prevalue.$devID
-                                                            > $prevalue.$network["designation"]),
+                                                            => $prevalue.$network["designation"]),
                                                      "import_device");
                               }
                            } else {
