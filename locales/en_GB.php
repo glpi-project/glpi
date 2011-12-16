@@ -110,9 +110,6 @@ $LANG['buttons'][59]="Dissociate";
 $LANG['buttons'][60]="Close window"; 
 $LANG['buttons'][61]="Regenerate"; 
 
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['calendar'][0]="YYYY-MM-DD"; 
 $LANG['calendar'][1]="DD-MM-YYYY"; 
 $LANG['calendar'][2]="MM-DD-YYYY"; 
@@ -140,6 +137,8 @@ $LANG['calendar'][24]="last Saturday";
 $LANG['calendar'][25]="Beginning of the month"; 
 $LANG['calendar'][26]="Beginning of the year"; 
 $LANG['calendar'][27]="Today"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['calendarD'][0]="S"; 
 $LANG['calendarD'][1]="M"; 

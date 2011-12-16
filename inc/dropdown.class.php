@@ -1013,28 +1013,21 @@ class Dropdown {
     * @param $step step used
     * @param $toadd values to add at the beginning
     * @param $options additionnal options :
-    *    - suffix : suffix to display
    **/
    static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
                                $options = array()) {
 
-      if (isset($options['suffix'])) {
-         $suffix = $options['suffix'];
-      } else {
-         $suffix = '';
-      }
       echo "<select name='$myname'>\n";
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
             echo "<option value='$key' ".($key==$value?" selected ":"").">";
-            echo ($suffix!=''?$val.' '.$suffix:$val)."</option>";
+            echo $val."</option>";
          }
       }
 
       for ($i=$min ; $i<=$max ; $i+=$step) {
-         echo "<option value='$i' ".($i==$value?" selected ":"").">";
-         echo ($suffix!=''?$i.' '.$suffix:$i)."</option>";
+         echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
       }
       echo "</select>";
 

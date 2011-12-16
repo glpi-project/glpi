@@ -451,10 +451,9 @@ class CronTask extends CommonDBTM{
       Dropdown::showInteger('hourmax', $this->fields['hourmax'], 0, 24);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][130]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
       Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
-                            array(0 => $LANG['setup'][200]),
-                            array('suffix' => Toolbox::ucfirst($LANG['calendar'][12])));
+                            array(0 => $LANG['setup'][200]));
       echo "</td><td>".$LANG['crontask'][40]."&nbsp;:&nbsp;</td><td>";
 
       if (empty($this->fields['lastrun'])) {
@@ -1336,26 +1335,26 @@ class CronTask extends CommonDBTM{
 
       $tab = array();
 
-      $tab[MINUTE_TIMESTAMP] = '1 ' .$LANG['job'][22];
+      $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute','%d minutes',1),1);
 
       // Minutes
       for ($i=5 ; $i<60 ; $i+=5) {
-         $tab[$i*MINUTE_TIMESTAMP] = $i . ' ' .$LANG['job'][22];
+         $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute','%d minutes',$i),$i);
       }
 
       // Heures
       for ($i=1 ; $i<24 ; $i++) {
-         $tab[$i*HOUR_TIMESTAMP] = $i . ' ' .Toolbox::ucfirst($LANG['gmt'][1]);
+         $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i),$i);
       }
 
       // Jours
       $tab[DAY_TIMESTAMP] = $LANG['setup'][305];
       for ($i=2 ; $i<7 ; $i++) {
-         $tab[$i*DAY_TIMESTAMP] = $i . ' ' .Toolbox::ucfirst($LANG['calendar'][12]);
+         $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
       }
 
-      $tab[WEEK_TIMESTAMP]  = $LANG['setup'][308];
-      $tab[MONTH_TIMESTAMP] = $LANG['setup'][309];
+      $tab[WEEK_TIMESTAMP]  = __('Each week');
+      $tab[MONTH_TIMESTAMP] = __('Each month');
 
       Dropdown::showFromArray($name, $tab, array('value' => $value));
    }

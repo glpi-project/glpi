@@ -50,10 +50,7 @@ class CalendarSegment extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['calendar'][10];
-      }
-      return $LANG['calendar'][5];
+      return _n('Time range','Time ranges',$nb);
    }
 
 
@@ -73,7 +70,7 @@ class CalendarSegment extends CommonDBChild {
       // Check override of segment : do not add
       if (count(self::getSegmentsBetween($input['calendars_id'], $input['day'], $input['begin'],
                                          $input['day'], $input['end'])) > 0 ) {
-         Session::addMessageAfterRedirect($LANG['calendar'][8], false, ERROR);
+         Session::addMessageAfterRedirect(__('Can not add a range riding an existing period'), false, ERROR);
          return false;
       }
       return $input;
@@ -299,16 +296,16 @@ class CalendarSegment extends CommonDBChild {
       if ($canedit) {
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['calendar'][6]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add a schedule')."</tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>".$LANG['calendar'][7]."&nbsp;: ";
+         echo "<tr class='tab_bg_2'><td class='center'>".__('Day')."</td><td>";
          echo "<input type='hidden' name='entities_id' value='".$calendar->fields['entities_id']."'>";
          echo "<input type='hidden' name='is_recursive' value='".$calendar->fields['is_recursive']."'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::showFromArray('day', $LANG['calendarDay']);
-         echo "</td><td class='center'>".__('Start');
+         echo "</td><td class='center'>".__('Start').'</td><td>';
          Dropdown::showHours("begin",date('H').":00");
-         echo "</td><td class='center'>".__('End');
+         echo "</td><td class='center'>".__('End').'</td><td>';
          Dropdown::showHours("end",(date('H')+1).":00");
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -318,7 +315,7 @@ class CalendarSegment extends CommonDBChild {
       }
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['calendar'][7]."</th>";
+      echo "<tr><th colspan='2'>".__('Day')."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "</tr>";
@@ -366,11 +363,11 @@ class CalendarSegment extends CommonDBChild {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['calendar'][10],
+                  return self::createTabEntry(_n('Time range','Time ranges',2),
                                               countElementsInTable($this->getTable(),
                                                                    "calendars_id = '".$item->getID()."'"));
                }
-               return $LANG['calendar'][10];
+               return _n('Time range','Time ranges',2);
          }
       }
       return '';
