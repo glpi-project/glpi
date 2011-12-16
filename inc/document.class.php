@@ -806,6 +806,12 @@ class Document extends CommonDBTM {
                           LEFT JOIN `glpi_entities`
                               ON (`glpi_entities`.`id` = `glpi_documents_items`.`items_id`)
                           WHERE ";
+            } if ($itemtype == 'KnowbaseItem') {
+               $query .= "-1 AS entity
+                          FROM `glpi_documents_items`, `$itemtable`
+                          ".KnowbaseItem::addVisibilityJoins()."
+                          WHERE `$itemtable`.`id` = `glpi_documents_items`.`items_id`
+                          AND ";
             } else {
                $query .= "`glpi_entities`.`id` AS entity
                           FROM `glpi_documents_items`, `$itemtable`
@@ -815,14 +821,31 @@ class Document extends CommonDBTM {
                           AND ";
             }
             $query .= "`glpi_documents_items`.`itemtype` = '$itemtype'
-                       AND `glpi_documents_items`.`documents_id` = '$instID' ".
-                       getEntitiesRestrictRequest(" AND ",$itemtable,'','',$item->maybeRecursive());
+                       AND `glpi_documents_items`.`documents_id` = '$instID' ";
+            if ($itemtype =='KnowbaseItem') {
+               if (Session::getLoginUserID()) {
+                 $where = "AND ".KnowbaseItem::addVisibilityRestrict();
+               } else {
+                  // Anonymous access
+                  if (Session::isMultiEntitiesMode()) {
+                     $where = " AND (`glpi_entities_knowbaseitems`.`entities_id` = '0'
+                                 AND `glpi_entities_knowbaseitems`.`is_recursive` = '1')";
+                  }
+               }
+            } else {
+               $query.= getEntitiesRestrictRequest(" AND ",$itemtable,'','',$item->maybeRecursive());
+            }
 
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
-            $query .= " ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
-
+            
+            if ($itemtype =='KnowbaseItem') {
+               $query .= " ORDER BY `$itemtable`.`$column`";
+            } else {
+               $query .= " ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
+            }
+            
             if ($itemtype == 'SoftwareLicense') {
                $soft = new Software();
             }
