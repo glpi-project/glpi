@@ -232,7 +232,7 @@ class Migration {
       }
 
       if ($format) {
-         if (!FieldExists($table,$field)) {
+         if (!FieldExists($table, $field, false)) {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
                                            $params['after']."";
 
@@ -280,10 +280,10 @@ class Migration {
       }
 
 
-      if (FieldExists($table,$oldfield)) {
+      if (FieldExists($table, $oldfield, false)) {
          // in order the function to be replayed
          // Drop new field if name changed
-         if ($oldfield != $newfield && FieldExists($table,$newfield)) {
+         if ($oldfield != $newfield && FieldExists($table, $newfield)) {
             $this->change[$table][] = "DROP `$newfield` ";
          }
 
@@ -305,7 +305,7 @@ class Migration {
    **/
    function dropField($table, $field) {
 
-      if (FieldExists($table,$field)) {
+      if (FieldExists($table, $field, false)) {
          $this->change[$table][] = "DROP `$field`";
       }
    }

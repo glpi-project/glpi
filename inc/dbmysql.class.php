@@ -369,14 +369,15 @@ class DBmysql {
    /**
     * List fields of a table
     *
-    * @param $table table name condition
+    * @param $table     String : table name condition
+    * @param $usecache  Boolean : if use field list cache (default true)
     *
     * @return list of fields
    **/
-   function list_fields($table) {
+   function list_fields($table, $usecache=true) {
       static $cache = array();
 
-      if (isset($cache[$table])) {
+      if ($usecache && isset($cache[$table])) {
          return $cache[$table];
       }
       $result = $this->query("SHOW COLUMNS FROM `$table`");
