@@ -790,7 +790,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array($objettype.'.days'               => Toolbox::ucfirst($LANG['calendar'][12]),
+      $tags = array($objettype.'.days'               => __('day(s)'),
                     $objettype.'.attribution'        => $LANG['job'][5],
                     $objettype.'.nocategoryassigned' => $LANG['mailing'][100]);
 

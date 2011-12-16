@@ -229,7 +229,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if ($autoclose_value >= 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
                $datas['##lang.ticket.autoclosewarning##']
-                           = $LANG['job'][54]." ".$autoclose_value." ".Toolbox::ucfirst($LANG['calendar'][12]);
+                           //TRANS: %s is the number of day before auto closing
+                           = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
+                                        'Without a reply, the ticket will be automatically closed after %s days',
+                                        $autoclose_value),
+                                     $autoclose_value);
       }
 
       $datas['##ticket.sla##'] = '';
@@ -435,11 +439,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
-                  = $LANG['validation'][27]." (".$LANG['job'][4]." ".
-                    Html::clean(getUserName($validation['users_id'])).")";
+                  //TRANS: %s is the user name
+                  = sprintf(__('An approval request has been submitted by %s'),
+                            Html::clean(getUserName($validation['users_id'])));
             $tmp['##validation.answer.title##']
-                  = $LANG['validation'][32]." (".$LANG['validation'][21]." ".
-                    Html::clean(getUserName($validation['users_id_validate'])).")";
+                  //TRANS: %s is the user name
+                  = sprintf(__('An answer to an an approval request was produced by %s'),
+                            Html::clean(getUserName($validation['users_id_validate'])));
 
             $tmp['##validation.author##']      = Html::clean(getUserName($validation['users_id']));
 
@@ -650,7 +656,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Tags with just lang
       $tags = array('ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.problems'         => $LANG['Menu'][7],
-                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".Toolbox::ucfirst($LANG['calendar'][12]));
+                    'ticket.autoclosewarning' => sprintf(__('Without a reply, the ticket will be automatically closed after %s day'),'?');
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
