@@ -1507,7 +1507,7 @@ class Dropdown {
 
                case 'Ticket' :
                   $tmp = new TicketFollowup();
-                  if ($tmp->canCreate()) {
+                  if ($tmp->canCreate() && stristr(Profile::getInterfaceName('central'),$val)) {
                      echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
                   }
 
