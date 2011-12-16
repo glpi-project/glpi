@@ -405,7 +405,7 @@ class Consumable extends CommonDBTM {
          }
          $i = 0;
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
          if ($show_old) {
             echo "<th>".$LANG['consumables'][31]."</th>";
          }
@@ -646,6 +646,7 @@ class Consumable extends CommonDBTM {
 
          switch ($item->getType()) {
             case 'ConsumableItem' :
+               self::showAddForm($item);
                self::showForConsumableItem($item);
                self::showForConsumableItem($item, 1);
                return true;

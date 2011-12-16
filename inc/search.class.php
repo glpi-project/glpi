@@ -935,10 +935,10 @@ class Search {
 
             // Add specific column Header
             if ($itemtype == 'CartridgeItem') {
-               echo self::showHeaderItem($output_type, $LANG['cartridges'][0], $header_num);
+               echo self::showHeaderItem($output_type, _n('Cartridge','Cartridges',2), $header_num);
             }
             if ($itemtype == 'ConsumableItem') {
-               echo self::showHeaderItem($output_type, $LANG['consumables'][0], $header_num);
+               echo self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
             }
             if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                echo self::showHeaderItem($output_type, $LANG['state'][6], $header_num);
