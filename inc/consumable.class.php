@@ -357,7 +357,7 @@ class Consumable extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add_several' value=\"".__s('Purge')."\"
+         echo "<input type='submit' name='add_several' value=\"".__s('Add')."\"
                 class='submit'>";
          echo "<input type='hidden' name='tID' value='$ID'>\n";
          echo "<span class='small_space'>";
