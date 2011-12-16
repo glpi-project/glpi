@@ -829,7 +829,7 @@ class OcsServer extends CommonDBTM {
       if (!empty($ocsServers)) {
          echo "\n<tr class='tab_bg_2'><th>" . $LANG['ocsng'][0] . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-         
+
          $msg = '';
          foreach ($ocsServers as $ocsServer) {
                $msg .= $LANG['ocsconfig'][2]." : '".$ocsServer['ocs_db_host']."'";
@@ -3724,7 +3724,7 @@ class OcsServer extends CommonDBTM {
                                                                  '_no_history'  => !$dohistory));
                                  self::addToOcsArray($computers_id,
                                                      array($prevalue.$devID
-                                                            > $prevalue.$network["designation"]),
+                                                            => $prevalue.$network["designation"]),
                                                      "import_device");
                               }
                            } else {
