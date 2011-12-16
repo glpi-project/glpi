@@ -3036,7 +3036,7 @@ class Transfer extends CommonDBTM {
                      2 => __('Purge'));
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][38]."&nbsp;:</td><td>";
+      echo "<td>".__('Historical')."</td><td>";
       $params['value'] = $this->fields['keep_history'];
       Dropdown::showFromArray('keep_history', $keep,$params);
       echo "</td>";
@@ -3049,14 +3049,14 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".$LANG['Menu'][38]."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG['networking'][6]."&nbsp;:</td><td>";
+      echo "<td>"._n('Network port','Network ports',2)."</td><td>";
       $options = array(0 => __('Delete'),
                        1 => __('Disconnect') ,
                        2 => __('Forward') );
       $params['value'] = $this->fields['keep_networklink'];
       Dropdown::showFromArray('keep_networklink',$options,$params);
       echo "</td>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][28]."&nbsp;:</td><td>";
+      echo "<td>"._n('Ticket','Tickets',2)."</td><td>";
       $options = array(0 => __('Delete'),
                        1 => __('Disconnect') ,
                        2 => __('Forward') );
@@ -3065,52 +3065,52 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][0]." -> ".$LANG["Menu"][4]."&nbsp;:</td><td>";
+      echo "<td>".__('Softwares of computers')."</td><td>";
       $params['value'] = $this->fields['keep_software'];
       Dropdown::showFromArray('keep_software', $keep,$params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][4]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the softwares are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_software'];
       Dropdown::showFromArray('clean_software', $clean,$params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG['Menu'][17]."&nbsp;:</td><td>";
+      echo "<td>"._n('Reservation','Reservations',2)."</td><td>";
       $params['value'] = $this->fields['keep_reservation'];
       Dropdown::showFromArray('keep_reservation',$keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][0]." -> ".Toolbox::ucfirst($LANG['log'][18])."&nbsp;:</td><td>";
+      echo "<td>".__('Components of computers')."</td><td>";
       $params['value'] = $this->fields['keep_device'];
       Dropdown::showFromArray('keep_device',$keep, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG['cartridges'][12]."&nbsp;:".
-            "</td><td>";
+      echo "<td>".__('Links between printers and cartridge types and cartridges');
+      echo "</td><td>";
       $params['value'] = $this->fields['keep_cartridgeitem'];
       Dropdown::showFromArray('keep_cartridgeitem', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG['cartridges'][12]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the cartridge types are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_cartridgeitem'];
       Dropdown::showFromArray('clean_cartridgeitem', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['cartridges'][12]." -> ".$LANG["Menu"][21]."&nbsp;:</td><td>";
+      echo "<td>".__('Links between cartridge types and cartridges')."</td><td>";
       $params['value'] = $this->fields['keep_cartridge'];
       Dropdown::showFromArray('keep_cartridge', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG['financial'][3]."&nbsp;:</td><td>";
+      echo "<td>".__('Financial and administrative informations')."</td><td>";
       $params['value'] = $this->fields['keep_infocom'];
       Dropdown::showFromArray('keep_infocom', $keep, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][92]." -> ".$LANG["Menu"][32]."&nbsp;:</td><td>";
+      echo "<td>".__('Links between consumable types and consumables')."</td><td>";
       $params['value'] = $this->fields['keep_consumable'];
       Dropdown::showFromArray('keep_consumable', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][0]." -> ".$LANG['computers'][8]."&nbsp;:</td><td>";
+      echo "<td>".__('Links between computers and volumes')."</td><td>";
       $params['value'] = $this->fields['keep_disk'];
       Dropdown::showFromArray('keep_disk', $keep, $params);
       echo "</td></tr>";
@@ -3119,41 +3119,41 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".$LANG['connect'][0]."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][3]."&nbsp;:</td><td>";
+      echo "<td>"._n('Monitor','Monitors',2)."</td><td>";
       $params['value'] = $this->fields['keep_dc_monitor'];
       Dropdown::showFromArray('keep_dc_monitor', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][3]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the monitors are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_dc_monitor'];
       Dropdown::showFromArray('clean_dc_monitor', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][2]."&nbsp;:</td><td>";
+      echo "<td>"._n('Printer','Printers',2)."</td><td>";
       $params['value'] = $this->fields['keep_dc_printer'];
       Dropdown::showFromArray('keep_dc_printer', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][2]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the printers are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_dc_printer'];
       Dropdown::showFromArray('clean_dc_printer', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][16]."&nbsp;:</td><td>";
+      echo "<td>"._n('Device','Devices',2)."</td><td>";
       $params['value'] = $this->fields['keep_dc_peripheral'];
       Dropdown::showFromArray('keep_dc_peripheral', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][16]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the devices are no longer used')."</td><td>";
       $params['value']=$this->fields['clean_dc_peripheral'];
       Dropdown::showFromArray('clean_dc_peripheral', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][34]."&nbsp;:</td><td>";
+      echo "<td>"._n('Phone','Phones',2)."</td><td>";
       $params['value'] = $this->fields['keep_dc_phone'];
       Dropdown::showFromArray('keep_dc_phone', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][34]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the phones are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_dc_phone'];
       Dropdown::showFromArray('clean_dc_phone', $clean, $params);
       echo "</td></tr>";
@@ -3162,41 +3162,41 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".$LANG["Menu"][26]."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][23]."&nbsp;:</td><td>";
+      echo "<td>"._n('Supplier','Suppliers',2)."</td><td>";
       $params['value'] = $this->fields['keep_supplier'];
       Dropdown::showFromArray('keep_supplier', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][23]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the suppliers are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_supplier'];
       Dropdown::showFromArray('clean_supplier', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG["Menu"][23]." -> ".$LANG["Menu"][22]."&nbsp;:</td><td>";
+      echo "<td>".__('Links between suppliers and contacts')."&nbsp;:</td><td>";
       $params['value'] = $this->fields['keep_contact'];
       Dropdown::showFromArray('keep_contact', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][22]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the contacts are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_contact'];
       Dropdown::showFromArray('clean_contact', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][27]."&nbsp;:</td><td>";
+      echo "<td>"._n('Document','Documents',2)."</td><td>";
       $params['value'] = $this->fields['keep_document'];
       Dropdown::showFromArray('keep_document', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][27]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the documents are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_document'];
       Dropdown::showFromArray('clean_document', $clean, $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][25]."&nbsp;:</td><td>";
+      echo "<td>"._n('Contract','Contracts',2)."</td><td>";
       $params['value'] = $this->fields['keep_contract'];
       Dropdown::showFromArray('keep_contract', $keep, $params);
       echo "</td>";
-      echo "<td>".$LANG["Menu"][25]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
+      echo "<td>".__('If the contracts are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_contract'];
       Dropdown::showFromArray('clean_contract', $clean, $params);
       echo "</td></tr>";

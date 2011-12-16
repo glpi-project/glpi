@@ -69,19 +69,19 @@ function update051to06() {
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
-                VALUES ('".addslashes($LANG['cartridges'][11])."')";
+                VALUES ('Ink-Jet')";
       $DB->query($query)
       or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
-                VALUES ('".addslashes($LANG['cartridges'][10])."')";
+                VALUES ('Toner')";
       $DB->query($query)
       or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
-                VALUES ('".addslashes($LANG['cartridges'][37])."')";
+                VALUES ('Ribbon')";
       $DB->query($query)
       or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
    }
