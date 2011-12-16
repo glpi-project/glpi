@@ -64,13 +64,13 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       // Common ITIL datas
       $datas = parent::getDatasForObject($item, $simple);
 
-      $datas["##problem.impacts"]  = $this->obj->getField('impactcontent');
-      $datas["##problem.causes"]   = $this->obj->getField('causecontent');
-      $datas["##problem.symptoms"] = $this->obj->getField('symptomcontent');
+      $datas["##problem.impacts"]  = $item->getField('impactcontent');
+      $datas["##problem.causes"]   = $item->getField('causecontent');
+      $datas["##problem.symptoms"] = $item->getField('symptomcontent');
 
       // Complex mode : get tasks
       if (!$simple) {
-         $restrict = "`problems_id`='".$this->obj->getField('id')."'";
+         $restrict = "`problems_id`='".$item->getField('id')."'";
          $tickets  = getAllDatasFromTable('glpi_problems_tickets', $restrict);
 
          $datas['tickets'] = array();
@@ -96,7 +96,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $datas['##problem.numberoftickets##'] = count($datas['tickets']);
          }
 
-         $restrict  = "`problems_id` = '".$this->obj->getField('id')."'
+         $restrict  = "`problems_id` = '".$item->getField('id')."'
                        ORDER BY `date` DESC,
                                 `id` ASC";
 
@@ -131,52 +131,52 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
             $datas['##problem.numberoftasks##'] = count($datas['tasks']);
          }
 
-         $restrict = "`problems_id`='".$this->obj->getField('id')."'";
+         $restrict = "`problems_id`='".$item->getField('id')."'";
          $items    = getAllDatasFromTable('glpi_items_problems',$restrict);
 
          $datas['items'] = array();
          if (count($tickets)) {
             foreach ($items as $data) {
-               $item = new $data['itemtype']();
-               if ($item->getFromDB($data['items_id'])) {
+               $item2 = new $data['itemtype']();
+               if ($item2->getFromDB($data['items_id'])) {
                   $tmp = array();
-                  $tmp['##item.itemtype##']    = $item->getTypeName();
-                  $tmp['##item.name##']        = $item->getField('name');
-                  $tmp['##item.serial##']      = $item->getField('serial');
-                  $tmp['##item.otherserial##'] = $item->getField('otherserial');
-                  $tmp['##item.contact##']     = $item->getField('contact');
-                  $tmp['##item.contactnum##']  = $item->getField('contactnum');
+                  $tmp['##item.itemtype##']    = $item2->getTypeName();
+                  $tmp['##item.name##']        = $item2->getField('name');
+                  $tmp['##item.serial##']      = $item2->getField('serial');
+                  $tmp['##item.otherserial##'] = $item2->getField('otherserial');
+                  $tmp['##item.contact##']     = $item2->getField('contact');
+                  $tmp['##item.contactnum##']  = $item2->getField('contactnum');
                   $tmp['##item.location##']    = '';
                   $tmp['##item.user##']        = '';
                   $tmp['##item.group##']       = '';
                   $tmp['##item.model##']       = '';
 
                   //Object location
-                  if ($item->getField('locations_id') != NOT_AVAILABLE) {
+                  if ($item2->getField('locations_id') != NOT_AVAILABLE) {
                      $tmp['##item.location##']
                                       = Dropdown::getDropdownName('glpi_locations',
-                                                                  $item->getField('locations_id'));
+                                                                  $item2->getField('locations_id'));
                   }
 
                   //Object user
-                  if ($item->getField('users_id')) {
+                  if ($item2->getField('users_id')) {
                      $user_tmp = new User();
-                     if ($user_tmp->getFromDB($item->getField('users_id'))) {
+                     if ($user_tmp->getFromDB($item2->getField('users_id'))) {
                         $tmp['##item.user##'] = $user_tmp->getName();
                      }
                   }
 
                   //Object group
-                  if ($item->getField('groups_id')) {
+                  if ($item2->getField('groups_id')) {
                      $tmp['##item.group##'] = Dropdown::getDropdownName('glpi_groups',
-                                                                        $item->getField('groups_id'));
+                                                                        $item2->getField('groups_id'));
                   }
 
-                  $modeltable = getSingular($item->getTable())."models";
+                  $modeltable = getSingular($item2->getTable())."models";
                   $modelfield = getForeignKeyFieldForTable($modeltable);
 
-                  if ($item->isField($modelfield)) {
-                     $tmp['##item.model##'] = $item->getField($modelfield);
+                  if ($item2->isField($modelfield)) {
+                     $tmp['##item.model##'] = $item2->getField($modelfield);
                   }
 
                   $datas['items'][] = $tmp;
