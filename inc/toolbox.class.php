@@ -80,9 +80,12 @@ class Toolbox {
    **/
    static function ucfirst($str) {
 
-      // for foreign language
-      $str[0] = mb_strtoupper($str[0], 'UTF-8');
-      return $str;
+      if($str{0}>="\xc3")
+         return (($str{1}>="\xa0")?
+         ($str{0}.chr(ord($str{1})-32)):
+         ($str{0}.$str{1})).substr($str,2);
+      else return ucfirst($str); 
+
     }
 
 
