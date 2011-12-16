@@ -510,22 +510,14 @@ class Document extends CommonDBTM {
          }
 
          // Reminder Case
-         $add_public_reminder_restrict = '';
-         if (Session::haveRight("reminder_public","r")) {
-            $add_public_reminder_restrict = "OR (`is_private` = '0'
-                                                 AND ".getEntitiesRestrictRequest("AND",
-                                                                                  "glpi_reminders").")";
-         }
          $query = "SELECT *
                    FROM `glpi_documents_items`
                    LEFT JOIN `glpi_reminders`
-                        ON (`glpi_knowbaseitems`.`id` = `glpi_reminders`.`items_id`
+                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
                             AND `glpi_documents_items`.`itemtype` = 'Reminder')
+                   ".Reminder::addVisibilityJoins()."                            
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                         AND ((`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                                AND `is_private` = '1')
-                              $add_public_reminder_restrict )";
-
+                         AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
          if ($DB->numrows($result)>0) {
             return true;
@@ -538,9 +530,9 @@ class Document extends CommonDBTM {
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
-                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                      ".KnowbaseItem::addVisibilityJoins()."
+                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."' 
+                              AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
@@ -553,10 +545,10 @@ class Document extends CommonDBTM {
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
+                      ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                            AND `glpi_knowbaseitems`.`is_faq` = '1' 
+                            AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
@@ -593,11 +585,12 @@ class Document extends CommonDBTM {
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+                      ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                             AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                            AND `glpi_knowbaseitems`.`is_faq` = '1'
+                            AND ".KnowbaseItem::addVisibilityRestrict();
+            
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
