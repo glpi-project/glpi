@@ -313,8 +313,9 @@ class TicketTemplate extends CommonDropdown {
    function getBeginHiddenFieldText($field) {
 
       if ($this->isHiddenField($field) && !$this->isPredefinedField($field)) {
-         echo "<span id='hiddentext$field'  style='display:none'>";
+         return "<span id='hiddentext$field'  style='display:none'>";
       }
+      return '';
    }
 
 
@@ -330,8 +331,9 @@ class TicketTemplate extends CommonDropdown {
    function getEndHiddenFieldText($field) {
 
       if ($this->isHiddenField($field) && !$this->isPredefinedField($field)) {
-         echo "</span>";
+         return "</span>";
       }
+      return '';
    }
 
 
@@ -347,8 +349,9 @@ class TicketTemplate extends CommonDropdown {
    function getBeginHiddenFieldValue($field) {
 
       if ($this->isHiddenField($field)) {
-         echo "<span id='hiddenvalue$field'  style='display:none'>";
+         return "<span id='hiddenvalue$field'  style='display:none'>";
       }
+      return '';
    }
 
 
@@ -363,27 +366,28 @@ class TicketTemplate extends CommonDropdown {
     * @return string to display
    **/
    function getEndHiddenFieldValue($field, &$ticket=NULL) {
-
+      $output='';
       if ($this->isHiddenField($field)) {
-         echo "</span>";
-         echo "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
+         $output .= "</span>";
+         $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
          if ($this->isPredefinedField($field) && !is_null($ticket)) {
             if ($num = array_search($field,$this->getAllowedFields())) {
                $display_options = array('comments' => true,
                                         'html'     => true);
-               echo $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
+               $output .= $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
                /// Display items_id
 
                if ($field == 'itemtype') {
-                  echo "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
+                  $output .= "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
                   if ($num = array_search('items_id',$this->getAllowedFields())) {
-                     echo " - ".$ticket->getValueToDisplay($num, $ticket->fields,
+                     $output .= " - ".$ticket->getValueToDisplay($num, $ticket->fields,
                                                            $display_options);
                   }
                }
             }
          }
       }
+      return $output;
    }
 
 
