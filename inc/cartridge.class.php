@@ -841,6 +841,7 @@ class Cartridge extends CommonDBTM {
             return true;
 
          case 'CartridgeItem' :
+            self::showAddForm($item);
             self::showForCartridgeItem($item);
             self::showForCartridgeItem($item, 1);
             return true;
