@@ -502,7 +502,7 @@ class Document extends CommonDBTM {
 
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
-
+         
          // My doc Check and Common doc right access
          if ($this->can($this->fields["id"],'r')
              || $this->fields["users_id"]===Session::getLoginUserID()) {
@@ -510,22 +510,14 @@ class Document extends CommonDBTM {
          }
 
          // Reminder Case
-         $add_public_reminder_restrict = '';
-         if (Session::haveRight("reminder_public","r")) {
-            $add_public_reminder_restrict = "OR (`is_private` = '0'
-                                                 AND ".getEntitiesRestrictRequest("AND",
-                                                                                  "glpi_reminders").")";
-         }
          $query = "SELECT *
                    FROM `glpi_documents_items`
                    LEFT JOIN `glpi_reminders`
-                        ON (`glpi_knowbaseitems`.`id` = `glpi_reminders`.`items_id`
+                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
                             AND `glpi_documents_items`.`itemtype` = 'Reminder')
+                   ".Reminder::addVisibilityJoins()."                            
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                         AND ((`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                                AND `is_private` = '1')
-                              $add_public_reminder_restrict )";
-
+                         AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
          if ($DB->numrows($result)>0) {
             return true;
@@ -538,9 +530,9 @@ class Document extends CommonDBTM {
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
-                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                      ".KnowbaseItem::addVisibilityJoins()."
+                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."' 
+                              AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
@@ -553,10 +545,10 @@ class Document extends CommonDBTM {
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
+                      ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                            AND `glpi_knowbaseitems`.`is_faq` = '1' 
+                            AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
@@ -582,28 +574,44 @@ class Document extends CommonDBTM {
          }
 
       } else if (Session::getLoginUserID()) { // ! central
-
+         
          // Check if it is my doc
          if ($this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
+         
+         // Reminder Case
+         $query = "SELECT *
+                   FROM `glpi_documents_items`
+                   LEFT JOIN `glpi_reminders`
+                        ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
+                            AND `glpi_documents_items`.`itemtype` = 'Reminder')
+                   ".Reminder::addVisibilityJoins()."                            
+                   WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
+                         AND ".Reminder::addVisibilityRestrict();
+         $result = $DB->query($query);
+         if ($DB->numrows($result)>0) {
+            return true;
+         }
+                  
          if (Session::haveRight("faq","r")) {
             // Check if it is a FAQ document
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+                      ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                             AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1'".
-                            getEntitiesRestrictRequest(' AND', 'glpi_knowbaseitems', '', '', true);
-
+                            AND `glpi_knowbaseitems`.`is_faq` = '1'
+                            AND ".KnowbaseItem::addVisibilityRestrict();
+            
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
             }
          }
-
+         
          // Tracking Case
          if (isset($options["tickets_id"])) {
             $job = new Ticket();
@@ -629,11 +637,15 @@ class Document extends CommonDBTM {
                    FROM `glpi_documents_items`
                    LEFT JOIN `glpi_knowbaseitems`
                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
+                   LEFT JOIN `glpi_entities_knowbaseitems`
+                        ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id`
+                              = `glpi_knowbaseitems`.`id`)
                    WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                          AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND `glpi_knowbaseitems`.`is_faq` = '1'
-                         AND `glpi_knowbaseitems`.`entities_id` = '0'
-                         AND `glpi_knowbaseitems`.`is_recursive` = '1'";
+                         AND `glpi_entities_knowbaseitems`.`entities_id` = '0'
+                         AND `glpi_entities_knowbaseitems`.`is_recursive` = '1'";
+                         $where = " ";
 
          $result = $DB->query($query);
          if ($DB->numrows($result)>0) {
