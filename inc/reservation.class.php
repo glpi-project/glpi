@@ -354,6 +354,8 @@ class Reservation extends CommonDBChild {
          $annee_suivante++;
       }
 
+      $monthsarray = Toolbox::getMonthsOfYearArray();
+
       $str_suivant = "?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
                      "annee_courante=$annee_suivante";
       $str_precedent = "?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
@@ -420,7 +422,7 @@ class Reservation extends CommonDBChild {
       echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
              "\" title=\"".__s('Previous')."\"></a></td>";
-      echo "<td class='b'>".$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</td>";
+      echo "<td class='b'>".$monthsarray[$mois_courant]."&nbsp;".$annee_courante."</td>";
       echo "<td><a href='reservation.php".$str_suivant."'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
              "\" title=\"".__s('Next')."\"></a></td></tr></table>\n";
@@ -444,18 +446,18 @@ class Reservation extends CommonDBChild {
       for ($i=$mois_courant ; $i<13 ; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_avant'>".$LANG['calendarM'][$i-1]."</a></div>";
+               "annee_courante=$annee_avant'>".$monthsarray[$i]."</a></div>";
       }
 
       echo "<div class='center b'>$annee_courante</div>";
 
       for ($i=1 ; $i<13 ; $i++) {
          if ($i == $mois_courant) {
-            echo "<div class='calendrier_case1 b'>".$LANG['calendarM'][$i-1]."</div>\n";
+            echo "<div class='calendrier_case1 b'>".$monthsarray[$i]."</div>\n";
          } else {
             echo "<div class='calendrier_case2'>";
             echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-                  "annee_courante=$annee_courante'>".$LANG['calendarM'][$i-1]."</a></div>\n";
+                  "annee_courante=$annee_courante'>".$monthsarray[$i]."</a></div>\n";
          }
       }
       echo "<div class='center b'>$annee_apres</div>\n";
@@ -463,7 +465,7 @@ class Reservation extends CommonDBChild {
       for ($i=1 ; $i<$mois_courant+1 ; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_apres'>".$LANG['calendarM'][$i-1]."</a></div>\n";
+               "annee_courante=$annee_apres'>".$monthsarray[$i]."</a></div>\n";
       }
       echo "</div>";
       echo "</td></tr></table>";
@@ -471,13 +473,13 @@ class Reservation extends CommonDBChild {
 
       // test
       echo "<table width='100%' class='tab_cadre'><tr>";
-      echo "<th width='14%'>".$LANG['calendarD'][1]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][2]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][3]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][4]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][5]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][6]."</th>";
-      echo "<th width='14%'>".$LANG['calendarD'][0]."</th>";
+      echo "<th width='14%'>".__('Monday')."</th>";
+      echo "<th width='14%'>".__('Tuesday')."</th>";
+      echo "<th width='14%'>".__('Wednesday')."</th>";
+      echo "<th width='14%'>".__('Thursday')."</th>";
+      echo "<th width='14%'>".__('Friday')."</th>";
+      echo "<th width='14%'>".__('Sunday')."</th>";
+      echo "<th width='14%'>".__('Saturday')."</th>";
       echo "</tr>\n";
       echo "<tr class='tab_bg_3' >";
 

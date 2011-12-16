@@ -138,8 +138,6 @@ $LANG['calendar'][25]="Beginning of the month";
 $LANG['calendar'][26]="Beginning of the year"; 
 $LANG['calendar'][27]="Today"; 
 
-/// TODO Before is ok for migration to gettext
-
 $LANG['calendarD'][0]="S"; 
 $LANG['calendarD'][1]="M"; 
 $LANG['calendarD'][2]="T"; 
@@ -156,6 +154,7 @@ $LANG['calendarDay'][4]="Thursday";
 $LANG['calendarDay'][5]="Friday"; 
 $LANG['calendarDay'][6]="Saturday"; 
 
+
 $LANG['calendarM'][0]="January"; 
 $LANG['calendarM'][1]="February"; 
 $LANG['calendarM'][2]="March"; 
@@ -168,6 +167,8 @@ $LANG['calendarM'][8]="September";
 $LANG['calendarM'][9]="October"; 
 $LANG['calendarM'][10]="November"; 
 $LANG['calendarM'][11]="December"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['cartridges'][0]="Cartridge"; 
 $LANG['cartridges'][1]="Cartridge Model"; 

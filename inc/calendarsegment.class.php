@@ -302,7 +302,7 @@ class CalendarSegment extends CommonDBChild {
          echo "<input type='hidden' name='entities_id' value='".$calendar->fields['entities_id']."'>";
          echo "<input type='hidden' name='is_recursive' value='".$calendar->fields['is_recursive']."'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Dropdown::showFromArray('day', $LANG['calendarDay']);
+         Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
          echo "</td><td class='center'>".__('Start').'</td><td>';
          Dropdown::showHours("begin",date('H').":00");
          echo "</td><td class='center'>".__('End').'</td><td>';
@@ -326,6 +326,8 @@ class CalendarSegment extends CommonDBChild {
                 ORDER BY `day`, `begin`, `end`";
       $result = $DB->query($query);
 
+      $daysofweek = Toolbox::getDaysOfWeekArray();
+
       if ($DB->numrows($result) >0) {
          while ($data = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1'>";
@@ -339,7 +341,7 @@ class CalendarSegment extends CommonDBChild {
             echo "</td>";
 
             echo "<td>";
-            echo $LANG['calendarDay'][$data['day']];
+            echo $daysofweek[$data['day']];
             echo "</td>";
             echo "<td>".$data["begin"]."</td>";
             echo "<td>".$data["end"]."</td>";
