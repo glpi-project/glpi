@@ -3981,7 +3981,7 @@ CREATE TABLE `glpi_profiles_users` (
 
 INSERT INTO `glpi_profiles_users` VALUES ('2','2','4','0','1','0');
 INSERT INTO `glpi_profiles_users` VALUES ('3','3','1','0','1','0');
-INSERT INTO `glpi_profiles_users` VALUES ('4','4','4','0','1','0');
+INSERT INTO `glpi_profiles_users` VALUES ('4','4','6','0','1','0');
 INSERT INTO `glpi_profiles_users` VALUES ('5','5','2','0','1','0');
 
 ### Dump table glpi_registrykeys
