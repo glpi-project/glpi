@@ -35,8 +35,8 @@
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration_log_file;
 
-   fwrite($migration_log_file, $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " .
-                               $error . "\n");
+   fwrite($migration_log_file,
+          $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
 }
 
 

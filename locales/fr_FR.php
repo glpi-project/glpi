@@ -381,7 +381,6 @@ $LANG['common'][120] = "L'élément doit être rattaché à un objet";
 $LANG['common'][121] = "problème(s) d'habilitation";
 
 $LANG['common'][123] = "Délégataire";
-$LANG['common'][124] = "Élément non rattaché à un objet";
 
 
 
@@ -1598,7 +1597,6 @@ $LANG['networking'][59] = "Passerelle";
 $LANG['networking'][60] = "Masque";
 $LANG['networking'][61] = "Sous-réseau";
 $LANG['networking'][62] = "Aucune carte réseau disponible";
-$LANG['networking'][63] = "Équipement non doté de carte réseau";
 
 $LANG['ocsconfig'][0] = "OCSNG";
 $LANG['ocsconfig'][1]  = "Utilisateur de la base de données OCSNG";
