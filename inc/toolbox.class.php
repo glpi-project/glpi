@@ -80,12 +80,12 @@ class Toolbox {
    **/
    static function ucfirst($str) {
 
-      if($str{0}>="\xc3")
-         return (($str{1}>="\xa0")?
-         ($str{0}.chr(ord($str{1})-32)):
-         ($str{0}.$str{1})).substr($str,2);
-      else return ucfirst($str); 
-
+      if ($str{0} >= "\xc3") {
+         return (($str{1}>="\xa0") ? ($str{0}.chr(ord($str{1})-32))
+                                   : ($str{0}.$str{1})).substr($str,2);
+      } else {
+         return ucfirst($str);
+      }
     }
 
 
