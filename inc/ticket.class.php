@@ -388,7 +388,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      // Not check show_all_ticket for Ticket itself      
+      // Not check show_all_ticket for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
             $ong = array();
@@ -1746,7 +1746,7 @@ class Ticket extends CommonITILObject {
       $tab[64]['linkfield']     = 'users_id_lastupdater';
       $tab[64]['name']          = $LANG['common'][101];
       $tab[64]['massiveaction'] = false;
-      
+
       $tab += $this->getSearchOptionsActors();
 
       $tab['sla'] = $LANG['sla'][1];
@@ -2824,7 +2824,8 @@ class Ticket extends CommonITILObject {
                       'slas_id'                   => 0,
                       '_add_validation'           => 0,
                       'type'                      => EntityData::getUsedConfig('tickettype',
-                                                                               $_SESSION['glpiactive_entity']),
+                                                                               $_SESSION['glpiactive_entity'],
+                                                                               '', Ticket::INCIDENT_TYPE),
                       '_right'                    => "id");
 
 
@@ -3001,15 +3002,13 @@ class Ticket extends CommonITILObject {
 
       $condition = "`is_helpdeskvisible`='1'";
       switch ($options['type']) {
+         default:
          case self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
             break;
 
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
-            break;
-
-         default:
             break;
       }
       $opt = array('value'     => $options['itilcategories_id'],
@@ -3316,7 +3315,7 @@ class Ticket extends CommonITILObject {
             $this->fields["entities_id"] = $this->userentities[0];
          }
       }
-      
+
       if (!isset($options['template_preview'])) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
                $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
@@ -3675,7 +3674,7 @@ class Ticket extends CommonITILObject {
                 $tt->getEndHiddenFieldText('itemtype');
       echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";                
+                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       echo "</th>";
       echo "<td rowspan='2'>";
       echo $tt->getBeginHiddenFieldValue('itemtype');
@@ -3715,7 +3714,7 @@ class Ticket extends CommonITILObject {
          if ($ID) {
             echo "</div>";
          }
-         
+
          echo "<span id='item_ticket_selection_information'></span>";
 
       } else {
@@ -4077,7 +4076,7 @@ class Ticket extends CommonITILObject {
 
          case "rejected" : // on affiche les tickets rejetés
             $query .= "WHERE ($search_assign)
-                             AND `status` <> 'closed'            
+                             AND `status` <> 'closed'
                              AND `global_validation` = 'rejected' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
