@@ -336,7 +336,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                     $lastItem->fields['locations_id'], 1, $lastItem->getEntityID(),
                                     $netport->fields["itemtype"]);
       } else {
-         echo $LANG['common'][124];
+         _e('item not linked to an object');
       }
       echo "</td>";
    }
@@ -382,7 +382,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
     * (Ethernet or Wifi). This method Allows us to select which one to select.
     *
-    * @param $lastItem the item that owns the NetworkPort we are selecting
+    * @param $recursiveItems
     * @param $multiple NetworkPortAlias are based on one NetworkPort wherever NetworkPortAggregate
     *                  are based on several NetworkPort.
    **/
