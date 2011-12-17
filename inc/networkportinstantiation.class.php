@@ -223,7 +223,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $LANG, $DB;
 
-      echo "<td>" . $LANG['devices'][3] . "&nbsp;:</td>\n</td>";
+      echo "<td>" . __('"Network Card') . "</td>\n</td>";
       echo "<td>";
 
       if (count($recursiveItems)  > 0) {
@@ -246,7 +246,7 @@ class NetworkPortInstantiation extends CommonDBChild {
             $query .= " FROM `glpi_devicenetworkcards` AS device,
                              `glpi_computers_devicenetworkcards` AS link
                         WHERE link.`computers_id` = ".$lastItem->getID()."
-                        AND device.`id` = link.`devicenetworkcards_id`";
+                              AND device.`id` = link.`devicenetworkcards_id`";
             // TODO : add checking the type of network card !
 
             // Add the javascript to update each field
@@ -288,13 +288,13 @@ class NetworkPortInstantiation extends CommonDBChild {
                                 'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames, $options);
             } else {
-               echo $LANG['networking'][62];
+                _e('no network card available');
             }
          } else {
-            echo $LANG['networking'][63];
+            _e('equipment without network card');
          }
       } else {
-         echo $LANG['common'][124];
+         _e('item not linked to an object');
       }
       echo "</td>";
    }

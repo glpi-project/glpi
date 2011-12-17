@@ -488,7 +488,7 @@ class NetworkPort extends CommonDBChild {
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) > 0) {
-         $lastItem = $recursiveItems[count($recursiveItems) - 1];
+         $lastItem             = $recursiveItems[count($recursiveItems) - 1];
          $lastItem_entities_id = $lastItem->getField('entities_id');
       } else {
          $lastItem_entities_id = $_SESSION['glpiactive_entity'];
