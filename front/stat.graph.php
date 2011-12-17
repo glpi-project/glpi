@@ -111,7 +111,7 @@ switch($_GET["type"]) {
 
    case "itilcategories_tree" :
       $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
-      $cond = "`itilcategories_id`='$parent'";
+      $cond = "(`id`='$parent' OR `itilcategories_id`='$parent')";
       // nobreak;
    case "itilcategories_id" :
       $val1  = $_GET["id"];
@@ -135,7 +135,7 @@ switch($_GET["type"]) {
    case 'group_tree' :
    case 'groups_tree_assign' :
       $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
-      $cond = "`groups_id`='$parent' AND ".
+      $cond = "(`id`='$parent' OR `groups_id`='$parent') AND ".
               ($_GET["type"]=='group_tree' ? '`is_requester`' : '`is_assign`');
       // nobreak;
    case "group" :

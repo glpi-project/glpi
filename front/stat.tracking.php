@@ -161,7 +161,7 @@ if (!$_REQUEST['showgraph']) {
 
 } else {
    $data = Stat::getDatas($_REQUEST["itemtype"], $_REQUEST["type"], $_REQUEST["date1"],
-                          $_REQUEST["date2"], $_REQUEST['start'], $val);
+                          $_REQUEST["date2"], $_REQUEST['start'], $val, $_REQUEST['value2']);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {
