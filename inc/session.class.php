@@ -584,8 +584,8 @@ class Session {
               && (isCommandLine()
                   || strpos($_SERVER['PHP_SELF'], 'cron.php')
                   || strpos($_SERVER['REQUEST_URI'], 'crontask.php?execute')));
-
    }
+
 
    /**
     * Get the Login User ID or return cron user ID for cron jobs

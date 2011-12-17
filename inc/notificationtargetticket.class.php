@@ -211,15 +211,15 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas["##ticket.costtime"]     = $item->getField('cost_time');
 
       $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
-                                                               "/index.php?redirect=ticket_".
-                                                               $item->getField("id")."_TicketValidation");
+                                                       "/index.php?redirect=ticket_".
+                                                       $item->getField("id")."_TicketValidation");
 
       $datas['##ticket.globalvalidation##']
                   = TicketValidation::getStatus($item->getField('global_validation'));
       $datas['##ticket.type##']  = Ticket::getTicketTypeName($item->getField('type'));
       $datas['##ticket.requesttype##']
                   = Dropdown::getDropdownName('glpi_requesttypes',
-                                                $item->getField('requesttypes_id'));
+                                              $item->getField('requesttypes_id'));
 
       $autoclose_value = EntityData::getUsedConfig('autoclose_delay', $this->getEntity(),
                                                    '', EntityData::CONFIG_NEVER);
@@ -294,7 +294,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          if ($hardware->isField('locations_id')) {
             $datas['##ticket.item.location##']
                         = Dropdown::getDropdownName('glpi_locations',
-                                                      $hardware->getField('locations_id'));
+                                                    $hardware->getField('locations_id'));
          }
 
          //Object user
@@ -309,7 +309,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          if ($hardware->getField('groups_id')) {
             $datas['##ticket.item.group##']
                         = Dropdown::getDropdownName('glpi_groups',
-                                                      $hardware->getField('groups_id'));
+                                                    $hardware->getField('groups_id'));
          }
 
          $modeltable = getSingular($this->getTable())."models";
@@ -656,7 +656,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Tags with just lang
       $tags = array('ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.problems'         => $LANG['Menu'][7],
-                    'ticket.autoclosewarning' => sprintf(__('Without a reply, the ticket will be automatically closed after %s day'),'?'));
+                    'ticket.autoclosewarning'
+                     => sprintf(__('Without a reply, the ticket will be automatically closed after %s day'),
+                                '?'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

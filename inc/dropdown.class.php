@@ -1088,7 +1088,7 @@ class Dropdown {
             } else {
                $values[$i] = sprintf(_n('%d day','%d days',$day),$day);
             }
-            
+
          } else if ($hour > 0 || $minute > 0) {
             //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
             $values[$i] = sprintf(__('%1$dh%2$s'),$hour,$minute);
@@ -1509,7 +1509,8 @@ class Dropdown {
 
                case 'Ticket' :
                   $tmp = new TicketFollowup();
-                  if ($tmp->canCreate() && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                  if ($tmp->canCreate()
+                      && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
                      echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
                   }
 

@@ -378,10 +378,11 @@ class TicketTemplate extends CommonDropdown {
                /// Display items_id
 
                if ($field == 'itemtype') {
-                  $output .= "<input type='hidden' name='items_id' value=\"".$ticket->fields['items_id']."\">";
+                  $output .= "<input type='hidden' name='items_id' value=\"".
+                               $ticket->fields['items_id']."\">";
                   if ($num = array_search('items_id',$this->getAllowedFields())) {
                      $output .= " - ".$ticket->getValueToDisplay($num, $ticket->fields,
-                                                           $display_options);
+                                                                 $display_options);
                   }
                }
             }

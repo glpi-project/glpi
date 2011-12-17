@@ -80,12 +80,12 @@ class Toolbox {
    **/
    static function ucfirst($str) {
 
-      if($str{0}>="\xc3")
-         return (($str{1}>="\xa0")?
-         ($str{0}.chr(ord($str{1})-32)):
-         ($str{0}.$str{1})).substr($str,2);
-      else return ucfirst($str); 
-
+      if ($str{0} >= "\xc3") {
+         return (($str{1}>="\xa0") ? ($str{0}.chr(ord($str{1})-32))
+                                   : ($str{0}.$str{1})).substr($str,2);
+      } else {
+         return ucfirst($str);
+      }
     }
 
 
@@ -1648,32 +1648,32 @@ class Toolbox {
    }
 
    static function getDaysOfWeekArray() {
-      $tab[0] = __("Sunday"); 
-      $tab[1] = __("Monday"); 
-      $tab[2] = __("Tuesday"); 
-      $tab[3] = __("Wednesday"); 
-      $tab[4] = __("Thursday"); 
-      $tab[5] = __("Friday"); 
-      $tab[6] = __("Saturday");   
-      
+      $tab[0] = __("Sunday");
+      $tab[1] = __("Monday");
+      $tab[2] = __("Tuesday");
+      $tab[3] = __("Wednesday");
+      $tab[4] = __("Thursday");
+      $tab[5] = __("Friday");
+      $tab[6] = __("Saturday");
+
       return $tab;
    }
 
    static function getMonthsOfYearArray() {
-   
-      $tab[1]  = __("January"); 
-      $tab[2]  = __("February"); 
-      $tab[3]  = __("March"); 
-      $tab[4]  = __("April"); 
-      $tab[5]  = __("May"); 
-      $tab[6]  = __("June"); 
-      $tab[7]  = __("July"); 
-      $tab[8]  = __("August"); 
-      $tab[9]  = __("September"); 
-      $tab[10] = __("October"); 
-      $tab[11] = __("November"); 
-      $tab[12] = __("December"); 
-      
+
+      $tab[1]  = __("January");
+      $tab[2]  = __("February");
+      $tab[3]  = __("March");
+      $tab[4]  = __("April");
+      $tab[5]  = __("May");
+      $tab[6]  = __("June");
+      $tab[7]  = __("July");
+      $tab[8]  = __("August");
+      $tab[9]  = __("September");
+      $tab[10] = __("October");
+      $tab[11] = __("November");
+      $tab[12] = __("December");
+
       return $tab;
    }
 

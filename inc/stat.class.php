@@ -45,10 +45,9 @@ class Stat {
       global $CFG_GLPI, $DB;
 
       $item = new $itemtype();
-
-      $val = array();
-
+      $val  = array();
       $cond = '';
+
       switch ($type) {
          case "technicien" :
             $val = $item->getUsedTechBetween($date1, $date2);
@@ -76,7 +75,7 @@ class Stat {
             $query = "SELECT `id`, `name`
                       FROM `glpi_groups`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
-                            AND (`id`=$parent OR `groups_id`='$parent')
+                            AND (`id` = $parent OR `groups_id` = '$parent')
                             AND ".($type=='group_tree' ? '`is_requester`' : '`is_assign`')."
                       ORDER BY `completename`";
 
@@ -92,8 +91,9 @@ class Stat {
             break;
 
          case "itilcategories_tree" :
-            $cond = "AND (`id`='$parent' OR `itilcategories_id`='$parent')";
+            $cond = "AND (`id` = '$parent' OR `itilcategories_id` = '$parent')";
             // nobreak
+
          case "itilcategories_id" :
             // Get all ticket categories for tree merge management
             $query = "SELECT DISTINCT `glpi_itilcategories`.`id`,
@@ -389,7 +389,7 @@ class Stat {
             $row_num++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
-            if ($output_type==HTML_OUTPUT
+            if ($output_type == HTML_OUTPUT
                 && strstr($type, '_tree')
                 && $value[$i]['id'] != $value2) {
                // HTML display
@@ -626,12 +626,12 @@ class Stat {
       switch ($param) {
          case "technicien" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`$userlinktable`.`users_id` = '$value'
-                              AND `$userlinktable`.`type`='".CommonITILObject::ASSIGN."')";
+            $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
+                               AND `$userlinktable`.`type`='".CommonITILObject::ASSIGN."')";
             break;
 
          case "technicien_followup" :
-            $WHERE .= " AND `$tasktable`.`users_id` = '$value'";
+            $WHERE   .= " AND `$tasktable`.`users_id` = '$value'";
             $LEFTJOIN = " LEFT JOIN `$tasktable`
                               ON (`$tasktable`.`$fkfield` = `$table`.`id`)";
             break;
@@ -642,24 +642,24 @@ class Stat {
 
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
-            $WHERE .= " AND (`$userlinktable`.`users_id` = '$value'
-                              AND `$userlinktable`.`type` ='".CommonITILObject::REQUESTER."')";
+            $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
+                               AND `$userlinktable`.`type` ='".CommonITILObject::REQUESTER."')";
             break;
 
          case "usertitles_id" :
-            $LEFTJOIN = $LEFTJOINUSER;
+            $LEFTJOIN  = $LEFTJOINUSER;
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
-            $WHERE .= " AND (`glpi_users`.`usertitles_id` = '$value'
-                              AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+            $WHERE    .= " AND (`glpi_users`.`usertitles_id` = '$value'
+                                AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "usercategories_id" :
-            $LEFTJOIN = $LEFTJOINUSER;
+            $LEFTJOIN  = $LEFTJOINUSER;
             $LEFTJOIN .= " LEFT JOIN `glpi_users`
                               ON (`glpi_users`.`id` = `$userlinktable`.`users_id`)";
-            $WHERE .= " AND (`glpi_users`.`usercategories_id` = '$value'
-                              AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+            $WHERE    .= " AND (`glpi_users`.`usercategories_id` = '$value'
+                                AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "users_id_recipient" :
@@ -701,29 +701,30 @@ class Stat {
 
          case 'group_tree' :
          case 'groups_tree_assign' :
-            $grptype    = ($param=='group_tree' ? CommonITILObject::REQUESTER : CommonITILObject::ASSIGN);
+            $grptype = ($param=='group_tree' ? CommonITILObject::REQUESTER
+                                             : CommonITILObject::ASSIGN);
             if ($value == $value2) {
                $groups = array($value);
             } else {
                $groups = getSonsOf("glpi_groups", $value);
             }
-            $condition  = implode("','",$groups);
+            $condition = implode("','",$groups);
 
-            $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
-                              AND `$grouplinktable`.`type` = '$grptype')";
+            $LEFTJOIN  = $LEFTJOINGROUP;
+            $WHERE    .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
+                                AND `$grouplinktable`.`type` = '$grptype')";
             break;
 
          case "group" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                              AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
+            $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
+                               AND `$grouplinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
             $LEFTJOIN = $LEFTJOINGROUP;
-            $WHERE .= " AND (`$grouplinktable`.`groups_id` = '$value'
-                              AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
+            $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
+                               AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
 
          case "requesttypes_id" :
@@ -749,13 +750,13 @@ class Stat {
             break;
 
          case "comp_champ" :
-            $ftable = getTableForItemType($value2);
-            $champ = getForeignKeyFieldForTable($ftable);
+            $ftable   = getTableForItemType($value2);
+            $champ    = getForeignKeyFieldForTable($ftable);
             $LEFTJOIN = " INNER JOIN `glpi_computers`
                               ON (`glpi_computers`.`id` = `$table`.`items_id`
                                   AND `$table`.`itemtype` = 'Computer')";
-            $WHERE .= " AND `glpi_computers`.`$champ` = '$value'
-                        AND `glpi_computers`.`is_template` <> '1'";
+            $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
+                          AND `glpi_computers`.`is_template` <> '1'";
             break;
       }
 
@@ -763,14 +764,14 @@ class Stat {
          case "inter_total" :
             $WHERE .= " AND ".getDateRequest("`$table`.`date`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m')
-                                 AS date_unix,
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`date`),'%Y-%m')
+                                  AS date_unix,
                              COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`date`";
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`date`";
             break;
 
          case "inter_solved" :
@@ -778,14 +779,14 @@ class Stat {
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`solvedate`";
+                              COUNT(`$table`.`id`) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_solved_late" :
@@ -795,13 +796,13 @@ class Stat {
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
                         AND `$table`.`solvedate` > `$table`.`due_date`";
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
+                              COUNT(`$table`.`id`) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
                       ORDER BY `$table`.`solvedate`";
             break;
 
@@ -810,14 +811,14 @@ class Stat {
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`closedate`";
+                              COUNT(`$table`.`id`) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgsolvedtime" :
@@ -825,14 +826,14 @@ class Stat {
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(solve_delay_stat) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`solvedate`";
+                              AVG(solve_delay_stat) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_avgclosedtime" :
@@ -840,13 +841,13 @@ class Stat {
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(close_delay_stat) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
+                              AVG(close_delay_stat) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
                       ORDER BY `$table`.`closedate`";
             break;
 
@@ -859,14 +860,14 @@ class Stat {
             $WHERE .= " AND `$actiontime_table`.`actiontime` > '0'
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(`$actiontime_table`.`actiontime`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`solvedate`";
+                              AVG(`$actiontime_table`.`actiontime`) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_avgtakeaccount" :
@@ -874,15 +875,15 @@ class Stat {
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
-            $query = "SELECT `$table`.`id`,
-                             FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
+            $query  = "SELECT `$table`.`id`,
+                              FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(`$table`.`takeintoaccount_delay_stat`) AS total_visites
-                      FROM `$table`
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`solvedate`";
+                              AVG(`$table`.`takeintoaccount_delay_stat`) AS total_visites
+                       FROM `$table`
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_opensatisfaction" :
@@ -890,16 +891,16 @@ class Stat {
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`closedate`";
+                              COUNT(`$table`.`id`) AS total_visites
+                       FROM `$table`
+                       INNER JOIN `glpi_ticketsatisfactions`
+                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_answersatisfaction" :
@@ -908,16 +909,16 @@ class Stat {
                         AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             COUNT(`$table`.`id`) AS total_visites
-                      FROM `$table`
-                      INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`closedate`";
+                              COUNT(`$table`.`id`) AS total_visites
+                       FROM `$table`
+                       INNER JOIN `glpi_ticketsatisfactions`
+                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgsatisfaction" :
@@ -926,18 +927,17 @@ class Stat {
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
+            $query  = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`$table`.`closedate`),'%Y-%m')
                                  AS date_unix,
-                             AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
-                      FROM `$table`
-                      INNER JOIN `glpi_ticketsatisfactions`
-                        ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
-                      $LEFTJOIN
-                      $WHERE
-                      GROUP BY date_unix
-                      ORDER BY `$table`.`closedate`";
+                              AVG(`glpi_ticketsatisfactions`.`satisfaction`) AS total_visites
+                       FROM `$table`
+                       INNER JOIN `glpi_ticketsatisfactions`
+                           ON (`$table`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                       $LEFTJOIN
+                       $WHERE
+                       GROUP BY date_unix
+                       ORDER BY `$table`.`closedate`";
             break;
-
       }
 
       $entrees = array();
