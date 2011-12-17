@@ -76,9 +76,9 @@ class Stat {
             $query = "SELECT `id`, `name`
                       FROM `glpi_groups`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
-                            AND `groups_id`='$parent'
+                            AND (`id`=$parent OR `groups_id`='$parent')
                             AND ".($type=='group_tree' ? '`is_requester`' : '`is_assign`')."
-                      ORDER BY name";
+                      ORDER BY `completename`";
 
             $result = $DB->query($query);
             $val    = array();
@@ -92,7 +92,7 @@ class Stat {
             break;
 
          case "itilcategories_tree" :
-            $cond = "AND `itilcategories_id`='$parent'";
+            $cond = "AND (`id`='$parent' OR `itilcategories_id`='$parent')";
             // nobreak
          case "itilcategories_id" :
             // Get all ticket categories for tree merge management
@@ -101,7 +101,7 @@ class Stat {
                       FROM `glpi_itilcategories`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_itilcategories", '', '', true)."
                             $cond
-                      ORDER BY category";
+                      ORDER BY `completename`";
 
             $result = $DB->query($query);
             $val    = array();
@@ -389,7 +389,9 @@ class Stat {
             $row_num++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
-            if ($output_type==HTML_OUTPUT && strstr($type, '_tree')) {
+            if ($output_type==HTML_OUTPUT
+                && strstr($type, '_tree')
+                && $value[$i]['id'] != $value2) {
                // HTML display
                $link = $_SERVER['PHP_SELF'].
                        "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
@@ -669,12 +671,19 @@ class Stat {
             break;
 
          case "itilcategories_tree" :
-            $categories = getSonsOf("glpi_itilcategories", $value);
+            if ($value == $value2) {
+               $categories = array($value);
+            } else {
+               $categories = getSonsOf("glpi_itilcategories", $value);
+            }
             $condition  = implode("','",$categories);
             $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
             break;
 
          case "itilcategories_id" :
+            /*
+            Drop this =>  Flat display, don't count child (use tree display for that)
+
             if (!empty($value)) {
                // do not merge for pie chart
                if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
@@ -685,15 +694,19 @@ class Stat {
                   $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
                }
 
-            } else {
-               $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
-            }
+            } else {             */
+
+            $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
             break;
 
          case 'group_tree' :
          case 'groups_tree_assign' :
             $grptype    = ($param=='group_tree' ? CommonITILObject::REQUESTER : CommonITILObject::ASSIGN);
-            $groups     = getSonsOf("glpi_groups", $value);
+            if ($value == $value2) {
+               $groups = array($value);
+            } else {
+               $groups = getSonsOf("glpi_groups", $value);
+            }
             $condition  = implode("','",$groups);
 
             $LEFTJOIN = $LEFTJOINGROUP;
