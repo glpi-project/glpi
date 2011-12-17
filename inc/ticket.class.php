@@ -387,7 +387,7 @@ class Ticket extends CommonITILObject {
                return self::createTabEntry($title, $nb);
             }
          }
-      }         
+      }
       // Not check show_all_ticket for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
@@ -2827,7 +2827,8 @@ class Ticket extends CommonITILObject {
                       'slas_id'                    => 0,
                       '_add_validation'            => 0,
                       'type'              => EntityData::getUsedConfig('tickettype',
-                                                                       $_SESSION['glpiactive_entity']),
+                                                                       $_SESSION['glpiactive_entity'],
+                                                                       '', Ticket::INCIDENT_TYPE),
                       '_right'                     => "id");
 
 
@@ -3005,16 +3006,13 @@ class Ticket extends CommonITILObject {
 
       $condition = "`is_helpdeskvisible`='1'";
       switch ($options['type']) {
-         case self::INCIDENT_TYPE :
-            $condition .= " AND `is_incident`='1'";
-            break;
-
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
             break;
 
-         default :
-            break;
+         default: // self::INCIDENT_TYPE :
+            $condition .= " AND `is_incident`='1'";
+
       }
       $opt = array('value'     => $options['itilcategories_id'],
                    'condition' => $condition,
