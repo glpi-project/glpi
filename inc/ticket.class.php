@@ -3002,14 +3002,12 @@ class Ticket extends CommonITILObject {
 
       $condition = "`is_helpdeskvisible`='1'";
       switch ($options['type']) {
-         default:
-         case self::INCIDENT_TYPE :
-            $condition .= " AND `is_incident`='1'";
-            break;
-
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
             break;
+
+         default: // self::INCIDENT_TYPE :
+            $condition .= " AND `is_incident`='1'";
       }
       $opt = array('value'     => $options['itilcategories_id'],
                                            'condition' => $condition,
