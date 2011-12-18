@@ -107,7 +107,7 @@ abstract class CommonDBChild extends CommonDBTM {
       global $LANG;
 
       if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
-         _e('item not linked to an object');
+         _e('Item not linked to an object');
          return;
       }
 
