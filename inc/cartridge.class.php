@@ -251,7 +251,7 @@ class Cartridge extends CommonDBTM {
          } else {
             //TRANS : for display cartridges count : %1$d is the total number, %2$d the new one, %3$d the used one, %4$d worn one
             $out .= sprintf(__('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
-                        $total,$unused,$used,$old);
+                            $total ,$unused, $used, $old);
          }
 
       } else {

@@ -288,13 +288,13 @@ class NetworkPortInstantiation extends CommonDBChild {
                                 'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames, $options);
             } else {
-                _e('no network card available');
+                _e('No network card available');
             }
          } else {
-            _e('equipment without network card');
+            _e('Equipment without network card');
          }
       } else {
-         _e('item not linked to an object');
+         _e('Item not linked to an object');
       }
       echo "</td>";
    }
