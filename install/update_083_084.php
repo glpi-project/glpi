@@ -35,15 +35,19 @@
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error) {
    global $migration_log_file;
 
-   fwrite($migration_log_file,
-          $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
+   if ($migration_log_file) {
+      fwrite($migration_log_file,
+             $origin . " - " . $id . "=" . $itemtype . "[" . $items_id . "] : " . $error . "\n");
+   }
 }
 
 
 function logMessage($msg, $andDisplay) {
    global $migration, $migration_log_file;
 
-   fwrite($migration_log_file, "** $msg\n");
+   if ($migration_log_file) {
+      fwrite($migration_log_file, "** $msg\n");
+   }
 
    if ($andDisplay) {
       $migration->displayMessage ($msg);
@@ -710,7 +714,9 @@ function update083to084() {
    }
 
 
-   fclose($GLOBALS['migration_log_file']);
+   if ($GLOBALS['migration_log_file']) {
+      fclose($GLOBALS['migration_log_file']);
+   }
 
    // must always be at the end
    $migration->executeMigration();
