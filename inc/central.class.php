@@ -55,9 +55,9 @@ class Central extends CommonGLPI {
       global $LANG;
 
       if ($item->getType() == __CLASS__) {
-         $tabs[1] = $LANG['central'][12]; // My
-         $tabs[2] = $LANG['central'][14]; // Group
-         $tabs[3] = $LANG['central'][13]; // Global
+         $tabs[1] = __('Personal View');
+         $tabs[2] = __('Group View');
+         $tabs[3] = __('Global View');
 
          return $tabs;
       }
@@ -141,12 +141,13 @@ class Central extends CommonGLPI {
          $user = new User();
          if (!empty($logins)) {
             $accouts = array();
-            $message = $LANG['central'][1]." : ";
             foreach ($logins as $login) {
                $user->getFromDBbyName($login);
                $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a>";
             }
-            $message.= implode(" ", $accounts);
+            $message= sprintf(__('For security reasons, please change the password for the default users: %s'),
+                              implode(" ", $accounts));
+
             echo "<tr><th colspan='2'><br>";
             Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
             echo "</th></tr>";

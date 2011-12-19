@@ -221,7 +221,7 @@ class Event extends CommonDBTM {
       // No Events in database
       if ($number < 1) {
          echo "<br><table class='tab_cadrehov'>";
-         echo "<tr><th>".$LANG['central'][4]."</th></tr>";
+         echo "<tr><th>".__('No Event')."</th></tr>";
          echo "</table><br>";
          return;
       }
@@ -231,8 +231,8 @@ class Event extends CommonDBTM {
 
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr><th colspan='5'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".$LANG['central'][2]." ".
-             $_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".
+           sprintf(__('Last %d events'),  $_SESSION['glpilist_limit'])."</a>";
       echo "</th></tr>";
 
       echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
@@ -320,7 +320,7 @@ class Event extends CommonDBTM {
 
       // No Events in database
       if ($number < 1) {
-         echo "<div class='center b'>".$LANG['central'][4]."</div>";
+         echo "<div class='center b'>".__('No Event')."</div>";
          return;
       }
 

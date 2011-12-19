@@ -586,15 +586,15 @@ class DisplayPreference extends CommonDBTM {
       switch ($item->getType()) {
          case 'Preference' :
             if (Session::haveRight('search_config', 'w')) {
-               return $LANG['central'][12];
+               return __('Personal View');
             }
             break;
 
          case __CLASS__:
             $ong = array();
-            $ong[1] = $LANG['central'][13];  // view group
+            $ong[1] = __('Global View');
             if (Session::haveRight('search_config', 'w')) {
-               $ong[2] = $LANG['central'][12]; // view personnal
+               $ong[2] = __('Personal View');
             }
             return $ong;
       }

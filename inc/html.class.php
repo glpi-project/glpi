@@ -327,31 +327,31 @@ class Html {
       if ($units['day']>0) {
          if ($display_sec) {
             //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes,  %4$d number of seconds
-            return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)', 
-                           $units['day'], $units['hour'], $units['minute'], 
+            return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)',
+                           $units['day'], $units['hour'], $units['minute'],
                            $units['second']);
          }
          //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
-         return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s)', 
+         return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s)',
                $units['day'], $units['hour'], $units['minute']);
       }
 
       if ($units['hour']>0) {
          if ($display_sec) {
             //TRANS: %1$d number of hours,   %2$d number of minutes,  %3$d number of seconds
-            return sprintf('%1$d hour(s) %2$d minute(s) %3$d second(s)', 
-                           $units['hour'], $units['minute'], 
+            return sprintf('%1$d hour(s) %2$d minute(s) %3$d second(s)',
+                           $units['hour'], $units['minute'],
                            $units['second']);
          }
          //TRANS: %1$d number of hours,   %2$d number of minutes
-         return sprintf('%1$d hour(s) %2$d minute(s)', 
+         return sprintf('%1$d hour(s) %2$d minute(s)',
                $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
-            return sprintf('%1$d minute(s) %2$d second(s)', 
+            return sprintf('%1$d minute(s) %2$d second(s)',
                            $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of minutes
@@ -1953,7 +1953,8 @@ class Html {
 
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' accesskey='1' title=\"".$LANG['central'][5]."\">";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' accesskey='1' title=\"".
+           __s('Home')."\">";
       echo "</a></div>";
 
       /// Prefs / Logout link
@@ -1966,7 +1967,7 @@ class Html {
       if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
          echo "?noAUTO=1";
       }
-      echo "' title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."</a>";
+      echo "' title=\"".__s('Logout')."\">".__('Logout')."</a>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1979,8 +1980,8 @@ class Html {
 
       echo "<li><a href='".
             (empty($CFG_GLPI["central_doc_url"])?"http://glpi-project.org/help-central":
-            $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".$LANG['central'][7]."\">".
-            $LANG['central'][7]."</a></li>";
+            $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
+            __('Help')."</a></li>";
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>";
@@ -2100,7 +2101,7 @@ class Html {
 
       // Display item
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".
-                 $LANG['central'][5]."\">".$LANG['central'][5]."</a> ></li>";
+                 __s('Home')."\">".__('Home')."</a> ></li>";
 
       if (isset($menu[$sector])) {
          $link = "/front/central.php";
@@ -2414,7 +2415,7 @@ class Html {
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
-             $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
+             __s('Home')."\"><span class='invisible'>Logo</span></a></div>";
 
       // Les préférences + lien déconnexion
       echo "<div id='c_preference'>";
@@ -2481,12 +2482,12 @@ class Html {
       echo "<div id='header'>";
       echo "<div id='c_logo' >";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
-             $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
+             __s('Home')."\"><span class='invisible'>Logo</span></a></div>";
 
       // Les préférences + lien déconnexion
       echo "<div id='c_preference' >";
       echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php' title=\"".
-                                      $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
+                                      __s('Logout')."\">".__('Logout')."</a>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -2499,7 +2500,7 @@ class Html {
 
       echo "<li><a href='".(empty($CFG_GLPI["helpdesk_doc_url"])?
                  "http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdesk_doc_url"]).
-                 "' target='_blank' title=\"".$LANG['central'][7]."\"> ".$LANG['central'][7].
+                 "' target='_blank' title=\"".__s('Help')."\"> ".__('Help').
            "</a></li>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                   $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>\n";
@@ -2522,7 +2523,7 @@ class Html {
       // Home
       echo "<li id='menu1'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-             $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
+             $LANG['job'][13]."\" class='itemP'>".__('Home')."</a>";
       echo "</li>";
 
       //  Create ticket
@@ -2612,7 +2613,7 @@ class Html {
       echo "<div id='c_ssmenu2'>";
       echo "<ul>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-          $LANG['central'][5]."\">".$LANG['central'][5]."></a></li>";
+          __s('Home')."\">".__('Home')."></a></li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       if (Session::haveRight('validate_ticket',1)) {
