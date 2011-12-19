@@ -3088,7 +3088,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
-             $LANG['central'][7]."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
+             __s('Help')."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
              "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 
       echo "&nbsp;";
@@ -3878,7 +3878,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
-               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
+               __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
          echo "&nbsp;";
          self::showDocumentAddButton();
@@ -4164,7 +4164,8 @@ class Ticket extends CommonITILObject {
 
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                           Toolbox::append_params($options,'&amp;')."\">".
+                           __('Your tickets in progress')."</a>";
             }
 
          } else {
@@ -4212,7 +4213,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]        = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][19]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        __('Your tickets to validate')."</a>";
 
                   break;
 
@@ -4228,7 +4230,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        __s('Your rejected tickets')."</a>";
 
                   break;
 
@@ -4246,7 +4249,8 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        __('Your tickets to close')."</a>";
                   break;
 
                case "toapprove" :
@@ -4271,7 +4275,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][3]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        __('Your tickets to close')."</a>";
                   break;
 
                case "requestbyself" :
@@ -4287,7 +4292,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        __('Your tickets in progress')."</a>";
             }
          }
 
@@ -4316,20 +4322,20 @@ class Ticket extends CommonITILObject {
                break;
 
             case 'tovalidate' :
-               echo $LANG['central'][19];
+               _e('Your tickets to validate');
                break;
 
             case 'rejected' :
-               echo $LANG['central'][17];
+               _e('Your rejected tickets');
                break;
 
             case 'toapprove' :
-               echo $LANG['central'][18];
+               _e('Your tickets to close');
                break;
 
             case 'requestbyself' :
             default :
-               echo $LANG['central'][9];
+               _e('Your tickets in progress');
          }
          echo "</th></tr>";
          echo "</table>";
@@ -4488,7 +4494,7 @@ class Ticket extends CommonITILObject {
          $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='9'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
+         echo "<tr><th colspan='9'>".__('New tickets')." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";

@@ -196,8 +196,6 @@ $LANG['cartridges'][40]="Average Time in stock";
 $LANG['cartridges'][41]="Average Time in use"; 
 $LANG['cartridges'][42]="Average number of printed pages"; 
 
-/// TODO Before is ok for migration to gettext
-
 $LANG['central'][1]="For security reasons, please change the password for the default users"; 
 $LANG['central'][2]="Last"; 
 $LANG['central'][4]="No Event"; 
@@ -213,6 +211,8 @@ $LANG['central'][14]="Group View";
 $LANG['central'][17]="Your rejected tickets"; 
 $LANG['central'][18]="Your tickets to close"; 
 $LANG['central'][19]="Your tickets to validate"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['change'][0]="Change"; 
 $LANG['change'][1]="Create a change from this ticket"; 
