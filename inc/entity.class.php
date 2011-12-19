@@ -647,6 +647,14 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+   /**
+    * get all entities with a notification option set
+    * manage CONFIG_PARENT (or NULL) value
+    *
+    * @param $field  String name of the field to search (>0)
+    *
+    * @return Array of id => value
+   **/
    static function getEntitiesToNotify($field) {
       global $DB, $CFG_GLPI;
 
