@@ -539,15 +539,17 @@ class Profile extends CommonDBTM {
       echo "<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
-      echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
-             ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".
+      echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
+             ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
              $LANG['tracking'][1]."</option>\n";
-      echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".
-             ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".
+      echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
+             ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
              $LANG['setup'][351]."</option>\n";
-      echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".
+      echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                               +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
              ($this->fields["helpdesk_hardware"]
-              ==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".
+              ==(pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                 +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
               $LANG['tracking'][1]." + ".$LANG['setup'][351]."</option>";
       echo "</select></td>\n";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
@@ -891,15 +893,19 @@ class Profile extends CommonDBTM {
       echo "\n<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
-      echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
-            ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".
-            $LANG['tracking'][1]."</option>\n";
-      echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".
-            ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".
-            $LANG['setup'][351]."</option>\n";
-      echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".
+      echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]
-             ==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".
+            == pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
+            $LANG['tracking'][1]."</option>\n";
+      echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
+            ($this->fields["helpdesk_hardware"]
+            = pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
+            $LANG['setup'][351]."</option>\n";
+      echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                               +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
+            ($this->fields["helpdesk_hardware"]
+             == (pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                 +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
             $LANG['tracking'][1]." + ".$LANG['setup'][351]."</option>";
       echo "</select></td>\n";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";

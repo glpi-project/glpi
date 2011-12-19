@@ -274,12 +274,12 @@ class Stat {
       global $LANG, $CFG_GLPI;
 
       // Set display type for export if define
-      $output_type = HTML_OUTPUT;
+      $output_type = Search::HTML_OUTPUT;
       if (isset($_GET["display_type"])) {
          $output_type = $_GET["display_type"];
       }
 
-      if ($output_type==HTML_OUTPUT) { // HTML display
+      if ($output_type == Search::HTML_OUTPUT) { // HTML display
          echo "<div class ='center'>";
       }
 
@@ -293,7 +293,7 @@ class Stat {
          }
 
          $nbcols = 8;
-         if ($output_type!=HTML_OUTPUT) { // not HTML display
+         if ($output_type != Search::HTML_OUTPUT) { // not HTML display
             $nbcols--;
          }
 
@@ -310,11 +310,11 @@ class Stat {
                break;
          }
 
-         if ($output_type==HTML_OUTPUT) { // HTML display
+         if ($output_type == Search::HTML_OUTPUT) { // HTML display
             echo Search::showNewLine($output_type);
             $header_num = 1;
 
-            if ($output_type==HTML_OUTPUT && strstr($type, '_tree') && $value2) {
+            if ($output_type == Search::HTML_OUTPUT && strstr($type, '_tree') && $value2) {
                // HTML display
                $link = $_SERVER['PHP_SELF'].
                        "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
@@ -343,10 +343,10 @@ class Stat {
          $header_to_add = '';
          echo Search::showHeaderItem($output_type, $subname, $header_num);
 
-         if ($output_type==HTML_OUTPUT) { // HTML display
+         if ($output_type == Search::HTML_OUTPUT) { // HTML display
             echo Search::showHeaderItem($output_type, "", $header_num);
          }
-         if ($output_type!=HTML_OUTPUT) {
+         if ($output_type != Search::HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][13].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][14], $header_num);
@@ -355,7 +355,7 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
 
          if ($itemtype =='Ticket') {
-            if ($output_type!=HTML_OUTPUT) {
+            if ($output_type != Search::HTML_OUTPUT) {
                $header_to_add = $LANG['satisfaction'][0].' - ';
             }
             echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13],
@@ -366,7 +366,7 @@ class Stat {
                                         $header_num);
          }
 
-         if ($output_type!=HTML_OUTPUT) {
+         if ($output_type != Search::HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][8].' - ';
          }
          if ($itemtype =='Ticket') {
@@ -376,7 +376,7 @@ class Stat {
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
 
-         if ($output_type!=HTML_OUTPUT) {
+         if ($output_type != Search::HTML_OUTPUT) {
             $header_to_add = $LANG['stats'][26].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
@@ -389,7 +389,7 @@ class Stat {
             $row_num++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
-            if ($output_type == HTML_OUTPUT
+            if ($output_type == Search::HTML_OUTPUT
                 && strstr($type, '_tree')
                 && $value[$i]['id'] != $value2) {
                // HTML display
@@ -402,7 +402,7 @@ class Stat {
                echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
             }
 
-            if ($output_type==HTML_OUTPUT) { // HTML display
+            if ($output_type == Search::HTML_OUTPUT) { // HTML display
                $link = "";
                if ($value[$i]['id']>0) {
                   $link = "<a href='stat.graph.php?id=".$value[$i]['id'].
@@ -503,9 +503,9 @@ class Stat {
                   $timedisplay = 0;
                }
 
-               if ($output_type==HTML_OUTPUT
-                  || $output_type==PDF_OUTPUT_LANDSCAPE
-                  || $output_type==PDF_OUTPUT_PORTRAIT) {
+               if ($output_type == Search::HTML_OUTPUT
+                  || $output_type == Search::PDF_OUTPUT_LANDSCAPE
+                  || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                   $timedisplay = Html::timestampToString($timedisplay, 0);
                }
                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -523,9 +523,9 @@ class Stat {
             } else {
                $timedisplay = 0;
             }
-            if ($output_type == HTML_OUTPUT
-                || $output_type == PDF_OUTPUT_LANDSCAPE
-                || $output_type == PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == Search::HTML_OUTPUT
+                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
+                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -542,9 +542,9 @@ class Stat {
             } else {
                $timedisplay = 0;
             }
-            if ($output_type==HTML_OUTPUT
-                || $output_type==PDF_OUTPUT_LANDSCAPE
-                || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == Search::HTML_OUTPUT
+                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
+                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -567,18 +567,18 @@ class Stat {
                $timedisplay = 0;
             }
 
-            if ($output_type==HTML_OUTPUT
-                || $output_type==PDF_OUTPUT_LANDSCAPE
-                || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == Search::HTML_OUTPUT
+                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
+                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             //Le temps total de l'intervention reelle - The total actiontime to resolv
             $timedisplay = $total_actiontime;
 
-            if ($output_type==HTML_OUTPUT
-                || $output_type==PDF_OUTPUT_LANDSCAPE
-                || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == Search::HTML_OUTPUT
+                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
+                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -592,7 +592,7 @@ class Stat {
          echo $LANG['stats'][23];
       }
 
-      if ($output_type==HTML_OUTPUT) { // HTML display
+      if ($output_type == Search::HTML_OUTPUT) { // HTML display
          echo "</div>";
       }
    }
@@ -1277,7 +1277,7 @@ class Stat {
          $entities = getAllDatasFromTable('glpi_entities');
       }
 
-      $output_type = HTML_OUTPUT;
+      $output_type = Search::HTML_OUTPUT;
       if (isset($_GET["display_type"])) {
          $output_type = $_GET["display_type"];
       }
@@ -1308,7 +1308,7 @@ class Stat {
       $numrows = $DB->numrows($result);
 
       if ($numrows>0) {
-         if ($output_type==HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             Html::printPager($start, $numrows, $target,
                              "date1=".$date1."&amp;date2=".$date2.
                                  "&amp;type=hardwares&amp;start=$start",
@@ -1365,12 +1365,11 @@ class Stat {
          }
 
          echo Search::showFooter($output_type);
-         if ($output_type==HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             echo "</div>";
          }
       }
    }
 
 }
-
 ?>

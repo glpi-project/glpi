@@ -106,14 +106,14 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         Ticket::commonListHeader(HTML_OUTPUT);
+         Ticket::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Ticket',
                                         $LANG['problem'][0] ." = ". $problem->fields["name"]);
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], false, HTML_OUTPUT, $i, $data['linkID']);
+            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
             $i++;
          }
       }
@@ -179,14 +179,14 @@ class Problem_Ticket extends CommonDBRelation{
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         Problem::commonListHeader(HTML_OUTPUT);
+         Problem::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Problem',
                                         $LANG['job'][38] ." = ". $ticket->fields["name"]);
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], false, HTML_OUTPUT, $i, $data['linkID']);
+            Problem::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
             $i++;
          }
       }

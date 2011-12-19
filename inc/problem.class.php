@@ -1074,7 +1074,7 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function commonListHeader($output_type=HTML_OUTPUT) {
+   static function commonListHeader($output_type=Search::HTML_OUTPUT) {
       global $LANG;
 
       // New Line for Header Items Line
@@ -1110,7 +1110,8 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function showShort($id, $output_type=HTML_OUTPUT, $row_num=0, $id_for_massaction=-1) {
+   static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
+                             $id_for_massaction=-1) {
       global $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
@@ -1143,7 +1144,7 @@ class Problem extends CommonITILObject {
 
          // First column
          $first_col = "ID : ".$job->fields["id"];
-         if ($output_type == HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
                            alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
                            self::getStatus($job->fields["status"])."\">";
@@ -1152,7 +1153,7 @@ class Problem extends CommonITILObject {
          }
 
          if (($candelete || $canupdate)
-             && $output_type == HTML_OUTPUT) {
+             && $output_type == Search::HTML_OUTPUT) {
 
             $sel = "";
             if (isset($_GET["select"]) && $_GET["select"] == "all") {
@@ -1170,7 +1171,7 @@ class Problem extends CommonITILObject {
          // Second column
          if ($job->fields['status']=='closed') {
             $second_col = $LANG['joblist'][12];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -1179,7 +1180,7 @@ class Problem extends CommonITILObject {
 
          } else if ($job->fields['status']=='solved') {
             $second_col = $LANG['joblist'][14];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -1188,7 +1189,7 @@ class Problem extends CommonITILObject {
 
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -1197,7 +1198,7 @@ class Problem extends CommonITILObject {
 
          } else {
             $second_col = $LANG['joblist'][11];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -1301,12 +1302,12 @@ class Problem extends CommonITILObject {
                               $CFG_GLPI["root_doc"].
                               "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
 
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $eigth_column .= "&nbsp;(".$job->numberOfTasks($showprivate).")";
             }
          }
 
-         if ($output_type == HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
                                                         array('display' => false,
                                                               'applyto' => "ticket".
@@ -1465,7 +1466,7 @@ class Problem extends CommonITILObject {
 
       // Ticket list
       if ($number > 0) {
-         self::commonListHeader(HTML_OUTPUT);
+         self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Problem',$data["id"]);
@@ -1495,7 +1496,7 @@ class Problem extends CommonITILObject {
 
          echo "</th></tr>";
          if ($number > 0) {
-            self::commonListHeader(HTML_OUTPUT);
+            self::commonListHeader(Search::HTML_OUTPUT);
 
             while ($data=$DB->fetch_assoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);

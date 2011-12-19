@@ -46,8 +46,8 @@ if (isset($_GET["globalsearch"])) {
    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
       $item = new $itemtype();
       if ($item->canView()) {
-         $_GET["reset"] = 'reset';
-         $_GET["display_type"] = GLOBAL_SEARCH;
+         $_GET["reset"]        = 'reset';
+         $_GET["display_type"] = Search::GLOBAL_SEARCH;
 
          Search::manageGetValues($itemtype,false,true);
 

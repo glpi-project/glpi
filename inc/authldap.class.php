@@ -1013,7 +1013,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
                                                               :$LANG['ldap'][15])."</th>";
             $num = 0;
-            echo Search::showHeaderItem(HTML_OUTPUT, $LANG['Menu'][14], $num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, $LANG['Menu'][14], $num,
                                         $_SERVER['PHP_SELF'].
                                                 "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
@@ -1315,7 +1315,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . __('Import'). "</th>";
             $header_num = 0;
-            echo Search::showHeaderItem(HTML_OUTPUT, $LANG['common'][35], $header_num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, $LANG['common'][35], $header_num,
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
             echo "<th>".$LANG['setup'][261]."</th>";

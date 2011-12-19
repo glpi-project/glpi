@@ -542,7 +542,7 @@ class Config extends CommonDBTM {
       echo "</td><td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);      
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -724,8 +724,8 @@ class Config extends CommonDBTM {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array(REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
-                      FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
+      $values = array(User::REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
+                      User::FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
       Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td></tr>";
 
