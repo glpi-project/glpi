@@ -647,7 +647,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   static function getEntitiesToNotify($field, $with_value=false) {
+   static function getEntitiesToNotify($field) {
       global $DB, $CFG_GLPI;
 
       $entities = array();
