@@ -650,57 +650,42 @@ class Entity extends CommonTreeDropdown {
    static function getEntitiesToNotify($field, $with_value=false) {
       global $DB, $CFG_GLPI;
 
+      $entities = array();
+
+      // root entity first
+      $ent = new EntityData();
+      if ($ent->getFromDB(0)) {  // always exists
+         $val = $ent->getField($field);
+         if ($val>0) {
+            $entities[0] = $val;
+         }
+      }
+
+      // Others entities in level order (parent first)
       $query = "SELECT `glpi_entities`.`id` AS `entity`,
+                       `glpi_entities`.`entities_id` AS `parent`,
                        `glpi_entitydatas`.`$field`
                 FROM `glpi_entities`
                 LEFT JOIN `glpi_entitydatas`
                      ON (`glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)
-                ORDER BY `glpi_entities`.`entities_id` ASC";
+                ORDER BY `glpi_entities`.`level` ASC";
 
-      $entities = array();
 
       foreach ($DB->request($query) as $entitydatas) {
-         self::getDefaultValueForAttributeInEntity($field, $entities, $entitydatas);
-      }
+         if ((is_null($entitydatas[$field]) || $entitydatas[$field]==EntityData::CONFIG_PARENT)
+             && isset($entities[$entitydatas['parent']])) {
 
-      //If root entity doesn't have row in glpi_entitydatas
-      $query = "SELECT `$field`
-                FROM `glpi_entitydatas`
-                WHERE `entities_id` = '0'";
-      $result = $DB->query($query);
+            // config inherit from parent
+            $entities[$entitydatas['entity']] = $entities[$entitydatas['parent']];
 
-      if ($DB->numrows($result)) {
-         self::getDefaultValueForAttributeInEntity($field, $entities,
-                                                   array('entity' => 0,
-                                                         $field   => $DB->result($result, 0,
-                                                                                 $field)));
+         } else if ($entitydatas[$field] > 0) {
 
-      } else if (isset($CFG_GLPI[$field])&& $CFG_GLPI[$field]) {
-         $entities[0] = $CFG_GLPI[$field];
+            // config found in entity
+            $entities[$entitydatas['entity']] = $entitydatas[$field];
+         }
       }
 
       return $entities;
-   }
-
-
-   static function getDefaultValueForAttributeInEntity($field, &$entities, $entitydatas) {
-      global $CFG_GLPI;
-
-      // TODO to be clean when no more option from config
-
-      //If there's a configuration for this entity & the value is not the one of the global config
-      if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
-         $entities[$entitydatas['entity']] = $entitydatas[$field];
-
-      //No configuration for this entity : if global config allows notification then add the entity
-      //to the array of entities to be notified
-      } else if ((!isset($entitydatas[$field])
-                  || $entitydatas[$field] == -1
-                  || is_null($entitydatas[$field]))
-                 && isset($CFG_GLPI[$field])) {
-
-         $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
-      }
    }
 
 
