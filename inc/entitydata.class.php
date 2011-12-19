@@ -378,7 +378,8 @@ class EntityData extends CommonDBChild {
 
       $fields = array('autoclose_delay', 'autofill_buy_date', 'autofill_delivery_date',
                       'autofill_order_date', 'autofill_use_date', 'autofill_warranty_date',
-                      'cartridges_alert_repeat', 'consumables_alert_repeat', 'notclosed_delay',
+                      'calendars_id', 'cartridges_alert_repeat', 'consumables_alert_repeat',
+                      'entities_id_software', 'notclosed_delay', 'tickettemplates_id',
                       'use_contracts_alert', 'use_infocoms_alert', 'use_licenses_alert',
                       'use_reservations_alert');
 
