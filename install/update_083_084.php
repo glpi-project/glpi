@@ -664,6 +664,9 @@ function update083to084() {
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
+   $migration->addField('glpi_mailcollectors', 'accepted', 'string');
+   $migration->addField('glpi_mailcollectors', 'refused', 'string');
+
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
