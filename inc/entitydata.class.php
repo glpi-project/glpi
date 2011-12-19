@@ -383,7 +383,7 @@ class EntityData extends CommonDBChild {
                       'use_reservations_alert');
 
       foreach ($fields as $field) {
-         $this->fields[$field] = -1;
+         $this->fields[$field] = self::CONFIG_PARENT;
       }
    }
 
@@ -898,12 +898,12 @@ class EntityData extends CommonDBChild {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                             'inquest_delay');
-                                          
+
             printf(_n('%d day','%d days',$inqconf),$inqconf);
             echo "<br>";
             //TRANS: %d is the percentage. %% to display %
             printf(__('%d%%'),$inquestrate);
-            
+
             if ($inquestconfig == 2) {
                echo "<br>";
                echo self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
