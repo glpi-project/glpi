@@ -54,6 +54,10 @@ class Ticket extends CommonITILObject {
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'ticket_status';
 
+   // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
+   const HELPDESK_MY_HARDWARE  = 0;
+   const HELPDESK_ALL_HARDWARE = 1;
+
    // Specific ones
    /// Hardware datas used by getFromDBwithData
    var $hardwaredatas = NULL;
@@ -2316,7 +2320,7 @@ class Ticket extends CommonITILObject {
       $rand        = mt_rand();
       $already_add = array();
 
-      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_MY_HARDWARE)) {
          $my_devices = "";
          $my_item    = $itemtype.'_'.$items_id;
 
@@ -2604,10 +2608,10 @@ class Ticket extends CommonITILObject {
 
       } else {
          echo "<div id='tracking_all_devices'>";
-         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)) {
+         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_ALL_HARDWARE)) {
             // Display a message if view my hardware
             if ($users_id
-                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
+                && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_MY_HARDWARE)) {
                echo $LANG['tracking'][2]."&nbsp;: ";
             }
 
@@ -4499,7 +4503,7 @@ class Ticket extends CommonITILObject {
                 Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";
 
-         self::commonListHeader(HTML_OUTPUT);
+         self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
@@ -4517,7 +4521,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function commonListHeader($output_type=HTML_OUTPUT) {
+   static function commonListHeader($output_type=Search::HTML_OUTPUT) {
       global $LANG;
 
       // New Line for Header Items Line
@@ -4702,7 +4706,7 @@ class Ticket extends CommonITILObject {
 
       // Ticket list
       if ($number > 0) {
-         self::commonListHeader(HTML_OUTPUT);
+         self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
@@ -4732,7 +4736,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</th></tr>";
          if ($number > 0) {
-            self::commonListHeader(HTML_OUTPUT);
+            self::commonListHeader(Search::HTML_OUTPUT);
 
             while ($data=$DB->fetch_assoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
@@ -4748,7 +4752,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0,
+   static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
                              $id_for_massaction=-1) {
       global $CFG_GLPI, $LANG;
 
@@ -4790,7 +4794,7 @@ class Ticket extends CommonITILObject {
 
          // First column
          $first_col = "ID : ".$job->fields["id"];
-         if ($output_type == HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
                            alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
                            self::getStatus($job->fields["status"])."\">";
@@ -4799,7 +4803,7 @@ class Ticket extends CommonITILObject {
          }
 
          if (($candelete || $canupdate)
-             && $output_type == HTML_OUTPUT) {
+             && $output_type == Search::HTML_OUTPUT) {
 
             $sel = "";
             if (isset($_GET["select"]) && $_GET["select"] == "all") {
@@ -4817,7 +4821,7 @@ class Ticket extends CommonITILObject {
          // Second column
          if ($job->fields['status']=='closed') {
             $second_col = $LANG['joblist'][12];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type ==Search:: HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -4826,7 +4830,7 @@ class Ticket extends CommonITILObject {
 
          } else if ($job->fields['status']=='solved') {
             $second_col = $LANG['joblist'][14];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -4835,7 +4839,7 @@ class Ticket extends CommonITILObject {
 
          } else if ($job->fields['begin_waiting_date']) {
             $second_col = $LANG['joblist'][15];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -4844,7 +4848,7 @@ class Ticket extends CommonITILObject {
 
          } else if ($job->fields['due_date']) {
             $second_col = $LANG['sla'][5];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -4853,7 +4857,7 @@ class Ticket extends CommonITILObject {
 
          } else {
             $second_col = $LANG['joblist'][11];
-            if ($output_type == HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                $second_col .= "&nbsp;:<br>";
             } else {
                $second_col .= " : ";
@@ -4948,7 +4952,7 @@ class Ticket extends CommonITILObject {
                   $sixth_col .= $item->getTypeName();
                   $sixth_col .= "<br><span class='b'>";
                   if ($item->canView()) {
-                     $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
+                     $sixth_col .= $item->getLink($output_type==Search::HTML_OUTPUT);
                   } else {
                      $sixth_col .= $item->getNameID();
                   }
@@ -4979,7 +4983,7 @@ class Ticket extends CommonITILObject {
             $eigth_column = "<a id='ticket".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
                             "/front/ticket.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
 
-            if ($followups && $output_type == HTML_OUTPUT) {
+            if ($followups && $output_type == Search::HTML_OUTPUT) {
                $eigth_column .= TicketFollowup::showShortForTicket($job->fields["id"]);
             } else {
                $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate)."-".
@@ -4987,7 +4991,7 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         if ($output_type == HTML_OUTPUT) {
+         if ($output_type == Search::HTML_OUTPUT) {
             $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
                                                         array('display' => false,
                                                               'applyto' => "ticket".

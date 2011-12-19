@@ -44,8 +44,8 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
    }
 
    // PDF case
-   if ($_GET["display_type"] == PDF_OUTPUT_LANDSCAPE
-       || $_GET["display_type"] == PDF_OUTPUT_PORTRAIT) {
+   if ($_GET["display_type"] == Search::PDF_OUTPUT_LANDSCAPE
+       || $_GET["display_type"] == Search::PDF_OUTPUT_PORTRAIT) {
 
       include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
    }

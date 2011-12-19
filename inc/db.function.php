@@ -1074,7 +1074,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
       $temp = $realname;
 
       if (strlen($firstname)>0) {
-         if ($order==FIRSTNAME_BEFORE) {
+         if ($order == User::FIRSTNAME_BEFORE) {
             $temp = $firstname." ".$temp;
          } else {
             $temp .= " ".$firstname;

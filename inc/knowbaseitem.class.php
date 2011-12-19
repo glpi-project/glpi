@@ -917,7 +917,7 @@ class KnowbaseItem extends CommonDBTM {
 
          if ($numrows_limit>0) {
             // Set display type for export if define
-            $output_type = HTML_OUTPUT;
+            $output_type = Search::HTML_OUTPUT;
 
             if (isset($_GET["display_type"])) {
                $output_type = $_GET["display_type"];
@@ -931,7 +931,7 @@ class KnowbaseItem extends CommonDBTM {
                $parameters .= "&amp;items_id=".$options['items_id']."&amp;itemtype=".$options['itemtype'];
             }
 
-            if ($output_type==HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                Html::printPager($params['start'], $numrows,
                                 Toolbox::getItemTypeSearchURL('KnowbaseItem'),
                                 $parameters, 'KnowbaseItem');
@@ -944,14 +944,14 @@ class KnowbaseItem extends CommonDBTM {
             $header_num = 1;
             echo Search::showHeaderItem($output_type, $LANG['knowbase'][14], $header_num);
 
-            if ($output_type!=HTML_OUTPUT) {
+            if ($output_type != Search::HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, $LANG['knowbase'][15], $header_num);
             }
             echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
             if (isset($options['itemtype'])
                 && isset($options['items_id'])
-                && $output_type==HTML_OUTPUT) {
+                && $output_type == Search::HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -966,7 +966,7 @@ class KnowbaseItem extends CommonDBTM {
                $row_num++;
                echo Search::showNewLine($output_type, $i%2);
 
-               if ($output_type==HTML_OUTPUT) {
+               if ($output_type == Search::HTML_OUTPUT) {
                   if (isset($options['itemtype']) && isset($options['items_id'])) {
                      $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                               "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
@@ -995,7 +995,7 @@ class KnowbaseItem extends CommonDBTM {
 
                if (isset($options['itemtype'])
                    && isset($options['items_id'])
-                   && $output_type==HTML_OUTPUT) {
+                   && $output_type == Search::HTML_OUTPUT) {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
@@ -1009,7 +1009,8 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             // Display footer
-            if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == Search::PDF_OUTPUT_LANDSCAPE
+                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
                echo Search::showFooter($output_type,
                                        Dropdown::getDropdownName("glpi_knowbaseitemcategories",
                                                                  $params['knowbaseitemcategories_id']));
@@ -1017,7 +1018,7 @@ class KnowbaseItem extends CommonDBTM {
                echo Search::showFooter($output_type);
             }
             echo "<br>";
-            if ($output_type==HTML_OUTPUT) {
+            if ($output_type == Search::HTML_OUTPUT) {
                Html::printPager($params['start'], $numrows,
                                 Toolbox::getItemTypeSearchURL('KnowbaseItem'),
                                 $parameters, 'KnowbaseItem');

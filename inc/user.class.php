@@ -45,6 +45,10 @@ class User extends CommonDBTM {
    public $dohistory         = true;
    public $history_blacklist = array('date_mod', 'date_sync', 'last_login');
 
+   // NAME FIRSTNAME ORDER TYPE
+   const REALNAME_BEFORE   = 0;
+   const FIRSTNAME_BEFORE  = 1;
+
 
    static function getTypeName($nb=0) {
       global $LANG;
@@ -2252,7 +2256,7 @@ class User extends CommonDBTM {
          }
          $query .= " WHERE $where ";
 
-         if ($_SESSION["glpinames_format"] == FIRSTNAME_BEFORE) {
+         if ($_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE) {
             $query.=" ORDER BY `glpi_users`.`firstname`,
                                `glpi_users`.`realname`,
                                `glpi_users`.`name` ";

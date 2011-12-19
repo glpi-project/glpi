@@ -34,6 +34,17 @@ if (!defined('GLPI_ROOT')) {
 /// Generic class for Search Engine
 class Search {
 
+   // Default number of items displayed in global search
+   const GLOBAL_DISPLAY_COUNT = 10;
+   // EXPORT TYPE
+   const GLOBAL_SEARCH        = -1;
+   const HTML_OUTPUT          = 0;
+   const SYLK_OUTPUT          = 1;
+   const PDF_OUTPUT_LANDSCAPE = 2;
+   const CSV_OUTPUT           = 3;
+   const PDF_OUTPUT_PORTRAIT  = 4;
+
+
    /**
     * Display search engine for an type
     *
@@ -124,12 +135,12 @@ class Search {
       $LIST_LIMIT = $_SESSION['glpilist_limit'];
 
       // Set display type for export if define
-      $output_type = HTML_OUTPUT;
+      $output_type = self::HTML_OUTPUT;
       if (isset($_GET['display_type'])) {
          $output_type = $_GET['display_type'];
          // Limit to 10 element
-         if ($_GET['display_type']==GLOBAL_SEARCH) {
-            $LIST_LIMIT = GLOBAL_SEARCH_DISPLAY_COUNT;
+         if ($_GET['display_type'] == self::GLOBAL_SEARCH) {
+            $LIST_LIMIT = self::GLOBAL_DISPLAY_COUNT;
          }
       }
       // hack for States
@@ -781,11 +792,11 @@ class Search {
             $parameters = $tmp[1].'&amp;'.$parameters;
          }
          */
-         if ($output_type==GLOBAL_SEARCH) {
+         if ($output_type == self::GLOBAL_SEARCH) {
             if ($item = getItemForItemtype($itemtype)) {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
-               if ($numrows>$p['start']+GLOBAL_SEARCH_DISPLAY_COUNT) {
+               if ($numrows>$p['start']+self::GLOBAL_DISPLAY_COUNT) {
                   echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
                }
                echo "</h2></div>\n";
@@ -797,7 +808,7 @@ class Search {
          // If the begin of the view is before the number of items
          if ($p['start']<$numrows) {
             // Display pager only for HTML
-            if ($output_type==HTML_OUTPUT) {
+            if ($output_type == self::HTML_OUTPUT) {
                // For plugin add new parameter if available
                if ($plug=isPluginItemType($itemtype)) {
                   $function = 'plugin_'.$plug['plugin'].'_addParamFordynamicReport';
@@ -825,7 +836,7 @@ class Search {
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
 
-            if ($isadmin && $output_type==HTML_OUTPUT) {
+            if ($isadmin && $output_type == self::HTML_OUTPUT) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
             }
@@ -850,7 +861,7 @@ class Search {
                }
             }
 
-            if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
+            if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
                $nbcols++;
             }
 
@@ -878,7 +889,7 @@ class Search {
             echo self::showNewLine($output_type);
             $header_num = 1;
 
-            if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
+            if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
                $search_config = "";
                if (Session::haveRight("search_config","w")
                    || Session::haveRight("search_config_global","w")) {
@@ -943,7 +954,7 @@ class Search {
             if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
                echo self::showHeaderItem($output_type, $LANG['state'][6], $header_num);
             }
-            if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
+            if ($itemtype == 'ReservationItem' && $output_type == self::HTML_OUTPUT) {
                if (Session::haveRight("reservation_central","w")) {
                   echo self::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
                   echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
@@ -963,7 +974,7 @@ class Search {
             $i = $begin_display;
 
             // Init list of items displayed
-            if ($output_type==HTML_OUTPUT) {
+            if ($output_type == self::HTML_OUTPUT) {
                Session::initNavigateListItems($itemtype);
             }
 
@@ -983,7 +994,7 @@ class Search {
                // Add item in item list
                Session::addToNavigateListItems($itemtype, $data["id"]);
 
-               if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
+               if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
                   $tmpcheck = "";
                   if ($isadmin) {
                      if ($itemtype=='Entity' && !in_array($data["id"],
@@ -1091,13 +1102,13 @@ class Search {
                if ($itemtype == 'CartridgeItem') {
                   echo self::showItem($output_type,
                                       Cartridge::getCount($data["id"], $data["ALARM"],
-                                                          $output_type!=HTML_OUTPUT),
+                                                          $output_type != self::HTML_OUTPUT),
                                       $item_num, $row_num);
                }
                if ($itemtype == 'ConsumableItem') {
                   echo self::showItem($output_type,
                                       Consumable::getCount($data["id"], $data["ALARM"],
-                                                           $output_type!=HTML_OUTPUT),
+                                                           $output_type != self::HTML_OUTPUT),
                                       $item_num, $row_num);
                }
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
@@ -1107,7 +1118,7 @@ class Search {
                   }
                   echo self::showItem($output_type, $typename, $item_num, $row_num);
                }
-               if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
+               if ($itemtype == 'ReservationItem' && $output_type == self::HTML_OUTPUT) {
                   if (Session::haveRight("reservation_central","w")) {
                      if (!Session::haveAccessToEntity($data["ENTITY"])) {
                         echo self::showItem($output_type, "&nbsp;", $item_num, $row_num);
@@ -1152,7 +1163,8 @@ class Search {
 
             $title = "";
             // Create title
-            if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
+            if ($output_type == self::PDF_OUTPUT_LANDSCAPE
+                || $output_type == self::PDF_OUTPUT_PORTRAIT) {
                if ($_SESSION["glpisearchcount"][$itemtype]>0 && count($p['contains'])>0) {
                   for ($key=0 ; $key<$_SESSION["glpisearchcount"][$itemtype] ; $key++) {
                      if (strlen($p['contains'][$key])>0) {
@@ -1279,7 +1291,7 @@ class Search {
             echo self::showFooter($output_type,$title);
 
             // Delete selected item
-            if ($output_type==HTML_OUTPUT) {
+            if ($output_type == self::HTML_OUTPUT) {
                if ($isadmin) {
                   Html::openArrowMassives("massiveaction_form");
                   Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
@@ -1292,7 +1304,7 @@ class Search {
                   echo "<br>";
                }
             }
-            if ($output_type==HTML_OUTPUT) { // In case of HTML display
+            if ($output_type == self::HTML_OUTPUT) { // In case of HTML display
                Html::printPager($p['start'], $numrows, $target, $parameters);
             }
          } else {
@@ -2079,7 +2091,7 @@ class Search {
 
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
-            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                $name1 = 'firstname';
                $name2 = 'name';
             } else {
@@ -2570,7 +2582,7 @@ class Search {
                }
                return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             }
-            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                $name1 = 'firstname';
                $name2 = 'realname';
             } else {
@@ -2658,7 +2670,7 @@ class Search {
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link `$table`.`id`".$SEARCH;
             }
-            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+            if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                $name1 = 'firstname';
                $name2 = 'name';
             } else {
@@ -4087,7 +4099,7 @@ class Search {
             $values  = explode(',',$data[$NAME.$num]);
             if (!($item = getItemForItemtype($data['ITEMTYPE']))) {
                continue;
-            }            
+            }
             $message = array();
             foreach ($values as $field) {
                $table = getTableNameForForeignKeyField($field);
@@ -4908,20 +4920,20 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
 
-         case PDF_OUTPUT_PORTRAIT :
+         case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_HEADER;
             $PDF_HEADER[$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
             break;
 
-         case SYLK_OUTPUT : //sylk
+         case self::SYLK_OUTPUT : //sylk
             global $SYLK_HEADER,$SYLK_SIZE;
             $SYLK_HEADER[$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]   = Toolbox::strlen($SYLK_HEADER[$num]);
             break;
 
-         case CSV_OUTPUT : //CSV
+         case self::CSV_OUTPUT : //CSV
             $out = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
@@ -4963,22 +4975,22 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
 
-         case PDF_OUTPUT_PORTRAIT :
+         case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
             $value                 = Html::weblink_extract($value);
             $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
             break;
 
-         case SYLK_OUTPUT : //sylk
+         case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value                  = Html::weblink_extract($value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num], Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
-         case CSV_OUTPUT : //csv
+         case self::CSV_OUTPUT : //csv
             $value = Html::weblink_extract($value);
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
@@ -5027,10 +5039,10 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
-         case PDF_OUTPUT_PORTRAIT :
-         case SYLK_OUTPUT : //sylk
-         case CSV_OUTPUT : //csv
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
             break;
 
          default :
@@ -5053,7 +5065,7 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf = new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
@@ -5071,7 +5083,7 @@ class Search {
             $pdf->ezStream();
             break;
 
-         case PDF_OUTPUT_PORTRAIT : //pdf
+         case self::PDF_OUTPUT_PORTRAIT : //pdf
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf= new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
@@ -5089,7 +5101,7 @@ class Search {
             $pdf->ezStream();
             break;
 
-         case SYLK_OUTPUT : //sylk
+         case self::SYLK_OUTPUT : //sylk
             global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
             // largeurs des colonnes
             foreach ($SYLK_SIZE as $num => $val) {
@@ -5112,7 +5124,7 @@ class Search {
             $out.= "E\n";
             break;
 
-         case CSV_OUTPUT : //csv
+         case self::CSV_OUTPUT : //csv
             break;
 
          default :
@@ -5136,14 +5148,14 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
-         case PDF_OUTPUT_PORTRAIT :
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY, $PDF_HEADER;
             $PDF_ARRAY  = array();
             $PDF_HEADER = array();
             break;
 
-         case SYLK_OUTPUT : // Sylk
+         case self::SYLK_OUTPUT : // Sylk
             global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
             $SYLK_ARRAY  = array();
             $SYLK_HEADER = array();
@@ -5175,7 +5187,7 @@ class Search {
             echo "\n";
             break;
 
-         case CSV_OUTPUT : // csv
+         case self::CSV_OUTPUT : // csv
             header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
             header('Pragma: private'); /// IE BUG + SSL
             header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
@@ -5207,10 +5219,10 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
-         case PDF_OUTPUT_PORTRAIT :
-         case SYLK_OUTPUT : //sylk
-         case CSV_OUTPUT : //csv
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
             break;
 
          default :
@@ -5235,12 +5247,12 @@ class Search {
 
       $out = "";
       switch ($type) {
-         case PDF_OUTPUT_LANDSCAPE : //pdf
-         case PDF_OUTPUT_PORTRAIT :
-         case SYLK_OUTPUT : //sylk
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+         case self::SYLK_OUTPUT : //sylk
             break;
 
-         case CSV_OUTPUT : //csv
+         case self::CSV_OUTPUT : //csv
             $out = "\n";
             break;
 

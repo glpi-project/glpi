@@ -144,32 +144,9 @@ if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
 }
 
 
-
 //Management modes
 define("MANAGEMENT_UNITARY",0);
 define("MANAGEMENT_GLOBAL",1);
-
-
-// EXPORT TYPE
-define("GLOBAL_SEARCH",-1);
-define("HTML_OUTPUT",0);
-define("SYLK_OUTPUT",1);
-define("PDF_OUTPUT_LANDSCAPE",2);
-define("CSV_OUTPUT",3);
-define("PDF_OUTPUT_PORTRAIT",4);
-
-
-// HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
-define("HELPDESK_MY_HARDWARE",0);
-define("HELPDESK_ALL_HARDWARE",1);
-
-// NAME FIRSTNAME ORDER TYPE
-define("REALNAME_BEFORE",0);
-define("FIRSTNAME_BEFORE",1);
-
-
-// Default number of items displayed in global search
-define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 
 
 //Mail send methods
