@@ -4379,6 +4379,14 @@ class OcsServer extends CommonDBTM {
             }
          }
       }
+
+      // Delete Unexisting VM not found in OCS
+      if (count($import_vm)) {
+         foreach ($import_vm as $key => $val) {
+            $virtualmachine->delete(array("id" => $key));
+            self::deleteInOcsArray($computers_id, $key, "import_vm");
+         }
+      }
    }
 
 
