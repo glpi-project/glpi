@@ -2307,6 +2307,8 @@ CREATE TABLE `glpi_mailcollectors` (
   `date_mod` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `passwd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `accepted` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `refused` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`)

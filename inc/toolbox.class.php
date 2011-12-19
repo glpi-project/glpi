@@ -1602,9 +1602,10 @@ class Toolbox {
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][169] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Incoming mail folder (optional, often INBOX)') . "</td>";
       echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $mailbox . "\" >";
       echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][171] . "&nbsp;:</td>";
       echo "<td><input size='10' type='text' name='server_port' value='$port'></td></tr>\n";
       if (empty($value)) {

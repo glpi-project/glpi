@@ -67,6 +67,10 @@ class MailCollector  extends CommonDBTM {
    /// Body converted
    var $body_converted = false;
 
+   // Destination folder
+   const REFUSED_FOLDER  = 'refused';
+   const ACCEPTED_FOLDER = 'accepted';
+
    public $dohistory = true;
 
 
@@ -222,6 +226,14 @@ class MailCollector  extends CommonDBTM {
 
       Toolbox::showMailServerConfig($this->fields["host"]);
 
+      echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
+      echo "<td><input size='30' type='text' name='accepted' value=\"" . $this->fields['accepted'] . "\" >";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
+      echo "<td><input size='30' type='text' name='refused' value=\"" . $this->fields['refused'] . "\" >";
+      echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."&nbsp;:</td><td>";
       Html::autocompletionTextField($this, "login");
       echo "</td></tr>";
@@ -313,6 +325,14 @@ class MailCollector  extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'accepted';
+      $tab[20]['name']          = __('Accepted mail archive folder (optional)');
+
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'refused';
+      $tab[21]['name']          = __('Refused mail archive folder (optional)');
+
       return $tab;
    }
 
@@ -350,9 +370,12 @@ class MailCollector  extends CommonDBTM {
                      $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                      $tkt['entities_id']         = $entity;
                      $ticket->add($tkt);
+                     $folder = self::ACCEPTED_FOLDER;
+                  } else {
+                     $folder = self::REFUSED_FOLDER;
                   }
                   //Delete email
-                  if ($this->deleteMails($i)) {
+                  if ($this->deleteMails($i, $folder)) {
                      $rejectedmail = new NotImportedEmail();
                      $rejectedmail->delete(array('id' => $rejected[$head['message_id']]['id']));
                   }
@@ -424,7 +447,7 @@ class MailCollector  extends CommonDBTM {
 
                // Manage blacklisted emails
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
-                  $this->deleteMails($i);
+                  $this->deleteMails($i, self::REFUSED_FOLDER);
                // entities_id set when new ticket / tickets_id when new followup
                } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
                            && $user_condition)
@@ -433,10 +456,10 @@ class MailCollector  extends CommonDBTM {
 
                   if (isset($tkt['_refuse_email_with_response'])) {
                      $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
-                     $delete_mail = true;
+                     $delete_mail = self::REFUSED_FOLDER;
                      $refused++;
                   } else if (isset($tkt['_refuse_email_no_response'])) {
-                     $delete_mail = true;
+                     $delete_mail = self::REFUSED_FOLDER;
                      $refused++;
                   } else if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
                      $tkt['_mailgate'] = $mailgateID;
@@ -448,7 +471,7 @@ class MailCollector  extends CommonDBTM {
                         if (false === is_array($result)) {
                            $fup = new TicketFollowup();
                            if ($fup->add($tkt)) {
-                              $delete_mail = true;
+                              $delete_mail = self::ACCEPTED_FOLDER;
                            }
                         } else {
                            $error++;
@@ -459,7 +482,7 @@ class MailCollector  extends CommonDBTM {
                         if (false === is_array($result)) {
                            $track = new Ticket();
                            if ($track->add($tkt)) {
-                              $delete_mail = true;
+                              $delete_mail = self::ACCEPTED_FOLDER;
                            }
                         } else {
                            $error++;
@@ -468,12 +491,12 @@ class MailCollector  extends CommonDBTM {
 
                   } else {
                      // Case never raise
-                     $delete_mail = true;
+                     $delete_mail = self::REFUSED_FOLDER;
                      $refused++;
                   }
                   //Delete Mail from Mail box if ticket is added successfully
                   if ($delete_mail) {
-                     $this->deleteMails($i);
+                     $this->deleteMails($i, $delete_mail);
                   }
 
                } else {
@@ -1236,9 +1259,20 @@ class MailCollector  extends CommonDBTM {
    /**
     * Delete mail from that mail box
     *
-    * @param $mid : mail Id
+    * @param $mid       String mail Id
+    * @param $folder    String folder to move (delete if empty)
+    *
+    * @return Boolean
     */
-   function deleteMails($mid) {
+   function deleteMails($mid, $folder='') {
+
+      if ($folder) {
+         if (imap_mail_move($this->marubox, $mid, $this->fields[$folder])) {
+            return true;
+         }
+         // raise an error and fallback to delete
+         trigger_error("Invalid configuration for $folder folder in receiver ".$this->getName());
+      }
       return imap_delete($this->marubox, $mid);
    }
 
