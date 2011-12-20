@@ -43,10 +43,7 @@ class Vlan extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][90];
-      }
-      return $LANG['networking'][56];
+      return _n('VLAN','VLANs',$nb);
    }
 
 
@@ -54,7 +51,7 @@ class Vlan extends CommonDropdown {
       global $LANG;
 
       return array(array('name'     => 'tag',
-                         'label'    => $LANG['common'][114],
+                         'label'    => __('ID TAG'),
                          'type'     => 'number',
                          'list'     => true));
    }
@@ -80,7 +77,7 @@ class Vlan extends CommonDropdown {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'tag';
-      $tab[11]['name']     = $LANG['common'][114];
+      $tab[11]['name']     = __('ID TAG');
       $tab[11]['datatype'] = 'number';
 
       return $tab;

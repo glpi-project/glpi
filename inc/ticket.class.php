@@ -1486,81 +1486,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /**
-    * Get text describing Followups
-    *
-    * @param $format text or html
-    * @param $sendprivate true if both public and private followups have to be printed in the email
-   **/
-   function textFollowups($format="text", $sendprivate=false) {
-      global $DB,$LANG;
-
-      // get the last followup for this job and give its content as
-      if (isset($this->fields["id"])) {
-         $query = "SELECT *
-                   FROM `glpi_ticketfollowups`
-                   WHERE `tickets_id` = '".$this->fields["id"]."' ".
-                         ($sendprivate?"":" AND `is_private` = '0' ")."
-                   ORDER by `date` DESC";
-
-         $result   = $DB->query($query);
-         $nbfollow = $DB->numrows($result);
-
-         $fup = new TicketFollowup();
-
-         if ($format == "html") {
-            $message = "<div class='description b'>".$LANG['mailing'][4]."&nbsp;: $nbfollow<br></div>\n";
-
-            if ($nbfollow > 0) {
-               while ($data = $DB->fetch_array($result)) {
-                  $fup->getFromDB($data['id']);
-                  $message .= "<span class='b'>[ ".Html::convDateTime($fup->fields["date"])." ] ".
-                               ($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"").
-                               "</span>\n";
-                  $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['job'][4]."&nbsp;:</span> ".
-                               $fup->getAuthorName()."\n";
-                  $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:
-                                <br>".str_replace("\n","<br>",$fup->fields["content"])."\n";
-
-                  if ($fup->fields["actiontime"]>0) {
-                     $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                                  "text-decoration:underline; '>".$LANG['mailing'][104]."&nbsp;:".
-                                  ".</span> ".parent::getActionTime($fup->fields["actiontime"])."\n";
-                  }
-                  $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['job'][35]."&nbsp;:</span> ";
-
-                  $message .= $LANG['mailing'][0]."\n";
-               }
-            }
-
-         } else { // text format
-            $message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]." : $nbfollow\n".
-                       $LANG['mailing'][1]."\n";
-
-            if ($nbfollow > 0) {
-               while ($data=$DB->fetch_array($result)) {
-                  $fup->getFromDB($data['id']);
-                  $message .= "[ ".Html::convDateTime($fup->fields["date"])." ]".
-                               ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
-                  $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
-                  $message .= $LANG['knowbase'][15]."&nbsp;:\n".$fup->fields["content"]."\n";
-                  if ($fup->fields["actiontime"]>0) {
-                     $message .= $LANG['mailing'][104]."&nbsp;: ".
-                                 parent::getActionTime($fup->fields["actiontime"])."\n";
-                  }
-                  $message .= $LANG['job'][35]."&nbsp;: ";
-
-                  $message .= $LANG['mailing'][0]."\n";
-               }
-            }
-         }
-         return $message;
-      }
-      return "";
-   }
 
 
    /**
@@ -1623,11 +1548,11 @@ class Ticket extends CommonITILObject {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][57];
+      $tab[1]['name']          = __('Title');
       $tab[1]['searchtype']    = 'contains';
       $tab[1]['datatype']      = 'string';
       $tab[1]['forcegroupby']  = true;
@@ -1641,7 +1566,7 @@ class Ticket extends CommonITILObject {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'number';
 
@@ -1652,7 +1577,7 @@ class Ticket extends CommonITILObject {
 
       $tab[14]['table']      = $this->getTable();
       $tab[14]['field']      = 'type';
-      $tab[14]['name']       = $LANG['common'][17];
+      $tab[14]['name']       = __('Type');
       $tab[14]['searchtype'] = 'equals';
 
       $tab[10]['table']      = $this->getTable();
@@ -1703,13 +1628,13 @@ class Ticket extends CommonITILObject {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
       $tab[7]['table']    = 'glpi_itilcategories';
       $tab[7]['field']    = 'completename';
-      $tab[7]['name']     = $LANG['common'][36];
+      $tab[7]['name']     = __('Category');
       $tab[7]['datatype'] = 'dropdown';
 
 
@@ -1722,7 +1647,7 @@ class Ticket extends CommonITILObject {
 
       $tab[131]['table']         = $this->getTable();
       $tab[131]['field']         = 'itemtype';
-      $tab[131]['name']          = $LANG['document'][14].' - '.$LANG['common'][17];
+      $tab[131]['name']          = __('Associated item type');
       $tab[131]['datatype']      = 'itemtypename';
       $tab[131]['itemtype_list'] = 'ticket_types';
       $tab[131]['nosort']        = true;
@@ -1750,7 +1675,7 @@ class Ticket extends CommonITILObject {
       $tab[64]['table']         = 'glpi_users';
       $tab[64]['field']         = 'name';
       $tab[64]['linkfield']     = 'users_id_lastupdater';
-      $tab[64]['name']          = $LANG['common'][101];
+      $tab[64]['name']          = __('Last updater');
       $tab[64]['massiveaction'] = false;
 
       $tab += $this->getSearchOptionsActors();
@@ -1844,7 +1769,7 @@ class Ticket extends CommonITILObject {
 
       $tab[31]['table']      = 'glpi_ticketsatisfactions';
       $tab[31]['field']      = 'type';
-      $tab[31]['name']       = $LANG['common'][17];
+      $tab[31]['name']       = __('Satisfaction survey type');
       $tab[31]['searchtype'] = 'equals';
       $tab[31]['joinparams'] = array('jointype' => 'child');
 
@@ -1924,7 +1849,7 @@ class Ticket extends CommonITILObject {
 
          $tab[40]['table']         = 'glpi_tickets_tickets';
          $tab[40]['field']         = 'tickets_id_1';
-         $tab[40]['name']          = $LANG['job'][55].' - '.$LANG['common'][66];
+         $tab[40]['name']          = __('All linked tickets');
          $tab[40]['massiveaction'] = false;
          $tab[40]['searchtype']    = 'equals';
          $tab[40]['joinparams']    = array('jointype' => 'item_item');
@@ -1940,8 +1865,7 @@ class Ticket extends CommonITILObject {
 
          $tab[41]['table']         = 'glpi_tickets_tickets';
          $tab[41]['field']         = 'count';
-         $tab[41]['name']          = $LANG['job'][55].' - '.$LANG['common'][66]." - ".
-                                     $LANG['tracking'][29];
+         $tab[41]['name']          = __('Number of all linked tickets');
          $tab[41]['massiveaction'] = false;
          $tab[41]['datatype']      = 'number';
          $tab[41]['usehaving']     = true;
@@ -1949,7 +1873,7 @@ class Ticket extends CommonITILObject {
 
          $tab[46]['table']         = 'glpi_tickets_tickets';
          $tab[46]['field']         = 'count';
-         $tab[46]['name']          = $LANG['job'][57]." - ".$LANG['tracking'][29];
+         $tab[46]['name']          = __('Duplicated tickets');
          $tab[46]['massiveaction'] = false;
          $tab[46]['datatype']      = 'number';
          $tab[46]['usehaving']     = true;
@@ -1962,7 +1886,7 @@ class Ticket extends CommonITILObject {
 
          $tab[26]['table']         = 'glpi_tickettasks';
          $tab[26]['field']         = 'content';
-         $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
+         $tab[26]['name']          = __('Number of duplicated tickets');
          $tab[26]['forcegroupby']  = true;
          $tab[26]['splititems']    = true;
          $tab[26]['massiveaction'] = false;
@@ -1979,7 +1903,7 @@ class Ticket extends CommonITILObject {
 
          $tab[20]['table']         = 'glpi_taskcategories';
          $tab[20]['field']         = 'name';
-         $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
+         $tab[20]['name']          = __('Task category');
          $tab[20]['forcegroupby']  = true;
          $tab[20]['splititems']    = true;
          $tab[20]['massiveaction'] = false;
@@ -2175,7 +2099,7 @@ class Ticket extends CommonITILObject {
          $tab['notclosed'] = $LANG['joblist'][35];
          $tab['process']   = $LANG['joblist'][21];
          $tab['old']       = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
-         $tab['all']       = $LANG['common'][66];
+         $tab['all']       = __('All');
       }
       return $tab;
    }
@@ -2456,8 +2380,7 @@ class Ticket extends CommonITILObject {
                   }
                }
                if (!empty($tmp_device)) {
-                  $my_devices .= "<optgroup label=\"".$LANG['tracking'][1]." - ".
-                                   $LANG['common'][35]."\">".$tmp_device."</optgroup>";
+                  $my_devices .= "<optgroup label=\"".__s('Devices own by my groups')."\">".$tmp_device."</optgroup>";
                }
             }
          }
@@ -2997,14 +2920,14 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:".$tt->getMandatoryMark('type')."</td>";
+      echo "<td>".__('Type').$tt->getMandatoryMark('type')."</td>";
       echo "<td>";
       self::dropdownType('type', array('value'     => $options['type'],
                                        'on_change' => 'submit()'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][36]."&nbsp;:";
+      echo "<td>".__('Category');
       echo $tt->getMandatoryMark('itilcategories_id');
       echo "</td><td>";
 
@@ -3074,8 +2997,7 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('name')
           || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][57]."&nbsp;:".
-                     $tt->getMandatoryMark('name')."</td>";
+         echo "<td>".__('Title').$tt->getMandatoryMark('name')."</td>";
          echo "<td><input type='text' maxlength='250' size='80' name='name'
                           value=\"".$options['name']."\"></td></tr>";
       }
@@ -3338,9 +3260,14 @@ class Ticket extends CommonITILObject {
       echo "<th colspan='4'>";
 
       if ($ID) {
-         echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
+         
          if ($ismultientities) {
-            echo "(".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']) . ")";
+            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+            printf(__('%1$s - ID %2$d (%3$s)'),$this->getTypeName(1),$ID,
+                  Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+            
+         } else {
+            printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
          }
 
       } else {

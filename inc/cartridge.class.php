@@ -233,11 +233,11 @@ class Cartridge extends CommonDBTM {
          $old    = self::getOldNumber($tID);
          $highlight = "";
          if ($unused<=$alarm_threshold) {
-            $highlight = "class='tab_bg_1_2'";
+            $highlight = "tab_bg_1_2";
          }
 
          if (!$nohtml) {
-            $out .= "<table $highlight width='100%'><tr><td>";
+            $out .= "<table  class='tab_format $highlight' width='100%'><tr><td>";
             $out .= __('Total')."</td><td>$total";
             $out .= "</td><td class='b'>";
             $out .= _n('New','New',$unused);

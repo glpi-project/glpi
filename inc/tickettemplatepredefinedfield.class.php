@@ -220,7 +220,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          $used = array();
          if ($DB->numrows($result)) {
             echo "<tr><th>&nbsp;</th>";
-            echo "<th>".$LANG['common'][16]."</th>";
+            echo "<th>".__('Name')."</th>";
             echo "<th>".$LANG['rulesengine'][13]."</th>";
             echo "</tr>";
 

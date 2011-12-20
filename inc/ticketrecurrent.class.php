@@ -136,7 +136,7 @@ class TicketRecurrent extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'is_active',
-                         'label' => $LANG['common'][60],
+                         'label' => __('Active'),
                          'type'  => 'bool',
                          'list'  => false),
                    array('name'  => 'tickettemplates_id',
@@ -148,7 +148,7 @@ class TicketRecurrent extends CommonDropdown {
                          'type'  => 'datetime',
                          'list'  => false),
                    array('name'  => 'periodicity',
-                         'label' => $LANG['common'][115],
+                         'label' => __('Periodicity'),
                          'type'  => 'timestamp',
                          'min'   => DAY_TIMESTAMP,
                          'step'  => DAY_TIMESTAMP,
@@ -173,7 +173,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'is_active';
-      $tab[11]['name']     = $LANG['common'][60];
+      $tab[11]['name']     = __('Active');
       $tab[11]['datatype'] = 'bool';
 
       $tab[12]['table']    = 'glpi_tickettemplates';
@@ -188,7 +188,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[15]['table']    = $this->getTable();
       $tab[15]['field']    = 'periodicity';
-      $tab[15]['name']     = $LANG['common'][115];
+      $tab[15]['name']     = __('Periodicity');
       $tab[15]['datatype'] = 'timestamp';
 
       $tab[14]['table']    = $this->getTable();

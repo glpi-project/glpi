@@ -792,7 +792,7 @@ class Toolbox {
             $showmem = $mem/1048576;
             echo "<td class='red'>
                   <img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
-                   $LANG['install'][87]." $showmem ".$LANG['common'][82]."</span>".
+                  sprintf(__('Allocated memory: %dMio'),$showmem)."</span>".
                    "<br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
             $error = 2;
             break;
@@ -1570,7 +1570,7 @@ class Toolbox {
       }
       $mailbox = preg_replace("/.*}/", "", $value);
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
       echo "<td><input size='30' type='text' name='mail_server' value=\"" .$addr. "\"></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][168] . "&nbsp;:</td><td>";

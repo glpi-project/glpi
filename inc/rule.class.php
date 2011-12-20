@@ -1607,7 +1607,7 @@ class Rule extends CommonDBTM {
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
 
          $type_match = ($this->fields["match"]==self::AND_MATCHING
-                        ?__('and'):__('or');
+                        ?__('and'):__('or'));
          $already_displayed = array();
          $first = true;
 

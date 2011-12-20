@@ -95,24 +95,24 @@ class Transfer extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][16];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       return $tab;
@@ -3013,16 +3013,16 @@ class Transfer extends CommonDBTM {
 
       if ($edit_form) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
+         echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($this, "name");
          echo "</td>";
-         echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+         echo "<td rowspan='3' class='middle right'>".__('Comments')."</td>";
          echo "<td class='center middle' rowspan='3'>
                <textarea cols='45' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>".__('last update')."</td>";
          echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                                 : $LANG['setup'][307]);
          echo "</td></tr>";
@@ -3292,7 +3292,7 @@ class Transfer extends CommonDBTM {
          echo '</table>';
 
       } else {
-         echo $LANG['common'][24];
+         _e('No selected element or badly defined operation');
       }
    }
 

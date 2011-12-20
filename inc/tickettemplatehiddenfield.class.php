@@ -193,7 +193,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
          $used = array();
          if ($DB->numrows($result)) {
             echo "<tr><th>&nbsp;</th>";
-            echo "<th>".$LANG['common'][16]."</th>";
+            echo "<th>".__('Name')."</th>";
             echo "</tr>";
 
             while ($data=$DB->fetch_assoc($result)) {

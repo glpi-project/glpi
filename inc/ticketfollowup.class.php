@@ -409,7 +409,7 @@ class TicketFollowup  extends CommonDBTM {
       if ($with_comment) {
          $name .= ' ('.Html::convDateTime($this->fields['date']);
          $name .= ', '.getUserName($this->fields['users_id']);
-         $name .= ', '.($this->fields['is_private'] ? $LANG['common'][77] : $LANG['common'][76]);
+         $name .= ', '.($this->fields['is_private'] ? __('Private') : __('Public'));
          $name .= ')';
       }
       return $name;
@@ -453,7 +453,7 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
-         echo "<td>".Dropdown::getYesNo(($this->fields["is_private"])."</td>";
+         echo "<td>".Dropdown::getYesNo($this->fields["is_private"])."</td>";
       }
       // echo "<td>&nbsp;</td>";
       echo "</tr>\n";
@@ -513,7 +513,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<td class='center middle' rowspan='3'><textarea name='content' cols='50' rows='6'>".
                $this->fields["content"]."</textarea></td>";
          if ($this->fields["date"]) {
-            echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
+            echo "<td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
          } else {
             echo "<td colspan='2'>&nbsp;";
@@ -527,7 +527,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][77]."&nbsp;:</td><td>";
+         echo "<td>".__('Private')."</td><td>";
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
 
@@ -615,11 +615,11 @@ class TicketFollowup  extends CommonDBTM {
          echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th>";//"<th>" . $LANG['job'][31] . "</th>";
-         echo "<th>" . $LANG['common'][37] . "</th>";
+         echo "<th>" . __('Writer') . "</th>";
          if ($showprivate) {
-            echo "<th>" . $LANG['common'][77] . "</th>";
+            echo "<th>" . __('Private') . "</th>";
          }
          echo "</tr>\n";
 
@@ -656,7 +656,7 @@ class TicketFollowup  extends CommonDBTM {
       $out = "";
       if ($DB->numrows($result)>0) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
-                  <tr><th>".$LANG['common'][27]."</th><th>".$LANG['job'][4]."</th>
+                  <tr><th>".__('Date')."</th><th>".$LANG['job'][4]."</th>
                   <th>".$LANG['joblist'][6]."</th></tr>\n";
 
          while ($data=$DB->fetch_array($result)) {
@@ -688,7 +688,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<tr><th colspan='4'>". $LANG['job'][51]."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".$LANG['common'][25]."&nbsp;:<br>(".$LANG['validation'][16].")</td>";
+         echo "<td colspan='2'>".__('Comments')."&nbsp;:<br>(".$LANG['validation'][16].")</td>";
          echo "<td class='center middle' colspan='2'>";
          echo "<textarea name='content' cols='70' rows='6'></textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
@@ -728,17 +728,17 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'date';
-      $tab[3]['name']     = $LANG['common'][26];
+      $tab[3]['name']     = __('Date');
       $tab[3]['datatype'] = 'datetime';
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'is_private';
-      $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
+      $tab[4]['name']     = __('Private');
       $tab[4]['datatype'] = 'bool';
 
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';
-      $tab[5]['name']  = $LANG['common'][34];
+      $tab[5]['name']  = __('User');
 
       return $tab;
    }

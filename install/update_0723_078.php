@@ -3820,17 +3820,17 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 create glpi_requesttypes ".$LANG['update'][90].$DB->error());
 
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(1, '".addslashes($LANG['Menu'][31])."', 1, 0, NULL)");
+                  VALUES(1, '".addslashes(__('Simplified interface'))."', 1, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(2, '".addslashes($LANG['setup'][14])."', 0, 1, NULL)");
+                  VALUES(2, '".addslashes(__('Email'))."', 0, 1, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(3, '".addslashes($LANG['help'][35])."', 0, 0, NULL)");
+                  VALUES(3, '".addslashes(__('Phone'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(4, '".addslashes($LANG['tracking'][34])."', 0, 0, NULL)");
+                  VALUES(4, '".addslashes(__('Direct'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(5, '".addslashes($LANG['tracking'][35])."', 0, 0, NULL)");
+                  VALUES(5, '".addslashes(__('Written')."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(6, '".addslashes($LANG['common'][62])."', 0, 0, NULL)");
+                  VALUES(6, '".addslashes(__('Other'))."', 0, 0, NULL)");
    }
    // Add default display
    $ADDTODISPLAYPREF['RequestType'] = array(14, 15);
