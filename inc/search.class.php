@@ -4585,6 +4585,7 @@ class Search {
 
             $search['States'][24]['table']     = 'glpi_users';
             $search['States'][24]['field']     = 'name';
+            $search['States'][24]['linkfield'] = 'users_id_tech';
             $search['States'][24]['name']      = $LANG['common'][10];
 
             $search['States'][80]['table']     = 'glpi_entities';
