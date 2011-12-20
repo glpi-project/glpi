@@ -212,8 +212,6 @@ $LANG['central'][17]="Your rejected tickets";
 $LANG['central'][18]="Your tickets to close"; 
 $LANG['central'][19]="Your tickets to validate"; 
 
-/// TODO Before is ok for migration to gettext
-
 $LANG['change'][0]="Change"; 
 $LANG['change'][1]="Create a change from this ticket"; 
 $LANG['change'][2]="Create a change from this problem"; 
@@ -229,6 +227,8 @@ $LANG['change'][11]="Qualification";
 $LANG['change'][12]="Applied"; 
 $LANG['change'][13]="Abandonned"; 
 $LANG['change'][14]="Review"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['choice'][0]="No"; 
 $LANG['choice'][1]="Yes"; 

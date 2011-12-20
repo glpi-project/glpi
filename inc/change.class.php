@@ -62,10 +62,7 @@ class Change extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][8];
-      }
-      return $LANG['change'][0];
+      return _n('Change','Changes',$nb);
    }
 
 
@@ -185,9 +182,9 @@ class Change extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               return array (1 => $LANG['problem'][3],         // Analysis
-                             2 => $LANG['change'][7],          // Plans
-                             3 => $LANG['jobresolution'][2]);  // Solution
+               return array (1 => __('Analysis'),
+                             2 => __('Plans'),   
+                             3 => __('Solution');
          }
       }
       return '';
@@ -495,35 +492,35 @@ class Change extends CommonITILObject {
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['analysis'] = $LANG['problem'][3];
+      $tab['analysis'] = __('Control list');
 
       $tab[60]['table']         = $this->getTable();
       $tab[60]['field']         = 'impactcontent';
-      $tab[60]['name']          = $LANG['problem'][4];
+      $tab[60]['name']          = __('Impact');
       $tab[60]['massiveaction'] = false;
       $tab[60]['datatype']      = 'text';
 
       $tab[61]['table']         = $this->getTable();
       $tab[61]['field']         = 'controlistcontent';
-      $tab[61]['name']          = $LANG['change'][3];
+      $tab[61]['name']          = __('Control list');
       $tab[61]['massiveaction'] = false;
       $tab[61]['datatype']      = 'text';
 
       $tab[62]['table']         = $this->getTable();
       $tab[62]['field']         = 'rolloutplancontent';
-      $tab[62]['name']          = $LANG['change'][4];
+      $tab[62]['name']          = __('Deployment plan');
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
 
       $tab[63]['table']         = $this->getTable();
       $tab[63]['field']         = 'backoutplancontent';
-      $tab[63]['name']          = $LANG['change'][5];
+      $tab[63]['name']          = __('Backup plan');
       $tab[63]['massiveaction'] = false;
       $tab[63]['datatype']      = 'text';
 
       $tab[64]['table']         = $this->getTable();
       $tab[64]['field']         = 'checklistcontent';
-      $tab[64]['name']          = $LANG['change'][6];
+      $tab[64]['name']          = __('Checklist');
       $tab[64]['massiveaction'] = false;
       $tab[64]['datatype']      = 'text';
 
@@ -596,18 +593,18 @@ class Change extends CommonITILObject {
 
       // To be overridden by class
       $tab = array('new'           => $LANG['joblist'][9],
-                   'evaluation'    => $LANG['change'][8],
-                   'approbation'   => $LANG['change'][9],
+                   'evaluation'    => __('Evaluation'),
+                   'approbation'   => __('Approval'),
                    'accepted'      => $LANG['problem'][1],
                    'waiting'       => $LANG['joblist'][26],
 //                   'assign'      => $LANG['joblist'][18],
 //                   'plan'        => $LANG['joblist'][19],
-                   'test'          => $LANG['change'][10],
-                   'qualification' => $LANG['change'][11],
-                   'solved'        => $LANG['change'][12], // applied
-                   'observe'       => $LANG['change'][14], // review
+                   'test'          => __('Test'),
+                   'qualification' => __('Qualification'),
+                   'solved'        => __('Applied'), // applied
+                   'observe'       => __('Review'), // review
                    'closed'        => $LANG['joblist'][33],
-//                   'abandoned'     => $LANG['change'][13], // managed using trash ?
+//                   'abandoned'     => __('Abandonned'), // managed using trash ?
    );
 
       if ($withmetaforsearch) {
@@ -1031,7 +1028,7 @@ class Change extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['change'][3]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Control list')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='controlistcontent' name='controlistcontent' rows='6' cols='80'>";
          echo $this->getField('controlistcontent');
@@ -1061,7 +1058,7 @@ class Change extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['change'][4]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Deployment plan')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='rolloutplancontent' name='rolloutplancontent' rows='6' cols='80'>";
          echo $this->getField('rolloutplancontent');
@@ -1072,7 +1069,7 @@ class Change extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['change'][5]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Backup plan')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='backoutplancontent' name='backoutplancontent' rows='6' cols='80'>";
          echo $this->getField('backoutplancontent');
@@ -1083,7 +1080,7 @@ class Change extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['change'][6]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Checklist')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='checklistcontent' name='checklistcontent' rows='6' cols='80'>";
          echo $this->getField('checklistcontent');

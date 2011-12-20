@@ -50,10 +50,7 @@ class Change_Problem extends CommonDBRelation{
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][624].' '.$LANG['change'][0].'-'.$LANG['problem'][0];
-      }
-      return $LANG['setup'][620].' '.$LANG['change'][0].'-'.$LANG['problem'][0];
+      return _n('Link Problem/Change','Links Problem/Change',$nb);
    }
 
 
@@ -89,8 +86,9 @@ class Change_Problem extends CommonDBRelation{
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
-      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>".$LANG['change'][2].
-           "</a>";
+      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
+      _e('Create a change from this problem');
+      echo "</a>";
       echo "</th>";
       if ($problem->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
@@ -109,8 +107,9 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Change',
-                                        $LANG['problem'][0] ." = ". $problem->fields["name"]);
+         Session::initNavigateListItems('Change', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
@@ -189,8 +188,9 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Problem',
-                                        $LANG['change'][0] ." = ". $change->fields["name"]);
+         Session::initNavigateListItems('Problem', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$change->getTypeName(1), $change->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];

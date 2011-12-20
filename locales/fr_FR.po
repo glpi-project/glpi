@@ -413,7 +413,7 @@ msgstr ""
 msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] "Calendrier"
-msgstr[1] ""
+msgstr[1] "Calendriers"
 
 #: inc/calendar_holiday.class.php:91 inc/calendarsegment.class.php:306
 #: inc/calendarsegment.class.php:319 inc/contract.class.php:245

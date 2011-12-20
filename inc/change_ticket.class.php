@@ -51,10 +51,7 @@ class Change_Ticket extends CommonDBRelation{
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][624].' '.$LANG['change'][0].'-'.$LANG['job'][38];
-      }
-      return $LANG['setup'][620].' '.$LANG['change'][0].'-'.$LANG['job'][38];
+      return _n('Link Ticket/Change','Links Ticket/Change',$nb);
    }
 
 
@@ -107,8 +104,9 @@ class Change_Ticket extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Ticket',
-                                        $LANG['change'][0] ." = ". $change->fields["name"]);
+         Session::initNavigateListItems('Ticket', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$change->getTypeName(1), $change->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
@@ -173,7 +171,8 @@ class Change_Ticket extends CommonDBRelation{
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
-      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>".$LANG['change'][1];
+      echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
+      _e('Create a change from this ticket');
       echo "</a></th></tr>";
 
       echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
@@ -190,8 +189,10 @@ class Change_Ticket extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Change', $LANG['job'][38] ." = ". $ticket->fields["name"]);
-
+         Session::initNavigateListItems('Change', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$ticket->getTypeName(1), $ticket->fields["name"]));
+      
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
