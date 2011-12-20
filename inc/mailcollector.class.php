@@ -255,7 +255,9 @@ class MailCollector  extends CommonDBTM {
       echo "<td><textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
       if ($ID>0) {
-         echo "<br>".$LANG['common'][26]."&nbsp;: ".Html::convDateTime($this->fields["date_mod"]);
+         echo "<br>";
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>";
 
@@ -321,7 +323,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 

@@ -171,18 +171,18 @@ class SoftwareLicense extends CommonDBTM {
       echo "<a href='software.form.php?id=".$softwares_id."'>".
              Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('SoftwareLicenseType',
                      array('value' => $this->fields["softwarelicensetypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"name");
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td>".__('Serial number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"serial");
       echo "</td></tr>\n";
@@ -267,12 +267,12 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'serial';
-      $tab[3]['name']      = $LANG['common'][19];
+      $tab[3]['name']      = __('Serial number');
       $tab[3]['datatype']  = 'string';
 
       $tab[162]['table']         = $this->getTable();
       $tab[162]['field']         = 'otherserial';
-      $tab[162]['name']          = $LANG['common'][20];
+      $tab[162]['name']          = __('Inventory number');
       $tab[162]['massiveaction'] = false;
       $tab[162]['datatype']      = 'string';
 
@@ -569,7 +569,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<th>&nbsp;</th>";
             echo "<th>".($sort=="`name`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=name&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
 
             if ($software->isRecursive()) {
                // Ereg to search entity in string for match default order
@@ -581,7 +581,7 @@ class SoftwareLicense extends CommonDBTM {
 
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`number`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=number&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29].
@@ -589,7 +589,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<th>".$LANG['software'][9]."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Type')."</a></th>";
             echo "<th>".($sort=="`buyname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1].
@@ -698,7 +698,7 @@ class SoftwareLicense extends CommonDBTM {
       global $LANG;
 
       return array('id'           => $LANG['login'][6],
-                   'serial'       => $LANG['common'][19],
+                   'serial'       => __('Serial number'),
                    'entities_id'  => $LANG['entity'][0],
                    'softwares_id' => $LANG['help'][31]);
    }

@@ -252,15 +252,14 @@ class Group extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center'>";
-      if (!$ID) {
-         $template = "newtemplate";
-         echo $LANG['computers'][14]."&nbsp;:&nbsp;";
-         echo HTML::convDateTime($_SESSION["glpi_currenttime"]);
 
+      if (!$ID) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
-         echo $LANG['common'][26]."&nbsp;:&nbsp;";
-         echo HTML::convDateTime($this->fields["date_mod"]);
-      }
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+      }      
       echo "</td></tr>";
 
       $this->showFormButtons($options);

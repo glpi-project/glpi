@@ -470,7 +470,7 @@ class Problem extends CommonITILObject {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
@@ -831,7 +831,7 @@ class Problem extends CommonITILObject {
       echo "<table>";
 
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
+         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";
@@ -1086,7 +1086,7 @@ class Problem extends CommonITILObject {
 
       $items[$LANG['joblist'][0]] = "glpi_problems.status";
       $items[$LANG['common'][27]] = "glpi_problems.date";
-      $items[$LANG['common'][26]] = "glpi_problems.date_mod";
+      $items[__('Last update')] = "glpi_problems.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {
          $items[$LANG['Menu'][37]] = "glpi_entities.completename";

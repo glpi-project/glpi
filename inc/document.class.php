@@ -312,9 +312,12 @@ class Document extends CommonDBTM {
             echo "&nbsp;";
          }
          echo "</th>";
-         echo "<th colspan='2'>".$LANG['common'][26]."&nbsp;: ".
-               Html::convDateTime($this->fields["date_mod"])."</th>";
-         echo "</tr>\n";
+         echo "<th colspan='2'>";
+         
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         
+         echo "</th></tr>\n";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -714,7 +717,7 @@ class Document extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 

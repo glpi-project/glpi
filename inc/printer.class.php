@@ -478,7 +478,7 @@ class Printer  extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Inserted on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
@@ -569,7 +569,7 @@ class Printer  extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 

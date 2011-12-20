@@ -257,9 +257,10 @@ class Rule extends CommonDBTM {
       echo "<textarea cols='110' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
 
       if (!$this->isNewID($ID)) {
-         echo "<br>".$LANG['common'][26]."&nbsp;:&nbsp;";
-         echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                         : $LANG['setup'][307]);
+         if ($this->fields["date_mod"]) {
+            echo "<br>";
+            printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         }            
       }
       echo"</td></tr>\n";
 

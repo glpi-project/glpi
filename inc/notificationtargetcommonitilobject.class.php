@@ -803,10 +803,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Tags without lang
       $tags = array($objettype.'.urlapprove'  => $LANG['document'][33].' '.$LANG['job'][51],
-                    $objettype.'.log.date'    => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
-                    $objettype.'.log.user'    => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
-                    $objettype.'.log.field'   => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
-                    $objettype.'.log.content' => $LANG['mailing'][144]. ' : '.$LANG['event'][19]);
+                    $objettype.'.log.date'    => __('Historical: date'),
+                    $objettype.'.log.user'    => __('Historical: user'),
+                    $objettype.'.log.field'   => __('Historical: field'),
+                    $objettype.'.log.content' => __('Historical: update');
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
