@@ -98,7 +98,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -169,7 +169,7 @@ class AuthMail extends CommonDBTM {
          $this->showTabs($options);
          $this->showFormHeader($options);
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
          echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
          echo "</td></tr>";
 

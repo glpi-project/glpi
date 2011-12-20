@@ -200,7 +200,7 @@ class Group extends CommonTreeDropdown {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>".__('Name')."</td>";
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
@@ -577,7 +577,7 @@ class Group extends CommonTreeDropdown {
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".$LANG['common'][17]."</th>";
-         echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Name')."</th><th>".$LANG['entity'][0]."</th>";
          if ($tree || $user) {
             echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";
          }

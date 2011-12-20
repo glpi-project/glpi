@@ -392,7 +392,7 @@ class CronTask extends CommonDBTM{
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td class ='b'>";
       if ($isplug=isPluginItemType($this->fields["itemtype"])) {
          echo $isplug["plugin"]." - ";
@@ -1092,7 +1092,7 @@ class CronTask extends CommonDBTM{
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;

@@ -160,7 +160,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"name");
       echo "</td></tr>\n";
@@ -193,7 +193,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'name';
-      $tab[2]['name']      = $LANG['common'][16];
+      $tab[2]['name']      = __('Name');
       $tab[2]['datatype']  = 'string';
 
       $tab[4]['table'] = 'glpi_operatingsystems';

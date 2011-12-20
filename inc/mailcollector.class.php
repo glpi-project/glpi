@@ -215,7 +215,7 @@ class MailCollector  extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['mailgate'][4]."</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]." (".$LANG['mailing'][111].")&nbsp;:";
+      echo "<tr class='tab_bg_1'><td>".__('Name (Email address))');
       echo "</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
@@ -285,11 +285,11 @@ class MailCollector  extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][16];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -1374,7 +1374,7 @@ class MailCollector  extends CommonDBTM {
 
       echo $LANG['mailgate'][0]."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
-         $msg = "\t".$LANG['common'][16].':"'.$mc['name'].'"  ';
+         $msg = "\t".__('Name').':"'.$mc['name'].'"  ';
          $msg .= " ".$LANG['common'][52].':'.$mc['host'];
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
          $msg .= " ".$LANG['login'][7].':'.

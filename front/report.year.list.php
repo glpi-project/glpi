@@ -126,7 +126,7 @@ if (isset($query) && count($query)) {
          $item = new $key();
          echo "<div class='center b'>".$item->getTypeName()."</div>";
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<tr><th>".__('Name')."</th>";
          echo "<th>".$LANG['common'][28]."</th>";
          if ($display_entity) {
             echo "<th>".$LANG['entity'][0]."</th>";

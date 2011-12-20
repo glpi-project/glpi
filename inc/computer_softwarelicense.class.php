@@ -302,7 +302,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             echo "<th>".($sort=="`compname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
 
             if ($showEntity) {
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").

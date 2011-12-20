@@ -95,7 +95,7 @@ class NotificationTargetUser extends NotificationTarget {
       global $LANG;
 
       $tags = array('user.name'              => $LANG['login'][6],
-                    'user.realname'          => $LANG['common'][16],
+                    'user.realname'          => __('Name'),
                     'user.firstname'         => $LANG['common'][43],
                     'user.token'             => $LANG['users'][4],
                     'user.passwordforgeturl' => $LANG['common'][94],

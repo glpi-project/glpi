@@ -233,7 +233,6 @@ $LANG['choice'][1]="Yes";
 $LANG['choice'][2]="or"; 
 $LANG['choice'][3]="and"; 
 
-/// TODO Before is ok for migration to gettext
 
 $LANG['common'][0]="Without name"; 
 $LANG['common'][1]="Item"; 
@@ -252,6 +251,9 @@ $LANG['common'][13]="Template";
 $LANG['common'][14]="Templates"; 
 $LANG['common'][15]="Location"; 
 $LANG['common'][16]="Name"; 
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][17]="Type"; 
 $LANG['common'][18]="Alternate username"; 
 $LANG['common'][19]="Serial Number"; 

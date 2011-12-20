@@ -127,7 +127,7 @@ class Link extends CommonDBTM {
       echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
                             [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
       Html::autocompletionTextField($this, "name", array('size' => 84));
       echo "</td></tr>";
@@ -157,7 +157,7 @@ class Link extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;

@@ -4605,7 +4605,7 @@ class Search {
 
             $search['States'][1]['table']      = 'state_types';
             $search['States'][1]['field']      = 'name';
-            $search['States'][1]['name']       = $LANG['common'][16];
+            $search['States'][1]['name']       = __('Name');
             $search['States'][1]['datatype']   = 'itemlink';
             $search['States'][1]['searchtype'] = 'contains';
 

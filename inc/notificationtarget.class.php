@@ -1041,7 +1041,7 @@ class NotificationTarget extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
 
       if ($req->numrows()) {
-         echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName()."</th>";
          echo "<th>".$LANG['common'][60]."</th>";
          echo "<th>".$LANG['common'][17]."</th>";

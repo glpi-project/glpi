@@ -117,7 +117,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
       echo "<h2>".$item->getTypeName()."</h2>";
 
-      echo "<table class='tab_cadre'><tr><th>".$LANG['common'][16]."</th>";
+      echo "<table class='tab_cadre'><tr><th>".__('Name')."</th>";
       if ($display_entity) {
          echo "<th>".$LANG['entity'][0]."</th>";
       }

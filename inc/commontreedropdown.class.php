@@ -363,9 +363,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<div class='firstbloc'>";
          echo "<form action='".$link."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>".$LANG['common'][93]."</th></tr>";
+         echo "<tr><th colspan='3'>".$LANG['common'][93]."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;: ";
+         echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
          Html::autocompletionTextField($this, "name", array('value' => ''));
 
          if ($entity_assign && $this->getForeignKeyField()!='entities_id') {
@@ -386,7 +386,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][76]." ".$this->getTreeLink();
       echo "</th></tr>";
 
-      echo "<tr><th>".$LANG['common'][16]."</th>"; // Name
+      echo "<tr><th>".__('Name')."</th>"; // Name
       if ($entity_assign) {
          echo "<th>".$LANG['entity'][0]."</th>"; // Entity
       }
@@ -474,7 +474,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][16];
+      $tab[14]['name']          = __('Name');
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['itemlink_link'] = $this->getType();
 

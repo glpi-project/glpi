@@ -178,7 +178,7 @@ class OcsServer extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -239,7 +239,7 @@ class OcsServer extends CommonDBTM {
       echo "<td class='top'>\n";
 
       echo "<table width='100%'>";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_name", $this->fields["import_general_name"]);
       echo "</td></tr>\n";
 
@@ -535,7 +535,7 @@ class OcsServer extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . __('Name') . "</td>\n";
       echo "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td>\n";
       echo "<td class='center'>" . $LANG['rulesengine'][78] . "&nbsp;: </td>\n";
       echo "<td>".$this->fields["ocs_version"]."</td></tr>\n";
@@ -3973,7 +3973,7 @@ class OcsServer extends CommonDBTM {
          echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
          echo "<td class='center'>";
          echo "<select name='ocsservers_id'>";
          while ($ocs = $DB->fetch_array($result)) {

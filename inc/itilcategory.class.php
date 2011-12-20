@@ -259,7 +259,7 @@ class ITILCategory extends CommonTreeDropdown {
          $used_incident = array();
          $used_demand = array();
          if ($DB->numrows($result)) {
-            echo "<th>".$LANG['common'][16]."</th>";
+            echo "<th>".__('Name')."</th>";
             echo "<th>".$LANG['job'][1]."</th>";
             echo "<th>".$LANG['job'][2]."</th>";
             echo "</tr>";

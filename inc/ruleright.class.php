@@ -78,16 +78,16 @@ class RuleRight extends Rule {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table  class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" .$LANG['rulesengine'][19] . "</th></tr>\n";
+      echo "<tr><th colspan='7'>" .$LANG['rulesengine'][19] . "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16] . "&nbsp;:&nbsp;";
+      echo "<td>".__('Name') . "</td><td>";
       Html::autocompletionTextField($this, "name", array('value' => '',
                                                          'size'  => 33));
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['joblist'][6] . "&nbsp;:&nbsp;";
+      echo '</td><td>'.$LANG['joblist'][6] . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
+      echo "</td><td>".$LANG['rulesengine'][9] . "</td><td>";
       $this->dropdownRulesMatch("match", "AND");
       echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
       echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
@@ -98,9 +98,9 @@ class RuleRight extends Rule {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".$LANG['profiles'][22] . "&nbsp;:&nbsp;";
+      echo "<td class='center'>".$LANG['profiles'][22] . "</td><td>";
       Dropdown::show('Profile');
-      echo "<span class='small_space'>".$LANG['profiles'][28] . "</span>&nbsp;:&nbsp;";
+      echo "</td><td><span class='small_space'>".$LANG['profiles'][28] . "</span></td><td colspan='3'>";
       Dropdown::showYesNo("is_recursive",0);
       echo "</td></tr>\n";
 

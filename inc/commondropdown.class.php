@@ -136,7 +136,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $fields = $this->getAdditionalFields();
       $nb = count($fields);
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
@@ -289,7 +289,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
