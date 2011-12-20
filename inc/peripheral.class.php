@@ -203,22 +203,6 @@ class Peripheral  extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template   = "newcomp";
-         $datestring = $LANG['computers'][14];
-         $date       = Html::convDateTime($_SESSION["glpi_currenttime"]);
-
-      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template   = "newtemplate";
-         $datestring = $LANG['computers'][14];
-         $date       = Html::convDateTime($_SESSION["glpi_currenttime"]);
-
-      } else {
-         $datestring = $LANG['common'][26];
-         $date       = Html::convDateTime($this->fields["date_mod"]);
-         $template   = false;
-      }
-
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -329,10 +313,22 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;
-      if (!$template && !empty($this->fields['template_name'])) {
+      echo "<td>";
+      if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
+          && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
-         echo "(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")</span>";
+         printf(__('Created from the template %d'),$this->fields['template_name']);
+         echo "</span>";
+      } else {
+         echo "&nbsp;";
+      }
+      echo "</td><td>";
+      if (isset($options['withtemplate']) && $options['withtemplate']) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Inserted on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+      } else {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 

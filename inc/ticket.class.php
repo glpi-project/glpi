@@ -3296,7 +3296,7 @@ class Ticket extends CommonITILObject {
 
       echo "</td></tr>";
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][95]." &nbsp;:</span></td><td>";
+         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
          if ($canupdate) {
             User::dropdown(array('name'   => 'users_id_recipient',
                                  'value'  => $this->fields["users_id_recipient"],
@@ -3314,7 +3314,7 @@ class Ticket extends CommonITILObject {
       echo "<table>";
 
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
+         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";
@@ -4460,7 +4460,7 @@ class Ticket extends CommonITILObject {
 
       $items[$LANG['joblist'][0]] = "glpi_tickets.status";
       $items[$LANG['common'][27]] = "glpi_tickets.date";
-      $items[$LANG['common'][26]] = "glpi_tickets.date_mod";
+      $items[__('Last update')] = "glpi_tickets.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {
          $items[$LANG['Menu'][37]] = "glpi_entities.completename";
