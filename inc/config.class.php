@@ -739,8 +739,8 @@ class Config extends CommonDBTM {
       if (!$userpref || $CFG_GLPI['show_count_on_tabs'] != -1) {
          echo "<td>".$LANG['setup'][1]."&nbsp;:</td><td>";
 
-         $values = array(0 => $LANG['choice'][0],
-                         1 => $LANG['choice'][1]);
+         $values = array(0 => __('No'),
+                         1 => __('Yes'));
 
          if (!$userpref) {
             $values[-1] = $LANG['setup'][307];
@@ -999,9 +999,9 @@ class Config extends CommonDBTM {
    static function dropdownGlobalManagement($name,$value) {
       global $LANG;
 
-      $choices[0] = $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $LANG['peripherals'][32];
-      $choices[1] = $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $LANG['peripherals'][31];
-      $choices[2] = $LANG['choice'][0];
+      $choices[0] = __('Yes - Restrict to unit management for manual add');
+      $choices[1] = __('Yes - Restrict to global management for manual add');
+      $choices[2] = __('No');
       Dropdown::showFromArray($name,$choices,array('value'=>$value));
    }
 

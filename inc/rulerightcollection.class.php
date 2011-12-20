@@ -151,7 +151,7 @@ class RuleRightCollection extends RuleCollection {
 
          case "is_recursive" :
             echo "<td class='center'>".$LANG['profiles'][28]." </td>\n";
-            echo "<td class='center'>".((!$value)?$LANG['choice'][0]:$LANG['choice'][1])."</td>";
+            echo "<td class='center'>".Dropdown::getYesNo($value)."</td>";
             break;
       }
       echo "</tr>";

@@ -228,12 +228,12 @@ $LANG['change'][12]="Applied";
 $LANG['change'][13]="Abandonned"; 
 $LANG['change'][14]="Review"; 
 
-/// TODO Before is ok for migration to gettext
-
 $LANG['choice'][0]="No"; 
 $LANG['choice'][1]="Yes"; 
 $LANG['choice'][2]="or"; 
 $LANG['choice'][3]="and"; 
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['common'][0]="Without name"; 
 $LANG['common'][1]="Item"; 

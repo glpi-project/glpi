@@ -1191,7 +1191,7 @@ class EntityData extends CommonDBChild {
       global $LANG;
 
       $tab = array(self::CONFIG_PARENT                  => $LANG['common'][102],
-                   self::CONFIG_NEVER                   => $LANG['choice'][0],
+                   self::CONFIG_NEVER                   => __('No'),
                    self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
                    self::AUTO_ASSIGN_CATEGORY_HARDWARE  => $LANG['setup'][50]);
 

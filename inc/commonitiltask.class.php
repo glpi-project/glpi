@@ -718,7 +718,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($this->maybePrivate() && $showprivate) {
-         echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
+         echo "<td>".Dropdown::getYesNo($this->fields["is_private"])."</td>";
       }
 
       echo "<td>";
@@ -801,12 +801,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
-         echo "<td><select name='is_private'>";
-         echo "<option value='0' ".(!$this->fields["is_private"]?" selected":"").">".
-                $LANG['choice'][0]."</option>";
-         echo "<option value='1' ".($this->fields["is_private"]?" selected":"").">".
-                $LANG['choice'][1]. "</option>";
-         echo "</select></td>";
+         echo "<td>";
+         Dropdown::showYesNo('is_private',$this->fields["is_private"]);
+         echo "</td>";
          echo "</tr>";
       }
 

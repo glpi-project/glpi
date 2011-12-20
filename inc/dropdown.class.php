@@ -529,11 +529,11 @@ class Dropdown {
       global $LANG;
 
       if ($restrict_to != 0) {
-         $options[0] = $LANG['choice'][0];
+         $options[0] = __('No');
       }
 
       if ($restrict_to != 1) {
-         $options[1] = $LANG['choice'][1];
+         $options[1] = __('Yes');
       }
       $params['value'] = $value;
       return self::showFromArray($name, $options, $params);
@@ -550,9 +550,9 @@ class Dropdown {
       global $LANG;
 
       if ($value) {
-         return $LANG['choice'][1];
+         return __('Yes');
       }
-      return $LANG['choice'][0];
+      return __('No');
    }
 
 

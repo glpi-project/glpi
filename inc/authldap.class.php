@@ -310,13 +310,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][180] . "&nbsp;:</td><td>";
       if (function_exists("ldap_start_tls")) {
-         $use_tls = $this->fields["use_tls"];
-         echo "<select name='use_tls'>";
-         echo "<option value='0' " . (!$use_tls ? " selected " : "") . ">" . $LANG['choice'][0] .
-               "</option>";
-         echo "<option value='1' " . ($use_tls ? " selected " : "") . ">" . $LANG['choice'][1] .
-               "</option>";
-         echo "</select>";
+         Dropdown::showYesNo('use_tls',$this->fields["use_tls"]);
       } else {
          echo "<input type='hidden' name='use_tls' value='0'>".$LANG['setup'][181];
       }
