@@ -1145,6 +1145,8 @@ function getUserName($ID, $link=0) {
             $user["comment"] = $LANG['common'][16]."&nbsp;: ".$username."<br>".$LANG['setup'][18].
                                "&nbsp;: ".$data["name"]."<br>";
 
+            /// TODO review comment management / first use table to display.
+
             $email = UserEmail::getDefaultForUser($ID);
             if (!empty($email)) {
                $user["comment"] .= $LANG['setup'][14]."&nbsp;: $email<br>";
@@ -1159,7 +1161,7 @@ function getUserName($ID, $link=0) {
             }
 
             if ($data["locations_id"]>0) {
-               $user["comment"] .= $LANG['common'][15]."&nbsp;: ".
+               $user["comment"] .= __('Location')."&nbsp;: ".
                                    Dropdown::getDropdownName("glpi_locations",
                                                              $data["locations_id"])."<br>";
             }

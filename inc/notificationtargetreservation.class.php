@@ -48,7 +48,7 @@ class NotificationTargetReservation extends NotificationTarget {
       global $LANG;
 
       if ($event != 'alert') {
-         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, $LANG['common'][10]);
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
@@ -140,7 +140,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.comment'     => $LANG['common'][25],
                                  'reservation.item.entity' => $LANG['entity'][0],
                                  'reservation.item.name'   => $LANG['financial'][104],
-                                 'reservation.item.tech'   => $LANG['common'][10]);
+                                 'reservation.item.tech'   => __('Technician in charge of the hardware'));
 
       foreach ($tags_except_alert as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

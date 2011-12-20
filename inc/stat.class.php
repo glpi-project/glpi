@@ -1382,12 +1382,8 @@ class Stat {
       $stat_list["Ticket"]["Ticket_Global"]["file"]  = "stat.global.php?itemtype=Ticket";
       $stat_list["Ticket"]["Ticket_Ticket"]["name"]  = $LANG['stats'][47];
       $stat_list["Ticket"]["Ticket_Ticket"]["file"]  = "stat.tracking.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Location"]["name"]  = $LANG['stats'][3];
+      $stat_list["Ticket"]["Ticket_Location"]["name"]  = __('By hardware characteristics');
       $stat_list["Ticket"]["Ticket_Location"]["file"]  = "stat.location.php?itemtype=Ticket";
-      $comment = "(".$LANG['common'][15].", ".$LANG['common'][17].", ".
-            $LANG['computers'][9].", ".$LANG['devices'][4].", ".$LANG['computers'][36].", ".
-            $LANG['devices'][2].", ".$LANG['devices'][5].")";
-      $stat_list["Ticket"]["Ticket_Location"]["comment"]  = $comment;
       $stat_list["Ticket"]["Ticket_Item"]["name"]  = $LANG['stats'][45];
       $stat_list["Ticket"]["Ticket_Item"]["file"]  = "stat.item.php";
       

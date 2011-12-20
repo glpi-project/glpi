@@ -371,7 +371,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                           $LANG['common'][64]." - ".$LANG['setup'][248]);
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP,
                           $LANG['common'][64]." - ".$LANG['setup'][249]);
-         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, $LANG['common'][10]);
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
          $this->addTarget(Notification::ASSIGN_TECH, $LANG['setup'][239]);
          $this->addTarget(Notification::REQUESTER_GROUP, $LANG['setup'][249]);
@@ -754,7 +754,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.authors'               => $LANG['job'][18],
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => $LANG['job'][4],
-                    'author.location'                   => $LANG['common'][15],
+                    'author.location'                   => __('Requester location'),
                     'author.phone'                      => $LANG['help'][35],
                     'author.phone2'                     => $LANG['help'][35].' 2',
                     $objettype.'.openbyuser'            => $LANG['common'][37],

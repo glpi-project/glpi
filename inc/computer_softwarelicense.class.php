@@ -318,7 +318,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number')."</a></th>";
             echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Location')."</a></th>";
             echo "<th>".(strstr($sort,"state")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";

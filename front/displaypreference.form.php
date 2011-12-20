@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
+   Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","display");
 }
 
 Session::checkSeveralRightsOr(array("search_config_global" => "w",

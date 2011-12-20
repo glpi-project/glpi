@@ -221,7 +221,7 @@ class RuleTicket extends Rule {
 
       $criterias['users_locations']['table']     = 'glpi_locations';
       $criterias['users_locations']['field']     = 'completename';
-      $criterias['users_locations']['name']      = $LANG['job'][4]." - ".$LANG['common'][15];
+      $criterias['users_locations']['name']      = __('Requester location');
       $criterias['users_locations']['linkfield'] = 'users_locations';
       $criterias['users_locations']['type']      = 'dropdown';
 

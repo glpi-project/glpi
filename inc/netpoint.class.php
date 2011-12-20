@@ -47,7 +47,7 @@ class Netpoint extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'locations_id',
-                         'label' => $LANG['common'][15],
+                         'label' => __('Location'),
                          'type'  => 'dropdownValue',
                          'list'  => true));
    }

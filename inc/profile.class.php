@@ -108,7 +108,8 @@ class Profile extends CommonDBTM {
                   $ong[2] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
                   $ong[3] = $LANG['title'][24]; // Assistance
                   $ong[4] = $LANG['setup'][619]; // Life cycles
-                  $ong[5] = $LANG['Menu'][15].'/'.$LANG['common'][12]; // Administration/Setup
+                  $ong[5] = __('Administration'); 
+                  $ong[6] = __('Setup'); 
                }
                return $ong;
          }
@@ -140,6 +141,9 @@ class Profile extends CommonDBTM {
 
             case 5 :
                $item->showFormAdmin();
+               break;
+            case 6 :
+               $item->showFormSetup();
                break;
 
          }
@@ -1121,8 +1125,6 @@ class Profile extends CommonDBTM {
       }
       echo "</div>";
    }
-
-
    /**
     * Print the central form for a profile
     *
@@ -1237,11 +1239,51 @@ class Profile extends CommonDBTM {
                                   $this->fields["rule_dictionnary_printer"], 1, 1, 1);
       echo "</td></tr>";
 
-      // Configuration
-      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['common'][12]."</th></tr>\n";
+
+      if ($canedit && $closeform) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value=$ID>";
+         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table></form>\n";
+      } else {
+         echo "</table>\n";
+      }
+      echo "</div>";
+
+      $this->showLegend();
+   }
+
+   /**
+    * Print the central form for a profile
+    *
+    * @param $openform boolean open the form
+    * @param $closeform boolean close the form
+   **/
+   function showFormSetup($openform=true, $closeform=true) {
+      global $LANG;
+
+      $ID = $this->fields['id'];
+      $target = $this->getFormURL();
+
+      if (!Session::haveRight("profile","r")) {
+         return false;
+      }
+
+      echo "<div class='firstbloc'>";
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+         echo "<form method='post' action='$target'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+
+
+      // Setup
+      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Setup')."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['common'][12]."&nbsp;:</td><td>";
+      echo "<td>".__('General setup')."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("config", $this->fields["config"], 1, 0, 1);
       echo "</td>";
       echo "<td>".$LANG['setup'][250]."&nbsp;:</td><td>";
@@ -1469,7 +1511,7 @@ class Profile extends CommonDBTM {
       $tab[41]['name']     = $LANG['ocsconfig'][22];
       $tab[41]['datatype'] = 'right';
 
-      $tab['config'] = $LANG['common'][12];
+      $tab['config'] = __('Setup');
 
       $tab[42]['table']    = $this->getTable();
       $tab[42]['field']    = 'dropdown';
@@ -1503,7 +1545,7 @@ class Profile extends CommonDBTM {
 
       $tab[47]['table']    = $this->getTable();
       $tab[47]['field']    = 'config';
-      $tab[47]['name']     = $LANG['common'][12];
+      $tab[47]['name']     = __('General setup');
       $tab[47]['datatype'] = 'right';
 
       $tab[52]['table']    = $this->getTable();

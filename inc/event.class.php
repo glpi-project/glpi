@@ -129,7 +129,7 @@ class Event extends CommonDBTM {
                           'tools'        => $LANG['Menu'][18],
                           'financial'    => $LANG['Menu'][26],
                           'login'        => $LANG['log'][55],
-                          'setup'        => $LANG['common'][12],
+                          'setup'        => __('Setup'),
                           'security'     => $LANG['log'][66],
                           'reservation'  => $LANG['log'][42],
                           'cron'         => $LANG['log'][59],

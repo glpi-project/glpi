@@ -46,7 +46,7 @@ Session::checkRight("backup", "w");
 // full path
 $path = GLPI_DUMP_DIR ;
 
-Html::header($LANG['common'][12], $_SERVER['PHP_SELF'], "admin", "backup");
+Html::header(__('Maintenance'), $_SERVER['PHP_SELF'], "admin", "backup");
 
 $max_time = min(get_cfg_var("max_execution_time"), get_cfg_var("max_input_time"));
 

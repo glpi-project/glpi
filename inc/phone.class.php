@@ -212,7 +212,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
+      echo "<td>".__('Location')."</td>";
       echo "<td>";
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
@@ -223,7 +223,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][10]."&nbsp;:</td>";
+      echo "<td>".__('Technician in charge of the hardware')."</td>";
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
@@ -471,7 +471,7 @@ class Phone extends CommonDBTM {
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = $LANG['common'][10];
+      $tab[24]['name']      = __('Technician in charge of the hardware');
 
       $tab[49]['table']     = 'glpi_groups';
       $tab[49]['field']     = 'completename';

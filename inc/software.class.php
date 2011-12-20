@@ -251,7 +251,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Location') . "</td><td>";
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
