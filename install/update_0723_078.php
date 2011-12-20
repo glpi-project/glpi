@@ -3828,7 +3828,7 @@ function update0723to078($output='HTML') {
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(4, '".addslashes(__('Direct'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
-                  VALUES(5, '".addslashes(__('Written')."', 0, 0, NULL)");
+                  VALUES(5, '".addslashes(__('Written'))."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes`
                   VALUES(6, '".addslashes(__('Other'))."', 0, 0, NULL)");
    }

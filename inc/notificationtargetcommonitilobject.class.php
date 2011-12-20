@@ -806,7 +806,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.log.date'    => __('Historical: date'),
                     $objettype.'.log.user'    => __('Historical: user'),
                     $objettype.'.log.field'   => __('Historical: field'),
-                    $objettype.'.log.content' => __('Historical: update');
+                    $objettype.'.log.content' => __('Historical: update'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

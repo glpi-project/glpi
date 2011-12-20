@@ -184,7 +184,7 @@ class Change extends CommonITILObject {
             case __CLASS__ :
                return array (1 => __('Analysis'),
                              2 => __('Plans'),   
-                             3 => __('Solution');
+                             3 => __('Solution'));
          }
       }
       return '';
