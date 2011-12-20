@@ -263,8 +263,8 @@ class TicketTemplate extends CommonDropdown {
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
-               $ong[1] = $LANG['common'][56];
-               $ong[2] = $LANG['Menu'][31];
+               $ong[1] = __('Standard interface');
+               $ong[2] = __('Simplified interface');
                return $ong;
          }
       }

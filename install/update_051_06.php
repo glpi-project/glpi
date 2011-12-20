@@ -651,7 +651,7 @@ function update051to06() {
 
       $query = "INSERT INTO `glpi_type_computers`
                        (`name`)
-                VALUES ('".$LANG['common'][52]."')";
+                VALUES ('Server')";
       $DB->query($query) or die("0.6 insert value in glpi_type_computers ".$LANG['update'][90].$DB->error());
 
       $serverid = $DB->insert_id();

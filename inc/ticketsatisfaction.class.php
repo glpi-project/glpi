@@ -145,7 +145,7 @@ class TicketSatisfaction extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td rowspan='1'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td rowspan='1'>".__('Comments')."</td>";
          echo "<td rowspan='1' class='middle'>";
          echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
          echo "</td></tr>\n";

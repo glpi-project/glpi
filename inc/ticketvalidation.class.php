@@ -345,7 +345,7 @@ class TicketValidation  extends CommonDBChild {
       }
 
       if ($withmetaforsearch) {
-         $tab['all'] = $LANG['common'][66];
+         $tab['all'] = __('All');
       }
       return $tab;
    }
@@ -516,7 +516,7 @@ class TicketValidation  extends CommonDBChild {
                            'entity' => $_SESSION["glpiactive_entity"],
                            'right'  => 'validate_ticket'));
 
-      echo "<br>".$LANG['common'][25]."&nbsp;: ";
+      echo "<br>".__('Comments')." ";
       echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
       echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -693,7 +693,7 @@ class TicketValidation  extends CommonDBChild {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Comments')."</td>";
          echo "<td><textarea cols='60' rows='3' name='comment_submission'>".
                $this->fields["comment_submission"]."</textarea></td></tr>";
 
@@ -706,7 +706,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Comments')."</td>";
          echo "<td>". $this->fields["comment_submission"]. "</td></tr>";
       }
 
@@ -732,7 +732,7 @@ class TicketValidation  extends CommonDBChild {
             echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+            echo "<td>".__('Comments')."</td>";
             echo "<td>".$this->fields["comment_validation"]."</td></tr>";
          }
       }

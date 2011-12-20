@@ -799,14 +799,16 @@ class CommonDBTM extends CommonGLPI {
 
       if ($addMessAfterRedirect) {
          if (($name=$this->getName()) == NOT_AVAILABLE) {
-            $this->fields['name'] = $this->getTypeName()." : ".$LANG['common'][2]
-                                    ." ".$this->fields['id'];
+            //TRANS: %1$s is the itemtype, %2$d is the id of the item
+            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'), 
+                                       $this->getTypeName(), $this->fields['id']);
          }
          $display = (isset($this->input['_no_message_link'])?$this->getNameID()
                                                             :$this->getLink());
 
          // Do not display quotes
-         Session::addMessageAfterRedirect($LANG['common'][70]."&nbsp;: ".stripslashes($display));
+         //TRANS : %s is the description of the added item
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully added: %s'),stripslashes($display)));
 
       }
    }
@@ -1019,13 +1021,20 @@ class CommonDBTM extends CommonGLPI {
          if (isset($this->fields['name'])) {
             $this->fields['name'] = stripslashes($this->fields['name']);
          } else {
-            $this->fields['name'] = $this->getTypeName()." : ".$LANG['common'][2]." ".
-                                    $this->fields['id'];
+            //TRANS: %1$s is the itemtype, %2$d is the id of the item
+            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'), 
+                                       $this->getTypeName(), $this->fields['id']);
          }
 
-         Session::addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
-                                          (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                                  :$this->getLink()));
+
+         if (isset($this->input['_no_message_link'])) {
+            $display = $this->getNameID();
+         } else {
+            $display = $this->getLink();
+         }
+         //TRANS : %s is the description of the updated item
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully updated: %s'),$display));
+
       }
 
    }
@@ -1185,9 +1194,16 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         Session::addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " .
-                                          (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                                  :$this->getLink()));
+      
+
+         if (isset($this->input['_no_message_link'])) {
+            $display = $this->getNameID();
+         } else {
+            $display = $this->getLink();
+         }
+         //TRANS : %s is the description of the updated item
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully deleted: %s'),$display));
+
       }
    }
 
@@ -1214,8 +1230,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         Session::addMessageAfterRedirect($LANG['common'][73]);
-      }
+
+         if (isset($this->input['_no_message_link'])) {
+            $display = $this->getNameID();
+         } else {
+            $display = $this->getLink();
+         }
+         //TRANS : %s is the description of the updated item
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully purged: %s'),$display));      }
    }
 
 
@@ -1302,10 +1324,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-         Session::addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " .
-                                          (isset($this->input['_no_message_link'])?$this->getNameID()
-                                                                                  :$this->getLink()));
-      }
+
+         if (isset($this->input['_no_message_link'])) {
+            $display = $this->getNameID();
+         } else {
+            $display = $this->getLink();
+         }
+         //TRANS : %s is the description of the updated item
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully restored: %s'),$display));      }
    }
 
 
@@ -1690,7 +1716,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"".__s('Purge')."\"
-                         class='submit' ".Html::addConfirmationOnAction($LANG['common'][50]).">";
+                         class='submit' ".Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
                } else {
                   echo "<input type='submit' name='delete' value='" . __s('Delete') ."'
                          class='submit'>";
@@ -1800,67 +1826,69 @@ class CommonDBTM extends CommonGLPI {
           && !$this->isNewID($ID)) {
 
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
+         
          //TRANS: %s is the template name
-         printf(__('Add based on template %s'),$this->fields["template_name"]);
+         printf(__('Add based on template %s'), $this->fields["template_name"]);
 
       } else if (!empty($params['withtemplate']) && $params['withtemplate'] == 1) {
          echo "<input type='hidden' name='is_template' value='1'>\n";
-         __e('Template Name');
+         _e('Template name');
          Html::autocompletionTextField($this, "template_name", array('size' => 25));
-
       } else if ($this->isNewID($ID)) {
-         echo $LANG['common'][87];
-
+         _e('New Card');
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
       }
 
-      if (isset($this->fields["entities_id"])
-          && Session::isMultiEntitiesMode()
-          && $this->isEntityAssign()) {
-
-         echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]).")";
-      }
 
       echo "</th><th colspan='".$params['colspan']."'>";
 
+      $entiyname = '';
+      if (isset($this->fields["entities_id"])
+          && Session::isMultiEntitiesMode()
+          && $this->isEntityAssign()) {
+         $entiyname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
+      }
       if (get_class($this)=='Entity') {
          // is recursive but cannot be change
 
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo $LANG['entity'][9]."&nbsp;:&nbsp;";
+               echo "<table class='tab_format'></tr><td>".$entiyname."</td><td class='right'>";
+               echo $LANG['entity'][9]."</td><td class='left'>";
 
                if ($params['canedit']) {
                   if (!$this->can($ID,'recursive')) {
                      echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = $LANG['common'][86];
+                     $comment = __('You are not allowed to change the visibility flag for child entities.');
                      // CommonDBChild : entity data is get or copy from parent
 
                   } else if ( $this instanceof CommonDBChild) {
                      echo Dropdown::getYesNo($this->isRecursive());
-                     $comment = $LANG['common'][91];
+                     $comment = __("Can't change this attribute. It's inherited from its parent.");
 
                   } else if ( !$this->canUnrecurs()) {
                      echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = $LANG['common'][84];
+                     $comment = __('Flag change forbidden. Linked items found.');
 
                   } else {
                      Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-                     $comment = $LANG['common'][85];
+                     $comment = __('Change visibility in the child entities');
                   }
-                  echo "&nbsp;";
+                  echo " ";
                   Html::showToolTip($comment);
                } else {
                   echo Dropdown::getYesNo($this->fields["is_recursive"]);
                }
+               echo "</td><tr></table>";
             } else {
+               echo $entiyname;
                echo "<input type='hidden' name='is_recursive' value='0'>";
             }
          } else {
-            echo "&nbsp;";
+            echo $entiyname;
          }
       }
       echo "</th></tr>\n";
@@ -2258,20 +2286,20 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getComments() {
       global $LANG,$CFG_GLPI;
-
+      /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
       if ($this->isField('completename')) {
-         $comment .= "<span class='b'>".$LANG['common'][51]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Complete Name')."&nbsp;: </span>".
                       $this->getField('completename')."<br>";
       }
 
       if ($this->isField('serial')) {
-         $comment .= "<span class='b'>".$LANG['common'][19]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Serial number')."&nbsp;: </span>".
                      $this->getField('serial')."<br>";
       }
 
       if ($this->isField('otherserial')) {
-         $comment .= "<span class='b'>".$LANG['common'][20]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Inventory number')."&nbsp;: </span>".
                      $this->getField('otherserial')."<br>";
       }
 
@@ -2285,42 +2313,42 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".$LANG['common'][15]."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Location')."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".$LANG['common'][34]."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('User')."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('groups_id') && $this->getType()!='Group') {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".$LANG['common'][35]."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Group')."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".$LANG['common'][10]."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Technician in charge of the hardware')."&nbsp;: "."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('contact')) {
-         $comment .= "<span class='b'>".$LANG['common'][18]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Alternate username')."&nbsp;: </span>".
                       $this->getField('contact')."<br>";
       }
 
       if ($this->isField('contact_num')) {
-         $comment .= "<span class='b'>".$LANG['common'][21]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Alternate username number')."&nbsp;: </span>".
                      $this->getField('contact_num')."<br>";
       }
       if (($this instanceof CommonDropdown) && $this->isField('comment')) {
-         $comment .= "<span class='b'>".$LANG['common'][25]."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Comments')."&nbsp;: </span>".
                       nl2br($this->getField('comment'))."<br>";
       }
 
@@ -2388,12 +2416,11 @@ class CommonDBTM extends CommonGLPI {
    function getSearchOptions() {
       global $LANG;
 
-      $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab = array();__('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -2593,7 +2620,8 @@ class CommonDBTM extends CommonGLPI {
       }
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
-         $message = $LANG['common'][106].' : '.implode(',',$fails);
+         //TRANS: %s is the list of the failed fields
+         $message = sprintf(__('At least one field has an incorrect value: %s'),implode(',',$fails));
          Session::addMessageAfterRedirect($message, INFO, true);
       }
    }
@@ -2620,8 +2648,8 @@ class CommonDBTM extends CommonGLPI {
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
 
-      return array('id'          => $LANG['common'][2],
-                   'serial'      => $LANG['common'][19],
+      return array('id'          => __('ID'),
+                   'serial'      => __('Serial number'),
                    'entities_id' => $LANG['entity'][0]);
    }
 
@@ -3137,16 +3165,15 @@ class CommonDBTM extends CommonGLPI {
       $query .= " ORDER by `template_name`";
 
       if ($result = $DB->query($query)) {
-         echo "<div class='center'><table class='tab_cadre' width='50%'>";
+         echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
-            echo "<tr><th>" . $LANG['common'][7] . " - ".$item->getTypeName()." :</th></tr>";
-            echo "<tr><td class='tab_bg_1 center'>";
-            echo "<a href=\"$target?id=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" .
-                   $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
+            echo "<tr><th>" . $item->getTypeName()."</th>";
+            echo "<th>".__('Choose a template')."</th></tr>";
+            echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+            echo "<a href=\"$target?id=-1&amp;withtemplate=2\">".__('Blank Template')."</a></td>";
             echo "</tr>";
          } else {
-            echo "<tr><th colspan='2'>" . $LANG['common'][14] . " - ".$item->getTypeName()." : ".
-                 "</th></tr>";
+            echo "<tr><th>".$item->getTypeName()."</th><th>".__('Templates')."</th></tr>";
          }
 
          while ($data = $DB->fetch_array($result)) {
@@ -3154,14 +3181,15 @@ class CommonDBTM extends CommonGLPI {
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                $templname.= "(".$data["id"].")";
             }
-            echo "<tr><td class='tab_bg_1 center'>";
             if ($item->canCreate() && !$add) {
+               echo "<tr><td class='tab_bg_1 center'>";
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
                echo "<a href=\"$target?id=" . $data["id"]."&amp;purge=purge&amp;withtemplate=1\">".
-                      __s('Purge') . "</a></td>";
+                      __('Purge') . "</a></td>";
             } else {
+               echo "<tr><td class='tab_bg_1 center' colspan='2'>";
                echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
             }
@@ -3169,8 +3197,8 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($item->canCreate() && !$add) {
-            echo "<tr><td colspan='2' class='tab_bg_2 center b'>";
-            echo "<a href=\"$target?withtemplate=1\">" . $LANG['common'][9] . "</a>";
+            echo "<tr><td class='tab_bg_2 center b' colspan='2'>";
+            echo "<a href=\"$target?withtemplate=1\">" . __('Add a template...') . "</a>";
             echo "</td></tr>";
          }
          echo "</table></div>\n";

@@ -121,23 +121,22 @@ class Ticket_Ticket extends CommonDBRelation {
       $ticket = new Ticket();
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
-            echo self::getLinkName($data['link'])."&nbsp;";
-            if (!$_SESSION['glpiis_ids_visible']) {
-               echo $LANG['common'][2]."&nbsp;".$data['tickets_id']."&nbsp;:&nbsp;";
-            }
-
             if ($ticket->getFromDB($data['tickets_id'])) {
-               echo $ticket->getLink();
-               echo  "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].
+               $icons =  "<img src='".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].
                              ".png' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
+                  $icons .=  " <a href='".$CFG_GLPI["root_doc"].
                                "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID".
                                "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
                                <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                 alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
-               }
+               }               
+               
+               //TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+               printf(__('%1$s %2$s %3$s'),self::getLinkName($data['link']),
+                     $ticket->getLink(), $icons);
+                              
             }
             echo '<br>';
          }
@@ -154,8 +153,8 @@ class Ticket_Ticket extends CommonDBRelation {
    static function dropdownLinks($myname, $value=self::LINK_TO) {
       global $LANG;
 
-      $tmp[self::LINK_TO]        = $LANG['common'][97];
-      $tmp[self::DUPLICATE_WITH] = $LANG['common'][98];
+      $tmp[self::LINK_TO]        = __('Linked to');
+      $tmp[self::DUPLICATE_WITH] = __('Duplicates');
       Dropdown::showFromArray($myname, $tmp, array('value' => $value));
    }
 
@@ -168,8 +167,8 @@ class Ticket_Ticket extends CommonDBRelation {
    static function getLinkName($value) {
       global $LANG;
 
-      $tmp[self::LINK_TO]        = $LANG['common'][97];
-      $tmp[self::DUPLICATE_WITH] = $LANG['common'][98];
+      $tmp[self::LINK_TO]        = __('Linked to');
+      $tmp[self::DUPLICATE_WITH] = __('Duplicates');
 
       if (isset($tmp[$value])) {
          return $tmp[$value];

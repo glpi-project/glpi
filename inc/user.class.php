@@ -53,10 +53,7 @@ class User extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][14];
-      }
-      return $LANG['common'][34];
+      return _n('User','Users',$nb);
    }
 
 
@@ -155,8 +152,8 @@ class User extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__:
             $ong = array();
-            $ong[1] = $LANG['common'][111]; // owned
-            $ong[2] = $LANG['common'][112]; // managed
+            $ong[1] = __('Used items'); 
+            $ong[2] = __('Managed items'); 
             return $ong;
 
          case 'Group' :
@@ -1482,7 +1479,7 @@ class User extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][18] . "&nbsp;:</td>";
+      echo "<td>" . __('Login') . "</td>";
       // si on est dans le cas d'un ajout , cet input ne doit plus etre hidden
       if ($this->fields["name"] == "") {
          echo "<td><input name='name' value='" . $this->fields["name"] . "'></td>";
@@ -1504,7 +1501,7 @@ class User extends CommonDBTM {
          if ((!$extauth || empty($ID))
              && $caneditpassword) {
 
-            echo "<td>" . $LANG['setup'][19]."&nbsp;:</td>";
+            echo "<td>" . __('Password')."</td>";
             echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
             echo "</td></tr>";
          } else {
@@ -1515,7 +1512,7 @@ class User extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
       Html::autocompletionTextField($this,"realname");
       echo "</td>";
 
@@ -1524,7 +1521,7 @@ class User extends CommonDBTM {
          if ((!$extauth || empty($ID))
              && $caneditpassword) {
 
-            echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
+            echo "<td>" . __('Password confirmation') . "</td>";
             echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
             echo "</td></tr>";
          } else {
@@ -1535,14 +1532,14 @@ class User extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td>";
      //Authentications informations : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
          if (Session::haveRight("user_authtype", "r")) {
-            echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
+            echo "<td>" . __('Authentication') . "</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
                echo '<br>'.$LANG['login'][29].'&nbsp;: '.
@@ -1558,15 +1555,15 @@ class User extends CommonDBTM {
       }
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "</td><td>";
       Html::autocompletionTextField($this, "mobile");
       echo "</td>";
-      echo "<td>".$LANG['common'][60]."&nbsp;:</td><td>";
+      echo "<td>".__('Active')."</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='top'>" . $LANG['setup'][15] . "&nbsp;:";
+      echo "<td class='top'>" . _n('Email','Emails',2);
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
       UserEmail::showForUser($this);
@@ -1579,7 +1576,7 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
+      echo "<td rowspan='5' class='middle'>" . __('Comments') . "</td>";
       echo "<td class='center middle' rowspan='5'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -1596,7 +1593,7 @@ class User extends CommonDBTM {
       Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('location') . "</td><td>";
       if (!empty($ID)) {
          $entities = Profile_User::getUserEntities($ID, true);
          if (count($entities) > 0) {
@@ -1652,7 +1649,7 @@ class User extends CommonDBTM {
 
          if ($ID > 0) {
             echo "<a target='_blank' href='".$CFG_GLPI["root_doc"].
-                  "/front/user.form.php?getvcard=1&amp;id=$ID'>". $LANG['common'][46]."</a>";
+                  "/front/user.form.php?getvcard=1&amp;id=$ID'>". __('Vcard')."</a>";
          }
          echo "</td></tr>";
       }
@@ -1698,7 +1695,7 @@ class User extends CommonDBTM {
          echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
          echo "</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
 
          if ($extauth
              && isset($authtype['realname_field'])
@@ -1719,7 +1716,7 @@ class User extends CommonDBTM {
             echo "<td colspan='2'></tr>";
          }
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
          if ($extauth
              && isset($authtype['firstname_field'])
              && !empty($authtype['firstname_field'])) {
@@ -1754,7 +1751,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
 
          if ($extauth && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
             echo $this->fields["mobile"];
@@ -1905,7 +1902,7 @@ class User extends CommonDBTM {
 
       // forcegroup by on name set force group by for all items
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -1917,17 +1914,17 @@ class User extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[34]['table']    = $this->getTable();
       $tab[34]['field']    = 'realname';
-      $tab[34]['name']     = $LANG['common'][48];
+      $tab[34]['name']     = __('Surname');
       $tab[34]['datatype'] = 'string';
 
       $tab[9]['table']     = $this->getTable();
       $tab[9]['field']     = 'firstname';
-      $tab[9]['name']      = $LANG['common'][43];
+      $tab[9]['name']      = __('First name');
       $tab[9]['datatype']  = 'string';
 
       $tab[5]['table']         = 'glpi_useremails';
@@ -1942,7 +1939,7 @@ class User extends CommonDBTM {
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'is_active';
-      $tab[8]['name']     = $LANG['common'][60];
+      $tab[8]['name']     = __('Active');
       $tab[8]['datatype'] = 'bool';
 
       $tab[6]['table']     = $this->getTable();
@@ -1957,12 +1954,12 @@ class User extends CommonDBTM {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'mobile';
-      $tab[11]['name']     = $LANG['common'][42];
+      $tab[11]['name']     = __('Mobile phone');
       $tab[11]['datatype'] = 'string';
 
       $tab[13]['table']         = 'glpi_groups';
       $tab[13]['field']         = 'completename';
-      $tab[13]['name']          = $LANG['common'][35];
+      $tab[13]['name']          = _n('Group','Groups',2);
       $tab[13]['forcegroupby']  = true;
       $tab[13]['datatype']      = 'itemlink';
       $tab[13]['itemlink_type'] = 'Group';
@@ -2000,7 +1997,7 @@ class User extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[17]['table']         = $this->getTable();
@@ -2010,7 +2007,7 @@ class User extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
@@ -2070,7 +2067,7 @@ class User extends CommonDBTM {
 
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';
-      $tab[60]['name']          = $LANG['stats'][13].' - '.$LANG['job'][4];
+      $tab[60]['name']          = __('Number of tickets as requester');
       $tab[60]['forcegroupby']  = true;
       $tab[60]['usehaving']     = true;
       $tab[60]['datatype']      = 'number';
@@ -2081,7 +2078,7 @@ class User extends CommonDBTM {
 
       $tab[61]['table']         = 'glpi_tickets';
       $tab[61]['field']         = 'count';
-      $tab[61]['name']          = $LANG['stats'][13].' - '.$LANG['common'][37];
+      $tab[61]['name']          = __('Number of written tickets');
       $tab[61]['forcegroupby']  = true;
       $tab[61]['usehaving']     = true;
       $tab[61]['datatype']      = 'number';
@@ -2377,7 +2374,7 @@ class User extends CommonDBTM {
       } else {
          $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
          if ($p['all']) {
-            $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
+            $default.= "<option value='0'>".__('All')."</option></select>";
          } else {
             $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
          }
@@ -2555,11 +2552,11 @@ class User extends CommonDBTM {
       }
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<tr><th>".__('Type')."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Serial number')."</th>";
+      echo "<th>".__('Inventory number')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       foreach ($type_user as $itemtype) {
@@ -2594,7 +2591,7 @@ class User extends CommonDBTM {
                   }
                   $linktype = "";
                   if ($data[$field_user] == $ID) {
-                     $linktype = $LANG['common'][34];
+                     $linktype = _n('User','Users',1);
                   }
                   echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
                   echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
@@ -2621,11 +2618,11 @@ class User extends CommonDBTM {
 
       if (!empty($group_where)) {
          echo "<div class='spaced'><table class='tab_cadre_fixe'><tr>".
-               "<th>".$LANG['common'][17]."</th>".
+               "<th>".__('Type')."</th>".
                "<th>".$LANG['entity'][0]."</th>".
-               "<th>".$LANG['common'][16]."</th>".
-               "<th>".$LANG['common'][19]."</th>".
-               "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
+               "<th>".__('Name')."</th>".
+               "<th>".__('Serial number')."</th>".
+               "<th>".__('Inventory number')."</th><th>&nbsp;</th></tr>";
 
          foreach ($type_group as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
@@ -2660,7 +2657,7 @@ class User extends CommonDBTM {
                      }
                      $linktype = "";
                      if (isset($groups[$data[$field_group]])) {
-                        $linktype = $LANG['common'][35]." ".$groups[$data[$field_group]];
+                        $linktype = sprintf(__('%1$s = %2$s'),_n('Group','Groups',1),$groups[$data[$field_group]]);
                      }
                      echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
