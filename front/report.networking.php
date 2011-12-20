@@ -37,6 +37,8 @@ Session::checkRight("reports", "r");
 
 Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
+Report::title();
+
 # Titre
 
 echo "<table class='tab_cadre' >";

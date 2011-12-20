@@ -37,7 +37,9 @@ Session::checkRight("reports", "r");
 
 if (isset($_POST["prise"]) && $_POST["prise"]) {
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
-
+   
+   Report::title();
+   
    $name = Dropdown::getDropdownName("glpi_netpoints",$_POST["prise"]);
 
    // Titre

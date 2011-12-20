@@ -35,6 +35,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
+Report::title();
+
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");

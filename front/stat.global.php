@@ -55,6 +55,8 @@ if (!empty($_REQUEST["date1"])
    $_REQUEST["date2"] = $tmp;
 }
 
+Stat::title();
+
 $item = new $_REQUEST['itemtype']();
 
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";

@@ -43,6 +43,8 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = 0;
 }
 
+Report::title();
+
 echo "<form method='get' name='form' action='report.reservation.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' class='center'>";
