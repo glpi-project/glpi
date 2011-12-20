@@ -107,8 +107,8 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($DB->numrows($result) >0) {
          
          Session::initNavigateListItems('Holiday', 
-               //TRANS : %s is the name of the calendar (used for headings of a list)
-               sprintf(__('Calendar = %s'),$calendar->fields["name"]));
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$calendar->getTypeName(1), $calendar->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             Session::addToNavigateListItems('Holiday', $data["id"]);

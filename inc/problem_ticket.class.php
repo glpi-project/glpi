@@ -50,10 +50,7 @@ class Problem_Ticket extends CommonDBRelation{
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][624].' '.$LANG['problem'][0].'-'.$LANG['job'][38];
-      }
-      return $LANG['setup'][620].' '.$LANG['problem'][0].'-'.$LANG['job'][38];
+      return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
 
 
@@ -107,8 +104,10 @@ class Problem_Ticket extends CommonDBRelation{
 
       if ($DB->numrows($result) >0) {
          Ticket::commonListHeader(Search::HTML_OUTPUT);
-         Session::initNavigateListItems('Ticket',
-                                        $LANG['problem'][0] ." = ". $problem->fields["name"]);
+         Session::initNavigateListItems('Ticket', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
+         
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
@@ -180,8 +179,10 @@ class Problem_Ticket extends CommonDBRelation{
 
       if ($DB->numrows($result) >0) {
          Problem::commonListHeader(Search::HTML_OUTPUT);
-         Session::initNavigateListItems('Problem',
-                                        $LANG['job'][38] ." = ". $ticket->fields["name"]);
+         Session::initNavigateListItems('Problem', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$ticket->getTypeName(1), $ticket->fields["name"]));
+
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
