@@ -856,13 +856,10 @@ class RuleCollection extends CommonDBTM {
 
             switch ($rule_result["result"]) {
                case 0 :
-                  echo $LANG['choice'][0];
-                  break;
-
                case 1 :
-                  echo $LANG['choice'][1];
+                  echo Dropdown::getYesNo($rule_result["result"]);
                   break;
-
+               
                case 2 :
                   echo $LANG['rulesengine'][107];
                   break;

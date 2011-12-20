@@ -1376,8 +1376,8 @@ class MailCollector  extends CommonDBTM {
          $msg .= " ".$LANG['common'][52].':'.$mc['host'];
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
          $msg .= " ".$LANG['login'][7].':'.
-                 (empty($mc['passwd'])?$LANG['choice'][0]:$LANG['choice'][1]);
-         $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
+                 (empty($mc['passwd'])?__('No'):__('Yes'));
+         $msg .= " ".$LANG['common'][60].':'.Dropdown::getYesNo($mc['is_active']);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
    }

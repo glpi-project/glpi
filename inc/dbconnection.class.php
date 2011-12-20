@@ -403,10 +403,11 @@ class DBConnection extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (self::isDBSlaveActive()) {
-         echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][1]." \n";
+         _e('Active');
+         echo " \n";
          self::showAllReplicateDelay();
       } else {
-         echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][0]."\n";
+         _e('Not active');
       }
       echo "\n</pre></td></tr>";
    }

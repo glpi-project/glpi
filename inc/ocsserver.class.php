@@ -505,53 +505,6 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   function ocsFormAutomaticLinkConfig($target, $ID, $withtemplate='', $templateid='') {
-      global $LANG;
-
-      if (!Session::haveRight("ocsng", "w")) {
-         return false;
-      }
-      $this->getFromDB($ID);
-      echo "<br><div class='center'>";
-      echo "<form name='formconfig' action=\"$target\" method='post'>\n";
-      echo "<table class='tab_cadre_fixe'>\n";
-      echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][52];
-      echo "<input type='hidden' name='id' value='$ID'></th></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][53] . " </td>\n<td colspan='3'>";
-      Dropdown::showYesNo("is_glpi_link_enabled", $this->fields["is_glpi_link_enabled"]);
-      echo "</td></tr>\n";
-
-      echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][54] . "</th></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['networking'][14] . " </td>\n<td>";
-      Dropdown::showYesNo("use_ip_to_link", $this->fields["use_ip_to_link"]);
-      echo "</td>\n";
-      echo "<td>" . $LANG['device_iface'][2] . " </td>\n<td>";
-      Dropdown::showYesNo("use_mac_to_link", $this->fields["use_mac_to_link"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][25] . " </td>\n<td>";
-      $link_array = array("0" => $LANG['choice'][0],
-                          "1" => $LANG['choice'][1]."&nbsp;: ".$LANG['ocsconfig'][57],
-                          "2" => $LANG['choice'][1]."&nbsp;: ".$LANG['ocsconfig'][56]);
-      Dropdown::showFromArray("use_name_to_link", $link_array,
-                              array('value' => $this->fields["use_name_to_link"]));
-      echo "</td>\n";
-      echo "<td>" . $LANG['common'][19] . " </td>\n<td>";
-      Dropdown::showYesNo("use_serial_to_link", $this->fields["use_serial_to_link"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td>\n<td colspan='3'>";
-      Dropdown::show('State', array('value' => $this->fields["states_id_linkif"],
-                                    'name'  => "states_id_linkif"));
-      echo "</td></tr>\n";
-      echo "</table><br>".$LANG['ocsconfig'][58];
-
-      echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
-             __s('Update') . "'></p>";
-      echo "</form></div>";
-   }
 
 
    /**
@@ -2391,8 +2344,8 @@ class OcsServer extends CommonDBTM {
             echo "<tr class='tab_bg_2 center'>";
             echo "<td>" . $tab["ocs_deviceid"] . "</td>\n";
             echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
-            echo "<td>" . $LANG['choice'][$tab["in_glpi"]] . "</td>\n";
-            echo "<td>" . $LANG['choice'][$tab["in_ocs"]] . "</td>\n";
+            echo "<td>" . Dropdown::getYesNo($tab["in_glpi"]) . "</td>\n";
+            echo "<td>" . Dropdown::getYesNo($tab["in_ocs"]) . "</td>\n";
             if (Session::isMultiEntitiesMode()) {
                echo "<td>".Dropdown::getDropdownName('glpi_entities', $tab['entities_id'])."</td>\n";
             }
@@ -2564,7 +2517,7 @@ class OcsServer extends CommonDBTM {
                           $tab["computers_id"] . "'>" . $tab["name"] . "</a></td>\n";
                echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . Html::convDateTime($hardware[$tab["ocsid"]]["date"]) . "</td>\n";
-               echo "<td>" . $LANG['choice'][$tab["use_auto_update"]] . "</td>\n";
+               echo "<td>" . Dropdown::getYesNo($tab["use_auto_update"]) . "</td>\n";
                echo "<td><input type='checkbox' name='toupdate[" . $tab["id"] . "]' " .
                           ($check == "all" ? "checked" : "") . "></td></tr>\n";
             }

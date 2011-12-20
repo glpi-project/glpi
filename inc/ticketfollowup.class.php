@@ -453,7 +453,7 @@ class TicketFollowup  extends CommonDBTM {
 
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($showprivate) {
-         echo "<td>".($this->fields["is_private"]?$LANG['choice'][1]:$LANG['choice'][0])."</td>";
+         echo "<td>".Dropdown::getYesNo(($this->fields["is_private"])."</td>";
       }
       // echo "<td>&nbsp;</td>";
       echo "</tr>\n";

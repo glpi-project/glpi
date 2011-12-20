@@ -2945,9 +2945,9 @@ class Search {
 
             case "bool" :
                if (!is_numeric($val)) {
-                  if (strcasecmp($val,$LANG['choice'][0])==0) {
+                  if (strcasecmp($val,__('No'))==0) {
                      $val = 0;
-                  } else if (strcasecmp($val,$LANG['choice'][1])==0) {
+                  } else if (strcasecmp($val,__('Yes'))==0) {
                      $val = 1;
                   }
                }

@@ -302,11 +302,11 @@ class Rule extends CommonDBTM {
       global $LANG;
 
       if (!$restrict || $restrict == self::AND_MATCHING) {
-         $elements[self::AND_MATCHING] = $LANG['choice'][3];
+         $elements[self::AND_MATCHING] = __('and');
       }
 
       if (!$restrict || $restrict == self::OR_MATCHING) {
-         $elements[self::OR_MATCHING]  = $LANG['choice'][2];
+         $elements[self::OR_MATCHING]  = __('or');
       }
 
       return Dropdown::showFromArray($name, $elements, array('value' => $value));
@@ -1309,7 +1309,7 @@ class Rule extends CommonDBTM {
       if ($condition == self::PATTERN_EXISTS
           || $condition == self::PATTERN_DOES_NOT_EXISTS
           || $condition == self::PATTERN_FIND) {
-          return $LANG['choice'][1];
+          return __('Yes');
 
       } else if (in_array($condition, array(self::PATTERN_IS,
                                             self::PATTERN_IS_NOT,
@@ -1500,10 +1500,7 @@ class Rule extends CommonDBTM {
 
             case "yesonly" :
             case "yesno" :
-               if ($value) {
-                  return $LANG['choice'][1];
-               }
-               return $LANG['choice'][0];
+               return Dropdown::getYesNo($value);
 
             case "dropdown_urgency" :
                return Ticket::getUrgencyName($value);
@@ -1556,10 +1553,7 @@ class Rule extends CommonDBTM {
                case "yesonly" :
                case "yesonly" :
                case "yesno"  :
-                  if ($value) {
-                     return $LANG['choice'][1];
-                  }
-                  return $LANG['choice'][0];
+                  Dropdown::getYesNo($value);
 
                case "dropdown_impact" :
                   return Ticket::getImpactName($value);
@@ -1613,7 +1607,7 @@ class Rule extends CommonDBTM {
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
 
          $type_match = ($this->fields["match"]==self::AND_MATCHING
-                        ?$LANG['choice'][3]:$LANG['choice'][2]);
+                        ?__('and'):__('or');
          $already_displayed = array();
          $first = true;
 

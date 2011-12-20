@@ -113,8 +113,8 @@ class Alert extends CommonDBTM {
          $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
       }
 
-      $times[0] = $LANG['choice'][0];
-      $times[1] = $LANG['choice'][1];
+      $times[0] = __('No');
+      $times[1] = __('Yes');
 
       Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }

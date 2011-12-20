@@ -173,9 +173,9 @@ class RuleImportComputer extends Rule {
 
       switch ($criteria['type']) {
          case "state" :
-            $link_array = array("0" => $LANG['choice'][0],
-                                "1" => $LANG['choice'][1]." : ".$LANG['ocsconfig'][57],
-                                "2" => $LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
+            $link_array = array("0" => __('No'),
+                                "1" => __('Yes if equal'),
+                                "2" => __('Yes if empty');
 
             Dropdown::showFromArray($name, $link_array, array('value' => $value));
       }
@@ -198,7 +198,7 @@ class RuleImportComputer extends Rule {
       global $LANG;
 
       if ($condition == self::PATTERN_IS_EMPTY) {
-          return $LANG['choice'][1];
+          return __('Yes');
       }
       return false;
    }
