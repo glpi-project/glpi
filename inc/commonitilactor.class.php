@@ -47,7 +47,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 //    public $itemtype_2 = 'User';
 //    public $items_id_2 = 'users_id';
 
-   var $checks_and_logs_only_for_itemtype1 = true;
+   var $checks_only_for_itemtype1 = true;
 
    var $no_form_page = true;
 
