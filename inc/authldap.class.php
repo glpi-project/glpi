@@ -216,8 +216,12 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
-         echo ($ID>0 ?"<td>".$LANG['common'][26]."&nbsp;:</td><td>".
-               Html::convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
+         if ($ID>0) {
+            echo "<td>".__('Last update')."</td><td>".
+               Html::convDateTime($this->fields["date_mod"])
+          } else {
+          echo "<td colspan='2'>&nbsp;";
+          }
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['ldap'][44] . "&nbsp;:</td>";
@@ -712,7 +716,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
@@ -1010,9 +1014,9 @@ class AuthLDAP extends CommonDBTM {
             echo Search::showHeaderItem(Search::HTML_OUTPUT, $LANG['Menu'][14], $num,
                                         $_SERVER['PHP_SELF'].
                                                 "?order=".($values['order']=="DESC"?"ASC":"DESC"));
-            echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
+            echo "<th>".__('Last update in the LDAP directory')."</th>";
             if ($_SESSION['ldap_import']['mode']) {
-               echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
+               echo "<th>".__('Last update in GLPI')."</th>";
             }
             echo "</tr>";
 

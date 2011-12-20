@@ -738,7 +738,8 @@ class NetworkPort extends CommonDBChild {
     * @param $new_items_id the id of the item after beeing cloned
    **/
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
-
+      global $DB;
+      
       $np = new NetworkPort();
       // ADD Ports
       $query = "SELECT `id`
