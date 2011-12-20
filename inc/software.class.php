@@ -361,13 +361,6 @@ class Software extends CommonDBTM {
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      /// TODO problem equals to 160...
-      $tab[7]['table']         = 'glpi_softwarelicenses';
-      $tab[7]['field']         = 'name';
-      $tab[7]['name']          = $LANG['common'][19];
-      $tab[7]['massiveaction'] = false;
-      $tab[7]['joinparams']    = array('jointype' => 'child');
-
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
       $tab[16]['name']     = $LANG['common'][25];
@@ -489,14 +482,14 @@ class Software extends CommonDBTM {
 
       $tab[161]['table']         = 'glpi_softwarelicenses';
       $tab[161]['field']         = 'serial';
-      $tab[161]['name']          = $LANG['common'][19];
+      $tab[161]['name']          = __('Serial number');
       $tab[161]['forcegroupby']  = true;
       $tab[161]['massiveaction'] = false;
       $tab[161]['joinparams']    = array('jointype' => 'child');
 
       $tab[162]['table']         = 'glpi_softwarelicenses';
       $tab[162]['field']         = 'otherserial';
-      $tab[162]['name']          = $LANG['common'][20];
+      $tab[162]['name']          = __('Inventory number');
       $tab[162]['forcegroupby']  = true;
       $tab[162]['massiveaction'] = false;
       $tab[162]['joinparams']    = array('jointype' => 'child');

@@ -141,7 +141,7 @@ class RuleOcs extends Rule {
 
       $criterias['SSN']['table']     = 'bios';
       $criterias['SSN']['field']     = 'SSN';
-      $criterias['SSN']['name']      = $LANG['common'][19];
+      $criterias['SSN']['name']      = __('Serial number');
       $criterias['SSN']['linkfield'] = 'HARDWARE_ID';
 
       return $criterias;

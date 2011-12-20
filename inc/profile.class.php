@@ -414,7 +414,7 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       $this->fields["interface"] = "helpdesk";
-      $this->fields["name"] = $LANG['common'][0];
+      $this->fields["name"] = __('Without name');
    }
 
 

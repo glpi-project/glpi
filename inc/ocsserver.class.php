@@ -251,7 +251,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_os_serial", $this->fields["import_os_serial"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][19] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Serial number') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_serial", $this->fields["import_general_serial"]);
       echo "</td></tr>\n";
 
@@ -2323,7 +2323,7 @@ class OcsServer extends CommonDBTM {
                   __('Uncheck all') . "</a>\n";
          }
          echo "<table class='tab_cadre'>";
-         echo "<tr><th>" . $LANG['common'][1] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
+         echo "<tr><th>" . __('Item') . "</th><th>" . $LANG['ocsng'][13] . "</th>";
          echo "<th>" . $LANG['ocsng'][59] . "</th><th>" . $LANG['ocsng'][60] . "</th>";
          if (Session::isMultiEntitiesMode()) {
             echo "<th>" . $LANG['entity'][0] . "</th>";
@@ -2807,8 +2807,8 @@ class OcsServer extends CommonDBTM {
                    __s('Import')."\">";
             echo "</td></tr>\n";
 
-            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][5]." / ";
-            echo $LANG['common'][22]." / ".$LANG['common'][19]."</th>\n";
+            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][5]."</th><th>";
+            echo $LANG['common'][22]."</th><th>".__('Serial number')."</th>\n";
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
@@ -2827,7 +2827,7 @@ class OcsServer extends CommonDBTM {
                   $data = $rule->processAllRules(array(), array(), $tab["id"]);
                }
                echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td>\n";
-               echo "<td>".$tab["manufacturer"]." / ".$tab["model"]." / ".$tab["serial"]."</td>\n";
+               echo "<td>".$tab["manufacturer"]."</td><td>".$tab["model"]."</td><td>".$tab["serial"]."</td>\n";
                echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . $tab["TAG"] . "</td>\n";
                if ($advanced && !$tolinked) {
@@ -2934,15 +2934,15 @@ class OcsServer extends CommonDBTM {
    static function getLockableFields() {
       global $LANG;
 
-      return array("name"                           => $LANG['common'][16],
-                   "computertypes_id"               => $LANG['common'][17],
-                   "manufacturers_id"               => $LANG['common'][5],
-                   "computermodels_id"              => $LANG['common'][22],
-                   "serial"                         => $LANG['common'][19],
-                   "otherserial"                    => $LANG['common'][20],
-                   "comment"                        => $LANG['common'][25],
-                   "contact"                        => $LANG['common'][18],
-                   "contact_num"                    => $LANG['common'][21],
+      return array("name"                           => __('Name'),
+                   "computertypes_id"               => __('Type'),
+                   "manufacturers_id"               => __('Manufacturer'),
+                   "computermodels_id"              => __('Model'),
+                   "serial"                         => __('Serial number'),
+                   "otherserial"                    => __('Inventory number'),
+                   "comment"                        => __('Comments'),
+                   "contact"                        => __('Alternate username'),
+                   "contact_num"                    => __('Alternate username number'),
                    "domains_id"                     => $LANG['setup'][89],
                    "networks_id"                    => $LANG['setup'][88],
                    "operatingsystems_id"            => $LANG['computers'][9],
@@ -2950,9 +2950,9 @@ class OcsServer extends CommonDBTM {
                    "operatingsystemversions_id"     => $LANG['computers'][52],
                    "os_license_number"              => $LANG['computers'][10],
                    "os_licenseid"                   => $LANG['computers'][11],
-                   "users_id"                       => $LANG['common'][34],
-                   "locations_id"                   => $LANG['common'][15],
-                   "groups_id"                      => $LANG['common'][35]);
+                   "users_id"                       => __('User'),
+                   "locations_id"                   => __('Location'),
+                   "groups_id"                      => __('Group'));
    }
 
 

@@ -303,7 +303,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact_num");
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td>".__('Serial number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "serial");
       echo "</td></tr>";
@@ -436,12 +436,12 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = $LANG['common'][19];
+      $tab[5]['name']      = __('Serial number');
       $tab[5]['datatype']  = 'string';
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = $LANG['common'][20];
+      $tab[6]['name']      = __('Inventory number');
       $tab[6]['datatype']  = 'string';
 
       $tab[7]['table']     = $this->getTable();

@@ -79,10 +79,10 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
       $tags = array('license.expirationdate' => $LANG['mailing'][51],
                     'license.item'           => $LANG['help'][31],
-                    'license.name'           => $LANG['common'][16],
-                    'license.serial'         => $LANG['common'][19],
+                    'license.name'           => __('Name'),
+                    'license.serial'         => __('Serial number'),
                     'license.entity'         => $LANG['entity'][0],
-                    'license.url'            => $LANG['common'][94],
+                    'license.url'            => __('URL'),
                     'license.action'         => $LANG['mailing'][119]);
 
       foreach ($tags as $tag => $label) {

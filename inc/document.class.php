@@ -787,11 +787,11 @@ class Document extends CommonDBTM {
          echo "<th>&nbsp;</th>";
       }
 
-      echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".__('Type')."</th>";
+      echo "<th>".__('Name')."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".__('Serial number')."</th>";
+      echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
 
       for ($i=0 ; $i < $number ; $i++) {

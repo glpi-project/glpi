@@ -667,6 +667,10 @@ function update083to084() {
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
 
+   // Clean display prefs
+   $query = "UPDATE `glpi_displaypreferences` SET `num` = 160 WHERE `itemtype` = 'Software' AND `num` = 7";
+   $DB->query($query);   
+
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
