@@ -4643,7 +4643,7 @@ class Search {
 
             $search['States'][19]['table']          = 'state_types';
             $search['States'][19]['field']          = 'date_mod';
-            $search['States'][19]['name']           = $LANG['common'][26];
+            $search['States'][19]['name']           = __('Last update');
             $search['States'][19]['datatype']       = 'datetime';
             $search['States'][19]['massiveaction']  = false;
 

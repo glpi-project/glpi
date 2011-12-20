@@ -477,7 +477,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       if ($ID>0) {
-         echo "<tr class='tab_bg_1'><td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<tr class='tab_bg_1'><td>".__('Last update')."</td>";
          echo "<td>";
          echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                          : $LANG['setup'][307]);
@@ -1318,7 +1318,7 @@ class Profile extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 

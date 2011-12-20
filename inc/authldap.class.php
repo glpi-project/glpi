@@ -218,7 +218,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
          if ($ID>0) {
             echo "<td>".__('Last update')."</td><td>".
-               Html::convDateTime($this->fields["date_mod"])
+               Html::convDateTime($this->fields["date_mod"]);
           } else {
           echo "<td colspan='2'>&nbsp;";
           }

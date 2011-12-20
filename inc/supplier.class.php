@@ -482,9 +482,9 @@ class Supplier extends CommonDBTM {
       echo "</th></tr>";
       echo "<tr><th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Serial number')."</th>";
+      echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
 
       $num = 0;

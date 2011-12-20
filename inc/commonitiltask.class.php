@@ -376,7 +376,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'date';
-      $tab[3]['name']     = $LANG['common'][26];
+      $tab[3]['name']     = __('Date');
       $tab[3]['datatype'] = 'datetime';
 
       $tab[4]['table']    = $this->getTable();

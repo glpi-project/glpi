@@ -161,7 +161,7 @@ class SLA extends CommonDBTM {
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>".__('Last update')."</td>";
          echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
                                                 : $LANG['setup'][307]);
          echo "</td></tr>";

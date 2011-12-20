@@ -464,7 +464,7 @@ class Change extends CommonITILObject {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
@@ -844,7 +844,7 @@ class Change extends CommonITILObject {
       echo "<table>";
 
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
+         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";

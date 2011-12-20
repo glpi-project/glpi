@@ -480,13 +480,15 @@ class KnowbaseItem extends CommonDBTM {
 
             echo "<span class='baskb_right'>";
             if ($this->fields["date_mod"]) {
-               echo $LANG['common'][26]."&nbsp;: ".Html::convDateTime($this->fields["date_mod"]).
-                    "     ";
+               //TRANS: %s is the datetime of update
+               printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
             }
+                        
             echo "</span><br>";
 
             if ($this->fields["date"]) {
-               echo $LANG['common'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
+               //TRANS: %s is the datetime of insertion
+               printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
             }
 
             echo "<span class='baskb_right'>";
@@ -700,6 +702,11 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($this->fields["date"]) {
+         //TRANS: %s is the datetime of update
+         printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
+      }
+            
+      if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
       }
 
@@ -710,9 +717,10 @@ class KnowbaseItem extends CommonDBTM {
       echo "<th class='tdkb' colspan='2'>";
 
       if ($this->fields["date_mod"]) {
-         echo $LANG['common'][26]."&nbsp;: ".Html::convDateTime($this->fields["date_mod"]).
-              "<br>";
-      }
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         echo "<br>";
+      }      
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
 
       $this->showFormButtons($options);
@@ -1177,7 +1185,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['name']          = __('Last update');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
