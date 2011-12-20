@@ -39,6 +39,8 @@ Session::checkRight("reports", "r");
 
 Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
+Report::title();
+
 $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
                'SoftwareLicense');
 

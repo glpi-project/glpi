@@ -34,7 +34,9 @@ Session::checkRight("reports", "r");
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
-
+   
+   Report::title();
+   
    // Titre
    $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
    echo "<div class='center'><h2>".$LANG['reports'][54]." $name </h2><br></div>";

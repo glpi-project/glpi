@@ -42,66 +42,7 @@ Session::checkRight("reports", "r");
 
 Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-echo "<table class='tab_cadre'>";
-echo "<tr><th>".$LANG['reports'][0]."&nbsp;:</th></tr>";
-
-// Report generation
-// Default Report included
-$report_list["default"]["name"] = $LANG['reports'][26];
-$report_list["default"]["file"] = "report.default.php";
-
-if (Session::haveRight("contract","r")) {
-   // Rapport ajoute par GLPI V0.2
-   $report_list["Contrats"]["name"] = $LANG['reports'][27];
-   $report_list["Contrats"]["file"] = "report.contract.php";
-}
-if (Session::haveRight("infocom","r")) {
-   $report_list["Par_annee"]["name"] = $LANG['reports'][28];
-   $report_list["Par_annee"]["file"] = "report.year.php";
-   $report_list["Infocoms"]["name"]  = $LANG['reports'][62];
-   $report_list["Infocoms"]["file"]  = "report.infocom.php";
-   $report_list["Infocoms2"]["name"] = $LANG['reports'][63];
-   $report_list["Infocoms2"]["file"] = "report.infocom.conso.php";
-}
-if (Session::haveRight("networking","r")) {
-   $report_list["Rapport prises reseau"]["name"] = $LANG['reports'][33];
-   $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
-}
-if (Session::haveRight("reservation_central","r")) {
-   $report_list["reservation"]["name"] = $LANG['financial'][50];
-   $report_list["reservation"]["file"] = "report.reservation.php";
-}
-
-$i = 0;
-$count = count($report_list);
-while ($data = each($report_list)) {
-   $val = $data[0];
-   $name = $report_list["$val"]["name"];
-   $file = $report_list["$val"]["file"];
-   echo  "<tr class='tab_bg_1'><td class='center b'><a href='$file'>$name</a></td></tr>";
-   $i++;
-}
-
-$names = array();
-if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
-   foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages) {
-      $function = "plugin_version_$plug";
-      $plugname = $function();
-      if (is_array($pages) && count($pages)) {
-         foreach ($pages as $page => $name) {
-            $names[$plug.'/'.$page]=$plugname['name'].' - '.$name;
-         }
-      }
-   }
-   asort($names);
-}
-
-foreach ($names as $key => $val) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/$key'>".$val."</a></td></tr>";
-}
-
-echo "</table></div>";
+Report::title();
 
 Html::footer();
 ?>
