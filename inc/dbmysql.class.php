@@ -483,7 +483,9 @@ class DBmysql {
 
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
-         if (substr(rtrim($formattedQuery),-1) == ";") {
+         if (substr(rtrim($formattedQuery),-1) == ";"
+             && substr(rtrim($formattedQuery),-4) != "&gt;"
+             && substr(rtrim($formattedQuery),-4) != "160;") {
 
             if (Toolbox::get_magic_quotes_runtime()) {
                $formattedQuerytorun = stripslashes($formattedQuery);
