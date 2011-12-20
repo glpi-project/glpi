@@ -65,6 +65,8 @@ if (!isset($_GET["start"])) {
    $_GET["start"] = 0;
 }
 
+Stat::title();
+
 echo "<div class='center'><form method='post' name='form' action='stat.item.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";

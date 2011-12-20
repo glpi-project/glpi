@@ -69,6 +69,8 @@ if (empty($_REQUEST["dropdown"])) {
    $_REQUEST["dropdown"] = "ComputerType";
 }
 
+Stat::title();
+
 echo "<form method='get' name='form' action='stat.location.php'>";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";

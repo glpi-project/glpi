@@ -1364,7 +1364,97 @@ class Stat {
          }
       }
    }
+   
+   static function title() {
+      global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
+      
+      $show_problem = Session::haveRight("edit_all_problem", "1")
+    || Session::haveRight("show_all_problem", "1");
+      
+      $opt_list["Ticket"] = $LANG['Menu'][5];
+      $stat_list["Ticket"]["Ticket_Global"]["name"]  = $LANG['stats'][1];
+      $stat_list["Ticket"]["Ticket_Global"]["file"]  = "stat.global.php?itemtype=Ticket";
+      $stat_list["Ticket"]["Ticket_Ticket"]["name"]  = $LANG['stats'][47];
+      $stat_list["Ticket"]["Ticket_Ticket"]["file"]  = "stat.tracking.php?itemtype=Ticket";
+      $stat_list["Ticket"]["Ticket_Location"]["name"]  = $LANG['stats'][3];
+      $stat_list["Ticket"]["Ticket_Location"]["file"]  = "stat.location.php?itemtype=Ticket";
+      $comment = "(".$LANG['common'][15].", ".$LANG['common'][17].", ".
+            $LANG['computers'][9].", ".$LANG['devices'][4].", ".$LANG['computers'][36].", ".
+            $LANG['devices'][2].", ".$LANG['devices'][5].")";
+      $stat_list["Ticket"]["Ticket_Location"]["comment"]  = $comment;
+      $stat_list["Ticket"]["Ticket_Item"]["name"]  = $LANG['stats'][45];
+      $stat_list["Ticket"]["Ticket_Item"]["file"]  = "stat.item.php";
+      
+      if ($show_problem) {
+         $opt_list["Problem"] = $LANG['Menu'][7];
+         $stat_list["Problem"]["Problem_Global"]["name"]  = $LANG['stats'][1];
+         $stat_list["Problem"]["Problem_Global"]["file"]  = "stat.global.php?itemtype=Problem";
+         $stat_list["Problem"]["Problem_Problem"]["name"]  = $LANG['stats'][46];
+         $stat_list["Problem"]["Problem_Problem"]["file"]  = "stat.tracking.php?itemtype=Problem";
+      }
+      
+      //Affichage du tableau de presentation des stats
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".$LANG['stats'][0]."&nbsp;:</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo "<select name='statmenu' onchange='window.location.href=this.options
+    [this.selectedIndex].value'>";
+      echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
+      
+      $i = 0;
+      $count = count($stat_list);
+      
+      foreach ($opt_list as $opt => $group) {
+         
+         echo "<optgroup label=\"". $group ."\">";
+         while ($data = each($stat_list[$opt])) {
+            $name = $data[1]["name"];
+            $file = $data[1]["file"];
+            $comment ="";
+            if (isset($data[1]["comment"]))
+               $comment = $data[1]["comment"];
+            
+            echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
+            $i++;
+         }
+         echo "</optgroup>";
+      }
+      $names = array();
+      $optgroup = array();
+      if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
+         foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
+            $function = "plugin_version_$plug";
+            $plugname = $function();
+            if (is_array($pages) && count($pages)) {
+               foreach ($pages as $page => $name) {
+                  $names[$plug.'/'.$page] = array("name"=> $name,
+                                                   "plug"=> $plug);
+                  $optgroup[$plug] = $plugname['name'];
+               }
+            }
+         }
+         asort($names);
+      }
+      
+      foreach ($optgroup as $opt => $title) {
 
+         echo "<optgroup label=\"". $title ."\">";
+         
+         foreach ($names as $key => $val) {
+             if ($opt==$val["plug"]) {
+               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".
+                                                                     $val["name"]."</option>";
+             }
+         }
+         
+          echo "</optgroup>";
+      }
+
+      echo "</select>";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+   }
 }
 
 ?>

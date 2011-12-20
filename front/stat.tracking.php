@@ -72,6 +72,8 @@ if (!isset($_REQUEST["start"])) {
    $_REQUEST["start"] = 0;
 }
 
+Stat::title();
+
 $requester = array('user'               => array('title' => $LANG['job'][4]),
                    'users_id_recipient' => array('title' => $LANG['common'][37]),
                    'group'              => array('title' => $LANG['common'][35]),

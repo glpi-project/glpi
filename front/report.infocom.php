@@ -55,6 +55,8 @@ if (!empty($_POST["date1"])
    $_POST["date2"] = $tmp;
 }
 
+Report::title();
+
 echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";

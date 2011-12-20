@@ -39,6 +39,8 @@ Session::checkRight("reports", "r");
 
 Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
+Report::title();
+
 # Title
 
 echo "<span class='big b'>GLPI ".$LANG['Menu'][6]."</span><br><br>";
