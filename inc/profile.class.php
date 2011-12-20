@@ -1132,7 +1132,7 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='$target'>";
       }
 
-      echo "<table class='tab_cadre_fixe'><tr>";
+      echo "<table class='tab_cadre_fixe'>";
 
       // Administration
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][15]."</th></tr>\n";
