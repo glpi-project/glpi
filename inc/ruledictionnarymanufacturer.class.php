@@ -47,7 +47,7 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = $LANG['common'][5];
+      $criterias['name']['name']  = __('Manufacturer');
       $criterias['name']['table'] = 'glpi_manufacturers';
 
       return $criterias;
@@ -58,7 +58,7 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
       global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['common'][5];
+      $actions['name']['name']          = __('Manufacturer');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign','regex_result');
 
       return $actions;

@@ -172,7 +172,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ref");
       echo "</td>";
-      echo "<td>".$LANG['common'][5]."&nbsp;:</td>";
+      echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
@@ -237,7 +237,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[34]['table']    = $this->getTable();
@@ -251,7 +251,7 @@ class ConsumableItem extends CommonDBTM {
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['common'][5];
+      $tab[23]['name']  = __('Manufacturer');
 
       $tab+=Location::getSearchOptionsToAdd();
 

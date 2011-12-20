@@ -215,7 +215,7 @@ class Supplier extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table'] = $this->getTable();
@@ -313,7 +313,7 @@ class Supplier extends CommonDBTM {
       if (!empty($this->fields['website'])) {
          $ret .= "<a href='".formatOutputWebLink($this->fields['website'])."' target='_blank'>
                   <img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
-                   $LANG['common'][4]."\" title=\"".$LANG['common'][4]."\"></a>&nbsp;&nbsp;";
+                   __s('Web')."\" title=\"".__s('Web')."\"></a>&nbsp;&nbsp;";
       }
 
       if ($this->can($this->fields['id'],'r')) {

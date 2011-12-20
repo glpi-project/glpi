@@ -185,7 +185,7 @@ class OcsServer extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']  = $this->getTable();
@@ -259,7 +259,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_model", $this->fields["import_general_model"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][5] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Manufacturer') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
       echo "</td></tr>\n";
 
@@ -2807,7 +2807,7 @@ class OcsServer extends CommonDBTM {
                    __s('Import')."\">";
             echo "</td></tr>\n";
 
-            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][5]."</th><th>";
+            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".__('Manufacturer')."</th><th>";
             echo $LANG['common'][22]."</th><th>".__('Serial number')."</th>\n";
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {

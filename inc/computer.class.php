@@ -468,9 +468,9 @@ class Computer extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][16].(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
@@ -498,7 +498,7 @@ class Computer extends CommonDBTM {
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
+      echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
@@ -532,9 +532,9 @@ class Computer extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this,'contact');
       echo "</td>";
-      echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][20].(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
+      $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
@@ -736,7 +736,7 @@ class Computer extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false; // implicit field is id
 
       $tab += Location::getSearchOptionsToAdd();
@@ -837,7 +837,7 @@ class Computer extends CommonDBTM {
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['common'][5];
+      $tab[23]['name']  = __('Manufacturer');
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';

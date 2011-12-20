@@ -69,10 +69,10 @@ class RuleDictionnaryPrinter extends RuleCached {
       echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . " " . $LANG['rulesengine'][108]."</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Original manufacturer')."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['peripherals'][33] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . " " . $LANG['rulesengine'][105]."</td>";
+      echo "<td class='tab_bg_1 b'>" . __('New manufacturer')."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td></tr>";
    }
 
@@ -111,7 +111,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['name']['table'] = 'glpi_printers';
 
       $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = $LANG['common'][5];
+      $criterias['manufacturer']['name']  = __('Manufacturer');
       $criterias['manufacturer']['table'] = '';
 /*
       $criterias['PORT']['field'] = 'PORT';
@@ -149,7 +149,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
-      $actions['manufacturer']['name']  = $LANG['common'][5];
+      $actions['manufacturer']['name']  = __('Manufacturer');
       $actions['manufacturer']['table'] = 'glpi_manufacturers';
       $actions['manufacturer']['type']  = 'dropdown';
 

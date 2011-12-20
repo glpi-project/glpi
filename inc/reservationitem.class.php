@@ -118,7 +118,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab[2]['table']         = 'reservation_types';
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab += Location::getSearchOptionsToAdd();
@@ -144,7 +144,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['common'][5];
+      $tab[23]['name']  = __('Manufacturer');
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';

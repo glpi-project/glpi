@@ -42,10 +42,8 @@ class Manufacturer extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][2];
-      }
-      return $LANG['common'][5];
+      
+      return _n('Manufacturer','Manufacturers',$nb);
    }
 
    static function processName($old_name) {

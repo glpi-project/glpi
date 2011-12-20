@@ -52,7 +52,7 @@ class RuleDictionnaryDropdown extends RuleCached {
          echo "<tr><th colspan='3'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"].
               "</th></tr>";
          echo "<tr><td class='tab_bg_1 b'>".$LANG['rulesengine'][104]."</td>";
-         echo "<td class='tab_bg_1 b'>".$LANG['common'][5]."</td>";
+         echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
          echo "<td class='tab_bg_1 b'>".$LANG['rulesengine'][105]."</td></tr>";
       } else {
          parent::showCacheRuleHeader();

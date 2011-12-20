@@ -406,7 +406,7 @@ class Cartridge extends CommonDBTM {
             echo "<th colspan='2'>&nbsp;</th></tr>";
          }
          $i = 0;
-         echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
+         echo "<tr><th>".__('ID')."</th><th>".$LANG['consumables'][23]."</th>";
          echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
          echo "<th>".__('Used on')."</th><th>".$LANG['search'][9]."</th>";
 
@@ -623,7 +623,7 @@ class Cartridge extends CommonDBTM {
       } else {
          echo "<tr><th colspan='7'>".__('Worn cartridges')."</th></tr>";
       }
-      echo "<tr><th>".$LANG['common'][2]."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
+      echo "<tr><th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
       echo "<th>".__('Add date')."</th>";
       echo "<th>".$LANG['consumables'][26]."</th>";
       if ($old!=0) {

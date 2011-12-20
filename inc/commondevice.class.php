@@ -75,7 +75,7 @@ abstract class CommonDevice extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'manufacturers_id',
-                         'label' => $LANG['common'][5],
+                         'label' => __('Manufacturer'),
                          'type'  => 'dropdownValue'));
    }
 
@@ -95,7 +95,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['common'][5];
+      $tab[23]['name']  = __('Manufacturer');
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';

@@ -678,16 +678,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       //Tags without lang
       $tags = array('ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
                     'ticket.urlsatisfaction'  => $LANG['document'][33].' '.$LANG['satisfaction'][0],
-                    'linkedticket.id'         => $LANG['job'][55]." - ".$LANG['common'][2],
-                    'linkedticket.link'       => $LANG['job'][55]." - ".$LANG['setup'][620],
-                    'linkedticket.url'        => $LANG['job'][55]." - ".$LANG['common'][94],
-                    'linkedticket.title'      => $LANG['job'][55]." - ".$LANG['common'][16],
-                    'linkedticket.content'    => $LANG['job'][55]." - ".$LANG['joblist'][6],
-                    'problem.id'              => $LANG['Menu'][7]." - ".$LANG['common'][2],
-                    'problem.date'            => $LANG['Menu'][7]." - ".$LANG['common'][27],
-                    'problem.url'             => $LANG['Menu'][7]." - ".$LANG['common'][94],
-                    'problem.title'           => $LANG['Menu'][7]." - ".$LANG['common'][16],
-                    'problem.content'         => $LANG['Menu'][7]." - ".$LANG['joblist'][6],
+                    'linkedticket.id'         => __("Linked ticket ID"),
+                    'linkedticket.link'       => __("Linked ticket link"),
+                    'linkedticket.url'        => __("Linked ticket URL"),
+                    'linkedticket.title'      => __("Linked ticket title"),
+                    'linkedticket.content'    => __("Linked ticket description"),
+                    'problem.id'              => __("Problem ID"),
+                    'problem.date'            => __("Problem date"),
+                    'problem.url'             => __("Problem URL"),
+                    'problem.title'           => __("Problem title"),
+                    'problem.content'         => __("Problem description"),
 
                    );
 

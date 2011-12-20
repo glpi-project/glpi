@@ -1493,7 +1493,7 @@ class Html {
 
          if ($sector=='admin' && $item == 'dictionnary') {
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']
-                           = $LANG['common'][5];
+                           = _n('Manufacturer','Manufacturers',2);
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']
                            = '/front/ruledictionnarymanufacturer.php';
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']
@@ -2193,7 +2193,7 @@ class Html {
 
                   case "template" :
                      echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                $LANG['common'][8]."\" alt=\"".$LANG['common'][8]."\" src='".
+                                __s('Manage templates...')."\" alt=\"".__s('Manage templates...')."\" src='".
                                 $CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png'></a></li>";
                      break;
 

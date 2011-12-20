@@ -242,7 +242,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ref");
       echo "</td>";
-      echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
+      echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>";
@@ -306,7 +306,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[34]['table']     = $this->getTable();
@@ -320,7 +320,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['name']      = __('Manufacturer');
 
       $tab += Location::getSearchOptionsToAdd();
 
@@ -546,7 +546,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>".__('Models of compatible printers')."</th></tr>";
-      echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
+      echo "<tr><th>".__('ID')."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
       $used = array();
       while ($i < $number) {
