@@ -1445,8 +1445,8 @@ class Search {
                       document.forms['searchform$itemtype'].submit();\">
                       <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
                        (!$p['is_deleted']?'_no':'').".png\" name='img_deleted'  alt=\"".
-                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."\" title=\"".
-                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."\" ></a>";
+                       (!$p['is_deleted']?__s('Show the trash'):$LANG['common'][81])."\" title=\"".
+                       (!$p['is_deleted']?__s('Show the trash'):$LANG['common'][81])."\" ></a>";
                // Dropdown::showYesNo("is_deleted",$p['is_deleted']);
                echo '&nbsp;&nbsp;';
             }
@@ -4611,7 +4611,7 @@ class Search {
 
             $search['States'][2]['table']      = 'state_types';
             $search['States'][2]['field']      = 'id';
-            $search['States'][2]['name']       = $LANG['common'][2];
+            $search['States'][2]['name']       = __('ID');
             $search['States'][2]['searchtype'] = 'contains';
 
             $search['States'][31]['table']     = 'glpi_states';
@@ -4649,11 +4649,12 @@ class Search {
 
             $search['States'][23]['table']     = 'glpi_manufacturers';
             $search['States'][23]['field']     = 'name';
-            $search['States'][23]['name']      = $LANG['common'][5];
+            $search['States'][23]['name']      = __('Manufacturer');
 
             $search['States'][24]['table']     = 'glpi_users';
             $search['States'][24]['field']     = 'name';
-            $search['States'][24]['name']      = $LANG['common'][10];
+            $search['States'][24]['linkfield'] = 'users_id_tech';
+            $search['States'][24]['name']      = __('Technician in charge of the hardware');
 
             $search['States'][80]['table']     = 'glpi_entities';
             $search['States'][80]['field']     = 'completename';

@@ -127,7 +127,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "link_ticket" :
          $rand = Ticket_Ticket::dropdownLinks('link');
-         echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
+         echo __('Ticket ID').' ';
          echo "<input type='text' name='tickets_id_1' value='' size='10'>\n";
          echo "<input type='submit' name='massiveaction' class='submit' value='".
                 __s('Post')."'>";

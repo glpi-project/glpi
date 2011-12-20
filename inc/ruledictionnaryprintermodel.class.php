@@ -52,7 +52,7 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
       $criterias['name']['table'] = 'glpi_printermodels';
 
       $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = $LANG['common'][5];
+      $criterias['manufacturer']['name']  = __('Manufacturer');
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
 
       return $criterias;

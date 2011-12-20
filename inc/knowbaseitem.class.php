@@ -1149,7 +1149,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab[4]['table'] = 'glpi_knowbaseitemcategories';

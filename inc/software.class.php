@@ -246,7 +246,7 @@ class Software extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>" . $LANG['common'][5] . " / ".$LANG['software'][6]."&nbsp;:</td><td>";
+      echo "<td>" . __('Publisher')."</td><td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
@@ -260,7 +260,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['common'][10] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Technician in charge of the hardware') . "</td><td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'interface',
@@ -356,7 +356,7 @@ class Software extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
       $tab+=Location::getSearchOptionsToAdd();
@@ -383,12 +383,12 @@ class Software extends CommonDBTM {
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['common'][5];
+      $tab[23]['name']  = __('Publisher');
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = $LANG['common'][10];
+      $tab[24]['name']      = __('Technician in charge of the hardware');
 
       $tab[49]['table']     = 'glpi_groups';
       $tab[49]['field']     = 'completename';

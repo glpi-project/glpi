@@ -256,11 +256,11 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       }
 
       //Tags without lang
-      $tags = array('ticket.id'        => $LANG['Menu'][5]." - ".$LANG['common'][2],
-                    'ticket.date'      => $LANG['Menu'][5]." - ".$LANG['common'][27],
-                    'ticket.url'       => $LANG['Menu'][5]." - ".$LANG['common'][94],
-                    'ticket.title'     => $LANG['Menu'][5]." - ".$LANG['common'][16],
-                    'ticket.content'   => $LANG['Menu'][5]." - ".$LANG['joblist'][6]);
+      $tags = array('ticket.id'        => __('Ticket ID'),
+                    'ticket.date'      => __('Ticket date'),
+                    'ticket.url'       => __('Ticket URL'),
+                    'ticket.title'     => __('Ticket title'),
+                    'ticket.content'   => __('Ticket description'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

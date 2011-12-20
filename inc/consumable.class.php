@@ -402,7 +402,7 @@ class Consumable extends CommonDBTM {
             echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
          }
          $i = 0;
-         echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
+         echo "<tr><th>".__('ID')."</th><th>".$LANG['consumables'][23]."</th>";
          echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
          if ($show_old) {
             echo "<th>".$LANG['consumables'][31]."</th>";

@@ -3843,7 +3843,7 @@ class Ticket extends CommonITILObject {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             Ticket_Ticket::dropdownLinks('_link[link]',
                                          (isset($values["_link"])?$values["_link"]['link']:''));
-            echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
+            echo __('Ticket ID')." ";
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]'
                          value='".(isset($values["_link"])?$values["_link"]['tickets_id_2']:'')."'

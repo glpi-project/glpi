@@ -72,10 +72,10 @@ class RuleDictionnarySoftware extends RuleCached {
 
       echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['entity'][0]." ".$LANG['rulesengine'][104]."</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5]." ".$LANG['rulesengine'][108]."</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Original publisher')."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td>\n";
       echo "<td class='tab_bg_1 b'>" . $LANG['ldap'][27] . "</td></tr>\n";
@@ -123,7 +123,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $criterias['name']['table'] = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = $LANG['common'][5];
+      $criterias['manufacturer']['name']  = __('Publisher');
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
       // TODO : why a dropdown (was not in 0.80) ?
       $criterias['manufacturer']['type']  = 'dropdown';
@@ -150,7 +150,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['version']['name']          = $LANG['rulesengine'][78];
       $actions['version']['force_actions'] = array('assign','regex_result', 'append_regex_result');
 
-      $actions['manufacturer']['name']  = $LANG['common'][5];
+      $actions['manufacturer']['name']  = __('Publisher');
       $actions['manufacturer']['table'] = 'glpi_manufacturers';
       $actions['manufacturer']['type']  = 'dropdown';
 
