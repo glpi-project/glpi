@@ -209,7 +209,7 @@ if ($item instanceof CommonTreeDropdown) {
       echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-         echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
+         echo "<option class='tree' value='0'>--".__('Limited view')."--</option>";
       }
 
       if (count($toadd)) {
@@ -470,7 +470,7 @@ if ($item instanceof CommonTreeDropdown) {
       echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-         echo "<option value='0'>--".$LANG['common'][11]."--</option>";
+         echo "<option value='0'>--".__('Limited view')."--</option>";
 
       } else if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
          echo "<option value='0'>".$_POST["emptylabel"]."</option>";

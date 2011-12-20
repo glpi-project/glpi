@@ -49,8 +49,7 @@ class Config extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      // No plural
-      return $LANG['common'][12];
+      return __('Setup');
    }
 
 
@@ -360,7 +359,7 @@ class Config extends CommonDBTM {
       echo "<th>" . $LANG['common'][18] . "</th>";
       echo "<th>" . $LANG['common'][34] . "</th>";
       echo "<th>" . $LANG['common'][35] . "</th>";
-      echo "<th>" . $LANG['common'][15] . "</th>";
+      echo "<th>" . __('Location') . "</th>";
       echo "<th>" . $LANG['state'][0] . "</th>";
       echo "</tr>";
 
@@ -939,7 +938,7 @@ class Config extends CommonDBTM {
       $exts = get_loaded_extensions();
       sort($exts);
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
-      $msg = $LANG['common'][12].": ";
+      $msg = __('Setup').": ";
 
       foreach (array('memory_limit',
                      'max_execution_time',

@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session ::checkLoginUser();
 
-Html::header($LANG['common'][12],$_SERVER['PHP_SELF'],"config","dropdowns");
+Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","dropdowns");
 
 echo "<div align='center'>";
 

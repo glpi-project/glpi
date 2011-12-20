@@ -39,7 +39,7 @@ if (isset($_GET["popup"])) {
 if (isset($_SESSION["glpipopup"]["name"])) {
    switch ($_SESSION["glpipopup"]["name"]) {
       case "search_config" :
-         Html::popHeader($LANG['common'][12], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
          if (isset($_POST["add"])
              || isset($_POST["delete"])
              || isset($_POST["delete_x"])

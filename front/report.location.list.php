@@ -57,7 +57,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    $result = $DB->query($query);
    if ($result && $DB->numrows($result)) {
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th>".$LANG['common'][15]."</th>";
+      echo "<tr><th>".__('Location')."</th>";
       echo "<th>".$LANG['reports'][37]."</th>";
       echo "<th>".$LANG['reports'][52]."</th>";
       echo "<th>".$LANG['networking'][14]."</th>";

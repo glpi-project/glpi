@@ -66,7 +66,7 @@ class NotificationMailSetting extends CommonDBTM {
 
       switch ($item->getType()) {
          case __CLASS__ :
-            $tabs[1] = $LANG['common'][12];
+            $tabs[1] = __('Setup');
             return $tabs;
       }
       return '';

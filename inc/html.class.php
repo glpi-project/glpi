@@ -1756,7 +1756,7 @@ class Html {
       /// CONFIG
       $config    = array();
       $addconfig = array();
-      $menu['config']['title'] = $LANG['common'][12];
+      $menu['config']['title'] = __('Setup');
 
       if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")) {
          $menu['config']['content']['dropdowns']['title']    = $LANG['setup'][0];
@@ -1885,7 +1885,7 @@ class Html {
          $menu['config']['content']['extauth']['options']['others']['title'] = $LANG['common'][67];
          $menu['config']['content']['extauth']['options']['others']['page']  = '/front/auth.others.php';
 
-         $menu['config']['content']['extauth']['options']['settings']['title'] = $LANG['common'][12];
+         $menu['config']['content']['extauth']['options']['settings']['title'] = __('Setup');
          $menu['config']['content']['extauth']['options']['settings']['page']
                         = '/front/auth.settings.php';
 
@@ -2211,7 +2211,7 @@ class Html {
 
                   case "config" :
                      echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                $LANG['common'][12]."\" alt=\"".$LANG['common'][12]."\" src='".
+                                __s('Setup')."\" alt=\"".__s('Setup')."\" src='".
                                 $CFG_GLPI["root_doc"]."/pics/menu_config.png'></a></li>";
                      break;
 

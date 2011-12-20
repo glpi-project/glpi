@@ -45,7 +45,7 @@ echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
 if (Session::haveRight("config","w")) {
    echo "<tr class='tab_bg_1'><td class='center b'><a href='auth.settings.php'>";
 }
-echo $LANG['common'][12]. ' ' . $LANG['login'][10]."</a></td></tr>";
+echo __('Setup')."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseLdap()) {
    echo "<a href='authldap.php'>". $LANG['Menu'][9] ."</a>";

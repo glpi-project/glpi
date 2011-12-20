@@ -156,7 +156,7 @@ class RuleOcs extends Rule {
       $actions['entities_id']['type']  = 'dropdown';
       $actions['entities_id']['table'] = 'glpi_entities';
 
-      $actions['locations_id']['name']  = $LANG['common'][15];
+      $actions['locations_id']['name']  = __('Location');
       $actions['locations_id']['type']  = 'dropdown';
       $actions['locations_id']['table'] = 'glpi_locations';
 

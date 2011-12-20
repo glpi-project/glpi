@@ -83,7 +83,7 @@ echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"s
 echo "<option value='OperatingSystem' ".
       ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
 echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"").">".
-      $LANG['common'][15]."</option>";
+      __('Location')."</option>";
 echo "</optgroup>";
 
 $devices = Dropdown::getDeviceItemTypes();

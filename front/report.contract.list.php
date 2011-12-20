@@ -119,7 +119,7 @@ if (isset($query) && count($query)) {
          if ($display_entity) {
             echo "<th>".$LANG['entity'][0]."</th>";
          }
-         echo "<th>".$LANG['common'][15]."</th>";
+         echo "<th>".__('Location')."</th>";
          echo "<th>".$LANG['financial'][14]."</th>";
          echo "<th>".$LANG['financial'][80]."</th>";
          echo "<th>".$LANG['financial'][6]."</th>";

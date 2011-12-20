@@ -74,10 +74,7 @@ class Location extends CommonTreeDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][1];
-      }
-      return $LANG['common'][15];
+      return _n('Location','Locations',$nb);
    }
 
 
@@ -87,21 +84,21 @@ class Location extends CommonTreeDropdown {
       $tab = array();
       $tab[3]['table'] = 'glpi_locations';
       $tab[3]['field'] = 'completename';
-      $tab[3]['name']  = $LANG['common'][15];
+      $tab[3]['name']  = __('Location');
 
       $tab[91]['table']         = 'glpi_locations';
       $tab[91]['field']         = 'building';
-      $tab[91]['name']          = $LANG['common'][15]." - ".$LANG['setup'][99];
+      $tab[91]['name']          = $LANG['setup'][99];
       $tab[91]['massiveaction'] = false;
 
       $tab[92]['table']         = 'glpi_locations';
       $tab[92]['field']         = 'room';
-      $tab[92]['name']          = $LANG['common'][15]." - ".$LANG['setup'][100];
+      $tab[92]['name']          = $LANG['setup'][100];
       $tab[92]['massiveaction'] = false;
 
       $tab[93]['table']         = 'glpi_locations';
       $tab[93]['field']         = 'comment';
-      $tab[93]['name']          = $LANG['common'][15]." - ".$LANG['common'][25];
+      $tab[93]['name']          = __('Location comments');
       $tab[93]['massiveaction'] = false;
 
       return $tab;

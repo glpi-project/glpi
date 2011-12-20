@@ -65,7 +65,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
    $result = $DB->query($query);
    if ($result && $DB->numrows($result)) {
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th>".$LANG['common'][15]."</th>";
+      echo "<tr><th>".__('Location')."</th>";
       echo "<th>".$LANG['reports'][52]."</th>";
       echo "<th>".$LANG['networking'][14]."</th>";
       echo "<th>".$LANG['reports'][46]."</th>";
