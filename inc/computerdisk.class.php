@@ -158,7 +158,7 @@ class ComputerDisk extends CommonDBChild {
       echo "<td colspan='3'>".$comp->getLink()."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td><td>".$LANG['computers'][6]."&nbsp;:</td>";
@@ -232,7 +232,7 @@ class ComputerDisk extends CommonDBChild {
          echo "</th></tr>";
 
          if ($DB->numrows($result)) {
-            echo "<tr><th>".$LANG['common'][16]."</th>";
+            echo "<tr><th>".__('Name')."</th>";
             echo "<th>".$LANG['computers'][6]."</th>";
             echo "<th>".$LANG['computers'][5]."</th>";
             echo "<th>".$LANG['computers'][4]."</th>";

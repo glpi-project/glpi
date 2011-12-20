@@ -214,7 +214,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<a href='$target?preconfig=default'>".$LANG['common'][44];
             echo "</a></td></tr>";
          }
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
          if ($ID>0) {
             echo "<td>".__('Last update')."</td><td>".
@@ -373,7 +373,7 @@ class AuthLDAP extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_2'><td></td>";
-         echo "<td class='center b'>".$LANG['common'][16]."</td>";
+         echo "<td class='center b'>".__('Name')."</td>";
          echo "<td class='center b'>".$LANG['ldap'][18]."</td><td class='center'></td></tr>";
 
          while ($ldap_replicate = $DB->fetch_array($result)) {
@@ -595,7 +595,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -1564,7 +1564,7 @@ class AuthLDAP extends CommonDBTM {
 
       //If more than one ldap server
       if ($DB->numrows($result) > 1) {
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
          echo "<td class='center'>";
          Dropdown::show('AuthLDAP', array('name'                => 'ldap_server',
                                           'display_emptychoice' => false,

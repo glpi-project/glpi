@@ -400,7 +400,7 @@ class NetworkPort extends CommonDBChild {
                   echo "<th>&nbsp;</th>\n";
                }
                echo "<th>#</th>\n";
-               echo "<th>" . $LANG['common'][16] . "</th>\n";
+               echo "<th>" . __('Name') . "</th>\n";
                echo "<th>" . NetworkName::getTypeName() . "</th>\n";
                      call_user_func(array($portType, 'showForItemHeader'));
                 echo "</tr>\n";
@@ -550,7 +550,7 @@ class NetworkPort extends CommonDBChild {
          echo "</td></tr>\n";
       }
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>\n";
+      echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";

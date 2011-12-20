@@ -96,7 +96,7 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['type']  = 'dropdown';
 
       $criterias['_users_id_requester']['field'] = 'name';
-      $criterias['_users_id_requester']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
+      $criterias['_users_id_requester']['name']  = __('Requester');
       $criterias['_users_id_requester']['table'] = 'glpi_users';
       $criterias['_users_id_requester']['type']  = 'dropdown';
 

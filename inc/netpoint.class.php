@@ -316,7 +316,7 @@ class Netpoint extends CommonDropdown {
             echo "<th width='10'>&nbsp;</th>";
          }
 
-         echo "<th>".$LANG['common'][16]."</th>"; // Name
+         echo "<th>".__('Name')."</th>"; // Name
          echo "<th>".$LANG['common'][25]."</th>"; // Comment
          echo "</tr>\n";
 
@@ -358,7 +358,7 @@ class Netpoint extends CommonDropdown {
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
-         echo "<td>".$LANG['common'][16]."&nbsp;: ";
+         echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($item, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
@@ -370,7 +370,7 @@ class Netpoint extends CommonDropdown {
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
-         echo "<td>".$LANG['common'][16]."&nbsp;: ";
+         echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showInteger('_from', 0, 0, 400);
          echo "&nbsp;-->&nbsp;";

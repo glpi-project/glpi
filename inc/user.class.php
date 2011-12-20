@@ -2374,7 +2374,7 @@ class User extends CommonDBTM {
       } else {
          $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
          if ($p['all']) {
-            $default.= "<option value='0'>".__('All')."</option></select>";
+            $default.= "<option value='0'>--".__('All')."--</option></select>";
          } else {
             $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
          }

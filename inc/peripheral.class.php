@@ -207,7 +207,8 @@ class Peripheral  extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16].(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>\n";
+      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
@@ -361,7 +362,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;

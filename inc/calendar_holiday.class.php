@@ -87,7 +87,7 @@ class Calendar_Holiday extends CommonDBRelation {
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
+      echo "<tr><th colspan='2'>".__('Name')."</th>";
       echo "<th>".__('Start')."</th>";
       echo "<th>".__('End')."</th>";
       echo "<th>".__('Recurrent')."</th>";

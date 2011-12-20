@@ -390,7 +390,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
-      echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
+      echo "<tr><th colspan='2'>".__('Name')."</th>";
       echo "<th>".$LANG['joblist'][6]."</th>";
       echo "<th>".$LANG['common'][60]."</th>";
 

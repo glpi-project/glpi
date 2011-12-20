@@ -468,7 +468,8 @@ class Computer extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16].(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+      //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
@@ -729,7 +730,7 @@ class Computer extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false; // implicit key==1
@@ -971,7 +972,7 @@ class Computer extends CommonDBTM {
 
       $tab[156]['table']         = 'glpi_computerdisks';
       $tab[156]['field']         = 'name';
-      $tab[156]['name']          = $LANG['common'][16]." ".$LANG['computers'][0];
+      $tab[156]['name']          = __('Volume');
       $tab[156]['forcegroupby']  = true;
       $tab[156]['massiveaction'] = false;
       $tab[156]['joinparams']    = array('jointype' => 'child');
@@ -1099,7 +1100,7 @@ class Computer extends CommonDBTM {
 
       $tab[160]['table']         = 'glpi_computervirtualmachines';
       $tab[160]['field']         = 'name';
-      $tab[160]['name']          = $LANG['computers'][57]." : ".$LANG['common'][16];
+      $tab[160]['name']          = __('Virtual machine');
       $tab[160]['forcegroupby']  = true;
       $tab[160]['massiveaction'] = false;
       $tab[160]['joinparams']    = array('jointype' => 'child');

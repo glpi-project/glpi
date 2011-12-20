@@ -94,20 +94,20 @@ class SlaLevel extends RuleTicket {
       if ($canedit) {
          echo "<div class='center first-bloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['sla'][4]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='7'>".$LANG['sla'][4]."</tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][16]."&nbsp;: ";
+         echo "<tr class='tab_bg_2'><td class='center'>".__('Name')."";
          echo "<input type='hidden' name='slas_id' value='$ID'>";
          echo "<input type='hidden' name='entities_id' value='".$sla->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$sla->isRecursive()."'>";
-         echo "<input  name='name' value=''>";
-         echo "</td><td class='center'>".$LANG['sla'][3]."&nbsp;: ";
+         echo "</td><td><input  name='name' value=''>";
+         echo "</td><td class='center'>".$LANG['sla'][3]."</td><td>";
 
          self::dropdownExecutionTime('execution_time',
                         array('max_time'  => $sla->fields['resolution_time'],
                               'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
-         echo "</td><td class='center'>".$LANG['common'][60]."&nbsp;: ";
+         echo "</td><td class='center'>".$LANG['common'][60]."</td><td>";
          Dropdown::showYesNo("is_active",array('value'=>1));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -123,7 +123,7 @@ class SlaLevel extends RuleTicket {
 
          if ($DB->numrows($result) >0) {
             echo "<div class='center'><table class='tab_cadre_fixehov'>";
-            echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
+            echo "<tr><th colspan='2'>".__('Name')."</th>";
             echo "<th>".$LANG['sla'][3]."</th>";
             echo "<th>".$LANG['common'][60]."</th>";
             echo "</tr>";
@@ -212,7 +212,7 @@ class SlaLevel extends RuleTicket {
       $this->showTabs($options);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"name");
       echo "</td>";

@@ -65,7 +65,7 @@ class AuthLdapReplicate extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" .$LANG['ldap'][20] . "</th></tr>";
-      echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td>";
+      echo "<tr class='tab_bg_1'><td class='center'>".__('Name')."</td>";
       echo "<td class='center'>".$LANG['common'][52]."</td>";
       echo "<td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
       echo "<tr class='tab_bg_1'>";

@@ -107,7 +107,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = $LANG['common'][16];
+      $criterias['name']['name']  = __('Name');
       $criterias['name']['table'] = 'glpi_printers';
 
       $criterias['manufacturer']['field'] = 'name';
@@ -143,7 +143,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['common'][16];
+      $actions['name']['name']          = __('Name');
       $actions['name']['force_actions'] = array('assign', 'regex_result');
 
       $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];

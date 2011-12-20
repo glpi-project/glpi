@@ -242,7 +242,7 @@ class Software extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['common'][16] . "&nbsp;:</td>";
+      echo "<td>" . __('Name') . "</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
@@ -349,7 +349,7 @@ class Software extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -441,7 +441,7 @@ class Software extends CommonDBTM {
 
       $tab[5]['table']         = 'glpi_softwareversions';
       $tab[5]['field']         = 'name';
-      $tab[5]['name']          = $LANG['common'][16]." - ".$LANG['software'][5];
+      $tab[5]['name']          = __('Version name');
       $tab[5]['forcegroupby']  = true;
       $tab[5]['massiveaction'] = false;
       $tab[5]['joinparams']    = array('jointype' => 'child');
@@ -475,7 +475,7 @@ class Software extends CommonDBTM {
 
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
-      $tab[160]['name']          = $LANG['common'][16]." - ".$LANG['software'][11];
+      $tab[160]['name']          = __('License name');
       $tab[160]['forcegroupby']  = true;
       $tab[160]['massiveaction'] = false;
       $tab[160]['joinparams']    = array('jointype' => 'child');
@@ -782,7 +782,7 @@ class Software extends CommonDBTM {
          echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand'
                 action='".$link."'>";
          echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
-         echo "<th>".$LANG['common'][16]."</th>";
+         echo "<th>".__('Name')."</th>";
          echo "<th>".$LANG['entity'][0]."</th>";
          echo "<th>".$LANG['software'][19]."</th>";
          echo "<th>".$LANG['software'][11]."</th></tr>";

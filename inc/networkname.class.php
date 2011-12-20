@@ -153,7 +153,7 @@ class NetworkName extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td>\n";
-      echo "<td>" . $LANG['common'][16] . "&nbsp;:</td><td>\n";
+      echo "<td>" . __('Name') . "</td><td>\n";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
@@ -585,7 +585,7 @@ class NetworkName extends FQDNLabel {
       } else {
          Html::printAjaxPager(self::getTypeName(2),$start,$number);
          echo "<table class='tab_cadre_fixe'><tr>";
-         echo "<th><a href='javascript:reloadTab(\"order=name\");'>".$LANG['common'][16]."</a></th>"; // Name
+         echo "<th><a href='javascript:reloadTab(\"order=name\");'>".__('Name')."</a></th>"; // Name
          echo "<th><a href='javascript:reloadTab(\"order=ip_addresses\");'>".
                     $LANG['networking'][14]."</th>"; // IP
          echo "<th>".$LANG['common'][25]."</th>"; // Comment

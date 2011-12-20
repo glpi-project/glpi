@@ -151,7 +151,7 @@ class NetworkAlias extends FQDNLabel {
                $this->fields["networknames_id"]."'>\n";
       }
       $this->displayRecursiveItems($recursiveItems, (isset($options['popup']) ? "Name" : "Link"));
-      echo "</td><td>" . $LANG['common'][16] . "&nbsp;:</td><td>\n";
+      echo "</td><td>" . __('Name') . "</td><td>\n";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 

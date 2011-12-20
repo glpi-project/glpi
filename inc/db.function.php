@@ -1142,7 +1142,7 @@ function getUserName($ID, $link=0) {
          if ($link==2) {
             $user["name"]    = $username;
             $user["link"]    = $CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
-            $user["comment"] = $LANG['common'][16]."&nbsp;: ".$username."<br>".$LANG['setup'][18].
+            $user["comment"] = __('Name')."&nbsp;: ".$username."<br>".$LANG['setup'][18].
                                "&nbsp;: ".$data["name"]."<br>";
 
             /// TODO review comment management / first use table to display.

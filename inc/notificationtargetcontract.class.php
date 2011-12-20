@@ -90,7 +90,7 @@ class NotificationTargetContract extends NotificationTarget {
       global $LANG;
 
       $tags = array('contract.action'  => $LANG['mailing'][119],
-                    'contract.name'    => $LANG['common'][16],
+                    'contract.name'    => __('Name'),
                     'contract.number'  => $LANG['financial'][4],
                     'contract.type'    => $LANG['common'][17],
                     'contract.entity'  => $LANG['entity'][0]);

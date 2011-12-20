@@ -341,7 +341,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             echo "<th>".($sort=="`compname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
 
             if ($showEntity) {
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
@@ -731,7 +731,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }
-      echo "<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th>";
+      echo "<th>" . __('Name') . "</th><th>" . $LANG['state'][0] . "</th>";
       echo "<th>" .$LANG['rulesengine'][78]."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
 
       return $cat;
@@ -798,7 +798,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
          $link      = $link_item."?id=".$licdata['id'];
-         $comment = "<table><tr><td>".$LANG['common'][16]."</td>"."<td>".
+         $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
                      $licdata['name']."</td></tr><tr><td>".__('Serial number').
                      "</td><td>".$licdata['serial']."</td></tr><tr><td>".
                      __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
@@ -872,7 +872,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
       
-      $comment = "<table><tr><td>".$LANG['common'][16]."</td>"."<td>".
+      $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
                   $licdata['name']."</td></tr><tr><td>".__('Serial number').
                   "</td><td>".$licdata['serial']."</td></tr><tr><td>".
                   __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';

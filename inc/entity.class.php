@@ -297,7 +297,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][16];
+      $tab[14]['name']          = __('Name');
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['itemlink_type'] = 'Entity';
       $tab[14]['massiveaction'] = false;
@@ -436,7 +436,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[36]['table']         = 'glpi_entitydatas';
       $tab[36]['field']         = 'calendars_id';        // not a dropdown because of special value
-      $tab[36]['name']          = __s('Calendar');
+      $tab[36]['name']          = __('Calendar');
       $tab[36]['massiveaction'] = false;
       $tab[36]['nosearch']      = true;
       $tab[36]['joinparams']    = array('jointype' => 'child');

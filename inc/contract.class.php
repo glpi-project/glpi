@@ -153,7 +153,7 @@ class Contract extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
+      echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
@@ -296,7 +296,7 @@ class Contract extends CommonDBTM {
 
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';
-      $tab[29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
+      $tab[29]['name']          = __('Contract');
       $tab[29]['forcegroupby']  = true;
       $tab[29]['datatype']      = 'itemlink';
       $tab[29]['itemlink_type'] = 'Contract';
@@ -305,7 +305,7 @@ class Contract extends CommonDBTM {
 
       $tab[30]['table']         = 'glpi_contracts';
       $tab[30]['field']         = 'num';
-      $tab[30]['name']          = $LANG['financial'][4]." ".$LANG['financial'][1];
+      $tab[30]['name']          = __('Contract number');
       $tab[30]['forcegroupby']  = true;
       $tab[30]['massiveaction'] = false;
       $tab[30]['joinparams']    = $joinparams;
@@ -313,14 +313,14 @@ class Contract extends CommonDBTM {
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
-      $tab[130]['name']          = $LANG['financial'][8];
+      $tab[130]['name']          = __('Contact duration');
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
       $tab[130]['joinparams']    = $joinparams;
 
       $tab[131]['table']         = 'glpi_contracts';
       $tab[131]['field']         = 'periodicity';
-      $tab[131]['name']          = $LANG['financial'][69];
+      $tab[131]['name']          = __('Contract periodicity');
       $tab[131]['forcegroupby']  = true;
       $tab[131]['massiveaction'] = false;
       $tab[131]['joinparams']    = $joinparams;
@@ -393,7 +393,7 @@ class Contract extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -1002,7 +1002,7 @@ class Contract extends CommonDBTM {
       }
       echo "</th></tr>";
 
-      echo "<tr><th>".$LANG['common'][16]."</th>";
+      echo "<tr><th>".__('Name')."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][4]."</th>";
       echo "<th>".$LANG['financial'][6]."</th>";

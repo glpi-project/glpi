@@ -159,7 +159,7 @@ class Rule extends CommonDBTM {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -232,7 +232,7 @@ class Rule extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
@@ -1773,15 +1773,15 @@ class Rule extends CommonDBTM {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" . $this->getTitle() . "</th></tr>\n";
+      echo "<tr><th colspan='7'>" . $this->getTitle() . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16] . "&nbsp;:&nbsp;";
+      echo "<td>".__('Name') . "</td><td>";
       Html::autocompletionTextField($this, "name", array('value' => '',
                                                          'size'  => 33));
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['joblist'][6] . "&nbsp;:&nbsp;";
+      echo "</td><td>".$LANG['joblist'][6] . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
+      echo "</td><td>".$LANG['rulesengine'][9] . "</td><td>";
       $this->dropdownRulesMatch("match", self::AND_MATCHING);
       echo "</td><td class='tab_bg_2 center'>";
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";

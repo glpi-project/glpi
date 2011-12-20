@@ -321,7 +321,7 @@ class Document extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
@@ -664,7 +664,7 @@ class Document extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
@@ -1334,7 +1334,7 @@ class Document extends CommonDBTM {
 
       echo "</th></tr>";
       if ($number > 0) {
-         echo "<tr><th>".$LANG['common'][16]."</th>";
+         echo "<tr><th>".__('Name')."</th>";
          echo "<th>".$LANG['entity'][0]."</th>";
          echo "<th>".$LANG['document'][2]."</th>";
          echo "<th>".$LANG['document'][33]."</th>";
