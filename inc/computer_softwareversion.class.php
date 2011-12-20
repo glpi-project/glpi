@@ -63,6 +63,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
+      if (!isset($input['computers_id']) || !isset($input['softwareversions_id'])
+         || $input['computers_id']<=0 
+         || $input['softwareversions_id']<=0 ) {
+         return false;
+      }
+
       // Get template and deleted informations from computer
       $computer = new Computer();
       if ($computer->getFromDB($input['computers_id'])) {

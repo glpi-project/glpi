@@ -41,7 +41,8 @@ $inst = new Computer_SoftwareVersion();
 
 // From Computer - Software tab (add form or from not installed license)
 if (isset($_REQUEST["install"])) {
-   if (isset($_REQUEST["softwareversions_id"]) && isset($_REQUEST["computers_id"])) {
+   if (isset($_REQUEST["softwareversions_id"]) && isset($_REQUEST["computers_id"])
+      && $_REQUEST["softwareversions_id"] && $_REQUEST["computers_id"]) {
       $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
                        'softwareversions_id' => $_REQUEST["softwareversions_id"]));
 
