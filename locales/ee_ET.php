@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Kinnituse päringu vastus";
 $LANG['validation'][29]="Tagasi lükkamisel lisa seletus"; 
 $LANG['validation'][30]="Cancel the approval request to"; // en_GB string to be translated
 $LANG['validation'][31]="Update the Approval request to"; // en_GB string to be translated
-$LANG['validation'][32]="An answer to a Approval request was produced"; // en_GB string to be translated
+$LANG['validation'][32]="An answer to an approval request was produced"; // en_GB string to be translated
 $LANG['validation'][33]="Kinnitust ootavad teated"; 
 ?>

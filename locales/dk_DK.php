@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Status of the Approval request"; // en_GB string to be 
 $LANG['validation'][29]="Angiv årsag hvis godkendelse er afvist"; 
 $LANG['validation'][30]="Cancel the approval request to"; // en_GB string to be translated
 $LANG['validation'][31]="Opdatér godkendelses-forespørgslen til"; 
-$LANG['validation'][32]="An answer to a Approval request was produced"; // en_GB string to be translated
+$LANG['validation'][32]="An answer to an approval request was produced"; // en_GB string to be translated
 $LANG['validation'][33]="Sager der afventer godkendelse"; 
 ?>

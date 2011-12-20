@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Status of the Approval request";
 $LANG['validation'][29]="If approval is denied, specify a reason"; 
 $LANG['validation'][30]="Cancel the approval request to"; 
 $LANG['validation'][31]="Update the Approval request to"; 
-$LANG['validation'][32]="An answer to a Approval request was produced"; 
+$LANG['validation'][32]="An answer to an approval request was produced"; 
 $LANG['validation'][33]="Tickets awaiting approval"; 
 ?>

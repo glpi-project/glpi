@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Status of the Approval request"; // en_GB string to be 
 $LANG['validation'][29]="If approval is denied, specify a reason"; // en_GB string to be translated
 $LANG['validation'][30]="Cancel the approval request to"; // en_GB string to be translated
 $LANG['validation'][31]="Update the Approval request to"; // en_GB string to be translated
-$LANG['validation'][32]="An answer to a Approval request was produced"; // en_GB string to be translated
+$LANG['validation'][32]="An answer to an approval request was produced"; // en_GB string to be translated
 $LANG['validation'][33]="Pieteikums gaida apstiprinājumu"; 
 ?>
