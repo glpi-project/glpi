@@ -91,8 +91,8 @@ if (isset($_POST["send"])) {
    echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
    echo " <td class='center b' width='30%'>".$LANG['document'][14]."</td>";
    echo " <td class='center b' width='5%'>".$LANG['common'][2]."</td>";
-   echo " <td class='center b' width='20%'>".$LANG['common'][19]."&nbsp;/&nbsp;".
-                                             $LANG['common'][20]."</td>";
+   echo " <td class='center b' width='10%'>".__('Serial number')."</td>";
+   echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
    echo " </tr>";
 
    $types = array('Computer'         => $LANG['help'][25],
@@ -123,16 +123,9 @@ if (isset($_POST["send"])) {
          echo "<td class='center'>&nbsp;$label&nbsp;</td>";
          echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
          echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
+         echo "<td class='center'>&nbsp;$s1&nbsp;</td>";
+         echo "<td class='center'>&nbsp;$s2&nbsp;</td>";
          echo "<td class='center'>";
-         if ($s1 != "") {
-            echo $s1;
-         }
-         if ($s1!="" && $s2!="") {
-            echo "&nbsp;/&nbsp;";
-         }
-         if ($s2 != "") {
-            echo $s2;
-         }
          echo "</td></tr>";
       }
    }

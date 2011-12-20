@@ -116,13 +116,13 @@ class RuleImportComputer extends Rule {
 
       $criterias['DESCRIPTION']['name']   = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
 
-      $criterias['serial']['name']        = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
+      $criterias['serial']['name']        = __('Serial number');
 
       // Model as Text to allow text criteria (contains, regex, ...)
-      $criterias['model']['name']         = $LANG['rulesengine'][152].' : '.$LANG['common'][22];
+      $criterias['model']['name']         = __('Model');
 
       // Manufacturer as Text to allow text criteria (contains, regex, ...)
-      $criterias['manufacturer']['name']  = $LANG['rulesengine'][152].' : '.$LANG['common'][5];
+      $criterias['manufacturer']['name']  = __('Manufacturer');
 
       return $criterias;
    }
@@ -175,7 +175,7 @@ class RuleImportComputer extends Rule {
          case "state" :
             $link_array = array("0" => __('No'),
                                 "1" => __('Yes if equal'),
-                                "2" => __('Yes if empty');
+                                "2" => __('Yes if empty'));
 
             Dropdown::showFromArray($name, $link_array, array('value' => $value));
       }

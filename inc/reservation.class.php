@@ -592,7 +592,7 @@ class Reservation extends CommonDBChild {
       // Add Hardware name
       $r = new ReservationItem();
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][1]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
       echo "<td>";
       foreach ($options['item'] as $itemID) {
          $r->getFromDB($itemID);
@@ -980,7 +980,7 @@ class Reservation extends CommonDBChild {
       } else {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
-         echo "<th>".$LANG['common'][1]."</th>";
+         echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
 
@@ -1035,7 +1035,7 @@ class Reservation extends CommonDBChild {
       } else {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
-         echo "<th>".$LANG['common'][1]."</th>";
+         echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
 

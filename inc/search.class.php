@@ -4622,15 +4622,15 @@ class Search {
 
             $search['States'][5]['table']     = 'state_types';
             $search['States'][5]['field']     = 'serial';
-            $search['States'][5]['name']      = $LANG['common'][19];
+            $search['States'][5]['name']      = __('Serial number');
 
             $search['States'][6]['table']     = 'state_types';
             $search['States'][6]['field']     = 'otherserial';
-            $search['States'][6]['name']      = $LANG['common'][20];
+            $search['States'][6]['name']      = __('Inventory number');
 
             $search['States'][16]['table']     = 'state_types';
             $search['States'][16]['field']     = 'comment';
-            $search['States'][16]['name']      = $LANG['common'][25];
+            $search['States'][16]['name']      = __('Comments');
             $search['States'][16]['datatype']  = 'text';
 
             $search['States'][70]['table']     = 'glpi_users';

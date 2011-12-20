@@ -350,7 +350,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`otherserial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
@@ -798,10 +798,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
          $link      = $link_item."?id=".$licdata['id'];
-         Html::showToolTip($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
-                              $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".
-                              $licdata['comment'],
-                           array('link' => $link));
+         $comment = "<table><tr><td>".$LANG['common'][16]."</td>"."<td>".
+                     $licdata['name']."</td></tr><tr><td>".__('Serial number').
+                     "</td><td>".$licdata['serial']."</td></tr><tr><td>".
+                     __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
+                     
+         Html::showToolTip($comment, array('link' => $link));
          echo "<br>";
       }
 
@@ -869,9 +871,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
-      Html::showToolTip($LANG['common'][16]."&nbsp;: ".$data['name']."<br>". $LANG['common'][19].
-                           "&nbsp;: ".$data['serial']."<br>".$data['comment'],
-                        array('link' => $link));
+      
+      $comment = "<table><tr><td>".$LANG['common'][16]."</td>"."<td>".
+                  $licdata['name']."</td></tr><tr><td>".__('Serial number').
+                  "</td><td>".$licdata['serial']."</td></tr><tr><td>".
+                  __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
+                           
+      Html::showToolTip($comment, array('link' => $link));
       echo "</td></tr>\n";
    }
 

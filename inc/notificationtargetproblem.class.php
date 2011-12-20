@@ -200,13 +200,13 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('task.author'               => $LANG['common'][37],
-                    'task.isprivate'            => $LANG['common'][77],
+      $tags = array('task.author'               => __('Writer'),
+                    'task.isprivate'            => __('Private'),
                     'task.date'                 => $LANG['reports'][60],
                     'task.description'          => $LANG['joblist'][6],
                     'task.category'             => $LANG['common'][36],
                     'task.time'                 => $LANG['job'][20],
-                    'task.user'                 => $LANG['common'][95],
+                    'task.user'                 => __('By'),
                     'task.begin'                => $LANG['search'][8],
                     'task.end'                  => $LANG['search'][9],
                     'task.status'               => $LANG['joblist'][0],
@@ -216,14 +216,14 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'problem.causes'            => $LANG['problem'][5],
                     'problem.symtoms'           => $LANG['problem'][6],
                     'item.name'                 => $LANG['financial'][104],
-                    'item.serial'               => $LANG['common'][19],
-                    'item.otherserial'          => $LANG['common'][20],
-                    'item.location'             => $LANG['common'][15],
-                    'item.model'                => $LANG['common'][22],
-                    'item.contact'              => $LANG['common'][18],
-                    'item.contactnumber'        => $LANG['common'][21],
-                    'item.user'                 => $LANG['common'][34],
-                    'item.group'                => $LANG['common'][35]);
+                    'item.serial'               => __('Serial number'),
+                    'item.otherserial'          => __('Inventory number'),
+                    'item.location'             => __('Location'),
+                    'item.model'                => __('Model'),
+                    'item.contact'              => __('Alternate username'),
+                    'item.contactnumber'        => __('Alternate username number'),
+                    'item.user'                 => __('User'),
+                    'item.group'                => __('Group'),);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

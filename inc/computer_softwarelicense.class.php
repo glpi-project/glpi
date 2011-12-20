@@ -312,10 +312,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`otherserial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number')."</a></th>";
             echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";

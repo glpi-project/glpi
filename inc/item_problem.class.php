@@ -128,11 +128,11 @@ class Item_Problem extends CommonDBRelation{
       } else {
          echo "<tr>";
       }
-      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".__('Type')."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th></tr>";
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Serial number')."</th>";
+      echo "<th>".__('Inventory number')."</th></tr>";
 
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {

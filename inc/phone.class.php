@@ -253,7 +253,7 @@ class Phone extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact_num");
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
+      echo "<td>".__('Serial number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"serial");
       echo "</td></tr>\n";
