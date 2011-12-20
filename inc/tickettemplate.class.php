@@ -229,6 +229,7 @@ class TicketTemplate extends CommonDropdown {
       $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
       $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
       $this->addStandardTab('TicketTemplate', $ong, $options);
+      $this->addStandardTab('ITILCategory', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

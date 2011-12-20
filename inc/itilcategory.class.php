@@ -212,6 +212,92 @@ class ITILCategory extends CommonTreeDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
+   
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (Session::haveRight("entity_dropdown","r")) {
+         switch ($item->getType()) {
+            case 'TicketTemplate' :
+               $ong[1] = $this->getTypeName();
+               return $ong;
+         }
+      }
+      return '';
+   }
+   
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      self::showForTicketTemplate($item, $withtemplate);
+      return true;
+   }
+   
+   
+   static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
+      global $DB, $LANG, $CFG_GLPI;
+      
+      $itilcategory = new self();
+      $ID = $tt->fields['id'];
+
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+         return false;
+      }
+      $ttm     = new self();
+
+      $rand    = mt_rand();
+
+      echo "<div class='center'>";
+
+      $query = "SELECT `glpi_itilcategories`.*
+                FROM `glpi_itilcategories`
+                WHERE (`tickettemplates_id_incident` = '$ID')
+                     OR (`tickettemplates_id_demand` = '$ID')
+                ORDER BY `name`";
+
+      if ($result=$DB->query($query)) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='3'>";
+         echo "<a href='".Toolbox::getItemTypeSearchURL($itilcategory->getType())."'>";
+         echo self::getTypeName($DB->numrows($result));
+         echo "</a>";
+         echo "</th></tr>";
+         $used_incident = array();
+         $used_demand = array();
+         if ($DB->numrows($result)) {
+            echo "<th>".$LANG['common'][16]."</th>";
+            echo "<th>".$LANG['job'][1]."</th>";
+            echo "<th>".$LANG['job'][2]."</th>";
+            echo "</tr>";
+
+            while ($data=$DB->fetch_assoc($result)) {
+               echo "<tr class='tab_bg_2'>";
+               $itilcategory->getFromDB($data['id']);
+               echo "<td>".$itilcategory->getLink(1)."</td>";
+               if ($data['tickettemplates_id_incident'] == $ID) {
+                  echo "<td align='center'>
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
+                  $used_incident[] = $data["id"];
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
+               if ($data['tickettemplates_id_demand'] == $ID) {
+                  echo "<td align='center'>
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
+                  $used_demand[] = $data["id"];
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
+            }
+
+         } else {
+            echo "<tr><th colspan='3'>".$LANG['search'][15]."</th></tr>";
+         }
+
+         echo "</table></div>";
+      }
+   }
 
 }
 
