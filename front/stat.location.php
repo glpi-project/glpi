@@ -79,7 +79,7 @@ echo "<optgroup label=\"".$LANG['setup'][0]."\">";
 echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").">".
        __('Type')."</option>";
 echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").">".
-       $LANG['common'][22]."</option>";
+       __('Model')."</option>";
 echo "<option value='OperatingSystem' ".
       ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
 echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"").">".

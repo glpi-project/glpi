@@ -160,7 +160,7 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td rowspan='7' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='7'>";
       echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -285,7 +285,7 @@ class Contact extends CommonDBTM{
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();

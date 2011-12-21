@@ -351,7 +351,7 @@ class Printer  extends CommonDBTM {
                                     'entity'    => $this->fields['entities_id'],
                                     'condition' => '`is_assign`'));
       echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
+      echo "<td>".__('Model')."</td>\n";
       echo "<td>";
       Dropdown::show('PrinterModel', array('value' => $this->fields["printermodels_id"]));
       echo "</td></tr>\n";
@@ -419,7 +419,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
-      echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='6'>".__('Comments')."</td>\n";
       echo "<td rowspan='6'><textarea cols='45' rows='12' name='comment' >".
             $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -533,7 +533,7 @@ class Printer  extends CommonDBTM {
 
       $tab[40]['table'] = 'glpi_printermodels';
       $tab[40]['field'] = 'name';
-      $tab[40]['name']  = $LANG['common'][22];
+      $tab[40]['name']  = __('Model');
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
@@ -576,7 +576,7 @@ class Printer  extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[42]['table']    = $this->getTable();

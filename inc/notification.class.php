@@ -138,7 +138,7 @@ class Notification extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='6'><textarea cols='45' rows='9' name='comment' >"
             .$this->fields["comment"]."</textarea></td></tr>";
 
@@ -232,7 +232,7 @@ class Notification extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       $tab[80]['table']         = 'glpi_entities';

@@ -74,7 +74,7 @@ class RuleSoftwareCategory extends Rule {
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
 
       $criterias['comment']['field'] = 'comment';
-      $criterias['comment']['name']  = $LANG['common'][25];
+      $criterias['comment']['name']  = __('Comments');
       $criterias['comment']['table'] = 'glpi_softwares';
       return $criterias;
    }

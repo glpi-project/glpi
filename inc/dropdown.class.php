@@ -629,7 +629,7 @@ class Dropdown {
                                     'PhonePowerSupply'     => PhonePowerSupply::getTypeName(2),
                                     'Filesystem'           => Filesystem::getTypeName(2)),
 
-                        $LANG['common'][22]
+                        __('Model')
                         => array('ComputerModel'         => ComputerModel::getTypeName(2),
                                  'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(2),
                                  'PrinterModel'          => PrinterModel::getTypeName(2),

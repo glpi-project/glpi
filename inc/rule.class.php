@@ -189,7 +189,7 @@ class Rule extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       $tab[80]['table']         = 'glpi_entities';
@@ -252,7 +252,7 @@ class Rule extends CommonDBTM {
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Comments')."</td>";
       echo "<td class='middle' colspan='3'>";
       echo "<textarea cols='110' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
 
@@ -260,7 +260,7 @@ class Rule extends CommonDBTM {
          if ($this->fields["date_mod"]) {
             echo "<br>";
             printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
-         }            
+         }
       }
       echo"</td></tr>\n";
 

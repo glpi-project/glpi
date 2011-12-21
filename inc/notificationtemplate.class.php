@@ -116,7 +116,7 @@ class NotificationTemplate extends CommonDBTM {
                               $CFG_GLPI["notificationtemplates_types"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='60' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -152,7 +152,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       return $tab;

@@ -398,7 +398,7 @@ class CronTask extends CommonDBTM{
          echo $isplug["plugin"]." - ";
       }
       echo $this->fields["name"]."</td>";
-      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='6'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -1114,7 +1114,7 @@ class CronTask extends CommonDBTM{
       $tab[4]['name']          = $LANG['joblist'][0];
       $tab[4]['searchtype']    = array('equals');
       $tab[4]['massiveaction'] = false;
-      
+
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
       $tab[5]['name']          = $LANG['crontask'][36];
@@ -1138,7 +1138,7 @@ class CronTask extends CommonDBTM{
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       return $tab;

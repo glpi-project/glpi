@@ -44,11 +44,10 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  =  $LANG['common'][22];
+      $criterias['name']['name']  =  __('Model');
       $criterias['name']['table'] ='glpi_computermodels';
 
       $criterias['manufacturer']['field'] = 'name';
@@ -60,10 +59,9 @@ class RuleDictionnaryComputerModel extends RuleDictionnaryDropdown {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['common'][22];
+      $actions['name']['name']          = __('Model');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;

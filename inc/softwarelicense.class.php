@@ -206,7 +206,7 @@ class SoftwareLicense extends CommonDBTM {
                                       'softwares_id' => $this->fields["softwares_id"],
                                       'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
-      echo "<td rowspan='".($ID>0?'4':'3')."' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='".($ID>0?'4':'3')."' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='".($ID>0?'4':'3')."'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -302,7 +302,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       return $tab;

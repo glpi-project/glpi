@@ -265,7 +265,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
          echo "<td colspan='3'>";
          echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
 
@@ -492,7 +492,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='firstname_field' value='".
                  $this->fields["firstname_field"]."'></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
       echo "<td><input type='text' name='comment_field' value='".$this->fields["comment_field"]."'>";
       echo "</td>";
       echo "<td>" . $LANG['users'][17] . "&nbsp;:&nbsp;</td>";
@@ -681,7 +681,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[17]['table']         = $this->getTable();

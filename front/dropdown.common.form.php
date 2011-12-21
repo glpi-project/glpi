@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
       call_user_func(array(&$dropdown, $method), $_POST);
       Html::back();
    } else {
-      Html::displayErrorAndDie($LANG['common'][24]);
+      Html::displayErrorAndDie(__('No selected element or badly defined operation'));
    }
 
 } else if (isset($_GET['popup'])) {

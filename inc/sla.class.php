@@ -154,7 +154,7 @@ class SLA extends CommonDBTM {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
-      echo "<td rowspan='".$rowspan."'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -219,7 +219,7 @@ class SLA extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[80]['table']         = 'glpi_entities';

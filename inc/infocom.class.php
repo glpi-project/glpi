@@ -946,7 +946,7 @@ class Infocom extends CommonDBChild {
             echo "<td>".$LANG['financial'][78]."&nbsp;:</td>";
             echo "<td><input type='text' $option name='warranty_value' value='".
                        Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
-            echo "<td rowspan='5'>".$LANG['common'][25]."&nbsp;:</td>";
+            echo "<td rowspan='5'>".__('Comments')."</td>";
             echo "<td rowspan='5' class='middle'>";
             echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
             echo "</textarea></td></tr>\n";
@@ -1281,7 +1281,7 @@ class Infocom extends CommonDBChild {
 
       $tab[122]['table']        = 'glpi_infocoms';
       $tab[122]['field']        = 'comment';
-      $tab[122]['name']         = $LANG['common'][25]." - ".$LANG['financial'][3];
+      $tab[122]['name']         = __('Comments on financial and administrative information');
       $tab[122]['datatype']     = 'text';
       $tab[122]['forcegroupby'] = true;
       $tab[122]['joinparams']   = $joinparams;
@@ -1386,7 +1386,7 @@ class Infocom extends CommonDBChild {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[17]['table']    = $this->getTable();

@@ -105,7 +105,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'comment';
-      $tab[4]['name']     = $LANG['common'][25];
+      $tab[4]['name']     = __('Comments');
       $tab[4]['datatype'] = 'text';
 
       $tab['common'] = $LANG['common'][32];
@@ -125,7 +125,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab[16]['table']    = 'reservation_types';
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[70]['table'] = 'glpi_users';
@@ -244,7 +244,7 @@ class ReservationItem extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
          echo "<td class='b'>$type - $name</td></tr>\n";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
          echo "<td><textarea name='comment' cols='30' rows='10' >".$r->fields["comment"];
          echo "</textarea></td></tr>\n";
 

@@ -513,7 +513,7 @@ class Computer extends CommonDBTM {
                                     'condition' => '`is_assign`'));
 
       echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;: </td>";
+      echo "<td>".__('Model')."</td>";
       echo "<td>";
       Dropdown::show('ComputerModel', array('value' => $this->fields["computermodels_id"]));
       echo "</td></tr>\n";
@@ -560,7 +560,7 @@ class Computer extends CommonDBTM {
                                     'condition' => '`is_itemgroup`'));
 
       echo "</td>";
-      echo "<td rowspan='9'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='9'>".__('Comments')."</td>";
       echo "<td rowspan='9' class='middle'>";
       echo "<textarea cols='45' rows='15' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -748,7 +748,7 @@ class Computer extends CommonDBTM {
 
       $tab[40]['table'] = 'glpi_computermodels';
       $tab[40]['field'] = 'name';
-      $tab[40]['name']  = $LANG['common'][22];
+      $tab[40]['name']  = __('Model');
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
@@ -795,7 +795,7 @@ class Computer extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       $tab[90]['table']         = $this->getTable();

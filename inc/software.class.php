@@ -278,7 +278,7 @@ class Software extends CommonDBTM {
                                     'entity'    => $this->fields['entities_id'],
                                     'condition' => '`is_assign`'));
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
+      echo "<td rowspan='5' class='middle'>".__('Comments') . "</td>";
       echo "<td class='center middle' rowspan='5'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -363,7 +363,7 @@ class Software extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
@@ -457,7 +457,7 @@ class Software extends CommonDBTM {
 
       $tab[170]['table']         = 'glpi_softwareversions';
       $tab[170]['field']         = 'comment';
-      $tab[170]['name']          = $LANG['common'][25]." - ".$LANG['software'][5];
+      $tab[170]['name']          = __('Comments on version');
       $tab[170]['forcegroupby']  = true;
       $tab[170]['datatype']      = 'text';
       $tab[170]['massiveaction'] = false;
@@ -514,7 +514,7 @@ class Software extends CommonDBTM {
 
       $tab[165]['table']         = 'glpi_softwarelicenses';
       $tab[165]['field']         = 'comment';
-      $tab[165]['name']          = $LANG['common'][25]." - ".$LANG['software'][11];
+      $tab[165]['name']          = __('Comments on license');
       $tab[165]['forcegroupby']  = true;
       $tab[165]['datatype']      = 'text';
       $tab[165]['massiveaction'] = false;

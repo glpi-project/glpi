@@ -395,7 +395,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             echo "<th>".$field['label']."</th>";
          }
       }
-      echo "<th>".$LANG['common'][25]."</th>";
+      echo "<th>".__('Comments')."</th>";
       echo "</tr>\n";
 
       $fk   = $this->getForeignKeyField();
@@ -480,7 +480,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       if ($this->isEntityAssign()) {
