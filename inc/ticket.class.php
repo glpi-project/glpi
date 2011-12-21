@@ -3268,7 +3268,7 @@ class Ticket extends CommonDBTM {
                }
 
                $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
-                                                    $item->maybeRecursive()) ;"
+                                                    $item->maybeRecursive())."
                          ORDER BY `name` ";
 
                $result = $DB->query($query);
