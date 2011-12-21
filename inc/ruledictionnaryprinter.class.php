@@ -127,7 +127,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['model']['table'] = '';
 
       $criterias['type']['field'] = 'type';
-      $criterias['type']['name']  = $LANG['common'][17];
+      $criterias['type']['name']  = __('Type');
       $criterias['type']['table'] = '';
 */
 

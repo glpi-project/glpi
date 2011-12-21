@@ -202,7 +202,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('ContactType', array('value' => $this->fields["contacttypes_id"]));
       echo "</td>";
@@ -271,7 +271,7 @@ class Contact extends CommonDBTM{
 
       $tab[9]['table'] = 'glpi_contacttypes';
       $tab[9]['field'] = 'name';
-      $tab[9]['name']  = $LANG['common'][17];
+      $tab[9]['name']  = __('Type');
 
       $tab[8]['table']         = 'glpi_suppliers';
       $tab[8]['field']         = 'name';

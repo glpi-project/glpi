@@ -410,7 +410,7 @@ class Contract extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_contracttypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][17];
+      $tab[4]['name']  = __('Type');
 
       $tab[5]['table']       = $this->getTable();
       $tab[5]['field']       = 'begin_date';

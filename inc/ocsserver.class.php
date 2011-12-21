@@ -263,7 +263,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][17] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Type') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_type", $this->fields["import_general_type"]);
       echo "</td></tr>\n";
 

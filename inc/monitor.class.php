@@ -224,7 +224,7 @@ class Monitor extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('MonitorType', array('value' => $this->fields["monitortypes_id"]));
       echo "</td></tr>";
@@ -369,7 +369,7 @@ class Monitor extends CommonDBTM {
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
-      
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
       return true;
@@ -412,7 +412,7 @@ class Monitor extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_monitortypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][17];
+      $tab[4]['name']  = __('Type');
 
       $tab[40]['table'] = 'glpi_monitormodels';
       $tab[40]['field'] = 'name';

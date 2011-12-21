@@ -225,7 +225,7 @@ class Peripheral  extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
+      echo "<td>".__('Type')."</td>\n";
       echo "<td>";
       Dropdown::show('PeripheralType', array('value' => $this->fields["peripheraltypes_id"]));
       echo "</td></tr>\n";
@@ -376,7 +376,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_peripheraltypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][17];
+      $tab[4]['name']  = __('Type');
 
       $tab[40]['table'] = 'glpi_peripheralmodels';
       $tab[40]['field'] = 'name';

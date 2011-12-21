@@ -483,7 +483,7 @@ class KnowbaseItem extends CommonDBTM {
                //TRANS: %s is the datetime of update
                printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
             }
-                        
+
             echo "</span><br>";
 
             if ($this->fields["date"]) {
@@ -705,7 +705,7 @@ class KnowbaseItem extends CommonDBTM {
          //TRANS: %s is the datetime of update
          printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
       }
-            
+
       if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
       }
@@ -720,7 +720,7 @@ class KnowbaseItem extends CommonDBTM {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
          echo "<br>";
-      }      
+      }
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
 
       $this->showFormButtons($options);
@@ -1257,7 +1257,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }
-      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".__('Type')."</th>";
       echo "<th>".$LANG['mailing'][121]."</th>";
       echo "</tr>";
 

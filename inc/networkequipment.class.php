@@ -266,7 +266,7 @@ class NetworkEquipment extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('NetworkEquipmentType',
                      array('value' => $this->fields["networkequipmenttypes_id"]));
@@ -425,7 +425,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_networkequipmenttypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][17];
+      $tab[4]['name']  = __('Type');
 
       $tab[40]['table'] = 'glpi_networkequipmentmodels';
       $tab[40]['field'] = 'name';

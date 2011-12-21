@@ -147,7 +147,7 @@ class Notification extends CommonDBTM {
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
       if (Session::haveRight('config', 'w') && $this->getEntityID() == 0) {
          $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
@@ -221,7 +221,7 @@ class Notification extends CommonDBTM {
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'itemtype';
-      $tab[5]['name']          = $LANG['common'][17];
+      $tab[5]['name']          = __('Type');
       $tab[5]['datatype']      = 'itemtypename';
       $tab[5]['massiveaction'] = false;
 

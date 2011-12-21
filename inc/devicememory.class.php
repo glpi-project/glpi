@@ -69,7 +69,7 @@ class DeviceMemory extends CommonDevice {
                                      'type'  => 'text',
                                      'unit'  => $LANG['setup'][35]),
                                array('name'  => 'devicememorytypes_id',
-                                     'label' => $LANG['common'][17],
+                                     'label' => __('Type'),
                                      'type'  => 'dropdownValue')));
    }
 
@@ -91,7 +91,7 @@ class DeviceMemory extends CommonDevice {
 
       $tab[13]['table'] = 'glpi_devicememorytypes';
       $tab[13]['field'] = 'name';
-      $tab[13]['name']  = $LANG['common'][17];
+      $tab[13]['name']  = __('Type');
 
       return $tab;
    }
@@ -108,7 +108,7 @@ class DeviceMemory extends CommonDevice {
       $data['label'] = $data['value'] = array();
 
       if ($this->fields["devicememorytypes_id"]) {
-         $data['label'][] = $LANG['common'][17];
+         $data['label'][] = __('Type');
          $data['value'][] = Dropdown::getDropdownName("glpi_devicememorytypes",
                                                       $this->fields["devicememorytypes_id"]);
       }

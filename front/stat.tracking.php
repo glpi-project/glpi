@@ -91,7 +91,7 @@ $caract    = array('itilcategories_id'   => array('title' => $LANG['common'][36]
                    'solutiontypes_id'    => array('title' => $LANG['job'][48]));
 
 if ($_REQUEST['itemtype'] == 'Ticket') {
-   $caract['type']            = array('title' => $LANG['common'][17]);
+   $caract['type']            = array('title' => __('Type'));
    $caract['requesttypes_id'] = array('title' => $LANG['job'][44]);
 }
 

@@ -259,7 +259,7 @@ class Group extends CommonTreeDropdown {
       } else {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
-      }      
+      }
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -543,7 +543,7 @@ class Group extends CommonTreeDropdown {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo $LANG['common'][17]."&nbsp;:&nbsp;";
+      echo __('Type')."&nbsp;";
       Dropdown::showItemType($types, array('value'     => $type,
                                            'name'      => 'onlytype',
                                            'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
@@ -576,7 +576,7 @@ class Group extends CommonTreeDropdown {
          Html::printAjaxPager('', $start, $nb);
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
-         echo "<th>".$LANG['common'][17]."</th>";
+         echo "<th>".__('Type')."</th>";
          echo "<th>".__('Name')."</th><th>".$LANG['entity'][0]."</th>";
          if ($tree || $user) {
             echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";

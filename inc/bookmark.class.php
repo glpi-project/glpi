@@ -210,7 +210,7 @@ class Bookmark extends CommonDBTM {
       Html::autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Type')."&nbsp;:</td>";
       echo "<td>";
 
       if ($this->canCreate()) {

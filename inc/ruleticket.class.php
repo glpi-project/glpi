@@ -152,7 +152,7 @@ class RuleTicket extends Rule {
                   /// TODO : check, because, previous version also propose deleted and template items
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
-                        $result = IPAddress::getUniqueItemByIPAddress($regexvalue, 
+                        $result = IPAddress::getUniqueItemByIPAddress($regexvalue,
                                                                       $output["entities_id"]);
                         break;
 
@@ -208,7 +208,7 @@ class RuleTicket extends Rule {
 
       $criterias['type']['table']     = 'glpi_tickets';
       $criterias['type']['field']     = 'type';
-      $criterias['type']['name']      = $LANG['common'][17];
+      $criterias['type']['name']      = __('Type');
       $criterias['type']['linkfield'] = 'type';
       $criterias['type']['type']      = 'dropdown_tickettype';
 
@@ -310,7 +310,7 @@ class RuleTicket extends Rule {
       $actions['itilcategories_id']['type']  = 'dropdown';
       $actions['itilcategories_id']['table'] = 'glpi_itilcategories';
 
-      $actions['type']['name']      = $LANG['common'][17];
+      $actions['type']['name']      = __('Type');
       $actions['type']['table']     = 'glpi_tickets';
       $actions['type']['type']      = 'dropdown_tickettype';
 

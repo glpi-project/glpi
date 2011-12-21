@@ -251,10 +251,10 @@ $LANG['common'][13]="Template";
 $LANG['common'][14]="Templates"; 
 $LANG['common'][15]="Location"; 
 $LANG['common'][16]="Name"; 
+$LANG['common'][17]="Type"; 
 
 /// TODO Before is ok for migration to gettext
 
-$LANG['common'][17]="Type"; 
 $LANG['common'][18]="Alternate username"; 
 $LANG['common'][19]="Serial Number"; 
 $LANG['common'][20]="Inventory number"; 

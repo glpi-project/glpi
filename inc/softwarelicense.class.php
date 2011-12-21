@@ -283,7 +283,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[5]['table'] = 'glpi_softwarelicensetypes';
       $tab[5]['field'] = 'name';
-      $tab[5]['name']  = $LANG['common'][17];
+      $tab[5]['name']  = __('Type');
 
       $tab[6]['table']     = 'glpi_softwareversions';
       $tab[6]['field']     = 'name';

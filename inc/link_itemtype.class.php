@@ -72,7 +72,7 @@ class Link_ItemType extends CommonDBTM{
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['links'][4]."&nbsp;:</th></tr>";
-      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<tr><th>".__('Type')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       while ($i < $number) {

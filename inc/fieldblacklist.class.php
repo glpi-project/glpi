@@ -63,7 +63,7 @@ class Fieldblacklist extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'itemtype',
-                         'label' => $LANG['common'][17],
+                         'label' => __('Type'),
                          'type'  => 'blacklist_itemtype'),
                    array('name'  => 'field',
                          'label' => $LANG['rulesengine'][12],
@@ -86,7 +86,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'itemtype';
-      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['name']          = __('Type');
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['forcegroupby']  = true;

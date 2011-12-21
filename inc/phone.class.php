@@ -218,7 +218,7 @@ class Phone extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('PhoneType', array('value' => $this->fields["phonetypes_id"]));
       echo "</td></tr>\n";

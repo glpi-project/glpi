@@ -284,7 +284,7 @@ class Reminder extends CommonDBTM {
 
    function post_addItem() {
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
-   
+
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
                                        $this->fields["end"],
                                        array('Reminder' => array($this->fields['id'])));
@@ -548,7 +548,7 @@ class Reminder extends CommonDBTM {
       }
       echo "</td></tr>\n";
 /*
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Type')."</td>";
       echo "<td>";
       if ($canedit && Session::haveRight("reminder_public","w")) {
          if (!$ID) {
@@ -818,7 +818,7 @@ class Reminder extends CommonDBTM {
             printf(__('From %1$s to %2$s: %3$s'),date("H:i",strtotime($val["begin"])),
                                             date("H:i",strtotime($val["end"])),
                                             Html::resume_text($val["name"],80)) ;
-            
+
             break;
 
          case "through" :
@@ -889,7 +889,7 @@ class Reminder extends CommonDBTM {
                               OR `glpi_reminders`.`is_planned` = '0')
                          $restrict_visibility
                    ORDER BY `glpi_reminders`.`name`";
-         
+
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
 
       } else {
@@ -1162,7 +1162,7 @@ class Reminder extends CommonDBTM {
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }
-      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".__('Type')."</th>";
       echo "<th>".$LANG['mailing'][121]."</th>";
       echo "</tr>";
 

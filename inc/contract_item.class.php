@@ -102,7 +102,7 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'itemtype';
-      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['name']          = __('Type');
       $tab[4]['massiveaction'] = false;
 
       return $tab;

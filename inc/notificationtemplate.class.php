@@ -109,7 +109,7 @@ class NotificationTemplate extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td><td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td><td colspan='3'>";
       Dropdown::dropdownTypes("itemtype",
                               ($this->fields['itemtype']?$this->fields['itemtype']
                                                         :'Ticket'),
@@ -146,7 +146,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'itemtype';
-      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['name']          = __('Type');
       $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['massiveaction'] = false;
 

@@ -714,7 +714,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[20]['table']        = $this->getTable();
       $tab[20]['field']        = 'itemtype';
-      $tab[20]['name']         = $LANG['common'][17];
+      $tab[20]['name']         = __('Type');
       $tab[20]['datatype']     = 'itemtype';
       $tab[20]['massiveation'] = false;
 
@@ -739,7 +739,7 @@ class NetworkPort extends CommonDBChild {
    **/
    static function cloneItem($itemtype, $old_items_id, $new_items_id) {
       global $DB;
-      
+
       $np = new NetworkPort();
       // ADD Ports
       $query = "SELECT `id`
