@@ -64,7 +64,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    function prepareInputForAdd($input) {
 
       if (!isset($input['computers_id']) || !isset($input['softwareversions_id'])
-         || $input['computers_id']<=0 
+         || $input['computers_id']<=0
          || $input['softwareversions_id']<=0 ) {
          return false;
       }
@@ -802,7 +802,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      $licdata['name']."</td></tr><tr><td>".__('Serial number').
                      "</td><td>".$licdata['serial']."</td></tr><tr><td>".
                      __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
-                     
+
          Html::showToolTip($comment, array('link' => $link));
          echo "<br>";
       }
@@ -871,12 +871,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
-      
+
+      // TODO review $licdata not defined ($data ?)
       $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
                   $licdata['name']."</td></tr><tr><td>".__('Serial number').
                   "</td><td>".$licdata['serial']."</td></tr><tr><td>".
                   __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
-                           
+
       Html::showToolTip($comment, array('link' => $link));
       echo "</td></tr>\n";
    }
