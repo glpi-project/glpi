@@ -389,7 +389,7 @@ class Contract extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -899,9 +899,9 @@ class Contract extends CommonDBTM {
          }
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".($totalnb>0? $LANG['common'][33].
-             "&nbsp;=&nbsp;$totalnb</td>" : "&nbsp;</td>");
-      echo "<td colspan='4'>&nbsp;</td></tr> ";
+      echo "<td class='center' colspan='2'>".
+            ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb)  : "&nbsp;");
+      echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
       if ($canedit) {
          if ($this->fields['max_links_allowed']==0

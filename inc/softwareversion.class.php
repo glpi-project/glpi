@@ -189,7 +189,7 @@ class SoftwareVersion extends CommonDBChild {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'name';
@@ -305,7 +305,7 @@ class SoftwareVersion extends CommonDBChild {
                echo "<td>".$data['comment']."</td></tr>\n";
             }
 
-            echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".$LANG['common'][33]."</td>";
+            echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".__('Total')."</td>";
             echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
             if ($canedit) {
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".

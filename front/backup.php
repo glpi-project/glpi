@@ -555,7 +555,8 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
    $filename = $_GET["delfile"];
    if (is_file($path."/".$_GET["delfile"])) {
       unlink($path."/".$_GET["delfile"]);
-      echo "<div class ='center spaced'>".$filename." ".$LANG['common'][28]."</div>";
+      // TRANS: %s is a file name
+      echo "<div class ='center spaced'>"._sprintf(__('%s deleted'), $filename)."</div>";
    }
 }
 
@@ -568,7 +569,7 @@ if (Session::haveRight("check_update","r")) {
 
 // Title backup
 echo "<div class='center'><table class='tab_glpi'><tr><td>".
-     "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".$LANG['common'][28]."\">".
+     "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
      "</td>";
 echo "<td><a class='icon_consol b'
            href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
@@ -589,7 +590,7 @@ echo "</tr></table>";
 <tr class='center'>
 <th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
 <th><u><i><?php _e('Size'); ?></i></u></th>
-<th><u><i><?php echo $LANG['common'][27]; ?></i></u></th>
+<th><u><i><?php _e('Date'); ?></i></u></th>
 <th colspan='3'>&nbsp;</th>
 </tr>
 <?php

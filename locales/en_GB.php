@@ -261,9 +261,6 @@ $LANG['common'][23]="Operation successful";
 $LANG['common'][24]="No selected element or badly defined operation";
 $LANG['common'][25]="Comments";
 $LANG['common'][26]="Last update";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][27]="Date";
 $LANG['common'][28]="Deleted";
 $LANG['common'][29]="Plugins";
@@ -271,6 +268,9 @@ $LANG['common'][30]="New item";
 $LANG['common'][31]="Blank Template";
 $LANG['common'][32]="Characteristics";
 $LANG['common'][33]="Total";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][34]="User";
 $LANG['common'][35]="Group";
 $LANG['common'][36]="Category (class)";

@@ -77,7 +77,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $tags = array('unicity.message'     => $LANG['event'][4],
                     'unicity.action_user' => $LANG['setup'][824],
                     'unicity.action_type' => $LANG['setup'][825],
-                    'unicity.date'        => $LANG['common'][27],
+                    'unicity.date'        => __('Date'),
                     'unicity.itemtype'    => __('Type'),
                     'unicity.entity'      => $LANG['entity'][0],
                     'unicity.action'      => $LANG['setup'][827]);

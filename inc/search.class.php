@@ -4601,7 +4601,7 @@ class Search {
 
          // standard type first
          if ($itemtype=='States') {
-            $search[$itemtype]['common'] = $LANG['common'][32];
+            $search[$itemtype]['common'] = __('Characteristics');
 
             $search['States'][1]['table']      = 'state_types';
             $search['States'][1]['field']      = 'name';
@@ -4708,7 +4708,7 @@ class Search {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
-               $search[$itemtype] += array('plugins' => $LANG['common'][29]);
+               $search[$itemtype] += array('plugins' => __('Plugins'));
                $search[$itemtype] += $plugsearch;
             }
          }

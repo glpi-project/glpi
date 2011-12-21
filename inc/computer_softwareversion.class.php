@@ -493,7 +493,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       if ($tot>0) {
-         echo "<tr class='tab_bg_1'><td class='right b'>".$LANG['common'][33]."</td>";
+         echo "<tr class='tab_bg_1'><td class='right b'>".__('Total')."</td>";
          echo "<td class='right b'>".$tot."</td></tr>\n";
       } else {
          echo "<tr class='tab_bg_1'><td colspan='2 b'>" . $LANG['search'][15] . "</td></tr>\n";

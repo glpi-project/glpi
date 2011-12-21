@@ -401,7 +401,7 @@ class Problem extends CommonITILObject {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -1085,7 +1085,7 @@ class Problem extends CommonITILObject {
       $items = array();
 
       $items[$LANG['joblist'][0]] = "glpi_problems.status";
-      $items[$LANG['common'][27]] = "glpi_problems.date";
+      $items[__('Date')] = "glpi_problems.date";
       $items[__('Last update')] = "glpi_problems.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {

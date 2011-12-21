@@ -295,7 +295,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';

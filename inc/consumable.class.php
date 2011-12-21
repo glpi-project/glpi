@@ -238,7 +238,7 @@ class Consumable extends CommonDBTM {
             $highlight = "class='tab_bg_1_2'";
          }
          if (!$nohtml) {
-            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total";
+            $out .= "<div $highlight>".sprintf(__('Total = %s'), $total);
             $out .= "<span class='b very_small_space'>";
             if ($unused>1) {
                $out .= $LANG['consumables'][14];
@@ -563,7 +563,7 @@ class Consumable extends CommonDBTM {
             echo "<th>$type</th>";
             $total[$key] = 0;
          }
-         echo "<th>".$LANG['common'][33]."</th>";
+         echo "<th>".__('Total')."</th>";
          echo "</tr>";
 
          // new
@@ -600,7 +600,7 @@ class Consumable extends CommonDBTM {
          echo "<td class='center'>".$tot."</td>";
          echo "</tr>";
          }
-         echo "<tr class='tab_bg_1'><td class='b'>".$LANG['common'][33]."</td>";
+         echo "<tr class='tab_bg_1'><td class='b'>".__('Total')."</td>";
          $tot = 0;
          foreach ($types as $id_type => $type) {
             $tot += $total[$id_type];

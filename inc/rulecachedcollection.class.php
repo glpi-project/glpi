@@ -150,7 +150,7 @@ class RuleCachedCollection extends RuleCollection {
       }
 
       echo "<tr>\n";
-      echo "<td class='tab_bg_2 b'>".$LANG['common'][33]." (".$DB->numrows($res_count).")</td>";
+      echo "<td class='tab_bg_2 b'>".__('Total')." (".$DB->numrows($res_count).")</td>";
       echo "<td class='tab_bg_2 b'>".$total."</td>";
       echo "</tr></table></div>\n";
    }

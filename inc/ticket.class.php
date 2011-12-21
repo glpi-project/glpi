@@ -4459,7 +4459,7 @@ class Ticket extends CommonITILObject {
       $items = array();
 
       $items[$LANG['joblist'][0]] = "glpi_tickets.status";
-      $items[$LANG['common'][27]] = "glpi_tickets.date";
+      $items[__('Date')] = "glpi_tickets.date";
       $items[__('Last update')] = "glpi_tickets.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {

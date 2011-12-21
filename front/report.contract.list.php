@@ -115,7 +115,7 @@ if (isset($query) && count($query)) {
          echo "<span class='b'>".$item->getTypeName()."</span>";
          echo "<table class='tab_cadre_report'>";
          echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".$LANG['common'][28]."</th>";
+         echo "<th>".__('Deleted')."</th>";
          if ($display_entity) {
             echo "<th>".$LANG['entity'][0]."</th>";
          }

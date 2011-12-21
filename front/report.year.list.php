@@ -127,7 +127,7 @@ if (isset($query) && count($query)) {
          echo "<div class='center b'>".$item->getTypeName()."</div>";
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".$LANG['common'][28]."</th>";
+         echo "<th>".__('Deleted')."</th>";
          if ($display_entity) {
             echo "<th>".$LANG['entity'][0]."</th>";
          }

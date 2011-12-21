@@ -108,7 +108,7 @@ class ReservationItem extends CommonDBTM {
       $tab[4]['name']     = __('Comments');
       $tab[4]['datatype'] = 'text';
 
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = 'reservation_types';
       $tab[1]['field']         = 'name';
