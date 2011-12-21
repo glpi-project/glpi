@@ -2338,7 +2338,7 @@ class Ticket extends CommonITILObject {
                }
 
                $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
-                                                    $item->maybeRecursive()) ;"
+                                                    $item->maybeRecursive())."
                          ORDER BY `name` ";
 
                $result = $DB->query($query);
