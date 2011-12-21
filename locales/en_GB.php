@@ -252,13 +252,13 @@ $LANG['common'][14]="Templates";
 $LANG['common'][15]="Location";
 $LANG['common'][16]="Name";
 $LANG['common'][17]="Type";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][18]="Alternate username";
 $LANG['common'][19]="Serial Number";
 $LANG['common'][20]="Inventory number";
 $LANG['common'][21]="Alternate username number";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][22]="Model";
 $LANG['common'][23]="Operation successful";
 $LANG['common'][24]="No selected element or badly defined operation";
