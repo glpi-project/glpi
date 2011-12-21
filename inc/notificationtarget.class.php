@@ -1044,7 +1044,7 @@ class NotificationTarget extends CommonDBChild {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".Entity::getTypeName()."</th>";
          echo "<th>".$LANG['common'][60]."</th>";
-         echo "<th>".$LANG['common'][17]."</th>";
+         echo "<th>".__('Type')."</th>";
          echo "<th>".$LANG['mailing'][120]."</th>";
          echo "<th>".NotificationEvent::getTypeName()."</th>";
          echo "<th>".NotificationTemplate::getTypeName()."</th></tr>";

@@ -54,7 +54,7 @@ class DeviceSoundCard extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'type',
-                                     'label' => $LANG['common'][17],
+                                     'label' => __('Type'),
                                      'type'  => 'text')));
    }
 
@@ -66,7 +66,7 @@ class DeviceSoundCard extends CommonDevice {
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'type';
-      $tab[12]['name']     = $LANG['common'][17];
+      $tab[12]['name']     = __('Type');
       $tab[12]['datatype'] = 'text';
 
       return $tab;
@@ -84,7 +84,7 @@ class DeviceSoundCard extends CommonDevice {
       $data['label'] = $data['value'] = array();
 
       if (!empty($this->fields["type"])) {
-         $data['label'][] = $LANG['common'][17];
+         $data['label'][] = __('Type');
          $data['value'][] = $this->fields["type"];
       }
 

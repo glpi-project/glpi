@@ -78,7 +78,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
                     'unicity.action_user' => $LANG['setup'][824],
                     'unicity.action_type' => $LANG['setup'][825],
                     'unicity.date'        => $LANG['common'][27],
-                    'unicity.itemtype'    => $LANG['common'][17],
+                    'unicity.itemtype'    => __('Type'),
                     'unicity.entity'      => $LANG['entity'][0],
                     'unicity.action'      => $LANG['setup'][827]);
 

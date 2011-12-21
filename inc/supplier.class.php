@@ -370,7 +370,7 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['common'][42]."</th>";
       echo "<th>".$LANG['financial'][30]."</th>";
       echo "<th>".$LANG['setup'][14]."</th>";
-      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".__('Type')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       $used = array();
@@ -480,7 +480,7 @@ class Supplier extends CommonDBTM {
          echo $LANG['document'][19];
       }
       echo "</th></tr>";
-      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<tr><th>".__('Type')."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";

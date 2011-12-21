@@ -3260,12 +3260,12 @@ class Ticket extends CommonITILObject {
       echo "<th colspan='4'>";
 
       if ($ID) {
-         
+
          if ($ismultientities) {
             //TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
             printf(__('%1$s - ID %2$d (%3$s)'),$this->getTypeName(1),$ID,
                   Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
-            
+
          } else {
             printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
          }
@@ -3443,7 +3443,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][17]."&nbsp;: </th>";
+      echo "<th width='10%'>".__('Type')."</th>";
       echo "<td width='40%'>";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {

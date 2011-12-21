@@ -486,7 +486,7 @@ class Computer extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('ComputerType', array('value' => $this->fields["computertypes_id"]));
       echo "</td></tr>\n";
@@ -643,7 +643,7 @@ class Computer extends CommonDBTM {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
       }
-      
+
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
           && Session::haveRight("view_ocsng","r")
@@ -744,7 +744,7 @@ class Computer extends CommonDBTM {
 
       $tab[4]['table']  = 'glpi_computertypes';
       $tab[4]['field']  = 'name';
-      $tab[4]['name']   = $LANG['common'][17];
+      $tab[4]['name']   = __('Type');
 
       $tab[40]['table'] = 'glpi_computermodels';
       $tab[40]['field'] = 'name';

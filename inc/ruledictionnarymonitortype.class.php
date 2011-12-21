@@ -48,7 +48,7 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = $LANG['common'][17];
+      $criterias['name']['name']  = __('Type');
       $criterias['name']['table'] = 'glpi_monitortypes';
 
       return $criterias;
@@ -59,7 +59,7 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
       global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['common'][17];
+      $actions['name']['name']          = __('Type');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;

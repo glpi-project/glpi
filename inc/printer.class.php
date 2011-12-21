@@ -325,7 +325,7 @@ class Printer  extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
+      echo "<td>".__('Type')."</td>\n";
       echo "<td>";
       Dropdown::show('PrinterType', array('value' => $this->fields["printertypes_id"]));
       echo "</td></tr>\n";
@@ -529,7 +529,7 @@ class Printer  extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_printertypes';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][17];
+      $tab[4]['name']  = __('Type');
 
       $tab[40]['table'] = 'glpi_printermodels';
       $tab[40]['field'] = 'name';

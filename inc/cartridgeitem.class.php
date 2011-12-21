@@ -232,7 +232,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td>".__('Type')."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
@@ -316,7 +316,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[4]['table']  = 'glpi_cartridgeitemtypes';
       $tab[4]['field']  = 'name';
-      $tab[4]['name']   = $LANG['common'][17];
+      $tab[4]['name']   = __('Type');
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';

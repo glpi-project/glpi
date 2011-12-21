@@ -943,7 +943,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<tr><th>".__('Type')."</th><th>" . $LANG['common'][27] . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['common'][37] . "</th>";
          if ($this->maybePrivate() && $showprivate) {
