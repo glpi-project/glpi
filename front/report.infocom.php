@@ -190,9 +190,11 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurtot += $valeursoustot;
       $valeurnettetot += $valeurnettesoustot;
 
-      echo "<tr><td colspan='6' class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-            $LANG['financial'][21]."=".Html::formatNumber($valeursoustot)." - ".
-            $LANG['financial'][81]."=".Html::formatNumber($valeurnettesoustot)."</h3></td></tr>";
+
+      $tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+                        Html::formatNumber($valeursoustot),
+                        Html::formatNumber($valeurnettesoustot));
+      echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
 
       if (count($valeurnettegraph)>0) {
          echo "<tr><td colspan='5' class='center'>";
@@ -263,9 +265,10 @@ if (($i%2)==0) {
 echo "</td></tr></table>";
 
 
-echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-      $LANG['financial'][21]."=".Html::formatNumber($valeurtot)." - ".
-      $LANG['financial'][81]."=".Html::formatNumber($valeurnettetot)."</h3></div>";
+$tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+                  Html::formatNumber($valeurtot),
+                  Html::formatNumber($valeurnettetot));
+echo "<div class='center'><h3>$tmpmsg</h3></div>";
 
 if (count($valeurnettegraphtot)>0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);

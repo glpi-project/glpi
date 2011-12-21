@@ -253,9 +253,10 @@ if (($i%2)==0) {
 
 echo "&nbsp;</td></tr></table>";
 
-echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
-      $LANG['financial'][21]." = ".Html::formatNumber($valeurtot)." - ".
-      $LANG['financial'][81]." = ".Html::formatNumber($valeurnettetot)."</h3></div>\n";
+$tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+                  Html::formatNumber($valeurtot),
+                  Html::formatNumber($valeurnettetot));
+echo "<div class='center'><h3>$tmpmsg</h3></div>\n";
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);

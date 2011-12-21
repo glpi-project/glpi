@@ -2809,7 +2809,7 @@ class OcsServer extends CommonDBTM {
 
             echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".__('Manufacturer')."</th><th>";
             echo __('Model')."</th><th>".__('Serial number')."</th>\n";
-            echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
+            echo "<th>" . __('Date') . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
                echo "<th>" . $LANG['ldap'][27] . "</th>\n";

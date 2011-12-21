@@ -990,7 +990,7 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".$LANG['common'][27]."</th>"; // Date
+            echo "<th>".__('Date')."</th>"; // Date
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
             echo "<th>".$LANG['joblist'][6]."</th>"; // Description
@@ -1040,7 +1040,7 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".$LANG['common'][27]."</th>"; // Date
+            echo "<th>".__('Date')."</th>"; // Date
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
@@ -1088,7 +1088,7 @@ class CronTask extends CommonDBTM{
       global $LANG;
 
       $tab = array();
-      $tab['common']           = $LANG['common'][32];
+      $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -1133,7 +1133,7 @@ class CronTask extends CommonDBTM{
 
       $tab[8]['table']         = $this->getTable();
       $tab[8]['field']         = 'itemtype';
-      $tab[8]['name']          = $LANG['common'][29];
+      $tab[8]['name']          = __('Plugins');
       $tab[8]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();

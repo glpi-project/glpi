@@ -153,7 +153,7 @@ class Link extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';

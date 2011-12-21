@@ -305,7 +305,7 @@ class Reminder extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -1052,13 +1052,13 @@ class Reminder extends CommonDBTM {
 //       echo "<br><table class='tab_cadre_fixehov'>";
 //
 //       if ($is_private) {
-//          echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG['common'][27]."</th></tr>\n";
+//          echo "<tr><th>"."$titre"."</th><th colspan='2'>".__('Date')."</th></tr>\n";
 //       } else {
 //          echo "<tr><th colspan='5'>"."$titre"."</th></tr>\n";
 //          echo "<tr><th>".$LANG['entity'][0]."</th>";
 //          echo "<th>".$LANG['common'][37]."</th>";
 //          echo "<th>".$LANG['title'][37]."</th>";
-//          echo "<th colspan='2'>".$LANG['common'][27]."</th></tr>\n";
+//          echo "<th colspan='2'>".__('Date')."</th></tr>\n";
 //       }
 //
 //       if (count($tabremind)>0) {

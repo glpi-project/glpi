@@ -380,7 +380,7 @@ class Stat {
             $header_to_add = $LANG['stats'][26].' - ';
          }
          echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][33], $header_num);
+         echo Search::showHeaderItem($output_type, $header_to_add.__('Total'), $header_num);
          // End Line for column headers
          echo Search::showEndLine($output_type);
          $row_num = 1;
@@ -1370,13 +1370,13 @@ class Stat {
          }
       }
    }
-   
+
    static function title() {
       global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
-      
+
       $show_problem = Session::haveRight("edit_all_problem", "1")
     || Session::haveRight("show_all_problem", "1");
-      
+
       $opt_list["Ticket"] = $LANG['Menu'][5];
       $stat_list["Ticket"]["Ticket_Global"]["name"]  = $LANG['stats'][1];
       $stat_list["Ticket"]["Ticket_Global"]["file"]  = "stat.global.php?itemtype=Ticket";
@@ -1386,7 +1386,7 @@ class Stat {
       $stat_list["Ticket"]["Ticket_Location"]["file"]  = "stat.location.php?itemtype=Ticket";
       $stat_list["Ticket"]["Ticket_Item"]["name"]  = $LANG['stats'][45];
       $stat_list["Ticket"]["Ticket_Item"]["file"]  = "stat.item.php";
-      
+
       if ($show_problem) {
          $opt_list["Problem"] = $LANG['Menu'][7];
          $stat_list["Problem"]["Problem_Global"]["name"]  = $LANG['stats'][1];
@@ -1394,7 +1394,7 @@ class Stat {
          $stat_list["Problem"]["Problem_Problem"]["name"]  = $LANG['stats'][46];
          $stat_list["Problem"]["Problem_Problem"]["file"]  = "stat.tracking.php?itemtype=Problem";
       }
-      
+
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['stats'][0]."&nbsp;:</th></tr>";
@@ -1402,12 +1402,12 @@ class Stat {
       echo "<select name='statmenu' onchange='window.location.href=this.options
     [this.selectedIndex].value'>";
       echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
-      
+
       $i = 0;
       $count = count($stat_list);
-      
+
       foreach ($opt_list as $opt => $group) {
-         
+
          echo "<optgroup label=\"". $group ."\">";
          while ($data = each($stat_list[$opt])) {
             $name = $data[1]["name"];
@@ -1415,7 +1415,7 @@ class Stat {
             $comment ="";
             if (isset($data[1]["comment"]))
                $comment = $data[1]["comment"];
-            
+
             echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
             $i++;
          }
@@ -1437,18 +1437,18 @@ class Stat {
          }
          asort($names);
       }
-      
+
       foreach ($optgroup as $opt => $title) {
 
          echo "<optgroup label=\"". $title ."\">";
-         
+
          foreach ($names as $key => $val) {
              if ($opt==$val["plug"]) {
                echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".
                                                                      $val["name"]."</option>";
              }
          }
-         
+
           echo "</optgroup>";
       }
 

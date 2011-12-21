@@ -371,7 +371,7 @@ class KnowbaseItem extends CommonDBTM {
 
       // set title for question if empty
       if (isset($input["name"]) && empty($input["name"])) {
-         $input["name"] = $LANG['common'][30];
+         $input["name"] = __('New item');
       }
 
       if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
@@ -389,7 +389,7 @@ class KnowbaseItem extends CommonDBTM {
 
       // set title for question if empty
       if (empty($input["name"])) {
-         $input["name"] = $LANG['common'][30];
+         $input["name"] = __('New item');
       }
       return $input;
    }
@@ -1145,7 +1145,7 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
@@ -1158,7 +1158,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'date';
-      $tab[5]['name']          = $LANG['common'][27];
+      $tab[5]['name']          = __('Date');
       $tab[5]['datatype']      = 'datetime';
       $tab[5]['massiveaction'] = false;
 

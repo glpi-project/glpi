@@ -454,7 +454,7 @@ class Group_User extends CommonDBRelation{
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';

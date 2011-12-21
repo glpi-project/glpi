@@ -410,7 +410,8 @@ class Budget extends CommonDropdown{
          }
       }
       if ($num>0) {
-         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."&nbsp;:&nbsp;$num</td><td colspan='5'>&nbsp;</td></tr> ";
+         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total = %s'), $num).
+              "</td><td colspan='5'>&nbsp;</td></tr> ";
       }
       echo "</table></div>";
    }
@@ -500,7 +501,7 @@ class Budget extends CommonDropdown{
                echo "<th>$typename</th>";
             }
          }
-         echo "<th>".$LANG['common'][33]."</th>";
+         echo "<th>".__('Total')."</th>";
          echo "</tr>";
 
          foreach ($entities_values as $entity => $value) {

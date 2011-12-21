@@ -183,7 +183,7 @@ class Change extends CommonITILObject {
 
             case __CLASS__ :
                return array (1 => __('Analysis'),
-                             2 => __('Plans'),   
+                             2 => __('Plans'),
                              3 => __('Solution'));
          }
       }
@@ -395,7 +395,7 @@ class Change extends CommonITILObject {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';

@@ -1331,7 +1331,7 @@ class Html {
 
       // PLUGINS
       if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
-         $menu['plugins']['title'] = $LANG['common'][29];
+         $menu['plugins']['title'] = __('Plugins');
          $plugins = array();
 
          foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
@@ -1937,7 +1937,7 @@ class Html {
 
 
       if (Session::haveRight("config","w")) {
-         $menu['config']['content']['plugins']['title'] = $LANG['common'][29];
+         $menu['config']['content']['plugins']['title'] = __('Plugins');
          $menu['config']['content']['plugins']['page']  = '/front/plugin.php';
       }
 
@@ -2583,8 +2583,8 @@ class Html {
 
          asort($list);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\"".$LANG['common'][29]."\" class='itemP'>".
-                $LANG['common'][29]."</a>";  // default none
+         echo "<a href='#' title=\"".__s('Plugins')."\" class='itemP'>".
+                __('Plugins')."</a>";  // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item

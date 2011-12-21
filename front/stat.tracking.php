@@ -96,9 +96,9 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 }
 
 
-$items = array($LANG['job'][4]      => $requester,
-               $LANG['common'][32]  => $caract,
-               $LANG['job'][5]      => array('technicien'
+$items = array($LANG['job'][4]       => $requester,
+               __('Characteristics') => $caract,
+               $LANG['job'][5]       => array('technicien'
                                                    => array('title' => $LANG['job'][6]." ".
                                                                        $LANG['stats'][48]),
                                              'technicien_followup'

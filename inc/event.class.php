@@ -135,7 +135,7 @@ class Event extends CommonDBTM {
                           'cron'         => $LANG['log'][59],
                           'document'     => $LANG['Menu'][27],
                           'notification' => $LANG['setup'][704],
-                          'plugin'       => $LANG['common'][29]);
+                          'plugin'       => __('Plugins'));
 
       return array($logItemtype, $logService);
    }
@@ -236,7 +236,7 @@ class Event extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
-      echo "<th>".$LANG['common'][27]."</th>";
+      echo "<th>".__('Date')."</th>";
       echo "<th width='8%'>".$LANG['event'][2]."</th>";
       echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
 
@@ -290,7 +290,7 @@ class Event extends CommonDBTM {
       // Columns of the Table
       $items = array("items_id" => array($LANG['event'][0],
                                          "colspan='2'"),
-                     "date"     => array($LANG['common'][27], ""),
+                     "date"     => array(__('Date'), ""),
                      "service"  => array($LANG['event'][2],
                                          "width='8%'"),
                      "level"    => array($LANG['event'][3],

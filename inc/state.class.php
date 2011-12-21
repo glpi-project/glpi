@@ -126,7 +126,7 @@ class State extends CommonTreeDropdown {
             }
          }
 
-         echo "<th>".$LANG['common'][33]."</th>";
+         echo "<th>".__('Total')."</th>";
          echo "</tr>";
          $query = "SELECT *
                    FROM `glpi_states`
@@ -174,7 +174,7 @@ class State extends CommonTreeDropdown {
             echo "<td class='right b'>$tot &nbsp;&nbsp;</td>";
             echo "</tr>";
          }
-         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."</td>";
+         echo "<tr class='tab_bg_2'><td class='center b'>".__('Total')."</td>";
          $tot = 0;
 
          foreach ($state_type as $itemtype) {

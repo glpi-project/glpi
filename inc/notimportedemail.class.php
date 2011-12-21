@@ -104,7 +104,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[19]['table']         = 'glpi_notimportedemails';
       $tab[19]['field']         = 'date';
-      $tab[19]['name']          = $LANG['common'][27];
+      $tab[19]['name']          = __('Date');
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 

@@ -777,7 +777,7 @@ abstract class CommonITILTask  extends CommonDBTM {
            "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
            "</textarea></td>";
       if ($ID > 0) {
-         echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
+         echo "<td>".__('Date')."</td>";
          echo "<td>";
          Html::showDateTimeFormItem("date", $this->fields["date"], 1, false);
       } else {
@@ -943,7 +943,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>".__('Type')."</th><th>" . $LANG['common'][27] . "</th>";
+         echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . $LANG['common'][37] . "</th>";
          if ($this->maybePrivate() && $showprivate) {

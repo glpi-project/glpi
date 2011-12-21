@@ -204,7 +204,7 @@ class Supplier extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -579,7 +579,7 @@ class Supplier extends CommonDBTM {
          }
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num" : "&nbsp;")."</td>";
+      echo "<td class='center'>".($num>0 ? sprintf(__('Total = %s'), $num) : "&nbsp;")."</td>";
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }

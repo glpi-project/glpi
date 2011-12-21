@@ -642,7 +642,7 @@ class SoftwareLicense extends CommonDBTM {
             }
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='".
-                   ($software->isRecursive()?4:3)."' class='right b'>".$LANG['common'][33]."</td>";
+                   ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
             echo "<td class='right b'>".($tot>0?$tot."&nbsp;&nbsp;":$LANG['software'][4])."</td>";
             echo "<td class='right b'>$tot_assoc&nbsp;&nbsp;</td>";
             echo "<td colspan='4' class='center'>";
