@@ -194,7 +194,7 @@ class SoftwareLicense extends CommonDBTM {
                                       'softwares_id' => $this->fields["softwares_id"],
                                       'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
-      echo "<td>".$LANG['common'][20]."&nbsp;:</td>";
+      echo "<td>".__('Inventory number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"otherserial");
       echo "</td></tr>\n";

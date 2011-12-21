@@ -519,7 +519,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][21]."&nbsp;: </td>";
+      echo "<td>".__('Alternate username number')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this,'contact_num');
       echo "</td>";
@@ -529,11 +529,11 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
+      echo "<td>".__('Alternate username')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,'contact');
       echo "</td>";
-      echo "<td>".$LANG['common'][20].(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
@@ -805,12 +805,12 @@ class Computer extends CommonDBTM {
 
       $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'contact';
-      $tab[17]['name']      = $LANG['common'][18];
+      $tab[17]['name']      = __('Alternate username');
       $tab[17]['datatype']  = 'string';
 
       $tab[18]['table']     = $this->getTable();
       $tab[18]['field']     = 'contact_num';
-      $tab[18]['name']      = $LANG['common'][21];
+      $tab[18]['name']      = __('Alternate username number');
       $tab[18]['datatype']  = 'string';
 
       $tab[70]['table'] = 'glpi_users';

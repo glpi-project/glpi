@@ -271,7 +271,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_domain", $this->fields["import_general_domain"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][18] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Alternate username') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_contact", $this->fields["import_general_contact"]);
       echo "</td></tr>\n";
 
@@ -335,7 +335,7 @@ class OcsServer extends CommonDBTM {
       echo "<td class='tab_bg_2 top'>\n";
 
       echo "<table width='100%'>";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][20] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Inventory number') . " </td>\n";
       echo "<td><select name='import_otherserial'>\n";
       echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "otherserial");
@@ -356,7 +356,7 @@ class OcsServer extends CommonDBTM {
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][21] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Alternate username number') . " </td>\n";
       echo "<td><select name='import_contact_num'>\n";
       echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "contact_num");
