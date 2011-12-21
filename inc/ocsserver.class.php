@@ -205,7 +205,7 @@ class OcsServer extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       return $tab;
@@ -255,7 +255,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_serial", $this->fields["import_general_serial"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][22] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Model') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_model", $this->fields["import_general_model"]);
       echo "</td></tr>\n";
 
@@ -275,7 +275,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_contact", $this->fields["import_general_contact"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Comments') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_comment", $this->fields["import_general_comment"]);
       echo "</td></tr>\n";
 
@@ -380,7 +380,7 @@ class OcsServer extends CommonDBTM {
       echo "<td class='tab_bg_2 top'>\n";
 
       echo "<table width='100%'>";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Comments') . " </td>\n<td>";
       Dropdown::showYesNo("import_monitor_comment", $this->fields["import_monitor_comment"]);
       echo "</td></tr>\n";
       echo "</table>";
@@ -543,7 +543,7 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
       echo "<td><input type='text' name='ocs_db_host' value=\"" .$this->fields["ocs_db_host"] ."\">";
       echo "</td>\n";
-      echo "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
+      echo "<td class='center' rowspan='$rowspan'>" . __('Comments') . "</td>\n";
       echo "<td rowspan='$rowspan'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -2808,7 +2808,7 @@ class OcsServer extends CommonDBTM {
             echo "</td></tr>\n";
 
             echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".__('Manufacturer')."</th><th>";
-            echo $LANG['common'][22]."</th><th>".__('Serial number')."</th>\n";
+            echo __('Model')."</th><th>".__('Serial number')."</th>\n";
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";

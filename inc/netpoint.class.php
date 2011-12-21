@@ -317,7 +317,7 @@ class Netpoint extends CommonDropdown {
          }
 
          echo "<th>".__('Name')."</th>"; // Name
-         echo "<th>".$LANG['common'][25]."</th>"; // Comment
+         echo "<th>".__('Comments')."</th>"; // Comment
          echo "</tr>\n";
 
          $crit = array('locations_id' => $ID,

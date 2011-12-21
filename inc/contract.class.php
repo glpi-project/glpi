@@ -232,7 +232,7 @@ class Contract extends CommonDBTM {
       Alert::displayLastAlert('Contract', $ID);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td class='top'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td class='top'>".__('Comments')."</td>";
       echo "<td class='center' colspan='3'>";
       echo "<textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -489,7 +489,7 @@ class Contract extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();

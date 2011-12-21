@@ -132,7 +132,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       return $tab;
@@ -185,7 +185,7 @@ class AuthMail extends CommonDBTM {
 
          Toolbox::showMailServerConfig($this->fields["connect_string"]);
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
          echo "<td>";
          echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
          if ($ID>0) {

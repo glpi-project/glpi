@@ -49,14 +49,14 @@ if (isset($_POST['transfer'])) {
       }
       $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
       unset($_SESSION['glpitransfer_list']);
-      echo "<span class='b'>".$LANG['common'][23]."<br>";
+      echo "<span class='b'>".__('Operation successful')."<br>";
       echo "<a href='central.php'>".__('Back')."</span></a>";
       Html::footer();
       exit();
    }
 } else if (isset($_GET['clear'])) {
    unset($_SESSION['glpitransfer_list']);
-   echo "<span class='b'>".$LANG['common'][23]."<br>";
+   echo "<span class='b'>".__('Operation successful')."<br>";
    echo "<a href='central.php'>".__('Back')."</span></a>";
    Html::footer();
    exit();

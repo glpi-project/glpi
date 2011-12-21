@@ -123,7 +123,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['DRIVER']['table'] = '';
 
       $criterias['model']['field'] = 'model';
-      $criterias['model']['name']  = $LANG['common'][22];
+      $criterias['model']['name']  = __('Model');
       $criterias['model']['table'] = '';
 
       $criterias['type']['field'] = 'type';
@@ -132,7 +132,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 */
 
       $criterias['comment']['field'] = 'comment';
-      $criterias['comment']['name']  = $LANG['common'][25];
+      $criterias['comment']['name']  = __('Comments');
       $criterias['comment']['table'] = '';
 
       return $criterias;

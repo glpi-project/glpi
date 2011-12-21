@@ -255,7 +255,7 @@ class CartridgeItem extends CommonDBTM {
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='4'>
              <textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -342,7 +342,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       $tab[90]['table']         = $this->getTable();
@@ -546,7 +546,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>".__('Models of compatible printers')."</th></tr>";
-      echo "<tr><th>".__('ID')."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
+      echo "<tr><th>".__('ID')."</th><th>".__('Model')."</th><th>&nbsp;</th></tr>";
 
       $used = array();
       while ($i < $number) {

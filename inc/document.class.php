@@ -313,10 +313,10 @@ class Document extends CommonDBTM {
          }
          echo "</th>";
          echo "<th colspan='2'>";
-         
+
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
-         
+
          echo "</th></tr>\n";
       }
 
@@ -325,7 +325,7 @@ class Document extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='6'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -693,7 +693,7 @@ class Document extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();

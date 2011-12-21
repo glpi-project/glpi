@@ -73,7 +73,8 @@ class Profile_User extends CommonDBTM {
           || !isset($input['users_id'])
           || $input['users_id'] < 0) {
 
-         Session::addMessageAfterRedirect($LANG['common'][24], false, ERROR);
+         Session::addMessageAfterRedirect(__('No selected element or badly defined operation'),
+                                          false, ERROR);
          return false;
       }
       return $input;

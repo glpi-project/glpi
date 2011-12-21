@@ -148,7 +148,7 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</td>";
 
       echo "<td rowspan='".($nb+1)."'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo __('Comments')."</td>";
       echo "<td rowspan='".($nb+1)."'>
             <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
@@ -301,7 +301,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       if ($this->isEntityAssign()) {

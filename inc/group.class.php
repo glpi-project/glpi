@@ -204,7 +204,7 @@ class Group extends CommonTreeDropdown {
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='8' class='middle'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+      echo "<td rowspan='8' class='middle'>".__('Comments')."</td>";
       echo "<td class='middle' rowspan='8'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";

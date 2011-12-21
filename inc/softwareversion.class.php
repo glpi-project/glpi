@@ -155,7 +155,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<a href='software.form.php?id=".$softwares_id."'>".
              Dropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
       echo "</td>";
-      echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
       echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
@@ -202,7 +202,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[31]['table'] = 'glpi_states';
@@ -287,7 +287,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<th>&nbsp;".$LANG['state'][0]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['computers'][9]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
-            echo "<th>&nbsp;".$LANG['common'][25]."&nbsp;</th>";
+            echo "<th>&nbsp;".__('Comments')."&nbsp;</th>";
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {

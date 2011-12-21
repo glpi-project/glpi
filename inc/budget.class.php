@@ -137,7 +137,7 @@ class Budget extends CommonDropdown{
       Html::autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td rowspan='$rowspan' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'><textarea cols='45' rows='4'
              name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
@@ -243,7 +243,7 @@ class Budget extends CommonDropdown{
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['name']      = __('Comments');
       $tab[16]['datatype']  = 'text';
 
       $tab[80]['table']         = 'glpi_entities';

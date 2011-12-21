@@ -251,7 +251,7 @@ class Peripheral  extends CommonDBTM {
                                     'entity'    => $this->fields['entities_id'],
                                     'condition' => '`is_assign`'));
       echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
+      echo "<td>".__('Model')."</td>\n";
       echo "<td>";
       Dropdown::show('PeripheralModel', array('value' => $this->fields["peripheralmodels_id"]));
       echo "</td></tr>\n";
@@ -302,7 +302,7 @@ class Peripheral  extends CommonDBTM {
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => '`is_itemgroup`'));
       echo "</td>\n";
-      echo "<td rowspan='3'>".$LANG['common'][25]."&nbsp;:</td>\n";
+      echo "<td rowspan='3'>".__('Comments')."</td>\n";
       echo "<td rowspan='3'>
             <textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
@@ -380,7 +380,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[40]['table'] = 'glpi_peripheralmodels';
       $tab[40]['field'] = 'name';
-      $tab[40]['name']  = $LANG['common'][22];
+      $tab[40]['name']  = __('Model');
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
@@ -423,7 +423,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();

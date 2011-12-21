@@ -656,7 +656,7 @@ class Reservation extends CommonDBChild {
          echo "</td></tr>\n";
       }
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Comments')."</td>";
       echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
@@ -872,7 +872,7 @@ class Reservation extends CommonDBChild {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
-            echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+            echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -919,7 +919,7 @@ class Reservation extends CommonDBChild {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
-            echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+            echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -982,7 +982,7 @@ class Reservation extends CommonDBChild {
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
-         echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+         echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
@@ -1037,7 +1037,7 @@ class Reservation extends CommonDBChild {
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
-         echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+         echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";

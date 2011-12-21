@@ -172,7 +172,7 @@ class NetworkName extends FQDNLabel {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
       echo "</tr>";
@@ -588,7 +588,7 @@ class NetworkName extends FQDNLabel {
          echo "<th><a href='javascript:reloadTab(\"order=name\");'>".__('Name')."</a></th>"; // Name
          echo "<th><a href='javascript:reloadTab(\"order=ip_addresses\");'>".
                     $LANG['networking'][14]."</th>"; // IP
-         echo "<th>".$LANG['common'][25]."</th>"; // Comment
+         echo "<th>".__('Comments')."</th>"; // Comment
          echo "</tr>\n";
 
          Session::initNavigateListItems($internetElement->getType(),

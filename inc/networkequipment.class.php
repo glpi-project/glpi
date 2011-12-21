@@ -293,7 +293,7 @@ class NetworkEquipment extends CommonDBTM {
                                     'entity'    => $this->fields['entities_id'],
                                     'condition' => '`is_assign`'));
       echo "</td>";
-      echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
+      echo "<td>".__('Model')."</td>";
       echo "<td>";
       Dropdown::show('NetworkEquipmentModel',
                      array('value' => $this->fields["networkequipmentmodels_id"]));
@@ -340,7 +340,7 @@ class NetworkEquipment extends CommonDBTM {
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='7'>".__('Comments')."</td>";
       echo "<td rowspan='7'>
             <textarea cols='45' rows='12' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
@@ -429,7 +429,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[40]['table'] = 'glpi_networkequipmentmodels';
       $tab[40]['field'] = 'name';
-      $tab[40]['name']  = $LANG['common'][22];
+      $tab[40]['name']  = __('Model');
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
@@ -472,7 +472,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
