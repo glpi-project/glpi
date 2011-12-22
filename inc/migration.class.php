@@ -241,8 +241,7 @@ class Migration {
                $query = "UPDATE `$table`
                          SET `$field` = ".$params['update']." ".
                          $params['condition']."";
-               $DB->query($query)
-               or die($this->version." set $field in $table " . $LANG['update'][90] . $DB->error());
+               $DB->queryOrDie($query, $this->version." set $field in $table");
             }
             return true;
          }
@@ -388,8 +387,7 @@ class Migration {
 
       if (!TableExists("$newtable") && TableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
-         $DB->query($query)
-         or die($this->version." rename $oldtable " . $LANG['update'][90] . $DB->error());
+         $DB->queryOrDie($query, $this->version." rename $oldtable");
       }
    }
 
@@ -407,15 +405,12 @@ class Migration {
 
       if (!TableExists("$newtable") && TableExists("$oldtable")) {
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
-         $DB->query($query)
-         or die($this->version." create $newtable " . $LANG['update'][90] . $DB->error());
+         $DB->queryOrDie($query, $this->version." create $newtable");
 
          $query = "INSERT INTO `$newtable`
                           (SELECT *
                            FROM `$oldtable`)";
-         $DB->query($query)
-         or die($this->version." copy from $oldtable to $newtable " . $LANG['update'][90] .
-                $DB->error());
+         $DB->queryOrDie($query, $this->version." copy from $oldtable to $newtable");
       }
    }
 
@@ -445,8 +440,7 @@ class Migration {
          $query = "INSERT INTO `$table`
                           (" . implode(', ', $fields) . ")
                    VALUES (" .implode(', ', $values) . ")";
-         $DB->query($query)
-         or die($this->version." insert in $table " . $LANG['update'][90] . $DB->error());
+         $DB->queryOrDie($query, $this->version." insert in $table");
 
          return $DB->insert_id();
       }
@@ -464,8 +458,7 @@ class Migration {
       if (isset($this->change[$table])) {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
          $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
-         $DB->query($query)
-         or die($this->version." multiple alter in $table " . $LANG['update'][90] . $DB->error());
+         $DB->queryOrDie($query, $this->version." multiple alter in $table");
 
          unset($this->change[$table]);
       }

@@ -796,7 +796,7 @@ class Plugin extends CommonDBTM {
             $query = "UPDATE `$table`
                       SET `itemtype` = '$name'
                       WHERE `itemtype` = '$num'";
-            $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+            $DB->queryOrDie($query, "update itemtype of table $table for $name");
          }
       }
 
@@ -825,8 +825,8 @@ class Plugin extends CommonDBTM {
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID'
                                                             AND `is_recursive` = '0')";
-                  $DB->query($query3) or die("0.80 update entities_id and is_recursive=0
-                                 in glpi_infocoms for $name ". $LANG['update'][90] . $DB->error());
+                  $DB->queryOrDie($query3, "0.80 update entities_id and is_recursive=0
+                                 in glpi_infocoms for $name");
 
                   // Recursive ones
                   $query3 = "UPDATE `glpi_infocoms`
@@ -837,8 +837,8 @@ class Plugin extends CommonDBTM {
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID'
                                                             AND `is_recursive` = '1')";
-                  $DB->query($query3) or die("0.80 update entities_id and is_recursive=1
-                                 in glpi_infocoms for $name ". $LANG['update'][90] . $DB->error());
+                  $DB->queryOrDie($query3, "0.80 update entities_id and is_recursive=1
+                                 in glpi_infocoms for $name");
                } else {
                   $query3 = "UPDATE `glpi_infocoms`
                              SET `entities_id` = '$entID'
@@ -846,8 +846,8 @@ class Plugin extends CommonDBTM {
                                    AND `items_id` IN (SELECT `id`
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID')";
-                  $DB->query($query3) or die("0.80 update entities_id in glpi_infocoms
-                        for $name ". $LANG['update'][90] . $DB->error());
+                  $DB->queryOrDie($query3, "0.80 update entities_id in glpi_infocoms
+                        for $name");
                }
             } // each entity
          } // each plugin type
@@ -858,7 +858,7 @@ class Plugin extends CommonDBTM {
             $query = "UPDATE `$table`
                       SET `itemtype` = '$name'
                       WHERE `itemtype` = '$num'";
-            $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
+            $DB->queryOrDie($query, "update itemtype of table $table for $name");
          }
       }
    }

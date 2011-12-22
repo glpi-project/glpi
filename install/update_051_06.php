@@ -42,19 +42,17 @@ function update051to06() {
    $query = "UPDATE `glpi_tracking`
              SET `category` = '0'
              WHERE `category` IS NULL";
-   $DB->query($query)
-   or die("0.6 prepare for alter category tracking ".$LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query, "0.6 prepare for alter category tracking");
 
    $query = "ALTER TABLE `glpi_tracking`
              CHANGE `category` `category` INT(11) DEFAULT '0' NOT NULL";
-   $DB->query($query) or die("0.6 alter category tracking ".$LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query, "0.6 alter category tracking");
 
    // state pour les template
    if (!FieldExists("glpi_state_item","is_template")) {
       $query = "ALTER TABLE `glpi_state_item`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add is_template in state_item ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add is_template in state_item");
    }
 
 
@@ -64,26 +62,22 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table dropdown_cartridge_type");
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
                 VALUES ('Ink-Jet')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_cartridge_type");
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
                 VALUES ('Toner')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_cartridge_type");
 
       $query = "INSERT INTO `glpi_dropdown_cartridge_type`
                        (`name`)
                 VALUES ('Ribbon')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_cartridge_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_cartridge_type");
    }
 
 
@@ -91,22 +85,21 @@ function update051to06() {
    if (!FieldExists("glpi_cartridges_type","alarm")) {
       $query = "ALTER TABLE `glpi_cartridges_type`
                 ADD `alarm` TINYINT DEFAULT '10' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add alarm in cartridges_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add alarm in cartridges_type");
    }
 
    // email for enterprises
    if (!FieldExists("glpi_enterprises","email")) {
       $query = "ALTER TABLE `glpi_enterprises`
                 ADD `email` VARCHAR(255) NOT NULL";
-      $DB->query($query) or die("0.6 add email in enterprises ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add email in enterprises");
    }
 
    // ldap_port for config
    if (!FieldExists("glpi_config","ldap_port")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `ldap_port` VARCHAR(10) DEFAULT '389' NOT NULL AFTER `ID` ";
-      $DB->query($query) or die("0.6 add ldap_port in config ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add ldap_port in config");
    }
 
    // CAS configuration
@@ -115,34 +108,30 @@ function update051to06() {
                 ADD `cas_host` VARCHAR(255) NOT NULL ,
                 ADD `cas_port` VARCHAR(255) NOT NULL ,
                 ADD `cas_uri` VARCHAR(255) NOT NULL ";
-      $DB->query($query) or die("0.6 add cas config in config ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add cas config in config");
    }
 
    // Limit Item for contracts and correct template bug
    if (!FieldExists("glpi_contracts","device_countmax")) {
       $query = "ALTER TABLE `glpi_contracts`
                 ADD `device_countmax` INT DEFAULT '0' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add device_countmax in contracts ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add device_countmax in contracts");
    }
 
    if (!FieldExists("glpi_contract_device","is_template")) {
       $query = "ALTER TABLE `glpi_contract_device`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add is_template in contract_device ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add is_template in contract_device");
    }
 
    if (!FieldExists("glpi_doc_device","is_template")) {
       $query = "ALTER TABLE `glpi_doc_device`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add is_template in doc_device ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add is_template in doc_device");
 
       $query = "ALTER TABLE `glpi_doc_device`
                 ADD INDEX (`is_template`) ";
-      $DB->query($query)
-      or die("0.6 alter is_template in doc_device ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 alter is_template in doc_device");
    }
 
    // Contract Type to dropdown
@@ -152,50 +141,42 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][50]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][51]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][52]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][53]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][54]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][55]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
                 VALUES ('".$LANG['financial'][56]."')";
-      $DB->query($query)
-      or die("0.6 add entries to dropdown_contract_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
    }
 
    //// Update author and assign from tracking / followups
@@ -204,7 +185,7 @@ function update051to06() {
       // Create assin_type field
       $query = "ALTER TABLE `glpi_tracking`
                 ADD `assign_type` TINYINT DEFAULT '0' NOT NULL AFTER `assign` ";
-      $DB->query($query) or die("0.6 add assign_type in tracking ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add assign_type in tracking");
 
       $users = array();
       // Load All users
@@ -220,8 +201,7 @@ function update051to06() {
       $query = "UPDATE `glpi_tracking`
                 SET `author` = '0'
                 WHERE `author` IS NULL";
-      $DB->query($query)
-      or die("0.6 prepare for alter category tracking ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 prepare for alter category tracking");
 
       // Load tracking authors tables
       $authors = array();
@@ -247,7 +227,7 @@ function update051to06() {
 
       $query = "ALTER TABLE `glpi_tracking`
                 CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
-      $DB->query($query) or die("0.6 alter author in tracking ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 alter author in tracking");
 
       $assign = array();
 
@@ -277,7 +257,7 @@ function update051to06() {
       // Update assign tracking
       $query = "ALTER TABLE `glpi_tracking`
                 CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
-      $DB->query($query) or die("0.6 alter assign in tracking ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 alter assign in tracking");
 
       $authors = array();
       // Load followup authors tables
@@ -304,7 +284,7 @@ function update051to06() {
       // Update authors tracking
       $query = "ALTER TABLE `glpi_followups`
                 CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
-      $DB->query($query) or die("0.6 alter author in followups ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 alter author in followups");
 
       // Update Enterprise Tracking
       $query  = "SELECT `computer`, `ID`
@@ -339,20 +319,19 @@ function update051to06() {
                   KEY `begin` (`begin`),
                   KEY `end` (`end`)
                 ) TYPE=MyISAM ";
-      $DB->query($query)
-      or die("0.6 add table glpi_tracking_planning ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_tracking_planning");
    }
 
    if (!FieldExists("glpi_config","planning_begin")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `planning_begin` TIME DEFAULT '08:00:00' NOT NULL";
-      $DB->query($query) or die("0.6 add planning begin in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add planning begin in config");
    }
 
    if (!FieldExists("glpi_config","planning_end")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `planning_end` TIME DEFAULT '20:00:00' NOT NULL";
-      $DB->query($query) or die("0.6 add planning end in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add planning end in config");
    }
 
    // Merge glpi_users and glpi_prefs
@@ -361,11 +340,11 @@ function update051to06() {
       // Create fields
       $query = "ALTER TABLE `glpi_users`
                 ADD `tracking_order` ENUM('yes', 'no') DEFAULT 'no' NOT NULL ";
-      $DB->query($query) or die("0.6 add tracking_order in users".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add tracking_order in users");
 
       $query = "ALTER TABLE `glpi_users`
                 ADD `language` VARCHAR(255) NOT NULL DEFAULT 'english'";
-      $DB->query($query) or die("0.6 add language in users".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add language in users");
 
       // Move data
       $query  = "SELECT *
@@ -378,14 +357,14 @@ function update051to06() {
                        SET `language` = '".$data['language']."',
                             `tracking_order` = '".$data['tracking_order']."'
                        WHERE `name` = '".$data['username']."'";
-            $DB->query($query2) or die("0.6 move pref to users".$LANG['update'][90].$DB->error());
+            $DB->queryOrDie($query2, "0.6 move pref to users");
          }
       }
       $DB->free_result($result);
 
       // Drop glpi_prefs
       $query = "DROP TABLE `glpi_prefs`";
-      $DB->query($query) or die("0.6 drop glpi_prefs".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 drop glpi_prefs");
    }
 
    // Create glpi_dropdown_ram_type
@@ -395,35 +374,31 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_dropdown_ram_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_ram_type");
 
       $query = "ALTER TABLE `glpi_device_ram`
                 ADD `new_type` INT(11) DEFAULT '0' NOT NULL ";
-      $DB->query($query) or die("0.6 create new type field for glpi_device_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 create new type field for glpi_device_ram");
 
       $query = "INSERT INTO `glpi_dropdown_ram_type`
                        (`name`)
                 VALUES ('EDO')";
-      $DB->query($query) or die("0.6 insert value in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_ram");
 
       $query = "INSERT INTO `glpi_dropdown_ram_type`
                        (`name`)
                 VALUES ('DDR')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_ram");
 
       $query = "INSERT INTO `glpi_dropdown_ram_type`
                        (`name`)
                 VALUES ('SDRAM')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_ram");
 
       $query = "INSERT INTO `glpi_dropdown_ram_type`
                        (`name`)
                 VALUES ('SDRAM-2')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_ram");
 
       // Get values
       $query  = "SELECT *
@@ -452,13 +427,11 @@ function update051to06() {
       // ALTER glpi_device_ram
       $query = "ALTER TABLE `glpi_device_ram`
                 DROP `type`";
-      $DB->query($query)
-      or die("0.6 drop type in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 drop type in glpi_dropdown_ram");
 
       $query = "ALTER TABLE `glpi_device_ram`
                 CHANGE `new_type` `type` INT(11) DEFAULT '0' NOT NULL ";
-      $DB->query($query)
-      or die("0.6 rename new_type in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 rename new_type in glpi_dropdown_ram");
    }
 
    // Create external links
@@ -468,7 +441,7 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query) or die("0.6 add table glpi_links ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_links");
    }
 
    if (!TableExists("glpi_links_device")) {
@@ -481,21 +454,21 @@ function update051to06() {
                   KEY `FK_links` (`FK_links`),
                   UNIQUE `device_type_2` (`device_type`,`FK_links`)
                 ) TYPE=MyISAM";
-      $DB->query($query) or die("0.6 add table glpi_links_device ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_links_device");
    }
 
    // Initial count page for printer
    if (!FieldExists("glpi_printers","initial_pages")) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `initial_pages` VARCHAR(30) DEFAULT '0' NOT NULL ";
-      $DB->query($query) or die("0.6 add initial_pages in printers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add initial_pages in printers");
    }
 
    // Auto assign intervention
    if (!FieldExists("glpi_config","auto_assign")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `auto_assign` ENUM('0', '1') DEFAULT '0' NOT NULL ";
-      $DB->query($query) or die("0.6 add auto_assign in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add auto_assign in config");
    }
 
    // Create glpi_dropdown_network
@@ -505,26 +478,25 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_dropdown_network ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_network");
    }
 
    if (!FieldExists("glpi_computers","network")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 a network in computers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 a network in computers");
    }
 
    if (!FieldExists("glpi_printers","network")) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 add network in printers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add network in printers");
    }
 
    if (!FieldExists("glpi_networking","network")) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `network` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 a network in networking".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 a network in networking");
    }
 
    // Create glpi_dropdown_domain
@@ -534,26 +506,25 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_dropdown_domain ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_domain");
    }
 
    if (!FieldExists("glpi_computers","domain")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 a domain in computers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 a domain in computers");
    }
 
    if (!FieldExists("glpi_printers","domain")) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 a domain in printers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 a domain in printers");
    }
 
    if (!FieldExists("glpi_networking","domain")) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `domain` INT(11) DEFAULT '0' NOT NULL AFTER `location` ";
-      $DB->query($query) or die("0.6 a domain in networking".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 a domain in networking");
    }
 
    // Create glpi_dropdown_vlan
@@ -563,7 +534,7 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query) or die("0.6 add table glpi_dropdown_vlan ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_vlan");
    }
 
    if (!TableExists("glpi_networking_vlan")) {
@@ -576,44 +547,40 @@ function update051to06() {
                   KEY `FK_vlan` (`FK_vlan`),
                   UNIQUE `FK_port_2` (`FK_port`,`FK_vlan`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_networking_vlan ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_networking_vlan");
    }
 
    // Global Peripherals
    if (!FieldExists("glpi_peripherals","is_global")) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD `is_global` ENUM('0', '1') DEFAULT '0' NOT NULL AFTER `FK_glpi_enterprise` ";
-      $DB->query($query) or die("0.6 add is_global in peripherals".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add is_global in peripherals");
    }
 
    // Global Monitors
    if (!FieldExists("glpi_monitors","is_global")) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `is_global` ENUM('0', '1') DEFAULT '0' NOT NULL AFTER `FK_glpi_enterprise` ";
-      $DB->query($query) or die("0.6 add is_global in peripherals".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add is_global in peripherals");
    }
 
    // Mailing Resa
    if (!FieldExists("glpi_config","mailing_resa_admin")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `mailing_resa_admin` VARCHAR(200) NOT NULL DEFAULT '1' AFTER `admin_email` ";
-      $DB->query($query)
-      or die("0.6 add mailing_resa_admin in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add mailing_resa_admin in config");
    }
 
    if (!FieldExists("glpi_config","mailing_resa_user")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `mailing_resa_user` VARCHAR(200) NOT NULL DEFAULT '1' AFTER `admin_email` ";
-      $DB->query($query)
-      or die("0.6 add mailing_resa_user in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add mailing_resa_user in config");
    }
 
    if (!FieldExists("glpi_config","mailing_resa_all_admin")) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `mailing_resa_all_admin` VARCHAR(200) NOT NULL DEFAULT '0' AFTER `admin_email`";
-      $DB->query($query)
-      or die("0.6 add mailing_resa_all_admin in config".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add mailing_resa_all_admin in config");
    }
 
    // Modele ordinateurs
@@ -623,16 +590,14 @@ function update051to06() {
 
       $query = "ALTER TABLE `glpi_type_computers`
                 RENAME `glpi_dropdown_model` ;";
-      $DB->query($query)
-      or die("0.6 rename table glpi_type_computers ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 rename table glpi_type_computers");
 
       $query = "CREATE TABLE `glpi_type_computers` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_type_computers ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_type_computers");
 
       // copie model dans type
       $query  = "SELECT *
@@ -643,8 +608,7 @@ function update051to06() {
             $query = "INSERT INTO `glpi_type_computers`
                              (`ID`, `name`)
                       VALUES ('".$data['ID']."', '".addslashes($data['name'])."')";
-            $DB->query($query)
-            or die("0.6 insert value in glpi_type_computers ".$LANG['update'][90].$DB->error());
+            $DB->queryOrDie($query, "0.6 insert value in glpi_type_computers");
          }
       }
       $DB->free_result($result);
@@ -652,29 +616,28 @@ function update051to06() {
       $query = "INSERT INTO `glpi_type_computers`
                        (`name`)
                 VALUES ('Server')";
-      $DB->query($query) or die("0.6 insert value in glpi_type_computers ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_type_computers");
 
       $serverid = $DB->insert_id();
 
       // Type -> modele
       $query = "ALTER TABLE `glpi_computers`
                 CHANGE `type` `model` INT(11) DEFAULT NULL ";
-      $DB->query($query) or die("0.6 add model in computers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add model in computers");
 
       $query = "ALTER TABLE `glpi_computers`
                 ADD `type` INT(11) DEFAULT NULL AFTER `model` ";
-      $DB->query($query) or die("0.6 add model in computers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add model in computers");
 
       // Update server values and drop flags_server
       $query = "UPDATE `glpi_computers`
                 SET `type` = '$serverid'
                 WHERE `flags_server` = '1'";
-      $DB->query($query) or die("0.6 update type of computers".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 update type of computers");
 
       $query = "ALTER TABLE `glpi_computers`
                 DROP `flags_server`;";
-      $DB->query($query)
-      or die("0.6 drop type in glpi_dropdown_ram ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 drop type in glpi_dropdown_ram");
    }
 
    if (!TableExists("glpi_consumables_type")) {
@@ -694,8 +657,7 @@ function update051to06() {
                   KEY `tech_num` (`tech_num`),
                   KEY `deleted` (`deleted`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_consumables_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_consumables_type");
 
       $query = "CREATE TABLE `glpi_consumables` (
                   `ID` int(11) NOT NULL auto_increment,
@@ -707,15 +669,14 @@ function update051to06() {
                   KEY `date_in` (`date_in`),
                   KEY `date_out` (`date_out`)
                 ) TYPE=MyISAM";
-      $DB->query($query) or die("0.6 add table glpi_consumables ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_consumables");
 
       $query = "CREATE TABLE `glpi_dropdown_consumable_type` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_dropdown_consumable_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_consumable_type");
    }
 
    // HDD connect type
@@ -725,32 +686,27 @@ function update051to06() {
                   `name` varchar(255) NOT NULL default '',
                   PRIMARY KEY  (`ID`)
                 ) TYPE=MyISAM";
-      $DB->query($query)
-      or die("0.6 add table glpi_dropdown_hdd_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add table glpi_dropdown_hdd_type");
 
       $query = "INSERT INTO `glpi_dropdown_hdd_type`
                        (`name`)
                 VALUES ('IDE')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_hdd_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_hdd_type");
 
       $query = "INSERT INTO `glpi_dropdown_hdd_type`
                        (`name`)
                 VALUES ('SATA')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_hdd_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_hdd_type");
 
       $query = "INSERT INTO `glpi_dropdown_hdd_type`
                        (`name`)
                 VALUES ('SCSI')";
-      $DB->query($query)
-      or die("0.6 insert value in glpi_dropdown_hdd_type ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 insert value in glpi_dropdown_hdd_type");
 
       // Insertion des enum dans l'ordre - le alter garde donc les bonne valeurs
       $query = "ALTER TABLE `glpi_device_hdd`
                 CHANGE `interface` `interface` INT(11) DEFAULT '0' NOT NULL";
-      $DB->query($query)
-      or die("0.6 alter interface of  glpi_device_hdd".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 alter interface of  glpi_device_hdd");
    }
 
 }

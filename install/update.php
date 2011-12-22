@@ -402,7 +402,7 @@ function showLocationUpdateForm() {
                  PRIMARY KEY (`ID`),
                  UNIQUE KEY (`name`,`parentID`),
                  KEY(`parentID`)) TYPE=MyISAM";
-      $DB->query($query) or die("LOCATION ".$DB->error());
+      $DB->queryOrDie($query, "LOCATION");
    }
 
    if (!isset($_POST["validate_location"])) {
@@ -577,7 +577,7 @@ function updateDbUpTo031() {
                 FROM `glpi_configs`";
    }
 
-   $result = $DB->query($query) or die("get current version".$DB->error());
+   $result = $DB->queryOrDie($query, "get current version");
 
    $current_version = trim($DB->result($result,0,0));
    $glpilanguage    = trim($DB->result($result,0,1));
@@ -869,7 +869,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             // Get current version
             $query = "SELECT `version`
                       FROM `$config_table`";
-            $result = $DB->query($query) or die("get current version".$DB->error());
+            $result = $DB->queryOrDie($query, "get current version");
 
             $current_version = trim($DB->result($result, 0, 0));
             $tab = updateDbUpTo031();
