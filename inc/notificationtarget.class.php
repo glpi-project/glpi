@@ -286,7 +286,7 @@ class NotificationTarget extends CommonDBChild {
          foreach ($DB->request($query) as $data) {
             //TRANS: %s is the name of the group
             $options .= "<option value='" . $data["id"] . "'>" .
-                         sprintf(__('Group %s'), $data["name"]) . "</option>";
+                         sprintf(__('Group: %s'), $data["name"]) . "</option>";
 
             if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
