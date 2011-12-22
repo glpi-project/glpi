@@ -3985,7 +3985,7 @@ class Search {
             if (empty($data[$NAME.$num])) {
                return "<a title=\"".$LANG['reservation'][22]."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data["refID"]."' >".$LANG['common'][49]."</a>";
+                        $data["refID"]."' >".__('None')."</a>";
             }
             return "<a title=\"".$LANG['reservation'][22]."\"
                      href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".

@@ -190,7 +190,7 @@ class OcsServer extends CommonDBTM {
 
       $tab[3]['table']  = $this->getTable();
       $tab[3]['field']  = 'ocs_db_host';
-      $tab[3]['name']   = $LANG['common'][52];
+      $tab[3]['name']   = __('Server');
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'is_active';
@@ -480,7 +480,7 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
       Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
-                            array(0 => $LANG['common'][49]));
+                            array(0 => __('None')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>".$LANG['ocsconfig'][20]."</td>";

@@ -38,7 +38,7 @@ class Central extends CommonGLPI {
       global $LANG;
 
       // No plural
-      return $LANG['common'][56];
+      return __('Standard interface');
    }
 
 

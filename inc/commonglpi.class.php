@@ -433,7 +433,7 @@ class CommonGLPI {
             echo $glpilisttitle;
 
          } else {
-            echo $LANG['common'][53];
+            echo __('List');
          }
          echo "</a>&nbsp;:&nbsp;</li>";
 

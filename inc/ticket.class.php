@@ -3886,7 +3886,7 @@ class Ticket extends CommonITILObject {
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='purge' value='".
                          __s('Purge')."' ".
-                         Html::addConfirmationOnAction($LANG['common'][50]).">";
+                         Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
                          __s('Delete')."'></td>";

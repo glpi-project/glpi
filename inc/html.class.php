@@ -438,7 +438,7 @@ class Html {
       }
       echo "<div class='center'><br><br>";
       echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='warning'><br><br>";
-      echo "<span class='b'>" . $LANG['common'][54] . "</span></div>";
+      echo "<span class='b'>" . __('Item not found') . "</span></div>";
       self::nullFooter();
       exit ();
    }

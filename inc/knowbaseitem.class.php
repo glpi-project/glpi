@@ -618,7 +618,7 @@ class KnowbaseItem extends CommonDBTM {
                "\" title=\"".$LANG['knowbase'][8]."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
          echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
-                addslashes($LANG['common'][55])."','".$CFG_GLPI["root_doc"].
+                __s('Are you sure you want to delete this element?')."','".$CFG_GLPI["root_doc"].
                 "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".$LANG['knowbase'][9].
                "\" title=\"".$LANG['knowbase'][9]."\"></a></td>";

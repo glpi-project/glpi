@@ -224,7 +224,7 @@ class Session {
        global $LANG;
 
        if (empty($title)) {
-          $title = $LANG['common'][53];
+          $title = __('List');
        }
        $url = '';
 

@@ -655,8 +655,9 @@ class Computer extends CommonDBTM {
          echo $LANG['ocsng'][13]."&nbsp;: ".Html::convDateTime($dataocs["last_update"]);
          echo "<br>";
          if (Session::haveRight("ocsng","r")) {
-            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
-                 .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
+            $tmp = " <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id=" .
+                   OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
+            printf(__('Server: %s'), $tmp);
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$ID'";
@@ -678,7 +679,7 @@ class Computer extends CommonDBTM {
             }
 
          } else {
-            echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
+            printf(__('Server: %s'), OcsServer::getServerNameByID($ID));
          }
       }
       echo "</td></tr>\n";
