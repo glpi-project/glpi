@@ -53,7 +53,7 @@ function update0723to078($output='HTML') {
    }
    displayMigrationMessage("078"); // Start
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : rename tables'); // Updating schema
 
    $changes     = array();
    $glpi_tables = array('glpi_alerts'                       => 'glpi_alerts',
@@ -238,7 +238,7 @@ function update0723to078($output='HTML') {
       echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename foreign keys'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : rename foreign keys'); // Updating schema
 
    $foreignkeys
       = array('assign'  => array(array('to'     => 'users_id_assign',
@@ -771,7 +771,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename bool values'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : rename bool values'); // Updating schema
 
    $boolfields
       = array('glpi_authldaps'
@@ -1444,7 +1444,7 @@ function update0723to078($output='HTML') {
          }
       }
    }
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : update text fields'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : update text fields'); // Updating schema
 
    $textfields
       = array('comments'
@@ -2336,7 +2336,7 @@ function update0723to078($output='HTML') {
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : others field changes'); // Updating schema
 
    if (FieldExists('glpi_alerts', 'date')) {
       $changes['glpi_alerts'][] = "CHANGE `date` `date` DATETIME NOT NULL";
@@ -2416,7 +2416,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : index management'); // Updating schema
 
    if (!isIndex('glpi_alerts', 'unicity')) {
       $changes['glpi_alerts'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`, `type`)";
@@ -2626,7 +2626,7 @@ function update0723to078($output='HTML') {
    }
 
    foreach ($changes as $table => $tab) {
-      displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $table); // Updating schema
+      displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $table); // Updating schema
       $query = "ALTER TABLE `$table`
                 ".implode($tab," ,\n").";";
       $DB->query($query)
@@ -2634,7 +2634,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Update itemtype fields'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Update itemtype fields'); // Updating schema
 
    // Convert itemtype to Class names
    $typetoname = array(GENERAL_TYPE          => "",// For tickets
@@ -2703,7 +2703,7 @@ function update0723to078($output='HTML') {
                             "glpi_networkports", "glpi_reservationitems", "glpi_tickets");
 
    foreach ($itemtype_tables as $table) {
-      displayMigrationMessage("078", $LANG['update'][142] . " - $table"); // Updating data
+      displayMigrationMessage("078", sprintf(__('Data migration - %s')), "$table"); // Updating data
       // Alter itemtype field
       $query = "ALTER TABLE `$table`
                 CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
@@ -2723,7 +2723,7 @@ function update0723to078($output='HTML') {
    if (FieldExists('glpi_logs', 'device_type')) {
 
       // History migration, handled separatly for optimization
-      displayMigrationMessage("078 ", $LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
+      displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s')), 'glpi_logs - 1'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
                 CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
                 ADD `itemtype` VARCHAR(100) NOT NULL DEFAULT ''  AFTER `device_type`,
@@ -2735,7 +2735,7 @@ function update0723to078($output='HTML') {
             or die("0.78 add item* fields to table glpi_logs " .$LANG['update'][90] . $DB->error());
 
       // Update values
-      displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
+      displayMigrationMessage("078", sprintf(__('Data migration - %s')), 'glpi_logs'); // Updating schema
 
       // Copy data
       $query = "UPDATE `glpi_logs`
@@ -2783,7 +2783,7 @@ function update0723to078($output='HTML') {
       $DB->query($query)
       or die("0.78 update itemtype of table glpi_logs " . $LANG['update'][90] . $DB->error());
 
-      displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
+      displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_logs - 2'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
                 DROP `device_type`,
                 DROP `FK_glpi_device`,
@@ -2796,7 +2796,7 @@ function update0723to078($output='HTML') {
 
    // Update glpi_profiles item_type
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Clean DB : post actions after renaming'); // Updating schema
 
    if (!isIndex('glpi_locations', 'name')) {
       $query = " ALTER TABLE `glpi_locations`
@@ -3058,7 +3058,7 @@ function update0723to078($output='HTML') {
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_rulecachesoftwares'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_rulecachesoftwares'); // Updating schema
 
    $query = "ALTER TABLE `glpi_rules`
              CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
@@ -3126,7 +3126,7 @@ function update0723to078($output='HTML') {
              $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_entities'); // Updating schema
 
    if (!FieldExists("glpi_entities","sons_cache")) {
       $query = "ALTER TABLE `glpi_entities`
@@ -3142,7 +3142,7 @@ function update0723to078($output='HTML') {
       or die("0.78 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_configs'); // Updating schema
 
 
    if (!FieldExists("glpi_configs","default_graphtype")) {
@@ -3194,7 +3194,7 @@ function update0723to078($output='HTML') {
       or die("0.78 add use_noright_users_add in glpi_configs " .$LANG['update'][90]. $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_budgets'); // Updating schema
 
    if (!FieldExists("glpi_profiles","budget")) {
       $query = "ALTER TABLE `glpi_profiles`
@@ -3295,7 +3295,7 @@ function update0723to078($output='HTML') {
    $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $LANG['crontask'][0]); // Updating schema
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3524,7 +3524,7 @@ function update0723to078($output='HTML') {
       or die("0.78 set value of filepath in glpi_documents " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $LANG['setup'][79]); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $LANG['setup'][79]); // Updating schema
 
    if (!FieldExists('glpi_tickets','solvedate')) {
       $query = "ALTER TABLE `glpi_tickets`
@@ -4042,10 +4042,10 @@ function update0723to078($output='HTML') {
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
-      displayMigrationMessage("078 ", $LANG['update'][141].' - '.Toolbox::ucfirst($LANG['log'][18])); // Updating schema
+      displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s')), Toolbox::ucfirst($LANG['log'][18])); // Updating schema
 
       foreach ($devtypetoname as $key => $itemtype) {
-         displayMigrationMessage("078 ", $LANG['update'][141].' - '.
+         displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s')), 
                                  Toolbox::ucfirst($LANG['log'][18]).' - '.$itemtype); // Updating schema
          $linktype      = "Computer_$itemtype";
          $linktable     = getTableForItemType($linktype);
@@ -4227,7 +4227,7 @@ function update0723to078($output='HTML') {
              $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['setup'][704]); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $LANG['setup'][704]); // Updating schema
    $templates = array();
    if (!TableExists('glpi_notificationtemplates')) {
       $query = "CREATE TABLE `glpi_notificationtemplates` (
@@ -5030,7 +5030,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    foreach ($tables as $table => $label) {
       // Migrate infocoms entity information
       if (!FieldExists($table,'entities_id')) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$label); // Updating schema
+         displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $label); // Updating schema
 
          $query = "ALTER TABLE `$table`
                    ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
@@ -5050,7 +5050,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  displayMigrationMessage("078", $LANG['update'][141].' - '.$label.' - '.
+                  displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $label.' - '.
                                           $data['itemtype']); // Updating schema
 
                   $itemtable = getTableForItemType($data['itemtype']);
@@ -5117,7 +5117,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                   'glpi_computerdisks' => 'glpi_computers');
    foreach ($items as $linkitem => $sourceitem) {
       if (!FieldExists($linkitem,'entities_id')) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$linkitem); // Updating schema
+         displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $linkitem); // Updating schema
 
          $query = "ALTER TABLE `$linkitem`
                    ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
@@ -5145,7 +5145,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    // Migrate softwareversions entity information
    if (!FieldExists('glpi_softwareversions','entities_id')) {
-      displayMigrationMessage("078", $LANG['update'][141].' - glpi_softwareversions'); // Updating schema
+      displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_softwareversions'); // Updating schema
 
       $query = "ALTER TABLE `glpi_softwareversions`
                 ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
@@ -5187,7 +5187,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_mailcollectors'); // Updating schema
 
    if (!FieldExists("glpi_mailcollectors", "is_active")) {
       $query = "ALTER TABLE `glpi_mailcollectors`
@@ -5235,7 +5235,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authldaps','date_mod')) {
       $query = "ALTER TABLE `glpi_authldaps`
@@ -5258,7 +5258,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['AuthLDAP'] = array(3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authmails','date_mod')) {
       $query = "ALTER TABLE `glpi_authmails`
@@ -5280,7 +5280,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    // Change search pref : host, date_mod
    $ADDTODISPLAYPREF['AuthMail'] = array(3, 19);
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_ocsservers'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_ocsservers'); // Updating schema
 
    if (!FieldExists('glpi_ocsservers','date_mod')) {
       $query = "ALTER TABLE `glpi_ocsservers`
@@ -5302,7 +5302,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['OcsServer'] = array(3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_profiles'); // Updating schema
 
    if (!FieldExists('glpi_profiles','date_mod')) {
       $query = "ALTER TABLE `glpi_profiles`
@@ -5325,7 +5325,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['Profile'] = array(2, 3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_printers'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_printers'); // Updating schema
 
    if (!FieldExists('glpi_printers','have_ethernet')) {
       $query = "ALTER TABLE `glpi_printers`
@@ -5343,7 +5343,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       or die("0.78 add have_wifi to glpi_printers " .$LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_profiles'); // Updating schema
 
    if (!FieldExists('glpi_transfers','date_mod')) {
       $query = "ALTER TABLE `glpi_transfers`
@@ -5365,7 +5365,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['Transfer']=array(19);
 
    // Convert events
-   displayMigrationMessage("078 ", $LANG['update'][142] . ' - glpi_events');
+   displayMigrationMessage("078 ", sprintf(__('Data migration - %s')), 'glpi_events');
 
    $convert_types = array('tracking'   => 'ticket',
                           'networking' => 'networkequipment',
@@ -5382,7 +5382,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       or die("0.78 update events data " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - ticket bookmarks');
+   displayMigrationMessage("078", sprintf(__('Data migration - %s')), 'ticket bookmarks');
 
    $query = "SELECT *
              FROM `glpi_bookmarks`
@@ -5953,7 +5953,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
+   displayMigrationMessage("078", sprintf(__('Data migrat$ion - %s')), 'glpi_displaypreferences');
 
    // Add search values for tickets
    $ADDTODISPLAYPREF['Ticket'] = array(12, 19, 15, 3, 4, 5, 7);

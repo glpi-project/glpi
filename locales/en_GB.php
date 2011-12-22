@@ -2285,7 +2285,10 @@ $LANG['update'][96]="All users having administrators rights have have been updat
 $LANG['update'][105]="Impossible to accomplish an update this way!!";
 $LANG['update'][106]="Go back to GLPI";
 $LANG['update'][107]="You must now proceed to updating your database content";
-$LANG['update'][130]="Locations Update";
+
+/// TODO After is ok for migration to gettext
+
+$LANG['update'][130]="Locations update";
 $LANG['update'][131]="The new structure is hierarchical";
 $LANG['update'][132]="Provide a delimiter in order to automate the new hierarchy generation.";
 $LANG['update'][133]="You can also specify a root location which will include all the generated locations.";
@@ -2298,8 +2301,6 @@ $LANG['update'][139]="Optimizing tables";
 $LANG['update'][140]="Creating indexes";
 $LANG['update'][141]="Change of the database layout";
 $LANG['update'][142]="Data migration";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['users'][1]="Title";
 $LANG['users'][2]="Category (class)";

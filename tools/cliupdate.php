@@ -201,7 +201,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 if (in_array('--optimize', $_SERVER['argv'])) {
 
-   $migration->displayTitle($LANG['update'][139]);
+   $migration->displayTitle(__('Optimizing tables'));
    DBmysql::optimize_tables($migration);
 
    $migration->displayWarning("Optimize done.");

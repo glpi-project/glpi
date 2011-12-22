@@ -672,7 +672,8 @@ function update083to084() {
    $DB->query($query);   
 
    // ************ Keep it at the end **************
-   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
+   //TRANS: %s is the table or item to migrate
+   $migration->displayMessage(sprintf(__('Data migration - %s')),'glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`

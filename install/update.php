@@ -407,13 +407,14 @@ function showLocationUpdateForm() {
 
    if (!isset($_POST["validate_location"])) {
       echo "<div class='center'>";
-      echo "<h4>".$LANG['update'][130]."</h4>";
-      echo "<p>".$LANG['update'][131]."</p>";
-      echo "<p>".$LANG['update'][132]."<br>".$LANG['update'][133]."</p>";
+      echo "<h4>".__('Locations update')."</h4>";
+      echo "<p>".__('The new structure is hierarchical')."</p>";
+      echo "<p>".__('Provide a delimiter in order to automate the new hierarchy generation.')."<br>";
+      echo __('You can also specify a root location which will include all the generated locations.')."</p>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
-      echo "<p>".$LANG['update'][134].": ".
+      echo "<p>".__('Delimiter')."&nbsp;".
             "<input type='text' name='car_sep' value='".$_POST['car_sep']."'></p>";
-      echo "<p>".$LANG['update'][135].": ".
+      echo "<p>".__('Root location').'&nbsp;'.
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
       echo "<input type='submit' class='submit' name='new_location' value=\"".__s('Post')."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
@@ -423,11 +424,11 @@ function showLocationUpdateForm() {
 
    if (isset($_POST["new_location"])) {
       location_create_new($_POST['car_sep'], $_POST['root']);
-      echo "<h4>".$LANG['update'][138]." : </h4>";
+      echo "<h4>".__('Actual locations')." : </h4>";
       display_old_locations();
-      echo "<h4>".$LANG['update'][137]." : </h4>";
+      echo "<h4>".__('New hierarchy')." : </h4>";
       display_new_locations();
-      echo "<p>".$LANG['update'][136]."</p>";
+      echo "<p>".__("This is the new hierarchy. If it's complete approve it.")."</p>";
       echo "<div align='center'>";
       echo "<form action='".$CFG_GLPI["root_doc"]."/install/update.php' method='post'>";
       echo "<input type='submit' class='submit' name='validate_location' value=\"".__s('Post')."\">";
@@ -754,7 +755,7 @@ function updateDbUpTo031() {
    $plugin = new Plugin();
    $plugin->unactivateAll();
 
-   echo "<h3>".$LANG['update'][139]."</h3>";
+   echo "<h3>".__('Optimizing tables')."</h3>";
 
    DBmysql::optimize_tables($migration);
 
