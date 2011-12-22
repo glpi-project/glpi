@@ -48,15 +48,13 @@ function update0721to0722() {
              FROM `glpi_display`
              WHERE `type` = ".RESERVATION_TYPE."
                    AND `num` = 31";
-   $DB->query($query)
-   or die("0.72.2 delete search of state from reservations " . $LANG['update'][90] . $DB->error());
+   $DB->queryOrDie($query, "0.72.2 delete search of state from reservations");
 
    // Clean licences alerts
    $query = "DELETE
              FROM `glpi_alerts`
              WHERE `device_type` = '".SOFTWARELICENSE_TYPE."'";
-   $DB->query($query)
-   or die("0.72.2 delete search of state from reservations " . $LANG['update'][90] . $DB->error());
+   $DB->queryOrDie($query, "0.72.2 delete search of state from reservations");
 
 
    //// Correct search.constant numbers
@@ -209,8 +207,7 @@ function update0721to0722() {
                 SET `num` = ".$data['to']."
                 WHERE `num` = ".$data['from']."
                       AND `type` = '".$data['type']."'";
-      $DB->query($query)
-      or die("0.72.2 reorder search.constant " . $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query, "0.72.2 reorder search.constant");
    }
 
    // Display "Work ended." message - Keep this as the last action.
