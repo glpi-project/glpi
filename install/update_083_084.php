@@ -239,8 +239,7 @@ function update083to084() {
                   KEY `is_recursive` (`is_recursive`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       //TRANS: %1$s is the title of the update, %2$s is the DB error
-      $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-                                 "0.84 create glpi_fqdns ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_fqdns");
 
       $fqdn = new FQDN();
 
@@ -282,9 +281,7 @@ function update083to084() {
                   KEY `item` (`items_id`,`itemtype`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
                 
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'), 
-                     "0.84 create glpi_ipaddresses ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_ipaddresses");
    }
 
    logMessage($LANG['install'][4]. " - glpi_wifinetworks", true);
@@ -302,9 +299,7 @@ function update083to084() {
                  KEY `essid` (`essid`),
                  KEY `name` (`name`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'), 
-               "0.84 create glpi_wifinetworks ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_wifinetworks");
 
       $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
    }
@@ -342,9 +337,7 @@ function update083to084() {
                   KEY `gateway` (`gateway_0`, `gateway_1`, `gateway_2`, `gateway_3`),
                   KEY `name` (`name`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_ipnetworks ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_ipnetworks");
 
       // Retrieve all the networks from the current network ports and add them to the IPNetworks
       $query = "SELECT DISTINCTROW INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) AS address,
@@ -432,9 +425,7 @@ function update083to084() {
                   KEY `item` (`items_id`, `itemtype`),
                   KEY `fqdns_id` (`fqdns_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networknames ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networknames");
 
       $ADDTODISPLAYPREF['NetworkName'] = array(12, 13);
 
@@ -458,9 +449,7 @@ function update083to084() {
                   KEY `name` (`name`),
                   KEY `networknames_id` (`networknames_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'), 
-         "0.84 create glpi_networkaliases ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkaliases");
    }
 
    logMessage($LANG['install'][4]. " - glpi_networkinterfaces", true);
@@ -506,9 +495,7 @@ function update083to084() {
                    WHERE `id` IN (SELECT `id`
                                   FROM `origin_glpi_networkports`
                                   WHERE `networkinterfaces_id` = '".$entry['id']."')";
-         $DB->query($query)
-         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-                  "0.84 update instantiation_type field of glpi_networkports ", $DB->error()));
+         $DB->queryOrDie($query, "0.84 update instantiation_type field of glpi_networkports");
          // Clear $instantiation_type for next check inside the loop
          unset($instantiation_type);
       }
@@ -539,9 +526,7 @@ function update083to084() {
                   KEY `type` (`type`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportethernets ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)"   => 'mac',
@@ -571,9 +556,7 @@ function update083to084() {
                   KEY `version` (`version`),
                   KEY `mode` (`mode`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportwifis ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportwifis");
 
       $port = new NetworkPortWifi();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
@@ -587,9 +570,7 @@ function update083to084() {
                   `id` int(11) NOT NULL,
                   PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportlocals ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportlocals");
 
       $port = new NetworkPortLocal();
       updateNetworkPortInstantiation($port, array(), false);
@@ -605,9 +586,7 @@ function update083to084() {
                   PRIMARY KEY (`id`),
                   KEY `mac` (`mac`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportdialups ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportdialups");
 
       $port = new NetworkPortDialup();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
@@ -627,9 +606,7 @@ function update083to084() {
                   KEY `networkinterfaces_id` (`networkinterfaces_id`),
                   KEY `netpoints_id` (`netpoints_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportmigrations ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportmigrations");
 
       $port = new NetworkPortMigration();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)"           => 'mac',
@@ -651,9 +628,7 @@ function update083to084() {
                   PRIMARY KEY (`id`),
                   KEY `mac` (`mac`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportaggregates ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
       // New element, so, we don't need to create items
    }
@@ -670,9 +645,7 @@ function update083to084() {
                   KEY `networkports_id` (`networkports_id`),
                   KEY `mac` (`mac`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query)
-      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-               "0.84 create glpi_networkportaliases ", $DB->error()));
+      $DB->queryOrDie($query, "0.84 create glpi_networkportaliases");
 
       // New element, so, we don't need to create items
    }

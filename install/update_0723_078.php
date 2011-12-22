@@ -207,8 +207,8 @@ function update0723to078($output='HTML') {
                if (TableExists("backup_$new_table")) {
                   $query = "DROP TABLE `backup_".$new_table."`";
                   $DB->query($query)
-                  or die("0.78 drop backup table backup_$new_table ".$LANG['update'][90].
-                         $DB->error());
+                  or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                                 "0.78 drop backup table backup_$new_table ", $DB->error()));
                }
                if ($output) {
                   echo "<p><span class='b'>$new_table table already exists. ";
@@ -218,7 +218,8 @@ function update0723to078($output='HTML') {
                $query = "RENAME TABLE `$new_table`
                          TO `backup_$new_table`";
                $DB->query($query)
-               or die("0.78 backup table $new_table " . $LANG['update'][90] . $DB->error());
+               or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.78 backup table $new_table ", $DB->error()));
 
             }
             // rename original table
@@ -2630,7 +2631,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `$table`
                 ".implode($tab," ,\n").";";
       $DB->query($query)
-      or die("0.78 multiple alter in $table " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 multiple alter in $table ", $DB->error()));
    }
 
 
@@ -2708,7 +2710,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `$table`
                 CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
       $DB->query($query)
-      or die("0.78 alter itemtype of table $table " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 alter itemtype of table $table ", $DB->error()));
 
       // Update values
       foreach ($typetoname as $key => $val) {
@@ -2743,15 +2746,16 @@ function update0723to078($output='HTML') {
                     `items_id` = `FK_glpi_device`,
                     `itemtype_link` = `device_internal_type`";
       $DB->query($query)
-      or die("0.78 update glpi_logs default values " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update glpi_logs default values ", $DB->error()));
 
       foreach ($typetoname as $key => $val) {
          $query = "UPDATE `glpi_logs`
                    SET `itemtype` = '$val'
                    WHERE `device_type` = '$key'";
          $DB->query($query)
-         or die("0.78 update itemtype of table glpi_logs for $val " . $LANG['update'][90] .
-                $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.78 update itemtype of table glpi_logs for $val ", $DB->error()));
 
          $query = "UPDATE `glpi_logs`
                    SET `itemtype_link` = '$val'
@@ -2761,8 +2765,8 @@ function update0723to078($output='HTML') {
                                                 ".Log::HISTORY_DISCONNECT_DEVICE.",
                                                 ".Log::HISTORY_CONNECT_DEVICE.")";
          $DB->query($query)
-         or die("0.78 update itemtype of table glpi_logs for $val " . $LANG['update'][90] .
-                $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.78 update itemtype of table glpi_logs for $val ", $DB->error()));
       }
 
       foreach ($devtypetoname as $key => $val) {
@@ -2781,7 +2785,8 @@ function update0723to078($output='HTML') {
                 SET `itemtype_link` = ''
                 WHERE `itemtype_link` = '0'";
       $DB->query($query)
-      or die("0.78 update itemtype of table glpi_logs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update itemtype of table glpi_logs ", $DB->error()));
 
       displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_logs - 2'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
@@ -2791,7 +2796,8 @@ function update0723to078($output='HTML') {
                 ADD INDEX `itemtype_link` (`itemtype_link`),
                 ADD INDEX `item` (`itemtype`,`items_id`)";
       $DB->query($query)
-      or die("0.78 drop device* fields to table glpi_logs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 drop device* fields to table glpi_logs ", $DB->error()));
    }
 
    // Update glpi_profiles item_type
@@ -2802,7 +2808,8 @@ function update0723to078($output='HTML') {
       $query = " ALTER TABLE `glpi_locations`
                  ADD INDEX `name` (`name`)";
       $DB->query($query)
-      or die("0.78 add name index in glpi_locations " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add name index in glpi_locations ", $DB->error()));
    }
 
 
@@ -2829,7 +2836,8 @@ function update0723to078($output='HTML') {
       $query = "UPDATE `glpi_configs`
                 SET `time_offset` = `time_offset`*3600";
       $DB->query($query)
-      or die("0.78 update time_offset value in glpi_configs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update time_offset value in glpi_configs ", $DB->error()));
    }
 
    if (FieldExists('glpi_authldaps', 'time_offset')) {
@@ -2872,15 +2880,15 @@ function update0723to078($output='HTML') {
                 SET `glpi_column` = 'locations_id'
                 WHERE `glpi_column` = 'location'";
       $DB->query($query)
-      or die("0.78 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] .
-             $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update value of glpi_column in glpi_ocsadmininfoslinks ", $DB->error()));
 
       $query = "UPDATE `glpi_ocsadmininfoslinks`
                 SET `glpi_column` = 'networks_id'
                 WHERE `glpi_column` = 'network'";
       $DB->query($query)
-      or die("0.78 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] .
-             $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update value of glpi_column in glpi_ocsadmininfoslinks ", $DB->error()));
 
       $query = "UPDATE `glpi_ocsadmininfoslinks`
                 SET `glpi_column` = 'groups_id'
@@ -2936,7 +2944,8 @@ function update0723to078($output='HTML') {
                                                       $data['query']))."'
                           WHERE `id` = ".$data['id']."";
                $DB->query($query2)
-               or die("0.78 update all bookmarks " . $LANG['update'][90] . $DB->error());
+               or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.78 update all bookmarks ", $DB->error()));
             }
          }
       }
@@ -2946,57 +2955,66 @@ function update0723to078($output='HTML') {
                  SET `path` = 'front/documenttype.php'
                  WHERE `path` = 'front/typedoc.php'";
       $DB->query($query2)
-      or die("0.78 update typedoc bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update typedoc bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/consumableitem.php'
                  WHERE `path` = 'front/consumable.php'";
       $DB->query($query2)
-      or die("0.78 update consumable bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update consumable bookmarks ", $DB->error()));
 
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/cartridgeitem.php'
                  WHERE `path` = 'front/cartridge.php'";
       $DB->query($query2)
-      or die("0.78 update cartridge bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update cartridge bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/ticket.php'
                  WHERE `path` = 'front/tracking.php'";
       $DB->query($query2)
-      or die("0.78 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update ticket bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/mailcollector.php'
                  WHERE `path` = 'front/mailgate.php'";
       $DB->query($query2)
-      or die("0.78 update mailcollector bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update mailcollector bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/ocsserver.php'
                  WHERE `path` = 'front/setup.ocsng.php'";
       $DB->query($query2)
-      or die("0.78 update ocsserver bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update ocsserver bookmarks ", $DB->error()));
 
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/supplier.php'
                  WHERE `path` = 'front/enterprise.php'";
       $DB->query($query2)
-      or die("0.78 update supplier bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update supplier bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/networkequipment.php'
                  WHERE `path` = 'front/networking.php'";
       $DB->query($query2)
-      or die("0.78 update networkequipment bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update networkequipment bookmarks ", $DB->error()));
 
       $query2 = "UPDATE `glpi_bookmarks`
                  SET `path` = 'front/states.php'
                  WHERE `path` = 'front/state.php'";
       $DB->query($query2)
-      or die("0.78 update states bookmarks " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update states bookmarks ", $DB->error()));
    }
 
    //// Upgrade rules datas
@@ -3043,7 +3061,8 @@ function update0723to078($output='HTML') {
                          WHERE `field` = '$old'
                                AND `rules_id` IN ($rules);";
                $DB->query($query)
-               or die("0.78 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+               or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.78 update datas for rules actions ", $DB->error()));
             }
             // Update criterias
             foreach ($tab as $old => $new) {
@@ -3063,8 +3082,8 @@ function update0723to078($output='HTML') {
    $query = "ALTER TABLE `glpi_rules`
              CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
    $DB->query($query)
-   or die("0.78 change subtype from INT(11) to VARCHAR(255) in glpi_rules " . $LANG['update'][90] .
-          $DB->error());
+   or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                  "0.78 change subtype from INT(11) to VARCHAR(255) in glpi_rules ", $DB->error()));
 
    $subtypes = array (0  => 'RuleOcs',
                       1  => 'RuleRight',
@@ -3098,7 +3117,8 @@ function update0723to078($output='HTML') {
              $DB->error());
    }
 
-   $DB->query($query) or die("0.78 update itemtypes in business rules " . $LANG['update'][90] . $DB->error());
+   $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                                    "0.78 update itemtypes in business rules ", $DB->error()));
    //Update business rules itemtypes
    foreach ($typetoname as $key => $val) {
       if ($key != GENERAL_TYPE) {
@@ -3115,15 +3135,16 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_rulecachesoftwares`
                 CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
       $DB->query($query)
-      or die("0.78 alter table glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 alter table glpi_rulecachesoftwares ", $DB->error()));
    }
 
    if (!FieldExists("glpi_rulecachesoftwares","is_helpdesk_visible")) {
       $query = "ALTER TABLE `glpi_rulecachesoftwares`
                 ADD `is_helpdesk_visible` CHAR( 1 ) NULL ";
       $DB->query($query)
-      or die("0.78 add is_helpdesk_visible in glpi_rulecachesoftwares " . $LANG['update'][90] .
-             $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add is_helpdesk_visible in glpi_rulecachesoftwares ", $DB->error()));
    }
 
    displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_entities'); // Updating schema
@@ -3132,14 +3153,16 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_entities`
                 ADD `sons_cache` LONGTEXT NULL ; ";
       $DB->query($query)
-      or die("0.78 add sons_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add sons_cache field in glpi_entities ", $DB->error()));
    }
 
    if (!FieldExists("glpi_entities","ancestors_cache")) {
       $query = "ALTER TABLE `glpi_entities`
                 ADD `ancestors_cache` LONGTEXT NULL ; ";
       $DB->query($query)
-      or die("0.78 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add ancestors_cache field in glpi_entities ", $DB->error()));
    }
 
    displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'glpi_configs'); // Updating schema
@@ -3149,42 +3172,48 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_configs`
                 ADD `default_graphtype` char( 3 ) NOT NULL DEFAULT 'svg'";
       $DB->query($query)
-      or die("0.78 add default_graphtype in glpi_configs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add default_graphtype in glpi_configs ", $DB->error()));
    }
 
    if (FieldExists('glpi_configs', 'license_deglobalisation')) {
       $query = "ALTER TABLE `glpi_configs`
                 DROP `license_deglobalisation`;";
       $DB->query($query)
-      or die("0.78 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 alter clean glpi_configs table ", $DB->error()));
    }
 
    if (FieldExists("glpi_configs","use_cache")) {
       $query = "ALTER TABLE `glpi_configs`
                 DROP `use_cache`;";
       $DB->query($query)
-      or die("0.78 drop use_cache in glpi_configs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 drop use_cache in glpi_configs ", $DB->error()));
    }
 
    if (FieldExists("glpi_configs","cache_max_size")) {
       $query = "ALTER TABLE `glpi_configs`
                 DROP `cache_max_size`;";
       $DB->query($query)
-      or die("0.78 drop cache_max_size in glpi_configs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 drop cache_max_size in glpi_configs ", $DB->error()));
    }
 
    if (!FieldExists("glpi_configs","default_request_type")) {
       $query = "ALTER TABLE `glpi_configs`
                 ADD `default_request_type` INT( 11 ) NOT NULL DEFAULT 1";
       $DB->query($query)
-      or die("0.78 add default_request_type in glpi_configs " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add default_request_type in glpi_configs ", $DB->error()));
    }
 
    if (!FieldExists("glpi_users","default_request_type")) {
       $query = "ALTER TABLE `glpi_users`
                 ADD `default_request_type` INT( 11 ) NULL";
       $DB->query($query)
-      or die("0.78 add default_request_type in glpi_users " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add default_request_type in glpi_users ", $DB->error()));
    }
 
    if (!FieldExists("glpi_configs","use_noright_users_add")) {
@@ -3200,12 +3229,14 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles`
                 ADD `budget` CHAR( 1 ) NULL ";
       $DB->query($query)
-      or die("0.78 add budget in glpi_profiles " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add budget in glpi_profiles ", $DB->error()));
 
       $query = "UPDATE `glpi_profiles`
                 SET `budget` = `infocom`";
       $DB->query($query)
-      or die("0.78 update default budget rights " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 update default budget rights ", $DB->error()));
 
    }
 
@@ -3215,13 +3246,15 @@ function update0723to078($output='HTML') {
                 ADD `is_recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`,
                 ADD INDEX `is_recursive` (`is_recursive`)";
       $DB->query($query)
-      or die("0.78 add is_recursive field in glpi_budgets " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add is_recursive field in glpi_budgets ", $DB->error()));
 
       // budgets in 0.72 were global
       $query = "UPDATE `glpi_budgets`
                 SET `is_recursive` = '1';";
       $DB->query($query)
-      or die("0.78 set is_recursive to true in glpi_budgets " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 set is_recursive to true in glpi_budgets ", $DB->error()));
    }
 
    if (!FieldExists("glpi_budgets","entities_id")) {
@@ -3229,7 +3262,8 @@ function update0723to078($output='HTML') {
                    ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`,
                    ADD INDEX `entities_id` (`entities_id`);";
          $DB->query($query)
-         or die("0.78 add entities_id field in glpi_budgets " . $LANG['update'][90] . $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.78 add entities_id field in glpi_budgets ", $DB->error()));
    }
 
    if (!FieldExists("glpi_budgets","is_deleted")) {
@@ -3237,7 +3271,8 @@ function update0723to078($output='HTML') {
                 ADD `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                 ADD INDEX `is_deleted` (`is_deleted`)";
       $DB->query($query)
-      or die("0.78 add is_deleted field in glpi_budget s" . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add is_deleted field in glpi_budgets", $DB->error()));
    }
 
    if (!FieldExists("glpi_budgets","begin_date")) {
@@ -3245,20 +3280,23 @@ function update0723to078($output='HTML') {
                 ADD `begin_date` DATE NULL,
                 ADD INDEX `begin_date` (`begin_date`)";
       $DB->query($query)
-      or die("0.78 add begin_date field in glpi_budgets " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add begin_date field in glpi_budgets ", $DB->error()));
    }
    if (!FieldExists("glpi_budgets","end_date")) {
       $query = "ALTER TABLE `glpi_budgets`
                 ADD `end_date` DATE NULL,
                 ADD INDEX `end_date` (`begin_date`)";
       $DB->query($query)
-      or die("0.78 add end_date field in glpi_budgets " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add end_date field in glpi_budgets ", $DB->error()));
    }
    if (!FieldExists("glpi_budgets","value")) {
       $query = "ALTER TABLE `glpi_budgets`
                 ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
       $DB->query($query)
-      or die("0.78 add value field in glpi_budgets " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.78 add value field in glpi_budgets ", $DB->error()));
    }
    if (!FieldExists("glpi_budgets","is_template")) {
       $query = "ALTER TABLE `glpi_budgets`

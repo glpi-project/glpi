@@ -404,7 +404,7 @@ if ($offsettable>=0 && $complete_utf8) {
 if ($conv_utf8) {
    $query = "ALTER TABLE `$config_table`
              ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
-   $DB->query($query) or die(" 0.6 add utf8_conv to $config_table ".$LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query, " 0.6 add utf8_conv to $config_table");
 }
 
 if ($complete_utf8) {

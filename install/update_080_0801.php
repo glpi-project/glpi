@@ -69,8 +69,8 @@ function update080to0801() {
                                FROM `glpi_groups_tickets`
                                WHERE `id` ='".$data2['id']."'";
                      $DB->query($query)
-                     or die("0.80.1 clean to update glpi_groups_tickets ".$LANG['update'][90] .
-                            $DB->error());
+                     or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.80.1 clean to update glpi_groups_tickets ", $DB->error()));
                   }
                }
             }
@@ -106,8 +106,8 @@ function update080to0801() {
                                FROM `glpi_tickets_users`
                                WHERE `id` ='".$data2['id']."'";
                      $DB->query($query)
-                     or die("0.80.1 clean to update glpi_tickets_users ".$LANG['update'][90] .
-                            $DB->error());
+                     or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.80.1 clean to update glpi_tickets_users ", $DB->error()));
                   }
                }
             }
@@ -139,8 +139,8 @@ function update080to0801() {
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 0)";
          $DB->query($query3)
-         or die("0.80.1 update entities_id and is_recursive=0 in glpi_slalevels ".
-                $LANG['update'][90]. $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                  "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels ", $DB->error()));
 
          // Recursive ones
          $query3 = "UPDATE `glpi_slalevels`
@@ -150,8 +150,7 @@ function update080to0801() {
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 1)";
          $DB->query($query3)
-         or die("0.80.1 update entities_id and is_recursive=1 in glpi_slalevels ".
-                $LANG['update'][90]. $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'), "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels ", $DB->error()));
       }
    }
 
