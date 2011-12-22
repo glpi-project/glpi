@@ -1136,8 +1136,8 @@ class Html {
             $opt['link'][1]       = 'AND';
 
 
-            $pic_validate = "<img title=\"".$LANG['validation'][15]."\" alt=\"".
-                              $LANG['validation'][15]."\" src='".
+            $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+                              __s('Ticket waiting for your approval')."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
 
             $menu['maintain']['content']['ticket']['links'][$pic_validate]
@@ -2632,8 +2632,8 @@ class Html {
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($opt,'&amp;');
-         $pic_validate = "<a href='$url_validate'><img title=\"".$LANG['validation'][15]."\" alt=\"".
-                           $LANG['validation'][15]."\" src='".
+         $pic_validate = "<a href='$url_validate'><img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+                           __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
          echo "<li>$pic_validate</li>\n";
 

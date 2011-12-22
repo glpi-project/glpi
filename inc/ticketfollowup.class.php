@@ -688,7 +688,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<tr><th colspan='4'>". $LANG['job'][51]."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".__('Comments')."&nbsp;:<br>(".$LANG['validation'][16].")</td>";
+         echo "<td colspan='2'>".__('Comments')."<br>".__('Optional when approved')."</td>";
          echo "<td class='center middle' colspan='2'>";
          echo "<textarea name='content' cols='70' rows='6'></textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";

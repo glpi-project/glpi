@@ -152,7 +152,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array('new'             => $LANG['job'][13],
                       'update'          => $LANG['mailing'][30],
                       'solved'          => $LANG['mailing'][123],
-                      'validation'      => $LANG['validation'][26],
+                      'validation'      => __('Approval request'),
                       'add_followup'    => $LANG['mailing'][10],
                       'update_followup' => $LANG['mailing'][134],
                       'delete_followup' => $LANG['mailing'][135],
@@ -565,7 +565,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
-                    'ticket.globalvalidation'      => $LANG['validation'][25]
+                    'ticket.globalvalidation'      => __('Global approval status'),
                   );
 
       foreach ($tags as $tag => $label) {
@@ -577,12 +577,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
      //Events specific for validation
      $tags = array('validation.author'            => $LANG['job'][4],
-                   'validation.status'            => $LANG['validation'][28],
-                   'validation.submissiondate'    => $LANG['validation'][3],
-                   'validation.commentsubmission' => $LANG['validation'][5],
-                   'validation.validationdate'    => $LANG['validation'][4],
-                   'validation.validator'         => $LANG['validation'][21],
-                   'validation.commentvalidation' => $LANG['validation'][6]);
+                   'validation.status'            => __('Status of the approval request'),
+                   'validation.submissiondate'    => __('Request date'),
+                   'validation.commentsubmission' => __('Request comments'),
+                   'validation.validationdate'    => __('Approval date'),
+                   'validation.validator'         => __('Approver'),
+                   'validation.commentvalidation' => __('Approval comments')
+                   );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -591,8 +592,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('validation')));
       }
       //Tags without lang for validation
-      $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title'     => $LANG['validation'][32]);
+      $tags = array('validation.submission.title' => __('An approval request has been submitted'),
+                    'validation.answer.title'     => __('An answer to an approval request was produced')
+                    );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -641,7 +643,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      //Foreach global tags
      $tags = array('followups'     => $LANG['mailing'][141],
                    'tasks'         => $LANG['mailing'][142],
-                   'validations'   => $LANG['validation'][8],
+                   'validations'   => _n('Approval','Approvals',2),
                    'linkedtickets' => $LANG['job'][55],
                    'problems'      => $LANG['Menu'][7],);
 
@@ -676,7 +678,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                 'events'  => array('alertnotclosed')));
 
       //Tags without lang
-      $tags = array('ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
+      $tags = array('ticket.urlvalidation'    => __('Approval request URL'),
                     'ticket.urlsatisfaction'  => $LANG['document'][33].' '.$LANG['satisfaction'][0],
                     'linkedticket.id'         => __("Linked ticket ID"),
                     'linkedticket.link'       => __("Linked ticket link"),

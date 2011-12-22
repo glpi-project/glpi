@@ -48,10 +48,7 @@ class TicketValidation  extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['validation'][8];
-      }
-      return $LANG['validation'][0];
+      return _n('Approval','Approvals',$nb);
    }
 
 
@@ -120,10 +117,10 @@ class TicketValidation  extends CommonDBChild {
             if (!Session::haveRight('create_validation','1')) {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
-            return self::createTabEntry($LANG['validation'][8],
+            return self::createTabEntry(_n('Approval','Approvals',2),
                                         countElementsInTable('glpi_ticketvalidations', $restrict));
          }
-         return $LANG['validation'][8];
+         return _n('Approval','Approvals',2);
       }
       return '';
    }
@@ -205,16 +202,17 @@ class TicketValidation  extends CommonDBChild {
             $user->getFromDB($this->fields["users_id_validate"]);
             $email = $user->getDefaultEmail();
             if (!empty($email)) {
-               Session::addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+               //TRANS: %s is the user name
+               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'),$user->getName()));
             } else {
-               Session::addMessageAfterRedirect($LANG['validation'][23], false, ERROR);
+               Session::addMessageAfterRedirect(__('The selected user has no valid email address. The request has been created, without email confirmation.'), false, ERROR);
             }
          }
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
-         $changes[2] = addslashes($LANG['validation'][13]." ".
-                                  getUserName($this->fields["users_id_validate"]));
+         //TRANS: %s is the username
+         $changes[2] = sprintf(__('Approval request send to %s'),getUserName($this->fields["users_id_validate"]));
          Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                       Log::HISTORY_LOG_SIMPLE_MESSAGE);
       }
@@ -230,7 +228,7 @@ class TicketValidation  extends CommonDBChild {
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if ($input["status"] == "rejected"
              && (!isset($input["comment_validation"]) || $input["comment_validation"] == '')) {
-            Session::addMessageAfterRedirect($LANG['validation'][29], false, ERROR);
+            Session::addMessageAfterRedirect(__('If approval is denied, specify a reason.'), false, ERROR);
             return false;
          }
          if ($input["status"] == "waiting") {
@@ -282,14 +280,14 @@ class TicketValidation  extends CommonDBChild {
 
          switch ($this->fields["status"]) {
             case 'accepted' :
-               $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".
-                                         $LANG['validation'][19];
+               //TRANS: %s is the username
+               $changes[2] = sprintf(__('Approval granted by %s'), getUserName($this->fields["users_id_validate"]));
                break;
 
             case 'rejected' :
             default :
-               $changes[2] = $LANG['validation'][31]." ".
-                             getUserName($this->fields["users_id_validate"]);
+               //TRANS: %s is the username
+               $changes[2] = sprintf(__('Update the approval request to %s'), getUserName($this->fields["users_id_validate"]));
                break;
 
          }
@@ -315,8 +313,9 @@ class TicketValidation  extends CommonDBChild {
       // Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($LANG['validation'][30]." ".
-                    getUserName($this->fields["users_id_validate"]));
+      //TRANS: %s is the username
+      $changes[2] = sprintf(__('Cancel the approval request to %s'), getUserName($this->fields["users_id_validate"]));
+
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
@@ -333,14 +332,14 @@ class TicketValidation  extends CommonDBChild {
    static function getAllStatusArray($withmetaforsearch=false, $global=false) {
       global $LANG;
 
-      $tab = array('waiting'  => $LANG['validation'][9],
-                   'rejected' => $LANG['validation'][10],
-                   'accepted' => $LANG['validation'][11]);
+      $tab = array('waiting'  => __('Waiting for approval'),
+                   'rejected' => __('Refused'),
+                   'accepted' => __('Granted'));
       if ($global) {
-         $tab['none'] = $LANG['validation'][12];
+         $tab['none'] = __('Not subject to approval');
 
          if ($withmetaforsearch) {
-            $tab['can'] = $LANG['validation'][11]." + ".$LANG['validation'][12];
+            $tab['can'] = __('Granted + Not subject to approval');
          }
       }
 
@@ -511,7 +510,7 @@ class TicketValidation  extends CommonDBChild {
    static function showFormMassiveAction() {
       global $LANG;
 
-      echo "&nbsp;".$LANG['validation'][21]."&nbsp;: ";
+      echo "&nbsp;".__('Approver')."&nbsp;: ";
       User::dropdown(array('name'   => 'users_id_validate',
                            'entity' => $_SESSION["glpiactive_entity"],
                            'right'  => 'validate_ticket'));
@@ -557,7 +556,7 @@ class TicketValidation  extends CommonDBChild {
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
             echo "<div class='center'><a href='javascript:viewAddValidation".$tID."$rand();'>";
-            echo $LANG['validation'][1]."</a></div><br>\n";
+            echo __('Send an approval request')."</a></div><br>\n";
          }
       }
 
@@ -572,17 +571,17 @@ class TicketValidation  extends CommonDBChild {
       $number = $DB->numrows($result);
 
       if ($number) {
-         $colonnes = array($LANG['validation'][2],
-                           $LANG['validation'][3],
-                           $LANG['validation'][18],
-                           $LANG['validation'][5],
-                           $LANG['validation'][4],
-                           $LANG['validation'][21],
-                           $LANG['validation'][6]);
+         $colonnes = array(__('State'),
+                           __('Request date'),
+                           __('Approval requester'),
+                           __('Request comments'),
+                           __('Approval date'),
+                           __('Approver'),
+                           __('Request comments'));
          $nb_colonnes = count($colonnes);
 
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='".$nb_colonnes."'>".$LANG['validation'][7]."</th></tr>";
+         echo "<tr><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket')."</th></tr>";
 
          echo "<tr>";
          foreach ($colonnes as $colonne) {
@@ -590,8 +589,11 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</tr>";
 
-         Session::initNavigateListItems('TicketValidation',
-                                        $LANG['validation'][26]." = ".$ticket->fields['name']);
+         Session::initNavigateListItems('TicketValidation', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1), $ticket->fields["name"]));
+
+
 
          while ($row = $DB->fetch_assoc($result)) {
             $canedit = $this->can($row["id"],'w');
@@ -675,14 +677,14 @@ class TicketValidation  extends CommonDBChild {
       $this->showFormHeader($options);
       if ($validation_admin) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][18]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Approval requester')."</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
          echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
          echo getUserName($this->fields["users_id"]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:&nbsp;</td>";
+         echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
          echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
@@ -699,10 +701,10 @@ class TicketValidation  extends CommonDBChild {
 
       } else {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][18]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Approval requester')."</td>";
          echo "<td>".getUserName($this->fields["users_id"])."</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:&nbsp;</td>";
+         echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -715,20 +717,20 @@ class TicketValidation  extends CommonDBChild {
 
          if ($validator) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
+            echo "<td>".__('Status of the approval request')."</td>";
             echo "<td>";
             self::dropdownStatus("status", array('value' => $this->fields["status"]));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16].")&nbsp;:&nbsp;</td>";
+            echo "<td>".__('Approval comments')."<br>".__('Optional when approved')."</td>";
             echo "<td><textarea cols='60' rows='3' name='comment_validation'>".
                         $this->fields["comment_validation"]."</textarea>";
             echo "</td></tr>";
 
          } else {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
+            echo "<td>".__('Status of the approval request')."</td>";
             echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -747,44 +749,44 @@ class TicketValidation  extends CommonDBChild {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['validation'][0];
+      $tab['common'] = __('Approval');
 
       $tab[1]['table']        = $this->getTable();
       $tab[1]['field']        = 'comment_submission';
-      $tab[1]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][5];
+      $tab[1]['name']         = __('Request comments');
       $tab[1]['datatype']     = 'text';
       $tab[1]['forcegroupby'] = true;
 
       $tab[2]['table']    = $this->getTable();
       $tab[2]['field']    = 'comment_validation';
-      $tab[2]['name']     = $LANG['validation'][0]." - ".$LANG['validation'][6];
+      $tab[2]['name']     = __('Approval comments');
       $tab[2]['datatype'] = 'text';
 
       $tab[3]['table']      = $this->getTable();
       $tab[3]['field']      = 'status';
-      $tab[3]['name']       = $LANG['validation'][0]." - ".$LANG['joblist'][0];
+      $tab[3]['name']       = __('Approval status');
       $tab[3]['searchtype'] = 'equals';
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'submission_date';
-      $tab[4]['name']     = $LANG['validation'][0]." - ".$LANG['validation'][3];
+      $tab[4]['name']     = __('Request date');
       $tab[4]['datatype'] = 'datetime';
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'validation_date';
-      $tab[5]['name']     = $LANG['validation'][0]." - ".$LANG['validation'][4];
+      $tab[5]['name']     = __('Approval date');
       $tab[5]['datatype'] = 'datetime';
 
       $tab[6]['table']         = 'glpi_users';
       $tab[6]['field']         = 'name';
-      $tab[6]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
+      $tab[6]['name']          = __('Approval requester');
       $tab[6]['datatype']      = 'itemlink';
       $tab[6]['itemlink_type'] = 'User';
 
       $tab[7]['table']         = 'glpi_users';
       $tab[7]['field']         = 'name';
       $tab[7]['linkfield']     = 'users_id_validate';
-      $tab[7]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][21];
+      $tab[7]['name']          = __('Approver');
       $tab[7]['datatype']      = 'itemlink';
       $tab[7]['itemlink_type'] = 'User';
 

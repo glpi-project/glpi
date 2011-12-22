@@ -361,7 +361,7 @@ class RuleTicket extends Rule {
       $actions['slas_id']['name']  = $LANG['sla'][1];
       $actions['slas_id']['type']  = 'dropdown';
 
-      $actions['users_id_validate']['name']          = $LANG['validation'][1];
+      $actions['users_id_validate']['name']          = __('Send an approval request');
       $actions['users_id_validate']['type']          = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions'] = array('add_validation');
 

@@ -385,10 +385,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       if ($event=='validation') {
-         $this->addTarget(Notification::VALIDATION_APPROVER,
-                          $LANG['validation'][0].' - '.$LANG['validation'][21]);
          $this->addTarget(Notification::VALIDATION_REQUESTER,
-                          $LANG['validation'][0].' - '.$LANG['validation'][18]);
+                          __('Approval requester'));
+         $this->addTarget(Notification::VALIDATION_APPROVER,
+                          __('Approver'));
       }
 
       if ($event=='update_task' || $event=='add_task' || $event=='delete_task') {
@@ -530,8 +530,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       if ($event == 'validation' && isset($options['validation_status'])) {
          $this->datas["##$objettype.action##"]
-                      = $LANG['validation'][0].' - '.
-                        TicketValidation::getStatus($options['validation_status']);
+                     //TRANS: %s id the state of the approval
+                      = sprintf(__('Approval - %s'),TicketValidation::getStatus($options['validation_status']));
       } else {
          $this->datas["##$objettype.action##"] = $events[$event];
       }

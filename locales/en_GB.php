@@ -2325,33 +2325,36 @@ $LANG['users'][23]="Users categories";
 $LANG['users'][24]="Add to delegatees";
 $LANG['users'][25]="Delete from delegatees";
 
+/// TODO After is ok for migration to gettext
+
+
 $LANG['validation'][0]="Approval";
-$LANG['validation'][1]="Send a Approval request";
+$LANG['validation'][1]="Send an approval request";
 $LANG['validation'][2]="State";
 $LANG['validation'][3]="Request date";
 $LANG['validation'][4]="Approval date";
-$LANG['validation'][5]="Request comment";
-$LANG['validation'][6]="Approval comment";
-$LANG['validation'][7]="Approval(s) for the ticket";
-$LANG['validation'][8]="Validations";
+$LANG['validation'][5]="Request comments";
+$LANG['validation'][6]="Approval comments";
+$LANG['validation'][7]="Approvals for the ticket";
+$LANG['validation'][8]="Approvals";
 $LANG['validation'][9]="Waiting for approval";
 $LANG['validation'][10]="Refused";
 $LANG['validation'][11]="Granted";
 $LANG['validation'][12]="Not subject to approval";
 $LANG['validation'][13]="Approval request sent to";
-$LANG['validation'][15]="Ticket waiting for your Approval";
+$LANG['validation'][15]="Ticket waiting for your approval";
 $LANG['validation'][16]="Optional when approved";
 $LANG['validation'][18]="Approval requester";
 $LANG['validation'][19]="Approval granted";
 $LANG['validation'][21]="Approver";
 $LANG['validation'][23]="The selected user has no valid email address. The request has been created, without email confirmation.";
-$LANG['validation'][25]="Global validation status";
+$LANG['validation'][25]="Global approval status";
 $LANG['validation'][26]="Approval request";
 $LANG['validation'][27]="An approval request has been submitted";
-$LANG['validation'][28]="Status of the Approval request";
+$LANG['validation'][28]="Status of the approval request";
 $LANG['validation'][29]="If approval is denied, specify a reason";
 $LANG['validation'][30]="Cancel the approval request to";
-$LANG['validation'][31]="Update the Approval request to";
-$LANG['validation'][32]="An answer to a Approval request was produced";
+$LANG['validation'][31]="Update the approval request to";
+$LANG['validation'][32]="An answer to an approval request was produced";
 $LANG['validation'][33]="Tickets awaiting approval";
 ?>

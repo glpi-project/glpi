@@ -1694,16 +1694,16 @@ class Ticket extends CommonITILObject {
       $tab[32]['massiveaction'] = false;
 
 
-      $tab['validation'] = $LANG['validation'][0];
+      $tab['validation'] = __('Approval');
 
       $tab[52]['table']      = $this->getTable();
       $tab[52]['field']      = 'global_validation';
-      $tab[52]['name']       = $LANG['validation'][0];
+      $tab[52]['name']       = __('Approval');
       $tab[52]['searchtype'] = 'equals';
 
       $tab[53]['table']         = 'glpi_ticketvalidations';
       $tab[53]['field']         = 'comment_submission';
-      $tab[53]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][5];
+      $tab[53]['name']          = __('Request comments');
       $tab[53]['datatype']      = 'text';
       $tab[53]['forcegroupby']  = true;
       $tab[53]['massiveaction'] = false;
@@ -1711,7 +1711,7 @@ class Ticket extends CommonITILObject {
 
       $tab[54]['table']         = 'glpi_ticketvalidations';
       $tab[54]['field']         = 'comment_validation';
-      $tab[54]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][6];
+      $tab[54]['name']          = __('Approval comments');
       $tab[54]['datatype']      = 'text';
       $tab[54]['forcegroupby']  = true;
       $tab[54]['massiveaction'] = false;
@@ -1719,7 +1719,7 @@ class Ticket extends CommonITILObject {
 
       $tab[55]['table']         = 'glpi_ticketvalidations';
       $tab[55]['field']         = 'status';
-      $tab[55]['name']          = $LANG['validation'][0]." - ".$LANG['joblist'][0];
+      $tab[55]['name']          = __('Approval status');
       $tab[55]['searchtype']    = 'equals';
       $tab[55]['forcegroupby']  = true;
       $tab[55]['massiveaction'] = false;
@@ -1727,7 +1727,7 @@ class Ticket extends CommonITILObject {
 
       $tab[56]['table']         = 'glpi_ticketvalidations';
       $tab[56]['field']         = 'submission_date';
-      $tab[56]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][3];
+      $tab[56]['name']          = __('Request date');
       $tab[56]['datatype']      = 'datetime';
       $tab[56]['forcegroupby']  = true;
       $tab[56]['massiveaction'] = false;
@@ -1735,7 +1735,7 @@ class Ticket extends CommonITILObject {
 
       $tab[57]['table']         = 'glpi_ticketvalidations';
       $tab[57]['field']         = 'validation_date';
-      $tab[57]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][4];
+      $tab[57]['name']          = __('Approval date');
       $tab[57]['datatype']      = 'datetime';
       $tab[57]['forcegroupby']  = true;
       $tab[57]['massiveaction'] = false;
@@ -1743,7 +1743,7 @@ class Ticket extends CommonITILObject {
 
       $tab[58]['table']         = 'glpi_users';
       $tab[58]['field']         = 'name';
-      $tab[58]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
+      $tab[58]['name']          = __('Approval requester');
       $tab[58]['datatype']      = 'itemlink';
       $tab[58]['itemlink_type'] = 'User';
       $tab[58]['forcegroupby']  = true;
@@ -1755,7 +1755,7 @@ class Ticket extends CommonITILObject {
       $tab[59]['table']         = 'glpi_users';
       $tab[59]['field']         = 'name';
       $tab[59]['linkfield']     = 'users_id_validate';
-      $tab[59]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][21];
+      $tab[59]['name']          = __('Approver');
       $tab[59]['datatype']      = 'itemlink';
       $tab[59]['itemlink_type'] = 'User';
       $tab[59]['forcegroupby']  = true;
@@ -2724,8 +2724,8 @@ class Ticket extends CommonITILObject {
                                                                                            '&amp;');
 
          if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) >0) {
-            echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
-                   alt=\"".$LANG['validation'][15]."\">".$LANG['validation'][33]."</a><br><br>";
+            echo "<a href='$url_validate' title=\"".__s('Ticket waiting for your approval')."\"
+                   alt=\"".__s('Ticket waiting for your approval')."\">".__s('Tickets awaiting approval')."</a><br><br>";
          }
       }
 
@@ -3568,9 +3568,9 @@ class Ticket extends CommonITILObject {
       // Display validation state
       echo "<th>";
       if (!$ID) {
-         echo $LANG['validation'][26]."&nbsp;:&nbsp;";
+         _e('Approval request');
       } else {
-         echo $LANG['validation'][0]."&nbsp;:&nbsp;";
+         _e('Approval');
       }
       echo "</th>";
       echo "<td>";
