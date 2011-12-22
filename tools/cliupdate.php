@@ -179,7 +179,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
    $query = "UPDATE `$config_table`
              SET `version` = '".GLPI_VERSION."',
                  `founded_new_version` = ''";
-   $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s')),
+                              'update version number', $DB->error());
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
