@@ -1286,11 +1286,11 @@ class Profile extends CommonDBTM {
       echo "<td>".__('General setup')."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("config", $this->fields["config"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['setup'][250]."&nbsp;:</td><td>";
+      echo "<td>".__('Search result default display')."</td><td>";
       self::dropdownNoneReadWrite("search_config_global", $this->fields["search_config_global"],
                                   1, 0, 1);
       echo "</td>";
-      echo "<td class='tab_bg_2'>".$LANG['setup'][250]." (".$LANG['common'][34].")&nbsp;:</td>";
+      echo "<td class='tab_bg_2'>".__('Search result user display')."</td>";
       echo "<td class='tab_bg_2'>";
       self::dropdownNoneReadWrite("search_config", $this->fields["search_config"], 1, 0, 1);
       echo "</td></tr>\n";
@@ -1550,12 +1550,12 @@ class Profile extends CommonDBTM {
 
       $tab[52]['table']    = $this->getTable();
       $tab[52]['field']    = 'search_config';
-      $tab[52]['name']     = $LANG['setup'][250]."(".$LANG['common'][34].")";
+      $tab[52]['name']     = __('Search result user display');
       $tab[52]['datatype'] = 'right';
 
       $tab[53]['table']    = $this->getTable();
       $tab[53]['field']    = 'search_config_global';
-      $tab[53]['name']     = $LANG['setup'][250];
+      $tab[53]['name']     = __('Search result default display');
       $tab[53]['datatype'] = 'right';
 
       $tab[107]['table']    = $this->getTable();

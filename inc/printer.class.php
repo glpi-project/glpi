@@ -379,7 +379,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][34]."&nbsp;:</td>\n";
+      echo "<td>".__('User')."</td>\n";
       echo "<td>";
       User::dropdown(array('value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
@@ -561,7 +561,7 @@ class Printer  extends CommonDBTM {
 
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
-      $tab[70]['name']  = $LANG['common'][34];
+      $tab[70]['name']  = __('User');
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'completename';

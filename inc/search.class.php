@@ -4635,7 +4635,7 @@ class Search {
 
             $search['States'][70]['table']     = 'glpi_users';
             $search['States'][70]['field']     = 'name';
-            $search['States'][70]['name']      = $LANG['common'][34];
+            $search['States'][70]['name']      = __('User');
 
             $search['States'][71]['table']     = 'glpi_groups';
             $search['States'][71]['field']     = 'completename';

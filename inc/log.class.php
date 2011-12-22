@@ -278,7 +278,7 @@ class Log extends CommonDBTM {
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
-      echo "<th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th>";
+      echo "<th>".__('User')."</th><th>".$LANG['event'][18]."</th>";
       echo "<th>".$LANG['event'][19]."</th></tr>";
 
       foreach (self::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {

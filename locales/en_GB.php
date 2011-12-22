@@ -268,10 +268,10 @@ $LANG['common'][30]="New item";
 $LANG['common'][31]="Blank Template";
 $LANG['common'][32]="Characteristics";
 $LANG['common'][33]="Total";
+$LANG['common'][34]="User";
 
 /// TODO Before is ok for migration to gettext
 
-$LANG['common'][34]="User";
 $LANG['common'][35]="Group";
 $LANG['common'][36]="Category (class)";
 $LANG['common'][37]="Writer";
@@ -2016,7 +2016,7 @@ $LANG['setup'][246]="Alarms on contracts";
 $LANG['setup'][247]="Alarms on financial and administrative informations";
 $LANG['setup'][248]="Group in charge of the ticket";
 $LANG['setup'][249]="Requester group";
-$LANG['setup'][250]="Display search results by default";
+$LANG['setup'][250]="Search result default display"; // fix during gettext
 $LANG['setup'][251]="Watch group";
 $LANG['setup'][252]="Select default items to show";
 $LANG['setup'][253]="Filter to search in groups";

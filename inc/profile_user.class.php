@@ -234,7 +234,7 @@ class Profile_User extends CommonDBTM {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][605]."</tr>";
-         echo "<tr><td class='tab_bg_2 center'>".$LANG['common'][34]."&nbsp;:&nbsp;";
+         echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right' => 'all'));
          echo "</td><td class='tab_bg_2 center'>".$LANG['profiles'][22]."&nbsp;:&nbsp;";
@@ -678,7 +678,7 @@ class Profile_User extends CommonDBTM {
 
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';
-      $tab[5]['name']  = $LANG['common'][34];
+      $tab[5]['name']  = __('User');
 
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';

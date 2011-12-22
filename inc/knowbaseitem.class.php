@@ -1191,7 +1191,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[70]['table']         = 'glpi_users';
       $tab[70]['field']         = 'name';
-      $tab[70]['name']          = $LANG['common'][34];
+      $tab[70]['name']          = __('User');
       $tab[70]['massiveaction'] = false;
 
       $tab[80]['table']         = 'glpi_entities';
@@ -1275,7 +1275,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['common'][34]."</td>";
+               echo "<td>".__('User')."</td>";
                echo "<td>".getUserName($data['users_id'])."</td>";
                echo "</tr>";
             }

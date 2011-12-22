@@ -144,7 +144,7 @@ class RuleMailCollector extends Rule {
 
       $criterias['GROUPS']['table']     = 'glpi_groups';
       $criterias['GROUPS']['field']     = 'completename';
-      $criterias['GROUPS']['name']      = $LANG['common'][34].' : '.$LANG['common'][35];
+      $criterias['GROUPS']['name']      = __('User : Group');
       $criterias['GROUPS']['linkfield'] = '';
       $criterias['GROUPS']['type']      = 'dropdown';
       $criterias['GROUPS']['virtual']   = true;
