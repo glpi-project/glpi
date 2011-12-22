@@ -155,7 +155,7 @@ abstract class CommonITILActor extends CommonDBRelation {
          $emails        = $user->getAllEmails();
       }
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][34]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
       echo "<td>".$user->getName()."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."&nbsp;:</td>";

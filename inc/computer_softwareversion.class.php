@@ -365,7 +365,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][35]."</a></th>";
             echo "<th>".(strstr($sort,"username")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=username,compname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][34]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('User')."</a></th>";
             echo "<th>".($sort=="`lname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=lname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][11]."</a></th>";

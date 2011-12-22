@@ -678,7 +678,7 @@ class Dropdown {
                         $LANG['Menu'][4]
                         => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
 
-                        $LANG['common'][34]
+                        __('User')
                         => array('UserTitle'     => UserTitle::getTypeName(2),
                                  'UserCategory'  => UserCategory::getTypeName(2)),
 

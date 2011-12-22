@@ -42,8 +42,8 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    function getNotificationTargets($entity) {
-      global $LANG;
-      $this->addTarget(Notification::USER,$LANG['common'][34]);
+
+      $this->addTarget(Notification::USER, __('User'));
    }
 
 

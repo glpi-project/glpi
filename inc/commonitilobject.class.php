@@ -1734,7 +1734,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[66]['table']         = 'glpi_users';
       $tab[66]['field']         = 'name';
       $tab[66]['datatype']      = 'dropdown';
-      $tab[66]['name']          = $LANG['common'][104]." - ".$LANG['common'][34];
+      $tab[66]['name']          = __('Watcher user');
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
       $tab[66]['joinparams']    = array('beforejoin'
@@ -1830,18 +1830,18 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($user_group) {
          case 'user' :
-            $icontitle = $LANG['common'][34].' - '.$type;
+            $icontitle = __s('User').' - '.$type; // should never be used
             switch ($type) {
                case self::REQUESTER :
-                  $icontitle = $LANG['common'][34].' - '.$LANG['job'][4];
+                  $icontitle = __s('Requester user');
                   break;
 
                case self::OBSERVER :
-                  $icontitle = $LANG['common'][34].' - '.$LANG['common'][104];
+                  $icontitle = __s('Watcher user');
                   break;
 
                case self::ASSIGN :
-                  $icontitle = $LANG['job'][6];
+                  $icontitle = __s('Technician');
                   break;
             }
             return "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'
@@ -1972,7 +1972,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
-                     'user'  => $LANG['common'][34],
+                     'user'  => __('User'),
                      'group' => $LANG['common'][35]);
 
       if ($withsupplier && $type == self::ASSIGN) {
