@@ -702,7 +702,7 @@ class Auth {
             return $out;
 
          case self::EXTERNAL :
-            $out = $LANG['common'][62];
+            $out = __('Other');
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {

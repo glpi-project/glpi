@@ -287,9 +287,6 @@ $LANG['common'][49]="None";
 $LANG['common'][50]="Confirm the final deletion ?";
 $LANG['common'][51]="Complete Name";
 $LANG['common'][52]="Server";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][53]="List";
 $LANG['common'][54]="Item not found";
 $LANG['common'][55]="Are you sure you want to delete this element?";
@@ -300,6 +297,9 @@ $LANG['common'][59]="Global";
 $LANG['common'][60]="Active";
 $LANG['common'][61]="Unknown error";
 $LANG['common'][62]="Other";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][63]="Error(s)";
 $LANG['common'][64]="Manager";
 $LANG['common'][65]="Interface";

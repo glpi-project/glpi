@@ -220,7 +220,7 @@ class MailCollector  extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Active')."</td><td>";
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
@@ -296,7 +296,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[2]['table']    = $this->getTable();
       $tab[2]['field']    = 'is_active';
-      $tab[2]['name']     = $LANG['common'][60];
+      $tab[2]['name']     = __('Active');
       $tab[2]['datatype'] = 'bool';
 
       $tab[3]['table']         = $this->getTable();
@@ -1379,7 +1379,7 @@ class MailCollector  extends CommonDBTM {
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
          $msg .= " ".$LANG['login'][7].':'.
                  (empty($mc['passwd'])?__('No'):__('Yes'));
-         $msg .= " ".$LANG['common'][60].':'.Dropdown::getYesNo($mc['is_active']);
+         $msg .= " ".__('Active').':'.Dropdown::getYesNo($mc['is_active']);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
    }

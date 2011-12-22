@@ -86,7 +86,7 @@ class Change_Ticket extends CommonDBRelation{
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='2'>".__('Title')."</th>";
       if ($change->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
          $colspan++;
@@ -104,7 +104,7 @@ class Change_Ticket extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Ticket', 
+         Session::initNavigateListItems('Ticket',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$change->getTypeName(1), $change->fields["name"]));
 
@@ -175,7 +175,7 @@ class Change_Ticket extends CommonDBRelation{
       _e('Create a change from this ticket');
       echo "</a></th></tr>";
 
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='2'>".__('Title')."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
@@ -189,10 +189,10 @@ class Change_Ticket extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Change', 
+         Session::initNavigateListItems('Change',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$ticket->getTypeName(1), $ticket->fields["name"]));
-      
+
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);

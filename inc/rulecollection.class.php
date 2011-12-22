@@ -392,7 +392,7 @@ class RuleCollection extends CommonDBTM {
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
       echo "<tr><th colspan='2'>".__('Name')."</th>";
       echo "<th>".$LANG['joblist'][6]."</th>";
-      echo "<th>".$LANG['common'][60]."</th>";
+      echo "<th>".__('Active')."</th>";
 
       if ($display_entities) {
          echo "<th>".$LANG['entity'][0]."</th>\n";
@@ -859,7 +859,7 @@ class RuleCollection extends CommonDBTM {
                case 1 :
                   echo Dropdown::getYesNo($rule_result["result"]);
                   break;
-               
+
                case 2 :
                   echo $LANG['rulesengine'][107];
                   break;

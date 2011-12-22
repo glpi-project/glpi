@@ -1858,7 +1858,7 @@ class Profile extends CommonDBTM {
 //       $tab[117]['name']     = $LANG['profiles'][56];
 //       $tab[117]['datatype'] = 'bool';
 
-      $tab['other'] = $LANG['common'][62];
+      $tab['other'] = __('Other');
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'password_update';

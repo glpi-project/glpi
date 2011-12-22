@@ -399,7 +399,7 @@ class Change extends CommonITILObject {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][57];
+      $tab[1]['name']          = __('Title');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['searchtype']    = 'contains';
@@ -934,7 +934,7 @@ class Change extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
+      echo "<th width='10%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";

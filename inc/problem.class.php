@@ -405,7 +405,7 @@ class Problem extends CommonITILObject {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][57];
+      $tab[1]['name']          = __('Title');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['searchtype']    = 'contains';
@@ -922,7 +922,7 @@ class Problem extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
+      echo "<th width='10%'>".__('Title')."</th>";
       echo "<td colspan='5'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
@@ -1096,8 +1096,8 @@ class Problem extends CommonITILObject {
       $items[$LANG['job'][4]]       = "glpi_problems.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_problems.users_id_assign";
 //       $items[$LANG['document'][14]] = "glpi_problems.itemtype, glpi_tickets.items_id";
-      $items[__('Category')]   = "glpi_itilcategories.completename";
-      $items[$LANG['common'][57]]   = "glpi_problems.name";
+      $items[__('Category')]        = "glpi_itilcategories.completename";
+      $items[__('Title')]           = "glpi_problems.name";
 
       foreach ($items as $key => $val) {
          $issort = 0;

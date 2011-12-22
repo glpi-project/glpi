@@ -192,7 +192,7 @@ class RuleTicket extends Rule {
       $criterias = array();
       $criterias['name']['table']     = 'glpi_tickets';
       $criterias['name']['field']     = 'name';
-      $criterias['name']['name']      = $LANG['common'][57];
+      $criterias['name']['name']      = __('Title');
       $criterias['name']['linkfield'] = 'name';
 
       $criterias['content']['table']     = 'glpi_tickets';

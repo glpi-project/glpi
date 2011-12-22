@@ -184,7 +184,7 @@ class Rule extends CommonDBTM {
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'is_active';
-      $tab[8]['name']      = $LANG['common'][60];
+      $tab[8]['name']      = __('Active');
       $tab[8]['datatype']  = 'bool';
 
       $tab[16]['table']     = $this->getTable();
@@ -246,7 +246,7 @@ class Rule extends CommonDBTM {
       echo "<td>";
       $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
       echo "</td>";
-      echo "<td>".$LANG['common'][60]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Active')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo"</td></tr>\n";
@@ -1830,7 +1830,7 @@ class Rule extends CommonDBTM {
          }
          echo "<th>" . $this->getTitle() . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th>";
-         echo "<th>" . $LANG['common'][60] . "</th>";
+         echo "<th>" . __('Active') . "</th>";
          echo "</tr>\n";
          Session::initNavigateListItems(get_class($this), $item->getTypeName()."=".$item->getName());
 

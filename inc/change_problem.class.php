@@ -107,7 +107,7 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Change', 
+         Session::initNavigateListItems('Change',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
 
@@ -174,7 +174,7 @@ class Change_Problem extends CommonDBRelation{
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][7]."</th></tr>";
-      echo "<tr><th colspan='2'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='2'>".__('Title')."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
@@ -188,7 +188,7 @@ class Change_Problem extends CommonDBRelation{
 
       $used = array();
       if ($DB->numrows($result) >0) {
-         Session::initNavigateListItems('Problem', 
+         Session::initNavigateListItems('Problem',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$change->getTypeName(1), $change->fields["name"]));
 

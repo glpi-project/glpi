@@ -528,7 +528,7 @@ class Reminder extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
       echo "<td>";
       if ($canedit) {
          Html::autocompletionTextField($this, "name",

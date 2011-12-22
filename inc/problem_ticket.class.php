@@ -104,10 +104,10 @@ class Problem_Ticket extends CommonDBRelation{
 
       if ($DB->numrows($result) >0) {
          Ticket::commonListHeader(Search::HTML_OUTPUT);
-         Session::initNavigateListItems('Ticket', 
+         Session::initNavigateListItems('Ticket',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
-         
+
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
@@ -163,7 +163,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".$LANG['problem'][7].
            "</a>";
       echo "</th></tr>";
-      echo "<tr><th colspan='9'>".$LANG['common'][57]."</th>";
+      echo "<tr><th colspan='9'>".__('Title')."</th>";
       echo "</tr>";
 
       $query = "SELECT DISTINCT `glpi_problems_tickets`.`id` AS linkID,
@@ -179,7 +179,7 @@ class Problem_Ticket extends CommonDBRelation{
 
       if ($DB->numrows($result) >0) {
          Problem::commonListHeader(Search::HTML_OUTPUT);
-         Session::initNavigateListItems('Problem', 
+         Session::initNavigateListItems('Problem',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$ticket->getTypeName(1), $ticket->fields["name"]));
 

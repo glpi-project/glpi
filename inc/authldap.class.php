@@ -228,7 +228,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td>";
          Dropdown::showYesNo('is_default',$this->fields['is_default']);
          echo "</td>";
-         echo "<td>" . $LANG['common'][60] . "&nbsp;:</td>";
+         echo "<td>" . __('Active'). "</td>";
          echo "<td>";
          Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
@@ -751,7 +751,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[30]['table']    = $this->getTable();
       $tab[30]['field']    = 'is_active';
-      $tab[30]['name']     = $LANG['common'][60];
+      $tab[30]['name']     = __('Active');
       $tab[30]['datatype'] = 'bool';
 
       return $tab;
