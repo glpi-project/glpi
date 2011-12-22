@@ -124,7 +124,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
       echo "<th>&nbsp;".$LANG['entity'][0]."&nbsp;</th>";
-      echo "<th>&nbsp;".$LANG['software'][9]."&nbsp;-&nbsp;".$LANG['tracking'][29]."</th>";
+      echo "<th>".__('Number of affected computers')."</th>";
       echo "</tr>\n";
 
       $tot = 0;

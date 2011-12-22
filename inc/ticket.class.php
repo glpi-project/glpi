@@ -542,22 +542,6 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
-//       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
-//          $title = trim($input['name']);
-//          if (empty($title)) {
-//             Session::addMessageAfterRedirect($LANG['tracking'][6], false, ERROR);
-//             unset($input['name']);
-//          }
-//       }
-//
-//       if ($CFG_GLPI["is_ticket_content_mandatory"] && isset($input['content'])) {
-//          $content = trim($input['content']);
-//          if (empty($content)) {
-//             Session::addMessageAfterRedirect($LANG['tracking'][7], false, ERROR);
-//             unset($input['content']);
-//          }
-//       }
-
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
 
@@ -749,7 +733,7 @@ class Ticket extends CommonITILObject {
                   $input['_forcenotif'] = true;
                }
             } else {
-               Session::addMessageAfterRedirect($LANG['tracking'][11], false, ERROR);
+               Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
             }
          }
       }
@@ -983,37 +967,6 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-//          $mandatory_ok = true;
-//
-//          if (!isset($input["urgency"])) {
-//             Session::addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
-//             $mandatory_ok = false;
-//          }
-//
-//          if ($CFG_GLPI["is_ticket_content_mandatory"]
-//              && (!isset($input['content']) || empty($input['content']))) {
-//
-//             Session::addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
-//             $mandatory_ok = false;
-//          }
-//
-//          if ($CFG_GLPI["is_ticket_title_mandatory"]
-//              && (!isset($input['name']) || empty($input['name']))) {
-//
-//             Session::addMessageAfterRedirect($LANG['help'][40], false, ERROR);
-//             $mandatory_ok = false;
-//          }
-//
-//          if ($CFG_GLPI["is_ticket_category_mandatory"]
-//              && (!isset($input['itilcategories_id']) || empty($input['itilcategories_id']))) {
-//
-//             Session::addMessageAfterRedirect($LANG['help'][41], false, ERROR);
-//             $mandatory_ok = false;
-//          }
-//
-//          if (!$mandatory_ok) {
-//             return false;
-//          }
       }
 
       unset($_SESSION["helpdeskSaved"]);
@@ -1244,7 +1197,7 @@ class Ticket extends CommonITILObject {
             if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
                $ticket_ticket->add($this->input['_link']);
             } else {
-               Session::addMessageAfterRedirect($LANG['tracking'][11], false, ERROR);
+               Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
             }
          }
       }
@@ -1815,7 +1768,7 @@ class Ticket extends CommonITILObject {
 
       $tab[27]['table']         = 'glpi_ticketfollowups';
       $tab[27]['field']         = 'count';
-      $tab[27]['name']          = $LANG['job'][9]." - ".$LANG['tracking'][29];
+      $tab[27]['name']          = "Number of follow-ups";
       $tab[27]['forcegroupby']  = true;
       $tab[27]['usehaving']     = true;
       $tab[27]['datatype']      = 'number';
@@ -1894,7 +1847,7 @@ class Ticket extends CommonITILObject {
 
          $tab[28]['table']         = 'glpi_tickettasks';
          $tab[28]['field']         = 'count';
-         $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
+         $tab[28]['name']          = __('Number of tasks');
          $tab[28]['forcegroupby']  = true;
          $tab[28]['usehaving']     = true;
          $tab[28]['datatype']      = 'number';
@@ -2300,7 +2253,7 @@ class Ticket extends CommonITILObject {
             }
          }
          if (!empty($my_devices)) {
-            $my_devices="<optgroup label=\"".$LANG['tracking'][1]."\">".$my_devices."</optgroup>";
+            $my_devices="<optgroup label=\"".__s('My devices')."\">".$my_devices."</optgroup>";
          }
 
          // My group items
@@ -2535,7 +2488,7 @@ class Ticket extends CommonITILObject {
             // Display a message if view my hardware
             if ($users_id
                 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_MY_HARDWARE)) {
-               echo $LANG['tracking'][2]."&nbsp;: ";
+               echo __('Or complete search')."&nbsp;";
             }
 
             $types = parent::getAllTypesForHelpdesk();
@@ -4357,24 +4310,24 @@ class Ticket extends CommonITILObject {
                 "\">".$LANG['title'][10]."</a></th></tr>";
       }
       echo "</th></tr>";
-      echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
+      echo "<tr><th>".$LANG['title'][28]."</th><th>".__('Number')."</th></tr>";
 
       $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][30]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".__('New')."</a></td>";
       echo "<td>".$status["new"]."</td></tr>";
 
       $options['contains'][0]    = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][31]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".__('Processing (assigned)')."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
 
       $options['contains'][0]    = 'plan';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".$LANG['tracking'][32]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".__('Processing (planned)')."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';

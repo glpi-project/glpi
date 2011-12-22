@@ -212,7 +212,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['tracking'][29]."&nbsp;:</td>";
+      echo "<td>".__('Number')."</td>";
       echo "<td>";
       Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
                             array(-1 => $LANG['software'][4]));
@@ -278,7 +278,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'number';
-      $tab[4]['name']     = $LANG['tracking'][29];
+      $tab[4]['name']     = __('Number');
       $tab[4]['datatype'] = 'number';
 
       $tab[5]['table'] = 'glpi_softwarelicensetypes';
@@ -584,7 +584,7 @@ class SoftwareLicense extends CommonDBTM {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`number`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=number&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29].
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Number').
                  "</a></th>";
             echo "<th>".$LANG['software'][9]."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
