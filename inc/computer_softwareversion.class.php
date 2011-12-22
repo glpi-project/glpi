@@ -872,11 +872,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
 
-      // TODO review $licdata not defined ($data ?)
       $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
-                  $licdata['name']."</td></tr><tr><td>".__('Serial number').
-                  "</td><td>".$licdata['serial']."</td></tr><tr><td>".
-                  __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
+                  $data['name']."</td></tr><tr><td>".__('Serial number').
+                  "</td><td>".$data['serial']."</td></tr><tr><td>".
+                  __('Comments').'</td><td>'.$data['comment'].'</td></tr></table>';
 
       Html::showToolTip($comment, array('link' => $link));
       echo "</td></tr>\n";
