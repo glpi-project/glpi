@@ -3006,7 +3006,7 @@ class Transfer extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 top' colspan='4'>";
          echo "<div class='center'>";
          Dropdown::show('Entity', array('name' => 'to_entity'));
-         echo "&nbsp;<input type='submit' name='transfer' value=\"".__s('Forward')."\"
+         echo "&nbsp;<input type='submit' name='transfer' value=\"".__s('Execute')."\"
                       class='submit'></div>";
          echo "</td></tr>";
       }
@@ -3052,14 +3052,14 @@ class Transfer extends CommonDBTM {
       echo "<td>"._n('Network port','Network ports',2)."</td><td>";
       $options = array(0 => __('Delete'),
                        1 => __('Disconnect') ,
-                       2 => __('Forward') );
+                       2 => __('Keep') );
       $params['value'] = $this->fields['keep_networklink'];
       Dropdown::showFromArray('keep_networklink',$options,$params);
       echo "</td>";
       echo "<td>"._n('Ticket','Tickets',2)."</td><td>";
       $options = array(0 => __('Delete'),
                        1 => __('Disconnect') ,
-                       2 => __('Forward') );
+                       2 => __('Keep') );
       $params['value'] = $this->fields['keep_ticket'];
       Dropdown::showFromArray('keep_ticket',$options,$params);
       echo "</td></tr>";
