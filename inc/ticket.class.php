@@ -3717,7 +3717,7 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').$LANG['common'][57]."&nbsp;: ".
+      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').__('Title').
              $tt->getMandatoryMark('name'). $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='90%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
@@ -4471,7 +4471,7 @@ class Ticket extends CommonITILObject {
       $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
       $items[$LANG['document'][14]] = "glpi_tickets.itemtype, glpi_tickets.items_id";
       $items[__('Category')]        = "glpi_itilcategories.completename";
-      $items[$LANG['common'][57]]   = "glpi_tickets.name";
+      $items[__('Title')]           = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
          $issort = 0;

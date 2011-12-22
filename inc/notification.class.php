@@ -142,7 +142,7 @@ class Notification extends CommonDBTM {
       echo "<td class='center middle' rowspan='6'><textarea cols='45' rows='9' name='comment' >"
             .$this->fields["comment"]."</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][60] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>";
@@ -227,7 +227,7 @@ class Notification extends CommonDBTM {
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'is_active';
-      $tab[6]['name']      = $LANG['common'][60];
+      $tab[6]['name']      = __('Active');
       $tab[6]['datatype']  = 'bool';
 
       $tab[16]['table']     = $this->getTable();

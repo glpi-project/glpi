@@ -346,7 +346,7 @@ class RuleRight extends Rule {
       $actions['is_recursive']['type']  = 'yesno';
       $actions['is_recursive']['table'] = '';
 
-      $actions['is_active']['name']  = $LANG['common'][60];
+      $actions['is_active']['name']  = __('Active');
       $actions['is_active']['type']  = 'yesno';
       $actions['is_active']['table'] = '';
 

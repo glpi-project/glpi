@@ -194,7 +194,7 @@ class OcsServer extends CommonDBTM {
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'is_active';
-      $tab[6]['name']     = $LANG['common'][60];
+      $tab[6]['name']     = __('Active');
       $tab[6]['datatype'] = 'bool';
 
       $tab[19]['table']         = $this->getTable();
@@ -574,7 +574,7 @@ class OcsServer extends CommonDBTM {
 
       echo "</tr>\n";
       echo "<tr class='tab_bg_1'><td class='center'>" .
-                     $LANG['common'][60] . "&nbsp;: </td>\n";
+                     __('Active') . "</td>\n";
       echo "<td>";
       Dropdown::showYesNo('is_active',$this->fields["is_active"]);
       echo "</td>";

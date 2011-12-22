@@ -329,7 +329,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
-      $tab = array(0 => $LANG['common'][59],
+      $tab = array(0 => __('Global'),
                    1 => $LANG['entity'][8]);
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
                               array('value' => $CFG_GLPI["use_autoname_by_entity"]));

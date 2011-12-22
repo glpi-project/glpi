@@ -43,7 +43,7 @@ class SlaLevel extends RuleTicket {
    protected $ruleactionclass   = 'SlaLevelAction';
    // No criteria
    protected $rulecriteriaclass = '';
-   
+
    public $right='sla';
 
    /**
@@ -107,7 +107,7 @@ class SlaLevel extends RuleTicket {
                         array('max_time'  => $sla->fields['resolution_time'],
                               'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
-         echo "</td><td class='center'>".$LANG['common'][60]."</td><td>";
+         echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active",array('value'=>1));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -125,7 +125,7 @@ class SlaLevel extends RuleTicket {
             echo "<div class='center'><table class='tab_cadre_fixehov'>";
             echo "<tr><th colspan='2'>".__('Name')."</th>";
             echo "<th>".$LANG['sla'][3]."</th>";
-            echo "<th>".$LANG['common'][60]."</th>";
+            echo "<th>".__('Active')."</th>";
             echo "</tr>";
             Session::initNavigateListItems('SlaLevel', $LANG['sla'][1]." - ".$sla->getName());
 
@@ -216,7 +216,7 @@ class SlaLevel extends RuleTicket {
       echo "<td>";
       Html::autocompletionTextField($this,"name");
       echo "</td>";
-      echo "<td>".$LANG['common'][60]."&nbsp;:</td>";
+      echo "<td>".__('Active')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_active",$this->fields["is_active"]);
       echo"</td></tr>\n";

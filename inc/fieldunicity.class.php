@@ -66,7 +66,7 @@ class FieldUnicity extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'is_active',
-                         'label' => $LANG['common'][60],
+                         'label' => __('Active'),
                          'type'  => 'bool'),
                    array('name'  => 'itemtype',
                          'label' => __('Type'),
@@ -332,7 +332,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[30]['table']          = $this->getTable();
       $tab[30]['field']          = 'is_active';
-      $tab[30]['name']           = $LANG['common'][60];
+      $tab[30]['name']           = __('Active');
       $tab[30]['datatype']       = 'bool';
       $tab[30]['massiveaction']  = false;
 

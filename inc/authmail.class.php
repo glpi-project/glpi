@@ -121,7 +121,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'is_active';
-      $tab[6]['name']      = $LANG['common'][60];
+      $tab[6]['name']      = __('Active');
       $tab[6]['datatype']  = 'bool';
 
       $tab[19]['table']         = $this->getTable();
@@ -174,7 +174,7 @@ class AuthMail extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>" . $LANG['common'][60] . "&nbsp;:</td>";
+         echo "<td>" . __('Active') . "</td>";
          echo "<td colspan='3'>";
          Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
