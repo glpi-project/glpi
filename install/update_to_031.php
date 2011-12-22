@@ -38,11 +38,11 @@ function updateDbTo031(){
 
 	//amSize ramSize
 	$query = "Alter table users drop can_assign_job";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "Alter table users add can_assign_job enum('yes','no') NOT NULL default 'no'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "Update users set can_assign_job = 'yes' where type = 'admin'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 
 	echo "<p class='center'>Version 0.2 & < </p>";
 
@@ -51,7 +51,7 @@ function updateDbTo031(){
 
 	if(!FieldExists("printers", "ramSize")) {
 		$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
-		$DB->query($query) or die($LANG['update'][90].$DB->error());
+		$DB->queryOrDie($query);
 	}
 
 	echo "<p class='center'>Version 0.21  </p>";
@@ -60,25 +60,25 @@ function updateDbTo031(){
 	//Ajout de NOT NULL et des valeurs par defaut.
 
 	$query = "ALTER TABLE computers MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "ALTER TABLE computers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 
 	$query = "ALTER TABLE monitors MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "ALTER TABLE monitors MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 	$query = "ALTER TABLE networking MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "ALTER TABLE networking MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 
 	$query = "ALTER TABLE printers MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "ALTER TABLE printers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 	$query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->query($query) or die($LANG['update'][90].$DB->error());
+	$DB->queryOrDie($query);
 	$query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 	echo "<p class='center'>Version 0.3  </p>";

@@ -2277,12 +2277,13 @@ $LANG['update'][88]="The version of the database is not compatible with the vers
 $LANG['update'][89]="You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.";
 $LANG['update'][90]="Error during the database update";
 $LANG['update'][91]="Caution!";
-$LANG['update'][92]="You will update the GLPI database named :";
+$LANG['update'][92]="You will update the GLPI database named:";
 $LANG['update'][93]="Database connection successful";
 $LANG['update'][94]="Update successful, your database is up to date";
 $LANG['update'][95]="Connection to database failed, verify the connection parameters included in config_db.php file";
 $LANG['update'][96]="All users having administrators rights have have been updated to 'super-admin' rights with the creation of his new user type.";
-$LANG['update'][105]="Impossible to accomplish an update this way!!";
+
+$LANG['update'][105]="Impossible to accomplish an update by this way!";
 $LANG['update'][106]="Go back to GLPI";
 $LANG['update'][107]="You must now proceed to updating your database content";
 

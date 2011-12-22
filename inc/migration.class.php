@@ -463,7 +463,7 @@ class Migration {
 
       if (isset($this->change[$table])) {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
-         $this->displayMessage( sprintf(__('Change of the database layout - %s')), $table);
+         $this->displayMessage( sprintf(__('Change of the database layout - %s'), $table));
          $DB->query($query)
          or die($this->version." multiple alter in $table " . $LANG['update'][90] . $DB->error());
 

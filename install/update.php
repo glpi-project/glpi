@@ -192,8 +192,8 @@ function showContentUpdateForm() {
    global $LANG;
 
    echo "<div class='center'>";
-   echo "<h3>".$LANG['update'][94]."</h3>";
-   echo "<p>".$LANG['update'][107]."</p></div>";
+   echo "<h3>".__('Update successful, your database is up to date')."</h3>";
+   echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
    echo "<p class='submit'>";
    echo "<a href='update_content.php'><span class='button'>".$LANG['install'][25]."</span></a>";
 }
@@ -466,34 +466,34 @@ function changeVarcharToID($table1, $table2, $chps) {
    if (!FieldExists($table2, "ID")) {
       $query = " ALTER TABLE `$table2`
                  ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-      $DB->query($query) or die("".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query);
    }
 
    $query = "ALTER TABLE `$table1`
              ADD `temp` INT";
-   $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query);
 
    $query = "SELECT `$table1`.`ID` AS row1,
                     `$table2`.`ID` AS row2
              FROM `$table1`, `$table2`
              WHERE `$table2`.`name` = `$table1`.`$chps`";
-   $result = $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $result = $DB->queryOrDie($query);
 
    while ($line = $DB->fetch_array($result)) {
       $query = "UPDATE `$table1`
                 SET `temp` = ". $line["row2"] ."
                 WHERE `ID` = '". $line["row1"] ."'";
-      $DB->query($query) or die($LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query);
    }
    $DB->free_result($result);
 
    $query = "ALTER TABLE `$table1`
              DROP `$chps`";
-   $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query);
 
    $query = "ALTER TABLE `$table1`
              CHANGE `temp` `$chps` INT";
-   $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query);
 }
 
 
@@ -549,14 +549,14 @@ function updateDbUpTo031() {
                   `ldap_field_phone` varchar(200) NOT NULL default '',
                 PRIMARY KEY (`ID`)
                 ) TYPE=MyISAM AUTO_INCREMENT=2 ";
-      $DB->query($query) or die($LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query);
 
       $query = "INSERT INTO `glpi_config`
                 VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet',
                         '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE',
                         '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1',
                         'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
-      $DB->query($query) or die($LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query);
 
       echo "<p class='center'>Version > 0.31  </p>";
    }
@@ -631,7 +631,7 @@ function updateDbUpTo031() {
          if (showLocationUpdateForm()) {
             $query = "UPDATE `glpi_config`
                       SET `version` = ' 0.68.3x'";
-            $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
+            $DB->queryOrDie($query, "0.68.3");
 
             showContentUpdateForm();
             exit();
@@ -738,7 +738,7 @@ function updateDbUpTo031() {
          // Force update content
          $query = "UPDATE `glpi_config`
                    SET `version` = ' 0.68.3x'";
-         $DB->query($query) or die("0.68.3 ".$LANG['update'][90].$DB->error());
+         $DB->queryOrDie($query, "0.68.3");
 
          showContentUpdateForm();
          exit();
@@ -749,7 +749,7 @@ function updateDbUpTo031() {
              SET `version` = ' 0.84',
                  `language` = '".$glpilanguage."',
                  `founded_new_version` = ''";
-   $DB->query($query) or die($LANG['update'][90].$DB->error());
+   $DB->queryOrDie($query);
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
@@ -771,31 +771,27 @@ function updateTreeDropdown() {
        && !FieldExists("glpi_dropdown_locations", "completename")) {
       $query = "ALTER TABLE `glpi_dropdown_locations`
                 ADD `completename` TEXT NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add completename in dropdown_locations");
    }
 
    if (TableExists("glpi_dropdown_kbcategories")
        && !FieldExists("glpi_dropdown_kbcategories", "completename")) {
       $query = "ALTER TABLE `glpi_dropdown_kbcategories`
                 ADD `completename` TEXT NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add completename in dropdown_kbcategories");
    }
 
    if (TableExists("glpi_locations") && !FieldExists("glpi_locations", "completename")) {
       $query = "ALTER TABLE `glpi_locations`
                 ADD `completename` TEXT NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add completename in glpi_locations ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add completename in glpi_locations");
    }
 
    if (TableExists("glpi_knowbaseitemcategories")
        && !FieldExists("glpi_knowbaseitemcategories", "completename")) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                 ADD `completename` TEXT NOT NULL ";
-      $DB->query($query)
-      or die("0.6 add completename in glpi_knowbaseitemcategories ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.6 add completename in glpi_knowbaseitemcategories");
    }
 }
 
@@ -837,15 +833,14 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    if (empty($from_install) && !isset($_POST["from_update"])) {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".$LANG['update'][105]."</span>";
+      echo "<h3><span class='red'>".__('Impossible to accomplish an update by this way!')."</span>";
       echo "<p class='submit'>";
-      echo "<a href='../index.php'><span class='button'>".$LANG['update'][106]."</span></a></p>";
+      echo "<a href='../index.php'><span class='button'>".__('Go back to GLPI')."</span></a></p>";
       echo "</div>";
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".$LANG['update'][91]."</span>&nbsp;".$LANG['update'][92].
-             $DB->dbdefault ."</h3>";
+      echo "<h3><span class='red'>".sprintf(__('Caution ! You will update the GLPI database named: %s'),$DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".$LANG['install'][26]."\">";
@@ -855,7 +850,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 // Step 2
 } else {
    if (test_connect()) {
-      echo "<h3>".$LANG['update'][93]."</h3>";
+      echo "<h3>".__('Database connection successful')."</h3>";
       if (!isset($_POST["update_location"])) {
          $current_verison = "0.31";
          $config_table    = "glpi_config";
@@ -882,7 +877,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
          echo "<div class='center'>";
          if (!empty($tab) && $tab["adminchange"]) {
-            echo "<div class='center'> <h2>". $LANG['update'][96] ."<h2></div>";
+            echo "<div class='center'> <h2>". __("All users having administrators rights have have been updated to 'super-admin' rights with the creation of his new user type.") ."<h2></div>";
          }
 
          if (showLocationUpdateForm()) {
@@ -912,8 +907,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       }
 
    } else {
-      echo "<h3> ";
-      echo $LANG['update'][95] ."</h3>";
+      echo "<h3>";
+      echo __("Connection to database failed, verify the connection parameters included in config_db.php file")."</h3>";
    }
 
 }
