@@ -211,7 +211,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<td colspan='3'>";
             echo "<a href='$target?preconfig=AD'>".$LANG['ldap'][17]."</a>";
             echo "&nbsp;&nbsp;/&nbsp;&nbsp;";
-            echo "<a href='$target?preconfig=default'>".$LANG['common'][44];
+            echo "<a href='$target?preconfig=default'>".__('Default values');
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -485,10 +485,10 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th class='center' colspan='4'>" . $LANG['setup'][167] . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][48] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Surname') . "</td>";
       echo "<td><input type='text' name='realname_field' value='".
                  $this->fields["realname_field"]."'></td>";
-      echo "<td>" . $LANG['common'][43] . "&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('First name') . "</td>";
       echo "<td><input type='text' name='firstname_field' value='".
                  $this->fields["firstname_field"]."'></td></tr>";
 
@@ -525,7 +525,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='phone2_field'value='".$this->fields["phone2_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][42] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Mobile phone') . "&nbsp;:&nbsp;</td>";
       echo "<td><input type='text' name='mobile_field'value='".$this->fields["mobile_field"]."'>";
       echo "</td>";
       echo "<td>" . __('Title') . "</td>";
@@ -639,13 +639,13 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[9]['table']          = $this->getTable();
       $tab[9]['field']          = 'realname_field';
-      $tab[9]['name']           = $LANG['common'][48];
+      $tab[9]['name']           = __('Surname');
       $tab[9]['massiveaction']  = false;
       $tab[9]['datatype']       = 'string';
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'firstname_field';
-      $tab[10]['name']          = $LANG['common'][43];
+      $tab[10]['name']          = __('First name');
       $tab[10]['massiveaction'] = false;
       $tab[10]['datatype']      = 'string';
 
@@ -663,7 +663,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'mobile_field';
-      $tab[13]['name']          = $LANG['common'][42];
+      $tab[13]['name']          = __('Mobile phone');
       $tab[13]['massiveaction'] = false;
       $tab[13]['datatype']      = 'string';
 
@@ -2282,11 +2282,11 @@ class AuthLDAP extends CommonDBTM {
                                'email2_field'    => $LANG['setup'][14].' 2',
                                'email3_field'    => $LANG['setup'][14].' 3',
                                'email4_field'    => $LANG['setup'][14].' 4',
-                               'realname_field'  => $LANG['common'][48],
-                               'firstname_field' => $LANG['common'][43],
+                               'realname_field'  => __('Surname'),
+                               'firstname_field' => __('First name'),
                                'phone_field'     => $LANG['help'][35],
                                'phone2_field'    => $LANG['help'][35] . " 2",
-                               'mobile_field'    => $LANG['common'][42],
+                               'mobile_field'    => __('Mobile phone'),
                                'title_field'     => __('Title'),
                                'category_field'  => __('Category'));
                $available_fields = array();

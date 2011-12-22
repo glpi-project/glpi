@@ -1157,7 +1157,7 @@ function getUserName($ID, $link=0) {
             }
 
             if (!empty($data["mobile"])) {
-               $user["comment"] .= $LANG['common'][42]."&nbsp;: ".$data["mobile"]."<br>";
+               $user["comment"] .= __('Mobile phone')."&nbsp;: ".$data["mobile"]."<br>";
             }
 
             if ($data["locations_id"]>0) {

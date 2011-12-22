@@ -286,7 +286,7 @@ class Dropdown {
                                         $data["phone2"];
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br><span class='b'>".$LANG['common'][42]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>".__('Mobile phone')."&nbsp;: </span> ".
                                         $data["mobile"];
                         }
                         if (!empty($data["fax"])) {
