@@ -2273,11 +2273,10 @@ $LANG['transfer'][6]="Think of making a backup before transferring items.";
 $LANG['transfer'][7]="Items to transfer";
 $LANG['transfer'][8]="Transfer mode";
 
-$LANG['update'][88]="The version of the database is not compatible with the version of the installed files. An update is necessary.";
-$LANG['update'][89]="You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.";
-
 /// TODO After is ok for migration to gettext
 
+$LANG['update'][88]="The version of the database is not compatible with the version of the installed files. An update is necessary.";
+$LANG['update'][89]="You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.";
 $LANG['update'][90]="Error during the database update";
 $LANG['update'][91]="Caution!";
 $LANG['update'][92]="You will update the GLPI database named:";
