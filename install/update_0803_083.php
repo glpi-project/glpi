@@ -1028,7 +1028,7 @@ function update0803to083() {
       $query = "INSERT INTO `glpi_tickettemplates`
                        (`name`, `is_recursive`)
                 VALUES ('Default', 1)";
-      $DB->queryOrDie($query), "0.83 add default ticket template");
+      $DB->queryOrDie($query, "0.83 add default ticket template");
       $default_ticket_template = $DB->insert_id();
 
    }
@@ -1061,7 +1061,7 @@ function update0803to083() {
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-      $DB->queryOrDie($query), "0.83 add table glpi_tickettemplatehiddenfields");
+      $DB->queryOrDie($query, "0.83 add table glpi_tickettemplatehiddenfields");
    }
 
    if (!TableExists('glpi_tickettemplatepredefinedfields')) {
@@ -1078,7 +1078,7 @@ function update0803to083() {
                   KEY `unicity` (`tickettemplates_id`,`num`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-      $DB->queryOrDie($query), "0.83 add table glpi_tickettemplatepredefinedfields");
+      $DB->queryOrDie($query, "0.83 add table glpi_tickettemplatepredefinedfields");
    }
 
    if (!TableExists('glpi_tickettemplatemandatoryfields')) {
@@ -1220,7 +1220,7 @@ function update0803to083() {
                   KEY `next_creation_date` (`next_creation_date`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-      $DB->queryOrDie($query), "0.83 add table glpi_ticketrecurrents");
+      $DB->queryOrDie($query, "0.83 add table glpi_ticketrecurrents");
 
       $ADDTODISPLAYPREF['TicketRecurrent'] = array(11, 12, 13, 15, 14);
    }
@@ -1682,13 +1682,13 @@ function update0803to083() {
                 SET `tickettemplates_id` = '$default_ticket_template'
                 WHERE `entities_id` = 0
                       AND `tickettemplates_id` = -2";
-      $DB->queryOrDie($query), "0.83 update tickettemplates_id for root entity in glpi_entitydatas");
+      $DB->queryOrDie($query, "0.83 update tickettemplates_id for root entity in glpi_entitydatas");
 
       $query = "UPDATE `glpi_entitydatas`
                 SET `entities_id_software` = -10
                 WHERE `entities_id` = 0
                       AND `entities_id_software` = -2";
-      $DB->queryOrDie($query), "0.83 update entities_id_software for root entity in glpi_entitydatas");
+      $DB->queryOrDie($query, "0.83 update entities_id_software for root entity in glpi_entitydatas");
 
    }
 

@@ -1,6 +1,6 @@
 <?php
 define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+#include (GLPI_ROOT . "/inc/includes.php");
 
 $dirs = array(GLPI_ROOT,GLPI_ROOT.'/inc/',
                GLPI_ROOT.'/ajax/',
