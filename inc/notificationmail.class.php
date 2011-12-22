@@ -242,8 +242,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $senderror = true;
          Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
       } else {
-         Toolbox::logInFile("mail",
-                            $LANG['tracking'][38]." ".$options['to']." : ".$options['subject']."\n");
+         //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+         Toolbox::logInFile("mail",sprintf(__('An email was sent to %1$s: %2$s'), $options['to'], $options['subject']."\n"));
       }
 
       $mmail->ClearAddresses();

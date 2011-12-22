@@ -498,7 +498,7 @@ class Problem extends CommonITILObject {
 
       $tab[65]['table']         = 'glpi_items_problems';
       $tab[65]['field']         = 'count';
-      $tab[65]['name']          = $LANG['common'][96].' - '.$LANG['tracking'][29];
+      $tab[65]['name']          = __('Number of items');
       $tab[65]['forcegroupby']  = true;
       $tab[65]['usehaving']     = true;
       $tab[65]['datatype']      = 'number';
@@ -545,7 +545,7 @@ class Problem extends CommonITILObject {
 
       $tab[28]['table']         = 'glpi_problemtasks';
       $tab[28]['field']         = 'count';
-      $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
+      $tab[28]['name']          = __('Number of tasks');
       $tab[28]['forcegroupby']  = true;
       $tab[28]['usehaving']     = true;
       $tab[28]['datatype']      = 'number';

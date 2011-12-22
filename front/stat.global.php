@@ -112,7 +112,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     => $LANG['tracking'][29],
+Stat::showGraph($toprint, array('title'     => __('Number'),
                                 'showtotal' => 1,
                                 'unit'      => $item->getTypeName(2)));
 

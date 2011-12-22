@@ -674,7 +674,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && !is_null($this->fields["due_date"])) { // Date set
 
          if ($this->fields["due_date"] < $this->fields["date"]) {
-            Session::addMessageAfterRedirect($LANG['tracking'][3].$this->fields["due_date"],
+            Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'),
                                              false, ERROR);
 
             if (($key=array_search('date',$this->updates)) !== false) {
@@ -695,7 +695,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Invalid dates : no change
          // closedate must be > solvedate
          if ($this->fields["closedate"] < $this->fields["solvedate"]) {
-            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
             if (($key=array_search('closedate',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -705,7 +705,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // closedate must be > create date
          if ($this->fields["closedate"]<$this->fields["date"]) {
-            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
@@ -731,7 +731,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Invalid dates : no change
          // solvedate must be > create date
          if ($this->fields["solvedate"] < $this->fields["date"]) {
-            Session::addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -1139,7 +1139,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
             } else {
                $input2         = array();
-               $input2["name"] = addslashes($LANG['tracking'][24]." $id");
+               //TRANS: Default document to files attached to tickets : %d is the ticket id
+               $input2["name"] = addslashes(sprintf(__('Document Ticket %d'),$id));
 
                if ($this->getType() == 'Ticket') {
                   $input2["tickets_id"]           = $id;
@@ -2203,8 +2204,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "&nbsp;&nbsp;";
          echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
               "/front/ticket.form.php?addme_observer=addme_observer".
-              "&amp;tickets_id=".$this->fields['id']."' title=\"".$LANG['tracking'][5]."\">".
-              $LANG['tracking'][5]."</a>";
+              "&amp;tickets_id=".$this->fields['id']."' title=\"".__s('Associate myself with this ticket')."\">".
+              __s('Associate myself with this ticket')."</a>";
       }
       echo "</th>";
 

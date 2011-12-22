@@ -547,47 +547,7 @@ class Reminder extends CommonDBTM {
       echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       echo "</td></tr>\n";
-/*
-      echo "<tr class='tab_bg_2'><td>".__('Type')."</td>";
-      echo "<td>";
-      if ($canedit && Session::haveRight("reminder_public","w")) {
-         if (!$ID) {
-            if (isset($_GET["is_private"])) {
-               $this->fields["is_private"] = $_GET["is_private"];
-            }
-
-            if (isset($_GET["is_recursive"])) {
-               $this->fields["is_recursive"] = $_GET["is_recursive"];
-            }
-         }
-         Dropdown::showPrivatePublicSwitch($this->fields["is_private"], $this->fields["entities_id"],
-                                           $this->fields["is_recursive"]);
-
-      } else {
-         if ($this->fields["is_private"]) {
-            echo $LANG['common'][77];
-         } else {
-            echo $LANG['common'][76];
-         }
-      }
-
-      echo "</td>\n";
-
-      if (Session::haveRight("reminder_public","w") && !$this->fields["is_private"]) {
-         echo "<td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
-         if ($canedit) {
-            Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-         } else {
-            echo Dropdpown::getYesNo($this->fields['is_helpdesk_visible']);
-         }
-         echo "</td>\n";
-
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
-      }
-      echo "</tr>";
-*/
+      
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";

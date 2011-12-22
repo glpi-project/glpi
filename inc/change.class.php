@@ -543,7 +543,7 @@ class Change extends CommonITILObject {
 //
 //       $tab[28]['table']         = 'glpi_changetasks';
 //       $tab[28]['field']         = 'count';
-//       $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
+//       $tab[28]['name']          = __('Number of tasks');
 //       $tab[28]['forcegroupby']  = true;
 //       $tab[28]['usehaving']     = true;
 //       $tab[28]['datatype']      = 'number';

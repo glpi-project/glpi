@@ -990,9 +990,9 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".__('Date')."</th>"; // Date
+            echo "<th>".__('Date')."</th>"; 
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
-            echo "<th>".$LANG['tracking'][29]."</th>"; // Number
+            echo "<th>".__('Number')."</th>"; 
             echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 
@@ -1040,10 +1040,10 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".__('Date')."</th>"; // Date
+            echo "<th>".__('Date')."</th>"; 
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
-            echo "<th>".$LANG['tracking'][29]."</th>"; // Number
+            echo "<th>".__('Number')."</th>"; 
             echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 

@@ -545,7 +545,7 @@ class Profile extends CommonDBTM {
              Dropdown::EMPTY_VALUE."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
              ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
-             $LANG['tracking'][1]."</option>\n";
+             __('My devices')."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
              ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
              $LANG['setup'][351]."</option>\n";
@@ -554,7 +554,7 @@ class Profile extends CommonDBTM {
              ($this->fields["helpdesk_hardware"]
               ==(pow(2, Ticket::HELPDESK_MY_HARDWARE)
                  +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
-              $LANG['tracking'][1]." + ".$LANG['setup'][351]."</option>";
+              __('My devices and all items')."</option>";
       echo "</select></td>\n";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
@@ -900,7 +900,7 @@ class Profile extends CommonDBTM {
       echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]
             == pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
-            $LANG['tracking'][1]."</option>\n";
+            __('My devices')."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]
             = pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
@@ -910,7 +910,7 @@ class Profile extends CommonDBTM {
             ($this->fields["helpdesk_hardware"]
              == (pow(2, Ticket::HELPDESK_MY_HARDWARE)
                  +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
-            $LANG['tracking'][1]." + ".$LANG['setup'][351]."</option>";
+            __('My devices and all items')."</option>";
       echo "</select></td>\n";
       echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";

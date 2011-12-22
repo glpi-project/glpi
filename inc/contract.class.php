@@ -287,7 +287,7 @@ class Contract extends CommonDBTM {
 
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
-      $tab[139]['name']          = $LANG['tracking'][29]." ".$LANG['financial'][1];
+      $tab[139]['name']          = __('Number of contracts')
       $tab[139]['forcegroupby']  = true;
       $tab[139]['usehaving']     = true;
       $tab[139]['datatype']      = 'number';
@@ -513,7 +513,7 @@ class Contract extends CommonDBTM {
 
       $tab[72]['table']         = 'glpi_contracts_items';
       $tab[72]['field']         = 'count';
-      $tab[72]['name']          = $LANG['document'][19]." (".$LANG['tracking'][29].")";
+      $tab[72]['name']          = __('Number of items');
       $tab[72]['forcegroupby']  = true;
       $tab[72]['usehaving']     = true;
       $tab[72]['datatype']      = 'number';

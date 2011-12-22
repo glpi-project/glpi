@@ -456,7 +456,7 @@ class FieldUnicity extends CommonDropdown {
                $searchOption = $item->getSearchOptionByField('field',$field);
                echo "<th>".$searchOption["name"]."</th>";
             }
-            echo "<th>".$LANG['tracking'][29]."</th></tr>";
+            echo "<th>".__('Number')."</th></tr>";
 
             foreach ($results as $result) {
                echo "<tr class='tab_bg_2'>";

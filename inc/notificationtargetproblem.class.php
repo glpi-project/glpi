@@ -211,7 +211,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'task.end'                  => $LANG['search'][9],
                     'task.status'               => $LANG['joblist'][0],
                     'problem.numberoftasks'     => $LANG['mailing'][122],
-                    'problem.numberoftickets'   => $LANG['Menu'][5]." - ".$LANG['tracking'][29],
+                    'problem.numberoftickets'   => __('Number of tickets'),
                     'problem.impacts'           => $LANG['problem'][4],
                     'problem.causes'            => $LANG['problem'][5],
                     'problem.symtoms'           => $LANG['problem'][6],

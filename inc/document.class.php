@@ -729,7 +729,7 @@ class Document extends CommonDBTM {
 
       $tab[72]['table']         = 'glpi_documents_items';
       $tab[72]['field']         = 'count';
-      $tab[72]['name']          = $LANG['document'][19]." (".$LANG['tracking'][29].")";
+      $tab[72]['name']          = __('Number of associated items');
       $tab[72]['forcegroupby']  = true;
       $tab[72]['usehaving']     = true;
       $tab[72]['datatype']      = 'number';
