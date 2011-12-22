@@ -358,7 +358,7 @@ class Config extends CommonDBTM {
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __('Alternate username') . "</th>";
       echo "<th>" . __('User') . "</th>";
-      echo "<th>" . $LANG['common'][35] . "</th>";
+      echo "<th>" . __('Group') . "</th>";
       echo "<th>" . __('Location') . "</th>";
       echo "<th>" . $LANG['state'][0] . "</th>";
       echo "</tr>";

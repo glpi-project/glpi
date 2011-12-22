@@ -468,7 +468,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[4]['table'] = 'glpi_groups';
       $tab[4]['field'] = 'completename';
-      $tab[4]['name']  = $LANG['common'][35];
+      $tab[4]['name']  = __('Group');
 
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';

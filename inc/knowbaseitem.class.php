@@ -475,7 +475,8 @@ class KnowbaseItem extends CommonDBTM {
             echo "<legend></legend>";
             echo "<div class='baskb'>";
             if ($this->fields["users_id"]) {
-               echo $LANG['common'][37]."&nbsp;: ".getUserName($this->fields["users_id"],"1")."      ";
+               //TRANS: %s is the writer name
+               printf(__('Writer: %s'), getUserName($this->fields["users_id"],"1"));
             }
 
             echo "<span class='baskb_right'>";
@@ -666,13 +667,13 @@ class KnowbaseItem extends CommonDBTM {
       $options['canedit'] = 0; // Hide the buttons
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_3'><th colspan='4'>".$LANG['common'][36]."&nbsp;:&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
-            (isset($_SESSION['glpiactiveprofile'])
-             && $_SESSION['glpiactiveprofile']['interface']=="central"
+      $tmp = "<a href='".$CFG_GLPI["root_doc"]."/front/".
+             (isset($_SESSION['glpiactiveprofile'])
+              && $_SESSION['glpiactiveprofile']['interface']=="central"
                   ?"knowbaseitem.php"
-                  :"helpdesk.faq.php")."?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".
-            $fullcategoryname."</a>";
+                  :"helpdesk.faq.php").
+             "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+      echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('Category: %s'), $tmp);
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][14]."</h2>";
@@ -688,8 +689,6 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
-         echo $LANG['common'][37]."&nbsp;: ";
-
          // Integer because true may be 2 and getUserName return array
          if ($linkusers_id) {
             $linkusers_id = 1;
@@ -697,7 +696,7 @@ class KnowbaseItem extends CommonDBTM {
             $linkusers_id = 0;
          }
 
-         echo getUserName($this->fields["users_id"], $linkusers_id);
+         printf(__('Writer: %s'), getUserName($this->fields["users_id"], $linkusers_id));
          echo "<br>";
       }
 
@@ -785,7 +784,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<td><form method=get action='".$params["target"]."'>";
          echo "<table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".__s('Browse')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
+         echo "<tr class='tab_bg_2'><td class='center'>".__('Category')."&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
          echo "</td><td><input type='submit' value=\"".__s('Post')."\" class='submit'></td>";
@@ -902,9 +901,10 @@ class KnowbaseItem extends CommonDBTM {
          $KbCategory = new KnowbaseItemCategory();
          $title = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-            $title = $LANG['common'][36]." = ".(empty($KbCategory->fields['name'])
-                                                ?"(".$params['knowbaseitemcategories_id'].")"
-                                                : $KbCategory->fields['name']);
+            $title = (empty($KbCategory->fields['name'])
+                              ?"(".$params['knowbaseitemcategories_id'].")"
+                              : $KbCategory->fields['name']);
+            $title = sprintf(__('Category: %s'), $title);
          }
 
          Session::initNavigateListItems('KnowbaseItem', $title);
@@ -955,7 +955,7 @@ class KnowbaseItem extends CommonDBTM {
             if ($output_type != Search::HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, $LANG['knowbase'][15], $header_num);
             }
-            echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
+            echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
             if (isset($options['itemtype'])
                 && isset($options['items_id'])
@@ -1154,7 +1154,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[4]['table'] = 'glpi_knowbaseitemcategories';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['common'][36];
+      $tab[4]['name']  = __('Category');
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'date';
@@ -1296,7 +1296,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['common'][35]."</td>";
+               echo "<td>".__('Group')."</td>";
                echo "<td>";
                $names = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
                echo $names["name"]." ";

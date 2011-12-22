@@ -3467,7 +3467,7 @@ class Ticket extends CommonITILObject {
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
-      echo "<th>".$LANG['common'][36]."&nbsp;:";
+      echo "<th>".__('Category');
       echo $tt->getMandatoryMark('itilcategories_id');
       echo "</th>";
       echo "<td >";
@@ -4470,7 +4470,7 @@ class Ticket extends CommonITILObject {
       $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
       $items[$LANG['document'][14]] = "glpi_tickets.itemtype, glpi_tickets.items_id";
-      $items[$LANG['common'][36]]   = "glpi_itilcategories.completename";
+      $items[__('Category')]        = "glpi_itilcategories.completename";
       $items[$LANG['common'][57]]   = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {

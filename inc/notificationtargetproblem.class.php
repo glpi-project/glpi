@@ -204,7 +204,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'task.isprivate'            => __('Private'),
                     'task.date'                 => $LANG['reports'][60],
                     'task.description'          => $LANG['joblist'][6],
-                    'task.category'             => $LANG['common'][36],
+                    'task.category'             => __('Category'),
                     'task.time'                 => $LANG['job'][20],
                     'task.user'                 => __('By'),
                     'task.begin'                => $LANG['search'][8],

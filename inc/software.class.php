@@ -255,7 +255,7 @@ class Software extends CommonDBTM {
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Category') . "</td><td>";
       Dropdown::show('SoftwareCategory', array('value' => $this->fields["softwarecategories_id"]));
       echo "</td></tr>\n";
 
@@ -292,7 +292,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Group') . "</td><td>";
       Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => '`is_itemgroup`'));
@@ -373,7 +373,7 @@ class Software extends CommonDBTM {
 
       $tab[62]['table'] = 'glpi_softwarecategories';
       $tab[62]['field'] = 'name';
-      $tab[62]['name']  = $LANG['common'][36];
+      $tab[62]['name']  = __('Category');
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -402,7 +402,7 @@ class Software extends CommonDBTM {
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'completename';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['name']      = __('Group');
       $tab[71]['condition'] = '`is_itemgroup`';
 
       $tab[61]['table']    = $this->getTable();

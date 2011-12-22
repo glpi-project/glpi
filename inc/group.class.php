@@ -43,12 +43,8 @@ class Group extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][36];
-      }
-      return $LANG['common'][35];
+      _n('Group', 'Groups', $nb);
    }
 
 
@@ -614,7 +610,7 @@ class Group extends CommonTreeDropdown {
 
       if ($nbcan) {
          Html::openArrowMassives("group_form_$field", true);
-         echo $LANG['common'][35]."&nbsp;:&nbsp;";
+         echo __('Group')."&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
          Dropdown::show('Group', array('entity'    => $this->fields["entities_id"],
                                        'used'      => array($this->fields["id"]),

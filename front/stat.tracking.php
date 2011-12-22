@@ -75,16 +75,14 @@ if (!isset($_REQUEST["start"])) {
 Stat::title();
 
 $requester = array('user'               => array('title' => $LANG['job'][4]),
-                   'users_id_recipient' => array('title' => $LANG['common'][37]),
-                   'group'              => array('title' => $LANG['common'][35]),
-                   'group_tree'         => array('title' => $LANG['common'][35].
-                                                            " (".$LANG['entity'][7].")"),
+                   'users_id_recipient' => array('title' => __('Writer')),
+                   'group'              => array('title' => __('Group')),
+                   'group_tree'         => array('title' => __('Group tree')),
                    'usertitles_id'      => array('title' => $LANG['users'][1]),
                    'usercategories_id'  => array('title' => $LANG['users'][2]));
 
-$caract    = array('itilcategories_id'   => array('title' => $LANG['common'][36]),
-                   'itilcategories_tree' => array('title' => $LANG['common'][36].
-                                                             " (".$LANG['entity'][7].")"),
+$caract    = array('itilcategories_id'   => array('title' => __('Category')),
+                   'itilcategories_tree' => array('title' => __('Category tree')),
                    'urgency'             => array('title' => $LANG['joblist'][29]),
                    'impact'              => array('title' => $LANG['joblist'][30]),
                    'priority'            => array('title' => $LANG['joblist'][2]),
@@ -105,10 +103,9 @@ $items = array($LANG['job'][4]       => $requester,
                                                    => array('title' => $LANG['job'][6]." ".
                                                                        $LANG['stats'][49]),
                                              'groups_id_assign'
-                                                   => array('title' => $LANG['common'][35]),
+                                                   => array('title' => __('Group')),
                                              'groups_tree_assign'
-                                                   => array('title' => $LANG['common'][35].
-                                                                       " (".$LANG['entity'][7].")"),
+                                                   => array('title' => __('Group tree')),
                                              'enterprise'
                                                    => array('title' => $LANG['financial'][26])));
 

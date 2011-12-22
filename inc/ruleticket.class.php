@@ -202,7 +202,7 @@ class RuleTicket extends Rule {
 
       $criterias['itilcategories_id']['table']     = 'glpi_itilcategories';
       $criterias['itilcategories_id']['field']     = 'name';
-      $criterias['itilcategories_id']['name']      = $LANG['common'][36];
+      $criterias['itilcategories_id']['name']      = __('Category');
       $criterias['itilcategories_id']['linkfield'] = 'itilcategories_id';
       $criterias['itilcategories_id']['type']      = 'dropdown';
 
@@ -227,7 +227,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_requester']['table']     = 'glpi_groups';
       $criterias['_groups_id_requester']['field']     = 'completename';
-      $criterias['_groups_id_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][35];
+      $criterias['_groups_id_requester']['name']      = __('Requester group');
       $criterias['_groups_id_requester']['linkfield'] = '_groups_id_requester';
       $criterias['_groups_id_requester']['type']      = 'dropdown';
 
@@ -239,7 +239,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_assign']['table']     = 'glpi_groups';
       $criterias['_groups_id_assign']['field']     = 'completename';
-      $criterias['_groups_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+      $criterias['_groups_id_assign']['name']      = __('Technician group');
       $criterias['_groups_id_assign']['linkfield'] = '_groups_id_assign';
       $criterias['_groups_id_assign']['type']      = 'dropdown';
 
@@ -257,7 +257,7 @@ class RuleTicket extends Rule {
 
       $criterias['_groups_id_observer']['table']     = 'glpi_groups';
       $criterias['_groups_id_observer']['field']     = 'completename';
-      $criterias['_groups_id_observer']['name']      = $LANG['common'][104]." - ".$LANG['common'][35];
+      $criterias['_groups_id_observer']['name']      = __('Watcher group');
       $criterias['_groups_id_observer']['linkfield'] = '_groups_id_observer';
       $criterias['_groups_id_observer']['type']      = 'dropdown';
 
@@ -306,7 +306,7 @@ class RuleTicket extends Rule {
       global $LANG;
 
       $actions = array();
-      $actions['itilcategories_id']['name']  = $LANG['common'][36];
+      $actions['itilcategories_id']['name']  = __('Category');
       $actions['itilcategories_id']['type']  = 'dropdown';
       $actions['itilcategories_id']['table'] = 'glpi_itilcategories';
 
@@ -318,7 +318,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_requester']['name'] = __('Requester user');
       $actions['_users_id_requester']['type'] = 'dropdown_users';
 
-      $actions['_groups_id_requester']['name']  = $LANG['job'][4]." - ".$LANG['common'][35];
+      $actions['_groups_id_requester']['name']  = __('Requester group');
       $actions['_groups_id_requester']['type']  = 'dropdown';
       $actions['_groups_id_requester']['table'] = 'glpi_groups';
 
@@ -326,7 +326,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_assign']['type'] = 'dropdown_assign';
 
       $actions['_groups_id_assign']['table'] = 'glpi_groups';
-      $actions['_groups_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['common'][35];
+      $actions['_groups_id_assign']['name']  = __('Technician group');
       $actions['_groups_id_assign']['type']  = 'dropdown';
 
       $actions['suppliers_id_assign']['table'] = 'glpi_suppliers';
@@ -337,7 +337,7 @@ class RuleTicket extends Rule {
       $actions['_users_id_observer']['type'] = 'dropdown_users';
 
       $actions['_groups_id_observer']['table'] = 'glpi_groups';
-      $actions['_groups_id_observer']['name']  = $LANG['common'][104]." - ".$LANG['common'][35];
+      $actions['_groups_id_observer']['name']  = __('Watcher group');
       $actions['_groups_id_observer']['type']  = 'dropdown';
 
       $actions['urgency']['name'] = $LANG['joblist'][29];

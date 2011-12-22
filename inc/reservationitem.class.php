@@ -134,7 +134,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab[71]['table'] = 'glpi_groups';
       $tab[71]['field'] = 'completename';
-      $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['name']  = __('Group');
 
       $tab[19]['table']         = 'reservation_types';
       $tab[19]['field']         = 'date_mod';

@@ -1313,7 +1313,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . __('Import'). "</th>";
             $header_num = 0;
-            echo Search::showHeaderItem(Search::HTML_OUTPUT, $LANG['common'][35], $header_num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Group'), $header_num,
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
             echo "<th>".$LANG['setup'][261]."</th>";

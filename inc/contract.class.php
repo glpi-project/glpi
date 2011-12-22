@@ -226,7 +226,7 @@ class Contract extends CommonDBTM {
       Dropdown::showInteger("max_links_allowed", $this->fields["max_links_allowed"], 1, 200, 1,
                             array(0 => $LANG['software'][4]));
       echo "</td>";
-      echo "<td>".$LANG['common'][41]."</td>";
+      echo "<td>".__('Email Alarms')."</td>";
       echo "<td>";
       self::dropdownAlert("alert", $this->fields["alert"]);
       Alert::displayLastAlert('Contract', $ID);
@@ -504,7 +504,7 @@ class Contract extends CommonDBTM {
 
       $tab[59]['table'] = $this->getTable();
       $tab[59]['field'] = 'alert';
-      $tab[59]['name']  = $LANG['common'][41];
+      $tab[59]['name']  = __('Email Alarms');
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';

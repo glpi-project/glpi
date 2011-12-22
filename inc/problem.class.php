@@ -476,7 +476,7 @@ class Problem extends CommonITILObject {
 
       $tab[7]['table'] = 'glpi_itilcategories';
       $tab[7]['field'] = 'completename';
-      $tab[7]['name']  = $LANG['common'][36];
+      $tab[7]['name']  = __('Category');
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -554,7 +554,7 @@ class Problem extends CommonITILObject {
 
       $tab[20]['table']         = 'glpi_taskcategories';
       $tab[20]['field']         = 'name';
-      $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
+      $tab[20]['name']          = __('Task category');
       $tab[20]['forcegroupby']  = true;
       $tab[20]['splititems']    = true;
       $tab[20]['massiveaction'] = false;
@@ -888,7 +888,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
+      echo "<th>".__('Category')."</th>";
       echo "<td >";
       $opt = array('value'     => $this->fields["itilcategories_id"],
                    'entity'    => $this->fields["entities_id"],
@@ -1096,7 +1096,7 @@ class Problem extends CommonITILObject {
       $items[$LANG['job'][4]]       = "glpi_problems.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_problems.users_id_assign";
 //       $items[$LANG['document'][14]] = "glpi_problems.itemtype, glpi_tickets.items_id";
-      $items[$LANG['common'][36]]   = "glpi_itilcategories.completename";
+      $items[__('Category')]   = "glpi_itilcategories.completename";
       $items[$LANG['common'][57]]   = "glpi_problems.name";
 
       foreach ($items as $key => $val) {

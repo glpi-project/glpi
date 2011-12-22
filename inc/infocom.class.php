@@ -1275,7 +1275,7 @@ class Infocom extends CommonDBChild {
 
       $tab[59]['table']        = 'glpi_infocoms';
       $tab[59]['field']        = 'alert';
-      $tab[59]['name']         = $LANG['common'][41];
+      $tab[59]['name']         = __('Email Alarms');
       $tab[59]['forcegroupby'] = true;
       $tab[59]['joinparams']   = $joinparams;
 
