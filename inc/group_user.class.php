@@ -412,10 +412,14 @@ class Group_User extends CommonDBRelation{
                echo "</td><td>";
                echo Dropdown::getDropdownName('glpi_groups', $data['groups_id']);
             }
-            echo "</td><td>";
-            echo Dropdown::getYesNo($data['is_manager']);
-            echo "</td><td>";
-            echo Dropdown::getYesNo($data['is_userdelegate']);
+            echo "</td><td align='center'>";
+            if ($data['is_manager']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+            }
+            echo "</td><td align='center'>";
+            if ($data['is_userdelegate']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
+            }
             echo "</tr>";
          }
          echo "</table>";
