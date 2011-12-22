@@ -1167,13 +1167,13 @@ function getUserName($ID, $link=0) {
             }
 
             if ($data["usertitles_id"]>0) {
-               $user["comment"] .= $LANG['users'][1]."&nbsp;: ".
+               $user["comment"] .= __('Title')."&nbsp;: ".
                                    Dropdown::getDropdownName("glpi_usertitles",
                                                              $data["usertitles_id"])."<br>";
             }
 
             if ($data["usercategories_id"]>0) {
-               $user["comment"] .= $LANG['users'][2]."&nbsp;: ".
+               $user["comment"] .= __('Category')."&nbsp;: ".
                                    Dropdown::getDropdownName("glpi_usercategories",
                                                              $data["usercategories_id"])."<br>";
             }

@@ -188,7 +188,7 @@ class UserEmail  extends CommonDBChild {
          }
          $count++;
 
-         echo "<input title='".$LANG['users'][21]."' type='radio' name='_default_email'
+         echo "<input title='".__s('Default email')."' type='radio' name='_default_email'
                 value='".$data['id']."'".
                 ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
          if (!$canedit || $data['is_dynamic']) {

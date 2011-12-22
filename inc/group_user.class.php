@@ -429,10 +429,10 @@ class Group_User extends CommonDBRelation{
          if ($canedit) {
             Html::openArrowMassives("groupuser_form$rand", true);
             $actions = array(''               => Dropdown::EMPTY_VALUE,
-                             'set_manager'    => $LANG['users'][19],
-                             'set_delegate'   => $LANG['users'][24],
-                             'unset_manager'  => $LANG['users'][20],
-                             'unset_delegate' => $LANG['users'][25],
+                             'set_manager'    => __('Add to managers'),
+                             'set_delegate'   => __('Add to delegatees'),
+                             'unset_manager'  => __('Delete from managers'),
+                             'unset_delegate' => __('Delete from delegatees'),
                              'deleteuser'     => __('Delete'));
             Dropdown::showFromArray('action', $actions);
             echo "&nbsp;";

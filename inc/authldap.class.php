@@ -495,7 +495,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
       echo "<td><input type='text' name='comment_field' value='".$this->fields["comment_field"]."'>";
       echo "</td>";
-      echo "<td>" . $LANG['users'][17] . "&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Administrative number') . "</td>";
       echo "<td>";
       echo "<input type='text' name='registration_number_field' value='".
              $this->fields["registration_number_field"]."'>";
@@ -528,11 +528,11 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][42] . "&nbsp;:&nbsp;</td>";
       echo "<td><input type='text' name='mobile_field'value='".$this->fields["mobile_field"]."'>";
       echo "</td>";
-      echo "<td>" . $LANG['users'][1] . "&nbsp;:</td>";
+      echo "<td>" . __('Title') . "</td>";
       echo "<td><input type='text' name='title_field' value='".$this->fields["title_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['users'][2] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Category') . "</td>";
       echo "<td><input type='text' name='category_field' value='".
                  $this->fields["category_field"]."'></td>";
       echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td>";
@@ -669,13 +669,13 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'title_field';
-      $tab[14]['name']          = $LANG['users'][1];
+      $tab[14]['name']          = __('Title');
       $tab[14]['massiveaction'] = false;
       $tab[14]['datatype']      = 'string';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'category_field';
-      $tab[15]['name']          = $LANG['users'][2];
+      $tab[15]['name']          = __('Category');
       $tab[15]['massiveaction'] = false;
       $tab[15]['datatype']      = 'string';
 
@@ -2287,8 +2287,8 @@ class AuthLDAP extends CommonDBTM {
                                'phone_field'     => $LANG['help'][35],
                                'phone2_field'    => $LANG['help'][35] . " 2",
                                'mobile_field'    => $LANG['common'][42],
-                               'title_field'     => $LANG['users'][1],
-                               'category_field'  => $LANG['users'][2]);
+                               'title_field'     => __('Title'),
+                               'category_field'  => __('Category'));
                $available_fields = array();
                foreach ($fields as $field => $label) {
                   if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {

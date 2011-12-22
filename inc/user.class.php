@@ -1569,7 +1569,7 @@ class User extends CommonDBTM {
       UserEmail::showForUser($this);
       echo "</td>";
 
-      echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Category') . "</td><td>";
       Dropdown::show('UserCategory', array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
 
@@ -1585,11 +1585,11 @@ class User extends CommonDBTM {
       Html::autocompletionTextField($this, "phone2");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['users'][17] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
       Html::autocompletionTextField($this, "registration_number");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
       Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
 
@@ -2027,7 +2027,7 @@ class User extends CommonDBTM {
 
       $tab[22]['table']         = $this->getTable();
       $tab[22]['field']         = 'registration_number';
-      $tab[22]['name']          = $LANG['users'][17];
+      $tab[22]['name']          = __('Administrative number');
       $tab[22]['massiveaction'] = false;
 
       $tab[23]['table']         = $this->getTable();
@@ -2050,11 +2050,11 @@ class User extends CommonDBTM {
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
-      $tab[81]['name']      = $LANG['users'][1];
+      $tab[81]['name']      = __('Title');
 
       $tab[82]['table'] = 'glpi_usercategories';
       $tab[82]['field'] = 'name';
-      $tab[82]['name']  = $LANG['users'][2];
+      $tab[82]['name']  = __('Category');
 
       $tab[79]['table'] = 'glpi_profiles';
       $tab[79]['field'] = 'name';
@@ -2432,13 +2432,13 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='hidden' name='ext_auth' value='1'>\n";
-      echo "<input type='submit' name='add_ext_auth_ldap' value=\"".$LANG['users'][15]."\"
+      echo "<input type='submit' name='add_ext_auth_ldap' value=\"".__s('Import from directories')."\"
              class='submit'>\n";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
-      echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['users'][16]."\"
+      echo "<input type='submit' name='add_ext_auth_simple' value=\"".__s('Import from other sources')."\"
              class='submit'>\n";
       echo "</td></tr>\n";
 
@@ -2794,9 +2794,9 @@ class User extends CommonDBTM {
          echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
                 "/front/lostpassword.php'>";
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . $LANG['users'][3]."</th></tr>";
+         echo "<tr><th colspan='2'>" . __('Forgot your password?')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['users'][11]."</td></tr>";
+         echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Please confirm your email address and enter your new password.')."</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14]."</td>";
          echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
@@ -2817,7 +2817,7 @@ class User extends CommonDBTM {
         echo "</table></form>";
 
       } else {
-         echo $LANG['users'][12];
+         _e('Your password reset request has expired or is invalid. Please renew it.');
       }
       echo "</div>";
    }
@@ -2833,9 +2833,9 @@ class User extends CommonDBTM {
       echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
              "/front/lostpassword.php'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>" . $LANG['users'][3]."</th></tr>";
+      echo "<tr><th colspan='2'>" . __('Forgot your password?')."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['users'][7]."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Please enter your email address. A email will be sent to you and you will be able to choose a new password.')."</td></tr>";
 
       echo "<tr class='tab_bg_2 center'>";
       echo "<td><input type='text' size='60' name='email' value=''></td>";
@@ -2859,7 +2859,7 @@ class User extends CommonDBTM {
 
                $input['id'] = $this->fields['id'];
                if ($this->update($input)) {
-                 echo $LANG['users'][13];
+                 _e('Reset password successful.');
                  //
                  $input2['password_forget_token']     = '';
                  $input2['password_forget_token_date'] = NULL;
@@ -2871,15 +2871,15 @@ class User extends CommonDBTM {
                }
 
             } else {
-               echo $LANG['users'][12];
+               _e('Your password reset request has expired or is invalid. Please renew it.');
             }
 
          } else {
-            echo $LANG['users'][9];
+            _e("The authentication method configuration doesn't allow you to change your password.");
          }
 
       } else {
-         echo $LANG['users'][8];
+         _e('Email address not found.');
       }
 
       echo "<br>";
@@ -2911,17 +2911,17 @@ class User extends CommonDBTM {
                $this->update($input);
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
-               echo $LANG['users'][10];
+               _e('An email has been sent to your email address. The email contains informations for reset your password.');
             } else {
                echo $LANG['mailing'][110];
             }
 
          } else {
-            echo $LANG['users'][9];
+            _e("The authentication method configuration doesn't allow you to change your password.");
          }
 
       } else {
-         echo $LANG['users'][8];
+         _e('Email address not found.');
       }
       echo "<br>";
       echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
