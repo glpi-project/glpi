@@ -893,7 +893,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['common'][52] . "&nbsp;:</td>";
+      echo "<td>" . __('Server') . "</td>";
       echo "<td><input type='text' name='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
       echo "<td>" . $LANG['setup'][175] . "&nbsp;:</td>";
       echo "<td><input type='text' name='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
@@ -931,7 +931,7 @@ class Config extends CommonDBTM {
 
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th>" . $LANG['common'][52] . "</th></tr>\n";
+      echo "<tr><th>" . __('Server') . "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       echo wordwrap($LANG['computers'][9]."&nbsp;: ".php_uname()."\n", $width, "\n\t");

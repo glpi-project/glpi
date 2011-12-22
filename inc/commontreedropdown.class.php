@@ -462,7 +462,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'completename';
-      $tab[1]['name']          = $LANG['common'][51];
+      $tab[1]['name']          = __('Complete Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;

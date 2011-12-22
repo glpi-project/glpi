@@ -233,7 +233,7 @@ class AuthLDAP extends CommonDBTM {
          Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
          echo "<td><input type='text' name='host' value='" . $this->fields["host"] . "'></td>";
          echo "<td>" . $LANG['setup'][172] . "&nbsp;:</td>";
          echo "<td><input id='port' type='text' name='port' value='" . $this->fields["port"] . "'>";
@@ -607,7 +607,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'host';
-      $tab[3]['name']     = $LANG['common'][52];
+      $tab[3]['name']     = __('Server');
       $tab[3]['datatype'] = 'string';
 
       $tab[4]['table']    = $this->getTable();
@@ -767,7 +767,7 @@ class AuthLDAP extends CommonDBTM {
          echo "\n</pre></td><tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
          foreach ($ldap_servers as $ID => $value) {
-            $fields = array($LANG['common'][52] => 'host',
+            $fields = array(__('Server')        => 'host',
                             $LANG['setup'][172] => 'port',
                             $LANG['setup'][154] => 'basedn',
                             $LANG['setup'][159] => 'condition',
@@ -777,7 +777,7 @@ class AuthLDAP extends CommonDBTM {
             $first = true;
             foreach ($fields as $label => $field) {
                $msg .= (!$first?', ':'').$label.': '.($value[$field] != ''?'\''.$value[$field].
-                        '\'':$LANG['common'][49]);
+                        '\'':__('None'));
                $first = false;
             }
             echo wordwrap($msg."\n", $width, "\n\t\t");

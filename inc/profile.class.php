@@ -1983,7 +1983,7 @@ class Profile extends CommonDBTM {
 
       switch ($value) {
          case 'central' :
-            return $LANG['common'][56];
+            return __('Standard interface');
 
          case 'helpdesk' :
             return $LANG['Menu'][31];

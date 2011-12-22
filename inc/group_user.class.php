@@ -128,7 +128,7 @@ class Group_User extends CommonDBRelation{
             echo "<input type='submit' name='addgroup' value=\"".__s('Add')."\"
                    class='submit'>";
          } else {
-            echo $LANG['common'][49];
+            _e('None');
          }
 
          echo "</td></tr>";
@@ -184,7 +184,7 @@ class Group_User extends CommonDBRelation{
 
       } else {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='$headerspan' class='center'>".$LANG['common'][49]."</td></tr>";
+         echo "<td colspan='$headerspan' class='center'>".__('None')."</td></tr>";
       }
       echo "</table>";
 

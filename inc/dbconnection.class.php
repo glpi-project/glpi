@@ -389,7 +389,7 @@ class DBConnection extends CommonDBTM {
          } else if ($diff) {
             echo $LANG['setup'][803] . "&nbsp;: " . Html::timestampToString($diff, 1) . "<br>";
          } else {
-            echo $LANG['setup'][803] . "&nbsp;: " . $LANG['common'][49] . "<br>";
+            echo $LANG['setup'][803] . "&nbsp;: " . __('None') . "<br>";
          }
       }
    }

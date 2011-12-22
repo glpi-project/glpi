@@ -553,7 +553,7 @@ class MailCollector  extends CommonDBTM {
 
       } else {
          if ($display) {
-            Session::addMessageAfterRedirect($LANG['common'][54]."&nbsp;: mailgate ".$mailgateID,
+            Session::addMessageAfterRedirect(__('Item not found')." (mailgate $mailgateID)",
                                              false, ERROR);
          } else {
             return 'Could find mailgate '.$mailgateID;
@@ -1375,7 +1375,7 @@ class MailCollector  extends CommonDBTM {
       echo $LANG['mailgate'][0]."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
          $msg = "\t".__('Name').':"'.$mc['name'].'"  ';
-         $msg .= " ".$LANG['common'][52].':'.$mc['host'];
+         $msg .= " ". sprintf(__('Server: %s'), $mc['host']);
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
          $msg .= " ".$LANG['login'][7].':'.
                  (empty($mc['passwd'])?__('No'):__('Yes'));

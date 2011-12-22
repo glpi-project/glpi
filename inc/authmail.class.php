@@ -110,7 +110,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'host';
-      $tab[3]['name']      = $LANG['common'][52];
+      $tab[3]['name']      = __('Server');
       $tab[3]['datatype']  = 'string';
 
       $tab[4]['table']         = $this->getTable();

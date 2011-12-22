@@ -282,14 +282,14 @@ $LANG['common'][44]="Default values";
 $LANG['common'][45]="Mio max";
 $LANG['common'][46]="Vcard";
 $LANG['common'][47]="Progress";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][48]="Surname";
 $LANG['common'][49]="None";
 $LANG['common'][50]="Confirm the final deletion ?";
 $LANG['common'][51]="Complete Name";
 $LANG['common'][52]="Server";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][53]="List";
 $LANG['common'][54]="Item not found";
 $LANG['common'][55]="Are you sure you want to delete this element?";

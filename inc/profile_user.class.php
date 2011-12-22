@@ -333,7 +333,7 @@ class Profile_User extends CommonDBTM {
                echo "</tr>";
 
             } else {
-               echo "<tr colspan='$headerspan'>".$LANG['common'][54]."</tr>";
+               echo "<tr colspan='$headerspan'>".__('Item not found')."</tr>";
             }
          }
       }
