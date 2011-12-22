@@ -1441,7 +1441,7 @@ class Dropdown {
                                              'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
 
-               echo "<option value='add_transfer_list'>".__('Forward')."</option>";
+               echo "<option value='add_transfer_list'>".__('Add to transfer list')."</option>";
             }
 
             switch ($itemtype) {
@@ -1570,7 +1570,7 @@ class Dropdown {
                 && $item->maybeRecursive()) {
 
                if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
-                  echo "<option value='merge'>".__('Forward and Merge');
+                  echo "<option value='merge'>".__('Transfer and Merge');
                   echo "</option>";
                }
             }
