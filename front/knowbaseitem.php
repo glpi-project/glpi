@@ -42,7 +42,7 @@ if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
 
 // Search a solution
 if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {

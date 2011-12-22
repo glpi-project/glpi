@@ -381,7 +381,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[28]['table']         = 'glpi_entitydatas';
       $tab[28]['field']         = 'notepad';
-      $tab[28]['name']          = $LANG['title'][37];
+      $tab[28]['name']          = __('Notes');
       $tab[28]['joinparams']    = array('jointype' => 'child');
       $tab[28]['datatype']      = 'text';
 

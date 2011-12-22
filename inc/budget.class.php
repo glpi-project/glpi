@@ -80,7 +80,7 @@ class Budget extends CommonDropdown{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return array (1 => $LANG['title'][26],
+               return array (1 => __('Main'),
                              2 => $LANG['common'][96]);
          }
       }
@@ -258,7 +258,7 @@ class Budget extends CommonDropdown{
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['name']          = __('Notes');
       $tab[90]['massiveaction'] = false;
 
       return $tab;

@@ -42,10 +42,8 @@ class Link extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['title'][33];
-      }
-      return $LANG['title'][32];
+
+      return _n('External link', 'External links',$nb);
    }
 
 
@@ -64,11 +62,11 @@ class Link extends CommonDBTM {
 
       if (Session::haveRight("link","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['title'][34],
+            return self::createTabEntry(_n('Link','Links',2),
                                         countElementsInTable('glpi_links_itemtypes',
                                                              "`itemtype` = '".$item->getType()."'"));
          }
-         return $LANG['title'][34];
+         return _n('Link','Links',2);
       }
       return '';
    }
@@ -348,7 +346,7 @@ class Link extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if ($DB->numrows($result)>0) {
-         echo "<tr><th>".$LANG['title'][33]."</th></tr>";
+         echo "<tr><th>"._n('External link', 'External links',2)."</th></tr>";
          while ($data=$DB->fetch_assoc($result)) {
             $name = $data["name"];
             if (empty($name)) {
@@ -393,7 +391,7 @@ class Link extends CommonDBTM {
          echo "</table></div>";
 
       } else {
-         echo "<tr class='tab_bg_2'><th>".$LANG['title'][33]."</th></tr>";
+         echo "<tr class='tab_bg_2'><th>"._n('External link', 'External links',2)."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['links'][7]."</td></tr>";
          echo "</table></div>";
       }

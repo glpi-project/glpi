@@ -80,10 +80,7 @@ class Ticket extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][5];
-      }
-      return $LANG['job'][38];
+      return _n('Ticket','Tickets',$nb);
    }
 
 
@@ -337,7 +334,7 @@ class Ticket extends CommonITILObject {
       if (Session::haveRight("show_all_ticket","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb    = 0;
-            $title = $LANG['title'][28];
+            $title = _n('Ticket','Tickets',2);
             switch ($item->getType()) {
 //                case 'Change' :
 //                   $nb = countElementsInTable('glpi_changes_tickets',
@@ -408,7 +405,7 @@ class Ticket extends CommonITILObject {
             return $ong;
 
          default :
-            return $LANG['title'][28];
+            return _n('Ticket','Tickets',2);
       }
 
       return '';
@@ -4307,10 +4304,10 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                        Toolbox::append_params($options,'&amp;').
-                "\">".$LANG['title'][10]."</a></th></tr>";
+                "\">".__('Ticket followup')."</a></th></tr>";
       }
       echo "</th></tr>";
-      echo "<tr><th>".$LANG['title'][28]."</th><th>".__('Number')."</th></tr>";
+      echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>".__('Number')."</th></tr>";
 
       $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";

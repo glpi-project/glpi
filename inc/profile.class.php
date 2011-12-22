@@ -106,7 +106,7 @@ class Profile extends CommonDBTM {
 
                } else {
                   $ong[2] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
-                  $ong[3] = $LANG['title'][24]; // Assistance
+                  $ong[3] = __('Assistance'); // Assistance
                   $ong[4] = $LANG['setup'][619]; // Life cycles
                   $ong[5] = __('Administration');
                   $ong[6] = __('Setup');
@@ -512,7 +512,7 @@ class Profile extends CommonDBTM {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['title'][24]."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][5]."&nbsp;:</td><td>";
@@ -707,7 +707,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][18]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['title'][37]."&nbsp;:</td><td>";
+      echo "<td>".__('Notes')."</td><td>";
       self::dropdownNoneReadWrite("notes", $this->fields["notes"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
@@ -729,7 +729,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['title'][5]."&nbsp;:</td><td>";
+      echo "<td>".__('Knowledge base')."</td><td>";
       self::dropdownNoneReadWrite("knowbase", $this->fields["knowbase"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['profiles'][23]."&nbsp;:</td><td colspan='3'>";
@@ -791,7 +791,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       // Assistance / Tracking-helpdesk
-      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['title'][24]."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][41]."</th>";
       echo "</tr>\n";
@@ -1311,7 +1311,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['document'][7]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("typedoc", $this->fields["typedoc"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['title'][33]."&nbsp;:</td><td>";
+      echo "<td>"._n('External link', 'External links',2)."</td><td>";
       self::dropdownNoneReadWrite("link", $this->fields["link"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['setup'][306]."&nbsp;:</td><td>";
@@ -1325,7 +1325,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("calendar", $this->fields["calendar"], 1, 1, 1);
       echo "</td>\n";
-      echo "<td>".$LANG['title'][24]."&nbsp;:</td><td>";
+      echo "<td>".__('Assistance')."</td><td>";
       self::dropdownNoneReadWrite("entity_helpdesk", $this->fields["entity_helpdesk"], 1, 1, 1);
       echo "</td></tr>\n";
 
@@ -1434,7 +1434,7 @@ class Profile extends CommonDBTM {
 
       $tab[29]['table']    = $this->getTable();
       $tab[29]['field']    = 'notes';
-      $tab[29]['name']     = $LANG['title'][37];
+      $tab[29]['name']     = __('Notes');
       $tab[29]['datatype'] = 'right';
 
       $tab[29]['table']    = $this->getTable();
@@ -1540,7 +1540,7 @@ class Profile extends CommonDBTM {
 
       $tab[46]['table']    = $this->getTable();
       $tab[46]['field']    = 'link';
-      $tab[46]['name']     = $LANG['title'][33];
+      $tab[46]['name']     = _n('External link', 'External links',2);
       $tab[46]['datatype'] = 'right';
 
       $tab[47]['table']    = $this->getTable();
@@ -1655,7 +1655,7 @@ class Profile extends CommonDBTM {
       $tab[62]['name']     = $LANG['Menu'][12];
       $tab[62]['datatype'] = 'right';
 
-      $tab['ticket'] = $LANG['title'][24];
+      $tab['ticket'] = __('Assistance');
 
       $tab[102]['table']    = $this->getTable();
       $tab[102]['field']    = 'create_ticket';

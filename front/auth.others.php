@@ -50,7 +50,7 @@ if (!isset($_GET["id"])) {
    $_GET["id"]="";
 }
 
-Html::header($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth","others");
 
 Auth::showOtherAuthList();
 

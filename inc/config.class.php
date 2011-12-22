@@ -529,7 +529,7 @@ class Config extends CommonDBTM {
       echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Assistance') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
@@ -768,7 +768,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       if ($oncentral) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['title'][24]."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['setup'][39]."&nbsp;:</td><td>";
@@ -1107,7 +1107,7 @@ class Config extends CommonDBTM {
             $tabs[1] = $LANG['setup'][70];   // Display
             $tabs[2] = $LANG['setup'][48];   // Prefs
             $tabs[3] = $LANG['Menu'][38];    // Inventory
-            $tabs[4] = $LANG['title'][24];   // Helpdesk
+            $tabs[4] = __('Assistance'); 
             $tabs[5] = $LANG['setup'][720];  // SysInfo
 
             if (DBConnection::isDBSlaveActive()) {

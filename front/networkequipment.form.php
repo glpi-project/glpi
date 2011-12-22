@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
+   Html::header(_n('Network device', 'Network devices', 2),$_SERVER['PHP_SELF'],"inventory","networking");
    $netdevice->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }

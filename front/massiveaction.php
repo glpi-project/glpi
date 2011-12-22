@@ -83,7 +83,7 @@ switch ($_POST["itemtype"]) {
       }
 }
 
-Html::header($LANG['title'][42], $_SERVER['PHP_SELF']);
+Html::header(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
 if (isset($_GET['multiple_actions'])) {
    if (isset($_SESSION['glpi_massiveaction'])

@@ -4665,7 +4665,7 @@ class Search {
          }
 
          if (Session::getLoginUserID() && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
-            $search[$itemtype]['tracking'] = $LANG['title'][24];
+            $search[$itemtype]['tracking'] = __('Assistance');
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
             $search[$itemtype][60]['linkfield']     = 'items_id';

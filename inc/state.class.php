@@ -42,10 +42,7 @@ class State extends CommonTreeDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['title'][9];
-      }
-      return $LANG['setup'][83];
+      return _n('Status of items', 'Status of items',$nb);
    }
 
 

@@ -63,7 +63,7 @@ if ($_GET["id"] == "new") {
    // on affiche le formulaire de saisie de l'item
    $kb->check(-1,'w');
 
-   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
    $available_options = array('itemtype', 'items_id');
    $options           = array();
    foreach ($available_options as $key) {
@@ -94,7 +94,7 @@ if ($_GET["id"] == "new") {
    // modifier un item dans la base de connaissance
    $kb->check($_GET["id"],'r');
 
-   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
    $kb->showForm($_GET["id"]);
    Html::footer();
 
@@ -201,7 +201,7 @@ if ($_GET["id"] == "new") {
    // Affiche un item de la base de connaissances
    $kb->check($_GET["id"],'r');
 
-   Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
 
    $kb->showFull(true);
 

@@ -85,7 +85,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='10'>".$LANG['title'][28]."</th>";
+      echo "<tr><th colspan='10'>"._n('Ticket','Tickets',2)."</th>";
       if ($problem->isRecursive()) {
          echo "<th>".$LANG['entity'][0]."</th>";
       }

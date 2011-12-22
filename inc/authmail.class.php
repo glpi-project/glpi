@@ -340,7 +340,7 @@ class AuthMail extends CommonDBTM {
 
       if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
-         $ong[1] = $LANG['title'][26];    // test connexion
+         $ong[1] = __('Main');    // test connexion
 
          return $ong;
       }

@@ -73,10 +73,7 @@ class NetworkPort extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['networking'][6];
-      }
-      return $LANG['networking'][4];
+      return _n('Network device', 'Network devices', $nb);
    }
 
 

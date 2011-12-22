@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-Html::header($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth",-1);
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth",-1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";

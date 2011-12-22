@@ -42,7 +42,7 @@ class RegistryKey extends CommonDBTM {
       global $LANG;
 
       // No plural
-      return $LANG['title'][43];
+      return __('Registry');
    }
 
 

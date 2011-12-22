@@ -2592,7 +2592,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
-         $ong[1] = $LANG['title'][26];    // test connexion
+         $ong[1] = __('Main');    // test connexion
          $ong[2]  = $LANG['Menu'][14];    // params for user
          $ong[3]  = $LANG['Menu'][36];    // params for group
          $ong[4]  = $LANG['entity'][0];   // params for entity config
