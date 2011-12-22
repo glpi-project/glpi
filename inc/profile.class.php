@@ -862,7 +862,7 @@ class Profile extends CommonDBTM {
       echo "</td>\n";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['validation'][0]."</th><";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Approval')."</th><";
       echo "/tr>\n";
 
       echo "<tr class='tab_bg_2'>";
