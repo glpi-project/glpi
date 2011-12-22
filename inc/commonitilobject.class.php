@@ -1712,7 +1712,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
       $tab[71]['datatype']      = 'dropdown';
-      $tab[71]['name']          = $LANG['common'][35];
+      $tab[71]['name']          = __('Group');
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
       $tab[71]['condition']     = 'is_requester';
@@ -1727,7 +1727,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[22]['field']     = 'name';
       $tab[22]['datatype']      = 'dropdown';
       $tab[22]['linkfield'] = 'users_id_recipient';
-      $tab[22]['name']      = $LANG['common'][37];
+      $tab[22]['name']      = __('Writer');
 
       $tab['observer'] = $LANG['common'][104];
 
@@ -1747,7 +1747,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'completename';
       $tab[65]['datatype']      = 'dropdown';
-      $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
+      $tab[65]['name']          = __('Watcher group');
       $tab[65]['forcegroupby']  = true;
       $tab[65]['massiveaction'] = false;
       $tab[65]['condition']     = 'is_requester';
@@ -1783,7 +1783,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['table']         = 'glpi_groups';
       $tab[8]['field']         = 'completename';
       $tab[8]['datatype']      = 'dropdown';
-      $tab[8]['name']          = $LANG['job'][5]." - ".$LANG['common'][35];
+      $tab[8]['name']          = __('Technician group');
       $tab[8]['forcegroupby']  = true;
       $tab[8]['massiveaction'] = false;
       $tab[8]['condition']     = 'is_assign';
@@ -1848,14 +1848,14 @@ abstract class CommonITILObject extends CommonDBTM {
                      alt=\"$icontitle\" title=\"$icontitle\">";
 
          case 'group' :
-            $icontitle = $LANG['common'][35];
+            $icontitle = __('Group');
             switch ($type) {
                case self::REQUESTER :
                   $icontitle = $LANG['setup'][249];
                   break;
 
                case self::OBSERVER :
-                  $icontitle = $LANG['setup'][251];
+                  $icontitle = __('Watcher group');
                   break;
 
                case self::ASSIGN :
@@ -1973,7 +1973,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'),
-                     'group' => $LANG['common'][35]);
+                     'group' => __('Group'));
 
       if ($withsupplier && $type == self::ASSIGN) {
          $types['supplier'] = $LANG['financial'][26];

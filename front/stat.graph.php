@@ -119,8 +119,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
       $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
-      $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_itilcategories",
-                                                                        $_GET["id"]);
+      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
       break;
 
    case "type" :
@@ -145,7 +144,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_groups", $_GET["id"], $cond);
       $prev  = getPreviousItem("glpi_groups", $_GET["id"], $cond);
-      $title = $LANG['common'][35]."&nbsp;: ".Dropdown::getDropdownName("glpi_groups", $_GET["id"]);
+      $title = __('Group')."&nbsp;".Dropdown::getDropdownName("glpi_groups", $_GET["id"]);
       break;
 
    case "groups_id_assign" :
@@ -153,7 +152,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_groups", $_GET["id"]);
       $prev  = getPreviousItem("glpi_groups", $_GET["id"]);
-      $title = $LANG['common'][35]."&nbsp;: ".Dropdown::getDropdownName("glpi_groups", $_GET["id"]);
+      $title = __('Group')."&nbsp;".Dropdown::getDropdownName("glpi_groups", $_GET["id"]);
       break;
 
    case "priority" :

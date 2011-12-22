@@ -470,7 +470,7 @@ class Change extends CommonITILObject {
 
       $tab[7]['table']          = 'glpi_itilcategories';
       $tab[7]['field']          = 'completename';
-      $tab[7]['name']           = $LANG['common'][36];
+      $tab[7]['name']           = __('Category');
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -552,7 +552,7 @@ class Change extends CommonITILObject {
 //
 //       $tab[20]['table']         = 'glpi_taskcategories';
 //       $tab[20]['field']         = 'name';
-//       $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
+//       $tab[20]['name']          = $LANG['job'][7]." - ".__('Category');
 //       $tab[20]['forcegroupby']  = true;
 //       $tab[20]['splititems']    = true;
 //       $tab[20]['massiveaction'] = false;
@@ -901,7 +901,7 @@ class Change extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['common'][36]."&nbsp;: </th>";
+      echo "<th>".__('Category')."</th>";
       echo "<td >";
       $opt = array('value'  => $this->fields["itilcategories_id"],
                    'entity' => $this->fields["entities_id"]);

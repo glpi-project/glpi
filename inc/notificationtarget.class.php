@@ -284,8 +284,9 @@ class NotificationTarget extends CommonDBChild {
                    ORDER BY `name`;";
 
          foreach ($DB->request($query) as $data) {
-            $options .= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
-                        $data["name"] . "</option>";
+            //TRANS: %s is the name of the group
+            $options .= "<option value='" . $data["id"] . "'>" .
+                         sprintf(__('Group %s'), $data["name"]) . "</option>";
 
             if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
@@ -305,8 +306,9 @@ class NotificationTarget extends CommonDBChild {
                    ORDER BY `name`;";
 
          foreach ($DB->request($query) as $data) {
-            $options .= "<option value='" . $data["id"] . "'>" . $LANG['common'][64].' '.
-                        $LANG['common'][35] . " " .$data["name"] . "</option>";
+            $options .= "<option value='" . $data["id"] . "'>";
+            //TRANS: %s is the name of the group
+            $options .= sprintf(__('Manager of group %s'), $data["name"]) . "</option>";
 
             if (isset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".
                                                   $data["items_id"]])) {
@@ -593,11 +595,10 @@ class NotificationTarget extends CommonDBChild {
 
       foreach ($DB->request($query) as $data) {
          //Add group
-         $this->addTarget($data["id"], $LANG['common'][35] . " " .$data["name"],
+         $this->addTarget($data["id"], sprintf(__('Group %s'), $data["name"]),
                           Notification::GROUP_TYPE);
          //Add group supervisor
-         $this->addTarget($data["id"],
-                          $LANG['common'][64].' '.$LANG['common'][35]." ".$data["name"],
+         $this->addTarget($data["id"], sprintf(__('Manager of group %s'), $data["name"]),
                           Notification::SUPERVISOR_GROUP_TYPE);
       }
    }

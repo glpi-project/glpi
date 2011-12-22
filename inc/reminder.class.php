@@ -316,7 +316,7 @@ class Reminder extends CommonDBTM {
 
       $tab[2]['table']         = 'glpi_users';
       $tab[2]['field']         = 'name';
-      $tab[2]['name']          = $LANG['common'][37];
+      $tab[2]['name']          = __('Writer');
       $tab[2]['datatype']      = 'dropdown';
       $tab[2]['massiveaction'] = false;
 
@@ -1056,7 +1056,7 @@ class Reminder extends CommonDBTM {
 //       } else {
 //          echo "<tr><th colspan='5'>"."$titre"."</th></tr>\n";
 //          echo "<tr><th>".$LANG['entity'][0]."</th>";
-//          echo "<th>".$LANG['common'][37]."</th>";
+//          echo "<th>".__('Writer')."</th>";
 //          echo "<th>".$LANG['title'][37]."</th>";
 //          echo "<th colspan='2'>".__('Date')."</th></tr>\n";
 //       }
@@ -1201,7 +1201,7 @@ class Reminder extends CommonDBTM {
                   echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['common'][35]."</td>";
+               echo "<td>".__('Group')."</td>";
                echo "<td>";
                $names = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
                echo $names["name"]." ";

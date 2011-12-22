@@ -371,7 +371,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = $LANG['job'][7]." - ".$LANG['common'][36];
+      $tab[2]['name']         = __('Task category');
       $tab[2]['forcegroupby'] = true;
 
       $tab[3]['table']    = $this->getTable();
@@ -787,7 +787,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
+      echo "<td>".__('Category')."</td><td>";
       Dropdown::show('TaskCategory', array('value' => $this->fields["taskcategories_id"]));
       echo "</td></tr>\n";
 
@@ -945,7 +945,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
-         echo "<th>" . $LANG['common'][37] . "</th>";
+         echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
             echo "<th>" . $LANG['common'][77] . "</th>";
          }
@@ -967,7 +967,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showFormMassiveAction() {
       global $LANG;
 
-      echo "&nbsp;".$LANG['common'][36]."&nbsp;: ";
+      echo "&nbsp;".__('Category')."&nbsp;";
       Dropdown::show('TaskCategory');
 
       echo "<br>".$LANG['joblist'][6]."&nbsp;: ";

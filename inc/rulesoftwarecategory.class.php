@@ -84,7 +84,7 @@ class RuleSoftwareCategory extends Rule {
       global $LANG;
 
       $actions = array();
-      $actions['softwarecategories_id']['name']  = $LANG['common'][36];
+      $actions['softwarecategories_id']['name']  = __('Category');
       $actions['softwarecategories_id']['type']  = 'dropdown';
       $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
       return $actions;

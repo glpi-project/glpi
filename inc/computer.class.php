@@ -553,7 +553,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
+      echo "<td>".__('Group')."</td>";
       echo "<td>";
       Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
                                     'entity'    => $this->fields["entities_id"],
@@ -819,7 +819,7 @@ class Computer extends CommonDBTM {
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'completename';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['name']      = __('Group');
       $tab[71]['condition'] = '`is_itemgroup`';
 
       $tab[19]['table']         = $this->getTable();

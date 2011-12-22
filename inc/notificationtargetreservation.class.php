@@ -134,7 +134,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                    'value' => true));
       }
 
-      $tags_except_alert = array('reservation.user'        => $LANG['common'][37],
+      $tags_except_alert = array('reservation.user'        => __('Writer'),
                                  'reservation.begin'       => $LANG['search'][8],
                                  'reservation.end'         => $LANG['search'][9],
                                  'reservation.comment'     => __('Comments'),

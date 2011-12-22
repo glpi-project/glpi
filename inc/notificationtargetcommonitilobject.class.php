@@ -362,10 +362,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       if ($event=='satisfaction') {
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
-         $this->addTarget(Notification::RECIPIENT, $LANG['common'][37]);
+         $this->addTarget(Notification::RECIPIENT, __('Writer'));
 
       } else if ($event!='alertnotclosed') {
-         $this->addTarget(Notification::RECIPIENT, $LANG['common'][37]);
+         $this->addTarget(Notification::RECIPIENT, __('Writer'));
          $this->addTarget(Notification::SUPPLIER, $LANG['financial'][26]);
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           $LANG['common'][64]." - ".$LANG['setup'][248]);
@@ -378,10 +378,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::ASSIGN_GROUP, $LANG['setup'][248]);
-         $this->addTarget(Notification::OBSERVER_GROUP, $LANG['setup'][251]);
+         $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, $LANG['common'][104]);
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,
-                          $LANG['common'][64]." - ".$LANG['setup'][251]);
+                          __('Watcher group manager'));
       }
 
       if ($event=='validation') {
@@ -394,13 +394,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($event=='update_task' || $event=='add_task' || $event=='delete_task') {
          $this->addTarget(Notification::TASK_ASSIGN_TECH,
                           $LANG['job'][7]." - ".$LANG['job'][6]);
-         $this->addTarget(Notification::TASK_AUTHOR,
-                          $LANG['job'][7]." - ".$LANG['common'][37]);
+         $this->addTarget(Notification::TASK_AUTHOR, __('Task author'));
       }
 
       if ($event=='update_followup' || $event=='add_followup' || $event=='delete_followup') {
-         $this->addTarget(Notification::FOLLOWUP_AUTHOR,
-                          $LANG['job'][9]." - ".$LANG['common'][37]);
+         $this->addTarget(Notification::FOLLOWUP_AUTHOR, __('Followup author'));
       }
    }
 
@@ -757,12 +755,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.location'                   => __('Requester location'),
                     'author.phone'                      => $LANG['help'][35],
                     'author.phone2'                     => $LANG['help'][35].' 2',
-                    $objettype.'.openbyuser'            => $LANG['common'][37],
+                    $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
                     $objettype.'.assigntosupplier'      => $LANG['job'][5]." - ".
                                                             $LANG['financial'][26],
-                    $objettype.'.groups'                => $LANG['common'][53]." : ".
-                                                            $LANG['common'][35],
+                    $objettype.'.groups'                => __('Requester group'),
                     $objettype.'.observergroups'        => $LANG['common'][104]." - ".
                                                             $LANG['Menu'][36],
                     $objettype.'.assigntogroups'        => $LANG['job'][5]." - ".$LANG['Menu'][36],

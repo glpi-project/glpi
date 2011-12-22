@@ -349,7 +349,7 @@ class OcsServer extends CommonDBTM {
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][35] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Group') . " </td>\n";
       echo "<td><select name='import_group'>\n";
       echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "groups_id");

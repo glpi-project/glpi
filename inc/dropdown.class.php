@@ -1261,12 +1261,16 @@ class Dropdown {
          echo $LANG['peripherals'][31];
 
          if ($params['management_restrict'] == 2) {
-            echo "&nbsp;<a title=\"".$LANG['common'][39]."\"
-                         href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".
-                         addslashes($LANG['common'][39])."','".$params['target'].
-                         "?unglobalize=unglobalize&amp;id=$ID')\">".$LANG['common'][38]."</a>&nbsp;";
-            echo "<img alt=\"".$LANG['common'][39]."\" title=\"".$LANG['common'][39]."\" src='".
-                   $CFG_GLPI["root_doc"]."/pics/aide.png'>";
+            echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
+                 "\" href=\"javascript:confirmAction('".
+                 __s('Do you really want to use unitary management this item ?')."\\n".
+                 __s('Duplicate the element as many times as there are connections').
+                 "','".$params['target']."?unglobalize=unglobalize&amp;id=$ID')\">".
+                 __('Use unitary management')."</a>&nbsp;";
+
+            echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').
+                 "\" title=\"".__s('Duplicate the element as many times as there are connections').
+                 "\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
          }
 
       } else {
