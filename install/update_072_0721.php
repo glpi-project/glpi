@@ -37,28 +37,28 @@
 /// Update from 0.72 to 0.72.1
 
 function update072to0721() {
-	global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI, $LANG;
 
 
-	echo "<h3>".$LANG['install'][4]." -&gt; 0.72.1</h3>";
-	displayMigrationMessage("0721"); // Start
+   echo "<h3>".$LANG['install'][4]." -&gt; 0.72.1</h3>";
+   displayMigrationMessage("0721"); // Start
          
    if (!isIndex("glpi_groups", "ldap_group_dn")) {
       $query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_group_dn` ( `ldap_group_dn` );";
-      $DB->query($query) or die("0.72.1 add index on ldap_group_dn in glpi_groups" . $DB->error());
+      $DB->query($query, "0.72.1 add index on ldap_group_dn in glpi_groups");
    }
 
    if (!isIndex("glpi_groups", "ldap_value")) {
       $query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_value`  ( `ldap_value` );";
-      $DB->query($query) or die("0.72.1 add index on ldap_value in glpi_groups" . $DB->error());
+      $DB->query($query, "0.72.1 add index on ldap_value in glpi_groups");
    }
 
    if (!isIndex('glpi_tracking', 'date_mod')) {
       $query=" ALTER TABLE `glpi_tracking` ADD INDEX `date_mod` (`date_mod`)  ";
-      $DB->query($query) or die("0.72.1 add date_mod index in glpi_tracking " . $DB->error());
+      $DB->query($query, "0.72.1 add date_mod index in glpi_tracking");
    }
 
-	// Display "Work ended." message - Keep this as the last action.
-	displayMigrationMessage("0721"); // End
+   // Display "Work ended." message - Keep this as the last action.
+   displayMigrationMessage("0721"); // End
 } // fin 0.72.1 #####################################################################################
 ?>

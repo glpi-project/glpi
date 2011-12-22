@@ -59,8 +59,7 @@ function update0722to0723() {
                 SET `num` = ".$data['to']."
                 WHERE `num` = ".$data['from']."
                      AND `type` = '".$data['type']."'";
-      $DB->query($query)
-      or die("0.72.3 reorder search.constant " . $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query, "0.72.3 reorder search.constant");
    }
 
    $LINK_ID_TABLE = array(1  => "glpi_computers",
@@ -114,8 +113,7 @@ function update0722to0723() {
                           WHERE `device_type` = ".$data['device_type']."
                                 AND `FK_device` NOT IN (SELECT `ID`
                                                         FROM `$table`)";
-               $DB->query($query2)
-               or die("0.72.3 clean doc_device table " . $LANG['update'][90] . $DB->error());
+               $DB->queryOrDie($query2, "0.72.3 clean doc_device table");
             }
          }
       }
@@ -125,8 +123,7 @@ function update0722to0723() {
    if (FieldExists("glpi_auth_ldap", "ldap_group_condition")) {
       $query = "ALTER TABLE `glpi_auth_ldap`
                 CHANGE `ldap_group_condition` `ldap_group_condition` TEXT NULL DEFAULT NULL";
-      $DB->query($query)
-      or die("0.72.3 alter ldap_group_condition in glpi_auth_ldap ".$LANG['update'][90].$DB->error());
+      $DB->queryOrDie($query, "0.72.3 alter ldap_group_condition in glpi_auth_ldap");
    }
 
    // Display "Work ended." message - Keep this as the last action.

@@ -41,9 +41,7 @@ function update0712to0713() {
    if (!FieldExists("glpi_rule_cache_software", "ignore_ocs_import")) {
       $query = "ALTER TABLE `glpi_rule_cache_software`
                 ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ";
-      $DB->query($query)
-      or die("0.71.3 add ignore_ocs_import field in dictionnary cache " .$LANG['update'][90] .
-             $DB->error());
+      $DB->queryOrDie($query, "0.71.3 add ignore_ocs_import field in dictionnary cache");
    }
 
    // Update to longtext for fields which may be very long
@@ -52,26 +50,22 @@ function update0712to0713() {
       if (isIndex("glpi_kbitems","fulltext")){ // to avoid pb in altering column answer
          $query = "ALTER TABLE `glpi_kbitems`
                    DROP INDEX `fulltext`";
-         $DB->query($query)
-         or die("0.71.3 alter kbitem drop index Fulltext " . $LANG['update'][90] . $DB->error());
+         $DB->queryOrDie($query, "0.71.3 alter kbitem drop index Fulltext");
       }
 
       $query = "ALTER TABLE `glpi_kbitems`
                 CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL ";
-      $DB->query($query)
-      or die("0.71.3 alter kbitem answer field to longtext " . $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query, "0.71.3 alter kbitem answer field to longtext");
 
       $query = "ALTER TABLE `glpi_kbitems`
                 ADD FULLTEXT `fulltext` (`question`,`answer`)";
-      $DB->query($query)
-      or die("0.71.3 alter kbitem re-add index Fulltext " . $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query, "0.71.3 alter kbitem re-add index Fulltext");
    }
 
    if (FieldExists("glpi_tracking", "contents")) {
       $query = "ALTER TABLE `glpi_tracking`
                 CHANGE `contents` `contents` LONGTEXT NULL DEFAULT NULL ";
-      $DB->query($query)
-      or die("0.71.3 alter tracking contents field to longtext " . $LANG['update'][90] . $DB->error());
+      $DB->queryOrDie($query, "0.71.3 alter tracking contents field to longtext");
    }
 
 
