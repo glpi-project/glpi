@@ -156,7 +156,7 @@ class Contact extends CommonDBTM{
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][48]."&nbsp;:</td>";
+      echo "<td>".__('Surname')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
@@ -166,7 +166,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][43]."&nbsp;:</td>";
+      echo "<td>".__('First name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td></tr>";
@@ -184,7 +184,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][42]."&nbsp;:</td>";
+      echo "<td>".__('Mobile phone')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mobile");
       echo "</td></tr>";
@@ -210,7 +210,7 @@ class Contact extends CommonDBTM{
 
       if ($ID>0) {
          echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
-                "/front/contact.form.php?getvcard=1&amp;id=$ID'>".$LANG['common'][46]."</a>";
+                "/front/contact.form.php?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
       echo "</td></tr>";
 
@@ -229,14 +229,14 @@ class Contact extends CommonDBTM{
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][48];
+      $tab[1]['name']          = __('Surname');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'firstname';
-      $tab[11]['name']  = $LANG['common'][43];
+      $tab[11]['name']  = __('First name');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
@@ -255,7 +255,7 @@ class Contact extends CommonDBTM{
 
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'mobile';
-      $tab[10]['name']  = $LANG['common'][42];
+      $tab[10]['name']  = __('Mobile phone');
       $tab[10]['datatype'] = 'string';
 
       $tab[5]['table']     = $this->getTable();

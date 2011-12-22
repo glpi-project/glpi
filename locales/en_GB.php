@@ -276,15 +276,15 @@ $LANG['common'][38]="Use unitary management";
 $LANG['common'][39]="Duplicate the element as many times as there are connections";
 $LANG['common'][40]="Do you really want to use unitary management this item ?";
 $LANG['common'][41]="Email Alarms";
+$LANG['common'][42]="Mobile phone";
+$LANG['common'][43]="First name";
+$LANG['common'][44]="Default values";
+$LANG['common'][45]="Mio max";
+$LANG['common'][46]="Vcard";
+$LANG['common'][47]="Progress";
 
 /// TODO Before is ok for migration to gettext
 
-$LANG['common'][42]="Mobile phone";
-$LANG['common'][43]="First name";
-$LANG['common'][44]="Default value(s)";
-$LANG['common'][45]="MB max";
-$LANG['common'][46]="Vcard";
-$LANG['common'][47]="Progress";
 $LANG['common'][48]="Surname";
 $LANG['common'][49]="None";
 $LANG['common'][50]="Confirm the final deletion ?";

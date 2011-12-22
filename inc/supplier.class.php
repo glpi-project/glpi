@@ -367,7 +367,7 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".$LANG['help'][35]." 2</th>";
-      echo "<th>".$LANG['common'][42]."</th>";
+      echo "<th>".__('Mobile phone')."</th>";
       echo "<th>".$LANG['financial'][30]."</th>";
       echo "<th>".$LANG['setup'][14]."</th>";
       echo "<th>".__('Type')."</th>";

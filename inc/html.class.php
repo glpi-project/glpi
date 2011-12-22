@@ -724,7 +724,7 @@ class Html {
     static function displayProgressBar($width, $percent, $options=array()) {
        global $CFG_GLPI, $LANG;
 
-       $param['title']        = $LANG['common'][47];
+       $param['title']        = __('Progress');
        $param['simple']       = false;
        $param['forcepadding'] = true;
 

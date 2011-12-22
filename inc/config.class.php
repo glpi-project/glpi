@@ -723,8 +723,8 @@ class Config extends CommonDBTM {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array(User::REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
-                      User::FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
+      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
+                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
       Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td></tr>";
 
