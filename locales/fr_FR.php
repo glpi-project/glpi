@@ -2670,7 +2670,7 @@ $LANG['update'][94]  = "La mise à jour est réussie, votre base de données est
 $LANG['update'][95]  = "La connexion à la base de données a échouée, vérifiez les paramètres de connexion figurant dans le fichier config_db.php";
 $LANG['update'][96]  = "Tous vos utilisateurs ayant précédemment les droits 'admin' se sont vu attribuer les droits 'super-admin' avec l'ajout de ce nouveau type d'utilisateur";
 
-$LANG['update'][105] = "Impossible d'accéder à la mise à jour de cette façon !!";
+$LANG['update'][105] = "Impossible d'accéder à la mise à jour de cette façon !";
 $LANG['update'][106] = "Retourner à GLPI";
 $LANG['update'][107] = "Vous devez maintenant procéder à la mise à jour de l'ancien contenu de votre base de données";
 

@@ -75,14 +75,15 @@ function update0803to083() {
    }
 
    //TRANS: %s is the table or item implied
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Problems'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Problems'));
 
    // Clean ticket validations : already done in 0.80
    $query = "DELETE
              FROM `glpi_ticketvalidations`
              WHERE `glpi_ticketvalidations`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
                                                                  FROM `glpi_tickets`)";
-   $DB->query($query) or die("0.83 clean glpi_ticketvalidations ".$LANG['update'][90].$DB->error());
+   $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s'), 
+                                    "0.83 clean glpi_ticketvalidations ", $DB->error()));
 
    // Problems management
    if (!TableExists('glpi_problems')) {
@@ -137,7 +138,8 @@ function update0803to083() {
                   KEY `due_date` (`due_date`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.83 create glpi_problems " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                                       "0.83 create glpi_problems ", $DB->error()));
       $ADDTODISPLAYPREF['Problem'] = array(21,12,19,15,3,7,18);
    }
 
@@ -248,7 +250,7 @@ function update0803to083() {
    $migration->addField('glpi_profiles', 'problem_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Changes'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Changes'));
 
  /*  // changes management
    if (!TableExists('glpi_changes')) {
@@ -301,7 +303,8 @@ function update0803to083() {
                   KEY `due_date` (`due_date`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.83 create glpi_changes " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die(sprintf(__('%1$s - Error during the database update: %2$s')),
+                                 "0.83 create glpi_changes ", $DB->error());
    }
 
    if (!TableExists('glpi_changes_users')) {
@@ -429,7 +432,7 @@ function update0803to083() {
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 */
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'TicketPlanning'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'TicketPlanning'));
 
    // Merge tickettasks and ticket planning
    if (TableExists('glpi_ticketplannings')) {
@@ -457,7 +460,7 @@ function update0803to083() {
       $migration->dropTable("glpi_ticketplannings");
 
 
-      $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Notification'); // Updating schema
+      $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Notification'));
 
       // Migrate templates
       $from = array('task.planning.user##', 'task.planning.begin##', 'task.planning.end##',
@@ -499,7 +502,8 @@ function update0803to083() {
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Problems', 'Problem', NOW())";
          $DB->query($query)
-         or die("0.83 add problem notification " . $LANG['update'][90] . $DB->error());
+         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                           "0.83 add problem notification ", $DB->error()));
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -604,7 +608,8 @@ function update0803to083() {
                       VALUES ('".$notif_names[$type]."', 0, 'Problem', '$type', 'mail',
                               $notid, '', 1, 1, NOW())";
             $DB->query($query)
-            or die("0.83 add problem $type notification " . $LANG['update'][90] . $DB->error());
+            or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                           "0.83 add problem $type notification ", $DB->error()));
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
@@ -619,7 +624,7 @@ function update0803to083() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'Clean Vlans'); // Updating schema
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Clean Vlans'));
 
    // Clean `glpi_networkports_vlans` datas (`networkports_id` whithout networkports)
    $query = "DELETE
@@ -627,9 +632,10 @@ function update0803to083() {
              WHERE `networkports_id` NOT IN (SELECT `id`
                                              FROM `glpi_networkports`)";
    $DB->query($query)
-   or die($this->version." clean networkports_vlans datas " . $LANG['update'][90] . $DB->error());
+   or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                  $this->version." clean networkports_vlans datas ", $DB->error()));
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Rename Solution objects'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Rename Solution objects'));
 
    // rename glpi_ticketsolutiontypes to glpi_solutiontypes
    $migration->renameTable('glpi_ticketsolutiontypes', 'glpi_solutiontypes');
@@ -653,7 +659,7 @@ function update0803to083() {
    $migration->migrationOneTable('glpi_solutiontemplates');
    $migration->addKey('glpi_solutiontemplates', 'solutiontypes_id');
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Rename Category objects'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Rename Category objects'));
 
 
    $migration->renameTable('glpi_ticketcategories','glpi_itilcategories');
@@ -685,7 +691,7 @@ function update0803to083() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Add various fields'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Add various fields'));
 
    $migration->addField("glpi_states", 'states_id', "integer");
    $migration->addField("glpi_states", 'completename', "text");
@@ -820,7 +826,7 @@ function update0803to083() {
    $migration->addField("glpi_contracts", "is_template", 'bool');
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Give consumable to groups'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Give consumable to groups'));
 
    if ($migration->addField("glpi_consumables", "itemtype", "VARCHAR(100) DEFAULT NULL",
                             array("after" => "date_out",
@@ -832,7 +838,7 @@ function update0803to083() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Several emails for users'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Several emails for users'));
 
    // Several email per users
    if (!TableExists('glpi_useremails')) {
@@ -909,7 +915,7 @@ function update0803to083() {
    $migration->addField("glpi_authldaps", 'email4_field','string');
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Multiple managers for groups'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Multiple managers for groups'));
 
    /// migration : multiple group managers
    $migration->addField("glpi_groups_users", "is_manager", 'bool');
@@ -958,7 +964,7 @@ function update0803to083() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Add entities informations on document links'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Add entities informations on document links'));
 
    if ($migration->addField("glpi_documents_items", "entities_id", "integer")) {
       $migration->addField("glpi_documents_items", "is_recursive", "bool");
@@ -999,7 +1005,7 @@ function update0803to083() {
                          'item');
    }
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'RuleTicket');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
    $changes['RuleTicket'] = array('ticketcategories_id' => 'itilcategories_id');
 
@@ -1022,7 +1028,8 @@ function update0803to083() {
                                AND `rules_id` IN ($rules)";
 
                $DB->query($query)
-               or die("0.83 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+               or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.83 update datas for rules actions ", $DB->error()));
             }
             // Update criterias
             foreach ($tab as $old => $new) {
@@ -1038,7 +1045,7 @@ function update0803to083() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'Ticket templates');
+   $migration->displayMessage(sprintf(__('Data migration - %s'),'Ticket templates'));
 
    $default_ticket_template = 0;
 
@@ -1062,7 +1069,8 @@ function update0803to083() {
                        (`name`, `is_recursive`)
                 VALUES ('Default', 1)";
       $DB->query($query)
-      or die("0.83 add default ticket template " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.83 add default ticket template ", $DB->error()));
       $default_ticket_template = $DB->insert_id();
 
    }
@@ -1182,7 +1190,7 @@ function update0803to083() {
    $migration->addField("glpi_entitydatas", "tickettemplates_id", 'integer',
                         array('value' => '-2'));
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'Tech Groups on items');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Tech Groups on items'));
 
    // Group of technicians in charge of Helpdesk items
    $migration->addField('glpi_computers', 'groups_id_tech', "integer",
@@ -1225,7 +1233,7 @@ function update0803to083() {
                         array('after' => 'init_pages_counter'));
    $migration->addKey('glpi_printers', 'last_pages_counter');
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'various cleaning DB');
+   $migration->displayMessage(sprintf(__('Data migration - %s'),'various cleaning DB'));
 
    // Clean ticket satisfactions
    $query = "DELETE
@@ -1233,7 +1241,8 @@ function update0803to083() {
              WHERE `glpi_ticketsatisfactions`.`tickets_id` NOT IN (SELECT `glpi_tickets`.`id`
                                                                    FROM `glpi_tickets`)";
    $DB->query($query)
-   or die("0.83 clean glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
+   or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.83 clean glpi_ticketsatisfactions ", $DB->error()));
 
    // Clean unused slalevels
    $query = "DELETE
@@ -1242,9 +1251,10 @@ function update0803to083() {
                   NOT IN (SELECT `glpi_tickets`.`id`, `glpi_tickets`.`slalevels_id`
                           FROM `glpi_tickets`)";
    $DB->query($query)
-   or die("0.83 clean glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
+   or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.83 clean glpi_slalevels_tickets ", $DB->error()));
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'recurrent tickets');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'recurrent tickets'));
 
    if (!TableExists('glpi_ticketrecurrents')) {
       $query = "CREATE TABLE `glpi_ticketrecurrents` (
@@ -1281,14 +1291,15 @@ function update0803to083() {
                 VALUES ('TicketRecurrent', 'ticketrecurrent', 3600, NULL, 1, 1, 3,
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->query($query)
-      or die("0.83 populate glpi_crontasks for ticketrecurrent " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.83 populate glpi_crontasks for ticketrecurrent ", $DB->error()));
    }
 
 
    $migration->addField('glpi_profiles', 'ticketrecurrent', "char", array('update' => '`sla`'));
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'various fields add');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'various fields add'));
 
 
    // Ticket delegation
@@ -1330,7 +1341,7 @@ function update0803to083() {
    $migration->addKey('glpi_ruleactions', array('field', 'value'), '', 'INDEX', 50);
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'Create new default profiles');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Create new default profiles'));
 
    $profiles = array('hotliner'   => array('name'                      => 'Hotliner',
                                            'interface'                 => 'central',
@@ -1486,10 +1497,11 @@ function update0803to083() {
                          (`".implode("`, `",array_keys($data))."`)
                   VALUES ('".implode("', '",$data)."')";
       $DB->query($query)
-      or die("0.83 create new profile $profile " . $LANG['update'][90] . $DB->error());
+      or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                        "0.83 create new profile $profile ", $DB->error()));
    }
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'Reminder visibility');
+   $migration->displayMessage(sprintf(__('Data migration - %s'),'Reminder visibility'));
 
    if (!TableExists('glpi_reminders_users')) {
       $query = "CREATE TABLE `glpi_reminders_users` (
@@ -1579,8 +1591,8 @@ function update0803to083() {
                                       (`reminders_id`, `profiles_id`)
                                VALUES ('".$data['id']."', '$pid');";
                      $DB->query($query)
-                     or die("0.83 migrate data for is_helpdesk_visible drop on glpi_reminders ".
-                            $LANG['update'][90].$DB->error());
+                     or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                                    "0.83 migrate data for is_helpdesk_visible drop on glpi_reminders ", $DB->error()));
                   }
                }
             }
@@ -1618,7 +1630,7 @@ function update0803to083() {
 
    $ADDTODISPLAYPREF['Reminder'] = array(2,3,4,5,6,7);
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'KnowbaseItem visibility');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'KnowbaseItem visibility'));
 
    if (!TableExists('glpi_knowbaseitems_users')) {
       $query = "CREATE TABLE `glpi_knowbaseitems_users` (
@@ -1700,8 +1712,8 @@ function update0803to083() {
                          VALUES ('".$data['id']."', '".$data['entities_id']."',
                                  '".$data['is_recursive']."');";
                $DB->query($query)
-               or die("0.83 migrate data for entities on glpi_entities_knowbaseitems ".
-                        $LANG['update'][90].$DB->error());
+               or die(sprintf(__('%1$s - Error during the database update: %2$s'),
+                              "0.83 migrate data for entities on glpi_entities_knowbaseitems ", $DB->error()));
             }
          }
       }
@@ -1747,16 +1759,16 @@ function update0803to083() {
                 WHERE `entities_id` = 0
                       AND `tickettemplates_id` = -2";
       $DB->query($query)
-      or die ("0.83 update tickettemplates_id for root entity in glpi_entitydatas ".
-              $LANG['update'][90]. $DB->error());
+      or die (sprintf(__('%1$s - Error during the database update: %2$s'),
+               "0.83 update tickettemplates_id for root entity in glpi_entitydatas ", $DB->error()));
 
       $query = "UPDATE `glpi_entitydatas`
                 SET `entities_id_software` = -10
                 WHERE `entities_id` = 0
                       AND `entities_id_software` = -2";
       $DB->query($query)
-      or die ("0.83 update entities_id_software for root entity in glpi_entitydatas ".
-              $LANG['update'][90]. $DB->error());
+      or die (sprintf(__('%1$s - Error during the database update: %2$s'),
+                     "0.83 update entities_id_software for root entity in glpi_entitydatas ", $DB->error()));
 
    }
 
@@ -1895,7 +1907,7 @@ function update0803to083() {
 
 
    // ************ Keep it at the end **************
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'glpi_displaypreferences');
+   $migration->displayMessage(sprintf(__('Data migration - %s'),'glpi_displaypreferences'));
 
    // Change is_recursive index
    $query = ("UPDATE `glpi_displaypreferences`

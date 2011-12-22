@@ -233,7 +233,7 @@ function step3($host, $user, $password, $update) {
       echo "</form>";
 
    } else {
-      echo  "<h3>".$LANG['update'][93]."</h3>";
+      echo  "<h3>".__('Database connection successful')."</h3>";
 
       if ($update == "no") {
          echo "<p>".$LANG['install'][38]."</p>";
