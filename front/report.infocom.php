@@ -191,7 +191,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurnettetot += $valeurnettesoustot;
 
 
-      $tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+      $tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
                         Html::formatNumber($valeursoustot),
                         Html::formatNumber($valeurnettesoustot));
       echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
@@ -265,7 +265,7 @@ if (($i%2)==0) {
 echo "</td></tr></table>";
 
 
-$tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+$tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
                   Html::formatNumber($valeurtot),
                   Html::formatNumber($valeurnettetot));
 echo "<div class='center'><h3>$tmpmsg</h3></div>";
