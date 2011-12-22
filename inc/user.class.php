@@ -168,7 +168,7 @@ class User extends CommonDBTM {
             break;
 
          case 'Preference' :
-            return $LANG['title'][26];
+            return __('Main');
       }
       return '';
    }
@@ -2946,7 +2946,7 @@ class User extends CommonDBTM {
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";
 
       if ($this->fields['user_dn']) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['title'][13]."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('User informations')."</td><td>";
          $config_ldap = new AuthLDAP();
          $ds          = false;
 

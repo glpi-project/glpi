@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkLoginUser();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   Html::helpHeader($LANG['title'][10],'',$_SESSION["glpiname"]);
+   Html::helpHeader(_n('Ticket','Tickets',2),'',$_SESSION["glpiname"]);
 } else {
-   Html::header($LANG['title'][10],'',"maintain","ticket");
+   Html::header(_n('Ticket','Tickets',2),'',"maintain","ticket");
 }
 
 if ($_SESSION['glpirefresh_ticket_list'] > 0) {

@@ -52,7 +52,7 @@ if (empty($_POST) || count($_POST) == 0) {
 }
 
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-   Html::nullHeader($LANG['title'][10]);
+   Html::nullHeader(_n('Ticket','Tickets',2));
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
 } else {

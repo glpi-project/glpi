@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("link", "r");
 
-Html::header($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
+Html::header(_n('External link', 'External links',2),$_SERVER['PHP_SELF'],"config","link");
 
 Search::show('Link');
 

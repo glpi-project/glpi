@@ -801,7 +801,7 @@ class Computer extends CommonDBTM {
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['name']          = __('Notes');
       $tab[90]['massiveaction'] = false;
 
       $tab[17]['table']     = $this->getTable();
@@ -1081,18 +1081,18 @@ class Computer extends CommonDBTM {
          $tab[106]['massiveaction'] = false;
          $tab[106]['joinparams']    = array('jointype' => 'child');
 
-         $tab['registry'] = $LANG['title'][43];
+         $tab['registry'] = __('Registry');
 
          $tab[110]['table']         = 'glpi_registrykeys';
          $tab[110]['field']         = 'value';
-         $tab[110]['name']          = $LANG['title'][43]." : ".$LANG['registry'][3];
+         $tab[110]['name']          = __('Registry key/value');
          $tab[110]['forcegroupby']  = true;
          $tab[110]['massiveaction'] = false;
          $tab[110]['joinparams']    = array('jointype' => 'child');
 
          $tab[111]['table']         = 'glpi_registrykeys';
          $tab[111]['field']         = 'ocs_name';
-         $tab[111]['name']          = $LANG['title'][43]." : ".$LANG['registry'][6];
+         $tab[111]['name']          = __('Registry OCSNG name');
          $tab[111]['forcegroupby']  = true;
          $tab[111]['massiveaction'] = false;
          $tab[111]['joinparams']    = array('jointype' => 'child');

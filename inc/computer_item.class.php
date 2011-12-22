@@ -699,9 +699,9 @@ class Computer_Item extends CommonDBRelation{
             case 'Monitor' :
                if (Session::haveRight('computer', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry($LANG['title'][27], self::countForItem($item));
+                     return self::createTabEntry(_n('Connection','Connections',2), self::countForItem($item));
                   }
-                  return $LANG['title'][27];
+                  return _n('Connection','Connections',2);
                }
                break;
 
@@ -711,9 +711,9 @@ class Computer_Item extends CommonDBRelation{
                    || Session::haveRight('peripheral', 'r')
                    || Session::haveRight('monitor', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry($LANG['title'][27], self::countForComputer($item));
+                     return self::createTabEntry(_n('Connection','Connections',2), self::countForComputer($item));
                   }
-                  return $LANG['title'][27];
+                  return _n('Connection','Connections',2);
                }
                break;
          }

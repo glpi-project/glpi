@@ -778,7 +778,7 @@ $LANG['help'][22]="Search the ID of your hardware";
 $LANG['help'][23]="Enter the first letters (user, item name, serial or asset number)";
 $LANG['help'][24]="Hardware Type";
 $LANG['help'][25]="Computer";
-$LANG['help'][26]="Networking device";
+$LANG['help'][26]="Network device";
 $LANG['help'][27]="Printer";
 $LANG['help'][28]="Monitor";
 $LANG['help'][29]="Device";
@@ -1344,7 +1344,7 @@ $LANG['monitors'][34]="HDMI";
 
 $LANG['networking'][4]="Network port";
 $LANG['networking'][5]="Memory (MB)";
-$LANG['networking'][6]="Network port";
+$LANG['networking'][6]="Network ports";
 $LANG['networking'][10]="No network port found";
 $LANG['networking'][11]="network ports found";
 $LANG['networking'][12]="network port found";
@@ -1740,7 +1740,7 @@ $LANG['rulesengine'][61]="Monitor type dictionary";
 $LANG['rulesengine'][62]="Phone type dictionary";
 $LANG['rulesengine'][63]="Peripheral type dictionary";
 $LANG['rulesengine'][64]="Printer type dictionary";
-$LANG['rulesengine'][65]="Networking device type dictionary";
+$LANG['rulesengine'][65]="Network device type dictionary";
 $LANG['rulesengine'][66]="Types";
 $LANG['rulesengine'][67]="Operating systems dictionary";
 $LANG['rulesengine'][68]="Service Pack dictionary";
@@ -2223,25 +2223,28 @@ $LANG['stats'][47]="By ticket";
 $LANG['stats'][48]="(assigned)";
 $LANG['stats'][49]="(tasks)";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['title'][5]="Knowledge base";
 $LANG['title'][6]="Networking equipments";
-$LANG['title'][9]="Item Status";
-$LANG['title'][10]="Ticket Followup";
-$LANG['title'][13]="User Information";
+$LANG['title'][9]="Status of items";
+$LANG['title'][10]="Ticket followup";
+$LANG['title'][13]="User informations";
 $LANG['title'][14]="External authentication sources";
 $LANG['title'][24]="Assistance";
 $LANG['title'][26]="Main";
 $LANG['title'][27]="Connections";
 $LANG['title'][28]="Tickets";
 $LANG['title'][32]="Link";
-$LANG['title'][33]="External Links";
+$LANG['title'][33]="External links";
 $LANG['title'][34]="Links";
 $LANG['title'][36]="Note";
 $LANG['title'][37]="Notes";
 $LANG['title'][38]="Historical";
-$LANG['title'][40]="Public and Personal notes";
+$LANG['title'][40]="Public and personal notes";
 $LANG['title'][42]="Bulk modification";
 $LANG['title'][43]="Registry";
+
 
 $LANG['tracking'][1]="My devices";
 $LANG['tracking'][2]="Or complete search";
@@ -2264,8 +2267,6 @@ $LANG['tracking'][35]="Written";
 $LANG['tracking'][37]="Keep tickets when purging hardware in the inventory";
 $LANG['tracking'][38]="An email was sent to";
 $LANG['tracking'][39]="Visible in the simplified interface";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['transfer'][1]="Transfer";
 $LANG['transfer'][3]="If no longer in use";

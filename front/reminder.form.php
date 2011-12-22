@@ -138,9 +138,9 @@ if (isset($_POST["add"])) {
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      Html::helpHeader($LANG['title'][40],'',$_SESSION["glpiname"]);
+      Html::helpHeader(_n('Reminder', 'Reminders', 2),'',$_SESSION["glpiname"]);
    } else {
-      Html::header($LANG['title'][40],'',"utils","reminder");
+      Html::header(_n('Reminder', 'Reminders', 2),'',"utils","reminder");
    }
 
    $remind->showForm($_GET["id"]);

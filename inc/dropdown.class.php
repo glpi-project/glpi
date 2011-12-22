@@ -603,7 +603,7 @@ class Dropdown {
                                     'State'           => State::getTypeName(2),
                                     'Manufacturer'    => Manufacturer::getTypeName(2)),
 
-                           $LANG['title'][24]
+                           __('Assistance')
                            => array('ITILCategory'     => ITILCategory::getTypeName(2),
                                     'TaskCategory'     => TaskCategory::getTypeName(2),
                                     'SolutionType'     => SolutionType::getTypeName(2),

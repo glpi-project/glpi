@@ -179,7 +179,7 @@ class CommonGLPI {
       switch ($itemtype) {
          case 'Note' :
             if (Session::haveRight("notes","r")) {
-               $ong['Note'] = $LANG['title'][36];
+               $ong['Note'] = __('Notes');
             }
             break;
 

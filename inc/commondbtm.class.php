@@ -2896,7 +2896,7 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe' >";
-      echo "<tr><th>".$LANG['title'][37]."</th></tr>";
+      echo "<tr><th>".__('Notes')."</th></tr>";
 
       echo "<tr><td class='tab_bg_1 center middle'>";
       echo "<textarea class='textarea_notes' cols='100' rows='35' name='notepad'>".

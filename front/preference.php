@@ -62,9 +62,9 @@ if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      Html::header($LANG['title'][13], $_SERVER['PHP_SELF'],'preference');
+      Html::header(__('Preferences'), $_SERVER['PHP_SELF'],'preference');
    } else {
-      Html::helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+      Html::helpHeader(__('Preferences'), $_SERVER['PHP_SELF']);
    }
 
    $pref = new Preference();

@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("internet","r");
 
-Html::header($LANG['Menu'][1],$_SERVER['PHP_SELF'],"config","dropdowns","NetworkName");
+Html::header(__('Networks'),$_SERVER['PHP_SELF'],"config","dropdowns","NetworkName");
 
 Search::show('NetworkName');
 

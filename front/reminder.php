@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
+Html::header(_n('Reminder', 'Reminders', 2),$_SERVER['PHP_SELF'],"utils","reminder");
 
 Search::show('Reminder');
 

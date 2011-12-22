@@ -1091,7 +1091,7 @@ class Html {
 
 
       // ASSISTANCE
-      $menu['maintain']['title'] = $LANG['title'][24];
+      $menu['maintain']['title'] = __('Assistance');
 
       if (Session::haveRight("observe_ticket","1")
           || Session::haveRight("show_all_ticket","1")
@@ -1268,7 +1268,7 @@ class Html {
 
       $menu['utils']['default'] = '/front/reminder.php';
 
-      $menu['utils']['content']['reminder']['title']           = $LANG['title'][37];
+      $menu['utils']['content']['reminder']['title']           = _n('Reminder','Reminders',2);
       $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
@@ -1925,7 +1925,7 @@ class Html {
 
 
       if (Session::haveRight("link","r")) {
-         $menu['config']['content']['link']['title']           = $LANG['title'][33];
+         $menu['config']['content']['link']['title']           = _n('External link', 'External links',2);
          $menu['config']['content']['link']['page']            = '/front/link.php';
          $menu['config']['content']['link']['hide']            = true;
          $menu['config']['content']['link']['links']['search'] = '/front/link.php';
@@ -2538,7 +2538,7 @@ class Html {
       if (Session::haveRight("observe_ticket","1")) {
          echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
-                $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
+                __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets',2)."</a>";
          echo "</li>";
       }
 

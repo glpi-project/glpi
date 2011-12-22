@@ -428,7 +428,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['name']          = __('Notes');
       $tab[90]['massiveaction'] = false;
 
       $tab[11]['table']    = $this->getTable();

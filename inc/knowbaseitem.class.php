@@ -50,7 +50,7 @@ class KnowbaseItem extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['title'][5];
+      return __('Knowledge base');
    }
 
 

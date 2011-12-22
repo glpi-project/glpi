@@ -147,7 +147,7 @@ if (isset($_REQUEST['getvcard'])) {
 } else {
    if (!isset($_GET["ext_auth"])) {
       Session::checkRight("user", "r");
-      Html::header($LANG['title'][13], '', "admin", "user");
+      Html::header(_n('User','Users',2), '', "admin", "user");
       $user->showForm($_GET["id"]);
       Html::footer();
 
@@ -173,7 +173,7 @@ if (isset($_REQUEST['getvcard'])) {
          Html::back();
       }
 
-      Html::header($LANG['title'][13], '', "admin", "user");
+      Html::header(_n('User','Users',2), '', "admin", "user");
       User::showAddExtAuthForm();
       Html::footer();
    }

@@ -50,10 +50,7 @@ class Reminder extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['title'][37];
-      }
-      return $LANG['title'][36];
+      return _n('Reminder', 'Reminders', $nb);
    }
 
 
@@ -767,7 +764,7 @@ class Reminder extends CommonDBTM {
          $img      = "rdv_public.png";
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".$LANG['title'][37].
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\""._n('Reminder','Reminders',1).
              "\">&nbsp;";
       echo "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
@@ -930,148 +927,6 @@ class Reminder extends CommonDBTM {
 
    }
 
-
-//    static function showList($is_private=1, $is_recursive=0) {
-//       global $DB, $CFG_GLPI, $LANG;
-//
-//       // show reminder that are not planned
-//       $planningRight = Session::haveRight("show_planning", "1");
-//       $users_id      = Session::getLoginUserID();
-//
-//       $is_helpdesk_visible = '';
-//       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-//           $is_helpdesk_visible = "AND `is_helpdesk_visible` = 1";
-//       }
-//       // Here do not restrict on visibility. Can view all reminders
-//
-//       if (!$is_private && $is_recursive) { // show public reminder
-//          $query = "SELECT *
-//                    FROM `glpi_reminders`
-//                    WHERE `is_private` = '0'
-//                          AND `is_recursive` = '1'
-//                          $is_helpdesk_visible ".
-//                          getEntitiesRestrictRequest("AND", "glpi_reminders", "", "", true);
-//
-//          $titre = $LANG['reminder'][16];
-//
-//       } else if (!$is_private && !$is_recursive) { // show public reminder
-//          $query = "SELECT *
-//                    FROM `glpi_reminders`
-//                    WHERE `is_private` = '0'
-//                          AND `is_recursive` = '0'
-//                          $is_helpdesk_visible ".
-//                          getEntitiesRestrictRequest("AND", "glpi_reminders");
-//
-//          $titre = $LANG['reminder'][1];
-//
-//       } else { // show private reminder
-//          $query = "SELECT *
-//                    FROM `glpi_reminders`
-//                    WHERE `users_id` = '$users_id'
-//                          AND `is_private` = '1'
-//                          $is_helpdesk_visible";
-//
-//          $titre = $LANG['reminder'][0];
-//       }
-//
-//       $result = $DB->query($query);
-//
-//       $tabremind = array();
-//       $remind    = new Reminder();
-//
-//       if ($DB->numrows($result)>0) {
-//          for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
-//             $remind->getFromDB($data["id"]);
-//
-//             if ($data["is_planned"]) { //Un rdv on va trier sur la date begin
-//                $sort = $data["begin"];
-//             } else { // non programmé on va trier sur la date de modif...
-//                $sort = $data["date"];
-//             }
-//
-//             $tabremind[$sort."$$".$i]["reminders_id"]
-//                = $remind->fields["id"];
-//             $tabremind[$sort."$$".$i]["users_id"]
-//                = $remind->fields["users_id"];
-//             $tabremind[$sort."$$".$i]["entity"]
-//                = $remind->fields["entities_id"];
-//             $tabremind[$sort."$$".$i]["begin"]
-//                = ($data["is_planned"]?"".$data["begin"]."":"".$data["date"]."");
-//             $tabremind[$sort."$$".$i]["end"]
-//                = ($data["is_planned"]?"".$data["end"]."":"");
-//             $tabremind[$sort."$$".$i]["name"]
-//                = Html::resume_text($remind->fields["name"], $CFG_GLPI["cut"]);
-//
-//             $tabremind[$sort."$$".$i]["text"]
-//                = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($remind->fields["name"])),
-//                                                $CFG_GLPI["cut"]);
-//          }
-//       }
-//       ksort($tabremind);
-//
-//       echo "<br><table class='tab_cadre_fixehov'>";
-//
-//       if ($is_private) {
-//          echo "<tr><th>"."$titre"."</th><th colspan='2'>".__('Date')."</th></tr>\n";
-//       } else {
-//          echo "<tr><th colspan='5'>"."$titre"."</th></tr>\n";
-//          echo "<tr><th>".$LANG['entity'][0]."</th>";
-//          echo "<th>".__('Writer')."</th>";
-//          echo "<th>".$LANG['title'][37]."</th>";
-//          echo "<th colspan='2'>".__('Date')."</th></tr>\n";
-//       }
-//
-//       if (count($tabremind)>0) {
-//          foreach ($tabremind as $key => $val) {
-//             echo "<tr class='tab_bg_2'>";
-//
-//             if (!$is_private) {
-//                // preg to split line (if needed) before ">" sign in completename
-//                echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1",
-//                                          Dropdown::getDropdownName("glpi_entities",
-//                                                                    $val["entity"])). "</td>";
-//                echo "<td>" .Dropdown::getDropdownName("glpi_users", $val["users_id"]) . "</td>";
-//             }
-//
-//             echo "<td width='60%' class='left'>";
-//             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
-//                   $val["reminders_id"]."'>".$val["name"]."</a>";
-//             echo "<div class='kb_resume'>";
-//             echo $val['text'];
-//             echo "</div></td>";
-//
-//             if ($val["end"]!="") {
-//                echo "<td class='center'>";
-//                $tab      = explode(" ",$val["begin"]);
-//                $date_url = $tab[0];
-//
-//                if ($planningRight) {
-//                   echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
-//                         "&amp;type=day'>";
-//                }
-//
-//                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".
-//                      Toolbox::ucfirst($LANG['log'][16]).
-//                      "\" title=\"".Toolbox::ucfirst($LANG['log'][16])."\">";
-//
-//                if ($planningRight) {
-//                   echo "</a>";
-//                }
-//
-//                echo "</td>";
-//                echo "<td class='center' >".Html::convDateTime($val["begin"]);
-//                echo "<br>".Html::convDateTime($val["end"])."";
-//
-//             } else {
-//                echo "<td>&nbsp;</td>";
-//                echo "<td class='center'>";
-//                echo "<span style='color:#aaaaaa;'>".Html::convDateTime($val["begin"])."</span>";
-//             }
-//             echo "</td></tr>\n";
-//          }
-//       }
-//       echo "</table>\n";
-//   }
 
 
    /**

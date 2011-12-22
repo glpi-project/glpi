@@ -65,7 +65,7 @@ class Log extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['title'][38];
+      return __('Historical');
    }
 
 
@@ -74,12 +74,12 @@ class Log extends CommonDBTM {
 
       if (!$withtemplate) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['title'][38],
+            return self::createTabEntry(__('Historical'),
                                         countElementsInTable('glpi_logs',
                                                              "itemtype = '".$item->getType()."'
                                                                AND items_id = '".$item->getID()."'"));
          }
-         return $LANG['title'][38];
+         return __('Historical');
       }
       return '';
    }
@@ -273,7 +273,7 @@ class Log extends CommonDBTM {
       }
 
       // Display the pager
-      Html::printAjaxPager($LANG['title'][38],$start,$number);
+      Html::printAjaxPager(__('Historical'),$start,$number);
 
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixe'>";
