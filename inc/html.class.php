@@ -1469,7 +1469,7 @@ class Html {
 
 
       if (Session::haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
-         $menu['admin']['content']['rule']['options']['transfer']['title'] = $LANG['transfer'][1];
+         $menu['admin']['content']['rule']['options']['transfer']['title'] = __('Transfer');
          $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
          $menu['admin']['content']['rule']['options']['transfer']['links']['search']
                                                                            = "/front/transfer.php";

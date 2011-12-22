@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Html::header($LANG['transfer'][1], '', 'admin', 'rule', 'transfer');
+Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 
 $transfer = new Transfer();
 
