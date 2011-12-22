@@ -45,7 +45,7 @@ if (!$CFG_GLPI['use_mailing']
 $user = new User();
 
 // Manage lost password
-Html::simpleHeader(__('Forgot your password?');
+Html::simpleHeader(__('Forgot your password?'));
 
 if (isset($_REQUEST['password_forget_token'])) {
 
