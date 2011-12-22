@@ -925,7 +925,7 @@ class User extends CommonDBTM {
         $this->fields['user_dn'] = addslashes($userdn);
         //Store date_sync
         $this->fields['date_sync'] = $_SESSION['glpi_currenttime'];
-
+        
          foreach ($fields as $k => $e) {
             if (empty($v[0][$e][0])) {
                switch ($k) {
@@ -1071,8 +1071,10 @@ class User extends CommonDBTM {
       $listgroups = array();
 
       //User dn may contain ( or ), need to espace it!
-      $user_dn = str_replace(array("(", ")"), array("\(", "\)"), $user_dn);
-
+      //User dn may also contains \, which must be replaced by \\, ...
+      //$user_dn = addslashes($user_dn);
+      $user_dn = str_replace(array("(", ")", "\,"), array("\(", "\)", "\\\,"), $user_dn);
+      
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
 
@@ -1088,6 +1090,7 @@ class User extends CommonDBTM {
 
       //Get the result of the search as an array
       $info = ldap_get_entries_clean($ds, $sr);
+
       //Browse all the groups
       for ($i = 0 ; $i < count($info) ; $i++) {
          //Get the cn of the group and add it to the list of groups
