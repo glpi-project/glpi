@@ -253,7 +253,8 @@ if (($i%2)==0) {
 
 echo "&nbsp;</td></tr></table>";
 
-$tmpmsg = sprintf('Total: Value=%s - Account net value=%s',
+//TRANS: %1$s and %2$s are values
+$tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
                   Html::formatNumber($valeurtot),
                   Html::formatNumber($valeurnettetot));
 echo "<div class='center'><h3>$tmpmsg</h3></div>\n";
