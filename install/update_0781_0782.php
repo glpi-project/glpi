@@ -51,7 +51,7 @@ function update0781to0782($output='HTML') {
    }
    displayMigrationMessage("0782"); // Start
 
-   displayMigrationMessage("0782", $LANG['update'][142]); // Updating schema
+   displayMigrationMessage("0782", __('Data migration')); // Updating schema
 
    /// Add document types
    $types = array('docx' => array('name' => 'Word XML',

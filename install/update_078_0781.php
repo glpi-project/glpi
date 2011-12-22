@@ -53,7 +53,7 @@ function update078to0781($output='HTML') {
    }
    displayMigrationMessage("0781"); // Start
 
-   displayMigrationMessage("0781", $LANG['update'][142] . ' - Clean reservation entity link'); // Updating schema
+   displayMigrationMessage("0781", sprintf(__('Data migration - %s')), 'Clean reservation entity link'); // Updating schema
 
    $entities=getAllDatasFromTable('glpi_entities');
    $entities[0]="Root";
