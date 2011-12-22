@@ -68,9 +68,7 @@ function update080to0801() {
                      $query = "DELETE
                                FROM `glpi_groups_tickets`
                                WHERE `id` ='".$data2['id']."'";
-                     $DB->query($query)
-                     or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-                              "0.80.1 clean to update glpi_groups_tickets ", $DB->error()));
+                     $DB->queryOrDie($query, "0.80.1 clean to update glpi_groups_tickets");
                   }
                }
             }
@@ -105,9 +103,7 @@ function update080to0801() {
                      $query = "DELETE
                                FROM `glpi_tickets_users`
                                WHERE `id` ='".$data2['id']."'";
-                     $DB->query($query)
-                     or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-                              "0.80.1 clean to update glpi_tickets_users ", $DB->error()));
+                     $DB->queryOrDie($query, "0.80.1 clean to update glpi_tickets_users");
                   }
                }
             }
@@ -138,9 +134,7 @@ function update080to0801() {
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 0)";
-         $DB->query($query3)
-         or die(sprintf(__('%1$s - Error during the database update: %2$s'),
-                  "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels ", $DB->error()));
+         $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
 
          // Recursive ones
          $query3 = "UPDATE `glpi_slalevels`
@@ -149,8 +143,7 @@ function update080to0801() {
                                         FROM `glpi_slas`
                                         WHERE `entities_id` = $entID
                                               AND `is_recursive` = 1)";
-         $DB->query($query3)
-         or die(sprintf(__('%1$s - Error during the database update: %2$s'), "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels ", $DB->error()));
+         $DB->queryOrDie($query3, "0.80.1 update entities_id and is_recursive=1 in glpi_slalevels");
       }
    }
 
