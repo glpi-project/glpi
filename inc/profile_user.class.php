@@ -773,7 +773,7 @@ class Profile_User extends CommonDBTM {
                   $nb = countElementsInTable($this->getTable(),
                                              "users_id = '".$item->getID()."'");
                }
-               return self::createTabEntry($LANG['users'][14], $nb);
+               return self::createTabEntry(_n('Authorization','Authorizations',2), $nb);
 
          }
       }

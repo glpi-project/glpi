@@ -2299,12 +2299,14 @@ $LANG['update'][140]="Creating indexes";
 $LANG['update'][141]="Change of the database layout";
 $LANG['update'][142]="Data migration";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['users'][1]="Title";
 $LANG['users'][2]="Category (class)";
 $LANG['users'][3]="Forgot your password?";
 $LANG['users'][4]="Token";
 $LANG['users'][5]="You have been made a request to reset your account password.";
-$LANG['users'][6]="Just follow this link (you have one day) :";
+$LANG['users'][6]="Just follow this link (you have one day):";
 $LANG['users'][7]="Please enter your email address. A email will be sent to you and you will be able to choose a new password.";
 $LANG['users'][8]="Email address not found.";
 $LANG['users'][9]="The authentication method configuration doesn't allow you to change your password.";
@@ -2325,7 +2327,6 @@ $LANG['users'][23]="Users categories";
 $LANG['users'][24]="Add to delegatees";
 $LANG['users'][25]="Delete from delegatees";
 
-/// TODO After is ok for migration to gettext
 
 
 $LANG['validation'][0]="Approval";

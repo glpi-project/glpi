@@ -42,10 +42,7 @@ class UserCategory extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['users'][23];
-      }
-      return $LANG['users'][2];
+      return _n('Users category', 'Users categories',$nb);
    }
 }
 

@@ -78,8 +78,8 @@ $requester = array('user'               => array('title' => $LANG['job'][4]),
                    'users_id_recipient' => array('title' => __('Writer')),
                    'group'              => array('title' => __('Group')),
                    'group_tree'         => array('title' => __('Group tree')),
-                   'usertitles_id'      => array('title' => $LANG['users'][1]),
-                   'usercategories_id'  => array('title' => $LANG['users'][2]));
+                   'usertitles_id'      => array('title' => __('Title')),
+                   'usercategories_id'  => array('title' => __('Category')));
 
 $caract    = array('itilcategories_id'   => array('title' => __('Category')),
                    'itilcategories_tree' => array('title' => __('Category tree')),

@@ -200,8 +200,7 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_usertitles", $_GET["id"]);
       $prev  = getPreviousItem("glpi_usertitles", $_GET["id"]);
-      $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_usertitles",
-                                                                      $_GET["id"]);
+      $title = sprintf(__('Title: %s'), Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
 
    case "solutiontypes_id" :
@@ -210,7 +209,7 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
       $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
-      $title = $LANG['users'][1]."&nbsp;: ".Dropdown::getDropdownName("glpi_solutiontypes",
+      $title = $LANG['job'][48]."&nbsp;: ".Dropdown::getDropdownName("glpi_solutiontypes",
                                                                       $_GET["id"]);
       break;
 
@@ -220,8 +219,7 @@ switch($_GET["type"]) {
       $next  = $prev=0;
       $next  = getNextItem("glpi_usercategories", $_GET["id"]);
       $prev  = getPreviousItem("glpi_usercategories", $_GET["id"]);
-      $title = $LANG['users'][2]."&nbsp;: ".Dropdown::getDropdownName("glpi_usercategories",
-                                                                      $_GET["id"]);
+      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_usercategories",$_GET["id"]));
       break;
 
    case "requesttypes_id" :

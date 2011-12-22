@@ -42,10 +42,7 @@ class UserTitle extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['users'][22];
-      }
-      return $LANG['users'][1];
+      return _n('Users title', 'Users titles',$nb);
    }
 }
 

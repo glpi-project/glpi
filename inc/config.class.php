@@ -834,8 +834,8 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:";
          if (!empty($data["personal_token"])) {
-            echo "<br>(".$LANG['users'][18]."&nbsp;".
-                       Html::convDateTime($data["personal_token_date"]).')';
+            //TRANS: %s is the generation date
+            echo "<br>".sprintf(__('generated on %s'), Html::convDateTime($data["personal_token_date"]));
          }
 
          echo "</td><td colspan='3'>";
