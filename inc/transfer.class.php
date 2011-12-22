@@ -3217,9 +3217,10 @@ class Transfer extends CommonDBTM {
       global $LANG, $DB, $CFG_GLPI;
 
       if (isset($_SESSION['glpitransfer_list']) && count($_SESSION['glpitransfer_list'])) {
-         echo "<div class='center b'>".$LANG['transfer'][5]."<br>".$LANG['transfer'][6]."</div>";
+         echo "<div class='center b'>".__('You can continue to add elements to be transferred or execute the transfer now');
+         echo "<br>".__('Think of making a backup before transferring items.')."</div>";
          echo "<table class='tab_cadre_fixe' >";
-         echo '<tr><th>'.$LANG['transfer'][7].'</th><th>'.$LANG['transfer'][8]."&nbsp;:&nbsp;";
+         echo '<tr><th>'.__('Items to transfer').'</th><th>'.__('Transfer mode')."&nbsp;";
          $rand = Dropdown::show('Transfer',
                                 array('name'     => 'id',
                                       'comments' => false,
@@ -3286,7 +3287,7 @@ class Transfer extends CommonDBTM {
 
          echo "<div class='center' id='transfer_form'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/transfer.action.php?clear=1'>".
-                $LANG['transfer'][4]."</a>";
+                __('To empty the list of elements to be transferred')."</a>";
          echo "</div>";
          echo '</td></tr>';
          echo '</table>';

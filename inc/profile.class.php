@@ -1167,7 +1167,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][37]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("entity", $this->fields["entity"], 1,  1,1);
       echo "</td>";
-      echo "<td>".$LANG['transfer'][1]."&nbsp;:</td><td>";
+      echo "<td>".__('Transfer')."</td><td>";
       self::dropdownNoneReadWrite("transfer", $this->fields["transfer"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['Menu'][35]."&nbsp;:</td><td>";
@@ -1642,7 +1642,7 @@ class Profile extends CommonDBTM {
 
       $tab[60]['table']    = $this->getTable();
       $tab[60]['field']    = 'transfer';
-      $tab[60]['name']     = $LANG['transfer'][1];
+      $tab[60]['name']     = __('Transfer');
       $tab[60]['datatype'] = 'right';
 
       $tab[61]['table']    = $this->getTable();

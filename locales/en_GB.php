@@ -2265,6 +2265,8 @@ $LANG['tracking'][37]="Keep tickets when purging hardware in the inventory";
 $LANG['tracking'][38]="An email was sent to";
 $LANG['tracking'][39]="Visible in the simplified interface";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['transfer'][1]="Transfer";
 $LANG['transfer'][3]="If no longer in use";
 $LANG['transfer'][4]="To empty the list of elements to be transferred";
@@ -2273,7 +2275,6 @@ $LANG['transfer'][6]="Think of making a backup before transferring items.";
 $LANG['transfer'][7]="Items to transfer";
 $LANG['transfer'][8]="Transfer mode";
 
-/// TODO After is ok for migration to gettext
 
 $LANG['update'][88]="The version of the database is not compatible with the version of the installed files. An update is necessary.";
 $LANG['update'][89]="You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.";
