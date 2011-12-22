@@ -37,7 +37,7 @@ class NotificationTargetUser extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('passwordforget' => __('Forgot your password?');
+      return array('passwordforget' => __('Forgot your password?'));
    }
 
 
@@ -109,7 +109,8 @@ class NotificationTargetUser extends NotificationTarget {
 
       // Only lang
       $lang = array('passwordforget.information' => __('You have been made a request to reset your account password.'),
-                    'passwordforget.link'        => __('Just follow this link (you have one day):');
+                    'passwordforget.link'        => __('Just follow this link (you have one day):')
+                    );
 
       foreach ($lang as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
