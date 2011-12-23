@@ -646,7 +646,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][707] . "</td><td>";
+      echo "<td>" . __('Alerts on reservations') . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
@@ -1135,7 +1135,7 @@ class EntityData extends CommonDBChild {
                $ong[1] = $LANG['financial'][44];      // Address
                $ong[2] = $LANG['entity'][14];         // Advanced
                if (Session::haveRight('notification','r')) {
-                  $ong[3] = $LANG['setup'][704];      // Notification
+                  $ong[3] = _n('Notification', 'Notifications',2);      // Notification
                }
                if (Session::haveRight('entity_helpdesk','r')) {
                   $ong[4] = __('Assistance');       // Helpdesk

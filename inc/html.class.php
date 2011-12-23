@@ -1817,10 +1817,10 @@ class Html {
 
       if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
           || Session::haveRight("config","w")) {
-         $menu['config']['content']['mailing']['title'] = $LANG['setup'][704];
+         $menu['config']['content']['mailing']['title'] = _n('Notification', 'Notifications',2);
          $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
          $menu['config']['content']['mailing']['options']['notification']['title']
-                                                        = $LANG['setup'][704];
+                                                        = _n('Notification', 'Notifications',2);
          $menu['config']['content']['mailing']['options']['notification']['page']
                                                         = '/front/notification.php';
          $menu['config']['content']['mailing']['options']['notification']['links']['add']
@@ -1841,7 +1841,7 @@ class Html {
 
       if (Session::haveRight("config","w")) {
 
-         $menu['config']['content']['config']['title'] = $LANG['setup'][703];
+         $menu['config']['content']['config']['title'] = __('General');
          $menu['config']['content']['config']['page']  = '/front/config.form.php';
 
          $menu['config']['content']['control']['title'] = $LANG['Menu'][41];

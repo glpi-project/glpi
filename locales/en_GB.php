@@ -1204,7 +1204,7 @@ $LANG['login'][31]="Authentication on a LDAP directory";
 $LANG['login'][32]="Authentication on GLPI database";
 $LANG['login'][33]="Authentication on mail server";
 
-$LANG['mailgate'][0]="Mails Receiver";
+$LANG['mailgate'][0]="Mails receiver";
 $LANG['mailgate'][1]="Emails refused";
 $LANG['mailgate'][2]="Get email tickets now";
 $LANG['mailgate'][3]="Number of available and retrieved emails";
@@ -2100,17 +2100,19 @@ $LANG['setup'][652]="SMTP+SSL";
 $LANG['setup'][653]="SMTP+TLS";
 $LANG['setup'][660]="Mail server";
 $LANG['setup'][661]="Impossible to configure the notifications : please configure your email followup using the above configuration.";
+
+/// TODO After is ok for migration to gettext
+
+
 $LANG['setup'][703]="General";
 $LANG['setup'][704]="Notifications";
 $LANG['setup'][705]="Notification";
 $LANG['setup'][707]="Alerts on reservations";
-$LANG['setup'][708]="Alerts on tickets which are not solved since";
+$LANG['setup'][708]="Alerts on tickets which are not solved";
 $LANG['setup'][720]="System informations";
 $LANG['setup'][721]="Information about system installation and configuration";
 $LANG['setup'][722]="To copy/paste in your support request";
 $LANG['setup'][732]="Domain of electronic mail service";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][800]="Mysql replicate";
 $LANG['setup'][801]="Enable the MySQL replicate";

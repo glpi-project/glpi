@@ -48,7 +48,7 @@ if (!empty($_POST["test_smtp_send"])) {
    Html::back();
 }
 
-Html::header($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");
+Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'],"config","mailing","config");
 
 $notificationmail->showForm(1);
 

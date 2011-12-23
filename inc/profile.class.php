@@ -1319,7 +1319,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][704]."&nbsp;:</td><td>";
+      echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
       self::dropdownNoneReadWrite("notification", $this->fields["notification"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
@@ -1530,7 +1530,7 @@ class Profile extends CommonDBTM {
 
       $tab[106]['table']    = $this->getTable();
       $tab[106]['field']    = 'notification';
-      $tab[106]['name']     = $LANG['setup'][704];
+      $tab[106]['name']     = _n('Notification', 'Notifications',2);
       $tab[106]['datatype'] = 'right';
 
       $tab[45]['table']    = $this->getTable();

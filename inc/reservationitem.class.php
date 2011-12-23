@@ -340,7 +340,7 @@ class ReservationItem extends CommonDBTM {
    static function cronInfo($name) {
       global $LANG;
 
-      return array('description' => $LANG['setup'][707]);
+      return array('description' => __('Alerts on reservations'));
    }
 
 

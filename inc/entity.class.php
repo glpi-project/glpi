@@ -330,7 +330,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[20]['table']         = 'glpi_entitydatas';
       $tab[20]['field']         = 'mail_domain';
-      $tab[20]['name']          = $LANG['setup'][732];
+      $tab[20]['name']          = __('Domain of electronic mail service');
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('jointype' => 'child');
       $tab[20]['datatype']      = 'string';
@@ -408,7 +408,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[32]['table']         = 'glpi_entitydatas';
       $tab[32]['field']         = 'use_reservations_alert';
-      $tab[32]['name']          = $LANG['setup'][707];
+      $tab[32]['name']          = __('Alerts on reservations');
       $tab[32]['massiveaction'] = false;
       $tab[32]['nosearch']      = true;
       $tab[32]['joinparams']    = array('jointype' => 'child');
@@ -422,7 +422,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[34]['table']         = 'glpi_entitydatas';
       $tab[34]['field']         = 'notclosed_delay';
-      $tab[34]['name']          = $LANG['setup'][708];
+      $tab[34]['name']          = __('Alerts on tickets which are not solved');
       $tab[34]['massiveaction'] = false;
       $tab[34]['nosearch']      = true;
       $tab[34]['joinparams']    = array('jointype' => 'child');

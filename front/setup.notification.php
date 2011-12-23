@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('notification' => 'r',
                                     'config'       => 'w'));
 
-Html::header($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing",-1);
+Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'],"config","mailing",-1);
 
 if (isset($_GET['activate'])) {
    $config = new Config();
@@ -64,7 +64,7 @@ if (!$CFG_GLPI['use_mailing']) {
 
    } else {
       echo "<table class='tab_cadre'>";
-      echo "<tr><th>&nbsp;" . $LANG['setup'][704]."&nbsp;</th></tr>";
+      echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
       if (Session::haveRight("config","r")) {
          echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
                $LANG['setup'][201] ."</a></td></tr>";
@@ -73,8 +73,8 @@ if (!$CFG_GLPI['use_mailing']) {
       }
 
       if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
-         echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-               "</a></td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . 
+               _n('Notification', 'Notifications',2) ."</a></td></tr>";
       } else {
             echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][661] ."</td></tr>";
       }

@@ -4063,7 +4063,7 @@ function update0723to078($output='HTML') {
       $DB->queryOrDie($query, "0.78 add import_externalauth_users right users which are able to write users");
    }
 
-   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), $LANG['setup'][704]); // Updating schema
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s')), 'Notifications'); // Updating schema
    $templates = array();
    if (!TableExists('glpi_notificationtemplates')) {
       $query = "CREATE TABLE `glpi_notificationtemplates` (

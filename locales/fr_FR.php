@@ -2456,7 +2456,7 @@ $LANG['setup'][704] = "Notifications";
 $LANG['setup'][705] = "Notification";
 
 $LANG['setup'][707] = "Alertes sur les réservations";
-$LANG['setup'][708] = "Alertes sur les tickets non résolus depuis";
+$LANG['setup'][708] = "Alertes sur les tickets non résolus";
 
 $LANG['setup'][720] = "Informations système";
 $LANG['setup'][721] = "Informations sur le système, l'installation et la configuration";

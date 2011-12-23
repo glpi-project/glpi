@@ -1335,7 +1335,7 @@ class MailCollector  extends CommonDBTM {
    function showSystemInformations($width) {
       global $LANG, $CFG_GLPI, $DB;
 
-      echo "<tr class='tab_bg_2'><th>".$LANG['setup'][704]." / ".$LANG['mailgate'][0]."</th></tr>\n";
+      echo "<tr class='tab_bg_2'><th>"._n('Notification', 'Notifications',2)."</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $msg = $LANG['setup'][231].": ";
@@ -1362,6 +1362,8 @@ class MailCollector  extends CommonDBTM {
                     $CFG_GLPI['smtp_host'].")";
       }
       echo wordwrap($msg."\n", $width, "\n\t\t");
+
+      echo "<tr class='tab_bg_2'><th>".__('Mails receivers')."</th></tr>\n";
 
       echo $LANG['mailgate'][0]."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
