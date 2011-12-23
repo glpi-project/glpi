@@ -703,7 +703,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $display = $_SESSION["glpiis_categorized_soft_expanded"];
          } else {
             // Not categorized
-            $catname = $LANG['softwarecategories'][2];
+            $catname = __('Uncategorized softwares');
             $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
          }
 

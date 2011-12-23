@@ -42,10 +42,7 @@ class SoftwareCategory extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['softwarecategories'][6];
-      }
-      return $LANG['softwarecategories'][5];
+      return _n('Software category','Software categories', $nb);
    }
 
 

@@ -817,12 +817,12 @@ class Config extends CommonDBTM {
 
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['softwarecategories'][5] ."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". _n('Software category','Software categories', 2) ."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['softwarecategories'][4]."&nbsp;:</td><td>";
+         echo "<td>" . __('Unfold the software belonging to a category')."</td><td>";
          Dropdown::showYesNo("is_categorized_soft_expanded", $data["is_categorized_soft_expanded"]);
-         echo "</td><td>" . $LANG['softwarecategories'][3] . "&nbsp;:</td><td>";
+         echo "</td><td>" . __('Unfold the software without category') . "</td><td>";
          Dropdown::showYesNo("is_not_categorized_soft_expanded",
                              $data["is_not_categorized_soft_expanded"]);
          echo "</td></tr>";
