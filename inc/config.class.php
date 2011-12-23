@@ -190,7 +190,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['setup'][118] . "&nbsp;:</td>";
@@ -865,7 +865,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
@@ -920,7 +920,7 @@ class Config extends CommonDBTM {
       $width = 128;
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
+      echo "<tr><th>" . __('Information about system installation and configuration') . "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       $oldlang = $_SESSION['glpilanguage'];
@@ -984,7 +984,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 
-      echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>\n";
+      echo "<tr class='tab_bg_2'><th>" . __('To copy/paste in your support request') . "</th></tr>\n";
 
       echo "</table></div>\n";
    }
@@ -1104,11 +1104,11 @@ class Config extends CommonDBTM {
             break;
 
          case __CLASS__ :
-            $tabs[1] = $LANG['setup'][70];   // Display
+            $tabs[1] = __('General setup');   // Display
             $tabs[2] = $LANG['setup'][48];   // Prefs
             $tabs[3] = $LANG['Menu'][38];    // Inventory
             $tabs[4] = __('Assistance'); 
-            $tabs[5] = $LANG['setup'][720];  // SysInfo
+            $tabs[5] = __('System informations');  // SysInfo
 
             if (DBConnection::isDBSlaveActive()) {
                $tabs[6]  = _n('Mysql replicate', 'Mysql replicates',2);  // Slave

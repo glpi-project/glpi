@@ -134,7 +134,7 @@ class Event extends CommonDBTM {
                           'reservation'  => $LANG['log'][42],
                           'cron'         => $LANG['log'][59],
                           'document'     => $LANG['Menu'][27],
-                          'notification' => $LANG['setup'][704],
+                          'notification' => _n('Notification', 'Notifications',2),
                           'plugin'       => __('Plugins'));
 
       return array($logItemtype, $logService);

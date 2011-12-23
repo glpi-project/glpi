@@ -102,10 +102,7 @@ class Notification extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][704];
-      }
-      return $LANG['setup'][705];
+      return _n('Notification', 'Notifications',$nb);
    }
 
 

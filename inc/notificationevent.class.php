@@ -187,8 +187,8 @@ class NotificationEvent extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['setup'][137].' - '.$LANG['setup'][704].
-               "<font color='blue'> (".$item->getTypeName().")</font></th></tr>";
+      echo "<tr><th colspan='2'>"._n('Notification', 'Notifications',2).
+               "</th><th colspan='2'><font color='blue'> (".$item->getTypeName().")</font></th></tr>";
 
       $events = array();
       if ($target = NotificationTarget::getInstanceByType(get_class($item))) {

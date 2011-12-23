@@ -1795,7 +1795,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                 '= '.self::ASSIGN)));
 
-      $tab['notification'] = $LANG['setup'][704];
+      $tab['notification'] = _n('Notification', 'Notifications',2);
 
       $tab[35]['table']      = getTableForItemType($this->userlinkclass);
       $tab[35]['field']      = 'use_notification';
