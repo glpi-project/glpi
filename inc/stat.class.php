@@ -332,55 +332,75 @@ class Stat {
                echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '',
                                            0, '', "colspan='3'");
             }
-            echo Search::showHeaderItem($output_type, $LANG['stats'][8], $header_num, '', 0, '',
+            echo Search::showHeaderItem($output_type, __('Average time'), $header_num, '', 0, '',
                                         $itemtype =='Ticket'?"colspan='3'":"colspan='2'");
-            echo Search::showHeaderItem($output_type, $LANG['stats'][26], $header_num, '', 0, '',
+            echo Search::showHeaderItem($output_type, __('Real duration of treatment of the ticket'), $header_num, '', 0, '',
                                         "colspan='2'");
          }
 
          echo Search::showNewLine($output_type);
          $header_num    = 1;
-         $header_to_add = '';
          echo Search::showHeaderItem($output_type, $subname, $header_num);
 
          if ($output_type == Search::HTML_OUTPUT) { // HTML display
             echo Search::showHeaderItem($output_type, "", $header_num);
          }
          if ($output_type != Search::HTML_OUTPUT) {
-            $header_to_add = $LANG['stats'][13].' - ';
+            echo Search::showHeaderItem($output_type, __('Number of opened tickets'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Number of solved tickets'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
+         } else {
+            echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Solved'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Late'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][14], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][15], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][17], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['job'][16], $header_num);
+         
 
          if ($itemtype =='Ticket') {
             if ($output_type != Search::HTML_OUTPUT) {
-               $header_to_add = $LANG['satisfaction'][0].' - ';
+               echo Search::showHeaderItem($output_type, __('Number of opened satisfaction survey'),
+                                          $header_num);
+               echo Search::showHeaderItem($output_type, __('Number of answered satisfaction survey'),
+                                          $header_num);
+               echo Search::showHeaderItem($output_type, __('Average satisfaction'),
+                                          $header_num);
+            
+            } else {
+               echo Search::showHeaderItem($output_type, __('Opened'),
+                                          $header_num);
+               echo Search::showHeaderItem($output_type, __('Answered'),
+                                          $header_num);
+               echo Search::showHeaderItem($output_type, _('Average'),
+                                          $header_num);
             }
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][13],
-                                        $header_num);
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['satisfaction'][14],
-                                       $header_num);
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107],
-                                        $header_num);
          }
 
          if ($output_type != Search::HTML_OUTPUT) {
-            $header_to_add = $LANG['stats'][8].' - ';
+            if ($itemtype =='Ticket') {
+               echo Search::showHeaderItem($output_type, __('Average time to take into account'),
+                                          $header_num);
+            }
+            echo Search::showHeaderItem($output_type, __('Average time to resolution'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Average time to closure'), $header_num);
+         } else {
+            if ($itemtype =='Ticket') {
+               echo Search::showHeaderItem($output_type, __('Take into account'),
+                                          $header_num);
+            }
+            echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Closuse'), $header_num);
          }
-         if ($itemtype =='Ticket') {
-            echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][12],
-                                        $header_num);
-         }
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][9], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['stats'][10], $header_num);
+         
 
          if ($output_type != Search::HTML_OUTPUT) {
-            $header_to_add = $LANG['stats'][26].' - ';
+            echo Search::showHeaderItem($output_type, __('Average real duration of treatment of the ticket'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Total real duration of treatment of the ticket'), $header_num);
+         } else {
+            echo Search::showHeaderItem($output_type, __('Average'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Total'), $header_num);
          }
-         echo Search::showHeaderItem($output_type, $header_to_add.$LANG['common'][107], $header_num);
-         echo Search::showHeaderItem($output_type, $header_to_add.__('Total'), $header_num);
          // End Line for column headers
          echo Search::showEndLine($output_type);
          $row_num = 1;
@@ -589,7 +609,7 @@ class Stat {
          echo Search::showFooter($output_type);
 
       } else {
-         echo $LANG['stats'][23];
+         _e('No statistics are available');
       }
 
       if ($output_type == Search::HTML_OUTPUT) { // HTML display
@@ -1048,7 +1068,7 @@ class Stat {
 
          if (!is_array($entrees) || count($entrees) == 0) {
             if (!empty($param['title'])) {
-               echo "<div class='center'>".$param['title']." : ".$LANG['stats'][2]."</div>";
+               echo "<div class='center'>".$param['title']."<br>".__('No item to display')."</div>";
             }
             return false;
          }
@@ -1327,7 +1347,7 @@ class Stat {
          if ($view_entities) {
             echo Search::showHeaderItem($output_type, $LANG['entity'][0], $header_num);
          }
-         echo Search::showHeaderItem($output_type, $LANG['stats'][13], $header_num);
+         echo Search::showHeaderItem($output_type, __('Number of tickets'), $header_num);
          echo Search::showEndLine($output_type);
 
          $DB->data_seek($result, $start);
@@ -1378,26 +1398,26 @@ class Stat {
     || Session::haveRight("show_all_problem", "1");
 
       $opt_list["Ticket"] = $LANG['Menu'][5];
-      $stat_list["Ticket"]["Ticket_Global"]["name"]  = $LANG['stats'][1];
+      $stat_list["Ticket"]["Ticket_Global"]["name"]  = __('Global');
       $stat_list["Ticket"]["Ticket_Global"]["file"]  = "stat.global.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Ticket"]["name"]  = $LANG['stats'][47];
+      $stat_list["Ticket"]["Ticket_Ticket"]["name"]  = __('By ticket');
       $stat_list["Ticket"]["Ticket_Ticket"]["file"]  = "stat.tracking.php?itemtype=Ticket";
       $stat_list["Ticket"]["Ticket_Location"]["name"]  = __('By hardware characteristics');
       $stat_list["Ticket"]["Ticket_Location"]["file"]  = "stat.location.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Item"]["name"]  = $LANG['stats'][45];
+      $stat_list["Ticket"]["Ticket_Item"]["name"]  = __('By hardware');
       $stat_list["Ticket"]["Ticket_Item"]["file"]  = "stat.item.php";
 
       if ($show_problem) {
          $opt_list["Problem"] = $LANG['Menu'][7];
-         $stat_list["Problem"]["Problem_Global"]["name"]  = $LANG['stats'][1];
+         $stat_list["Problem"]["Problem_Global"]["name"]  = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]  = "stat.global.php?itemtype=Problem";
-         $stat_list["Problem"]["Problem_Problem"]["name"]  = $LANG['stats'][46];
+         $stat_list["Problem"]["Problem_Problem"]["name"]  = __('By problem');
          $stat_list["Problem"]["Problem_Problem"]["file"]  = "stat.tracking.php?itemtype=Problem";
       }
 
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['stats'][0]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo "<select name='statmenu' onchange='window.location.href=this.options
     [this.selectedIndex].value'>";

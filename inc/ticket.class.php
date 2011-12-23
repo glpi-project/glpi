@@ -1785,7 +1785,7 @@ class Ticket extends CommonITILObject {
 
       $tab[150]['table']         = $this->getTable();
       $tab[150]['field']         = 'takeintoaccount_delay_stat';
-      $tab[150]['name']          = $LANG['stats'][24];
+      $tab[150]['name']          = __('Take into account time');
       $tab[150]['datatype']      = 'timestamp';
       $tab[150]['forcegroupby']  = true;
       $tab[150]['massiveaction'] = false;

@@ -99,7 +99,7 @@ echo "</select></td>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
 Html::showDateFormItem("date1",$_REQUEST["date1"]);
 echo "</td>";
-echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
+echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value='". $_REQUEST['itemtype'] ."'>";
 echo "<input type='submit' class='button' name='submit' value='".__s('Update')."'></td></tr>";
@@ -161,10 +161,10 @@ if (!$_REQUEST['showgraph']) {
       foreach ($data['opened'] as $key => $val) {
          $cleandata[Html::clean($key)] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][5] => $cleandata),
-                      array('title'     => $LANG['stats'][5],
+      Stat::showGraph(array(__('Number opened') => $cleandata),
+                      array('title'     => __('Number opened'),
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
    }
 
@@ -173,10 +173,10 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[Html::clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                      array('title'     => $LANG['stats'][11],
+      Stat::showGraph(array(__('Number solved') => $cleandata),
+                      array('title'     => __('Number solved'),
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
    }
 
@@ -185,10 +185,10 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[Html::clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][19] => $cleandata),
-                      array('title'     => $LANG['stats'][19],
+      Stat::showGraph(array(__('Number resolved late') => $cleandata),
+                      array('title'     => __('Number resolved late'),
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
    }
 
@@ -197,10 +197,10 @@ if (!$_REQUEST['showgraph']) {
          $newkey = Html::clean($key);
          $cleandata[$newkey]=$val;
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                      array('title'     => $LANG['stats'][17],
+      Stat::showGraph(array(__('Number closed') => $cleandata),
+                      array('title'     => __('Number closed'),
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
    }
 
@@ -209,10 +209,10 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
+      Stat::showGraph(array($LANG['satisfaction'][3] => $cleandata),
                       array('title'     => $LANG['satisfaction'][3],
                             'showtotal' => 1,
-                            'unit'      => $LANG['stats'][35],
+                            'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
    }
 

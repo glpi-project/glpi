@@ -1666,21 +1666,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[151]['table']         = $this->getTable();
       $tab[151]['field']         = 'solve_delay_stat';
-      $tab[151]['name']          = $LANG['stats'][21];
+      $tab[151]['name']          = __('Resolution time');
       $tab[151]['datatype']      = 'timestamp';
       $tab[151]['forcegroupby']  = true;
       $tab[151]['massiveaction'] = false;
 
       $tab[152]['table']         = $this->getTable();
       $tab[152]['field']         = 'close_delay_stat';
-      $tab[152]['name']          = $LANG['stats'][22];
+      $tab[152]['name']          = __('Closing time');
       $tab[152]['datatype']      = 'timestamp';
       $tab[152]['forcegroupby']  = true;
       $tab[152]['massiveaction'] = false;
 
       $tab[153]['table']         = $this->getTable();
       $tab[153]['field']         = 'waiting_duration';
-      $tab[153]['name']          = $LANG['stats'][25];
+      $tab[153]['name']          = __('Waiting time');
       $tab[153]['datatype']      = 'timestamp';
       $tab[153]['forcegroupby']  = true;
       $tab[153]['massiveaction'] = false;
@@ -2725,7 +2725,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr><th colspan='2'>".$LANG['common'][100]."</th></tr>";
 
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['stats'][12]."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('Take into account')."</td><td>";
          if ($this->fields['takeintoaccount_delay_stat']>0) {
             echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'],0);
          } else {
@@ -2735,7 +2735,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
-         echo "<tr class='tab_bg_2'><td>".$LANG['stats'][9]."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('Resolution')."</td><td>";
 
          if ($this->fields['solve_delay_stat']>0) {
             echo Html::timestampToString($this->fields['solve_delay_stat'],0);
@@ -2746,7 +2746,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($this->fields['status']=='closed') {
-         echo "<tr class='tab_bg_2'><td>".$LANG['stats'][10]."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('Closure')."</td><td>";
          if ($this->fields['close_delay_stat']>0) {
             echo Html::timestampToString($this->fields['close_delay_stat']);
          } else {

@@ -2571,7 +2571,7 @@ $LANG['stats'][12] = "Prise en compte";
 $LANG['stats'][13] = "Nombre de tickets";
 $LANG['stats'][14] = "Durée réelle";
 $LANG['stats'][15] = "Nombre de problèmes";
-$LANG['stats'][16] = "Nom du technicien";
+$LANG['stats'][16] = "Technicien";
 $LANG['stats'][17] = "Nombre clos";
 
 $LANG['stats'][19] = "Nombre résolus en retard";
@@ -2587,7 +2587,7 @@ $LANG['stats'][33] = "Min(s)";
 $LANG['stats'][34] = "Sec(s)";
 $LANG['stats'][35] = "Ticket(s)";
 
-$LANG['stats'][44] = "Nom du fournisseur";
+$LANG['stats'][44] = "Fournisseur";
 $LANG['stats'][45] = "Par matériel";
 $LANG['stats'][46] = "Par problème";
 $LANG['stats'][47] = "Par ticket";
