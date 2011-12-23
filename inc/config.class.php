@@ -201,7 +201,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo "</td><td>" . $LANG['setup'][407] . "&nbsp;:</td>";
+      echo "</td><td>" . __('Simplified interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' value='" .
                  $CFG_GLPI["helpdesk_doc_url"] . "'></td>";
       echo "</tr>";
@@ -209,7 +209,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
       Dropdown::showInteger("list_limit_max", $CFG_GLPI["list_limit_max"], 5, 200, 5);
-      echo "</td><td>" . $LANG['setup'][408] . "&nbsp;:</td>";
+      echo "</td><td>" . __('Standard interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='central_doc_url' value='" .
                  $CFG_GLPI["central_doc_url"] . "'></td>";
       echo "</tr>";
@@ -217,7 +217,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][108] . "&nbsp;:</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
-      echo "</td><td>" . $LANG['setup'][314] . "&nbsp;:</td><td>";
+      echo "</td><td>" . __('Maximum capacity of displayed characters for URLs') . "</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
       echo "</td>";
       echo "</tr>";
@@ -328,7 +328,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Automatic fields (marked by *)') . "</td><td>";
       $tab = array(0 => __('Global'),
                    1 => $LANG['entity'][8]);
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
@@ -551,7 +551,7 @@ class Config extends CommonDBTM {
       echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
       Dropdown::show('DocumentCategory',
                      array('value' => $CFG_GLPI["documentcategories_id_forticket"],
                            'name'  => "documentcategories_id_forticket"));
@@ -777,7 +777,7 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
          echo " </td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][40] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td><td> " . $LANG['job'][44] . "&nbsp;:</td><td>";
          Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
@@ -889,7 +889,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' class='center b'>".$LANG['setup'][306].' - '.$LANG['setup'][400]."</td>";
+      echo "<td colspan='4' class='center b'>".__('Proxy configuration for check for upgrade')."</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";

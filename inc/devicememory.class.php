@@ -67,7 +67,7 @@ class DeviceMemory extends CommonDevice {
                                array('name'  => 'frequence',
                                      'label' => $LANG['device_ram'][1],
                                      'type'  => 'text',
-                                     'unit'  => $LANG['setup'][35]),
+                                     'unit'  => __('MHz')),
                                array('name'  => 'devicememorytypes_id',
                                      'label' => __('Type'),
                                      'type'  => 'dropdownValue')));

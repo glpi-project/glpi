@@ -2039,7 +2039,7 @@ $LANG['setup'][275]="Restrict printer management";
 $LANG['setup'][280]="Automatically update of the elements related to the computers";
 $LANG['setup'][281]="When connecting or updating";
 $LANG['setup'][282]="When disconnecting";
-$LANG['setup'][283]="Copy";
+$LANG['setup'][283]=" Copy";
 $LANG['setup'][284]="Clear";
 $LANG['setup'][285]="Do not copy";
 $LANG['setup'][286]="Do not delete";
@@ -2056,21 +2056,25 @@ $LANG['setup'][306]="Check for upgrade";
 $LANG['setup'][307]="Never";
 $LANG['setup'][308]="Each week";
 $LANG['setup'][309]="Each month";
-$LANG['setup'][310]="Impossible to connect to site.";
+
+/// TODO After is ok for migration to gettext
+
+$LANG['setup'][310]="Impossible to connect to site";
 $LANG['setup'][311]="Failed to connect to the proxy server";
 $LANG['setup'][312]="No data available on the web site";
 $LANG['setup'][313]="Be careful : there is no default value";
 $LANG['setup'][314]="Maximum capacity of displayed characters for URLs";
+
+
 $LANG['setup'][350]="Link with items for the creation of tickets";
-$LANG['setup'][351]="All Items";
-$LANG['setup'][352]="Linkable items to a ticket";
+$LANG['setup'][351]="All items";
+$LANG['setup'][352]="Associable items to a ticket";
 $LANG['setup'][360]="Automatic fields (marked by *)";
+
 $LANG['setup'][400]="Proxy configuration";
 $LANG['setup'][407]="Simplified interface help link";
 $LANG['setup'][408]="Standard interface help link";
 $LANG['setup'][409]="Default heading when adding a document to a ticket";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][503]="Phones models";
 $LANG['setup'][504]="Phones types";
