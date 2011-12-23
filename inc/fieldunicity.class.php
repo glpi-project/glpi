@@ -48,7 +48,7 @@ class FieldUnicity extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['setup'][811];
+      return __('Fields unicity');
    }
 
 
@@ -72,13 +72,13 @@ class FieldUnicity extends CommonDropdown {
                          'label' => __('Type'),
                          'type'  => 'unicity_itemtype'),
                    array('name'  => 'fields',
-                         'label' => $LANG['setup'][815],
+                         'label' => __('Unique fields'),
                          'type'  => 'unicity_fields'),
                    array('name'  => 'action_refuse',
-                         'label' => $LANG['setup'][821],
+                         'label' => __('Record into the database denied'),
                          'type'  => 'bool'),
                    array('name'  => 'action_notify',
-                         'label' => $LANG['setup'][822],
+                         'label' => __(),
                          'type'  => 'bool'));
    }
 
@@ -105,7 +105,7 @@ class FieldUnicity extends CommonDropdown {
 
       if (!$withtemplate) {
          if ($item->getType()==$this->getType()) {
-            return $LANG['setup'][826];
+            return __('Duplicates');
          }
       }
       return '';
@@ -284,7 +284,7 @@ class FieldUnicity extends CommonDropdown {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['setup'][811];
+      $tab['common'] = __('Fields unicity');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -300,7 +300,7 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'fields';
-      $tab[3]['name']          = $LANG['setup'][815];
+      $tab[3]['name']          = __('Unique fields');
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
@@ -312,12 +312,12 @@ class FieldUnicity extends CommonDropdown {
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'action_refuse';
-      $tab[5]['name']          = $LANG['setup'][821];
+      $tab[5]['name']          = __('Record into the database denied');
       $tab[5]['datatype']      = 'bool';
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'action_notify';
-      $tab[6]['name']          = $LANG['setup'][822];
+      $tab[6]['name']          = __('Send a notification');
       $tab[6]['datatype']      = 'bool';
 
       $tab[86]['table']    = $this->getTable();
@@ -356,7 +356,7 @@ class FieldUnicity extends CommonDropdown {
       global $LANG;
 
       if (!$input['itemtype'] || empty($input['_fields'])) {
-         Session::addMessageAfterRedirect($LANG['setup'][817], true, ERROR);
+         Session::addMessageAfterRedirect(__("It's mandatory to select a type and at least one field"), true, ERROR);
          $input = array();
 
       } else {
@@ -418,7 +418,7 @@ class FieldUnicity extends CommonDropdown {
       if (!empty($fields)) {
          $colspan = count($fields) + 1;
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><th colspan='".$colspan."'>".$LANG['setup'][826]."</th></tr>";
+         echo "<tr class='tab_bg_2'><th colspan='".$colspan."'>".__('Duplicates')."</th></tr>";
 
          $entities = array($unicity->fields['entities_id']);
          if ($unicity->fields['is_recursive']) {

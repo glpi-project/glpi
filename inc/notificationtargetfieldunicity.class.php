@@ -37,7 +37,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('refuse' => $LANG['setup'][827]);
+      return array('refuse' => __('Alert on duplicate record'));
    }
 
 
@@ -58,9 +58,9 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $this->datas['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
       if ($options['refuse']) {
-         $this->datas['##unicity.action##'] = $LANG['setup'][821];
+         $this->datas['##unicity.action##'] = __('Record into the database denied');
       } else {
-         $this->datas['##unicity.action##'] = $LANG['setup'][823];
+         $this->datas['##unicity.action##'] = __('Item successfully added but duplicate record on');
       }
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -75,12 +75,12 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       global $LANG;
 
       $tags = array('unicity.message'     => $LANG['event'][4],
-                    'unicity.action_user' => $LANG['setup'][824],
-                    'unicity.action_type' => $LANG['setup'][825],
+                    'unicity.action_user' => __('Doer'),
+                    'unicity.action_type' => __('Intended action'),
                     'unicity.date'        => __('Date'),
                     'unicity.itemtype'    => __('Type'),
                     'unicity.entity'      => $LANG['entity'][0],
-                    'unicity.action'      => $LANG['setup'][827]);
+                    'unicity.action'      => __('Alert on duplicate record'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

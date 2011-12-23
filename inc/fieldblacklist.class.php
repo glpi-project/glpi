@@ -42,10 +42,7 @@ class Fieldblacklist extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][829];
-      }
-      return $LANG['setup'][828];
+      return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
    }
 
 

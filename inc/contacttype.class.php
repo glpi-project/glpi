@@ -42,10 +42,7 @@ class ContactType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][82];
-      }
-      return $LANG['dropdown'][15];
+      return _n('Contact type', 'Contact types', $nb);
    }
 }
 

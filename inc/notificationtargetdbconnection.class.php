@@ -48,7 +48,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('desynchronization' => $LANG['setup'][810]);
+      return array('desynchronization' => __('Desynchronization MySQL replication'));
    }
 
 
@@ -75,7 +75,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('dbconnection.delay' => $LANG['setup'][803]);
+      $tags = array('dbconnection.delay' => __('Difference between master and slave'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -85,8 +85,8 @@ class NotificationTargetDBConnection extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('dbconnection.title' => $LANG['setup'][808],
-                    'dbconnection.delay' => $LANG['setup'][807]);
+      $tags = array('dbconnection.title' => __('Slave database out of sync!'),
+                    'dbconnection.delay' => __('The slave base is desynchronized. The difference is of:'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

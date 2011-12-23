@@ -2670,12 +2670,12 @@ class CommonDBTM extends CommonGLPI {
       global $LANG;
 
       if ($unicity['action_refuse']) {
-         $message_text = $LANG['setup'][813];
+         $message_text = sprintf(__('Impossible record for %s'),implode('&nbsp;&&nbsp;',$message));
       } else {
-         $message_text = $LANG['setup'][823];
+         $message_text = sprintf(__('Item successfully added but duplicate record on %s'),
+                                 implode('&nbsp;&&nbsp;',$message));
       }
-      $message_text .= " ".implode('&nbsp;&&nbsp;',$message);
-      $message_text .= $LANG['setup'][818];
+      $message_text .= '<br>'.__('Other items exist');
 
       foreach ($doubles as $double) {
          $doubles_text = array();
@@ -2705,10 +2705,10 @@ class CommonDBTM extends CommonGLPI {
          }
          // Add information on item in trash
          if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-            $doubles_text[] = $LANG['setup'][820];
+            $doubles_text[] = __('Item in the trash');
          }
 
-         $message_text .= "<br>[".implode(', ',$doubles_text)."]";
+         $message_text .= "<br>[".implode(' - ',$doubles_text)."]";
       }
       return $message_text;
    }

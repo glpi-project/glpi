@@ -488,7 +488,7 @@ class OcsServer extends CommonDBTM {
       $actions[0] = Dropdown::EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
       foreach (getAllDatasFromTable('glpi_states') as $state) {
-         $actions['STATE_'.$state['id']] = $LANG['setup'][819].' '.$state['name'];
+         $actions['STATE_'.$state['id']] = sprintf(__('Change to state %s'),$state['name']);
       }
       Dropdown::showFromArray('deleted_behavior', $actions,
                               array('value' => $this->fields['deleted_behavior']));

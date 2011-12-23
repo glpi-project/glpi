@@ -685,7 +685,7 @@ class Dropdown {
                         $LANG['rulesengine'][19]
                         => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
 
-                        $LANG['setup'][811]
+                        __('Fields unicity')
                         => array('Fieldblacklist' => Fieldblacklist::getTypeName(2))
 
                  ); //end $opt
