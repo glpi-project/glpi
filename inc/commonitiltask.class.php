@@ -793,7 +793,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (isset($this->fields["state"])) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['state'][0]."&nbsp;:</td><td>";
+         echo "<td>".__('Status')."</td><td>";
          Planning::dropdownState("state", $this->fields["state"]);
          echo "</td></tr>\n";
       }

@@ -2184,13 +2184,12 @@ $LANG['softwarecategories'][4]="Unfold the software belonging to a category";
 $LANG['softwarecategories'][5]="Software category";
 $LANG['softwarecategories'][6]="Software categories";
 
-$LANG['state'][0]="Status";
-$LANG['state'][1]="Summary";
-$LANG['state'][6]="Item Type";
-$LANG['state'][7]="No items found";
-
 /// TODO After is ok for migration to gettext
 
+$LANG['state'][0]="Status";
+$LANG['state'][1]="Summary";
+$LANG['state'][6]="Item type";
+$LANG['state'][7]="No items found";
 
 $LANG['stats'][0]="Select statistics to be displayed";
 $LANG['stats'][1]="Global";

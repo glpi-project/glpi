@@ -952,7 +952,7 @@ class Search {
                echo self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
             }
             if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
-               echo self::showHeaderItem($output_type, $LANG['state'][6], $header_num);
+               echo self::showHeaderItem($output_type, __('Item type'), $header_num);
             }
             if ($itemtype == 'ReservationItem' && $output_type == self::HTML_OUTPUT) {
                if (Session::haveRight("reservation_central","w")) {
@@ -4618,7 +4618,7 @@ class Search {
 
             $search['States'][31]['table']     = 'glpi_states';
             $search['States'][31]['field']     = 'completename';
-            $search['States'][31]['name']      = $LANG['state'][0];
+            $search['States'][31]['name']      = __('Status');
 
             $search['States'] += Location::getSearchOptionsToAdd();
 

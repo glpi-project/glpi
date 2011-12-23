@@ -359,7 +359,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Location')."</a></th>";
             echo "<th>".(strstr($sort,"state")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Status')."</a></th>";
             echo "<th>".(strstr($sort,"groupe")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=groupe,compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Group')."</a></th>";
@@ -731,7 +731,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }
-      echo "<th>" . __('Name') . "</th><th>" . $LANG['state'][0] . "</th>";
+      echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
       echo "<th>" .$LANG['rulesengine'][78]."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
 
       return $cat;

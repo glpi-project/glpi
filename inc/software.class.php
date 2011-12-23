@@ -448,7 +448,7 @@ class Software extends CommonDBTM {
 
       $tab[31]['table']         = 'glpi_states';
       $tab[31]['field']         = 'completename';
-      $tab[31]['name']          = $LANG['state'][0];
+      $tab[31]['name']          = __('Status');
       $tab[31]['forcegroupby']  = true;
       $tab[31]['massiveaction'] = false;
       $tab[31]['joinparams']    = array('beforejoin'

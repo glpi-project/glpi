@@ -269,7 +269,7 @@ class RuleTicket extends Rule {
 
       $criterias['itemtype']['table']     = 'glpi_tickets';
       $criterias['itemtype']['field']     = 'itemtype';
-      $criterias['itemtype']['name']      = $LANG['state'][6];
+      $criterias['itemtype']['name']      = __('Item type');
       $criterias['itemtype']['linkfield'] = 'itemtype';
       $criterias['itemtype']['type']      = 'dropdown_tracking_itemtype';
 

@@ -2306,7 +2306,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".$LANG['state'][0]."&nbsp;: </span>$tmp<br>";
+            $comment .= "<span class='b'>".__('Status')."&nbsp;: </span>$tmp<br>";
          }
       }
 
