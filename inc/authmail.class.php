@@ -115,7 +115,7 @@ class AuthMail extends CommonDBTM {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'connect_string';
-      $tab[4]['name']          = $LANG['setup'][170];
+      $tab[4]['name']          = __('Connection string');
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'string';
 

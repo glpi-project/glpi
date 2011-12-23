@@ -437,7 +437,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['ldap'][45] . "&nbsp;:</td><td>";
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
-      echo "</td><td> " . $LANG['setup'][187] . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('GLPI server time zone') . "</td><td>";
       Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
       echo "</td></tr>";
 
@@ -882,7 +882,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
+      echo "<td> " . __('Logs in files (SQL, email, automatic action...)') . "</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
       echo "</td><td> " . __('Active') . "&nbsp;:</td><td>";
       $active = DBConnection::isDBSlaveActive();
@@ -896,7 +896,8 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Server') . "</td>";
       echo "<td><input type='text' name='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
-      echo "<td>" . $LANG['setup'][175] . "&nbsp;:</td>";
+      //TRANS: Proxy port
+      echo "<td>" . __('Port') . "</td>";
       echo "<td><input type='text' name='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
       echo "</tr>";
 

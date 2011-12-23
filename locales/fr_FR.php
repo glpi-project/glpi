@@ -2267,7 +2267,7 @@ $LANG['setup'][148] = "Pas pour les horaires";
 $LANG['setup'][149] = "Nombre de décimales pour les montants";
 $LANG['setup'][150] = "Format des nombres";
 
-$LANG['setup'][154] = "Basedn";
+$LANG['setup'][154] = "BaseDN";
 $LANG['setup'][155] = "DN du compte (pour les connexions non anonymes)";
 $LANG['setup'][156] = "Mot de passe du compte (pour les connexions non anonymes)";
 $LANG['setup'][157] = "L'extension LDAP de votre parseur PHP n'est pas installée";
@@ -2320,7 +2320,7 @@ $LANG['setup'][206] = "Échec de l'envoi du courriel de test à l'administrateur
 $LANG['setup'][207] = "Courriel de réponse (si nécessaire)";
 $LANG['setup'][208] = "Nom de l'administrateur";
 $LANG['setup'][209] = "Nom de réponse (si nécessaire)";
-$LANG['setup'][217] = "La fonction mail PHP n'existe pas ou est désactivée sur votre système";
+$LANG['setup'][217] = "La fonction mail PHP n'existe pas ou est désactivée sur votre système.";
 $LANG['setup'][218] = "L'utilisation d'un serveur SMTP est indispensable";
 $LANG['setup'][219] = "Autoriser les ouvertures de tickets anonymes (helpdesk.html, collecteur)";
 $LANG['setup'][220] = "Autoriser les suivis anonymes (collecteur)";

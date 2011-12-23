@@ -1608,12 +1608,14 @@ class Toolbox {
       echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $mailbox . "\" >";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][171] . "&nbsp;:</td>";
+      //TRANS: for mail connection system
+      echo "<tr class='tab_bg_1'><td>" . __('Port (optional)') . "</td>";
       echo "<td><input size='10' type='text' name='server_port' value='$port'></td></tr>\n";
       if (empty($value)) {
          $value = "&nbsp;";
       }
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][170] . "&nbsp;:</td>";
+      //TRANS: for mail connection system
+      echo "<tr class='tab_bg_1'><td>" . __('Connection string') . "</td>";
       echo "<td class='b'>$value</td></tr>\n";
    }
 

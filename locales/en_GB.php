@@ -1942,8 +1942,8 @@ $LANG['setup'][147]="Dynamic display";
 $LANG['setup'][148]="Step for the hours";
 $LANG['setup'][149]="Number of decimals in amounts";
 $LANG['setup'][150]="Number Format";
-$LANG['setup'][154]="Basedn";
-$LANG['setup'][155]="rootdn (for non anonymous binds)";
+$LANG['setup'][154]="BaseDN";
+$LANG['setup'][155]="RootDN (for non anonymous binds)";
 $LANG['setup'][156]="Pass (for non-anonymous binds)";
 $LANG['setup'][157]="The LDAP extension of your PHP parser isn't installed";
 $LANG['setup'][158]="Impossible to use LDAP as external source of connection";
@@ -1955,6 +1955,9 @@ $LANG['setup'][166]="Impossible to use email server as external source of connec
 $LANG['setup'][167]="Binding to the LDAP directory";
 $LANG['setup'][168]="Connection options";
 $LANG['setup'][169]="Mail folder (optional, often INBOX)";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][170]="Connection string";
 $LANG['setup'][171]="Port (optional)";
 $LANG['setup'][172]="Port (default=389)";
@@ -1970,8 +1973,6 @@ $LANG['setup'][182]="Logout fallback URL";
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)";
 $LANG['setup'][186]="LDAP directory time zone";
 $LANG['setup'][187]="GLPI server time zone";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][190]="x509 certificate authentication";
 $LANG['setup'][191]="Email attribute for x509 authentication";

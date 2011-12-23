@@ -113,23 +113,6 @@ class RuleDictionnaryPrinter extends RuleCached {
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = __('Manufacturer');
       $criterias['manufacturer']['table'] = '';
-/*
-      $criterias['PORT']['field'] = 'PORT';
-      $criterias['PORT']['name']  = $LANG['setup'][175];
-      $criterias['PORT']['table'] = '';
-
-      $criterias['DRIVER']['field'] = 'DRIVER';
-      $criterias['DRIVER']['name']  = $LANG['printers'][32];
-      $criterias['DRIVER']['table'] = '';
-
-      $criterias['model']['field'] = 'model';
-      $criterias['model']['name']  = __('Model');
-      $criterias['model']['table'] = '';
-
-      $criterias['type']['field'] = 'type';
-      $criterias['type']['name']  = __('Type');
-      $criterias['type']['table'] = '';
-*/
 
       $criterias['comment']['field'] = 'comment';
       $criterias['comment']['name']  = __('Comments');

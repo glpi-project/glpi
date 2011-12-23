@@ -1690,7 +1690,7 @@ class User extends CommonDBTM {
          echo "<div class='center'>";
          echo "<form method='post' name='user_manager' action='".$target."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>" . $LANG['setup'][18] . "&nbsp;: " .$this->fields["name"];
+         echo "<tr><th colspan='4'>" . sprintf(__('Login: %s'), $this->fields["name"]);
          echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
          echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
          echo "</th></tr>";
@@ -1906,7 +1906,7 @@ class User extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['setup'][18];
+      $tab[1]['name']          = __('Login');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['forcegroupby']  = true;
