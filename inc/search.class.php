@@ -797,7 +797,7 @@ class Search {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows>$p['start']+self::GLOBAL_DISPLAY_COUNT) {
-                  echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
+                  echo " <a href='$target?$parameters'>".__('All')."</a>";
                }
                echo "</h2></div>\n";
             } else {
@@ -1173,7 +1173,7 @@ class Search {
                         }
                         switch ($p['field'][$key]) {
                            case "all" :
-                              $title .= $LANG['common'][66];
+                              $title .= __('All');
                               break;
 
                            case "view" :
@@ -1445,8 +1445,10 @@ class Search {
                       document.forms['searchform$itemtype'].submit();\">
                       <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
                        (!$p['is_deleted']?'_no':'').".png\" name='img_deleted'  alt=\"".
-                       (!$p['is_deleted']?__s('Show the trash'):$LANG['common'][81])."\" title=\"".
-                       (!$p['is_deleted']?__s('Show the trash'):$LANG['common'][81])."\" ></a>";
+                       (!$p['is_deleted']?__s('Show the trash'):__s("Don't show deleted items")).
+                      "\" title=\"".
+                       (!$p['is_deleted']?__s('Show the trash'):__s("Don't show deleted items")).
+                      "\" ></a>";
                // Dropdown::showYesNo("is_deleted",$p['is_deleted']);
                echo '&nbsp;&nbsp;';
             }
@@ -1538,7 +1540,7 @@ class Search {
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
             echo "selected";
          }
-         echo ">".$LANG['common'][66]."</option>";
+         echo ">".__('All')."</option>";
          echo "</select>\n";
 
          echo "</td><td class='left'>";

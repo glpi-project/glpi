@@ -53,7 +53,7 @@ echo "<tr class='tab_bg_2'>";
 echo "<td width='150' class='center'>";
 echo "<p class='b'>".$LANG['reports'][12]."</p> ";
 echo "<p><select name='item_type[]' size='8' multiple>";
-echo "<option value='0' selected>".$LANG['common'][66]."</option>";
+echo "<option value='0' selected>".__('All')."</option>";
 echo "<option value='Computer'>".$LANG['Menu'][0]."</option>";
 echo "<option value='Printer'>".$LANG['Menu'][2]."</option>";
 echo "<option value='NetworkEquipment'>".$LANG['help'][26]."</option>";
@@ -65,7 +65,7 @@ echo "</select> </p></td>";
 
 echo "<td width='150' class='center'><p class='b'>".$LANG['reports'][13]."</p> ";
 echo "<p><select name='annee[]' size='8' multiple>";
-echo "<option value='toutes' selected>".$LANG['common'][66]."</option>";
+echo "<option value='toutes' selected>".__('All')."</option>";
 $y = date("Y");
 for ($i=$y-10 ; $i<$y+10 ; $i++) {
    echo " <option value='$i'>$i</option>";

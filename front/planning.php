@@ -67,16 +67,16 @@ switch ($_GET["usertype"]) {
 }
 
 if (isset($_REQUEST['checkavailability'])) {
-   Html::popHeader($LANG['common'][75]);
+   Html::popHeader(__('Availability'));
    if (!isset($_REQUEST["begin"])) {
       $_REQUEST["begin"] = "";
    }
    if (!isset($_REQUEST["end"])) {
       $_REQUEST["end"] = "";
-   }   
+   }
    if (!isset($_REQUEST["users_id"])) {
       $_REQUEST["users_id"] = "";
-   }  
+   }
    Planning::checkAvailability($_REQUEST['users_id'], $_REQUEST['begin'], $_REQUEST['end']);
    Html::popFooter();
 
