@@ -602,7 +602,7 @@ class EntityData extends CommonDBChild {
       echo "<td rowspan='2'>" . $LANG['setup'][115] . "&nbsp;:</td><td rowspan='2'>";
       Dropdown::showInteger('default_alarm_threshold',
                             $entitynotification->fields["default_alarm_threshold"], 0, 100, 1,
-                            array('-1' => $LANG['setup'][307]));
+                            array('-1' => __('Never')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -843,7 +843,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
       echo "<td colspan='2'>";
       $autoclose = array(self::CONFIG_PARENT => $LANG['common'][102],
-                         self::CONFIG_NEVER  => $LANG['setup'][307]);
+                         self::CONFIG_NEVER  => __('Never'));
       if ($ID == 0) {
          unset($autoclose[self::CONFIG_PARENT]);
       }
@@ -1226,7 +1226,7 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case 0 :
-                  return $LANG['setup'][307];
+                  return __('Never');
             }
             return $values[$field].' '.Toolbox::ucfirst($LANG['gmt'][1]);
 
@@ -1237,22 +1237,22 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case self::CONFIG_NEVER :
-                  return $LANG['setup'][307];
+                  return __('Never');
 
                case DAY_TIMESTAMP :
-                  return $LANG['setup'][305];
+                  return __('Each day');
 
                case WEEK_TIMESTAMP :
-                  return $LANG['setup'][308];
+                  return __('Each week');
 
                case MONTH_TIMESTAMP :
-                  return $LANG['setup'][309];
+                  return __('Each month');
             }
             break;
 
          case 'notclosed_delay' :   // 0 means never
             if ($values[$field] == 0) {
-               return $LANG['setup'][307];
+               return __('Never');
             }
             // nobreak;
 
@@ -1262,7 +1262,7 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case self::CONFIG_NEVER :
-                  return $LANG['setup'][307];
+                  return __('Never');
             }
             return sprintf(_n('%d day','%d days',$values[$field]),$values[$field]);
 

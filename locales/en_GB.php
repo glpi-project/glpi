@@ -2043,26 +2043,29 @@ $LANG['setup'][283]=" Copy";
 $LANG['setup'][284]="Clear";
 $LANG['setup'][285]="Do not copy";
 $LANG['setup'][286]="Do not delete";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][290]="Automatic transfer of computers";
 $LANG['setup'][291]="Template for the automatic transfer of computers in another entity";
 $LANG['setup'][292]="No automatic transfer";
+
 $LANG['setup'][300]="Check if a new version is available";
 $LANG['setup'][301]="A new version is available:";
 $LANG['setup'][302]="You will find it on the GLPI-PROJECT.org site";
 $LANG['setup'][303]="You have the latest available version";
 $LANG['setup'][304]="Connection failed. If you use a proxy, please configure it.";
-$LANG['setup'][305]="Every day";
+$LANG['setup'][305]="Each day";
 $LANG['setup'][306]="Check for upgrade";
 $LANG['setup'][307]="Never";
 $LANG['setup'][308]="Each week";
 $LANG['setup'][309]="Each month";
 
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][310]="Impossible to connect to site";
 $LANG['setup'][311]="Failed to connect to the proxy server";
 $LANG['setup'][312]="No data available on the web site";
-$LANG['setup'][313]="Be careful : there is no default value";
+$LANG['setup'][313]="Be careful: there is no default value";
 $LANG['setup'][314]="Maximum capacity of displayed characters for URLs";
 
 

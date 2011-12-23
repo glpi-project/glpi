@@ -457,7 +457,7 @@ class CronTask extends CommonDBTM{
       echo "</td><td>".$LANG['crontask'][40]."&nbsp;:&nbsp;</td><td>";
 
       if (empty($this->fields['lastrun'])) {
-         echo $LANG['setup'][307];
+         _e('Never');
       } else {
          echo Html::convDateTime($this->fields['lastrun']);
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetdate=1'>";
@@ -1349,7 +1349,7 @@ class CronTask extends CommonDBTM{
       }
 
       // Jours
-      $tab[DAY_TIMESTAMP] = $LANG['setup'][305];
+      $tab[DAY_TIMESTAMP] = __('Each day');
       for ($i=2 ; $i<7 ; $i++) {
          $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
       }

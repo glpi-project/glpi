@@ -563,7 +563,8 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
 if (Session::haveRight("check_update","r")) {
    echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
-   echo "<a href='backup.php?action=check_version' class='icon_consol b'>".$LANG['setup'][300]."</a>";
+   echo "<a href='backup.php?action=check_version' class='icon_consol b'>".
+         __('Check if a new version is available')."</a>";
    echo "</td></tr></table></div>";
 }
 
