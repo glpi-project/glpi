@@ -2178,13 +2178,14 @@ $LANG['software'][47]="Merging";
 $LANG['software'][48]="Merge";
 $LANG['software'][49]="Software deleted after merging";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['softwarecategories'][2]="Uncategorized softwares";
 $LANG['softwarecategories'][3]="Unfold the software without category";
 $LANG['softwarecategories'][4]="Unfold the software belonging to a category";
 $LANG['softwarecategories'][5]="Software category";
 $LANG['softwarecategories'][6]="Software categories";
 
-/// TODO After is ok for migration to gettext
 
 $LANG['state'][0]="Status";
 $LANG['state'][1]="Summary";
