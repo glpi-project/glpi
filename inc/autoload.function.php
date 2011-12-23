@@ -94,7 +94,8 @@ function __($str){
 function __s($str){
    global $TRANSLATE;
 
-   return  "__s".addslashes($TRANSLATE->_($str));
+//   return  "__s".addslashes($TRANSLATE->_($str));
+   return "__s".htmlentities($TRANSLATE->_($str), ENT_QUOTES, 'UTF-8');
 }
 
 
