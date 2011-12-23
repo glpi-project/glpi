@@ -167,8 +167,8 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][5] => $cleandata),
-                      array('title'     => $LANG['stats'][5],
+      Stat::showGraph(array(__('Number opened') => $cleandata),
+                      array('title'     => __('Number opened'),
                             'showtotal' => 1,
                             'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
@@ -179,8 +179,8 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                      array('title'     => $LANG['stats'][11],
+      Stat::showGraph(array(__('Number resolved') => $cleandata),
+                      array('title'     => __('Number resolved'),
                             'showtotal' => 1,
                             'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
@@ -192,8 +192,8 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[$newkey] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][19] => $cleandata),
-                      array('title'     => $LANG['stats'][19],
+      Stat::showGraph(array(__('Number resolved late') => $cleandata),
+                      array('title'     => __('Number resolved late'),
                             'showtotal' => 1,
                             'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
@@ -205,8 +205,8 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                      array('title'     => $LANG['stats'][17],
+      Stat::showGraph(array(__('Number closed') => $cleandata),
+                      array('title'     => __('Number closed'),
                             'showtotal' => 1,
                             'unit'      => $item->getTypeName(2),
                             'type'      => 'pie'));
@@ -218,8 +218,8 @@ if (!$_REQUEST['showgraph']) {
             $newkey             = Html::clean($key);
             $cleandata[$newkey] = $val;
          }
-         Stat::showGraph(array($LANG['stats'][11] => $cleandata),
-                        array('title'     => $LANG['satisfaction'][3],
+         Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
+                        array('title'     => __('Satisfaction survey'),
                               'showtotal' => 1,
                               'unit'      => $item->getTypeName(2),
                               'type'      => 'pie'));
