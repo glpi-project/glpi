@@ -1848,7 +1848,7 @@ class Html {
          $menu['config']['content']['control']['page']  = '/front/control.php';
 
          $menu['config']['content']['control']['options']['FieldUnicity']['title']
-                        = $LANG['setup'][811];
+                        = __('Fields unicity');
          $menu['config']['content']['control']['options']['FieldUnicity']['page']
                         = '/front/fieldunicity.php';
          $menu['config']['content']['control']['options']['FieldUnicity']['links']['add']
@@ -2306,7 +2306,7 @@ class Html {
 
       if ($DB->isSlave() && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
-         echo "<a href='#see_debug'>".$LANG['setup'][809]."</a>";
+         echo "<a href='#see_debug'>".__('MySQL replica: read only')."</a>";
          echo "</div>";
       }
 

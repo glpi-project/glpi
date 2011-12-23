@@ -43,7 +43,7 @@ class DBConnection extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['setup'][800];
+      return _n('Mysql replicate', 'Mysql replicates',$nb);
    }
 
 
@@ -316,7 +316,7 @@ class DBConnection extends CommonDBTM {
       global $LANG;
 
       return array('description' => $LANG['crontask'][10],
-                   'parameter'   => $LANG['setup'][806]);
+                   'parameter'   => __('Max delay between master and slave (minutes)'));
    }
 
 
@@ -346,10 +346,11 @@ class DBConnection extends CommonDBTM {
             // Quite strange, but allow simple stat
             $task->addVolume($diff);
             if ($diff > 1000000000) { // very large means slave is disconnect
+               $task->log(sprintf(__('Mysql server: "%1$s", Can\'t connect to the database'), $name));
                $task->log($LANG['install'][30]." : '$name', ".$LANG['install'][35]);
             } else {
-               $task->log($LANG['install'][30]." : '$name', ".
-                          $LANG['setup'][803]." : ".Html::timestampToString($diff, true));
+               $task->log(sprintf(__('Mysql server: "%1$s", Difference between master and slave: %2$s'),
+                                 $name, Html::timestampToString($diff, true)));
             }
 
             if ($diff > ($task->fields['param']*60)) {
@@ -387,9 +388,10 @@ class DBConnection extends CommonDBTM {
          if ($diff > 1000000000) {
             echo $LANG['install'][35] . "<br>";
          } else if ($diff) {
-            echo $LANG['setup'][803] . "&nbsp;: " . Html::timestampToString($diff, 1) . "<br>";
+            echo sprintf(__('Difference between master and slave: %s'),Html::timestampToString($diff, 1)) . "<br>";
          } else {
-            echo $LANG['setup'][803] . "&nbsp;: " . __('None') . "<br>";
+            
+            echo sprintf(__('Difference between master and slave: %s'), __('None')) . "<br>";
          }
       }
    }
@@ -399,7 +401,7 @@ class DBConnection extends CommonDBTM {
       global $LANG;
 
       echo "\n</pre></td>";
-      echo "</tr><tr class='tab_bg_2'><th>" . $LANG['setup'][800] . "</th></tr>";
+      echo "</tr><tr class='tab_bg_2'><th>" . _n('Mysql replicate', 'Mysql replicates',2) . "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (self::isDBSlaveActive()) {

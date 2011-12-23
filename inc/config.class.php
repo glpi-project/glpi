@@ -469,7 +469,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
-      echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][800] . "</th></tr>";
+      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replicate', 'Mysql replicates',2) . "</th></tr>";
       $DBSlave = DBConnection::getDBSlaveConf();
 
       if (is_array($DBSlave->dbhost)) {
@@ -480,7 +480,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['install'][30] . "&nbsp;:</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
-      echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td>";
+      echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBSlave->dbdefault."'>";
       echo "</td></tr>";
 
@@ -493,7 +493,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][804] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Use the slave for the search engine') . "</td><td>";
       Dropdown::showYesNo("use_slave_for_search", $CFG_GLPI["use_slave_for_search"]);
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
@@ -883,7 +883,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td> " . $LANG['setup'][801] . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('Active') . "&nbsp;:</td><td>";
       $active = DBConnection::isDBSlaveActive();
       Dropdown::showYesNo("_dbslave_status", $active);
       echo "</td></tr>";
@@ -1111,7 +1111,7 @@ class Config extends CommonDBTM {
             $tabs[5] = $LANG['setup'][720];  // SysInfo
 
             if (DBConnection::isDBSlaveActive()) {
-               $tabs[6]  = $LANG['setup'][800];  // Slave
+               $tabs[6]  = _n('Mysql replicate', 'Mysql replicates',2);  // Slave
             }
             return $tabs;
       }

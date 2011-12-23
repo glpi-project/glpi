@@ -42,10 +42,7 @@ class SupplierType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][80];
-      }
-      return $LANG['financial'][79];
+      return _n('Third party type', 'Third party types', $nb);
    }
 }
 
