@@ -2434,7 +2434,7 @@ class Ticket extends CommonITILObject {
                      }
                   }
                   if (!empty($tmp_device)) {
-                     $my_devices .= "<optgroup label=\"".Toolbox::ucfirst($LANG['software'][17])."\">";
+                     $my_devices .= "<optgroup label=\"".__s('Installed softwares')."\">";
                      $my_devices .= $tmp_device."</optgroup>";
                   }
                }

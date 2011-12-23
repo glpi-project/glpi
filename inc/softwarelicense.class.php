@@ -50,10 +50,8 @@ class SoftwareLicense extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['software'][11];
-      }
-      return $LANG['software'][12];
+      return _n('License', 'Licenses', $nb);
+
    }
 
 
@@ -188,7 +186,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['software'][1]."&nbsp;:</td>";
+      echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
       SoftwareVersion::dropdown(array('name'         => "softwareversions_id_buy",
                                       'softwares_id' => $this->fields["softwares_id"],
@@ -200,7 +198,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['software'][2]."&nbsp;:</td>";
+      echo "<td>".__('Version in use')."</td>";
       echo "<td>";
       SoftwareVersion::dropdown(array('name'         => "softwareversions_id_use",
                                       'softwares_id' => $this->fields["softwares_id"],
@@ -215,11 +213,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".__('Number')."</td>";
       echo "<td>";
       Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
-                            array(-1 => $LANG['software'][4]));
+                            array(-1 => __('Unlimited'));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['software'][32]."&nbsp;:</td>";
+      echo "<td>".__('Expiration')."</td>";
       echo "<td>";
       Html::showDateFormItem('expire', $this->fields["expire"]);
       Alert::displayLastAlert('SoftwareLicense', $ID);
@@ -288,16 +286,16 @@ class SoftwareLicense extends CommonDBTM {
       $tab[6]['table']     = 'glpi_softwareversions';
       $tab[6]['field']     = 'name';
       $tab[6]['linkfield'] = 'softwareversions_id_buy';
-      $tab[6]['name']      = $LANG['software'][1];
+      $tab[6]['name']      = __('Purchase version');
 
       $tab[7]['table']     = 'glpi_softwareversions';
       $tab[7]['field']     = 'name';
       $tab[7]['linkfield'] = 'softwareversions_id_use';
-      $tab[7]['name']      = $LANG['software'][2];
+      $tab[7]['name']      = __('Version in use');
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'expire';
-      $tab[8]['name']     = $LANG['software'][32];
+      $tab[8]['name']     = __('Expiration');
       $tab[8]['datatype'] = 'date';
 
       $tab[16]['table']    = $this->getTable();
@@ -523,7 +521,7 @@ class SoftwareLicense extends CommonDBTM {
          if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                   $LANG['software'][8]."</a>";
+                   __('Add a license')."</a>";
             echo "</td></tr>\n";
          }
 
@@ -532,7 +530,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       // Display the pager
-      Html::printAjaxPager($LANG['software'][11], $start, $number);
+      Html::printAjaxPager(_n('License', 'Licenses',2), $start, $number);
 
       $rand = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,
@@ -586,20 +584,20 @@ class SoftwareLicense extends CommonDBTM {
                  "<a href='javascript:reloadTab(\"sort=number&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Number').
                  "</a></th>";
-            echo "<th>".$LANG['software'][9]."</th>";
+            echo "<th>".__('Affected computers')."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Type')."</a></th>";
             echo "<th>".($sort=="`buyname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1].
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Purchase version').
                  "</a></th>";
             echo "<th>".($sort=="`usename`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][2]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Version in use')."</a></th>";
             echo "<th>".($sort=="`expire`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32].
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Expiration').
                  "</a></th>";
             echo "</tr>\n";
 
@@ -622,7 +620,7 @@ class SoftwareLicense extends CommonDBTM {
                }
                echo "<td>".$data['serial']."</td>";
                echo "<td class='right'>".
-                      ($data['number']>0?$data['number']."&nbsp;&nbsp;":$LANG['software'][4])."</td>";
+                      ($data['number']>0?$data['number']:__('Unlimited'))."</td>";
                $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
                $tot_assoc += $nb_assoc;
                echo "<td class='right'>$nb_assoc&nbsp;&nbsp;</td>";
@@ -643,13 +641,13 @@ class SoftwareLicense extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='".
                    ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
-            echo "<td class='right b'>".($tot>0?$tot."&nbsp;&nbsp;":$LANG['software'][4])."</td>";
-            echo "<td class='right b'>$tot_assoc&nbsp;&nbsp;</td>";
+            echo "<td class='right b'>".($tot>0?$tot."":__('Unlimited'))."</td>";
+            echo "<td class='right b'>$tot_assoc</td>";
             echo "<td colspan='4' class='center'>";
 
             if ($canedit) {
                echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                      $LANG['software'][8]."</a>";
+                      __('Add a license')."</a>";
             }
 
             echo "</td></tr>";

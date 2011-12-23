@@ -413,10 +413,11 @@ class CartridgeItem extends CommonDBTM {
 
             foreach ($DB->request($query_alert) as $cartridge) {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
-                  // define message alert
-                  $message .= $LANG['mailing'][35]." ".$cartridge["cartname"]." - ".
-                              $LANG['consumables'][2]."&nbsp;: ".$cartridge["cartref"]." - ".
-                              $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+                  //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+                  $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
+                              $cartridge["cartname"], $cartridge["cartref"], $unused);
+                  $message.='<br>';
+
                   $items[$cartridge["cartID"]] = $cartridge;
 
                   // if alert exists -> delete

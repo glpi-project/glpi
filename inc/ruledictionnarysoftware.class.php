@@ -77,7 +77,7 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td>\n";
+      echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
       echo "<td class='tab_bg_1 b'>" . $LANG['ldap'][27] . "</td></tr>\n";
    }
 
@@ -154,7 +154,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['manufacturer']['table'] = 'glpi_manufacturers';
       $actions['manufacturer']['type']  = 'dropdown';
 
-      $actions['is_helpdesk_visible']['name']  = $LANG['software'][46];
+      $actions['is_helpdesk_visible']['name']  = __('Associable to a ticket');
       $actions['is_helpdesk_visible']['table'] = 'glpi_softwares';
       $actions['is_helpdesk_visible']['type']  = 'yesno';
 

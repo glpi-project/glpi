@@ -339,9 +339,11 @@ class ConsumableItem extends CommonDBTM {
                if (($unused=Consumable::getUnusedNumber($consumable["consID"]))
                               <=$consumable["threshold"]) {
                   // define message alert
-                  $message .= $LANG['mailing'][35]." ".$consumable["consname"]." - ".
-                              $LANG['consumables'][2]."&nbsp;: ".$consumable["consref"]." - ".
-                              $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+                  //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+                  $message .= sprintf(__('Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s - Remaining %3$d'),
+                              $consumable["consname"], $consumable["consref"], $unused);
+                  $message.='<br>';
+                  
                   $items[$consumable["consID"]] = $consumable;
 
                   // if alert exists -> delete
