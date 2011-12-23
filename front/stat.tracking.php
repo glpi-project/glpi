@@ -204,7 +204,7 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
+      Stat::showGraph(array($LANG['stats'][17] => $cleandata),
                       array('title'     => $LANG['stats'][17],
                             'showtotal' => 1,
                             'unit'      => $item->getTypeName(2),
@@ -217,7 +217,7 @@ if (!$_REQUEST['showgraph']) {
             $newkey             = Html::clean($key);
             $cleandata[$newkey] = $val;
          }
-         Stat::showGraph(array($LANG['stats'][11] => $cleandata),
+         Stat::showGraph(array($LANG['satisfaction'][3] => $cleandata),
                         array('title'     => $LANG['satisfaction'][3],
                               'showtotal' => 1,
                               'unit'      => $item->getTypeName(2),
