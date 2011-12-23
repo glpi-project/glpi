@@ -347,7 +347,7 @@ class Config extends CommonDBTM {
          Dropdown::show('Transfer',
                         array('value'      => $CFG_GLPI["transfers_id_auto"],
                               'name'       => "transfers_id_auto",
-                              'emptylabel' => __('No automatic transfer'));
+                              'emptylabel' => __('No automatic transfer')));
          echo "</td></td></tr>";
          echo "</table>";
       }
