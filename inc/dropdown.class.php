@@ -1501,8 +1501,8 @@ class Dropdown {
 
                case 'User' :
                   if ($isadmin) {
-                     echo "<option value='add_group'>".$LANG['setup'][604]."</option>";
-                     echo "<option value='add_userprofile'>".$LANG['setup'][607]."</option>";
+                     echo "<option value='add_group'>".__('Associate to a group')."</option>";
+                     echo "<option value='add_userprofile'>".__('Associate to a profile')."</option>";
                   }
 
                   if (Session::haveRight("user_authtype","w")) {

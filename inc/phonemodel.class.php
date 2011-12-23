@@ -44,10 +44,7 @@ class PhoneModel extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][503];
-      }
-      return $LANG['dropdown'][25];
+      return _n('Phone model', 'Phones models', $nb);
    }
 }
 

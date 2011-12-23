@@ -2425,7 +2425,7 @@ $LANG['setup'][604] = "Associer à un groupe";
 $LANG['setup'][605] = "Ajouter une habilitation à un utilisateur";
 $LANG['setup'][606] = "Ajout impossible. L'utilisateur existe déjà.";
 $LANG['setup'][607] = "Associer à un profil";
-$LANG['setup'][608] = "Logiciels associables à un ticket par défaut";
+$LANG['setup'][608] = "Par défaut, les logiciels sont associables à un ticket";
 
 $LANG['setup'][610] = "Titre du ticket obligatoire";
 $LANG['setup'][611] = "Contenu du ticket obligatoire";

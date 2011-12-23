@@ -42,10 +42,7 @@ class PhonePowerSupply extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][505];
-      }
-      return $LANG['dropdown'][18];
+      return _n('Phone power supply type', 'Phones power supply types', $nb);
    }
 }
 

@@ -467,7 +467,7 @@ class User extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         Session::addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
+         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false, ERROR);
          return false;
       }
 

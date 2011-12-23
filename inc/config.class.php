@@ -556,7 +556,7 @@ class Config extends CommonDBTM {
                      array('value' => $CFG_GLPI["documentcategories_id_forticket"],
                            'name'  => "documentcategories_id_forticket"));
       echo "</td>";
-      echo "<td>" . $LANG['setup'][608] . "&nbsp;:</td><td>";
+      echo "<td>" . __('By default, a software may be associable to a ticket') . "</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                           $CFG_GLPI["default_software_helpdesk_visible"]);
       echo "</td></tr>";
