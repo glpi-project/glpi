@@ -898,7 +898,7 @@ class Search {
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
 
-                  $search_config = "<img alt=\"".$LANG['setup'][252]."\" title=\"".$LANG['setup'][252].
+                  $search_config = "<img alt=\"".__s('Select default items to show')."\" title=\"".__s('Select default items to show').
                                     "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
                }

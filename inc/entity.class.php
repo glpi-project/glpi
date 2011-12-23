@@ -367,14 +367,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[26]['table']         = 'glpi_entitydatas';
       $tab[26]['field']         = 'cartridges_alert_repeat';
-      $tab[26]['name']          = $LANG['setup'][244];
+      $tab[26]['name']          = __('Alarms on cartridges');
       $tab[26]['joinparams']    = array('jointype' => 'child');
       $tab[26]['massiveaction'] = false;
       $tab[26]['nosearch']      = true;
 
       $tab[27]['table']         = 'glpi_entitydatas';
       $tab[27]['field']         = 'consumables_alert_repeat';
-      $tab[27]['name']          = $LANG['setup'][243];
+      $tab[27]['name']          = __('Alarms on consumables');
       $tab[27]['joinparams']    = array('jointype' => 'child');
       $tab[27]['massiveaction'] = false;
       $tab[27]['nosearch']      = true;
@@ -387,21 +387,21 @@ class Entity extends CommonTreeDropdown {
 
       $tab[29]['table']         = 'glpi_entitydatas';
       $tab[29]['field']         = 'use_licenses_alert';
-      $tab[29]['name']          = $LANG['setup'][264];
+      $tab[29]['name']          = __('Alarms on expired licenses');
       $tab[29]['massiveaction'] = false;
       $tab[29]['nosearch']      = true;
       $tab[29]['joinparams']    = array('jointype' => 'child');
 
       $tab[30]['table']         = 'glpi_entitydatas';
       $tab[30]['field']         = 'use_contracts_alert';
-      $tab[30]['name']          = $LANG['setup'][246];
+      $tab[30]['name']          = __('Alarms on contracts');
       $tab[30]['massiveaction'] = false;
       $tab[30]['nosearch']      = true;
       $tab[30]['joinparams']    = array('jointype' => 'child');
 
       $tab[31]['table']         = 'glpi_entitydatas';
       $tab[31]['field']         = 'use_infocoms_alert';
-      $tab[31]['name']          = $LANG['setup'][247];
+      $tab[31]['name']          = __('Alarms on financial and administrative informations');
       $tab[31]['massiveaction'] = false;
       $tab[31]['nosearch']      = true;
       $tab[31]['joinparams']    = array('jointype' => 'child');
@@ -520,14 +520,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[48]['table']         = 'glpi_entitydatas';
       $tab[48]['field']         = 'default_contract_alert';
-      $tab[48]['name']          = $LANG['setup'][246].' - '.$LANG['setup'][46];
+      $tab[48]['name']          =__('Default value for alarms on contracts');
       $tab[48]['massiveaction'] = false;
       $tab[48]['nosearch']      = true;
       $tab[48]['joinparams']    = array('jointype' => 'child');
 
       $tab[49]['table']         = 'glpi_entitydatas';
       $tab[49]['field']         = 'default_infocom_alert';
-      $tab[49]['name']          = $LANG['setup'][247].' - '.$LANG['setup'][46];
+      $tab[49]['name']          = __('Default value for alarms on financial and administrative informations');
       $tab[49]['massiveaction'] = false;
       $tab[49]['nosearch']      = true;
       $tab[49]['joinparams']    = array('jointype' => 'child');

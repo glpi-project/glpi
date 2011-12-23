@@ -616,10 +616,10 @@ class NotificationTarget extends CommonDBChild {
       global $LANG;
 
       if (Session::haveRight("config", "w")) {
-         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, $LANG['setup'][237]);
+         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
       }
       $this->addTarget(Notification::ENTITY_ADMINISTRATOR,
-                       $LANG['setup'][237]." ".$LANG['entity'][0]);
+                       __('Entity administrator'));
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);

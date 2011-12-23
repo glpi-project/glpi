@@ -1999,8 +1999,11 @@ $LANG['setup'][223]="Limit of the schedules for planning";
 $LANG['setup'][227]="URL of the application";
 $LANG['setup'][228]="Login Field";
 $LANG['setup'][229]="Send a test email to the administrator";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][231]="Way of sending emails";
-$LANG['setup'][232]="SMTP Host";
+$LANG['setup'][232]="SMTP host";
 $LANG['setup'][234]="SMTP Login (optional)";
 $LANG['setup'][235]="SMTP Password (optional)";
 $LANG['setup'][236]="Former technician in charge of the ticket";
@@ -2024,27 +2027,27 @@ $LANG['setup'][254]="Search type";
 $LANG['setup'][255]="Group attribute containing its users";
 $LANG['setup'][256]="In users";
 $LANG['setup'][257]="In groups";
-$LANG['setup'][258]="Users & Groups";
+$LANG['setup'][258]="In users and groups";
 $LANG['setup'][259]="Belonging to groups";
 $LANG['setup'][260]="User attribute containing its groups";
 $LANG['setup'][261]="Group DN";
 $LANG['setup'][262]="Use DN in the search";
 $LANG['setup'][263]="Search filter for users";
 $LANG['setup'][264]="Alarms on expired licenses";
+
 $LANG['setup'][271]="Restrict monitor management";
 $LANG['setup'][272]="Restrict device management";
 $LANG['setup'][273]="Restrict phone management";
 $LANG['setup'][274]="for manual add";
 $LANG['setup'][275]="Restrict printer management";
+
 $LANG['setup'][280]="Automatically update of the elements related to the computers";
 $LANG['setup'][281]="When connecting or updating";
 $LANG['setup'][282]="When disconnecting";
-$LANG['setup'][283]=" Copy";
+$LANG['setup'][283]="Copy";
 $LANG['setup'][284]="Clear";
 $LANG['setup'][285]="Do not copy";
 $LANG['setup'][286]="Do not delete";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][290]="Automatic transfer of computers";
 $LANG['setup'][291]="Template for the automatic transfer of computers in another entity";

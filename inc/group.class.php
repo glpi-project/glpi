@@ -300,7 +300,7 @@ class Group extends CommonTreeDropdown {
 
          $tab[3]['table']     = $this->getTable();
          $tab[3]['field']     = 'ldap_field';
-         $tab[3]['name']      = $LANG['setup'][260];
+         $tab[3]['name']      = __('User attribute containing its groups');
          $tab[3]['datatype']  = 'string';
 
          $tab[4]['table']     = $this->getTable();
@@ -310,7 +310,7 @@ class Group extends CommonTreeDropdown {
 
          $tab[5]['table']     = $this->getTable();
          $tab[5]['field']     = 'ldap_group_dn';
-         $tab[5]['name']      = $LANG['setup'][261];
+         $tab[5]['name']      = __('Group DN');
          $tab[5]['datatype']  = 'string';
       }
 
@@ -379,10 +379,10 @@ class Group extends CommonTreeDropdown {
 
       if (Session::haveRight("config","r") && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:&nbsp;</td></tr>";
+         echo "<td colspan='2' class='center'>".__('In users')."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][260]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('User attribute containing its groups')."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "ldap_field");
          echo "</td></tr>";
@@ -394,11 +394,11 @@ class Group extends CommonTreeDropdown {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>".$LANG['setup'][257]."&nbsp;:&nbsp;</td>";
+         echo "<td colspan='2' class='center'>".__('In groups')."</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][261]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Group DN')."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "ldap_group_dn");
          echo "</td></tr>";

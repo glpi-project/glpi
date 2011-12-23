@@ -1041,7 +1041,7 @@ class Infocom extends CommonDBChild {
             echo "</td>";
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<td>".$LANG['setup'][247]."&nbsp;:</td>";
+               echo "<td>".__('Alarms on financial and administrative informations')."</td>";
                echo "<td>";
                echo self::dropdownAlert("alert", $ic->fields["alert"]);
                Alert::displayLastAlert('Infocom', $ic->fields['id']);

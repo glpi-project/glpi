@@ -425,7 +425,7 @@ class EntityData extends CommonDBChild {
                                                                 $state['name'];
       }
 
-      $options[Infocom::COPY_WARRANTY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][29];
+      $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
       //Buy date
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['financial'][14] . "&nbsp;: </td>";
@@ -437,7 +437,7 @@ class EntityData extends CommonDBChild {
       //Order date
       echo "<td> " . $LANG['financial'][28] . "&nbsp;: </td>";
       echo "<td>";
-      $options[Infocom::COPY_BUY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][14];
+      $options[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
       Dropdown::showFromArray('autofill_order_date', $options,
                               array('value' => $entitydata->getField('autofill_order_date')));
       echo "</td></tr>";
@@ -446,7 +446,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['financial'][27] . "&nbsp;: </td>";
       echo "<td>";
-      $options[Infocom::COPY_ORDER_DATE] = $LANG['setup'][283].' '.$LANG['financial'][28];
+      $options[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
       Dropdown::showFromArray('autofill_delivery_date', $options,
                               array('value' => $entitydata->getField('autofill_delivery_date')));
       echo "</td>";
@@ -454,7 +454,7 @@ class EntityData extends CommonDBChild {
       //Use date
       echo "<td> " . $LANG['financial'][76] . "&nbsp;: </td>";
       echo "<td>";
-      $options[Infocom::COPY_DELIVERY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][27];
+      $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
       Dropdown::showFromArray('autofill_use_date', $options,
                               array('value' => $entitydata->getField('autofill_use_date')));
       echo "</td></tr>";
@@ -464,9 +464,9 @@ class EntityData extends CommonDBChild {
       echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
       echo "<td>";
       $options = array(0                           => $LANG['financial'][113],
-                       Infocom::COPY_BUY_DATE      => $LANG['setup'][283].': '.$LANG['financial'][14],
-                       Infocom::COPY_ORDER_DATE    => $LANG['setup'][283].': '.$LANG['financial'][28],
-                       Infocom::COPY_DELIVERY_DATE => $LANG['setup'][283].' '.$LANG['financial'][27]);
+                       Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+                       Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+                       Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'));
       if ($ID > 0) {
          $options[self::CONFIG_PARENT] = $LANG['common'][102];
       }
@@ -554,7 +554,7 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['setup'][240]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][203]."&nbsp;:&nbsp;</td>";
@@ -590,10 +590,10 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
 
-      echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Alarms options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][244] . "</td><td>";
+      echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
@@ -606,7 +606,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][243] . "</td><td>";
+      echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
       $default_value = $entitynotification->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
@@ -614,7 +614,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][246] . "</td><td>";
+      echo "<td>" . __('Alarms on contracts') . "</td><td>";
       $default_value = $entitynotification->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
                                  'value'          => $default_value,
@@ -626,7 +626,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][247] . "</td><td>";
+      echo "<td>" . __('Alarms on financial and administrative informations') . "</td><td>";
       $default_value = $entitynotification->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
@@ -637,7 +637,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][264] . "</td><td>";
+      echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
       $default_value = $entitynotification->fields['use_licenses_alert'];
       Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
                                  'value'          => $default_value,
@@ -1295,16 +1295,16 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case Infocom::COPY_WARRANTY_DATE :
-                  return $LANG['setup'][283].' '.$LANG['financial'][29];
+                  return __('Copy the start date of warranty');
 
                case Infocom::COPY_BUY_DATE :
-                  return $LANG['setup'][283].' '.$LANG['financial'][14];
+                  return __('Copy the date of purchase');
 
                case Infocom::COPY_ORDER_DATE :
-                  return $LANG['setup'][283].' '.$LANG['financial'][28];
+                  return __('Copy the order date');
 
                case Infocom::COPY_DELIVERY_DATE :
-                  return $LANG['setup'][283].' '.$LANG['financial'][27];
+                  return __('Copy the delivery date');
 
                default :
                   if (strstr($values[$field], '_')) {

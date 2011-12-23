@@ -238,7 +238,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo $LANG['setup'][241]."<span class='small_space'>";
+         echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
          echo "<input type='submit' name='activate' value=\"".__s('Post')."\" class='submit'>";
          echo "</span></form></th></tr></table>\n";
 
@@ -246,7 +246,7 @@ class DisplayPreference extends CommonDBTM {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
 
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
-         echo $LANG['setup'][252]."&nbsp;: </th></tr>";
+         echo __('Select default items to show')."</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -390,7 +390,7 @@ class DisplayPreference extends CommonDBTM {
       $numrows = $DB->numrows($result);
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
-      echo $LANG['setup'][252]."&nbsp;: </th></tr>\n";
+      echo __s('Select default items to show')."</th></tr>\n";
 
       if ($global_write) {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
