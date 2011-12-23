@@ -1584,7 +1584,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.phone']['title']
-                           = $LANG['setup'][503];
+                           = _n('Phone model', 'Phones models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.phone']['page']
                            = '/front/ruledictionnaryphonemodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']
@@ -1662,7 +1662,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.phone']['title']
-                           = $LANG['setup'][504];
+                           = _n('Phone type', 'Phones types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.phone']['page']
                            = '/front/ruledictionnaryphonetype.php';
             $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']

@@ -1890,7 +1890,7 @@ class AuthLDAP extends CommonDBTM {
          Session::addMessageAfterRedirect($LANG['login'][15], false, ERROR);
 
       } else {
-         Session::addMessageAfterRedirect($LANG['setup'][606], false, ERROR);
+         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false, ERROR);
       }
       return false;
    }

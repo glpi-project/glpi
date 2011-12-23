@@ -106,7 +106,7 @@ class Group_User extends CommonDBRelation{
          echo "<div class='firstbloc'>";
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".__('Associate to a group')."</th></tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
@@ -223,7 +223,7 @@ class Group_User extends CommonDBRelation{
 
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['setup'][603]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add a user')."</tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
 
          User::dropdown(array('right'  => "all",

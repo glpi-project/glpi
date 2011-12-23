@@ -305,7 +305,7 @@ class Group extends CommonTreeDropdown {
 
          $tab[4]['table']     = $this->getTable();
          $tab[4]['field']     = 'ldap_value';
-         $tab[4]['name']      = $LANG['setup'][601];
+         $tab[4]['name']      = __('Attribute value');
          $tab[4]['datatype']  = 'string';
 
          $tab[5]['table']     = $this->getTable();
@@ -388,7 +388,7 @@ class Group extends CommonTreeDropdown {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['setup'][601]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Attribute value')."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "ldap_value");
          echo "</td></tr>";

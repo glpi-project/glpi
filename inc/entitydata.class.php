@@ -1192,8 +1192,8 @@ class EntityData extends CommonDBChild {
 
       $tab = array(self::CONFIG_PARENT                  => $LANG['common'][102],
                    self::CONFIG_NEVER                   => __('No'),
-                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => $LANG['setup'][51],
-                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => $LANG['setup'][50]);
+                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
+                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'));
 
       if (is_null($val)) {
          return $tab;
