@@ -213,7 +213,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".__('Number')."</td>";
       echo "<td>";
       Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
-                            array(-1 => __('Unlimited'));
+                            array(-1 => __('Unlimited')));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

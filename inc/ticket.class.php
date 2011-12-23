@@ -1559,7 +1559,7 @@ class Ticket extends CommonITILObject {
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'due_date';
-      $tab[18]['name']          = $LANG['sla'][5];
+      $tab[18]['name']          = __('Due date');
       $tab[18]['datatype']      = 'datetime';
       $tab[18]['maybefuture']   = true;
       $tab[18]['massiveaction'] = false;
@@ -3277,7 +3277,7 @@ class Ticket extends CommonITILObject {
       // SLA
       echo "<tr>";
       echo "<td>".$tt->getBeginHiddenFieldText('due_date');
-      echo "<span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
+      echo "<span class='tracking_small'>".__('Due date')."</span>";
       if (!$ID) {
          echo $tt->getMandatoryMark('due_date');
       }
