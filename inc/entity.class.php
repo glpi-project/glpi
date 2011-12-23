@@ -316,14 +316,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[18]['table']         = 'glpi_entitydatas';
       $tab[18]['field']         = 'admin_email';
-      $tab[18]['name']          = $LANG['setup'][203];
+      $tab[18]['name']          = __('Administrator email');
       $tab[18]['massiveaction'] = false;
       $tab[18]['joinparams']    = array('jointype' => 'child');
       $tab[18]['datatype']      = 'string';
 
       $tab[19]['table']         = 'glpi_entitydatas';
       $tab[19]['field']         = 'admin_reply';
-      $tab[19]['name']          = $LANG['setup'][207];
+      $tab[19]['name']          = __('Administrator reply-to email (if needed)');
       $tab[19]['massiveaction'] = false;
       $tab[19]['joinparams']    = array('jointype' => 'child');
       $tab[19]['datatype']      = 'string';
@@ -343,19 +343,19 @@ class Entity extends CommonTreeDropdown {
 
       $tab[22]['table']         = 'glpi_entitydatas';
       $tab[22]['field']         = 'admin_email_name';
-      $tab[22]['name']          = $LANG['setup'][208];
+      $tab[22]['name']          = __('Administrator name');
       $tab[22]['joinparams']    = array('jointype' => 'child');
       $tab[22]['datatype']      = 'string';
 
       $tab[23]['table']         = 'glpi_entitydatas';
       $tab[23]['field']         = 'admin_reply_name';
-      $tab[23]['name']          = $LANG['setup'][209];
+      $tab[23]['name']          = __('Response name (if needed)');
       $tab[23]['joinparams']    = array('jointype' => 'child');
       $tab[23]['datatype']      = 'string';
 
       $tab[24]['table']         = 'glpi_entitydatas';
       $tab[24]['field']         = 'mailing_signature';
-      $tab[24]['name']          = $LANG['setup'][204];
+      $tab[24]['name']          = __('Email signature');
       $tab[24]['joinparams']    = array('jointype' => 'child');
       $tab[24]['datatype']      = 'text';
 

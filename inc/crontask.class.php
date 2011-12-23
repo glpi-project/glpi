@@ -453,7 +453,7 @@ class CronTask extends CommonDBTM{
 
       echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
       Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
-                            array(0 => $LANG['setup'][200]));
+                            array(0 => __('Infinite')));
       echo "</td><td>".$LANG['crontask'][40]."&nbsp;:&nbsp;</td><td>";
 
       if (empty($this->fields['lastrun'])) {

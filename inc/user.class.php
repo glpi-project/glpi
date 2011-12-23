@@ -482,7 +482,7 @@ class User extends CommonDBTM {
                unset($input["password2"]);
 
             } else {
-               Session::addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
+               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'), false, ERROR);
                return false;
             }
          }
@@ -590,7 +590,7 @@ class User extends CommonDBTM {
                unset($input["password2"]);
 
             } else {
-               Session::addMessageAfterRedirect($LANG['setup'][21], false, ERROR);
+               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'), false, ERROR);
                return false;
             }
          }
@@ -1709,7 +1709,7 @@ class User extends CommonDBTM {
 
          //do some rights verification
          if (!$extauth && Session::haveRight("password_update", "1")) {
-            echo "<td>" . $LANG['setup'][19] . "&nbsp;:</td>";
+            echo "<td>" . __('Password') . "</td>";
             echo "<td><input type='password' name='password' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
          } else {
@@ -1728,7 +1728,7 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!$extauth && Session::haveRight("password_update", "1")) {
-            echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
+            echo "<td>" . __('Password confirmation') . "</td>";
             echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
          } else {
@@ -2805,7 +2805,7 @@ class User extends CommonDBTM {
          echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][20]."</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
          echo "</td></tr>";
 

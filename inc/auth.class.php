@@ -692,7 +692,7 @@ class Auth {
             return $out;
 
          case self::X509 :
-            $out = $LANG['setup'][190];
+            $out = __('x509 certificate authentication');
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
@@ -991,9 +991,9 @@ class Auth {
       echo "<table class='tab_cadre_fixe'>";
 
       // CAS config
-      echo "<tr><th colspan='2'>" . $LANG['setup'][177];
+      echo "<tr><th>" . $LANG['setup'][177].'</th><th>';
       if (!empty($CFG_GLPI["cas_host"])) {
-         echo " - ".$LANG['setup'][192];
+         _e('Enabled');
       }
       echo "</th></tr>\n";
 
@@ -1015,22 +1015,22 @@ class Auth {
          echo "<p>" . $LANG['setup'][179] . "</p></td></tr>\n";
       }
       // X509 config
-      echo "<tr><th colspan='2'>" . $LANG['setup'][190];
+      echo "<tr><th>" . __('x509 certificate authentication')."</th>/th>";
       if (!empty($CFG_GLPI["x509_email_field"])) {
-         echo " - ".$LANG['setup'][192];
+         _e('Enabled');
       }
       echo "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][191] . "</td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Email attribute for x509 authentication') . "</td>";
       echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
       echo "</td></tr>\n";
 
       // Autres config
-      echo "<tr><th colspan='2'>" . $LANG['login'][19];
+      echo "<tr><th>" . $LANG['login'][19]."</th>/th>";
       if (!empty($CFG_GLPI["existing_auth_server_field"])) {
-         echo " - ".$LANG['setup'][192];
+         _e('Enabled');
       }
       echo "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][193] . "</td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Field storage of the login in the HTTP request') . "</td>";
       echo "<td><select name='existing_auth_server_field'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='HTTP_AUTH_USER' " .
@@ -1055,12 +1055,12 @@ class Auth {
       echo "</select>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][199] . "</td><td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Remove the domain of logins like login@domain') . "</td><td>";
       Dropdown::showYesNo('existing_auth_server_field_clean_domain',
                           $CFG_GLPI['existing_auth_server_field_clean_domain']);
       echo "</td></tr>\n";
 
-      echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>\n";
+      echo "<tr><th colspan='2'>" . __('Access control and additional informations')."</th></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
       Dropdown::show('AuthLDAP', array('name'   => 'authldaps_id_extra',
                                        'value'  => $CFG_GLPI["authldaps_id_extra"]));

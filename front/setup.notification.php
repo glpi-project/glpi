@@ -53,7 +53,7 @@ if (!$CFG_GLPI['use_mailing']) {
    echo "<div align='center'<p>";
    if (Session::haveRight("config","w")) {
       echo "<a href='setup.notification.php?activate=1' class='icon_consol b'>" .
-               $LANG['setup'][202] ."</a></p></div>";
+               __('Enable followup via email') ."</a></p></div>";
    }
 
 } else {
@@ -67,7 +67,7 @@ if (!$CFG_GLPI['use_mailing']) {
       echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
       if (Session::haveRight("config","r")) {
          echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
-               $LANG['setup'][201] ."</a></td></tr>";
+               __('Email followups configuration') ."</a></td></tr>";
             echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
                   $LANG['mailing'][113] ."</a></td> </tr>";
       }

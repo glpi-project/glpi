@@ -320,7 +320,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
+      echo "<td>" .__('Beginning of fiscal yea') . "</td><td>";
       Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
       echo "</td><td> " . __('Restrict printer management') . "</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
@@ -378,7 +378,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<td>";
-      State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
+      State::dropdownBehaviour("state_autoupdate_mode", __('Copy computer status'),
                                $CFG_GLPI["state_autoupdate_mode"]);
       echo "</td></tr>";
 
@@ -395,7 +395,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<td>";
-      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
+      State::dropdownBehaviour("state_autoclean_mode", __('Clear status'),
                                $CFG_GLPI["state_autoclean_mode"]);
       echo "</td></tr>";
 
@@ -539,7 +539,7 @@ class Config extends CommonDBTM {
                                                                                    15 => 15,
                                                                                    20 => 20));
       echo "&nbsp;" . $LANG['job'][22];
-      echo "</td><td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
+      echo "</td><td>" .__('Limit of the schedules for planning') . "</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
       Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
@@ -569,9 +569,9 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][219] . "&nbsp;:</td><td>";
+      echo "<td>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
-      echo "</td><td>" . $LANG['setup'][220] . "&nbsp;:</td><td>";
+      echo "</td><td>" . __('Allow anonymous followups (receiver)') . "</td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
 

@@ -177,9 +177,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->Body    = $LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
       if (!$mmail->Send()) {
-         Session::addMessageAfterRedirect($LANG['setup'][206], false, ERROR);
+         Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false, ERROR);
       } else {
-         Session::addMessageAfterRedirect($LANG['setup'][205]);
+         Session::addMessageAfterRedirect(__('Test email sent to administrator'));
       }
    }
 

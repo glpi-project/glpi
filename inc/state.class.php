@@ -56,7 +56,7 @@ class State extends CommonTreeDropdown {
    static function dropdownBehaviour($name, $lib="", $value=0) {
       global $DB, $LANG;
 
-      $elements = array("0" => $LANG['setup'][195]);
+      $elements = array("0" => __('Keep status'));
 
       if ($lib) {
          $elements["-1"] = $lib;
@@ -69,7 +69,7 @@ class State extends CommonTreeDropdown {
 
       if ($DB->numrows($result) > 0) {
          while (($data = $DB->fetch_assoc($result))) {
-            $elements[$data["id"]] = $LANG['setup'][198] . " : " . $data["name"];
+            $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
          }
       }
       Dropdown::showFromArray($name, $elements, array('value' => $value));
