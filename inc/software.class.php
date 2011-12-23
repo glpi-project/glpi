@@ -799,7 +799,7 @@ class Software extends CommonDBTM {
 
          Html::openArrowMassives("mergesoftware_form$rand", true);
          echo "<input type='hidden' name='id' value='$ID'>";
-         Html::closeArrowMassives(array('mergesoftware' => __('Merge'));
+         Html::closeArrowMassives(array('mergesoftware' => __('Merge')));
 
          echo "</form>";
 
