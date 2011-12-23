@@ -319,7 +319,7 @@ class Reminder extends CommonDBTM {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'state';
-      $tab[3]['name']          = $LANG['state'][0];
+      $tab[3]['name']          = __('Status');
       $tab[3]['datatype']      = 'dropdown';
       $tab[3]['massiveaction'] = false;
       $tab[3]['searchtype']    = 'equals';
@@ -556,7 +556,7 @@ class Reminder extends CommonDBTM {
       Html::showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true, $canedit);
       echo '</td></tr></table>';
       echo "</td>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Status')."</td>";
       echo "<td>";
       Planning::dropdownState("state", $this->fields["state"]);
       echo "</td>\n";

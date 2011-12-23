@@ -252,7 +252,7 @@ class NetworkEquipment extends CommonDBTM {
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
-      echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
+      echo "<td>".__('Status')."</td>";
       echo "<td>";
       Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>";
@@ -430,7 +430,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = $LANG['state'][0];
+      $tab[31]['name']  = __('Status');
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';

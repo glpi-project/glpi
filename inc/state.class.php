@@ -112,7 +112,7 @@ class State extends CommonTreeDropdown {
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
          // Type
-         echo "<th>".$LANG['state'][0]."</th>";
+         echo "<th>".__('Status')."</th>";
 
          foreach ($state_type as $key => $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
@@ -183,7 +183,7 @@ class State extends CommonTreeDropdown {
          echo "</table></div>";
 
       } else {
-         echo "<div class='center b'>".$LANG['state'][7]."</div>";
+         echo "<div class='center b'>".__('No item found')."</div>";
       }
    }
 

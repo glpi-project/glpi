@@ -169,7 +169,7 @@ class SoftwareVersion extends CommonDBChild {
       Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
       Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
@@ -207,7 +207,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $tab[31]['table'] = 'glpi_states';
       $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = $LANG['state'][0];
+      $tab[31]['name']  = __('Status');
 
       return $tab;
    }
@@ -284,7 +284,7 @@ class SoftwareVersion extends CommonDBChild {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre'><tr>";
             echo "<th>&nbsp;".$LANG['software'][5]."&nbsp;</th>";
-            echo "<th>&nbsp;".$LANG['state'][0]."&nbsp;</th>";
+            echo "<th>&nbsp;".__('Status')."</th>";
             echo "<th>&nbsp;".$LANG['computers'][9]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
             echo "<th>&nbsp;".__('Comments')."&nbsp;</th>";

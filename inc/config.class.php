@@ -360,7 +360,7 @@ class Config extends CommonDBTM {
       echo "<th>" . __('User') . "</th>";
       echo "<th>" . __('Group') . "</th>";
       echo "<th>" . __('Location') . "</th>";
-      echo "<th>" . $LANG['state'][0] . "</th>";
+      echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
       $fields = array("contact", "group", "location", "user");

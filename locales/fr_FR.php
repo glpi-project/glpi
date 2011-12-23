@@ -2552,7 +2552,7 @@ $LANG['softwarecategories'][6] = "Catégories des logiciels";
 $LANG['state'][0] = "Statut";
 $LANG['state'][1] = "Synthèse";
 
-$LANG['state'][6] = "Type de matériel";
+$LANG['state'][6] = "Type d'élément";
 $LANG['state'][7] = "Pas de matériel trouvé";
 
 

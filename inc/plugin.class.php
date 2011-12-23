@@ -326,7 +326,7 @@ class Plugin extends CommonDBTM {
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>".$LANG['rulesengine'][78]."</th>";
          echo "<th>".$LANG['install'][92]."</th>";
-         echo "<th>".$LANG['state'][0]."</th><th>".$LANG['plugins'][9]."</th>";
+         echo "<th>".__('Status')."</th><th>".$LANG['plugins'][9]."</th>";
          echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {

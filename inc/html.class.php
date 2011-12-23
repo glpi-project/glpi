@@ -2205,7 +2205,7 @@ class Html {
 
                   case "summary" :
                      echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                $LANG['state'][1]."\" alt=\"".$LANG['state'][1]."\" src='".
+                                __s('Summary')."\" alt=\"".__s('Summary')."\" src='".
                                 $CFG_GLPI["root_doc"]."/pics/menu_show.png'></a></li>";
                      break;
 
