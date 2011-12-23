@@ -557,14 +557,14 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
-      echo "<th class='center' colspan='4'>" . $LANG['setup'][623] . "</th></tr>";
+      echo "<th class='center' colspan='4'>" . __('Import entities from LDAP directory') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][622] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Attribute representing entity') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='entity_field' value='".$this->fields["entity_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][621] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Search filter for entities') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='entity_condition' value='".$this->fields["entity_condition"]."'
              size='100'></td></tr>";

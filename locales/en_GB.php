@@ -2079,6 +2079,10 @@ $LANG['setup'][605]="Add a empowerment to a user";
 $LANG['setup'][606]="Unable to add. The user already exists.";
 $LANG['setup'][607]="Associate to a profile";
 $LANG['setup'][608]="Software associable to a ticket by default";
+
+/// TODO After is ok for migration to gettext
+
+
 $LANG['setup'][610]="Compulsory title of the ticket";
 $LANG['setup'][611]="Compulsory ticket content";
 $LANG['setup'][612]="Compulsory ticket category";
@@ -2089,13 +2093,12 @@ $LANG['setup'][616]="From \ To";
 $LANG['setup'][617]="Life cycle of problems";
 $LANG['setup'][618]="Life cycle of changes";
 $LANG['setup'][619]="Life cycles";
+
 $LANG['setup'][620]="Link";
 $LANG['setup'][621]="Search filter for entities";
 $LANG['setup'][622]="Attribute representing entity";
 $LANG['setup'][623]="Import entities from LDAP directory";
 $LANG['setup'][624]="Links";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][650]="PHP";
 $LANG['setup'][651]="SMTP";

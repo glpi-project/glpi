@@ -49,11 +49,7 @@ class Contact_Supplier extends CommonDBRelation{
    static function getTypeName($nb=0) {
       global $LANG;
 
-      // Probablu nether use, so minimal gettext
-      if ($nb>1) {
-         return $LANG['setup'][624].' '.__('Contact').'-'.$LANG['financial'][26];
-      }
-      return $LANG['setup'][620].' '.__('Contact').'-'.$LANG['financial'][26];
+      return _n('Link Contact/Supplier','Links Contact/Supplier',$nb);
    }
 
 

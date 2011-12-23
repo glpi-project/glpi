@@ -429,7 +429,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['setup'][124] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
-      echo "</td><td> " . $LANG['setup'][613] . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('Add a user without accreditation from a LDAP directory') . "</td><td>";
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
       echo "</td></tr>";
 

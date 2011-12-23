@@ -78,10 +78,7 @@ class Contract_Item extends CommonDBRelation{
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][624].'-'.$LANG['financial'][1];
-      }
-      return $LANG['setup'][620].'-'.$LANG['financial'][1];
+      return _n('Link Contract/Item','Links Contract/Item',$nb);
    }
 
 
