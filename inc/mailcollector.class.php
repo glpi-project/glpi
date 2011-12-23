@@ -525,22 +525,13 @@ class MailCollector  extends CommonDBTM {
             imap_expunge($this->marubox);
             $this->close_mailbox();   //Close Mail Box
 
+            //TRANS: %1, %2, %3 and %4 are number of messages
+            $msg = sprintf(__('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d'),
+                           $tot, $this->fetch_emails, $refused, $error);
             if ($display) {
-
-               if ($error==0) {
-                  Session::addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".
-                                                   $this->fetch_emails);
-               } else {
-                  Session::addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".
-                                                    $this->fetch_emails." ($error ".
-                                                    $LANG['common'][63].")",
-                                                   false, ERROR);
-               }
-
+               Session::addMessageAfterRedirect($msg, false, ($error ? ERROR : INFO));
             } else {
-               return "Number of messages: available=$tot, collected=".$this->fetch_emails.
-                       ($error>0?" ($error error(s))":"".
-                       ($refused>0?" ($refused refused)":""));
+               return $msg;
             }
 
          } else {
