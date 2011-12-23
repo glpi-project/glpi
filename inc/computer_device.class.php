@@ -213,7 +213,7 @@ class Computer_Device extends CommonDBTM {
       echo "<th colspan='".($global_colspan-4)."'>".""."</th></tr>";
       $nb = 0;
 
-      $specificity_units = array('DeviceProcessor'   => $LANG['setup'][35],
+      $specificity_units = array('DeviceProcessor'   => __('MHz'),
                                  'DeviceMemory'      => __('Mio'),
                                  'DeviceHardDrive'   => __('Mio'),
                                  'DeviceGraphicCard' => __('Mio'));

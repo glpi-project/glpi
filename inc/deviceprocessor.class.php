@@ -56,11 +56,11 @@ class DeviceProcessor extends CommonDevice {
                          array(array('name'  => 'specif_default',
                                      'label' => $LANG['device_ram'][1]." ".$LANG['devices'][24],
                                      'type'  => 'text',
-                                     'unit'  => $LANG['setup'][35]),
+                                     'unit'  => __('MHz')),
                                array('name'  => 'frequence',
                                      'label' => $LANG['device_ram'][1],
                                      'type'  => 'text',
-                                     'unit'  => $LANG['setup'][35])));
+                                     'unit'  => __('MHz'))));
    }
 
 

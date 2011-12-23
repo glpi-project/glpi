@@ -1243,7 +1243,8 @@ class Toolbox {
 
          } else {
             if (isset($msgerr)) {
-               $msgerr = $LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
+               //TRANS: %s is the error string
+               $msgerr = sprintf(__('Connection failed. If you use a proxy, please configure it. (%s)'),$errstr); 
             }
             return "";
          }
@@ -1261,7 +1262,8 @@ class Toolbox {
 
          } else {
             if (isset($msgerr)) {
-               $msgerr = $LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
+               //TRANS: %s is the error string
+               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'),$errstr); 
             }
             return "";
          }
@@ -1326,9 +1328,10 @@ class Toolbox {
 
       if (empty($content) && isset($msgerr)) {
          if (empty($errstr)) {
-            $msgerr = $LANG['setup'][312]; // no data
+            $msgerr = __('No data available on the web site');
          } else {
-            $msgerr = $LANG['setup'][310] . " ($errstr)"; // HTTP error
+            //TRANS: %s is the error string
+            $msgerr = sprintf(__('Impossible to connect to site (%s)'),$errstr); 
          }
       }
       return $content;

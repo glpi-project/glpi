@@ -539,7 +539,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][350]."&nbsp;:</td>";
+      echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
@@ -548,7 +548,7 @@ class Profile extends CommonDBTM {
              __('My devices')."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
              ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
-             $LANG['setup'][351]."</option>\n";
+             __('All items')."</option>\n";
       echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
                                +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
              ($this->fields["helpdesk_hardware"]
@@ -556,7 +556,7 @@ class Profile extends CommonDBTM {
                  +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
               __('My devices and all items')."</option>";
       echo "</select></td>\n";
-      echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
+      echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
@@ -893,7 +893,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
-      echo "<td>".$LANG['setup'][350]."&nbsp;:</td>";
+      echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td><select name='helpdesk_hardware'>";
       echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
@@ -904,7 +904,7 @@ class Profile extends CommonDBTM {
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]
             = pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
-            $LANG['setup'][351]."</option>\n";
+            __('All items')."</option>\n";
       echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
                                +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
             ($this->fields["helpdesk_hardware"]
@@ -912,7 +912,7 @@ class Profile extends CommonDBTM {
                  +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
             __('My devices and all items')."</option>";
       echo "</select></td>\n";
-      echo "<td>".$LANG['setup'][352]."&nbsp;:</td>";
+      echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
@@ -1760,12 +1760,12 @@ class Profile extends CommonDBTM {
 
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'helpdesk_hardware';
-      $tab[86]['name']          = $LANG['setup'][350];
+      $tab[86]['name']          = __('Link with items for the creation of tickets');
       $tab[86]['massiveaction'] = false;
 
       $tab[87]['table']         = $this->getTable();
       $tab[87]['field']         = 'helpdesk_item_type';
-      $tab[87]['name']          = $LANG['setup'][352];
+      $tab[87]['name']          = __('Associable items to a ticket');
       $tab[87]['massiveaction'] = false;
 
       $tab[88]['table']    = $this->getTable();

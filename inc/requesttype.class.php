@@ -114,7 +114,7 @@ class RequestType extends CommonDropdown {
             $DB->query($query);
 
          } else {
-            Session::addMessageAfterRedirect($LANG['setup'][313], true);
+            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
       }
 
@@ -127,7 +127,7 @@ class RequestType extends CommonDropdown {
             $DB->query($query);
 
          } else {
-            Session::addMessageAfterRedirect($LANG['setup'][313], true);
+            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
          }
       }
    }
