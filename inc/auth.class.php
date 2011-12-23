@@ -991,7 +991,7 @@ class Auth {
       echo "<table class='tab_cadre_fixe'>";
 
       // CAS config
-      echo "<tr><th>" . $LANG['setup'][177].'</th><th>';
+      echo "<tr><th>" . __('CAS authentication').'</th><th>';
       if (!empty($CFG_GLPI["cas_host"])) {
          _e('Enabled');
       }
@@ -1000,19 +1000,23 @@ class Auth {
       if (function_exists('curl_init')
           && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem")))) {
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][174] . "</td>";
+         //TRANS: for CAS SSO system
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
          echo "<td><input type='text' name='cas_host' value=\"".$CFG_GLPI["cas_host"]."\"></td></tr>\n";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][175] . "</td>";
+         //TRANS: for CAS SSO system
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Port') . "</td>";
          echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][176] . "</td>";
+         //TRANS: for CAS SSO system
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)') . "</td>";
          echo "<td><input type='text' name='cas_uri' value=\"".$CFG_GLPI["cas_uri"]."\"></td></tr>\n";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][182] . "</td>";
+         //TRANS: for CAS SSO system
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Logout fallback URL') . "</td>";
          echo "<td><input type='text' name='cas_logout' value=\"".$CFG_GLPI["cas_logout"]."\"></td>".
               "</tr>\n";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<p class='red'>" . $LANG['setup'][178] . "</p>";
-         echo "<p>" . $LANG['setup'][179] . "</p></td></tr>\n";
+         echo "<p class='red'>" . __("The CURL or DOMXML extension for your PHP parser isn't installed") . "</p>";
+         echo "<p>" .__('Impossible to use CAS as external source of connection') . "</p></td></tr>\n";
       }
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th>/th>";

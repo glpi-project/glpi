@@ -235,7 +235,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
          echo "<td><input type='text' name='host' value='" . $this->fields["host"] . "'></td>";
-         echo "<td>" . $LANG['setup'][172] . "&nbsp;:</td>";
+         echo "<td>" . __('Port (default=389)') . "</td>";
          echo "<td><input id='port' type='text' name='port' value='" . $this->fields["port"] . "'>";
          echo "</td></tr>";
 
@@ -312,14 +312,14 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID'>". $LANG['entity'][14] . "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][180] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Use TLS') . "</td><td>";
       if (function_exists("ldap_start_tls")) {
          Dropdown::showYesNo('use_tls',$this->fields["use_tls"]);
       } else {
-         echo "<input type='hidden' name='use_tls' value='0'>".$LANG['setup'][181];
+         echo "<input type='hidden' name='use_tls' value='0'>".__('ldap_start_tls does not exist');
       }
       echo "</td>";
-      echo "<td>" . $LANG['setup'][186] . "&nbsp;:</td><td>";
+      echo "<td>" . __('LDAP directory time zone') . "</td><td>";
       Dropdown::showGMT("time_offset", $this->fields["time_offset"]);
       echo"</td></tr>";
 
@@ -612,7 +612,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'port';
-      $tab[4]['name']     = $LANG['setup'][175];
+      $tab[4]['name']     = __('Port');
       $tab[4]['datatype'] = 'integer';
 
       $tab[5]['table']    = $this->getTable();
@@ -768,11 +768,11 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
          foreach ($ldap_servers as $ID => $value) {
             $fields = array(__('Server')        => 'host',
-                            $LANG['setup'][172] => 'port',
-                            $LANG['setup'][154] => 'basedn',
-                            $LANG['setup'][159] => 'condition',
-                            $LANG['setup'][155] => 'rootdn',
-                            $LANG['setup'][180] => 'use_tls');
+                            __('Port (default=389)') => 'port',
+                            __('BaseDN') => 'basedn',
+                            __('Connection filter') => 'condition',
+                            __('RootDN (for non anonymous binds)') => 'rootdn',
+                            __('Use TLS') => 'use_tls');
             $msg = '';
             $first = true;
             foreach ($fields as $label => $field) {

@@ -301,7 +301,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'host';
-      $tab[3]['name']          = $LANG['setup'][170];
+      $tab[3]['name']          = __('Connection string');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
 
