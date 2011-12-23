@@ -97,11 +97,9 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 $items = array($LANG['job'][4]       => $requester,
                __('Characteristics') => $caract,
                $LANG['job'][5]       => array('technicien'
-                                                   => array('title' => $LANG['job'][6]." ".
-                                                                       $LANG['stats'][48]),
+                                                   => array('title' => __('Technician as assigned')),
                                              'technicien_followup'
-                                                   => array('title' => $LANG['job'][6]." ".
-                                                                       $LANG['stats'][49]),
+                                                   => array('title' => __('Technician in tasks')),
                                              'groups_id_assign'
                                                    => array('title' => __('Group')),
                                              'groups_tree_assign'
@@ -126,7 +124,7 @@ echo "<select name='type'>".$INSELECT."</select></td>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
 Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
-echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
+echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"". $_REQUEST["itemtype"] ."\">";
 echo "<input type='submit' class='button' name='submit' value=\"".__s('Update')."\"></td>".

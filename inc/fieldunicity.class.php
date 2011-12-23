@@ -449,7 +449,7 @@ class FieldUnicity extends CommonDropdown {
          }
 
          if (empty($results)) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+            echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
          } else {
             echo "<tr class='tab_bg_2'>";
             foreach ($fields as $field) {
@@ -468,7 +468,7 @@ class FieldUnicity extends CommonDropdown {
          }
 
       } else {
-         echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".$LANG['stats'][2]."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
       }
       echo "</table>";
    }

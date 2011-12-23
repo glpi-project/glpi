@@ -203,7 +203,7 @@ class NotificationEvent extends CommonDBTM {
             }
 
          } else  {
-            echo "<tr class='tab_bg_2 center'><td colspan='4'>".$LANG['stats'][2]."</td></tr>";
+            echo "<tr class='tab_bg_2 center'><td colspan='4'>".__('No item to display')."</td></tr>";
          }
       }
       echo "</table></div>";

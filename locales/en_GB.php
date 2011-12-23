@@ -1815,7 +1815,7 @@ $LANG['satisfaction'][9]="Internal survey";
 $LANG['satisfaction'][10]="External survey";
 $LANG['satisfaction'][12]="Invitation to fill out the survey";
 $LANG['satisfaction'][13]="Opened";
-$LANG['satisfaction'][14]="Answers";
+$LANG['satisfaction'][14]="Answered";
 
 $LANG['search'][0]="Search";
 $LANG['search'][1]="for all";
@@ -2189,6 +2189,9 @@ $LANG['state'][1]="Summary";
 $LANG['state'][6]="Item Type";
 $LANG['state'][7]="No items found";
 
+/// TODO After is ok for migration to gettext
+
+
 $LANG['stats'][0]="Select statistics to be displayed";
 $LANG['stats'][1]="Global";
 $LANG['stats'][2]="No item to display";
@@ -2196,14 +2199,14 @@ $LANG['stats'][3]="By item";
 $LANG['stats'][5]="Number opened";
 $LANG['stats'][7]="Show graphics";
 $LANG['stats'][8]="Average time";
-$LANG['stats'][9]="Résolution";
-$LANG['stats'][10]="Closing";
+$LANG['stats'][9]="Resolution";
+$LANG['stats'][10]="Closure";
 $LANG['stats'][11]="Number resolved";
 $LANG['stats'][12]="Take into account";
 $LANG['stats'][13]="Number of tickets";
 $LANG['stats'][14]="Real duration";
 $LANG['stats'][15]="Number of problems";
-$LANG['stats'][16]="Technician name";
+$LANG['stats'][16]="Technician";
 $LANG['stats'][17]="Number closed";
 $LANG['stats'][19]="Number resolved late";
 $LANG['stats'][20]="Username";
@@ -2212,18 +2215,16 @@ $LANG['stats'][22]="Closing time";
 $LANG['stats'][23]="No statistics are available";
 $LANG['stats'][24]="Take into account time";
 $LANG['stats'][25]="Waiting time";
-$LANG['stats'][26]="(real) Duration of ticket";
-$LANG['stats'][33]="Min(s)";
-$LANG['stats'][34]="Sec(s)";
+$LANG['stats'][26]="Real duration of treatment of the ticket";
+$LANG['stats'][33]="min(s)";
+$LANG['stats'][34]="sec(s)";
 $LANG['stats'][35]="Ticket(s)";
-$LANG['stats'][44]="Supplier Name";
+$LANG['stats'][44]="Supplier";
 $LANG['stats'][45]="By hardware";
 $LANG['stats'][46]="By problem";
 $LANG['stats'][47]="By ticket";
 $LANG['stats'][48]="(assigned)";
 $LANG['stats'][49]="(tasks)";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['title'][5]="Knowledge base";
 $LANG['title'][6]="Networking equipments";

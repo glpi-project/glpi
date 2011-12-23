@@ -141,13 +141,13 @@ foreach ($values2['avgactiontime'] as $key => $val) {
 }
 
 
-$available = array('avgclosed'      => $LANG['stats'][10],
-                   'avgsolved'      => $LANG['stats'][9],
-                   'avgactiontime'  => $LANG['stats'][14]);
+$available = array('avgclosed'      => __('Closure'),
+                   'avgsolved'      => __('Resolution'),
+                   'avgactiontime'  => __('Real duration'));
 
 
 if ($_REQUEST['itemtype']=='Ticket') {
-   $available['avgtaketime'] = $LANG['stats'][12];
+   $available['avgtaketime'] = __('Take into account');
 
    //Temps moyen de prise en compte de l'intervention
    $values2['avgtaketime'] = Stat::constructEntryValues($_REQUEST['itemtype'],
@@ -183,7 +183,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     => $LANG['stats'][8],
+Stat::showGraph($toprint, array('title'     => __('Average time'),
                                 'unit'      => Toolbox::ucfirst($LANG['gmt'][1]),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
@@ -222,7 +222,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
    Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
                                    'showtotal' => 1,
-                                   'unit'      => $LANG['stats'][35]));
+                                   'unit'      => __('Ticket(s)')));
 
 
    $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],

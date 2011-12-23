@@ -906,20 +906,21 @@ class CronTask extends CommonDBTM{
             echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".number_format($data['elapsedmin'],2)." ".$LANG['stats'][34];
+            //TRANS: %s is the number of seconds
+            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedmin'],2)));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][52]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".number_format($data['elapsedmax'],2)." ".$LANG['stats'][34];
+            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedmax'],2)));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][53]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right b'>".number_format($data['elapsedavg'],2)." ".$LANG['stats'][34].
-                 "</td></tr>";
+            echo "<td class='right b'>".sprintf(__('%s sec(s)',number_format($data['elapsedavg'],2)));
+            echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['job'][20]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".number_format($data['elapsedtot'],2)." ".$LANG['stats'][34].
-                 "</td></tr>";
+            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedtot'],2)));
+            echo "</td></tr>";
          }
 
          if ($data && $data['voltot']>0) {
@@ -937,8 +938,8 @@ class CronTask extends CommonDBTM{
             echo "<td class='right'>".$data['voltot']." ".$LANG['crontask'][62]."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][59]."&nbsp;:&nbsp;</td>";
-            echo "<td class='left'>".number_format($data['voltot']/$data['elapsedtot'],2)." ".
-                   $LANG['crontask'][62]." / ".$LANG['stats'][34]."</td></tr>";
+            echo "<td class='left'>".sprintf(__('%s elements/sec',number_format($data['voltot']/$data['elapsedtot'],2)));
+            echo "</td></tr>";
          }
       }
       echo "</table></div>";

@@ -2960,7 +2960,7 @@ class User extends CommonDBTM {
             if (is_array($info)) {
                Html::printCleanArray($info);
             } else {
-               echo $LANG['stats'][2];
+               _e('No item to display');
             }
 
          } else {
