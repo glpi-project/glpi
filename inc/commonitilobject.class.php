@@ -1852,7 +1852,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $icontitle = __('Group');
             switch ($type) {
                case self::REQUESTER :
-                  $icontitle = $LANG['setup'][249];
+                  $icontitle = __('Requester group');
                   break;
 
                case self::OBSERVER :
@@ -1860,7 +1860,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   break;
 
                case self::ASSIGN :
-                  $icontitle = $LANG['setup'][248];
+                  $icontitle = __('Group in charge of the ticket');
                   break;
             }
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'

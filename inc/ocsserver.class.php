@@ -559,7 +559,7 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
       echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'>";
       if ($ID > 0) {
-         echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+         echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
 
       echo "</td>";

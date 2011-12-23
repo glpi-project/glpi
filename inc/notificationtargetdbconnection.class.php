@@ -41,7 +41,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
-      $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, $LANG['setup'][237]);
+      $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
    }
 
 

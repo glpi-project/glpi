@@ -357,7 +357,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $LANG;
 
       if ($event=='update') {
-         $this->addTarget(Notification::OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
+         $this->addTarget(Notification::OLD_TECH_IN_CHARGE, __('Former technician in charge of the ticket'));
       }
 
       if ($event=='satisfaction') {
@@ -373,11 +373,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                           __('Requester group manager'));
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
-         $this->addTarget(Notification::ASSIGN_TECH, $LANG['setup'][239]);
-         $this->addTarget(Notification::REQUESTER_GROUP, $LANG['setup'][249]);
+         $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of this ticket'));
+         $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
-         $this->addTarget(Notification::ASSIGN_GROUP, $LANG['setup'][248]);
+         $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket');
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, $LANG['common'][104]);
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,

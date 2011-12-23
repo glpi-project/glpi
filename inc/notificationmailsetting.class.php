@@ -182,7 +182,7 @@ class NotificationMailSetting extends CommonDBTM {
                                 $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][231] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>" . __('Way of sending emails') . "</td><td>";
          $mail_methods = array(MAIL_MAIL    => __('PHP'),
                                MAIL_SMTP    => __('SMTP'),
                                MAIL_SMTPSSL => __('SMTP+SSL'),
@@ -194,19 +194,19 @@ class NotificationMailSetting extends CommonDBTM {
                 $LANG['setup'][229]."\">";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
          echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
          echo "</td>";
-         echo "<td >" . $LANG['setup'][234] . "&nbsp;:</td>";
+         echo "<td >" . __('SMTP Login (optional)') . "</td>";
          echo "<td><input type='text' name='smtp_username' size='40' value='" .
                     $CFG_GLPI["smtp_username"] . "'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][175] . "&nbsp;:</td>";
          echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          echo "</td>";
-         echo "<td >" . $LANG['setup'][235] . "&nbsp;:</td>";
+         echo "<td >" . __('SMTP Password (optional)') . "</td>";
          echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
-         echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".$LANG['setup'][284];
+         echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".__('Clear');
 
          echo "</td></tr>";
 

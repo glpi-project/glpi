@@ -257,7 +257,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
          echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'>";
          if ($ID) {
-            echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+            echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
          }
 
          echo "</td>";
@@ -410,31 +410,31 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
-      echo "<th class='center' colspan='4'>" . $LANG['setup'][259] . "</th></tr>";
+      echo "<th class='center' colspan='4'>" . __('Belonging to groups') . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][254] . "&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Search type') . "</td><td>";
       $group_search_type = $this->fields["group_search_type"];
       echo "<select name='group_search_type'>";
       echo "<option value='0' " . (($group_search_type == 0) ? " selected " : "") . ">" .
-             $LANG['setup'][256] . "</option>";
+             __('In users') . "</option>";
       echo "<option value='1' " . (($group_search_type == 1) ? " selected " : "") . ">" .
-             $LANG['setup'][257] . "</option>";
+             __('In groups') . "</option>";
       echo "<option value='2' " . (($group_search_type == 2) ? " selected " : "") . ">" .
-             $LANG['setup'][258] . "</option>";
+             __('In users and groups') . "</option>";
       echo "</select></td>";
-      echo "<td>" . $LANG['setup'][260] . "&nbsp;:</td>";
+      echo "<td>" . __('User attribute containing its groups') . "</td>";
       echo "<td><input type='text' name='group_field' value='".$this->fields["group_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][253] . "&nbsp;:&nbsp;</td><td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups') . "</td><td colspan='3'>";
       echo "<input type='text' name='group_condition' value='".$this->fields["group_condition"]."'
              size='100'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][255] . "&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Group attribute containing its users') . "</td>";
       echo "<td><input type='text' name='group_member_field' value='".
                  $this->fields["group_member_field"]."'></td>";
-      echo "<td>" . $LANG['setup'][262] . "&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Use DN in the search') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("use_dn", $this->fields["use_dn"]);
       echo "</td></tr>";
@@ -710,7 +710,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'use_dn';
-      $tab[18]['name']          = $LANG['setup'][262];
+      $tab[18]['name']          = __('Use DN in the search');
       $tab[18]['datatype']      = 'bool';
       $tab[18]['massiveaction'] = false;
 
@@ -728,25 +728,25 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'group_field';
-      $tab[21]['name']          = $LANG['setup'][260];
+      $tab[21]['name']          = __('User attribute containing its groups');
       $tab[21]['massiveaction'] = false;
       $tab[21]['datatype']      = 'string';
 
       $tab[22]['table']         = $this->getTable();
       $tab[22]['field']         = 'group_condition';
-      $tab[22]['name']          = $LANG['setup'][253];
+      $tab[22]['name']          = __('Filter to search in groups');
       $tab[22]['massiveaction'] = false;
       $tab[22]['datatype']      = 'string';
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'group_member_field';
-      $tab[23]['name']          = $LANG['setup'][255];
+      $tab[23]['name']          = __('Group attribute containing its users');
       $tab[23]['massiveaction'] = false;
       $tab[23]['datatype']      = 'string';
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'group_search_type';
-      $tab[24]['name']          = $LANG['setup'][254];
+      $tab[24]['name']          = __('Search type');
       $tab[24]['massiveaction'] = false;
 
       $tab[30]['table']    = $this->getTable();
@@ -865,8 +865,8 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'>";
       echo "<form method='post' action='$target'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" . ($users?$LANG['setup'][263]
-                                           :$LANG['setup'][253]) . "</th></tr>";
+      echo "<tr><th colspan='2'>" . ($users?__('Search filter for users')
+                                           :__('Filter to search in groups')) . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
@@ -877,7 +877,7 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr><th colspan='2'>" . $LANG['setup'][263] . "</th></tr>";
+         echo "<tr><th colspan='2'>" . __('Search filter for users') . "</th></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='text' name='ldap_filter2' value='".$_SESSION["ldap_group_filter2"]."'
@@ -1316,7 +1316,7 @@ class AuthLDAP extends CommonDBTM {
             echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Group'), $header_num,
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
-            echo "<th>".$LANG['setup'][261]."</th>";
+            echo "<th>".__('Group DN')."</th>";
             echo"<th>".$LANG['ldap'][27]."</th>";
             if (Session::isMultiEntitiesMode()) {
                echo"<th>".$LANG['entity'][9]."</th>";
@@ -2241,7 +2241,7 @@ class AuthLDAP extends CommonDBTM {
                      "\" size='90' ".(!$_SESSION['ldap_import']['basedn']?"disabled":"").">";
                echo "</td></tr>";
 
-               echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
+               echo "<tr class='tab_bg_2'><td>".__('Search filter for users')."</td><td colspan='3'>";
                echo "<input type='text' name='ldap_filter' value=\"".
                       $_SESSION['ldap_import']['ldap_filter']."\" size='90'>";
                echo "</td></tr>";

@@ -241,7 +241,7 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td>";
       echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
       if ($ID > 0) {
-         echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".$LANG['setup'][284];
+         echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
       echo "</td>";
       echo "</tr>";
@@ -1338,7 +1338,7 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>"._n('Notification', 'Notifications',2)."</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      $msg = $LANG['setup'][231].": ";
+      $msg = __('Way of sending emails:')." ";
       switch($CFG_GLPI['smtp_mode']) {
          case MAIL_MAIL :
             $msg .= __('PHP');

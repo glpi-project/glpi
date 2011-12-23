@@ -296,7 +296,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . $LANG['ocsconfig'][23] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
-      echo "</td><td> " . $LANG['setup'][271] . "&nbsp;:</td>";
+      echo "</td><td> " . __('Restrict monitor management') . "</td>";
       echo "<td>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
                                        $CFG_GLPI["monitors_management_restrict"]);
@@ -305,7 +305,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][8] . "&nbsp;:</td><td>";
       Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
-      echo "</td></td><td> " . $LANG['setup'][272] . "&nbsp;:</td><td>";
+      echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
@@ -314,7 +314,7 @@ class Config extends CommonDBTM {
       Dropdown::show('SoftwareCategory',
                      array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
                            'name'  => "softwarecategories_id_ondelete"));
-      echo "</td><td> " . $LANG['setup'][273] . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('Restrict phone management') . "</td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
                                        $CFG_GLPI["phones_management_restrict"]);
       echo "</td></tr>";
@@ -322,7 +322,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
       Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
-      echo "</td><td> " . $LANG['setup'][275] . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('Restrict printer management') . "</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
                                       $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
@@ -353,7 +353,8 @@ class Config extends CommonDBTM {
       }
 
       echo "<br><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
+      echo "<tr><th colspan='4'>".__('Automatically update of the elements related to the computers');
+      echo "</th><th colspan='2'>".__('Unit management')."</th></tr>";
 
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __('Alternate username') . "</th>";
@@ -365,9 +366,9 @@ class Config extends CommonDBTM {
 
       $fields = array("contact", "group", "location", "user");
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][281] . "&nbsp;:</td>";
-      $values[0] = $LANG['setup'][285];
-      $values[1] = $LANG['setup'][283];
+      echo "<td> " . __('When connecting or updating') . "</td>";
+      $values[0] = __('Do not copy');
+      $values[1] = __('Copy');
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -382,9 +383,9 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][282] . "&nbsp;:</td>";
-      $values[0] = $LANG['setup'][286];
-      $values[1] = $LANG['setup'][284];
+      echo "<td> " . __('When disconnecting') . "</td>";
+      $values[0] = __('Do not delete');
+      $values[1] = __('Clear');
 
       foreach ($fields as $field) {
          echo "<td>";
@@ -904,7 +905,7 @@ class Config extends CommonDBTM {
       echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
       echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'>";
-      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>&nbsp;".$LANG['setup'][284];
+      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>&nbsp;".__('Clear');
 
       echo "</td>";
       echo "</tr>";
