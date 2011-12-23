@@ -457,7 +457,7 @@ class Problem extends CommonITILObject {
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'due_date';
-      $tab[18]['name']          = $LANG['sla'][5];
+      $tab[18]['name']          = __('Due date');
       $tab[18]['datatype']      = 'datetime';
       $tab[18]['maybefuture']   = true;
       $tab[18]['massiveaction'] = false;
@@ -843,7 +843,7 @@ class Problem extends CommonITILObject {
 
       // SLA
       echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
+      echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
       echo "<td>";
       if ($this->fields["due_date"]=='NULL') {
          $this->fields["due_date"] = '';
@@ -1188,14 +1188,9 @@ class Problem extends CommonITILObject {
             $second_col .= Html::convDateTime($job->fields['solvedate']);
 
          } else if ($job->fields['due_date']) {
-            $second_col = $LANG['sla'][5];
-            if ($output_type == Search::HTML_OUTPUT) {
-               $second_col .= "&nbsp;:<br>";
-            } else {
-               $second_col .= " : ";
-            }
-            $second_col .= Html::convDateTime($job->fields['due_date']);
-
+            $second_col = sprintf(__('Due date: %s'), 
+               ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                  Html::convDateTime($job->fields['due_date']));
          } else {
             $second_col = $LANG['joblist'][11];
             if ($output_type == Search::HTML_OUTPUT) {

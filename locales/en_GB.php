@@ -2136,6 +2136,8 @@ $LANG['setup'][827]="Alert on duplicate record";
 $LANG['setup'][828]="Ignored value for the unicity";
 $LANG['setup'][829]="Ignored values for the unicity";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['sla'][1]="SLA";
 $LANG['sla'][2]="Maximum time to solve";
 $LANG['sla'][3]="Execution";
@@ -2145,13 +2147,11 @@ $LANG['sla'][6]="Escalation level";
 $LANG['sla'][8]="Next escalation";
 $LANG['sla'][9]="Automatic reminders of SLAs";
 $LANG['sla'][10]="24/7";
-$LANG['sla'][11]="Calendar of ticket";
+$LANG['sla'][11]="Calendar of the ticket";
 $LANG['sla'][12]="Assign a SLA";
 $LANG['sla'][13]="The assignment of a SLA to a ticket causes the recalculation of the due date.";
 $LANG['sla'][14]="Escalations defined in the SLA will be triggered under this new date.";
 $LANG['sla'][15]="Escalation levels";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['software'][1]="Purchase version";
 $LANG['software'][2]="Version in use";

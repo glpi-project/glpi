@@ -358,7 +358,7 @@ class RuleTicket extends Rule {
       $actions['affectobject']['force_actions'] = array('affectbyip', 'affectbyfqdn', 'affectbymac');
 
       $actions['slas_id']['table'] = 'glpi_slas';
-      $actions['slas_id']['name']  = $LANG['sla'][1];
+      $actions['slas_id']['name']  = __('SLA');
       $actions['slas_id']['type']  = 'dropdown';
 
       $actions['users_id_validate']['name']          = __('Send an approval request');

@@ -57,10 +57,7 @@ class SlaLevel extends RuleTicket {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['sla'][15];
-      }
-      return $LANG['sla'][6];
+      return _n('Escalation level', 'Escalation levels', $nb);
    }
 
    function cleanDBonPurge() {
@@ -94,14 +91,14 @@ class SlaLevel extends RuleTicket {
       if ($canedit) {
          echo "<div class='center first-bloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='7'>".$LANG['sla'][4]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add an escalation level')."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>".__('Name')."";
          echo "<input type='hidden' name='slas_id' value='$ID'>";
          echo "<input type='hidden' name='entities_id' value='".$sla->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$sla->isRecursive()."'>";
          echo "</td><td><input  name='name' value=''>";
-         echo "</td><td class='center'>".$LANG['sla'][3]."</td><td>";
+         echo "</td><td class='center'>".__('Execution')."</td><td>";
 
          self::dropdownExecutionTime('execution_time',
                         array('max_time'  => $sla->fields['resolution_time'],
@@ -124,10 +121,12 @@ class SlaLevel extends RuleTicket {
          if ($DB->numrows($result) >0) {
             echo "<div class='center'><table class='tab_cadre_fixehov'>";
             echo "<tr><th colspan='2'>".__('Name')."</th>";
-            echo "<th>".$LANG['sla'][3]."</th>";
+            echo "<th>".__('Execution')."</th>";
             echo "<th>".__('Active')."</th>";
             echo "</tr>";
-            Session::initNavigateListItems('SlaLevel', $LANG['sla'][1]." - ".$sla->getName());
+            Session::initNavigateListItems('SlaLevel',
+                  //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                  sprintf(__('%1$s = %2$s'),$sla->getTypeName(1), $sla->getName()));
 
             while ($data = $DB->fetch_array($result)) {
 
@@ -156,7 +155,7 @@ class SlaLevel extends RuleTicket {
                echo "</td>";
                echo "<td>".($data["execution_time"]<>0?Html::timestampToString($data["execution_time"],
                                                                                false)
-                                                      :$LANG['sla'][5])."</td>";
+                                                      :__('Due date'))."</td>";
                echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
                echo "</tr>";
                echo "<tr class='tab_bg_1'><td colspan='4'>";
@@ -181,7 +180,7 @@ class SlaLevel extends RuleTicket {
 
       $actions = parent::getActions();
       unset($actions['slas_id']);
-      $actions['recall']['name'] = $LANG['sla'][9];
+      $actions['recall']['name'] = __('Automatic reminders of SLAs');
       $actions['recall']['type'] = 'yesonly';
       $actions['recall']['force_actions'] = array('send');
       return $actions;
@@ -225,11 +224,11 @@ class SlaLevel extends RuleTicket {
       $sla->getFromDB($this->fields['slas_id']);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['sla'][1]."&nbsp;:</td>";
+      echo "<td>".__('SLA')."</td>";
       echo "<td>";
       echo $sla->getLink();
       echo "</td>";
-      echo "<td>".$LANG['sla'][3]."</td>";
+      echo "<td>".__('Execution')."</td>";
       echo "<td>";
 
       self::dropdownExecutionTime('execution_time',
@@ -292,7 +291,7 @@ class SlaLevel extends RuleTicket {
             }
          }
          if (!in_array(0,$p['used'])) {
-            $possible_values[0]=$LANG['sla'][5];
+            $possible_values[0] = __('Due date');
          }
 
          ksort($possible_values);

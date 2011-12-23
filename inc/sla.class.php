@@ -49,7 +49,7 @@ class SLA extends CommonDBTM {
       global $LANG;
 
       // Acronymous, no plural
-      return $LANG['sla'][1];
+      return __('SLA');
    }
 
 
@@ -171,11 +171,11 @@ class SLA extends CommonDBTM {
       echo "<td>";
 
       Dropdown::show('Calendar', array('value'      => $this->fields["calendars_id"],
-                                       'emptylabel' => $LANG['sla'][10],
-                                       'toadd'      => array('-1' => $LANG['sla'][11])));
+                                       'emptylabel' => __('24/7'),
+                                       'toadd'      => array('-1' => __('Calendar of the ticket'))));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['sla'][2]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
       $possible_values = array();
       for ($i=1 ; $i<24 ; $i++) {

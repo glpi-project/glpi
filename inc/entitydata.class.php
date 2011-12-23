@@ -782,7 +782,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
-                       'emptylabel' => $LANG['sla'][10]);
+                       'emptylabel' => __('24/7'));
 
       if ($ID) {
          $options['toadd'] = array(self::CONFIG_PARENT => $LANG['common'][102]);
@@ -790,13 +790,13 @@ class EntityData extends CommonDBChild {
       Dropdown::show('Calendar', $options);
 
       if ($entdata->fields["calendars_id"] == self::CONFIG_PARENT) {
-         echo "<font class='green'>&nbsp;&nbsp;";
+         echo "<br><font class='green'>";
          $calendar = new Calendar();
          $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
          if (!$cid) {
-            echo "- ".$LANG['sla'][10];
+            e_('24/7');
          } else if ($calendar->getFromDB($cid)) {
-            echo "- ".$calendar->getLink();
+            echo $calendar->getLink();
          }
          echo "</font>";
       }
@@ -1275,7 +1275,7 @@ class EntityData extends CommonDBChild {
                   return $LANG['common'][102];
 
                case 0 :
-                  return $LANG['sla'][10];
+                  return __('24/7');
             }
             return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
 

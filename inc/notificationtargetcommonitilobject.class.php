@@ -748,7 +748,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.creationdate'          => $LANG['reports'][60],
                     $objettype.'.closedate'             => $LANG['reports'][61],
                     $objettype.'.solvedate'             => $LANG['reports'][64],
-                    $objettype.'.duedate'               => $LANG['sla'][5],
+                    $objettype.'.duedate'               => __('Due date'),
                     $objettype.'.authors'               => $LANG['job'][18],
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => $LANG['job'][4],
