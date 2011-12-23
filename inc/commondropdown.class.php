@@ -412,7 +412,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // Replace form (set to new value)
-      echo "<p>" . $LANG['setup'][65] . "</p>";
+      echo "<p>" . __('You can also replace all the events of this heading by another:') . "</p>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
 

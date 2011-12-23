@@ -1341,19 +1341,19 @@ class MailCollector  extends CommonDBTM {
       $msg = $LANG['setup'][231].": ";
       switch($CFG_GLPI['smtp_mode']) {
          case MAIL_MAIL :
-            $msg .= $LANG['setup'][650];
+            $msg .= __('PHP');
             break;
 
          case MAIL_SMTP :
-            $msg .= $LANG['setup'][651];
+            $msg .= __('SMTP');
             break;
 
          case MAIL_SMTPSSL :
-            $msg .= $LANG['setup'][652];
+            $msg .= __('SMTP+SSL');
             break;
 
          case MAIL_SMTPTLS :
-            $msg .= $LANG['setup'][653];
+            $msg .= __('SMTP+TLS');
             break;
       }
 

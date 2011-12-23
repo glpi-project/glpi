@@ -2094,14 +2094,16 @@ $LANG['setup'][621]="Search filter for entities";
 $LANG['setup'][622]="Attribute representing entity";
 $LANG['setup'][623]="Import entities from LDAP directory";
 $LANG['setup'][624]="Links";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][650]="PHP";
 $LANG['setup'][651]="SMTP";
 $LANG['setup'][652]="SMTP+SSL";
 $LANG['setup'][653]="SMTP+TLS";
-$LANG['setup'][660]="Mail server";
-$LANG['setup'][661]="Impossible to configure the notifications : please configure your email followup using the above configuration.";
 
-/// TODO After is ok for migration to gettext
+$LANG['setup'][660]="Mail server";
+$LANG['setup'][661]="Impossible to configure the notifications: please configure your email followup using the above configuration.";
 
 
 $LANG['setup'][703]="General";

@@ -181,12 +181,12 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature'>".
                                 $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 
-         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][660]."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Mail server')."</th></tr>";
          echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][231] . "&nbsp;:</td><td>";
-         $mail_methods = array(MAIL_MAIL    => $LANG['setup'][650],
-                               MAIL_SMTP    => $LANG['setup'][651],
-                               MAIL_SMTPSSL => $LANG['setup'][652],
-                               MAIL_SMTPTLS => $LANG['setup'][653]);
+         $mail_methods = array(MAIL_MAIL    => __('PHP'),
+                               MAIL_SMTP    => __('SMTP'),
+                               MAIL_SMTPSSL => __('SMTP+SSL'),
+                               MAIL_SMTPTLS => __('SMTP+TLS'));
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
          echo "</td><td colspan='2' class='center'>";
