@@ -1849,7 +1849,7 @@ class User extends CommonDBTM {
             unset($this->oldvalues['name']);
             /// For displayed message
             $this->fields['name'] = $this->oldvalues['name'];
-            Session::addMessageAfterRedirect($LANG['setup'][614], false, ERROR);
+            Session::addMessageAfterRedirect(__('Unable to update login. A user already exists.'), false, ERROR);
          }
       }
 

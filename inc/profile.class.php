@@ -107,7 +107,7 @@ class Profile extends CommonDBTM {
                } else {
                   $ong[2] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
                   $ong[3] = __('Assistance'); // Assistance
-                  $ong[4] = $LANG['setup'][619]; // Life cycles
+                  $ong[4] = __('Life cycles'); // Life cycles
                   $ong[5] = __('Administration');
                   $ong[6] = __('Setup');
                }
@@ -1032,8 +1032,9 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $tabstatus = Ticket::getAllStatusArray();
 
-      echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
-      echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of tickets')."</th>";
+      //TRANS: \ to split row heading (From) and colums headin (To) for life cycles
+      echo "<tr class='tab_bg_1'><td class='b center'>".__("From \ To");
       echo "<input type='hidden' name='_cycles_ticket' value='1'</td>";
       foreach ($tabstatus as $label) {
          echo "<td class='center'>$label</td>";
@@ -1060,8 +1061,8 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $tabstatus = Problem::getAllStatusArray();
 
-      echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][617]."</th>";
-      echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of tickets')."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
       echo "<input type='hidden' name='_cycles_problem' value='1'</td>";
       foreach ($tabstatus as $label) {
          echo "<td class='center'>$label</td>";
@@ -1089,8 +1090,8 @@ class Profile extends CommonDBTM {
 //       echo "<table class='tab_cadre_fixe'>";
 //       $tabstatus = Change::getAllStatusArray();
 //
-//       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][618]."</th>";
-//       echo "<tr class='tab_bg_1'><td class='b center'>".$LANG['setup'][616];
+//       echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
+//       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
 //       echo "<input type='hidden' name='_cycles_change' value='1'</td>";
 //       foreach ($tabstatus as $label) {
 //          echo "<td class='center'>$label</td>";
@@ -1809,14 +1810,14 @@ class Profile extends CommonDBTM {
 
       $tab[100]['table']         = $this->getTable();
       $tab[100]['field']         = 'ticket_status';
-      $tab[100]['name']          = $LANG['setup'][615];
+      $tab[100]['name']          = __('Life cycle of tickets');
       $tab[100]['nosearch']      = true;
       $tab[100]['datatype']      = 'text';
       $tab[100]['massiveaction'] = false;
 
       $tab[110]['table']         = $this->getTable();
       $tab[110]['field']         = 'problem_status';
-      $tab[110]['name']          = $LANG['setup'][617];
+      $tab[110]['name']          = __('Life cycle of problems');
       $tab[110]['nosearch']      = true;
       $tab[110]['datatype']      = 'text';
       $tab[110]['massiveaction'] = false;
@@ -1838,7 +1839,7 @@ class Profile extends CommonDBTM {
 
 //       $tab[111]['table']         = $this->getTable();
 //       $tab[111]['field']         = 'change_status';
-//       $tab[111]['name']          = $LANG['setup'][618];
+//       $tab[111]['name']          = __('Life cycle of changes');
 //       $tab[111]['nosearch']      = true;
 //       $tab[111]['datatype']      = 'text';
 //       $tab[111]['massiveaction'] = false;
