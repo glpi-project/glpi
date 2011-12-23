@@ -224,9 +224,10 @@ class DBmysql {
     * @return Query result handler
    **/
    function queryOrDie($query, $message='') {
-      $this->query($query) 
+      $res = $this->query($query) 
          or die(sprintf(__('%1$s - Error during the database query: '.$query.' - Error is %2$s'),
                         $message, $this->error()));
+      return $res;
    }
 
    /**

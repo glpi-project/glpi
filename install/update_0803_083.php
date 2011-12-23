@@ -608,7 +608,7 @@ function update0803to083() {
              FROM `glpi_networkports_vlans`
              WHERE `networkports_id` NOT IN (SELECT `id`
                                              FROM `glpi_networkports`)";
-   $DB->queryOrDie($query, $this->version." clean networkports_vlans datas");
+   $DB->queryOrDie($query, "0.83 clean networkports_vlans datas");
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Rename Solution objects'));
 
