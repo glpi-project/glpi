@@ -1854,7 +1854,7 @@ $LANG['setup'][15]="Emails";
 $LANG['setup'][18]="Login";
 $LANG['setup'][19]="Password";
 $LANG['setup'][20]="Password confirmation";
-$LANG['setup'][21]="Error : the two passwords are not identical";
+$LANG['setup'][21]="Error: the two passwords do not match";
 $LANG['setup'][35]="MHz";
 $LANG['setup'][39]="Followed private for default";
 $LANG['setup'][40]="Private tasks by default";
@@ -1970,8 +1970,11 @@ $LANG['setup'][182]="Logout fallback URL";
 $LANG['setup'][185]="Logs in files (SQL, email, automatic action...)";
 $LANG['setup'][186]="LDAP directory time zone";
 $LANG['setup'][187]="GLPI server time zone";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][190]="x509 certificate authentication";
-$LANG['setup'][191]="email attribute for x509 authentication";
+$LANG['setup'][191]="Email attribute for x509 authentication";
 $LANG['setup'][192]="Enabled";
 $LANG['setup'][193]="Field storage of the login in the HTTP request";
 $LANG['setup'][194]="Access control and additional informations";
@@ -1983,25 +1986,23 @@ $LANG['setup'][199]="Remove the domain of logins like login@domain";
 $LANG['setup'][200]="Infinite";
 $LANG['setup'][201]="Email followups configuration";
 $LANG['setup'][202]="Enable followup via email";
-$LANG['setup'][203]="Administrator Email";
-$LANG['setup'][204]="Email Signature";
+$LANG['setup'][203]="Administrator email";
+$LANG['setup'][204]="Email signature";
 $LANG['setup'][205]="Test email sent to administrator";
 $LANG['setup'][206]="Failed to send test email to administrator";
-$LANG['setup'][207]="Administrator reply-to Email (if needed)";
+$LANG['setup'][207]="Administrator reply-to email (if needed)";
 $LANG['setup'][208]="Administrator name";
-$LANG['setup'][209]="Response name (if necessary)";
-$LANG['setup'][217]="The PHP mail function is unknown or is not activated on your system";
-$LANG['setup'][218]="The use of a SMTP is needed";
+$LANG['setup'][209]="Response name (if needed)";
+
+$LANG['setup'][217]="The PHP mail function is unknown or is not activated on your system.";
+$LANG['setup'][218]="The use of a SMTP is needed.";
 $LANG['setup'][219]="Allow anonymous ticket creation (helpdesk.receiver)";
 $LANG['setup'][220]="Allow anonymous followups (receiver)";
 $LANG['setup'][221]="Beginning of fiscal year";
 $LANG['setup'][223]="Limit of the schedules for planning";
 $LANG['setup'][227]="URL of the application";
-$LANG['setup'][228]="Login Field";
+$LANG['setup'][228]="Login field";
 $LANG['setup'][229]="Send a test email to the administrator";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['setup'][231]="Way of sending emails";
 $LANG['setup'][232]="SMTP host";
 $LANG['setup'][234]="SMTP Login (optional)";

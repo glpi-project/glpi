@@ -557,20 +557,20 @@ class EntityData extends CommonDBChild {
       echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][203]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Administrator email')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entitynotification, "admin_email");
       echo "</td>";
-      echo "<td>" . $LANG['setup'][208] . "</td><td>";
+      echo "<td>" . __('Administrator name') . "</td><td>";
       Html::autocompletionTextField($entitynotification, "admin_email_name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][207]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entitynotification, "admin_reply");
       echo "</td>";
-      echo "<td>" . $LANG['setup'][209] . "</td><td>";
+      echo "<td>" . __('Response name (if needed)') . "</td><td>";
       Html::autocompletionTextField($entitynotification, "admin_reply_name");
       echo "</td></tr>";
 
@@ -583,7 +583,7 @@ class EntityData extends CommonDBChild {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle right'>" . $LANG['setup'][204] . "</td>";
+      echo "<td class='middle right'>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='60' rows='5' name='mailing_signature'>".
              $entitynotification->fields["mailing_signature"]."</textarea>";

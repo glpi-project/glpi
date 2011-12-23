@@ -261,7 +261,7 @@ class AuthLDAP extends CommonDBTM {
          }
 
          echo "</td>";
-         echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
+         echo "<td>" . __('Login field') . "</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
 
@@ -633,7 +633,7 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[8]['table']          = $this->getTable();
       $tab[8]['field']          = 'login_field';
-      $tab[8]['name']           = $LANG['setup'][228];
+      $tab[8]['name']           = __('Login field');
       $tab[8]['massiveaction']  = false;
       $tab[8]['datatype']       = 'string';
 

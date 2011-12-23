@@ -382,7 +382,7 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::ACTIVATED :
-                  echo $LANG['setup'][192];
+                  _e('Enabled');
                   break;
 
                case self::NOTINSTALLED :
@@ -883,7 +883,7 @@ class Plugin extends CommonDBTM {
                break;
 
             case self::ACTIVATED :
-               $msg .=  $LANG['setup'][192];
+               $msg .=  __('Enabled');
                break;
 
             case self::NOTINSTALLED :
