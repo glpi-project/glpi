@@ -294,7 +294,7 @@ class Planning {
 
       echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['common'][75]."&nbsp:</th>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Availability')."&nbsp:</th>";
       echo "<th colspan='3'>".getUserName($who)."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -459,9 +459,9 @@ class Planning {
       // Define some constants
       $date = explode("-",$when);
       $time = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-      
+
       $daysinweek = Toolbox::getDaysOfWeekArray();
-       
+
       // Check bisextile years
       list($current_year, $current_month, $current_day) = explode("-", $when);
       if (($current_year%4)==0) {

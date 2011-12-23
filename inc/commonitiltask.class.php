@@ -351,7 +351,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $name .= ', '.getUserName($this->fields['users_id']);
          // Manage private case
          if (isset($this->maybeprivate)) {
-            $name .= ', '.($this->fields['is_private'] ? $LANG['common'][77] : $LANG['common'][76]);
+            $name .= ', '.($this->fields['is_private'] ? __('Private') : __('Public'));
          }
          $name .= ')';
       }
@@ -381,7 +381,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'is_private';
-      $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
+      $tab[4]['name']     = __('Public followup');
       $tab[4]['datatype'] = 'bool';
 
       $tab[5]['table'] = 'glpi_users';
@@ -800,7 +800,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if ($this->maybePrivate()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][77]."&nbsp;:</td>";
+         echo "<td>".__('Public')."</td>";
          echo "<td>";
          Dropdown::showYesNo('is_private',$this->fields["is_private"]);
          echo "</td>";
@@ -947,7 +947,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
-            echo "<th>" . $LANG['common'][77] . "</th>";
+            echo "<th>" . __('Public') . "</th>";
          }
          echo "<th>" . $LANG['job'][35] . "</th></tr>\n";
 

@@ -612,7 +612,7 @@ class Change extends CommonITILObject {
          $tab['notclosed'] = $LANG['joblist'][35];
          $tab['process']   = $LANG['joblist'][21];
          $tab['old']       = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
-         $tab['all']       = $LANG['common'][66];
+         $tab['all']       = __('All');
       }
       return $tab;
    }

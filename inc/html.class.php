@@ -854,14 +854,14 @@ class Html {
       echo " Ext.Updater.defaults.loadScripts = true;\n";
       // JMD : validator doesn't accept html in script , must escape html element to validate
       echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator center\">".
-            $LANG['common'][80]."<\/span>';\n";
+            __('Loading...')."<\/span>';\n";
       echo "//]]> \n";
       echo "</script>\n";
 
       echo "<!--[if IE]>" ;
       echo "<script type='text/javascript'>\n";
       echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
-            $LANG['common'][80]."<\/span>';\n";
+            __('Loading...')."<\/span>';\n";
       echo "</script>\n";
       echo "<![endif]-->";
 
@@ -1882,7 +1882,7 @@ class Html {
          $menu['config']['content']['extauth']['options']['imap']['title'] = $LANG['Menu'][10];
          $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
 
-         $menu['config']['content']['extauth']['options']['others']['title'] = $LANG['common'][67];
+         $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
          $menu['config']['content']['extauth']['options']['others']['page']  = '/front/auth.others.php';
 
          $menu['config']['content']['extauth']['options']['settings']['title'] = __('Setup');

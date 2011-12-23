@@ -306,7 +306,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       foreach ($tags as $tag => $values) {
 
          if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
-            $event = $LANG['common'][66];
+            $event = __('All');
          } else {
             $event = implode(', ',$values['events']);
          }

@@ -1207,7 +1207,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
       if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
          echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][3]."</option>";
          echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
@@ -1283,7 +1283,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<select id='$id' name='$name'>";
 
       if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
          echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][42]."</option>";
          echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
@@ -1366,7 +1366,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<select id='$id' name='$name'>";
 
       if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
          echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][47]."</option>";
          echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".

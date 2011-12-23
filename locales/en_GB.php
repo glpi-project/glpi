@@ -300,9 +300,6 @@ $LANG['common'][62]="Other";
 $LANG['common'][63]="Error(s)";
 $LANG['common'][64]="Manager";
 $LANG['common'][65]="Interface";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][66]="All";
 $LANG['common'][67]="Others";
 $LANG['common'][68]="Landscape";
@@ -317,8 +314,11 @@ $LANG['common'][76]="Public";
 $LANG['common'][77]="Private";
 $LANG['common'][78]="Set public";
 $LANG['common'][79]="Set personal";
-$LANG['common'][80]="During loading...";
+$LANG['common'][80]="Loading..."; // fix during gettext
 $LANG['common'][81]="Don't show deleted items";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][82]="MB";
 $LANG['common'][83]="You don't have permission to perform this action.";
 $LANG['common'][84]="Flag change forbidden. Linked items found.";

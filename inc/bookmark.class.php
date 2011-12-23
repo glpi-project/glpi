@@ -77,7 +77,7 @@ class Bookmark extends CommonDBTM {
             $ong = array();
             $ong[1] = $LANG['common'][88]; // personal
             if (Session::haveRight('bookmark_public','r')) {
-               $ong[2] = $LANG['common'][76]; // public
+               $ong[2] = __('Public'); // public
             }
             return $ong;
       }
@@ -219,9 +219,9 @@ class Bookmark extends CommonDBTM {
                                            $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
-            echo $LANG['common'][77];
+            echo __('Private');
          } else {
-            echo $LANG['common'][76];
+            echo __('Public');
          }
       }
       echo "</td></tr>";
