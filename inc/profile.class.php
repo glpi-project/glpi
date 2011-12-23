@@ -1189,7 +1189,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['sla'][1]."&nbsp;:</td><td>";
+      echo "<td>".__('SLA')."</td><td>";
       self::dropdownNoneReadWrite("sla", $this->fields["sla"], 1, 1, 1);
       echo "</td>";
       echo "<td colspan='4'>&nbsp;";

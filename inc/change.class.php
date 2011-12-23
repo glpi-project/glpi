@@ -451,7 +451,7 @@ class Change extends CommonITILObject {
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'due_date';
-      $tab[18]['name']          = $LANG['sla'][5];
+      $tab[18]['name']          = __('Due date');
       $tab[18]['datatype']      = 'datetime';
       $tab[18]['maybefuture']   = true;
       $tab[18]['massiveaction'] = false;
@@ -856,7 +856,7 @@ class Change extends CommonITILObject {
 
       // SLA
       echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
+      echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
       echo "<td>";
       if ($this->fields["due_date"]=='NULL') {
          $this->fields["due_date"] = '';

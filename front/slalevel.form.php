@@ -101,7 +101,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
  } else {//print computer informations
-   Html::header($LANG['sla'][6], $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header(_n('Escalation level', 'Escalation levels', 2), $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
    $item->showForm($_GET["id"]);
    Html::footer();

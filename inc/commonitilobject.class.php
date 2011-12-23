@@ -2709,7 +2709,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['sla'][5]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
       if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {

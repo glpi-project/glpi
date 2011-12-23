@@ -162,7 +162,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'closed'          => $LANG['mailing'][127],
                       'deleted'         => $LANG['mailing'][129],
                       'alertnotclosed'  => $LANG['crontask'][15],
-                      'recall'          => $LANG['sla'][9],
+                      'recall'          => __('Automatic reminders of SLAs'),
                       'satisfaction'    => $LANG['satisfaction'][3]);
       asort($events);
       return $events;
@@ -527,7 +527,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Locales
       $tags = array('ticket.type'                  => __('Type'),
-                    'ticket.sla'                   => $LANG['sla'][1],
+                    'ticket.sla'                   => __('SLA'),
                     'ticket.requesttype'           => $LANG['job'][44],
                     'ticket.itemtype'              => $LANG['reports'][12],
                     'ticket.item.name'             => $LANG['financial'][104],

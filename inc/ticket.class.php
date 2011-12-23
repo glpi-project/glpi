@@ -1630,17 +1630,17 @@ class Ticket extends CommonITILObject {
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['sla'] = $LANG['sla'][1];
+      $tab['sla'] = __('SLA');
 
       $tab[30]['table']         = 'glpi_slas';
       $tab[30]['field']         = 'name';
-      $tab[30]['name']          = $LANG['sla'][1];
+      $tab[30]['name']          = __('SLA');
       $tab[30]['massiveaction'] = false;
       $tab[30]['datatype']      = 'dropdown';
 
       $tab[32]['table']         = 'glpi_slalevels';
       $tab[32]['field']         = 'name';
-      $tab[32]['name']          = $LANG['sla'][6];
+      $tab[32]['name']          = __('Escalation level');
       $tab[32]['massiveaction'] = false;
 
 
@@ -3289,23 +3289,24 @@ class Ticket extends CommonITILObject {
             echo "<span class='tracking_small'>&nbsp;";
             echo Html::convDateTime($this->fields["due_date"])."</span>";
 
-            echo "</td></tr><tr><td><span class='tracking_small'>".$LANG['sla'][1]."&nbsp;:</span>";
+            echo "</td></tr><tr><td><span class='tracking_small'>".__('SLA')."</span>";
             echo "</td><td><span class='tracking_small'>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
             $slalevel   = new SlaLevel();
             if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
-               $commentsla .= '<span class="b">'.$LANG['sla'][6]."&nbsp;:&nbsp;</span>".
-                              $slalevel->getName().'<br><br>';
+               $commentsla .= '<span class="b">'.sprintf(__('Escalation level: %s'), $slalevel->getName()).
+                              '</span><br><br>';
             }
 
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla .= '<span class="b">'.$LANG['sla'][8]."&nbsp;:&nbsp;</span>".
-                              Html::convDateTime($nextaction->fields['date']).'<br>';
+               $commentsla .= '<span class="b">'.sprintf(__('Next escalation: %s'), 
+                                                Html::convDateTime($nextaction->fields['date'])).
+                              '</span><br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
-                  $commentsla .= '<span class="b">'.$LANG['sla'][6]."&nbsp;:&nbsp;</span>".
-                                 $slalevel->getName().'<br>';
+                  $commentsla .= '<span class="b">'.sprintf(__('Escalation level: %s'), $slalevel->getName())
+                                 .'</span><br>';
                }
             }
             $slaoptions = array();
@@ -3327,11 +3328,12 @@ class Ticket extends CommonITILObject {
                echo "<td>";
                echo "<span id='sla_action'>";
                echo "<a class='pointer' ".
-                      Html::addConfirmationOnAction(array($LANG['sla'][13], $LANG['sla'][14]),
+                      Html::addConfirmationOnAction(array(__('The assignment of a SLA to a ticket causes the recalculation of the due date.'),
+                       __("Escalations defined in the SLA will be triggered under this new date.")),
                                                     "cleanhide('sla_action');cleandisplay('sla_choice');").
-                     ">".$LANG['sla'][12].'</a>';
+                     ">".__('Assign a SLA').'</a>';
                echo "</span>";
-               echo "<span id='sla_choice' style='display:none'>".$LANG['sla'][1]."&nbsp;:&nbsp;";
+               echo "<span id='sla_choice' style='display:none'>".__('SLA')."&nbsp;";
                Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                           'value'  => $this->fields["slas_id"]));
                echo "</span>";
@@ -3349,7 +3351,7 @@ class Ticket extends CommonITILObject {
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
-         echo "<td>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
+         echo "<td>".$tt->getBeginHiddenFieldText('slas_id').__('SLA').
                      $tt->getMandatoryMark('slas_id').
                      $tt->getEndHiddenFieldText('slas_id')."</td>";
          echo "<td>".$tt->getBeginHiddenFieldValue('slas_id');
@@ -4724,14 +4726,9 @@ class Ticket extends CommonITILObject {
             $second_col .= Html::convDateTime($job->fields['begin_waiting_date']);
 
          } else if ($job->fields['due_date']) {
-            $second_col = $LANG['sla'][5];
-            if ($output_type == Search::HTML_OUTPUT) {
-               $second_col .= "&nbsp;:<br>";
-            } else {
-               $second_col .= " : ";
-            }
-            $second_col .= Html::convDateTime($job->fields['due_date']);
-
+            $second_col = sprintf(__('Due date: %s'), 
+               ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                  Html::convDateTime($job->fields['due_date']));
          } else {
             $second_col = $LANG['joblist'][11];
             if ($output_type == Search::HTML_OUTPUT) {
