@@ -3024,7 +3024,7 @@ class Transfer extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('last update')."</td>";
          echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : $LANG['setup'][307]);
+                                                : __('Never'));
          echo "</td></tr>";
       }
 

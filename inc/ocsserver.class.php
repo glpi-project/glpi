@@ -583,7 +583,7 @@ class OcsServer extends CommonDBTM {
          echo "<td>".__('Last update')."</td>";
          echo "<td>";
          echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                         : $LANG['setup'][307]);
+                                         : __('Never'));
          echo "</td>";
       }
 

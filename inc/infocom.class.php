@@ -1499,7 +1499,7 @@ class Infocom extends CommonDBChild {
 
       // Life warranty
       if ($addwarranty==-1 && $deletenotice==0) {
-         return $LANG['setup'][307];
+         return __('Never');
       }
 
       if ($from==NULL || empty($from)) {

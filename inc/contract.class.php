@@ -1341,7 +1341,7 @@ class Contract extends CommonDBTM {
    static function dropdownContractRenewal($name, $value=0) {
       global $LANG;
 
-      $tmp[0] = $LANG['setup'][307];
+      $tmp[0] = __('Never');
       $tmp[1] = $LANG['financial'][105];
       $tmp[2] = $LANG['financial'][106];
       Dropdown::showFromArray($name, $tmp, array('value' => $value));

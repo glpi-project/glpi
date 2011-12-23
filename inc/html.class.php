@@ -2342,10 +2342,13 @@ class Html {
       echo "</span></td>";
 
       if (!empty($CFG_GLPI["founded_new_version"])) {
-         echo "<td class='copyright'>".$LANG['setup'][301].
-               "<a href='http://www.glpi-project.org' target='_blank' title=\"".
-                 $LANG['setup'][302]."\"> ".
-                preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a></td>";
+         echo "<td class='copyright'>";
+         $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\"".
+                 __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
+                preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a>";
+         echo sprintf(__('A new version is available: %s.'), $latest_version);
+         
+         echo "</td>";
       }
       echo "<td class='right'>";
       echo "<a href='http://glpi-project.org/'>";

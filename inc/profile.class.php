@@ -484,7 +484,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>".__('Last update')."</td>";
          echo "<td>";
          echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                         : $LANG['setup'][307]);
+                                         : __('Never'));
          echo "</td></tr>";
       }
 
@@ -1315,7 +1315,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
       self::dropdownNoneReadWrite("link", $this->fields["link"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['setup'][306]."&nbsp;:</td><td>";
+      echo "<td>".__('Check for upgrade')."</td><td>";
       self::dropdownNoneReadWrite("check_update", $this->fields["check_update"], 1, 1, 0);
       echo "</td></tr>\n";
 
@@ -1608,7 +1608,7 @@ class Profile extends CommonDBTM {
 
       $tab[54]['table']    = $this->getTable();
       $tab[54]['field']    = 'check_update';
-      $tab[54]['name']     = $LANG['setup'][306];
+      $tab[54]['name']     = __('Check for upgrade');
       $tab[54]['datatype'] = 'bool';
 
       $tab[55]['table']    = $this->getTable();

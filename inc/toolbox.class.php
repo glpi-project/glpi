@@ -974,12 +974,11 @@ class Toolbox {
 
             if (!$auto) {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.
-                                                   $LANG['setup'][302]);
-
+                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'), $latest_version));
+                  Session::addMessageAfterRedirect(__('You will find it on the GLPI-PROJECT.org site.'));
                } else {
-                  echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
-                  echo "<div class='center'>".$LANG['setup'][302]."</div>";
+                  echo "<div class='center'>".sprintf(__('A new version is available: %s.'), $latest_version)."</div>";
+                  echo "<div class='center'>".__('You will find it on the GLPI-PROJECT.org site.')."</div>";
                }
 
             } else {
@@ -993,16 +992,16 @@ class Toolbox {
          } else {
             if (!$auto) {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect($LANG['setup'][303]);
+                  Session::addMessageAfterRedirect(__('You have the latest available version'));
                } else {
-                  echo "<div class='center'>".$LANG['setup'][303]."</div>";
+                  echo "<div class='center'>".__('You have the latest available version')."</div>";
                }
 
             } else {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect($LANG['setup'][303]);
+                  Session::addMessageAfterRedirect(__('You have the latest available version'));
                } else {
-                  return $LANG['setup'][303];
+                  return __('You have the latest available version');
                }
             }
          }

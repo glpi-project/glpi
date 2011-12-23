@@ -250,7 +250,7 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $LANG['setup'][123] . "&nbsp;:</td><td>";
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
-                               array(0 => $LANG['setup'][307]));
+                               array(0 => __('Never')));
          echo "</td><td>" . $LANG['setup'][122] . "&nbsp;:</td><td>";
          Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
          echo "</td></tr>";
@@ -341,13 +341,13 @@ class Config extends CommonDBTM {
 
       if (Session::haveRight("transfer","w") && Session::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
+         echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][291] . "&nbsp;:</td><td>";
+         echo "<td>" . __('Template for the automatic transfer of computers in another entity') . "</td><td>";
          Dropdown::show('Transfer',
                         array('value'      => $CFG_GLPI["transfers_id_auto"],
                               'name'       => "transfers_id_auto",
-                              'emptylabel' => $LANG['setup'][292]));
+                              'emptylabel' => __('No automatic transfer'));
          echo "</td></td></tr>";
          echo "</table>";
       }
@@ -742,7 +742,7 @@ class Config extends CommonDBTM {
                          1 => __('Yes'));
 
          if (!$userpref) {
-            $values[-1] = $LANG['setup'][307];
+            $values[-1] = __('Never');
          }
          Dropdown::showFromArray('show_count_on_tabs', $values, array('value' => $data["show_count_on_tabs"]));
          echo "</td>";
@@ -792,7 +792,7 @@ class Config extends CommonDBTM {
          }
          echo "</td><td>" . $LANG['setup'][11] . "&nbsp;:</td><td>";
          Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30, 1,
-                               array(0 => $LANG['setup'][307]));
+                               array(0 => __('Never')));
          echo "&nbsp;".$LANG['job'][22];
          echo "</td>";
          echo "</tr>";

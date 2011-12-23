@@ -91,10 +91,10 @@ class Alert extends CommonDBTM {
          $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
       }
 
-      $times[EntityData::CONFIG_NEVER] = $LANG['setup'][307];
-      $times[DAY_TIMESTAMP]            = $LANG['setup'][305];
-      $times[WEEK_TIMESTAMP]           = $LANG['setup'][308];
-      $times[MONTH_TIMESTAMP]          = $LANG['setup'][309];
+      $times[EntityData::CONFIG_NEVER] = __('Never');
+      $times[DAY_TIMESTAMP]            = __('Each day');
+      $times[WEEK_TIMESTAMP]           = __('Each week');
+      $times[MONTH_TIMESTAMP]          = __('Each month');
 
       Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }
@@ -127,9 +127,9 @@ class Alert extends CommonDBTM {
       $p['step']  = 1;
       $p['toadd'] = array();
       if (isset($options['never_value']) && $options['never_value']) {
-         $p['toadd'][$options['never_value']] = $LANG['setup'][307];
+         $p['toadd'][$options['never_value']] = __('Never');
       } else {
-         $p['toadd'][0] = $LANG['setup'][307];
+         $p['toadd'][0] = __('Never');
       }
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {

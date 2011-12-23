@@ -224,7 +224,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $autoclose_value = EntityData::getUsedConfig('autoclose_delay', $this->getEntity(),
                                                    '', EntityData::CONFIG_NEVER);
 
-      $datas['##ticket.autoclose##']             = $LANG['setup'][307];
+      $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";
       if ($autoclose_value >= 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
