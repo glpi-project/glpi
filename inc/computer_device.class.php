@@ -214,9 +214,9 @@ class Computer_Device extends CommonDBTM {
       $nb = 0;
 
       $specificity_units = array('DeviceProcessor'   => $LANG['setup'][35],
-                                 'DeviceMemory'      => $LANG['common'][82],
-                                 'DeviceHardDrive'   => $LANG['common'][82],
-                                 'DeviceGraphicCard' => $LANG['common'][82]);
+                                 'DeviceMemory'      => __('Mio'),
+                                 'DeviceHardDrive'   => __('Mio'),
+                                 'DeviceGraphicCard' => __('Mio'));
 
       $numberOfPreviousItem = 0;
       foreach ($devtypes as $itemtype) {

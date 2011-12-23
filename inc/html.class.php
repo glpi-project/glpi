@@ -452,7 +452,7 @@ class Html {
    static function displayRightError() {
       global $LANG;
 
-      self::displayErrorAndDie($LANG['common'][83]);
+      self::displayErrorAndDie(__("You don't have permission to perform this action."));
    }
 
 

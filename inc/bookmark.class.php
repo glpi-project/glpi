@@ -75,9 +75,9 @@ class Bookmark extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__:
             $ong = array();
-            $ong[1] = $LANG['common'][88]; // personal
+            $ong[1] = __('Personal');
             if (Session::haveRight('bookmark_public','r')) {
-               $ong[2] = __('Public'); // public
+               $ong[2] = __('Public');
             }
             return $ong;
       }

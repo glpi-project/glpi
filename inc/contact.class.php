@@ -45,12 +45,8 @@ class Contact extends CommonDBTM{
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][22];
-      }
-      return $LANG['common'][92];
+      return _n('Contact', 'Contacts', $nb);
    }
 
 
@@ -367,7 +363,7 @@ class Contact extends CommonDBTM{
 
       $used = array();
       if ($number>0) {
-         Session::initNavigateListItems('Supplier', $LANG['common'][92]." = ".$this->fields['name']);
+         Session::initNavigateListItems('Supplier', __('Contact')." = ".$this->fields['name']);
 
          while ($data= $DB->fetch_array($result)) {
             $ID = $data["id"];

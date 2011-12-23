@@ -1417,7 +1417,7 @@ class MailCollector  extends CommonDBTM {
 
       $sizes[0] = $LANG['mailgate'][8];
       for ($index=1 ; $index<100 ; $index++) {
-         $sizes[$index*1048576] = $index. ' '.$LANG['common'][82];
+         $sizes[$index*1048576] = sprintf(__('%s Mio'), $index);
       }
       Dropdown::showFromArray($name, $sizes, array('value' => $value));
    }

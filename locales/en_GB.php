@@ -316,10 +316,7 @@ $LANG['common'][78]="Set public";
 $LANG['common'][79]="Set personal";
 $LANG['common'][80]="Loading..."; // fix during gettext
 $LANG['common'][81]="Don't show deleted items";
-
-/// TODO Before is ok for migration to gettext
-
-$LANG['common'][82]="MB";
+$LANG['common'][82]="Mio";
 $LANG['common'][83]="You don't have permission to perform this action.";
 $LANG['common'][84]="Flag change forbidden. Linked items found.";
 $LANG['common'][85]="Change visibility in the child entities";
@@ -329,7 +326,10 @@ $LANG['common'][88]="Personal";
 $LANG['common'][89]="Not installed";
 $LANG['common'][90]="Object";
 $LANG['common'][91]="Can't change this attribute. It's inherited from its parent.";
-$LANG['common'][92]="Alternate username";
+$LANG['common'][92]="Contact"; // fixed during gettext
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][93]="New child heading";
 $LANG['common'][94]="URL";
 $LANG['common'][95]="By";
