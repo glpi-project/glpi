@@ -298,11 +298,11 @@ $LANG['common'][60]="Active";
 $LANG['common'][61]="Unknown error";
 $LANG['common'][62]="Other";
 $LANG['common'][63]="Error(s)";
+$LANG['common'][64]="Manager";
+$LANG['common'][65]="Interface";
 
 /// TODO Before is ok for migration to gettext
 
-$LANG['common'][64]="Manager";
-$LANG['common'][65]="Interface";
 $LANG['common'][66]="All";
 $LANG['common'][67]="Others";
 $LANG['common'][68]="Landscape";

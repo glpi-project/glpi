@@ -57,7 +57,7 @@ class DeviceControl extends CommonDevice {
                                      'label' => $LANG['device_control'][0],
                                      'type'  => 'bool'),
                                array('name'  => 'interfacetypes_id',
-                                     'label' => $LANG['common'][65],
+                                     'label' => __('Interface'),
                                      'type'  => 'dropdownValue')));
    }
 
@@ -74,7 +74,7 @@ class DeviceControl extends CommonDevice {
 
       $tab[14]['table']    = 'glpi_interfacetypes';
       $tab[14]['field']    = 'name';
-      $tab[14]['name']     = $LANG['common'][65];
+      $tab[14]['name']     = __('Interface');
 
       return $tab;
    }
@@ -95,7 +95,7 @@ class DeviceControl extends CommonDevice {
          $data['value'][] = Dropdown::getYesNo($this->fields["is_raid"]);
       }
       if ($this->fields["interfacetypes_id"]) {
-         $data['label'][] = $LANG['common'][65];
+         $data['label'][] = __('Interface');
          $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
                                                       $this->fields["interfacetypes_id"]);
       }

@@ -60,7 +60,7 @@ class DeviceDrive extends CommonDevice {
                                      'label' => $LANG['device_drive'][1],
                                      'type'  => 'text'),
                                array('name'  => 'interfacetypes_id',
-                                     'label' => $LANG['common'][65],
+                                     'label' => __('Interface'),
                                      'type'  => 'dropdownValue')));
    }
 
@@ -82,7 +82,7 @@ class DeviceDrive extends CommonDevice {
 
       $tab[14]['table'] = 'glpi_interfacetypes';
       $tab[14]['field'] = 'name';
-      $tab[14]['name']  = $LANG['common'][65];
+      $tab[14]['name']  = __('Interface');
 
       return $tab;
    }
@@ -109,7 +109,7 @@ class DeviceDrive extends CommonDevice {
       }
 
       if ($this->fields["interfacetypes_id"]) {
-         $data['label'][] = $LANG['common'][65];
+         $data['label'][] = __('Interface');
          $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
                                                       $this->fields["interfacetypes_id"]);
       }

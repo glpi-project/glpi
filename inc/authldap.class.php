@@ -2202,13 +2202,14 @@ class AuthLDAP extends CommonDBTM {
       if ((Session::haveRight('config','w') || Session::haveRight('entity','w'))
           && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
 
-         echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]."&nbsp;: ";
-         echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
-                        "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
-                        ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE
-                           ? self::EXPERT_INTERFACE : self::SIMPLE_INTERFACE)."'>".
-                        ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE
-                           ? $LANG['ldap'][39] : $LANG['ldap'][40])."</a>";
+         echo "</span>&nbsp;<span class='ldap_right'><a href='".$_SERVER['PHP_SELF']."?action=".
+              $_SESSION['ldap_import']['action']."&amp;mode=".$_SESSION['ldap_import']['mode'];
+
+         if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
+            echo "&amp;interface=".self::EXPERT_INTERFACE."'>".__('Expert mode')."</a>";
+         } else {
+            echo "&amp;interface=".self::SIMPLE_INTERFACE."'>".__('Simple mode')."</a>";
+         }
       } else {
          $_SESSION['ldap_import']['interface'] = self::SIMPLE_INTERFACE;
       }
