@@ -269,7 +269,7 @@ function update0713to072() {
          for ($numsoft=0 ; $soft=$DB->fetch_assoc($result_softs) ; $numsoft++) {
             // To avoid navigator timeout on by DB
             if (!($numsoft % $step)) {
-               displayMigrationMessage("072 ", $LANG['software'][11] . " : $numsoft / $nbsoft");
+               displayMigrationMessage("072 ", "Licenses : $numsoft / $nbsoft");
             }
 
             // oldstate present if migration run more than once
@@ -532,14 +532,14 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 create glpi_dropdown_licensetypes table");
 
       $input["tablename"]   = "glpi_dropdown_licensetypes";
-      $input["value"]       = $LANG['software'][28];
+      $input["value"]       = "OEM";
       $input['type']        = "first";
       $input["comment"]     = "";
       $input["entities_id"] = -1;
 
       $query = "INSERT INTO `glpi_dropdown_licensetypes`
                        (`name`)
-                VALUES ('" . addslashes($LANG['software'][28]) . "')";
+                VALUES ('OEM')";
 
       if ($result = $DB->query($query)) {
          $oemtype  =  $DB->insert_id();

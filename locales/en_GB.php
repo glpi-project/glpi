@@ -2151,6 +2151,8 @@ $LANG['sla'][13]="The assignment of a SLA to a ticket causes the recalculation o
 $LANG['sla'][14]="Escalations defined in the SLA will be triggered under this new date.";
 $LANG['sla'][15]="Escalation levels";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['software'][1]="Purchase version";
 $LANG['software'][2]="Version in use";
 $LANG['software'][3]="Not installed affected licenses";
@@ -2169,7 +2171,7 @@ $LANG['software'][19]="Installations";
 $LANG['software'][20]="Remaining";
 $LANG['software'][28]="OEM";
 $LANG['software'][29]="Update";
-$LANG['software'][30]="License Types";
+$LANG['software'][30]="License types";
 $LANG['software'][32]="Expiration";
 $LANG['software'][44]="Install software";
 $LANG['software'][45]="Uninstall software";
@@ -2177,8 +2179,6 @@ $LANG['software'][46]="Associable to a ticket";
 $LANG['software'][47]="Merging";
 $LANG['software'][48]="Merge";
 $LANG['software'][49]="Software deleted after merging";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['softwarecategories'][2]="Uncategorized softwares";
 $LANG['softwarecategories'][3]="Unfold the software without category";

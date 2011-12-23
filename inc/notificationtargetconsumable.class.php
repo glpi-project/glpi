@@ -79,7 +79,7 @@ class NotificationTargetConsumable extends NotificationTarget {
       $tags = array('consumable.action'    => $LANG['mailing'][119],
                     'consumable.reference' => $LANG['consumables'][2],
                     'consumable.item'      => $LANG['financial'][104],
-                    'consumable.remaining' => $LANG['software'][20],
+                    'consumable.remaining' => __('Remaining'),
                     'consumable.entity'    => $LANG['entity'][0]);
 
       foreach ($tags as $tag => $label) {

@@ -3972,7 +3972,7 @@ class Search {
 
          case "glpi_softwarelicenses.number" :
             if ($data[$NAME.$num."_2"]==-1) {
-               return $LANG['software'][4];
+               return __('Unlimited');
             }
             if (empty($data[$NAME.$num])) {
                return 0;

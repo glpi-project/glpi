@@ -74,7 +74,7 @@ class Software extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->isRecursive() && $item->can($item->fields['id'],'w')) {
-                  return $LANG['software'][47];
+                  return __('Merging');
                }
                break;
          }
@@ -266,7 +266,7 @@ class Software extends CommonDBTM {
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Associable to a ticket') . "</td><td>";
       Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
@@ -320,7 +320,7 @@ class Software extends CommonDBTM {
 
       // UPDATE
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['software'][29] . "&nbsp;:</td><td colspan='3'>";
+      echo "<td>" . __('Update') . "</td><td colspan='3'>";
       Dropdown::showYesNo("is_update", $this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
       Dropdown::show('Software', array('value' => $this->fields["softwares_id"]));
@@ -407,7 +407,7 @@ class Software extends CommonDBTM {
 
       $tab[61]['table']    = $this->getTable();
       $tab[61]['field']    = 'is_helpdesk_visible';
-      $tab[61]['name']     = $LANG['software'][46];
+      $tab[61]['name']     = __('Associable to a ticket');
       $tab[61]['datatype'] = 'bool';
 
       $tab[80]['table']         = 'glpi_entities';
@@ -437,7 +437,7 @@ class Software extends CommonDBTM {
       $tab[86]['datatype']      = 'bool';
       $tab[86]['massiveaction'] = false;
 
-      $tab['versions'] = $LANG['software'][5];
+      $tab['versions'] = _n('Version', 'Versions',2);
 
       $tab[5]['table']         = 'glpi_softwareversions';
       $tab[5]['field']         = 'name';
@@ -465,13 +465,13 @@ class Software extends CommonDBTM {
 
       $tab[4]['table']        = 'glpi_operatingsystems';
       $tab[4]['field']        = 'name';
-      $tab[4]['name']         = $LANG['computers'][9]." - ".$LANG['software'][5];
+      $tab[4]['name']         = __('Operating system version');
       $tab[4]['forcegroupby'] = true;
       $tab[4]['joinparams']   = array('beforejoin'
                                         => array('table'      => 'glpi_softwareversions',
                                                  'joinparams' => array('jointype' => 'child')));
 
-      $tab['license'] = $LANG['software'][11];
+      $tab['license'] = _n('License', 'Licenses', 2);
 
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
@@ -505,7 +505,7 @@ class Software extends CommonDBTM {
 
       $tab[164]['table']         = 'glpi_softwarelicensetypes';
       $tab[164]['field']         = 'name';
-      $tab[164]['name']          = $LANG['software'][30];
+      $tab[164]['name']          = __('License types');
       $tab[164]['forcegroupby']  = true;
       $tab[164]['massiveaction'] = false;
       $tab[164]['joinparams']    = array('beforejoin'
@@ -522,7 +522,7 @@ class Software extends CommonDBTM {
 
       $tab[166]['table']         = 'glpi_softwarelicenses';
       $tab[166]['field']         =  'expire';
-      $tab[166]['name']          = $LANG['software'][32];
+      $tab[166]['name']          = __('Expiration');
       $tab[166]['forcegroupby']  = true;
       $tab[166]['datatype']      = 'date';
       $tab[166]['massiveaction'] = false;
@@ -784,8 +784,8 @@ class Software extends CommonDBTM {
          echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".$LANG['entity'][0]."</th>";
-         echo "<th>".$LANG['software'][19]."</th>";
-         echo "<th>".$LANG['software'][11]."</th></tr>";
+         echo "<th>"._n('Installation', 'Installations', 2)."</th>";
+         echo "<th>"._n('License', 'Licenses', 2)."</th></tr>";
 
          foreach ($req as $data) {
             echo "<tr class='tab_bg_2'>";
@@ -799,7 +799,7 @@ class Software extends CommonDBTM {
 
          Html::openArrowMassives("mergesoftware_form$rand", true);
          echo "<input type='hidden' name='id' value='$ID'>";
-         Html::closeArrowMassives(array('mergesoftware' => $LANG['software'][48]));
+         Html::closeArrowMassives(array('mergesoftware' => __('Merge'));
 
          echo "</form>";
 
@@ -824,7 +824,7 @@ class Software extends CommonDBTM {
       $ID = $this->getField('id');
 
       echo "<div class='center'>";
-      echo "<table class='tab_cadrehov'><tr><th>".$LANG['software'][47]."</th></tr>";
+      echo "<table class='tab_cadrehov'><tr><th>".__('Merging')."</th></tr>";
       echo "<tr class='tab_bg_2'><td>";
       Html::createProgressBar($LANG['rulesengine'][90]);
       echo "</td></tr></table></div>\n";
@@ -894,7 +894,7 @@ class Software extends CommonDBTM {
          //error_log ("All merge operations ok.");
          $soft = new self();
          foreach ($item as $old) {
-            $soft->putInTrash($old, $LANG['software'][49]);
+            $soft->putInTrash($old, __('Software deleted after merging'));
          }
       }
       Html::changeProgressBarPosition($i, $nb+1, $LANG['rulesengine'][91]);

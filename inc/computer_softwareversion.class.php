@@ -48,10 +48,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['software'][19];
-      }
-      return $LANG['software'][44];
+      return _n('Installation', 'Installations', $nb);
    }
 
 
@@ -266,7 +263,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Display the pager
-      Html::printAjaxPager($LANG['software'][19],$start,$number);
+      Html::printAjaxPager(_n('Installation', 'Installations', 2),$start,$number);
 
       $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,
@@ -336,7 +333,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($crit=="softwares_id") {
                echo "<th>".($sort=="`vername`"?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=vername&amp;order=".
-                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][5].
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._n('Version', 'Versions',2).
                     "</a></th>";
             }
             echo "<th>".($sort=="`compname`"?$sort_img:"").
@@ -368,7 +365,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('User')."</a></th>";
             echo "<th>".($sort=="`lname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=lname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][11]."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._n('License', 'Licenses', 2)."</a></th>";
             echo "</tr>\n";
 
             do {
@@ -466,7 +463,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
       echo "<th>&nbsp;".$LANG['entity'][0]."&nbsp;</th>";
-      echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
+      echo "<th>"._n('Installation', 'Installations', 2)."</th>";
       echo "</tr>\n";
 
       $tot = 0;
@@ -557,7 +554,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td class='cneter' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
-         echo $LANG['software'][11]."&nbsp;:&nbsp;";
+         echo _n('License', 'Licenses', 2)."&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
@@ -566,11 +563,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "<tr><th colspan='5'>";
 
-      if ($DB->numrows($result)==1) {
-         echo Toolbox::ucfirst($LANG['software'][16]);
-      } else {
-         echo Toolbox::ucfirst($LANG['software'][17]);
-      }
+      echo _n('Installed software', 'Installed softwares', $DB->numrows($result));
+      
       echo "</th></tr>";
 
       $cat = -1;
@@ -710,7 +704,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       } else {
          // Not installed
          $cat     = '';
-         $catname = $LANG['software'][3];
+         $catname = __('Not installed affected licenses');
          $display = true;
       }
 
@@ -732,7 +726,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .$LANG['rulesengine'][78]."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
+      echo "<th>" .__('Version')."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
 
       return $cat;
    }

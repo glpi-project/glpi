@@ -73,7 +73,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          case "glpi_softwarelicenses.number" :
             Dropdown::showInteger($search["linkfield"], 0, 1, 1000, 1,
-                                  array(-1 => $LANG['software'][4]));
+                                  array(-1 => __('Unlimited'));
             break;
 
          case "glpi_contracts.alert" :

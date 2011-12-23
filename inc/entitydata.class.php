@@ -477,7 +477,7 @@ class EntityData extends CommonDBChild {
 
       echo "<tr><th colspan='4'>".$LANG['Menu'][4]."</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['software'][10] . "&nbsp;: </td>";
+      echo "<td> " . __('Entity for software creation') . "</td>";
       echo "<td>";
 
       $toadd = array(self::CONFIG_NEVER => $LANG['common'][110]); // Keep software in PC entity

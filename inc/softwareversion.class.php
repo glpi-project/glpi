@@ -52,10 +52,7 @@ class SoftwareVersion extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['software'][5];
-      }
-      return $LANG['rulesengine'][78];
+      return _n('Version', 'Versions',$nb);
    }
 
 
@@ -283,10 +280,10 @@ class SoftwareVersion extends CommonDBChild {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre'><tr>";
-            echo "<th>&nbsp;".$LANG['software'][5]."&nbsp;</th>";
+            echo "<th>&nbsp;"._n('Version', 'Versions',2)."</th>";
             echo "<th>&nbsp;".__('Status')."</th>";
             echo "<th>&nbsp;".$LANG['computers'][9]."&nbsp;</th>";
-            echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
+            echo "<th>&nbsp;"._n('Installation', 'Installations', 2)."</th>";
             echo "<th>&nbsp;".__('Comments')."&nbsp;</th>";
             echo "</tr>\n";
 
@@ -309,7 +306,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
             if ($canedit) {
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
-                      $LANG['software'][7]."</a>";
+                      __('Add a version')."</a>";
             }
             echo "</td></tr>";
             echo "</table>\n";
@@ -320,7 +317,7 @@ class SoftwareVersion extends CommonDBChild {
             if ($canedit) {
                echo "<tr class='tab_bg_2'><td class='center'>";
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
-                      $LANG['software'][7]."</a></td></tr>";
+                      __('Add a version')."</a></td></tr>";
             }
             echo "</table>\n";
          }

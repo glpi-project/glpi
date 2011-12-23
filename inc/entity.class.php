@@ -541,7 +541,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[51]['table']         = 'glpi_entitydatas';
       $tab[51]['field']         = 'entities_id_software';   // not a dropdown because of special value
-      $tab[51]['name']          = $LANG['software'][10];
+      $tab[51]['name']          = __('Entity for software creation');
       $tab[51]['massiveaction'] = false;
       $tab[51]['nosearch']      = true;
 
