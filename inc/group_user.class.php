@@ -230,7 +230,7 @@ class Group_User extends CommonDBRelation{
                               'entity' => $entityrestrict,
                               'used'   => $used_ids));
 
-         echo "</td><td>".$LANG['common'][64]."</td><td>";
+         echo "</td><td>".__('Manager')."</td><td>";
          Dropdown::showYesNo('is_manager',
                              ($crit == 'is_manager' ? 1 : 0));
 
@@ -358,7 +358,7 @@ class Group_User extends CommonDBRelation{
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo $LANG['rulesengine'][16]."&nbsp;:&nbsp;";
       $crits = array(''                => Dropdown::EMPTY_VALUE,
-                     'is_manager'      => $LANG['common'][64],
+                     'is_manager'      => __('Manager'),
                      'is_userdelegate' => $LANG['common'][123]);
       Dropdown::showFromArray('crit', $crits,
                               array('value'     => $crit,
@@ -397,7 +397,7 @@ class Group_User extends CommonDBRelation{
          if ($tree) {
            echo "<th>".Group::getTypeName(1)."</th>";
          }
-         echo "<th>".$LANG['common'][64]."</th>";
+         echo "<th>".__('Manager')."</th>";
          echo "<th>".$LANG['common'][123]."</th></tr>";
 
          for ($i=$start, $j=0 ; $i<$number && $j<$_SESSION['glpilist_limit'] ; $i++, $j++) {

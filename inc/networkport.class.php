@@ -626,7 +626,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[87]['table']         = 'glpi_networkinterfaces';
       $tab[87]['field']         = 'name';
-      $tab[87]['name']          = $LANG['common'][65];
+      $tab[87]['name']          = __('Interface');
       $tab[87]['forcegroupby']  = true;
       $tab[87]['massiveaction'] = false;
       $tab[87]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
