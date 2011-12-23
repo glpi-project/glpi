@@ -63,7 +63,7 @@ class DeviceMemory extends CommonDevice {
                          array(array('name'  => 'specif_default',
                                      'label' => $LANG['device_ram'][2]." ".$LANG['devices'][24],
                                      'type'  => 'text',
-                                     'unit'  => $LANG['common'][82]),
+                                     'unit'  => __('Mio')),
                                array('name'  => 'frequence',
                                      'label' => $LANG['device_ram'][1],
                                      'type'  => 'text',

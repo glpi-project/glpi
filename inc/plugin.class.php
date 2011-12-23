@@ -166,7 +166,7 @@ class Plugin extends CommonDBTM {
       } else if (file_exists($dir . "fr_FR.php")) {
          include ($dir . "fr_FR.php");
       }
-      
+
       // New localisation system
       if (file_exists($dir.$trytoload.".mo")) {
          $TRANSLATE->addTranslation(
@@ -174,29 +174,29 @@ class Plugin extends CommonDBTM {
                'content' => $dir.$trytoload.".mo",
                'locale'  => $coretrytoload
             )
-         );         
+         );
       } else if (file_exists($dir.$CFG_GLPI["language"].".mo")) {
          $TRANSLATE->addTranslation(
             array(
                'content' => $dir.$CFG_GLPI["language"].".mo",
                'locale'  => $coretrytoload
             )
-         ); 
+         );
       } else if (file_exists($dir."en_GB.mo")) {
          $TRANSLATE->addTranslation(
             array(
                'content' => $dir."en_GB.mo",
                'locale'  => $coretrytoload
             )
-         ); 
+         );
       } else if (file_exists($dir."fr_FR.mo")) {
          $TRANSLATE->addTranslation(
             array(
                'content' => $dir."fr_FR.mo",
                'locale'  => $coretrytoload
             )
-         ); 
-      }      
+         );
+      }
    }
 
 
@@ -386,7 +386,7 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::NOTINSTALLED :
-                  echo $LANG['common'][89];
+                  echo __('Not installed');
                   break;
 
                case self::NOTUPDATED :
@@ -887,7 +887,7 @@ class Plugin extends CommonDBTM {
                break;
 
             case self::NOTINSTALLED :
-               $msg .=  $LANG['common'][89];
+               $msg .=  __('Not installed');
                break;
 
             case self::TOBECONFIGURED :

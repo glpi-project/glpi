@@ -179,12 +179,12 @@ class ComputerDisk extends CommonDBChild {
       echo "<td>".$LANG['computers'][3]."&nbsp;:</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "totalsize");
-      echo "&nbsp;".$LANG['common'][82]."</td>";
+      echo "&nbsp;".__('Mio')."</td>";
 
       echo "<td>".$LANG['computers'][2]."&nbsp;:</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "freesize");
-      echo "&nbsp;".$LANG['common'][82]."</td></tr>";
+      echo "&nbsp;".__('Mio')."</td></tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -257,10 +257,11 @@ class ComputerDisk extends CommonDBChild {
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";
                echo "<td>".$data['fsname']."</td>";
-               echo "<td class='right'>".Html::formatNumber($data['totalsize'], false, 0)."&nbsp;".
-                      $LANG['common'][82]."<span class='small_space'></span></td>";
-               echo "<td class='right'>".Html::formatNumber($data['freesize'], false, 0)."&nbsp;".
-                      $LANG['common'][82]."<span class='small_space'></span></td>";
+               //TRANS: %s is a size
+               $tmp = sprintf(__('%s Mio'), Html::formatNumber($data['totalsize'], false, 0));
+               echo "<td class='right'>$tmp<span class='small_space'></span></td>";
+               $tmp = sprintf(__('%s Mio'), Html::formatNumber($data['freesize'], false, 0));
+               echo "<td class='right'>$tmp<span class='small_space'></span></td>";
                echo "<td>";
                $percent = 0;
                if ($data['totalsize']>0) {

@@ -63,7 +63,7 @@ class DeviceGraphicCard extends CommonDevice {
                          array(array('name'  => 'specif_default',
                                      'label' => $LANG['devices'][6]." ".$LANG['devices'][24],
                                      'type'  => 'text',
-                                     'unit'  => $LANG['common'][82]),
+                                     'unit'  => __('Mio')),
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
                                      'type'  => 'dropdownValue')));
