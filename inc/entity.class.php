@@ -534,7 +534,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[50]['table']         = 'glpi_entitydatas';
       $tab[50]['field']         = 'default_alarm_threshold';
-      $tab[50]['name']          = $LANG['setup'][115];
+      $tab[50]['name']          = __('Default threshold for cartridge and consumable count');
       $tab[50]['massiveaction'] = false;
       $tab[50]['nosearch']      = true;
       $tab[50]['datatype']      = 'number';

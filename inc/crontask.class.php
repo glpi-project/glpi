@@ -1308,7 +1308,7 @@ class CronTask extends CommonDBTM{
 
          case 'logs' :
             return array('description' => $LANG['crontask'][7],
-                         'parameter'   => $LANG['setup'][109]);
+                         'parameter'   => __('How long system logs are keep in database (in days, 0 for infinite)');
 
          case 'optimize' :
             return array('description' => $LANG['crontask'][8]);

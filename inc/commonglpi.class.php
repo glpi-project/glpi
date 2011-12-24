@@ -497,7 +497,7 @@ class CommonGLPI {
               || in_array($class, $CFG_GLPI["infocom_types"])
               || in_array($class, $CFG_GLPI["reservation_types"]))) {
 
-            $onglets[-2] = $LANG['setup'][137];
+            $onglets[-2] = __('Debug');
       }
 
       if (count($onglets)) {

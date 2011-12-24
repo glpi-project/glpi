@@ -598,7 +598,7 @@ class Dropdown {
       static $optgroup = NULL;
 
       if (is_null($optgroup)) {
-         $optgroup = array($LANG['setup'][139]
+         $optgroup = array__('Common')
                            => array('Location'        => Location::getTypeName(2),
                                     'State'           => State::getTypeName(2),
                                     'Manufacturer'    => Manufacturer::getTypeName(2)),
