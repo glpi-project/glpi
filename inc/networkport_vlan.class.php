@@ -189,7 +189,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<input type='hidden' name='networkports_id' value='$ID'>\n";
 
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . $LANG['setup'][90] . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . _n('VLAN','VLANs',2) . "</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2'>";
          $used = self::showForNetworkPort($ID, true,0);
@@ -234,11 +234,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
          switch ($item->getType()) {
             case 'NetworkPort' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['setup'][90],
+                  return self::createTabEntry(_n('VLAN','VLANs',2),
                                               countElementsInTable($this->getTable(),
                                                                    "networkports_id = '".$item->getID()."'"));
                }
-               return $LANG['setup'][90];
+               return _n('VLAN','VLANs',2);
          }
       }
       return '';

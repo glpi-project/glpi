@@ -42,10 +42,7 @@ class ConsumableItemType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][92];
-      }
-      return $LANG['consumables'][12];
+      return _n('Consumables type', 'Consumables types',$nb),
    }
 }
 
