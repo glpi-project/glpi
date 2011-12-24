@@ -217,9 +217,11 @@ function update083to084() {
                                     "It is a copy of $copyTable", false);
       }
    }
-   if (count($originTables) > 0)
+   /* Actually, now, we recommend to use the migration cleaner plugin ...
+   if (count($originTables) > 0) {
       $migration->displayWarning("You can remove ".implode(', ', $originTables).
                                  " tables if have no need of them.", true);
+   } */
 
 
    logMessage($LANG['install'][4]. " - glpi_fqdns", true);
@@ -312,6 +314,11 @@ function update083to084() {
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+                  `completename` text COLLATE utf8_unicode_ci,
+                  `level` int(11) NOT NULL DEFAULT '0',
+                  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+                  `sons_cache` longtext COLLATE utf8_unicode_ci,
                   `version` tinyint unsigned DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -353,6 +360,7 @@ function update083to084() {
          $address = $entry['address'];
          $netmask = $entry['netmask'];
          $gateway = $entry['gateway'];
+         $entities_id = $entry['entities_id'];
 
          if ((empty($address)) || ($address == '0.0.0.0') || (empty($netmask))
              || ($netmask == '0.0.0.0') || ($netmask == '255.255.255.255')) {
@@ -363,13 +371,14 @@ function update083to084() {
             $gateway = '';
          }
 
-         $networkName   = $address."/".$netmask.
-                          (empty($entry['gateway']) ? "" : " - ".$entry['gateway']);
+         $networkDefinition = "$address/$netmask";
+         $networkName   = $networkDefinition . (empty($gateway) ? "" : " - ".$gateway);
 
-         $input         = array('entities_id' => $entry['entities_id'],
-                                'name'        => $networkName,
-                                'network'     => $address."/".$netmask,
-                                'gateway'     => $entry["gateway"]);
+         $input         = array('entities_id'  => $entities_id,
+                                'name'         => $networkName,
+                                'completename' => $networkName,
+                                'network'      => $networkDefinition,
+                                'gateway'      => $gateway);
 
          $preparedInput = $network->prepareInput($input);
 
@@ -378,11 +387,10 @@ function update083to084() {
             if (isset($preparedInput['error'])) {
                $query = "SELECT id, items_id, itemtype
                          FROM origin_glpi_networkports
-                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='" .
-                               $entry['address']."'
-                               AND `netmask` = '".$entry['netmask']."'
-                               AND `gateway` = '".$entry['gateway']."'
-                               AND `entities_id` = '".$entry['entities_id']."'";
+                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='$address'
+                               AND `netmask` = '$netmask'
+                               AND `gateway` = '$gateway'
+                               AND `entities_id` = '$entities_id'";
                $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
@@ -394,9 +402,9 @@ function update083to084() {
             $query = "SELECT id, items_id, itemtype
                       FROM origin_glpi_networkports
                       WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
-                            AND `netmask` = '".$entry['netmask']."'
-                            AND `gateway` = '".$entry['gateway']."'
-                            AND `entities_id` = '".$entry['entities_id']."'";
+                            AND `netmask` = '$netmask'
+                            AND `gateway` = '$gateway'
+                            AND `entities_id` = '$entities_id'";
             $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
@@ -501,8 +509,10 @@ function update083to084() {
          unset($instantiation_type);
       }
    }
+   /* Actually, now, we recommend to use the migration cleaner plugin ...
    $migration->displayWarning("You can delete glpi_networkinterfaces table if you have no need
                               of them.", true);
+   */
 
    foreach (array('ip', 'gateway', 'mac', 'netmask', 'netpoints_id', 'networkinterfaces_id',
                   'subnet') as $field) {
@@ -666,6 +676,8 @@ function update083to084() {
              WHERE `itemtype` = 'Software'
                    AND `num` = 7";
    $DB->query($query);
+
+   $migration->displayWarning("You should run migration cleaner plugin !", true);
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
