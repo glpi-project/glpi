@@ -1890,6 +1890,9 @@ $LANG['setup'][86]="Memory types";
 $LANG['setup'][87]="Knowledge base category";
 $LANG['setup'][88]="Network";
 $LANG['setup'][89]="Domain";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][90]="VLANs";
 $LANG['setup'][91]="Computers models";
 $LANG['setup'][92]="Consumables types";
@@ -1900,9 +1903,6 @@ $LANG['setup'][96]="Printers models";
 $LANG['setup'][97]="Peripherals models";
 $LANG['setup'][98]="Tasks category";
 $LANG['setup'][99]="Building number";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['setup'][100]="Room number";
 $LANG['setup'][101]="Maximal number of automatic actions (run by CLI)";
 $LANG['setup'][102]="Log Level";
