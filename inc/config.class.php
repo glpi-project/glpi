@@ -222,7 +222,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][149] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>" .__('Number of decimals in amounts') . "</td><td>";
       Dropdown::showInteger("decimal_number", $CFG_GLPI["decimal_number"], 1, 4);
       echo "</td><td>" . $LANG['setup'][47]."&nbsp;:</td><td>";
       Dropdown::showFromArray("default_graphtype", array('png' => 'PNG',
@@ -230,7 +230,7 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI["default_graphtype"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['setup'][147]."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][120] . "&nbsp;:</td><td>";
@@ -533,7 +533,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assistance') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Step for the hours') . "</td><td>";
       Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(5  => 5,
                                                                                    10 => 10,
                                                                                    15 => 15,
@@ -707,7 +707,7 @@ class Config extends CommonDBTM {
        } else {
         echo "<td colspan='2'>&nbsp;</td>";
       }
-      echo "<td>" . $LANG['setup'][150] . "&nbsp;:</td>";
+      echo "<td>" .__('Number format') . "</td>";
       $values = array(0 => '1 234.56',
                       1 => '1,234.56',
                       2 => '1 234,56');

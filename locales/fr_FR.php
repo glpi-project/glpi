@@ -2260,7 +2260,7 @@ $LANG['setup'][138] = "Utiliser GLPI en Mode";
 $LANG['setup'][139] = "Général";
 $LANG['setup'][140] = "Types";
 
-$LANG['setup'][145] = "Os";
+$LANG['setup'][145] = "Systèmes d'exploitation";
 
 $LANG['setup'][147] = "Affichage dynamique";
 $LANG['setup'][148] = "Pas pour les horaires";
@@ -2276,7 +2276,7 @@ $LANG['setup'][159] = "Filtre de connexion";
 
 $LANG['setup'][162] = "Configuration serveur de messagerie";
 
-$LANG['setup'][164] = "Nom domaine de messagerie <br>(adresse de messagerie de type identifiant@domaine)";
+$LANG['setup'][164] = "Nom domaine de messagerie (adresse de messagerie de type identifiant@domaine)";
 $LANG['setup'][165] = "L'extension IMAP de votre parseur PHP n'est pas installée";
 $LANG['setup'][166] = "Impossible d'utiliser la messagerie comme source de connexion externe";
 $LANG['setup'][167] = "Liaison à l'annuaire LDAP";

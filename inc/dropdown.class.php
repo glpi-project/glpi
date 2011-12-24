@@ -258,7 +258,7 @@ class Dropdown {
             $query = "SELECT *
                       FROM `". $table ."`
                       WHERE `id` = '". $id ."'";
-
+            /// TODO reviewx comment management...
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result) != 0) {
                   $data = $DB->fetch_assoc($result);
@@ -294,7 +294,7 @@ class Dropdown {
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>".$LANG['setup'][14]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."&nbsp;: </span> ".
                                         $data["email"];
                         }
                         break;
@@ -309,7 +309,7 @@ class Dropdown {
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>".$LANG['setup'][14]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."&nbsp;: </span> ".
                                         $data["email"];
                         }
                         break;
@@ -610,7 +610,7 @@ class Dropdown {
                                     'RequestType'      => RequestType::getTypeName(2),
                                     'SolutionTemplate' => SolutionTemplate::getTypeName(2)),
 
-                           $LANG['setup'][140]
+                           _n('Type', 'Types', 2)
                            => array('ComputerType'         => ComputerType::getTypeName(2),
                                     'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(2),
                                     'PrinterType'          => PrinterType::getTypeName(2),
@@ -653,7 +653,7 @@ class Dropdown {
                         => array('Calendar' => Calendar::getTypeName(2),
                                  'Holiday'  => Holiday::getTypeName(2)),
 
-                        $LANG['setup'][145]
+                        _n('Operating system', 'Operating systems',2)
                         => array('OperatingSystem'    => OperatingSystem::getTypeName(2),
                                  'OperatingSystemVersion'
                                                       => OperatingSystemVersion::getTypeName(2),

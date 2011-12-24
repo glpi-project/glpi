@@ -1575,7 +1575,7 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
       echo "<td><input size='30' type='text' name='mail_server' value=\"" .$addr. "\"></td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][168] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
       echo "<select name='server_type'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='/imap' ".(strstr($value,"/imap") ?" selected ":"") . ">IMAP</option>\n";
