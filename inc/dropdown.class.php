@@ -1558,7 +1558,8 @@ class Dropdown {
 
             }
 
-            if ($item instanceof CommonTreeDropdown) {
+            if (($item instanceof CommonTreeDropdown)
+                && (!($item instanceof CommonImplicitTreeDropdown))) {
                if ($isadmin) {
                   echo "<option value='move_under'>".__('Move')."</option>";
                }
