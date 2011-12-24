@@ -246,7 +246,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             }
 
          } else {
-            echo "<tr><th colspan='3'>".$LANG['search'][15]."</th></tr>";
+            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
 
          if ($canedit) {

@@ -444,7 +444,7 @@ class Group_User extends CommonDBRelation{
          }
          echo "</div>";
       } else {
-         echo "<p class='center b'>".$LANG['search'][15]."</p>";
+         echo "<p class='center b'>".__('No item found')."</p>";
       }
    }
 

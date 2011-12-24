@@ -579,7 +579,7 @@ class NetworkName extends FQDNLabel {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan>".self::getTypeName(0)." - ".$LANG['search'][15]."</th></tr>";
+         echo "<tr><th>".self::getTypeName(0)."</th><th>".__('No item found')."</th></tr>";
          echo "</table>\n";
 
       } else {

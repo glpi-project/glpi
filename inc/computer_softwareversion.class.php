@@ -257,7 +257,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='center'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['search'][15]."</th></tr>";
+         echo "<tr><th>".__('No item found')."</th></tr>";
          echo "</table></div>\n";
          return;
       }
@@ -437,7 +437,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
          } else { // Not found
-            echo $LANG['search'][15];
+            _e('No item found');
          }
       } // Query
       echo "</div>\n";
@@ -493,7 +493,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td class='right b'>".__('Total')."</td>";
          echo "<td class='right b'>".$tot."</td></tr>\n";
       } else {
-         echo "<tr class='tab_bg_1'><td colspan='2 b'>" . $LANG['search'][15] . "</td></tr>\n";
+         echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
       }
       echo "</table></div>";
    }

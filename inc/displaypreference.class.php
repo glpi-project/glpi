@@ -554,7 +554,7 @@ class DisplayPreference extends CommonDBTM {
 
       } else {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><td class='b center'>".$LANG['search'][15]."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='b center'>".__('No item found')."</td></tr>";
          echo "</table>";
       }
    }

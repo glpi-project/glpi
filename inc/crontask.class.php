@@ -972,7 +972,7 @@ class CronTask extends CommonDBTM{
       echo "<br><div class='center'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['search'][15]."</th></tr>";
+         echo "<tr><th>".__('No item found')."</th></tr>";
          echo "</table>";
          echo "</div>";
          return;
@@ -1011,7 +1011,7 @@ class CronTask extends CommonDBTM{
             echo "</table>";
 
          } else { // Not found
-            echo $LANG['search'][15];
+            _e('No item found');
          }
       } // Query
       echo "</div>";
@@ -1077,7 +1077,7 @@ class CronTask extends CommonDBTM{
             echo "</table>";
 
          } else { // Not found
-            echo $LANG['search'][15];
+            _e('No item found');
          }
       } // Query
 

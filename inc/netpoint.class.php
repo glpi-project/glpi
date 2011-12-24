@@ -301,7 +301,7 @@ class Netpoint extends CommonDropdown {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan>".$LANG['networking'][51]." - ".$LANG['search'][15]."</th></tr>";
+         echo "<tr><th>".$LANG['networking'][51]."</th><th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
          Html::printAjaxPager($item->getTreeLink()." - ".$LANG['networking'][51],$start,$number);

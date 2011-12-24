@@ -285,7 +285,7 @@ class ITILCategory extends CommonTreeDropdown {
             }
 
          } else {
-            echo "<tr><th colspan='3'>".$LANG['search'][15]."</th></tr>";
+            echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
 
          echo "</table></div>";

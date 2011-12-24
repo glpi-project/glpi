@@ -804,7 +804,7 @@ class Software extends CommonDBTM {
          echo "</form>";
 
       } else {
-         echo $LANG['search'][15];
+         _e('No item found');
       }
 
       echo "</div>";

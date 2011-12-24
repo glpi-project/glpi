@@ -1817,6 +1817,8 @@ $LANG['satisfaction'][12]="Invitation to fill out the survey";
 $LANG['satisfaction'][13]="Opened";
 $LANG['satisfaction'][14]="Answered";
 
+
+
 $LANG['search'][0]="Search";
 $LANG['search'][1]="for all";
 $LANG['search'][2]="contains";
@@ -1836,6 +1838,7 @@ $LANG['search'][21]="Less than";
 $LANG['search'][22]="More than";
 $LANG['search'][23]="before";
 $LANG['search'][24]="after";
+
 
 /// TODO After is ok for migration to gettext
 
