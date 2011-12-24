@@ -347,7 +347,7 @@ class Group_User extends CommonDBRelation{
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(2)."</tr>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(2)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo $LANG['rulesengine'][16]."&nbsp;:&nbsp;";
       $crits = array(''                => Dropdown::EMPTY_VALUE,
