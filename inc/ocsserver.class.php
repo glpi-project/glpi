@@ -267,7 +267,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_type", $this->fields["import_general_type"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][89] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Domain') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_domain", $this->fields["import_general_domain"]);
       echo "</td></tr>\n";
 
@@ -363,7 +363,7 @@ class OcsServer extends CommonDBTM {
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][88] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Network') . " </td>\n";
       echo "<td><select name='import_network'>\n";
       echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "networks_id");
@@ -2943,8 +2943,8 @@ class OcsServer extends CommonDBTM {
                    "comment"                        => __('Comments'),
                    "contact"                        => __('Alternate username'),
                    "contact_num"                    => __('Alternate username number'),
-                   "domains_id"                     => $LANG['setup'][89],
-                   "networks_id"                    => $LANG['setup'][88],
+                   "domains_id"                     => __('Domain'),
+                   "networks_id"                    => __('Network'),
                    "operatingsystems_id"            => $LANG['computers'][9],
                    "operatingsystemservicepacks_id" => $LANG['computers'][53],
                    "operatingsystemversions_id"     => $LANG['computers'][52],

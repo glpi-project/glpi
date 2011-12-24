@@ -122,7 +122,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
              " scrollbars=yes' );w.focus();\">".$LANG['mailing'][138]."</a></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td colspan='3'>";
+      echo "<td>" . __('Language') . "</td><td colspan='3'>";
 
       //Get all used languages
       $used = self::getAllUsedLanguages($notificationtemplates_id);
@@ -180,7 +180,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th></th><th>".$LANG['setup'][41]."</th></tr>";
+      echo "<tr class='tab_bg_1'><th></th><th>".__('Language')."</th></tr>";
 
       foreach ($DB->request('glpi_notificationtemplatetranslations',
                             array('notificationtemplates_id' => $nID)) as $data) {
@@ -240,7 +240,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'language';
-      $tab[1]['name']          = $LANG['setup'][41];
+      $tab[1]['name']          = __('Language');
       $tab[1]['datatype']      = 'language';
       $tab[1]['massiveaction'] = false;
 

@@ -1412,7 +1412,7 @@ class User extends CommonDBTM {
       $title = $LANG['Menu'][14];
 
       if ($this->canCreate()) {
-         $buttons["user.form.php?new=1"] = $LANG['setup'][2];
+         $buttons["user.form.php?new=1"] = __('Add user...');
          $title = "";
 
          if (Auth::useAuthExt()) {
@@ -1422,7 +1422,7 @@ class User extends CommonDBTM {
       }
       if (Session::haveRight("import_externalauth_users", "w")) {
          if (AuthLdap::useAuthLdap()) {
-            $buttons["ldap.php"] = $LANG['setup'][3];
+            $buttons["ldap.php"] = __('LDAP directory link');
          }
       }
       Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title,
@@ -1743,7 +1743,7 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!GLPI_DEMO_MODE) {
-            echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
+            echo "<td>" . __('Language') . "&nbsp;:</td><td>";
             /// Use sesion variable because field in table may be null if same of the global config
             Dropdown::showLanguages("language", array('value' => $_SESSION["glpilanguage"]));
          } else {
@@ -1806,7 +1806,7 @@ class User extends CommonDBTM {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
             $modes[Session::TRANSLATION_MODE] = __('Translation');
-            $modes[Session::DEBUG_MODE]       = __('Debug')];
+            $modes[Session::DEBUG_MODE]       = __('Debug');
             Dropdown::showFromArray('use_mode', $modes, array('value' => $this->fields["use_mode"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
@@ -2002,7 +2002,7 @@ class User extends CommonDBTM {
 
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'language';
-      $tab[17]['name']          = $LANG['setup'][41];
+      $tab[17]['name']          = __('Language');
       $tab[17]['datatype']      = 'language';
 
       $tab[19]['table']         = $this->getTable();

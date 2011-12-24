@@ -638,7 +638,7 @@ class Auth {
 
       if ($DB->result($result, 0, "cpt") > 0) {
          $methods[self::LDAP]     = $LANG['login'][31];
-         $methods[self::EXTERNAL] = $LANG['setup'][67];
+         $methods[self::EXTERNAL] = __('External authentications');
       }
 
       $sql = "SELECT COUNT(*) AS cpt

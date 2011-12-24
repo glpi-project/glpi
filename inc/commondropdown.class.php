@@ -106,7 +106,7 @@ abstract class CommonDropdown extends CommonDBTM {
       global $LANG;
 
       if ($this->display_dropdowntitle) {
-         Dropdown::showItemTypeMenu($LANG['setup'][0], Dropdown::getStandardDropdownItemTypes(),
+         Dropdown::showItemTypeMenu(__('Dropdowns'), Dropdown::getStandardDropdownItemTypes(),
                                     $this->getSearchURL());
       }
    }
@@ -387,18 +387,18 @@ abstract class CommonDropdown extends CommonDBTM {
       global $LANG;
 
       if ($this->haveChildren()) {
-         echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
+         echo "<div class='center'><p class='red'>" .__("You can't delete that item, because it has sub-items") . "</p></div>";
          return false;
       }
 
       $ID = $this->fields['id'];
 
       echo "<div class='center'>";
-      echo "<p class='red'>" . $LANG['setup'][63] . "</p>";
+      echo "<p class='red'>" . __("Caution: you're about to remove a heading used for one or more items.") . "</p>";
 
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
-         echo "<p>" . $LANG['setup'][64] . "</p>";
+         echo "<p>" . __('If you confirm the deletion the items using this heading used fields will be blanked.') . "</p>";
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";

@@ -429,7 +429,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[35]['table']         = 'glpi_entitydatas';
       $tab[35]['field']         = 'auto_assign_mode';
-      $tab[35]['name']          = $LANG['setup'][52];
+      $tab[35]['name']          = __('Automatic assignment of tickets');
       $tab[35]['massiveaction'] = false;
       $tab[35]['nosearch']      = true;
       $tab[35]['joinparams']    = array('jointype' => 'child');

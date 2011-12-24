@@ -224,7 +224,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" .__('Number of decimals in amounts') . "</td><td>";
       Dropdown::showInteger("decimal_number", $CFG_GLPI["decimal_number"], 1, 4);
-      echo "</td><td>" . $LANG['setup'][47]."&nbsp;:</td><td>";
+      echo "</td><td>" . __('Default chart format')."</td><td>";
       Dropdown::showFromArray("default_graphtype", array('png' => 'PNG',
                                                          'svg' => 'SVG'),
                               array('value' => $CFG_GLPI["default_graphtype"]));
@@ -303,7 +303,7 @@ class Config extends CommonDBTM {
       echo "</td</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][8] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Enable the financial and administrative informations by default') . "</td><td>";
       Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
       echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
@@ -546,7 +546,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['mailgate'][7] . " (".$LANG['setup'][46].")&nbsp;:</td><td>";
+      echo "<td>".__('Maximum size of each file imported by the mail receiver (default value)')."</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -682,7 +682,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][6] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Maximum number of search results to display on a page')."</td><td>";
@@ -730,14 +730,14 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][7]."&nbsp;:</td><td>";
+      echo "<td>".__('CSV delimiter')."</td><td>";
       $values = array(';' =>';',
                       ',' =>',');
       Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
       echo "</td>";
 
       if (!$userpref || $CFG_GLPI['show_count_on_tabs'] != -1) {
-         echo "<td>".$LANG['setup'][1]."&nbsp;:</td><td>";
+         echo "<td>".__('See the counts in the tabs')."</td><td>";
 
          $values = array(0 => __('No'),
                          1 => __('Yes'));
@@ -760,7 +760,7 @@ class Config extends CommonDBTM {
       } else {
          echo "<td colspan='2'></td>";
       }
-      echo "<td>" . ($userpref?__('Select language'):__('Default language') . "&nbsp;:</td><td>";
+      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "&nbsp;:</td><td>";
       if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
@@ -772,7 +772,7 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['setup'][39]."&nbsp;:</td><td>";
+         echo "<td>".__('Private followups by default')."</td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
          echo "</td><td> " . __('Show new tickets on the home page') . "</td><td>";
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
@@ -1097,7 +1097,7 @@ class Config extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Preference' :
-            return $LANG['setup'][6];
+            return __('Personalization');
 
          case 'User' :
             if (Session::haveRight('user','w')
@@ -1108,7 +1108,7 @@ class Config extends CommonDBTM {
 
          case __CLASS__ :
             $tabs[1] = __('General setup');   // Display
-            $tabs[2] = $LANG['setup'][48];   // Prefs
+            $tabs[2] = __('Default values');   // Prefs
             $tabs[3] = $LANG['Menu'][38];    // Inventory
             $tabs[4] = __('Assistance'); 
             $tabs[5] = __('System informations');  // SysInfo

@@ -547,7 +547,7 @@ class Computer extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>".__('Network')."</td>";
       echo "<td>";
       Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
@@ -566,7 +566,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
+      echo "<td>".__('Domain')."</td>";
       echo "<td >";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td></tr>";
@@ -831,11 +831,11 @@ class Computer extends CommonDBTM {
 
       $tab[32]['table'] = 'glpi_networks';
       $tab[32]['field'] = 'name';
-      $tab[32]['name']  = $LANG['setup'][88];
+      $tab[32]['name']  = __('Network');
 
       $tab[33]['table'] = 'glpi_domains';
       $tab[33]['field'] = 'name';
-      $tab[33]['name']  = $LANG['setup'][89];
+      $tab[33]['name']  = __('Domain');
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';
@@ -904,7 +904,7 @@ class Computer extends CommonDBTM {
 
       $tab[11]['table']         = 'glpi_devicenetworkcards';
       $tab[11]['field']         = 'designation';
-      $tab[11]['name']          = $LANG['setup'][9];
+      $tab[11]['name']          = _n('Network interface', 'Network interfaces', 1);
       $tab[11]['forcegroupby']  = true;
       $tab[11]['massiveaction'] = false;
       $tab[11]['joinparams']    = array('beforejoin'

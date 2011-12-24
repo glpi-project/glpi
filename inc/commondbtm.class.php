@@ -3120,7 +3120,7 @@ class CommonDBTM extends CommonGLPI {
                   if (isset($CFG_GLPI['languages'][$value])) {
                      return $CFG_GLPI['languages'][$value][0];
                   }
-                  return $LANG['setup'][46];
+                  return __('Default value');
 
             }
          }

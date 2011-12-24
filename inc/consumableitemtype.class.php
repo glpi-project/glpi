@@ -42,7 +42,7 @@ class ConsumableItemType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return _n('Consumables type', 'Consumables types',$nb),
+      return _n('Consumables type', 'Consumables types',$nb);
    }
 }
 

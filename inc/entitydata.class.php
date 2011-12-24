@@ -620,7 +620,7 @@ class EntityData extends CommonDBChild {
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
-      echo "<td >".$LANG['setup'][46] . "&nbsp;:</td><td>";
+      echo "<td >".__('Default value') . "</td><td>";
       Contract::dropdownAlert("default_contract_alert",
                               $entitynotification->fields["default_contract_alert"]);
       echo "</td></tr>";
@@ -632,7 +632,7 @@ class EntityData extends CommonDBChild {
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
-      echo "<td >" . $LANG['setup'][46]."&nbsp;:</td><td>";
+      echo "<td >" . __('Default value')."</td><td>";
       Alert::dropdownInfocomAlert($entitynotification->fields["default_infocom_alert"]);
       echo "</td></tr>";
 
@@ -819,7 +819,7 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>".$LANG['setup'][52]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets')."</td>";
       echo "<td colspan='2'>";
       $autoassign = self::getAutoAssignMode();
 

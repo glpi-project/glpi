@@ -107,7 +107,7 @@ class RuleOcs extends Rule {
 
       $criterias['DOMAIN']['table']     = 'hardware';
       $criterias['DOMAIN']['field']     = 'WORKGROUP';
-      $criterias['DOMAIN']['name']      = $LANG['setup'][89];
+      $criterias['DOMAIN']['name']      = __('Domain');
       $criterias['DOMAIN']['linkfield'] = '';
 
       $criterias['OCS_SERVER']['table']     = 'glpi_ocsservers';

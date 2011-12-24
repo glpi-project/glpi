@@ -1597,7 +1597,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.computer']['title']
-                           = $LANG['setup'][4];
+                           = _n('Computers type', 'Computers types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.computer']['page']
                            = '/front/ruledictionnarycomputertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']
@@ -1610,7 +1610,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['title']
-                           = $LANG['setup'][44];
+                           = _n('Monitor type', 'Monitor types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['page']
                            = '/front/ruledictionnarymonitortype.php';
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']
@@ -1623,7 +1623,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.printer']['title']
-                           = $LANG['setup'][43];
+                           = _n('Printer type', 'Printer types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.printer']['page']
                            = '/front/ruledictionnaryprintertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
@@ -1636,7 +1636,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']
-                           = $LANG['setup'][69];
+                           = _n('Devices type', 'Devices types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']
                            = '/front/ruledictionnaryperipheraltype.php';
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
@@ -1649,7 +1649,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.networking']['title']
-                           = $LANG['setup'][42];
+                           = _n('Networking equipment type', 'Networking equipment types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.networking']['page']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
             $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']
@@ -1759,7 +1759,7 @@ class Html {
       $menu['config']['title'] = __('Setup');
 
       if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")) {
-         $menu['config']['content']['dropdowns']['title']    = $LANG['setup'][0];
+         $menu['config']['content']['dropdowns']['title']    = __('Dropdowns');
          $menu['config']['content']['dropdowns']['shortcut'] = 'n';
          $menu['config']['content']['dropdowns']['page']     = '/front/dropdown.php';
 

@@ -40,7 +40,7 @@ $group = new Group();
 $group->checkGlobal('w');
 Session::checkRight('user_authtype', 'w');
 
-Html::header($LANG['setup'][3], $_SERVER['PHP_SELF'], "admin", "group", "ldap");
+Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
 
 if (isset($_GET['next'])) {
    AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);

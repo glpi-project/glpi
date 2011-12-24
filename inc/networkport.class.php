@@ -572,7 +572,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab = array();
 
-      $tab['network'] = $LANG['setup'][88];
+      $tab['network'] = __('Networking');
 
       $joinparams = array('jointype' => 'itemtype_item');
       if ($itemtype=='Computer') {
@@ -702,7 +702,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[10]['table'] = 'glpi_networkinterfaces';
       $tab[10]['field'] = 'name';
-      $tab[10]['name']  = $LANG['setup'][9];
+      $tab[10]['name']  = _n('Network interface', 'Network interfaces', 1);
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';

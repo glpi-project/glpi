@@ -42,10 +42,7 @@ class PrinterType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][43];
-      }
-      return $LANG['dropdown'][10];
+      return _n('Printer type', 'Printer types', $nb);
    }
 }
 

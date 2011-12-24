@@ -42,10 +42,10 @@ Session::checkRight("import_externalauth_users", 'w');
 AuthLdap::manageValuesInSession($_REQUEST);
 
 if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
-   Html::popHeader($LANG['setup'][3], $_SERVER['PHP_SELF']);
+   Html::popHeader(__('LDAP directory link'), $_SERVER['PHP_SELF']);
 
 } else {
-   Html::header($LANG['setup'][3], $_SERVER['PHP_SELF'], "admin", "user", "ldap");
+   Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "user", "ldap");
 }
 
 if (isset($_GET['start'])) {

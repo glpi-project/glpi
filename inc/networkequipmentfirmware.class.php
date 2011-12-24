@@ -42,10 +42,7 @@ class NetworkEquipmentFirmware extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][33];
-      }
-      return $LANG['setup'][71];
+      return _n('Firmware', 'Firmwares', $nb);
    }
 }
 

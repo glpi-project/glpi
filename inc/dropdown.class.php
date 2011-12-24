@@ -598,7 +598,7 @@ class Dropdown {
       static $optgroup = NULL;
 
       if (is_null($optgroup)) {
-         $optgroup = array__('Common')
+         $optgroup = array(__('Common')
                            => array('Location'        => Location::getTypeName(2),
                                     'State'           => State::getTypeName(2),
                                     'Manufacturer'    => Manufacturer::getTypeName(2)),
@@ -661,7 +661,7 @@ class Dropdown {
                                                       => OperatingSystemServicePack::getTypeName(2),
                                  'AutoUpdateSystem'   => AutoUpdateSystem::getTypeName(2)),
 
-                        $LANG['setup'][88]
+                        __('Networking')
                         => array('NetworkInterface'   => NetworkInterface::getTypeName(2),
                                  'NetworkEquipmentFirmware'
                                                       => NetworkEquipmentFirmware::getTypeName(2),

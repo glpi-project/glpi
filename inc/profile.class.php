@@ -1300,10 +1300,10 @@ class Profile extends CommonDBTM {
       echo "<td>".Toolbox::ucfirst($LANG['log'][18])."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("device", $this->fields["device"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['setup'][0]."&nbsp;:</td><td>";
+      echo "<td>".__('Dropdowns')."</td><td>";
       self::dropdownNoneReadWrite("dropdown", $this->fields["dropdown"], 1, 1, 1);
       echo "</td>";
-      echo "<td class='tab_bg_2'>".$LANG['setup'][0]." (".$LANG['entity'][0].")&nbsp;:</td>";
+      echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
       echo "<td class='tab_bg_2'>";
       self::dropdownNoneReadWrite("entity_dropdown", $this->fields["entity_dropdown"], 1, 1, 1);
       echo "</td></tr>\n";
@@ -1516,12 +1516,12 @@ class Profile extends CommonDBTM {
 
       $tab[42]['table']    = $this->getTable();
       $tab[42]['field']    = 'dropdown';
-      $tab[42]['name']     = $LANG['setup'][0];
+      $tab[42]['name']     = __('Dropdowns');
       $tab[42]['datatype'] = 'right';
 
       $tab[43]['table']    = $this->getTable();
       $tab[43]['field']    = 'entity_dropdown';
-      $tab[43]['name']     = $LANG['setup'][0]."(".$LANG['Menu'][37].")";
+      $tab[43]['name']     = __('Entity dropdowns');
       $tab[43]['datatype'] = 'right';
 
       $tab[44]['table']    = $this->getTable();

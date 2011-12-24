@@ -983,9 +983,9 @@ class Toolbox {
 
             } else {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
+                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'), $latest_version));
                } else {
-                  return $LANG['setup'][301]." ".$latest_version;
+                  return sprintf(__('A new version is available: %s.'), $latest_version);
                }
             }
 

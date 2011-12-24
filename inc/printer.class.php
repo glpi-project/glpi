@@ -409,13 +409,13 @@ class Printer  extends CommonDBTM {
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => '`is_itemgroup`'));
       echo "</td>\n";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>\n";
+      echo "<td>".__('Network')."</td>\n";
       echo "<td>";
       Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][89]."&nbsp;:</td>\n";
+      echo "<td>".__('Domain')."</td>\n";
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td>";
@@ -622,11 +622,11 @@ class Printer  extends CommonDBTM {
 
       $tab[32]['table'] = 'glpi_networks';
       $tab[32]['field'] = 'name';
-      $tab[32]['name']  = $LANG['setup'][88];
+      $tab[32]['name']  = __('Network');
 
       $tab[33]['table'] = 'glpi_domains';
       $tab[33]['field'] = 'name';
-      $tab[33]['name']  = $LANG['setup'][89];
+      $tab[33]['name']  = __('Domain');
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';

@@ -4302,7 +4302,7 @@ class Search {
                if (isset($CFG_GLPI['languages'][$data[$NAME.$num]])) {
                   return $CFG_GLPI['languages'][$data[$NAME.$num]][0];
                }
-               return $LANG['setup'][46];
+               return __('Default value');
          }
       }
 
