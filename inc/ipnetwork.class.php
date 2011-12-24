@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 /// \anchor ipAddressToNetwork We have to notice that checking regarding an IP address is the same
 /// thing than checking regarding a network with all bits of the netmask set to 1
 /// @since 0.84
-class IPNetwork extends CommonDropdown {
+class IPNetwork extends CommonImplicitTreeDropdown {
 
    public $dohistory = true;
 
@@ -151,6 +151,24 @@ class IPNetwork extends CommonDropdown {
    }
 
 
+   function getNewAncestor() {
+
+      if (isset($this->implicit)) {
+
+         $params = array("address" => $this->implicit['address'],
+                         "netmask" => $this->implicit['netmask']);
+
+         $parents = self::searchNetworks("contains", $params, $this->implicit['entity']);
+
+         if ((is_array($parents)) && (count($parents) > 0)) {
+            return $parents[0];
+         }
+      }
+
+      return 0;
+   }
+
+
    function prepareInput($input) {
       global $LANG;
 
@@ -192,6 +210,7 @@ class IPNetwork extends CommonDropdown {
          } else {
             $entity = -1;
          }
+
          // TODO : what is the best way ? recursive or not ?
          $sameNetworks = self::searchNetworks("equals", $params, $entity, false);
          // Check unicity !
@@ -200,6 +219,12 @@ class IPNetwork extends CommonDropdown {
                          'input' => false);
          }
          $networkUpdate = true;
+
+         // Update class for the CommonImplicitTree update ...
+         $this->implicit['address'] = $address;
+         $this->implicit['netmask'] = $netmask;
+         $this->implicit['entity'] = $entity;
+
          // Then, update $input to reflect the network and the netmask
          $input = $address->setArrayFromAddress($input, "version", "address", "address");
          $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
@@ -274,6 +299,25 @@ class IPNetwork extends CommonDropdown {
          return parent::prepareInputForUpdate($input);
       }
       return false;
+   }
+
+
+   function getPotentialSons() {
+
+      if (isset($this->implicit)) {
+
+         $params = array("address" => $this->implicit['address'],
+                         "netmask" => $this->implicit['netmask'],
+                         "exclude IDs" => $this->getID());
+
+         $mysons = self::searchNetworks("is contained by", $params, $this->implicit['entity']);
+
+         if (is_array($mysons)) {
+            return $mysons;
+         }
+      }
+
+      return array();
    }
 
 
