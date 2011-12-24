@@ -153,16 +153,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function getNewAncestor() {
 
-      if (isset($this->implicit)) {
+      if (isset($this->data_for_implicit_update)) {
 
-         $params = array("address" => $this->implicit['address'],
-                         "netmask" => $this->implicit['netmask']);
+         $params = array("address" => $this->data_for_implicit_update['address'],
+                         "netmask" => $this->data_for_implicit_update['netmask']);
 
          if (isset($this->fields['id'])) {
             $params['exclude IDs'] = $this->fields['id'];
          }
 
-         $parents = self::searchNetworks("contains", $params, $this->implicit['entity']);
+         $parents = self::searchNetworks("contains", $params,
+                                         $this->data_for_implicit_update['entities_id']);
 
          if ((is_array($parents)) && (count($parents) > 0)) {
             return $parents[0];
@@ -208,15 +209,15 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          }
 
          if (isset($this->fields["entities_id"])) {
-            $entity = $this->fields["entities_id"];
+            $entities_id = $this->fields["entities_id"];
          } else if (isset($input["entities_id"])) {
-            $entity = $input["entities_id"];
+            $entities_id = $input["entities_id"];
          } else {
-            $entity = -1;
+            $entities_id = -1;
          }
 
          // TODO : what is the best way ? recursive or not ?
-         $sameNetworks = self::searchNetworks("equals", $params, $entity, false);
+         $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
          // Check unicity !
          if ($sameNetworks && count($sameNetworks) > 0) {
             return array('error' => __('Network already defined in visible entities'),
@@ -228,24 +229,19 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $input = $address->setArrayFromAddress($input, "version", "address", "address");
          $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
 
-         // Update class for the CommonImplicitTree update ...
-         $this->implicit['address'] = $address;
-         $this->implicit['netmask'] = $netmask;
-         $this->implicit['entity'] = $entity;
       } else {
          // If netmask and address are not modified, then, load them from DB to check the validity
          // of the gateway
          $networkUpdate = false;
          $address->setAddressFromArray($this->fields, "version", "address", "address");
          $netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
-
-         if ((isset($this->force_tree_update)) && ($this->force_tree_update)) {
-         // Update class for the CommonImplicitTree update ...
-            $this->implicit['address'] = $address;
-            $this->implicit['netmask'] = $netmask;
-            $this->implicit['entity'] = $this->fields['entities_id'];
-         }
+         $entities_id = $this->fields['entities_id'];
       }
+
+      // Update class for the CommonImplicitTree update ...
+      $this->data_for_implicit_update = array('address'     => $address,
+                                              'netmask'     => $netmask,
+                                              'entities_id' => $entities_id);
 
       $returnValue = array();
       // If the gateway has been altered, or the network informations (address or netmask) changed,
@@ -315,13 +311,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function getPotentialSons() {
 
-      if (isset($this->implicit)) {
+      if (isset($this->data_for_implicit_update)) {
 
-         $params = array("address" => $this->implicit['address'],
-                         "netmask" => $this->implicit['netmask'],
+         $params = array("address"     => $this->data_for_implicit_update['address'],
+                         "netmask"     => $this->data_for_implicit_update['netmask'],
                          "exclude IDs" => $this->getID());
 
-         $mysons = self::searchNetworks("is contained by", $params, $this->implicit['entity']);
+         $mysons = self::searchNetworks("is contained by", $params,
+                                        $this->data_for_implicit_update['entities_id']);
 
          if (is_array($mysons)) {
             return $mysons;
