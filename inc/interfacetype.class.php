@@ -42,10 +42,7 @@ class InterfaceType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][93];
-      }
-      return $LANG['dropdown'][16];
+      return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
    }
 }
 

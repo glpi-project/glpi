@@ -44,10 +44,7 @@ class ComputerModel extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][91];
-      }
-      return $LANG['dropdown'][20];
+      return _n('Computers model', 'Computers models', $nb);
    }
 }
 

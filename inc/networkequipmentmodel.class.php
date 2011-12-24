@@ -44,10 +44,7 @@ class NetworkEquipmentModel extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][95];
-      }
-      return $LANG['dropdown'][21];
+      return _n('Networking equipment model', 'Networking equipment models', $nb);
    }
 }
 

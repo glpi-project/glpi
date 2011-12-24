@@ -1519,7 +1519,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.computer']['title']
-                           = $LANG['setup'][91];
+                           = _n('Computers model', 'Computers models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.computer']['page']
                            = '/front/ruledictionnarycomputermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
@@ -1532,7 +1532,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']
-                           = $LANG['setup'][94];
+                           = _n('Monitors model', 'Monitors models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']
                            = '/front/ruledictionnarymonitormodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
@@ -1545,7 +1545,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.printer']['title']
-                           = $LANG['setup'][96];
+                           = _n('Printers model', 'Printers models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.printer']['page']
                            = '/front/ruledictionnaryprintermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']
@@ -1558,7 +1558,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['title']
-                           = $LANG['setup'][97];
+                           = _n('Peripherals model', 'Peripherals models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['page']
                            = '/front/ruledictionnaryperipheralmodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']
@@ -1571,7 +1571,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.networking']['title']
-                           = $LANG['setup'][95];
+                           = _n('Networking equipment model', 'Networking equipment models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.networking']['page']
                            = '/front/ruledictionnarynetworkequipmentmodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['search']

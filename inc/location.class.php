@@ -61,7 +61,7 @@ class Location extends CommonTreeDropdown {
                          'type'  => 'parent',
                          'list'  => false),
                    array('name'  => 'building',
-                         'label' => $LANG['setup'][99],
+                         'label' => __('Building number'),
                          'type'  => 'text',
                          'list'  => true),
                    array('name'  => 'room',
@@ -88,7 +88,7 @@ class Location extends CommonTreeDropdown {
 
       $tab[91]['table']         = 'glpi_locations';
       $tab[91]['field']         = 'building';
-      $tab[91]['name']          = $LANG['setup'][99];
+      $tab[91]['name']          = __('Building number');
       $tab[91]['massiveaction'] = false;
 
       $tab[92]['table']         = 'glpi_locations';
@@ -117,7 +117,7 @@ class Location extends CommonTreeDropdown {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'building';
-      $tab[11]['name']     = $LANG['setup'][99];
+      $tab[11]['name']     = __('Building number');
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table']    = $this->getTable();

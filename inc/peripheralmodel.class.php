@@ -44,10 +44,7 @@ class PeripheralModel extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][97];
-      }
-      return $LANG['dropdown'][24];
+      return _n('Peripherals model', 'Peripherals models', $nb);
    }
 }
 
