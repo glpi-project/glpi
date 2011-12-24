@@ -98,19 +98,31 @@ if ($pot && $po) {
          $current_string_plural = $reg[1];
       }
 
+      if (preg_match('/^"(.*)"$/',$content,$reg)) {
+         $current_string .= $reg[1];
+         $current_string_plural .= $reg[1];
+         echo '-'.$current_string."-\n";
+      }
+      
+
       if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
          if (strlen($reg[1]) == 0) { //Singular
             $translation = search_in_dict($current_string);
             $content     = "msgstr \"$translation\"\n";
-
+            echo '+'.$current_string."+\n";
+            echo "$translation\n";
          } else {
             switch ($reg[1]) {
                case "0" : // Singular
+                  echo '+'.$current_string."+\n";
                   $translation = search_in_dict($current_string);
+                  echo "$translation\n";
                   break;
 
                case "1" : // Plural
+                  echo '++'.$current_string."++\n";
                   $translation = search_in_dict($current_string_plural);
+                  echo "$translation\n";
                   break;
             }
             $content = "msgstr[".$reg[1]."] \"$translation\"\n";
@@ -146,10 +158,24 @@ function search_in_dict($string) {
    }
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
-         // Search same case
+         // Search same case without punc
          if (strcmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
+         // Search same case with punc
+         if (strcmp($val,$left.$string.$right) === 0) {
+            return $left.$LANG[$mod][$key].$right;
+         }
+         // Search same case with left punc
+         if (strcmp($val,$left.$string) === 0) {
+            return $left.$LANG[$mod][$key];
+         }
+         
+         // Search same case with right punc
+         if (strcmp($val,$string.$right) === 0) {
+            return $LANG[$mod][$key].$right;
+         }
+         
       }
    }
 
@@ -159,6 +185,19 @@ function search_in_dict($string) {
          if (strcasecmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
+         // Search same case with punc
+         if (strcasecmp($val,$left.$string.$right) === 0) {
+            return $left.$LANG[$mod][$key].$right;
+         }
+         // Search same case with left punc
+         if (strcasecmp($val,$left.$string) === 0) {
+            return $left.$LANG[$mod][$key];
+         }
+         
+         // Search same case with right punc
+         if (strcasecmp($val,$string.$right) === 0) {
+            return $LANG[$mod][$key].$right;
+         }         
       }
    }
 
