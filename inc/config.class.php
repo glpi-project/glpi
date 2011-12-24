@@ -193,13 +193,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][118] . "&nbsp;:</td>";
+      echo "<td> " . __('Text on the login page') . "</td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='70' rows='4' name='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
+      echo "<td> " . __('Authorize anonymous view of the FAQ') . "</td><td>";
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
       echo "</td><td>" . __('Simplified interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' value='" .
@@ -207,7 +207,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
+      echo "<td>" . __('Maximum number of search results to display on a page')."</td><td>";
       Dropdown::showInteger("list_limit_max", $CFG_GLPI["list_limit_max"], 5, 200, 5);
       echo "</td><td>" . __('Standard interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='central_doc_url' value='" .
@@ -215,7 +215,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][108] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Maximum number of characters for the summary text boxes') . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
       echo "</td><td>" . __('Maximum capacity of displayed characters for URLs') . "</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
@@ -233,11 +233,11 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][120] . "&nbsp;:</td><td>";
+      echo "<td>" . __('Use dynamic display for dropdowns and text fields') . "</td><td>";
       Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
       echo "</td>";
       if ($CFG_GLPI["use_ajax"]) {
-         echo "<td>".$LANG['setup'][119]."&nbsp;:</td><td>";
+         echo "<td>".__('Minimum size of the text for dynamic search in dropdowns')."</td><td>";
          Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
                                0, 10, 1);
       } else {
@@ -248,17 +248,17 @@ class Config extends CommonDBTM {
 
       if ($CFG_GLPI["use_ajax"]) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][123] . "&nbsp;:</td><td>";
+         echo "<td>" . __("Don't use dynamic display if the number of items is less than") . "</td><td>";
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
-         echo "</td><td>" . $LANG['setup'][122] . "&nbsp;:</td><td>";
+         echo "</td><td>" . __('Maximum number of items to display in the dropdowns when wildcard is not used') . "</td><td>";
          Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][127] . "&nbsp;:</td><td>";
+         echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
          Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-         echo "</td><td>" . $LANG['setup'][121] . "&nbsp;:</td>";
+         echo "</td><td>" . __('Character to force the full display of dropdowns (wildcard)') . "</td>";
          echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
                     $CFG_GLPI["ajax_wildcard"] . "'></td>";
          echo "</tr>";
@@ -428,7 +428,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['login'][10] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][124] . "&nbsp;:</td><td>";
+      echo "<td> " . __('Automatically add users from an external authentication source') . "</td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
       echo "</td><td> " . __('Add a user without accreditation from a LDAP directory') . "</td><td>";
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
@@ -685,13 +685,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['setup'][6] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
+      echo "<td>" . __('Maximum number of search results to display on a page')."</td><td>";
       // Limit using global config
       Dropdown::showInteger('list_limit',
                             ($data['list_limit']<$CFG_GLPI['list_limit_max']
                              ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
                             5, $CFG_GLPI['list_limit_max'], 5);
-      echo "</td><td>" . $LANG['setup'][128] ."&nbsp;:</td>";
+      echo "</td><td>" . __('Date format') ."</td>";
       echo "<td>";
       $date_formats = array(0 => __('YYYY-MM-DD'),
                             1 => __('DD-MM-YYYY'),
@@ -701,7 +701,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
+         echo "<td>" . __('Maximum number of characters for each items in dropdowns') . "</td><td>";
          Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
@@ -717,13 +717,13 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . $LANG['setup'][132] . "&nbsp;:</td><td>";
+         echo "<td>" . __('Display the complete name in the tree dropdowns') . "</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
       } else {
         echo "<td colspan='2'>&nbsp;</td>";
       }
-      echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
+      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
       $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
                       User::FIRSTNAME_BEFORE => __('First name, Surname'));
       Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
@@ -754,13 +754,13 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . $LANG['setup'][129] . "&nbsp;:</td><td>";
+         echo "<td>" . __('Show GLPI ID') . "</td><td>";
          Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
          echo "</td>";
       } else {
          echo "<td colspan='2'></td>";
       }
-      echo "<td>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . "&nbsp;:</td><td>";
+      echo "<td>" . ($userpref?__('Select language'):__('Default language') . "&nbsp;:</td><td>";
       if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
@@ -774,7 +774,7 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['setup'][39]."&nbsp;:</td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
-         echo "</td><td> " . $LANG['setup'][110] . "&nbsp;:</td><td>";
+         echo "</td><td> " . __('Show new tickets on the home page') . "</td><td>";
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
          echo " </td></tr>";
 
@@ -785,20 +785,20 @@ class Config extends CommonDBTM {
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>".$LANG['setup'][12]."&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket')."</td><td>";
          if (!$userpref || Session::haveRight('own_ticket', 1)) {
             Dropdown::showYesNo("set_default_tech", $data["set_default_tech"]);
          } else {
             echo Dropdown::getYesNo(0);
          }
-         echo "</td><td>" . $LANG['setup'][11] . "&nbsp;:</td><td>";
+         echo "</td><td>" . __('Automatically refresh the list of tickets') . "</td><td>";
          Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30, 1,
                                array(0 => __('Never')));
          echo "&nbsp;".$LANG['job'][22];
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][114] . "&nbsp;:</td>";
+         echo "<td>" . __('Priority colours') . "</td>";
          echo "<td colspan='3'>";
 
          echo "<table><tr>";
@@ -869,15 +869,16 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
-      $values[1] = $LANG['setup'][103];
-      $values[2] = $LANG['setup'][104];
-      $values[3] = $LANG['setup'][105];
-      $values[4] = $LANG['setup'][106];
-      $values[5] = $LANG['setup'][107];
+      echo "<td>" . __('Log Level') . "</td><td>";
+      $values[1] = __('1- Critical (login error only)');
+      $values[2] = __('2- Severe (Not used)');
+      $values[3] = __('3- Important (successful logins)');
+      $values[4] = __('4- Notices (Add, delete, tracking)');
+      $values[5] = __('5- Complete (All)');
+      
       Dropdown::showFromArray('event_loglevel', $values,
                               array('value' => $CFG_GLPI["event_loglevel"]));
-      echo "</td><td>".$LANG['setup'][101]."&nbsp;:</td><td>";
+      echo "</td><td>".__('Maximal number of automatic actions (run by CLI)')."</td><td>";
       Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
 

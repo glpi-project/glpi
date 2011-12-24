@@ -1858,10 +1858,10 @@ $LANG['setup'][21]="Error: the two passwords do not match";
 $LANG['setup'][35]="MHz";
 $LANG['setup'][39]="Followed private for default";
 $LANG['setup'][40]="Private tasks by default";
-$LANG['setup'][41]="Select Language";
-$LANG['setup'][42]="Networking equipment Types";
-$LANG['setup'][43]="Printer Types";
-$LANG['setup'][44]="Monitor Types";
+$LANG['setup'][41]="Select language";
+$LANG['setup'][42]="Networking equipment types";
+$LANG['setup'][43]="Printer types";
+$LANG['setup'][44]="Monitor types";
 $LANG['setup'][45]="Case Types";
 $LANG['setup'][46]="Default value";
 $LANG['setup'][47]="Default chart format";
@@ -1900,6 +1900,9 @@ $LANG['setup'][96]="Printers Models";
 $LANG['setup'][97]="Peripherals Models";
 $LANG['setup'][98]="Tasks category";
 $LANG['setup'][99]="Building number";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][100]="Room number";
 $LANG['setup'][101]="Maximal number of automatic actions (run by CLI)";
 $LANG['setup'][102]="Log Level";
@@ -1916,7 +1919,7 @@ $LANG['setup'][112]="Maximum number of characters for each items in dropdowns";
 $LANG['setup'][113]="Default language";
 $LANG['setup'][114]="Priority colours";
 $LANG['setup'][115]="Default threshold for cartridge and consumable count";
-$LANG['setup'][117]="Authorize anonymous view of the FAQs";
+$LANG['setup'][117]="Authorize anonymous view of the FAQ";
 $LANG['setup'][118]="Text on the login page";
 $LANG['setup'][119]="Minimum size of the text for dynamic search in dropdowns";
 $LANG['setup'][120]="Use dynamic display for dropdowns and text fields";
@@ -1927,18 +1930,15 @@ $LANG['setup'][124]="Automatically add users from an external authentication sou
 $LANG['setup'][125]="... From an external source";
 $LANG['setup'][126]="Automatically add a user of an external source";
 $LANG['setup'][127]="Autocompletion of text fields";
-$LANG['setup'][128]="Date Format";
+$LANG['setup'][128]="Date format";
 $LANG['setup'][129]="Show GLPI ID";
 $LANG['setup'][130]="Number of days this action logs are stored";
 $LANG['setup'][132]="Display the complete name in the tree dropdowns";
 $LANG['setup'][135]="Normal";
 $LANG['setup'][136]="Translation";
 $LANG['setup'][137]="Debug";
-$LANG['setup'][138]="Use GLPI in Mode";
+$LANG['setup'][138]="Use GLPI in mode";
 $LANG['setup'][139]="Common";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['setup'][140]="Types";
 $LANG['setup'][145]="Operating systems";
 $LANG['setup'][147]="Dynamic display";

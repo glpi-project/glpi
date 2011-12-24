@@ -1417,7 +1417,7 @@ class User extends CommonDBTM {
 
          if (Auth::useAuthExt()) {
             // This requires write access because don't use entity config.
-            $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
+            $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
       if (Session::haveRight("import_externalauth_users", "w")) {
@@ -1803,10 +1803,10 @@ class User extends CommonDBTM {
          echo "</td>";
 
         if (Session::haveRight("config", "w")) {
-            echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td>";
-            $modes[Session::NORMAL_MODE]      = $LANG['setup'][135];
-            $modes[Session::TRANSLATION_MODE] = $LANG['setup'][136];
-            $modes[Session::DEBUG_MODE]       = $LANG['setup'][137];
+            echo "<td>" . __('Use GLPI in mode') . "</td><td>";
+            $modes[Session::NORMAL_MODE]      = __('Normal');
+            $modes[Session::TRANSLATION_MODE] = __('Translation');
+            $modes[Session::DEBUG_MODE]       = __('Debug')];
             Dropdown::showFromArray('use_mode', $modes, array('value' => $this->fields["use_mode"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
@@ -2424,7 +2424,7 @@ class User extends CommonDBTM {
       echo "<form method='get' action='".Toolbox::getItemTypeFormURL('User')."'>\n";
 
       echo "<table class='tab_cadre'>\n";
-      echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
+      echo "<tr><th colspan='4'>".__('Automatically add a user of an external source')."</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
       echo "<td><input type='text' name='login'></td></tr>";
@@ -2940,7 +2940,7 @@ class User extends CommonDBTM {
       }
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['setup'][137].' - '.$LANG['login'][2]."</th></tr>";
+      echo "<tr><th colspan='4'>".$LANG['login'][2]."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][26]."&nbsp;:</td>";
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";

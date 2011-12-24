@@ -83,7 +83,7 @@ function update0713to072() {
                         'glpi_users.date_mod');
 
    foreach ($date_fields as $tablefield) {
-      displayMigrationMessage("072", $LANG['setup'][128]." (1) ($tablefield)");
+      displayMigrationMessage("072", "Date format (1) ($tablefield)");
 
       list($table,$field) = explode('.', $tablefield);
       if (FieldExists($table, $field)) {
@@ -110,7 +110,7 @@ function update0713to072() {
    $date_fields[] = "glpi_type_docs.date_mod";
 
    foreach ($date_fields as $tablefield) {
-      displayMigrationMessage("072", $LANG['setup'][128]." (2) ($tablefield)");
+      displayMigrationMessage("072", "Date format (2) ($tablefield)");
 
       list($table,$field) = explode('.', $tablefield);
       if (FieldExists($table, $field)) {
