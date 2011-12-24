@@ -158,6 +158,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $params = array("address" => $this->implicit['address'],
                          "netmask" => $this->implicit['netmask']);
 
+         if (isset($this->fields['id'])) {
+            $params['exclude IDs'] = $this->fields['id'];
+         }
+
          $parents = self::searchNetworks("contains", $params, $this->implicit['entity']);
 
          if ((is_array($parents)) && (count($parents) > 0)) {
@@ -220,20 +224,27 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          }
          $networkUpdate = true;
 
+         // Then, update $input to reflect the network and the netmask
+         $input = $address->setArrayFromAddress($input, "version", "address", "address");
+         $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
+
          // Update class for the CommonImplicitTree update ...
          $this->implicit['address'] = $address;
          $this->implicit['netmask'] = $netmask;
          $this->implicit['entity'] = $entity;
-
-         // Then, update $input to reflect the network and the netmask
-         $input = $address->setArrayFromAddress($input, "version", "address", "address");
-         $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
       } else {
          // If netmask and address are not modified, then, load them from DB to check the validity
          // of the gateway
          $networkUpdate = false;
          $address->setAddressFromArray($this->fields, "version", "address", "address");
          $netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
+
+         if ((isset($this->force_tree_update)) && ($this->force_tree_update)) {
+         // Update class for the CommonImplicitTree update ...
+            $this->implicit['address'] = $address;
+            $this->implicit['netmask'] = $netmask;
+            $this->implicit['entity'] = $this->fields['entities_id'];
+         }
       }
 
       $returnValue = array();

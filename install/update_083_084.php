@@ -374,11 +374,13 @@ function update083to084() {
          $networkDefinition = "$address/$netmask";
          $networkName   = $networkDefinition . (empty($gateway) ? "" : " - ".$gateway);
 
-         $input         = array('entities_id'  => $entities_id,
-                                'name'         => $networkName,
-                                'completename' => $networkName,
-                                'network'      => $networkDefinition,
-                                'gateway'      => $gateway);
+         $input         = array('entities_id'   => $entities_id,
+                                'name'          => $networkName,
+                                'network'       => $networkDefinition,
+                                'gateway'       => $gateway,
+                                'ipnetworks_id' => 0,
+                                'completename'  => $networkName,
+                                'level'         => 1);
 
          $preparedInput = $network->prepareInput($input);
 
