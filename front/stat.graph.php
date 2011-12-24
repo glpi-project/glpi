@@ -290,13 +290,13 @@ $target = preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 
 echo "<form method='post' name='form' action='$target'><div class='center'>";
 echo "<table class='tab_cadre'>";
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
 echo "<input type='submit' class='button' value=\"".__s('Update')."\"></td></tr>";
 
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";

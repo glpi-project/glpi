@@ -762,7 +762,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div><table class='center-h'><tr><td>";
 
       echo "<form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
-      echo "<tr><th colspan='2'>".$LANG['search'][0]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='2'>".__('Search')."</th></tr>";
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";

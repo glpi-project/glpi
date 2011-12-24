@@ -135,8 +135,8 @@ class NotificationTargetReservation extends NotificationTarget {
       }
 
       $tags_except_alert = array('reservation.user'        => __('Writer'),
-                                 'reservation.begin'       => $LANG['search'][8],
-                                 'reservation.end'         => $LANG['search'][9],
+                                 'reservation.begin'       => __('Start date'),
+                                 'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => $LANG['entity'][0],
                                  'reservation.item.name'   => $LANG['financial'][104],
@@ -155,7 +155,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                 'foreach' => true,
                                 'events'  => array('alert')));
 
-      $tag_alert = array('reservation.expirationdate' => $LANG['search'][9],
+      $tag_alert = array('reservation.expirationdate' => __('End date'),
                          'reservation.entity'         => $LANG['entity'][0]);
 
       foreach ($tag_alert as $tag => $label) {

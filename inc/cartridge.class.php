@@ -408,7 +408,7 @@ class Cartridge extends CommonDBTM {
          $i = 0;
          echo "<tr><th>".__('ID')."</th><th>".$LANG['consumables'][23]."</th>";
          echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
-         echo "<th>".__('Used on')."</th><th>".$LANG['search'][9]."</th>";
+         echo "<th>".__('Used on')."</th><th>".__('End date')."</th>";
 
          if ($show_old) {
             echo "<th>".__('Printer counter')."</th>";
@@ -627,7 +627,7 @@ class Cartridge extends CommonDBTM {
       echo "<th>".__('Add date')."</th>";
       echo "<th>".$LANG['consumables'][26]."</th>";
       if ($old!=0) {
-         echo "<th>".$LANG['search'][9]."</th><th>".__('Printer counter')."</th>";
+         echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th>";
       }
 
       echo "<th>&nbsp;</th></tr>";

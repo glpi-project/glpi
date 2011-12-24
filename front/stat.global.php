@@ -61,14 +61,14 @@ $item = new $_REQUEST['itemtype']();
 
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
 echo "<table class='tab_cadre'>";
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][8]."&nbsp;: </td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
 
 echo "<input type='submit' class='button' value=\"".__s('Update')."\"></td></tr>";
 
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;: </td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2",$_REQUEST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";

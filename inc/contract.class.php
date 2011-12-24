@@ -171,7 +171,7 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][5]."&nbsp;:</td><td>";
       echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true).
             "' size='14'></td>";
-      echo "<td>".$LANG['search'][8]."&nbsp;:</td>";
+      echo "<td>".__('Start date')."</td>";
       echo "<td>";
       Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
       echo "</td></tr>";
@@ -327,7 +327,7 @@ class Contract extends CommonDBTM {
 
       $tab[132]['table']         = 'glpi_contracts';
       $tab[132]['field']         = 'begin_date';
-      $tab[132]['name']          = $LANG['search'][8]." ".$LANG['financial'][1];
+      $tab[132]['name']          = __('Contract start date');
       $tab[132]['forcegroupby']  = true;
       $tab[132]['datatype']      = 'date';
       $tab[132]['massiveaction'] = false;
@@ -342,7 +342,7 @@ class Contract extends CommonDBTM {
 
       $tab[134]['table']         = 'glpi_contracts';
       $tab[134]['field']         = 'end_date';
-      $tab[134]['name']          = $LANG['search'][9]." ".$LANG['financial'][1];
+      $tab[134]['name']          = __('Contract end date');
       $tab[134]['forcegroupby']  = true;
       $tab[134]['datatype']      = 'date_delay';
       $tab[134]['datafields'][1] = 'begin_date';
@@ -414,7 +414,7 @@ class Contract extends CommonDBTM {
 
       $tab[5]['table']       = $this->getTable();
       $tab[5]['field']       = 'begin_date';
-      $tab[5]['name']        = $LANG['search'][8];
+      $tab[5]['name']        = __('Start date');
       $tab[5]['datatype']    = 'date';
       $tab[5]['maybefuture'] = true;
 
@@ -425,7 +425,7 @@ class Contract extends CommonDBTM {
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'end_date';
-      $tab[20]['name']          = $LANG['search'][9];
+      $tab[20]['name']          = __('End date');
       $tab[20]['datatype']      = 'date_delay';
       $tab[20]['datafields'][1] = 'begin_date';
       $tab[20]['datafields'][2] = 'duration';
@@ -1007,7 +1007,7 @@ class Contract extends CommonDBTM {
       echo "<th>".$LANG['financial'][4]."</th>";
       echo "<th>".$LANG['financial'][6]."</th>";
       echo "<th>".$LANG['financial'][26]."</th>";
-      echo "<th>".$LANG['search'][8]."</th>";
+      echo "<th>".__('Start date')."</th>";
       echo "<th>".$LANG['financial'][8]."</th>";
       if ($withtemplate!=2) {
          echo "<th>&nbsp;</th>";

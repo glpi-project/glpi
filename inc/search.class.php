@@ -1177,7 +1177,7 @@ class Search {
                               break;
 
                            case "view" :
-                              $title .= $LANG['search'][11];
+                              $title .= __('Items seen');
                               break;
 
                            default :
@@ -1218,7 +1218,7 @@ class Search {
                               break;
 
                            case "under" :
-                              $title .= ' '.$LANG['search'][3].' '.
+                              $title .= ' '.__('under').' '.
                                         Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
                                                                   $p['contains'][$key]);
                               break;
@@ -1273,7 +1273,7 @@ class Search {
                               break;
 
                            case "under" :
-                              $title .= ' '.$LANG['search'][3].' '.
+                              $title .= ' '.__('under').' '.
                                         Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
                                                                   $p['contains2'][$key]);
                               break;
@@ -1410,14 +1410,14 @@ class Search {
             echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;
                    document.forms['searchform$itemtype'].submit();\">";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
-                   $LANG['search'][17]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                   __s('Add a search criteria')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype]>1) {
                echo "<input type='hidden' disabled id='delete_search_count'
                       name='delete_search_count' value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
-                     $LANG['search'][18]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                     __s('Delete a search criteria')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             if (is_array($linked) && count($linked)>0) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
@@ -1425,7 +1425,7 @@ class Search {
                echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
-                      $LANG['search'][19]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                      __('Add a global search criteria')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
@@ -1492,7 +1492,7 @@ class Search {
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
             echo "selected";
          }
-         echo ">".$LANG['search'][11]."</option>\n";
+         echo ">".__('Items seen')."</option>\n";
 
          reset($options);
          $first_group = true;
@@ -1655,7 +1655,7 @@ class Search {
       echo "<td width='150px'>";
       echo "<table width='100%'>";
       // Display sort selection
-/*      echo "<tr><td colspan='2'>".$LANG['search'][4];
+/*      echo "<tr><td colspan='2'>".__('sorted by');
       echo "&nbsp;<select name='sort' size='1'>";
       reset($options);
       $first_group=true;
@@ -4819,7 +4819,7 @@ class Search {
                      break;
 
                   case "under" :
-                     $actions['under'] = $LANG['search'][3];
+                     $actions['under'] = __('under');
                      break;
 
                   case "lessthan" :
@@ -4895,7 +4895,7 @@ class Search {
 
                $itemlinked      = new $itemtype_linked();
                if ($itemlinked instanceof CommonTreeDropdown) {
-                  $actions['under'] = $LANG['search'][3];
+                  $actions['under'] = __('under');
                }
                return $actions;
          }

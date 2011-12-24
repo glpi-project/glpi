@@ -85,7 +85,7 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
    echo "</td></tr>\n";
 }
 
-echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
+echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
 $rand_begin = Html::showDateTimeFormItem("plan[begin]", $begin, -1, false, true, '', '',
                                          $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
@@ -105,7 +105,7 @@ $default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*
 $rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
                                                          'max'        => 50*HOUR_TIMESTAMP,
                                                          'value'      => $default_delay,
-                                                         'emptylabel' => $LANG['search'][12]));
+                                                         'emptylabel' => __('Specify an end date'));
 echo "<br><div id='date_end$rand'></div>";
 
 $params = array('duration'     => '__VALUE__',

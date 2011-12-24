@@ -96,7 +96,7 @@ foreach ($devices as $label => $dp) {
 }
 echo "</select></td>";
 
-echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
+echo "<td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1",$_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
@@ -104,7 +104,7 @@ echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value='". $_REQUEST['itemtype'] ."'>";
 echo "<input type='submit' class='button' name='submit' value='".__s('Update')."'></td></tr>";
 
-echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
+echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2",$_REQUEST["date2"]);
 echo "</td><td class='center'>";
 Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
