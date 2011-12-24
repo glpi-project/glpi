@@ -594,8 +594,12 @@ function update083to084() {
 
    logMessage($LANG['install'][4]. " - glpi_networkportmigrations", true);
 
-   // Adding NetworkPortMigration table
-   if (!TableExists('glpi_networkportmigrations')) {
+   $query = "SELECT *
+             FROM glpi_networkports
+             WHERE `instantiation_type`='NetworkPortMigration'";
+   $result = $DB->query($query);
+   // Adding NetworkPortMigration table only if it is required : in case of unknown interface
+   if ((!TableExists('glpi_networkportmigrations')) && ($DB->numrows($result) > 0)) {
       $query = "CREATE TABLE `glpi_networkportmigrations` (
                   `id` int(11) NOT NULL,
                   `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
