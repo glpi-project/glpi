@@ -47,7 +47,7 @@ class RuleMailCollectorCollection extends RuleCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][70];
+      return __('Rules for assigning a ticket created through a mail receiver');
    }
 
 

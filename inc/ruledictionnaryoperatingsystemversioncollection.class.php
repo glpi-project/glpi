@@ -48,7 +48,7 @@ class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDro
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][69];
+      return __('Dictionnary of operating system versions');
    }
 
 }

@@ -45,7 +45,7 @@ class RuleOcs extends Rule {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][18];
+      return __('Rules for assigning a computer to an entity');
    }
 
 
@@ -131,7 +131,7 @@ class RuleOcs extends Rule {
 
       $criterias['MACHINE_NAME']['table']     = 'hardware';
       $criterias['MACHINE_NAME']['field']     = 'NAME';
-      $criterias['MACHINE_NAME']['name']      = $LANG['rulesengine'][25];
+      $criterias['MACHINE_NAME']['name']      = __("Computer's name");
       $criterias['MACHINE_NAME']['linkfield'] = '';
 
       $criterias['DESCRIPTION']['table']     = 'hardware';
@@ -160,11 +160,11 @@ class RuleOcs extends Rule {
       $actions['locations_id']['type']  = 'dropdown';
       $actions['locations_id']['table'] = 'glpi_locations';
 
-      $actions['_affect_entity_by_tag']['name'] = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['name'] = __('Entity from TAG');
       $actions['_affect_entity_by_tag']['type'] = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
+      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       return $actions;

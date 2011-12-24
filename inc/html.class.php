@@ -1443,7 +1443,7 @@ class Html {
           || Session::haveRight("rule_softwarecategories","r")
           || Session::haveRight("rule_mailcollector","r")) {
 
-         $menu['admin']['content']['rule']['title']    = $LANG['rulesengine'][17];
+         $menu['admin']['content']['rule']['title']    = _n('Rule', 'Rules', 2);
          $menu['admin']['content']['rule']['shortcut'] = '';
          $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
@@ -1487,7 +1487,7 @@ class Html {
           || Session::haveRight("rule_dictionnary_software","r")
           || Session::haveRight("rule_dictionnary_printer","r")) {
 
-         $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
+         $menu['admin']['content']['dictionnary']['title']    = __('Dictionaries');
          $menu['admin']['content']['dictionnary']['shortcut'] = '';
          $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
@@ -1712,7 +1712,7 @@ class Html {
             }
 
             $menu['admin']['content']['dictionnary']['options']['printer']['title']
-                           = $LANG['rulesengine'][39];
+                           = _n('Printer','Printers',2);
             $menu['admin']['content']['dictionnary']['options']['printer']['page']
                            = '/front/ruledictionnaryprinter.php';
             $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']

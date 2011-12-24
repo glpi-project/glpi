@@ -52,7 +52,7 @@ class RuleSoftwareCategory extends Rule {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][37];
+      return __('Rules for assigning a category to software');
    }
 
 

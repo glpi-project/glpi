@@ -82,7 +82,7 @@ class RuleCachedCollection extends RuleCollection {
             "/front/popup.php?popup=show_cache&amp;sub_type=".
             $this->getRuleClassName()."' ,'glpipopup', ".
             "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
-            $LANG['rulesengine'][100]."</a></span></div>";
+            __('Cache informations')."</a></span></div>";
    }
 
 
@@ -136,9 +136,9 @@ class RuleCachedCollection extends RuleCollection {
                 ORDER BY `name`";
       $res_count = $DB->query($query);
 
-      echo "<tr><th colspan='2'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->getTitle()."</th></tr>\n";
-      echo "<tr><td class='tab_bg_1'>".$LANG['rulesengine'][102]."</td>";
-      echo "<td class='tab_bg_1'>".$LANG['rulesengine'][103]."</td></tr>\n";
+      echo "<tr><th>".__('Cache informations')."</th><th>".$this->getTitle()."</th></tr>\n";
+      echo "<tr><td class='tab_bg_1'>".__('Rule name')."</td>";
+      echo "<td class='tab_bg_1'>".__('Objects in cache')."</td></tr>\n";
 
       $total = 0;
       while ($datas = $DB->fetch_array($res_count)) {

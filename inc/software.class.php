@@ -826,7 +826,7 @@ class Software extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadrehov'><tr><th>".__('Merging')."</th></tr>";
       echo "<tr class='tab_bg_2'><td>";
-      Html::createProgressBar($LANG['rulesengine'][90]);
+      Html::createProgressBar(__('Work in progress...'));
       echo "</td></tr></table></div>\n";
 
       $item = array_keys($item);
@@ -897,7 +897,7 @@ class Software extends CommonDBTM {
             $soft->putInTrash($old, __('Software deleted after merging'));
          }
       }
-      Html::changeProgressBarPosition($i, $nb+1, $LANG['rulesengine'][91]);
+      Html::changeProgressBarPosition($i, $nb+1, __('Task completed.'));
       return $i==($nb+1);
    }
 

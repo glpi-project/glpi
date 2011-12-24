@@ -107,7 +107,7 @@ class RuleCached extends Rule {
       }
 
       echo "</table><br><br>\n";
-      echo "<a href='$target'>".$LANG['rulesengine'][100]."</a></div>";
+      echo "<a href='$target'>".__('Cache informations')."</a></div>";
    }
 
 
@@ -117,10 +117,10 @@ class RuleCached extends Rule {
    function showCacheRuleHeader() {
       global $LANG;
 
-      echo "<tr><th colspan='2'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"];
+      echo "<tr><th>".__('Cache informations')."</th><th>".$this->fields["name"];
       echo "</th></tr>\n";
-      echo "<tr><td class='tab_bg_1'>".$LANG['rulesengine'][104]."</td>";
-      echo "<td class='tab_bg_1'>".$LANG['rulesengine'][105]."</td></tr>";
+      echo "<tr><td class='tab_bg_1'>".__('Original value')."</td>";
+      echo "<td class='tab_bg_1'>".__('Modified value')."</td></tr>";
    }
 
 
@@ -134,7 +134,7 @@ class RuleCached extends Rule {
 
       echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
       echo "<td class='tab_bg_2'>".
-            ($fields["new_value"]!=''?$fields["new_value"]:$LANG['rulesengine'][106])."</td>";
+            ($fields["new_value"]!=''?$fields["new_value"]:__('Unchanged'))."</td>";
    }
 
 }

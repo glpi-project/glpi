@@ -81,7 +81,7 @@ class RuleMailCollector extends Rule {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][70];
+      return __('Rules for assigning a ticket created through a mail receiver');
    }
 
 
@@ -151,7 +151,7 @@ class RuleMailCollector extends Rule {
       $criterias['GROUPS']['id']        = 'groups';
 
       $criterias['KNOWN_DOMAIN']['field']           = 'name';
-      $criterias['KNOWN_DOMAIN']['name']            = $LANG['rulesengine'][148];
+      $criterias['KNOWN_DOMAIN']['name']            = __('Mail domain is known');
       $criterias['KNOWN_DOMAIN']['table']           = 'glpi_entitydatas';
       $criterias['KNOWN_DOMAIN']['type']            = 'yesno';
       $criterias['KNOWN_DOMAIN']['virtual']         = true;
@@ -159,7 +159,7 @@ class RuleMailCollector extends Rule {
       $criterias['KNOWN_DOMAIN']['allow_condition'] = array(Rule::PATTERN_IS);
 
       $criterias['PROFILES']['field']           = 'name';
-      $criterias['PROFILES']['name']            = $LANG['rulesengine'][146];
+      $criterias['PROFILES']['name']            = __('User featuring the profile');
       $criterias['PROFILES']['table']           = 'glpi_profiles';
       $criterias['PROFILES']['type']            = 'dropdown';
       $criterias['PROFILES']['virtual']         = true;
@@ -168,7 +168,7 @@ class RuleMailCollector extends Rule {
 
       if (Session::isMultiEntitiesMode()) {
          $criterias['UNIQUE_PROFILE']['field']           = 'name';
-         $criterias['UNIQUE_PROFILE']['name']            = $LANG['rulesengine'][147];
+         $criterias['UNIQUE_PROFILE']['name']            = __('User featuring a single profile');
          $criterias['UNIQUE_PROFILE']['table']           = 'glpi_profiles';
          $criterias['UNIQUE_PROFILE']['type']            = 'dropdown';
          $criterias['UNIQUE_PROFILE']['virtual']         = true;
@@ -177,7 +177,7 @@ class RuleMailCollector extends Rule {
       }
 
       $criterias['ONE_PROFILE']['field']           = 'name';
-      $criterias['ONE_PROFILE']['name']            = $LANG['rulesengine'][145];
+      $criterias['ONE_PROFILE']['name']            = __('User with a single profile');
       $criterias['ONE_PROFILE']['table']           = '';
       $criterias['ONE_PROFILE']['type']            = 'yesonly';
       $criterias['ONE_PROFILE']['virtual']         = true;
@@ -197,23 +197,23 @@ class RuleMailCollector extends Rule {
       $actions['entities_id']['type']  = 'dropdown';
       $actions['entities_id']['table'] = 'glpi_entities';
 
-      $actions['_affect_entity_by_domain']['name']          = $LANG['rulesengine'][133];
+      $actions['_affect_entity_by_domain']['name']          = __('Entity from domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
 
-      $actions['_affect_entity_by_tag']['name']          = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
       $actions['_affect_entity_by_tag']['type']          = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
-      $actions['_affect_entity_by_user_entity']['name']  = $LANG['rulesengine'][144];
+      $actions['_affect_entity_by_user_entity']['name']  = __("Entity based on user's profile");
       $actions['_affect_entity_by_user_entity']['type']  = 'yesonly';
       $actions['_affect_entity_by_user_entity']['table'] = '';
 
-      $actions['_refuse_email_no_response']['name']  = $LANG['rulesengine'][134];
+      $actions['_refuse_email_no_response']['name']  = __('Reject email (without email response)');
       $actions['_refuse_email_no_response']['type']  = 'yesonly';
       $actions['_refuse_email_no_response']['table'] = '';
 
-      $actions['_refuse_email_with_response']['name']  = $LANG['rulesengine'][135];
+      $actions['_refuse_email_with_response']['name']  = __('Reject email (with email response)');
       $actions['_refuse_email_with_response']['type']  = 'yesonly';
       $actions['_refuse_email_with_response']['table'] = '';
 

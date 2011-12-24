@@ -221,7 +221,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          if ($DB->numrows($result)) {
             echo "<tr><th>&nbsp;</th>";
             echo "<th>".__('Name')."</th>";
-            echo "<th>".$LANG['rulesengine'][13]."</th>";
+            echo "<th>".__('Value')."</th>";
             echo "</tr>";
 
             while ($data=$DB->fetch_assoc($result)) {

@@ -49,7 +49,7 @@ class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollect
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][52];
+      return __('Dictionnary of phone models');
    }
 
 }

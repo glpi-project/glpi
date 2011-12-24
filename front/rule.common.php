@@ -101,7 +101,7 @@ if (isset($_GET["action"])) {
    $max = get_cfg_var("max_execution_time");
    $max = $start + ($max>0 ? $max/2.0 : 30.0);
 
-   Html::header($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecollection->menu_type,
+   Html::header(_n('Rule', 'Rules', 2), $_SERVER['PHP_SELF'], "admin", $rulecollection->menu_type,
                 $rulecollection->menu_option);
 
    if (!(isset($_POST['replay_confirm']) || isset($_GET['offset']))
@@ -112,10 +112,10 @@ if (isset($_GET["action"])) {
 
    echo "<table class='tab_cadrehov'>";
 
-   echo "<tr><th><div class='relative b'>" .$rulecollection->getTitle(). " - " .
-         $LANG['rulesengine'][76]. "</div></th></tr>\n";
+   echo "<tr><th><div class='relative b'>" .$rulecollection->getTitle(). "<br>" .
+         __('Replay the dictionary rules'). "</div></th></tr>\n";
    echo "<tr><td class='center'>";
-   Html::createProgressBar($LANG['rulesengine'][90]);
+   Html::createProgressBar(__('Work in progress...'));
    echo "</td></tr>\n";
    echo "</table>";
 
@@ -138,7 +138,7 @@ if (isset($_GET["action"])) {
       // Work ended
       $end   = explode(" ",microtime());
       $duree = round($end[0]+$end[1]-$start);
-      Html::changeProgressBarMessage($LANG['rulesengine'][91]." (".Html::timestampToString($duree).")");
+      Html::changeProgressBarMessage(sprintf(__('Task completed in %s'),Html::timestampToString($duree)));
       echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a>";
 
    } else {
@@ -151,7 +151,7 @@ if (isset($_GET["action"])) {
    exit();
 }
 
-Html::header($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
+Html::header(_n('Rule', 'Rules', 2), $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
              $rulecollection->menu_option);
 
 $rulecollection->showTabs();

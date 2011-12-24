@@ -44,7 +44,7 @@ class Migration {
 
       // begin of global message
       echo "<div id='migration_message_$ver'>
-            <p class='center'>".$LANG['rulesengine'][90]."</p></div>";
+            <p class='center'>".__('Work in progress...')."</p></div>";
 
       $this->deb = time();
       $this->version = $ver;
@@ -477,7 +477,7 @@ class Migration {
       }
 
       // end of global message
-      $this->displayMessage($LANG['rulesengine'][91]);
+      $this->displayMessage(__('Task completed.'));
    }
 
 }

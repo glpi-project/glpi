@@ -78,7 +78,7 @@ class RuleRight extends Rule {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table  class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>" .$LANG['rulesengine'][19] . "</th></tr>\n";
+      echo "<tr><th colspan='7'>" .__('Authorizations assignment rules') . "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name') . "</td><td>";
@@ -87,7 +87,7 @@ class RuleRight extends Rule {
       echo '</td><td>'.$LANG['joblist'][6] . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
-      echo "</td><td>".$LANG['rulesengine'][9] . "</td><td>";
+      echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch("match", "AND");
       echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
       echo "<input type=hidden name='sub_type' value='" . get_class($this) . "'>";
@@ -302,7 +302,7 @@ class RuleRight extends Rule {
 
          $criterias['GROUPS']['table']     = 'glpi_groups';
          $criterias['GROUPS']['field']     = 'completename';
-         $criterias['GROUPS']['name']      = $LANG['rulesengine'][149];
+         $criterias['GROUPS']['name']      = __('Imported group from an LDAP directory');
          $criterias['GROUPS']['linkfield'] = '';
          $criterias['GROUPS']['type']      = 'dropdown';
          $criterias['GROUPS']['virtual']   = true;
@@ -323,17 +323,17 @@ class RuleRight extends Rule {
       $actions['entities_id']['type']   = 'dropdown';
       $actions['entities_id']['table']  = 'glpi_entities';
 
-      $actions['_affect_entity_by_dn']['name']          = $LANG['rulesengine'][130];
+      $actions['_affect_entity_by_dn']['name']          = __('Entity based on LDAP information');
       $actions['_affect_entity_by_dn']['type']          = 'text';
       $actions['_affect_entity_by_dn']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_dn']['duplicatewith'] = 'entities_id';
 
-      $actions['_affect_entity_by_tag']['name']          = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
       $actions['_affect_entity_by_tag']['type']          = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_tag']['duplicatewith'] = 'entities_id';
 
-      $actions['_affect_entity_by_domain']['name']          = $LANG['rulesengine'][129];
+      $actions['_affect_entity_by_domain']['name']          = __('Entity from mail domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
@@ -350,7 +350,7 @@ class RuleRight extends Rule {
       $actions['is_active']['type']  = 'yesno';
       $actions['is_active']['table'] = '';
 
-      $actions['_ignore_user_import']['name']  = $LANG['rulesengine'][132];
+      $actions['_ignore_user_import']['name']  = __('To be unaware of import');
       $actions['_ignore_user_import']['type']  = 'yesonly';
       $actions['_ignore_user_import']['table'] = '';
       return $actions;

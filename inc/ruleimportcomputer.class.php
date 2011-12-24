@@ -63,7 +63,7 @@ class RuleImportComputer extends Rule {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][57];
+      return __('Rules for import and link computers');
    }
 
 
@@ -79,7 +79,7 @@ class RuleImportComputer extends Rule {
       $criterias = array();
       $criterias['entities_id']['table']     = 'glpi_entities';
       $criterias['entities_id']['field']     = 'entities_id';
-      $criterias['entities_id']['name']      = $LANG['rulesengine'][152].' : '.$LANG['ocsng'][62];
+      $criterias['entities_id']['name']      = __('Target entity for the computer');
       $criterias['entities_id']['linkfield'] = 'entities_id';
       $criterias['entities_id']['type']      = 'dropdown';
 
@@ -98,23 +98,21 @@ class RuleImportComputer extends Rule {
       $criterias['ocsservers_id']['linkfield'] = '';
       $criterias['ocsservers_id']['type']      = 'dropdown';
 
-      $criterias['TAG']['name']        = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
+      $criterias['TAG']['name']        = __('OCSNG TAG');
 
       $criterias['DOMAIN']['name']     = __('Domain');
 
-      $criterias['IPSUBNET']['name']   = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
+      $criterias['IPSUBNET']['name']   = __('Subnet');
 
-      $criterias['MACADDRESS']['name'] = $LANG['rulesengine'][152].' : '.$LANG['device_iface'][2];
+      $criterias['MACADDRESS']['name'] = __('MAC address');
 
-      $criterias['IPADDRESS']['name']  = $LANG['rulesengine'][152].' : '.
-                                         $LANG['financial'][44]." ". $LANG['networking'][14];
+      $criterias['IPADDRESS']['name']  = __('IP address');
 
-      $criterias['name']['name']            = $LANG['rulesengine'][152].' : '.
-                                                        $LANG['rulesengine'][25];
+      $criterias['name']['name']            = __("Computer's name");
       $criterias['name']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
                                                     self::PATTERN_IS_EMPTY, Rule::PATTERN_FIND);
 
-      $criterias['DESCRIPTION']['name']   = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
+      $criterias['DESCRIPTION']['name']   = __('Description');
 
       $criterias['serial']['name']        = __('Serial number');
 
@@ -135,7 +133,7 @@ class RuleImportComputer extends Rule {
       $actions['_fusion']['name']        = $LANG['ocsng'][58];
       $actions['_fusion']['type']        = 'fusion_type';
 
-      $actions['_ignore_import']['name'] = $LANG['rulesengine'][132];
+      $actions['_ignore_import']['name'] = __('To be unaware of import');
       $actions['_ignore_import']['type'] = 'yesonly';
 
       return $actions;
@@ -189,8 +187,8 @@ class RuleImportComputer extends Rule {
    static function addMoreCriteria($criterion='') {
       global $LANG;
 
-      return array(Rule::PATTERN_FIND     => $LANG['rulesengine'][151],
-                   self::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
+      return array(Rule::PATTERN_FIND     => __('is already present in GLPI'),
+                   self::PATTERN_IS_EMPTY => __('is empty in GLPI'));
    }
 
 

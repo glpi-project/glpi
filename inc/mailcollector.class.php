@@ -1396,8 +1396,8 @@ class MailCollector  extends CommonDBTM {
 
       if (countElementsInTable($this->getTable())) {
          $buttons = array();
-         $buttons["notimportedemail.php"] = $LANG['rulesengine'][142];
-         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142],
+         $buttons["notimportedemail.php"] = __('List of not imported emails');
+         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", __('List of not imported emails'),
                             '', $buttons);
       }
    }

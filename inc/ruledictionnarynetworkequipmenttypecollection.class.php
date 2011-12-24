@@ -48,7 +48,7 @@ class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropd
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][65];
+      return __('Dictionnary of network equipment types');
    }
 
 }

@@ -103,10 +103,7 @@ class Rule extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['rulesengine'][17];
-      }
-      return Toolbox::ucfirst($LANG['log'][65]);
+      return _n('Rule', 'Rules', $nb);
    }
 
 
@@ -149,7 +146,7 @@ class Rule extends CommonDBTM {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][8];
+      return __('Rules management');
    }
 
 
@@ -166,7 +163,7 @@ class Rule extends CommonDBTM {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'ranking';
-      $tab[3]['name']          = $LANG['rulesengine'][10];
+      $tab[3]['name']          = __('Position');
       $tab[3]['datatype']      = 'integer';
       $tab[3]['massiveaction'] = false;
 
@@ -178,7 +175,7 @@ class Rule extends CommonDBTM {
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'match';
-      $tab[5]['name']          = $LANG['rulesengine'][9];
+      $tab[5]['name']          = __('Logical operator');
       $tab[5]['datatype']      = 'string';
       $tab[5]['massiveaction'] = false;
 
@@ -242,7 +239,7 @@ class Rule extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['rulesengine'][9]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Logical operator')."</td>";
       echo "<td>";
       $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
       echo "</td>";
@@ -359,7 +356,7 @@ class Rule extends CommonDBTM {
                  || in_array('append_regex_result',$val['force_actions']))) {
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td>".$LANG['rulesengine'][83]."</td></tr>\n";
+            echo "<tr class='tab_bg_2'><td>".__('It is possible to affect the result of a regular expression using the string #0')."</td></tr>\n";
             echo "</table><br>";
             return;
          }
@@ -428,16 +425,16 @@ class Rule extends CommonDBTM {
       }
       echo "<div class='spaced'>";
       echo "<table $style>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
+      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . _n('Action','Actions',2) . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
 
       if ($canedit) {
          echo "<td>&nbsp;</td>";
       }
 
-      echo "<td class='center b'>".$LANG['rulesengine'][12]."</td>";
-      echo "<td class='center b'>".$LANG['rulesengine'][11]."</td>";
-      echo "<td class='center b'>".$LANG['rulesengine'][13]."</td>";
+      echo "<td class='center b'>".__('Fields')."</td>";
+      echo "<td class='center b'>".__('Action type')."</td>";
+      echo "<td class='center b'>".__('Value')."</td>";
       echo "</tr>\n";
 
       $nb = count($this->actions);
@@ -471,10 +468,10 @@ class Rule extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][30] . "</tr>";
+      echo "<tr><th colspan='4'>" . _n('Action', 'Actions', 1) . "</tr>";
 
       echo "<tr class='tab_bg_1 center'>";
-      echo "<td>".$LANG['rulesengine'][30] . "&nbsp;:&nbsp;</td><td>";
+      echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
       $val = $this->dropdownActions($ra->getAlreadyUsedForRuleID($rules_id, $this->getType()));
       echo "</td><td class='left'><span id='action_span'>\n";
       $_POST["sub_type"] = $this->getType();
@@ -499,10 +496,10 @@ class Rule extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][16] . "</tr>";
+      echo "<tr><th colspan='4'>" . _n('Criteria', 'Criteria', 1) . "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".$LANG['rulesengine'][16] . "&nbsp;:&nbsp;</td><td>";
+      echo "<td class='center'>"._n('Criteria', 'Criteria', 1) . "</td><td>";
       $val = $this->dropdownCriterias();
       echo "</td><td class='left'><span id='criteria_span'>\n";
       $_POST["sub_type"] = $this->getType();
@@ -558,15 +555,15 @@ class Rule extends CommonDBTM {
       echo "<form name='criteriasform' id='criteriasform' method='post' action='".
              Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
+      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       if ($canedit) {
          echo "<td>&nbsp;</td>";
       }
-      echo "<td class='center b'>".$LANG['rulesengine'][16]."</td>\n";
-      echo "<td class='center b'>".$LANG['rulesengine'][14]."</td>\n";
-      echo "<td class='center b'>".$LANG['rulesengine'][15]."</td>\n";
+      echo "<td class='center b'>"._n('Criteria', 'Criteria', 1)."</td>\n";
+      echo "<td class='center b'>".__('Condition')."</td>\n";
+      echo "<td class='center b'>".__('Reason')."</td>\n";
       echo "</tr>\n";
 
       $maxsize = sizeof($this->criterias);
@@ -610,7 +607,7 @@ class Rule extends CommonDBTM {
 
       if ($this->specific_parameters) {
          $itemtype = get_class($this).'Parameter';
-         echo "<img alt='' title=\"".$LANG['rulesengine'][140]."\" src='".$CFG_GLPI["root_doc"].
+         echo "<img alt='' title=\"".__s('Add a criteria')."\" src='".$CFG_GLPI["root_doc"].
                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
                 "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
@@ -1177,13 +1174,13 @@ class Rule extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadrehov'>";
-      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][82] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Result details') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center b'>".$LANG['rulesengine'][16]."</td>";
-      echo "<td class='center b'>".$LANG['rulesengine'][14]."</td>";
-      echo "<td class='center b'>".$LANG['rulesengine'][15]."</td>";
-      echo "<td class='center b'>".$LANG['rulesengine'][41]."</td>";
+      echo "<td class='center b'>"._n('Criteria', 'Criteria', 1)."</td>";
+      echo "<td class='center b'>".__('Condition')."</td>";
+      echo "<td class='center b'>".__('Reason')."</td>";
+      echo "<td class='center b'>".__('Validation')."</td>";
       echo "</tr>\n";
 
       foreach ($check_results as $ID=>$criteria_result) {
@@ -1202,9 +1199,9 @@ class Rule extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadrehov'>";
-      echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>";
+      echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center b' colspan='2'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;";
+      echo "<td class='center b'>".__('Validation')."</td><td>";
       echo Dropdown::getYesNo($global_result)."</td>";
 
       $output = $this->preProcessPreviewResults($output);
@@ -1220,7 +1217,7 @@ class Rule extends CommonDBTM {
       //If a regular expression was used, and matched, display the results
       if (count($this->regex_results)) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['rulesengine'][85]."</td>";
+         echo "<td>".__('Result of the regular expression')."</td>";
          echo "<td>";
          Html::printCleanArray($this->regex_results[0]);
          echo "</td></tr>\n";
@@ -1605,7 +1602,7 @@ class Rule extends CommonDBTM {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
+         echo "<tr><th colspan='3'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>";
 
          $type_match = ($this->fields["match"]==self::AND_MATCHING
                         ?__('and'):__('or'));
@@ -1781,7 +1778,7 @@ class Rule extends CommonDBTM {
       echo "</td><td>".$LANG['joblist'][6] . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
-      echo "</td><td>".$LANG['rulesengine'][9] . "</td><td>";
+      echo "</td><td>".__('Logical operator') . "</td><td>";
       $this->dropdownRulesMatch("match", self::AND_MATCHING);
       echo "</td><td class='tab_bg_2 center'>";
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";
@@ -1960,7 +1957,7 @@ class Rule extends CommonDBTM {
                   $input['id'] = $data[$fieldid];
                   $ruleitem->update($input);
                }
-               Session::addMessageAfterRedirect($LANG['rulesengine'][150], true);
+               Session::addMessageAfterRedirect(__('Rules using the object have been disabled.'), true);
             }
          }
       }
@@ -2024,13 +2021,13 @@ class Rule extends CommonDBTM {
                                                   AND `glpi_ruleactions`.`value` = '".$item->getID()."'");
                   }
 
-                  return self::createTabEntry($LANG['rulesengine'][17], $nb);
+                  return self::createTabEntry(_n('Rule', 'Rules', 2), $nb);
                }
                return $this->getTypeName(2);
 
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['rulesengine'][17],
+                  return self::createTabEntry(_n('Rule', 'Rules', 2),
                                               countElementsInTable('glpi_ruleactions',
                                                                    "`field` = 'slas_id'
                                                                     AND `value` = '".$item->getID()."'"));

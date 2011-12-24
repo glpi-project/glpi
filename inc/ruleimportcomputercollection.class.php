@@ -58,7 +58,7 @@ class RuleImportComputerCollection extends RuleCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][57];
+      return __('Rules for import and link computers');
    }
 
 

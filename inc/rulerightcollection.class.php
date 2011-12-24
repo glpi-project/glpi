@@ -57,7 +57,7 @@ class RuleRightCollection extends RuleCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][19];
+      return __('Authorizations assignment rules');
    }
 
 
@@ -74,14 +74,14 @@ class RuleRightCollection extends RuleCollection {
       global $LANG;
 
       $actions = $rule->getActions();
-      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='4'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<span class='b'>".
+      echo "<td class='center' colspan='2'>".__('Validation')."</td><td colspan='2'><span class='b'>".
              Dropdown::getYesNo($global_result)."</span></td>";
 
       if (isset($output["_ldap_rules"]["rules_entities"])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='4'>".$LANG['rulesengine'][111]."</td>";
+         echo "<td class='center' colspan='4'>".__('Entities assignment')."</td>";
          foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
             foreach ($entities as $entity) {
                $this->displayActionByName("entity", $entity[0]);
@@ -94,7 +94,7 @@ class RuleRightCollection extends RuleCollection {
 
       if (isset($output["_ldap_rules"]["rules_rights"])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='4' class='center'>".$LANG['rulesengine'][110]."</td>";
+         echo "<td colspan='4' class='center'>".__('Rights assignment')."</td>";
          foreach ($output["_ldap_rules"]["rules_rights"] as $val) {
             $this->displayActionByName("profile", $val[0]);
          }
@@ -102,7 +102,7 @@ class RuleRightCollection extends RuleCollection {
 
       if (isset($output["_ldap_rules"]["rules_entities_rights"])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='4' class='center'>".$LANG['rulesengine'][112]."</td>";
+         echo "<td colspan='4' class='center'>".__('Rights and entities assignment')."</td>";
          foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
             $this->displayActionByName("entity", $val[0]);
             if (isset($val[1])) {

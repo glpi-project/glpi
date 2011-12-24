@@ -46,7 +46,7 @@ class RuleTicket extends Rule {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][28];
+      return __('Business rules for tickets');
    }
 
 

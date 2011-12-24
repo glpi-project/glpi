@@ -55,10 +55,7 @@ class RuleAction extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['rulesengine'][7];
-      }
-      return $LANG['rulesengine'][30];
+      return _n('Action','Actions',$nb);
    }
 
 
@@ -75,18 +72,18 @@ class RuleAction extends CommonDBChild {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
-      $tab[1]['name']          = $LANG['rulesengine'][7];
+      $tab[1]['name']          = _n('Action','Actions',1);
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'field';
-      $tab[2]['name']          = $LANG['rulesengine'][12];
+      $tab[2]['name']          = __('Fields');
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'string';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'value';
-      $tab[3]['name']          = $LANG['rulesengine'][13];
+      $tab[3]['name']          = __('Value');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
 
@@ -164,13 +161,13 @@ class RuleAction extends CommonDBChild {
    static function getActions() {
       global $LANG;
 
-      return array('assign'              => $LANG['rulesengine'][22],
-                   'regex_result'        => $LANG['rulesengine'][45],
-                   'append_regex_result' => $LANG['rulesengine'][79],
-                   'affectbyip'          => $LANG['rulesengine'][46],
-                   'affectbyfqdn'        => $LANG['rulesengine'][47],
-                   'affectbymac'         => $LANG['rulesengine'][49],
-                   'compute'             => $LANG['rulesengine'][38],
+      return array('assign'              => __('Assign'),
+                   'regex_result'        => __('Assign the value from regular expression'),
+                   'append_regex_result' => __('Add the result from regular expression'),
+                   'affectbyip'          => __('Assign: equipment by IP address'),
+                   'affectbyfqdn'        => __('Assign: equipment by name + domain'),
+                   'affectbymac'         => __('Assign: equipment by MAC address'),
+                   'compute'             => __('Recalculate'),
                    'send'                => __('Send'),
                    'add_validation'      => __('Send'));
    }

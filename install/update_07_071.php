@@ -266,15 +266,15 @@ function update07to071() {
       //Create a software category for softwares to be deleted by the dictionnary
       $result = $DB->query("SELECT `ID`
                             FROM `glpi_dropdown_software_category`
-                            WHERE `name` = '".$LANG['rulesengine'][94]."'");
+                            WHERE `name` = 'FUSION'");
 
       if (!$DB->numrows($result)) {
          $DB->query("INSERT INTO `glpi_dropdown_software_category`
-                     SET `name` = '".$LANG['rulesengine'][94]."'");
+                     SET `name` = 'FUSION'");
 
          $result = $DB->query("SELECT `ID`
                                FROM `glpi_dropdown_software_category`
-                               WHERE `name` = '".$LANG['rulesengine'][94]."'");
+                               WHERE `name` = 'FUSION'");
       }
       $cat_id = $DB->result($result, 0, "ID");
 

@@ -53,7 +53,7 @@ class RuleDictionnaryPrinter extends RuleCached {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][39];
+      return __('Dictionnary of printers');
    }
 
 
@@ -65,15 +65,15 @@ class RuleDictionnaryPrinter extends RuleCached {
    function showCacheRuleHeader() {
       global $LANG;
 
-      echo "<tr><th colspan='6'>" . $LANG['rulesengine'][100] . "&nbsp;: " . $this->fields["name"];
+      echo "<tr><th colspan='3'>" . __('Cache informations') . "</th><th colspan='3'>" . $this->fields["name"];
       echo "</th></tr>";
 
-      echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
+      echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('Original manufacturer')."</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['peripherals'][33] . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('New manufacturer')."</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td></tr>";
+      echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td></tr>";
    }
 
 
@@ -83,14 +83,14 @@ class RuleDictionnaryPrinter extends RuleCached {
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>". ($fields["new_value"] != '' ? $fields["new_value"]
-                                                                : $LANG['rulesengine'][106])."</td>";
+                                                                : __('Unchanged'))."</td>";
       echo "<td class='tab_bg_2'>".
              ($fields["is_global"] != '' ? Dropdown::getGlobalSwitch($fields["is_global"])
-                                         : $LANG['rulesengine'][106]) . "</td>";
+                                         : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>" .
             ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
              ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
-             : $LANG['rulesengine'][106]) . "</td>";
+             : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
 
       if ($fields["ignore_ocs_import"] == '') {
@@ -129,7 +129,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $actions['name']['name']          = __('Name');
       $actions['name']['force_actions'] = array('assign', 'regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
+      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       $actions['manufacturer']['name']  = __('Manufacturer');

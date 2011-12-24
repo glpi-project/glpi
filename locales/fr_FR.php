@@ -2007,7 +2007,7 @@ $LANG['rulesengine'][31]  = "existe";
 $LANG['rulesengine'][32]  = "n'existe pas";
 $LANG['rulesengine'][33]  = "Dictionnaire des intitulés";
 
-$LANG['rulesengine'][35]  = "Dictionnaire logiciel";
+$LANG['rulesengine'][35]  = "Dictionnaire des logiciels";
 $LANG['rulesengine'][36]  = "Dictionnaire des fabricants";
 $LANG['rulesengine'][37]  = "Règles d'affectation d'une catégorie aux logiciels";
 $LANG['rulesengine'][38]  = "Recalculer";

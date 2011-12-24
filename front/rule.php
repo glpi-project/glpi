@@ -40,7 +40,7 @@ Session::checkCentralAccess();
 Html::header(__('Rules'), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
 echo "<table class='tab_cadre'>";
-echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
+echo "<tr><th>" . __('Rule type') . "</th></tr>";
 
 foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
    $rulecollection = new $rulecollectionclass();

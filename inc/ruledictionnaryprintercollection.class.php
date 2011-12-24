@@ -65,7 +65,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][39];
+      return __('Dictionnary of printers');
    }
 
 

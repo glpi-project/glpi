@@ -56,10 +56,7 @@ class RuleCriteria extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['rulesengine'][6];
-      }
-      return $LANG['rulesengine'][16];
+      return _n('Criteria', 'Criteria', $nb);
    }
 
 
@@ -76,19 +73,19 @@ class RuleCriteria extends CommonDBChild {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'criteria';
-      $tab[1]['name']          = $LANG['rulesengine'][6];
+      $tab[1]['name']          = __('Name');
       $tab[1]['massiveaction'] = false;
       $tab[1]['datatype']      = 'string';
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'condition';
-      $tab[2]['name']          = $LANG['rulesengine'][14];
+      $tab[2]['name']          = __('Condition');
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'string';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'pattern';
-      $tab[3]['name']          = $LANG['rulesengine'][15];
+      $tab[3]['name']          = __('Reason');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
 
@@ -345,16 +342,16 @@ class RuleCriteria extends CommonDBChild {
    static function getConditions($itemtype, $criterion='') {
       global $LANG;
 
-      $criteria =  array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
-                         Rule::PATTERN_IS_NOT          => $LANG['rulesengine'][1],
+      $criteria =  array(Rule::PATTERN_IS              => __('is'),
+                         Rule::PATTERN_IS_NOT          => __('is not'),
                          Rule::PATTERN_CONTAIN         => __('contains'),
-                         Rule::PATTERN_NOT_CONTAIN     => $LANG['rulesengine'][3],
-                         Rule::PATTERN_BEGIN           => $LANG['rulesengine'][4],
-                         Rule::PATTERN_END             => $LANG['rulesengine'][5],
-                         Rule::REGEX_MATCH             => $LANG['rulesengine'][26],
-                         Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
-                         Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
-                         Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
+                         Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
+                         Rule::PATTERN_BEGIN           => __('starting with'),
+                         Rule::PATTERN_END             => __('finished by'),
+                         Rule::REGEX_MATCH             => __('regular expression matches'),
+                         Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
+                         Rule::PATTERN_EXISTS          => __('exists'),
+                         Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist'));
 
       $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'),$criterion);
 

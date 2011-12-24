@@ -60,12 +60,12 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "test_all_rules" :
-         Html::popHeader($LANG['rulesengine'][84], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Test rules engine'), $_SERVER['PHP_SELF']);
          include "rulesengine.test.php";
          break;
 
       case "show_cache" :
-         Html::popHeader($LANG['rulesengine'][100], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Cache informations'), $_SERVER['PHP_SELF']);
          include "rule.cache.php";
          break;
 

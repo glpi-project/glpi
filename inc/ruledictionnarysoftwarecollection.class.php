@@ -67,7 +67,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][35];
+      return __('Dictionnary of software');
    }
 
 
@@ -90,12 +90,12 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
              $target . "\">\n";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2' class='b'>" . $LANG['rulesengine'][92] . "</th</tr>\n";
+      echo "<tr><th colspan='2' class='b'>" . __('Warning before running rename based on the dictionary rules') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
-      echo "<td class='tab_bg_2 center'>" . $LANG['rulesengine'][93] . "</td></tr>\n";
-      echo "<tr><th colspan='2' class='b'>" . $LANG['rulesengine'][95] . "</th</tr>\n";
-      echo "<tr><td class='tab_bg_2 center'>" . $LANG['rulesengine'][96] . "</td>";
+      echo "<td class='tab_bg_2 center'>" . __('Warning! This operation can put merged software in the trash.<br>Sure to notify your users.') . "</td></tr>\n";
+      echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
+      echo "<tr><td class='tab_bg_2 center'>" . __('Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
       Dropdown::show('Manufacturer', array('name' => 'manufacturer'));
       echo "</td></tr>\n";
@@ -379,7 +379,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
          $software = new Software();
          while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-            $software->putInTrash($soft["id"], $LANG['rulesengine'][87]);
+            $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
          }
       }
    }
