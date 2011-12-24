@@ -1736,7 +1736,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='top'>" . $LANG['setup'][15] . "&nbsp;:";
+         echo "<tr class='tab_bg_1'><td class='top'>" . _n('Email', 'Emails',2);
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);
@@ -1929,7 +1929,7 @@ class User extends CommonDBTM {
 
       $tab[5]['table']         = 'glpi_useremails';
       $tab[5]['field']         = 'email';
-      $tab[5]['name']          = $LANG['setup'][15];
+      $tab[5]['name']          = _n('Email', 'Emails',2);
       $tab[5]['datatype']      = 'email';
       $tab[5]['joinparams']    = array('jointype'=>'child');
       $tab[5]['forcegroupby']  = true;
@@ -2798,7 +2798,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Please confirm your email address and enter your new password.')."</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14]."</td>";
+         echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
          echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['login'][7]."</td>";

@@ -45,7 +45,7 @@ if (!Toolbox::canUseImapPop()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
-   echo "<tr class='tab_bg_2'><td class='center red'>" . $LANG['setup'][165] . "</td></tr></table>";
+   echo "<tr class='tab_bg_2'><td class='center red'>" . __('Your PHP parser was compiled without the IMAP functions') . "</td></tr></table>";
    echo "</div>";
    Html::footer();
    exit();

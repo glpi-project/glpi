@@ -161,7 +161,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
+      echo "<td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "email");
       echo "</td></tr>";
@@ -253,7 +253,7 @@ class Supplier extends CommonDBTM {
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'email';
-      $tab[6]['name']     = $LANG['setup'][14];
+      $tab[6]['name']     = _n('Email', 'Emails', 1);
       $tab[6]['datatype'] = 'email';
 
       $tab[9]['table'] = 'glpi_suppliertypes';
@@ -369,7 +369,7 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['help'][35]." 2</th>";
       echo "<th>".__('Mobile phone')."</th>";
       echo "<th>".$LANG['financial'][30]."</th>";
-      echo "<th>".$LANG['setup'][14]."</th>";
+      echo "<th>"._n('Email', 'Emails', 1)."</th>";
       echo "<th>".__('Type')."</th>";
       echo "<th>&nbsp;</th></tr>";
 

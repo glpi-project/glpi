@@ -1936,28 +1936,28 @@ $LANG['setup'][136]="Translation";
 $LANG['setup'][137]="Debug";
 $LANG['setup'][138]="Use GLPI in Mode";
 $LANG['setup'][139]="Common";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][140]="Types";
-$LANG['setup'][145]="Os";
+$LANG['setup'][145]="Operating systems";
 $LANG['setup'][147]="Dynamic display";
 $LANG['setup'][148]="Step for the hours";
 $LANG['setup'][149]="Number of decimals in amounts";
-$LANG['setup'][150]="Number Format";
+$LANG['setup'][150]="Number format";
 $LANG['setup'][154]="BaseDN";
 $LANG['setup'][155]="RootDN (for non anonymous binds)";
-$LANG['setup'][156]="Pass (for non-anonymous binds)";
+$LANG['setup'][156]="Password (for non-anonymous binds)";
 $LANG['setup'][157]="The LDAP extension of your PHP parser isn't installed";
 $LANG['setup'][158]="Impossible to use LDAP as external source of connection";
 $LANG['setup'][159]="Connection filter";
 $LANG['setup'][162]="Email server configuration";
-$LANG['setup'][164]="Email domain Name <br>(users email will be login@domain)";
+$LANG['setup'][164]="Email domain name (users email will be login@domain)";
 $LANG['setup'][165]="Your PHP parser was compiled without the IMAP functions";
 $LANG['setup'][166]="Impossible to use email server as external source of connection";
 $LANG['setup'][167]="Binding to the LDAP directory";
 $LANG['setup'][168]="Connection options";
 $LANG['setup'][169]="Mail folder (optional, often INBOX)";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['setup'][170]="Connection string";
 $LANG['setup'][171]="Port (optional)";
 $LANG['setup'][172]="Port (default=389)";

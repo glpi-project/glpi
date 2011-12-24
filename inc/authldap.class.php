@@ -239,22 +239,22 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input id='port' type='text' name='port' value='" . $this->fields["port"] . "'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Connection filter') . "</td>";
          echo "<td colspan='3'>";
          echo "<input type='text' name='condition' value='".$this->fields["condition"]."' size='100'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][154] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('BaseDN') . "</td>";
          echo "<td colspan='3'>";
          echo "<input type='text' name='basedn' size='100' value='" . $this->fields["basedn"] . "'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][155] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('RootDN (for non anonymous binds)') . "</td>";
          echo "<td colspan='3'><input type='text' name='rootdn' size='100' value='".
                 $this->fields["rootdn"]."'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Password (for non-anonymous binds)') . "</td>";
          echo "<td><input type='password' name='rootdn_passwd' value='' autocomplete='off'>";
          if ($ID) {
             echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
@@ -294,8 +294,8 @@ class AuthLDAP extends CommonDBTM {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['login'][2] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
-         echo "<p class='red'>" . $LANG['setup'][157] . "</p>";
-         echo "<p>" . $LANG['setup'][158] . "</p></td></tr></table></div>";
+         echo "<p class='red'>" . __("The LDAP extension of your PHP parser isn't installed") . "</p>";
+         echo "<p>" . __('Impossible to use LDAP as external source of connection') . "</p></td></tr></table></div>";
       }
    }
 
@@ -483,7 +483,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID'>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='center' colspan='4'>" . $LANG['setup'][167] . "</th></tr>";
+      echo "<th class='center' colspan='4'>" . __('Binding to the LDAP directory') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Surname') . "</td>";
       echo "<td><input type='text' name='realname_field' value='".
@@ -503,18 +503,18 @@ class AuthLDAP extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Email') . "</td>";
       echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;2&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Email 2') . "</td>";
       echo "<td><input type='text' name='email2_field' value='".$this->fields["email2_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;3&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Email 3') . "</td>";
       echo "<td><input type='text' name='email3_field' value='".$this->fields["email3_field"]."'>";
       echo "</td>";
-      echo "<td>" . $LANG['setup'][14] . "&nbsp;4&nbsp;:&nbsp;</td>";
+      echo "<td>" . __('Email 4') . "</td>";
       echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
@@ -617,12 +617,12 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'basedn';
-      $tab[5]['name']     = $LANG['setup'][154];
+      $tab[5]['name']     = __('BaseDN');
       $tab[5]['datatype'] = 'string';
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'condition';
-      $tab[6]['name']     = $LANG['setup'][159];
+      $tab[6]['name']     = __('Connection filter');
       $tab[6]['datatype'] = 'string';
 
       $tab[7]['table']         = $this->getTable();
@@ -686,25 +686,25 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'email1_field';
-      $tab[17]['name']          = $LANG['setup'][14].' 1';
+      $tab[17]['name']          = __('Email');
       $tab[17]['massiveaction'] = false;
       $tab[17]['datatype']      = 'string';
 
       $tab[25]['table']         = $this->getTable();
       $tab[25]['field']         = 'email2_field';
-      $tab[25]['name']          = $LANG['setup'][14].' 2';
+      $tab[25]['name']          = __('Email 2');
       $tab[25]['massiveaction'] = false;
       $tab[25]['datatype']      = 'string';
 
       $tab[26]['table']         = $this->getTable();
       $tab[26]['field']         = 'email3_field';
-      $tab[26]['name']          = $LANG['setup'][14].' 3';
+      $tab[26]['name']          = __('Email 3');
       $tab[26]['massiveaction'] = false;
       $tab[26]['datatype']      = 'string';
 
       $tab[27]['table']         = $this->getTable();
       $tab[27]['field']         = 'email4_field';
-      $tab[27]['name']          = $LANG['setup'][14].' 4';
+      $tab[27]['name']          = __('Email 4');
       $tab[27]['massiveaction'] = false;
       $tab[27]['datatype']      = 'string';
 
@@ -2279,10 +2279,10 @@ class AuthLDAP extends CommonDBTM {
 
                $field_counter = 0;
                $fields = array('login_field'     => $LANG['login'][6],
-                               'email1_field'    => $LANG['setup'][14],
-                               'email2_field'    => $LANG['setup'][14].' 2',
-                               'email3_field'    => $LANG['setup'][14].' 3',
-                               'email4_field'    => $LANG['setup'][14].' 4',
+                               'email1_field'    => __('Email'),
+                               'email2_field'    => __('Email 2'),
+                               'email3_field'    => __('Email 3'),
+                               'email4_field'    => __('Email 4'),
                                'realname_field'  => __('Surname'),
                                'firstname_field' => __('First name'),
                                'phone_field'     => $LANG['help'][35],

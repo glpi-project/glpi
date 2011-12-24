@@ -50,14 +50,16 @@ echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseLdap()) {
    echo "<a href='authldap.php'>". $LANG['Menu'][9] ."</a>";
 } else {
-   echo "<p class='red'>".$LANG['setup'][157] ."</p><p>".$LANG['setup'][158].'</p>';
+   echo "<p class='red'>".__("The LDAP extension of your PHP parser isn't installed") ."</p>";
+   echo "<p>".__('Impossible to use LDAP as external source of connection').'</p>';
 }
 echo "</td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseImapPop()) {
    echo "<a href='authmail.php'>" .$LANG['Menu'][10] ."</a>";
 } else {
-   echo "<p class='red'>".$LANG['setup'][165] ."</p><p>".$LANG['setup'][166].'</p>';
+   echo "<p class='red'>".__('Your PHP parser was compiled without the IMAP functions') ."</p>";
+   echo "<p>".__('Impossible to use email server as external source of connection').'</p>';
 }
 echo "</td> </tr>";
 echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['login'][17] .

@@ -582,7 +582,7 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= $LANG['setup'][14] . ": ";
+                  $comments .= __('Email') . ": ";
                   $comments .= $data['email'];
                }
 
