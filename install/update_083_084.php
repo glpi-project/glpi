@@ -280,7 +280,7 @@ function update083to084() {
                   KEY `binary` (`binary_0`, `binary_1`, `binary_2`, `binary_3`),
                   KEY `item` (`items_id`,`itemtype`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-                
+
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses");
    }
 
@@ -378,7 +378,8 @@ function update083to084() {
             if (isset($preparedInput['error'])) {
                $query = "SELECT id, items_id, itemtype
                          FROM origin_glpi_networkports
-                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
+                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='" .
+                               $entry['address']."'
                                AND `netmask` = '".$entry['netmask']."'
                                AND `gateway` = '".$entry['gateway']."'
                                AND `entities_id` = '".$entry['entities_id']."'";
@@ -595,7 +596,7 @@ function update083to084() {
    logMessage($LANG['install'][4]. " - glpi_networkportmigrations", true);
 
    $query = "SELECT *
-             FROM glpi_networkports
+             FROM `glpi_networkports`
              WHERE `instantiation_type`='NetworkPortMigration'";
    $result = $DB->query($query);
    // Adding NetworkPortMigration table only if it is required : in case of unknown interface
@@ -660,8 +661,11 @@ function update083to084() {
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
 
    // Clean display prefs
-   $query = "UPDATE `glpi_displaypreferences` SET `num` = 160 WHERE `itemtype` = 'Software' AND `num` = 7";
-   $DB->query($query);   
+   $query = "UPDATE `glpi_displaypreferences`
+             SET `num` = 160
+             WHERE `itemtype` = 'Software'
+                   AND `num` = 7";
+   $DB->query($query);
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
