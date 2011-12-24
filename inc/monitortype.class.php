@@ -42,10 +42,7 @@ class MonitorType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][44];
-      }
-      return $LANG['dropdown'][11];
+      return _n('Monitor type', 'Monitor types', $nb);
    }
 }
 

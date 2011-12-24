@@ -1837,15 +1837,17 @@ $LANG['search'][22]="More than";
 $LANG['search'][23]="before";
 $LANG['search'][24]="after";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['setup'][0]="Dropdowns";
 $LANG['setup'][1]="See the counts in the tabs";
 $LANG['setup'][2]="Add user...";
 $LANG['setup'][3]="LDAP directory link";
-$LANG['setup'][4]="Computers Types";
+$LANG['setup'][4]="Computers types";
 $LANG['setup'][6]="Personalization";
 $LANG['setup'][7]="CSV delimiter";
 $LANG['setup'][8]="Enable the financial and administrative informations by default";
-$LANG['setup'][9]="Network Interface";
+$LANG['setup'][9]="Network interface";
 $LANG['setup'][10]="Display order of surnames firstnames";
 $LANG['setup'][11]="Automatically refresh the list of tickets";
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket";
@@ -1856,27 +1858,29 @@ $LANG['setup'][19]="Password";
 $LANG['setup'][20]="Password confirmation";
 $LANG['setup'][21]="Error: the two passwords do not match";
 $LANG['setup'][35]="MHz";
-$LANG['setup'][39]="Followed private for default";
+$LANG['setup'][39]="Private followups by default";
 $LANG['setup'][40]="Private tasks by default";
-$LANG['setup'][41]="Select language";
+$LANG['setup'][41]="Language";
 $LANG['setup'][42]="Networking equipment types";
 $LANG['setup'][43]="Printer types";
 $LANG['setup'][44]="Monitor types";
-$LANG['setup'][45]="Case Types";
+$LANG['setup'][45]="Case types";
 $LANG['setup'][46]="Default value";
 $LANG['setup'][47]="Default chart format";
 $LANG['setup'][48]="Default values";
+
 $LANG['setup'][50]="Based on the category then the item";
 $LANG['setup'][51]="Based on the item then the category";
 $LANG['setup'][52]="Automatic assignment of tickets";
-$LANG['setup'][63]="Caution: you're about to remove a heading used for one or more items";
-$LANG['setup'][64]="If you confirm the deletion the items using this heading used fields will be blanked";
+
+$LANG['setup'][63]="Caution: you're about to remove a heading used for one or more items.";
+$LANG['setup'][64]="If you confirm the deletion the items using this heading used fields will be blanked.";
 $LANG['setup'][65]="You can also replace all the events of this heading by another:";
 $LANG['setup'][67]="External authentications";
-$LANG['setup'][69]="Devices Types";
+$LANG['setup'][69]="Devices types";
 $LANG['setup'][70]="General setup";
 $LANG['setup'][71]="Firmware";
-$LANG['setup'][74]="You can't delete that place, because it has sub-places";
+$LANG['setup'][74]="You can't delete that item, because it has sub-items";
 $LANG['setup'][75]="As child of";
 $LANG['setup'][76]="Sons of";
 $LANG['setup'][79]="Category of tickets";
@@ -1890,9 +1894,6 @@ $LANG['setup'][86]="Memory types";
 $LANG['setup'][87]="Knowledge base category";
 $LANG['setup'][88]="Network";
 $LANG['setup'][89]="Domain";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['setup'][90]="VLANs";
 $LANG['setup'][91]="Computers models";
 $LANG['setup'][92]="Consumables types";

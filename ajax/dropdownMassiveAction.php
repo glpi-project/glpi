@@ -68,7 +68,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case 'move_under' :
-         echo $LANG['setup'][75];
+         _e('As child of');
          Dropdown::show($_POST['itemtype'], array('name'     => 'parent',
                                                   'comments' => 0));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".

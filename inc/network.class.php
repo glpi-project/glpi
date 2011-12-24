@@ -42,10 +42,7 @@ class Network extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][1];
-      }
-      return $LANG['setup'][88];
+      return _n('Network', 'Networks', $nb);
    }
 }
 

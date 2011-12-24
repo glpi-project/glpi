@@ -100,7 +100,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['TAG']['name']        = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
 
-      $criterias['DOMAIN']['name']     = $LANG['rulesengine'][152].' : '.$LANG['setup'][89];
+      $criterias['DOMAIN']['name']     = __('Domain');
 
       $criterias['IPSUBNET']['name']   = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
 

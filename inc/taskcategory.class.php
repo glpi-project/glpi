@@ -46,7 +46,7 @@ class TaskCategory extends CommonTreeDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return _n('Tasks category','Tasks categories', $nb),
+      return _n('Tasks category','Tasks categories', $nb);
    }
 
    function canCreate() {

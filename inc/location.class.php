@@ -57,7 +57,7 @@ class Location extends CommonTreeDropdown {
       global $LANG;
 
       return array(array('name'  => $this->getForeignKeyField(),
-                         'label' => $LANG['setup'][75],
+                         'label' => __('As child of'),
                          'type'  => 'parent',
                          'list'  => false),
                    array('name'  => 'building',

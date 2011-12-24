@@ -43,7 +43,7 @@ Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","dropdowns");
 echo "<div align='center'>";
 
 $optgroup = Dropdown::getStandardDropdownItemTypes();
-Dropdown::showItemTypeMenu($LANG['setup'][0], $optgroup);
+Dropdown::showItemTypeMenu(__('Dropdowns'), $optgroup);
 Dropdown::showItemTypeList($optgroup);
 
 echo "</div>";

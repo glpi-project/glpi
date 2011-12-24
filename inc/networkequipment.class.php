@@ -325,7 +325,7 @@ class NetworkEquipment extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
+      echo "<td>".__('Network')."</td>";
       echo "<td>";
       Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
       echo "</td></tr>";
@@ -343,7 +343,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][89]."&nbsp;:</td>";
+      echo "<td>".__('Domain')."</td>";
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
       echo "</td></tr>";
@@ -361,7 +361,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
+      echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
       echo "<td>";
       Dropdown::show('NetworkEquipmentFirmware',
                      array('value' => $this->fields["networkequipmentfirmwares_id"]));
@@ -479,7 +479,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[11]['table'] = 'glpi_networkequipmentfirmwares';
       $tab[11]['field'] = 'name';
-      $tab[11]['name']  = $LANG['setup'][71];
+      $tab[11]['name']  = _n('Firmware', 'Firmwares', 1);
 
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'ram';
@@ -498,11 +498,11 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[32]['table'] = 'glpi_networks';
       $tab[32]['field'] = 'name';
-      $tab[32]['name']  = $LANG['setup'][88];
+      $tab[32]['name']  = __('Network');
 
       $tab[33]['table'] = 'glpi_domains';
       $tab[33]['field'] = 'name';
-      $tab[33]['name']  = $LANG['setup'][89];
+      $tab[33]['name']  = __('Domain');
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';

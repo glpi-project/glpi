@@ -312,7 +312,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
+      echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "firmware");
       echo "</td></tr>\n";

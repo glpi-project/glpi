@@ -41,11 +41,9 @@ class DeviceCaseType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       global $LANG;
+      
+      return  _n('Case type', 'Case types', $nb);
 
-      if ($nb>1) {
-         return $LANG['setup'][45];
-      }
-      return $LANG['dropdown'][17];
    }
 }
 

@@ -112,7 +112,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          case "glpi_users.language" :
             Dropdown::showLanguages("language", array('display_none' => true,
-                                                      'emptylabel'   => $LANG['setup'][46]));
+                                                      'emptylabel'   => __('Default value')));
             break;
             
          case "glpi_crontasks.mode" :

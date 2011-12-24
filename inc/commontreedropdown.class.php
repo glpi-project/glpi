@@ -46,7 +46,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => $this->getForeignKeyField(),
-                         'label' => $LANG['setup'][75],
+                         'label' => __('As child of'),
                          'type'  => 'parent',
                          'list'  => false));
    }
@@ -383,7 +383,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][76]." ".$this->getTreeLink();
+      echo "<tr><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'),$this->getTreeLink());
       echo "</th></tr>";
 
       echo "<tr><th>".__('Name')."</th>"; // Name

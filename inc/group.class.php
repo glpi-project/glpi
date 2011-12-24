@@ -114,7 +114,7 @@ class Group extends CommonTreeDropdown {
                if ($item->getField('is_usergroup')
                    && Session::haveRight('config', 'r')
                    && AuthLdap::useAuthLdap()) {
-                  $ong[3] = $LANG['setup'][3];
+                  $ong[3] = __('LDAP directory link');
                }
                return $ong;
          }
@@ -206,7 +206,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>".$LANG['setup'][75]."</td><td colspan='2'>";
+      echo "<td colspan='2'>".__('As child of')."</td><td colspan='2'>";
       Dropdown::show('Group',
                      array('value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
@@ -278,7 +278,7 @@ class Group extends CommonTreeDropdown {
           && Session::haveRight("user_authtype", "w")
           && AuthLdap::useAuthLdap()) {
 
-         $buttons["ldap.group.php"] = $LANG['setup'][3];
+         $buttons["ldap.group.php"] = __('LDAP directory link');
          $title = "";
 
       } else {

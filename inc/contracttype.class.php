@@ -42,10 +42,7 @@ class ContractType extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['setup'][85];
-      }
-      return $LANG['financial'][6];
+      return _n('Contract type', 'Contract types', $nb);
    }
 }
 

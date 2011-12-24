@@ -2186,7 +2186,7 @@ $LANG['setup'][51]  = "Basée sur le matériel puis sur la catégorie";
 $LANG['setup'][52]  = "Affectation automatique des tickets";
 
 $LANG['setup'][63]  = "Attention vous êtes sur le point de supprimer un intitulé utilisé par un ou plusieurs éléments.";
-$LANG['setup'][64]  = "Si vous confirmez la suppression, les éléments utilisant cet intitulé se verront attribuer un champ vide";
+$LANG['setup'][64]  = "Si vous confirmez la suppression, les éléments utilisant cet intitulé se verront attribuer un champ vide.";
 $LANG['setup'][65]  = "Vous pouvez aussi remplacer toutes les occurrences de cet intitulé par un autre :";
 
 $LANG['setup'][67]  = "Authentifications externes";
