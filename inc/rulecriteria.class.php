@@ -369,7 +369,7 @@ class RuleCriteria extends CommonDBChild {
          $crititemtype = getItemtypeForTable($crit['table']);
          $item         = new $crititemtype();
          if ($item instanceof CommonTreeDropdown) {
-            $criteria[Rule::PATTERN_UNDER] = $LANG['search'][3];
+            $criteria[Rule::PATTERN_UNDER] = __('under');
          }
       }
 

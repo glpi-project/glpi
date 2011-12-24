@@ -902,7 +902,7 @@ class CronTask extends CommonDBTM{
          $result = $DB->query($query);
 
          if ($data = $DB->fetch_assoc($result)) {
-            echo "<tr class='tab_bg_1'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td>";
+            echo "<tr class='tab_bg_1'><td>".__('Start date')."</td>";
             echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:&nbsp;</td>";

@@ -669,7 +669,7 @@ $LANG['financial'][11]="Invoice period";
 $LANG['financial'][13]="Account number";
 $LANG['financial'][14]="Date of purchase";
 $LANG['financial'][15]="Warranty duration";
-$LANG['financial'][16]="Warranty Information";
+$LANG['financial'][16]="Warranty information";
 $LANG['financial'][18]="Order number";
 $LANG['financial'][19]="Delivery form";
 $LANG['financial'][20]="Immobilization number";
@@ -1818,6 +1818,8 @@ $LANG['satisfaction'][13]="Opened";
 $LANG['satisfaction'][14]="Answered";
 
 
+/// TODO After is ok for migration to gettext
+
 
 $LANG['search'][0]="Search";
 $LANG['search'][1]="for all";
@@ -1826,21 +1828,19 @@ $LANG['search'][3]="under";
 $LANG['search'][4]="sorted by";
 $LANG['search'][8]="Start date";
 $LANG['search'][9]="End date";
-$LANG['search'][11]="Items Seen";
-$LANG['search'][12]="Specify a termination date";
+$LANG['search'][11]="Items seen";
+$LANG['search'][12]="Specify an end date";
 $LANG['search'][15]="No item found";
 $LANG['search'][16]="A least";
-$LANG['search'][17]="Add a search criterium";
+$LANG['search'][17]="Add a search criteria";
 $LANG['search'][18]="Delete a search criteria";
-$LANG['search'][19]="Add a global search criterium";
+$LANG['search'][19]="Add a global search criteria";
 $LANG['search'][20]="Delete a global search criteria";
 $LANG['search'][21]="Less than";
 $LANG['search'][22]="More than";
 $LANG['search'][23]="before";
 $LANG['search'][24]="after";
 
-
-/// TODO After is ok for migration to gettext
 
 $LANG['setup'][0]="Dropdowns";
 $LANG['setup'][1]="See the counts in the tabs";

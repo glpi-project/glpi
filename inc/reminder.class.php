@@ -333,12 +333,12 @@ class Reminder extends CommonDBTM {
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'begin_view_date';
-      $tab[5]['name']          = $LANG['search'][8];
+      $tab[5]['name']          = __('Visibility start date');
       $tab[5]['datatype']      = 'datetime';
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'end_view_date';
-      $tab[6]['name']          = $LANG['search'][9];
+      $tab[6]['name']          = __('Visibility end date');
       $tab[6]['datatype']      = 'datetime';
 
       $tab[7]['table']         = $this->getTable();
@@ -349,12 +349,12 @@ class Reminder extends CommonDBTM {
 
       $tab[8]['table']         = $this->getTable();
       $tab[8]['field']         = 'begin';
-      $tab[8]['name']          = $LANG['job'][35].' - '.$LANG['search'][8];
+      $tab[8]['name']          = __('Planning start date');
       $tab[8]['datatype']      = 'datetime';
 
       $tab[9]['table']         = $this->getTable();
       $tab[9]['field']         = 'end';
-      $tab[9]['name']          = $LANG['job'][35].' - '.$LANG['search'][9];
+      $tab[9]['name']          = __('Planning end date');
       $tab[9]['datatype']      = 'datetime';
 
       $tab[19]['table']         = $this->getTable();

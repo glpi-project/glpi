@@ -38,7 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
-Html::header($LANG['search'][0],$_SERVER['PHP_SELF']);
+Html::header(__('Search'),$_SERVER['PHP_SELF']);
 
 if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];

@@ -147,13 +147,13 @@ class Budget extends CommonDropdown{
              value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['search'][8]."&nbsp;: </td>";
+      echo "<td>".__('Start date')."</td>";
       echo "<td>";
       Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['search'][9]."&nbsp;: </td>";
+      echo "<td>".__('End date')."</td>";
       echo "<td>";
       Html::showDateFormItem("end_date",$this->fields["end_date"]);
       echo "</td></tr>";
@@ -228,12 +228,12 @@ class Budget extends CommonDropdown{
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'begin_date';
-      $tab[2]['name']      = $LANG['search'][8];
+      $tab[2]['name']      = __('Start date');
       $tab[2]['datatype']  = 'date';
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'end_date';
-      $tab[3]['name']      = $LANG['search'][9];
+      $tab[3]['name']      = __('End date');
       $tab[3]['datatype']  = 'date';
 
       $tab[4]['table']     = $this->getTable();

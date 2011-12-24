@@ -635,11 +635,11 @@ class Reservation extends CommonDBChild {
          }
          echo "</td></tr>\n";
       }
-      echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       Html::showDateTimeFormItem("begin", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('End date')."</td><td>";
       Html::showDateTimeFormItem("end", $resa->fields["end"], -1, false);
       Alert::displayLastAlert('Reservation', $ID);
       echo "</td></tr>\n";
@@ -869,8 +869,8 @@ class Reservation extends CommonDBChild {
             echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
 
          } else {
-            echo "<tr><th>".$LANG['search'][8]."</th>";
-            echo "<th>".$LANG['search'][9]."</th>";
+            echo "<tr><th>".__('Start date')."</th>";
+            echo "<th>".__('End date')."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -916,8 +916,8 @@ class Reservation extends CommonDBChild {
             echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
 
          } else {
-            echo "<tr><th>".$LANG['search'][8]."</th>";
-            echo "<th>".$LANG['search'][9]."</th>";
+            echo "<tr><th>".__('Start date')."</th>";
+            echo "<th>".__('End date')."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -978,8 +978,8 @@ class Reservation extends CommonDBChild {
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr\n>";
 
       } else {
-         echo "<tr><th>".$LANG['search'][8]."</th>";
-         echo "<th>".$LANG['search'][9]."</th>";
+         echo "<tr><th>".__('Start date')."</th>";
+         echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
@@ -1033,8 +1033,8 @@ class Reservation extends CommonDBChild {
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>\n";
 
       } else {
-         echo "<tr><th>".$LANG['search'][8]."</th>";
-         echo "<th>".$LANG['search'][9]."</th>";
+         echo "<tr><th>".__('Start date')."</th>";
+         echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";

@@ -1208,16 +1208,11 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<select id='$id' name='$name'>";
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][3]."</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][4]."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][5]."</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][6]."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][7]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least very medium')."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
       }
 
       if ($complete || $major) {
@@ -1284,16 +1279,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][42]."</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][43]."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][44]."</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][45]."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][46]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium')."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
       }
 
       if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
@@ -1367,16 +1357,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][47]."</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][48]."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][49]."</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][50]."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
-                $LANG['help'][51]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium')."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
       }
 
       if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {

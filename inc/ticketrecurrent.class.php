@@ -144,7 +144,7 @@ class TicketRecurrent extends CommonDropdown {
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'begin_date',
-                         'label' => $LANG['search'][8],
+                         'label' => __('Start date'),
                          'type'  => 'datetime',
                          'list'  => false),
                    array('name'  => 'periodicity',
@@ -183,7 +183,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'begin_date';
-      $tab[13]['name']     = $LANG['search'][8];
+      $tab[13]['name']     = __('Start date');
       $tab[13]['datatype'] = 'datetime';
 
       $tab[15]['table']    = $this->getTable();

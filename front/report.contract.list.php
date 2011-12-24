@@ -123,8 +123,8 @@ if (isset($query) && count($query)) {
          echo "<th>".$LANG['financial'][14]."</th>";
          echo "<th>".$LANG['financial'][80]."</th>";
          echo "<th>".$LANG['financial'][6]."</th>";
-         echo "<th>".$LANG['search'][8]."</th>";
-         echo "<th>".$LANG['search'][9]."</th>";
+         echo "<th>".__('Start date')."</th>";
+         echo "<th>".__('End date')."</th>";
          echo "</tr>";
          while ( $data = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1'>";

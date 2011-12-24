@@ -2553,7 +2553,7 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "</td><td colspan='3'>";
          $infsup  = array('<' => __('More than'),
-                          '>' => __('Less than');
+                          '>' => __('Less than'));
          $options = array('value' => (isset($_SESSION['ldap_import']['operator'])
                                       ? $_SESSION['ldap_import']['operator']
                                       : '<'));
