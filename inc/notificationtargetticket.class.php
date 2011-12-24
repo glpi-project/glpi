@@ -163,7 +163,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'deleted'         => $LANG['mailing'][129],
                       'alertnotclosed'  => $LANG['crontask'][15],
                       'recall'          => __('Automatic reminders of SLAs'),
-                      'satisfaction'    => $LANG['satisfaction'][3]);
+                      'satisfaction'    => __('Satisfaction survey'));
       asort($events);
       return $events;
    }
@@ -607,10 +607,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
       // Events for ticket satisfaction
-      $tags = array('satisfaction.datebegin'           => $LANG['satisfaction'][6],
-                    'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
-                    'satisfaction.satisfactionlevel'   => $LANG['satisfaction'][7],
-                    'satisfaction.satisfactioncomment' => $LANG['satisfaction'][8]);
+      $tags = array('satisfaction.datebegin'           => __('Creation date of the satisfaction survey'),
+                    'satisfaction.dateanswered'        => __('Response date to the satisfaction survey'),
+                    'satisfaction.satisfactionlevel'   => __('Satisfaction'),
+                    'satisfaction.satisfactioncomment' => __('Comments to the satisfaction survey'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -619,8 +619,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('satisfaction')));
       }
 
-      $tags = array('satisfaction.type'  => $LANG['satisfaction'][9]." - ".
-                                           $LANG['satisfaction'][10],);
+      $tags = array('satisfaction.type'  => __('Survey type'),);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -630,7 +629,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('satisfaction')));
       }
 
-      $tags = array('satisfaction.text' => $LANG['satisfaction'][12]);
+      $tags = array('satisfaction.text' => __('Invitation to fill out the survey');
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -679,7 +678,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Tags without lang
       $tags = array('ticket.urlvalidation'    => __('Approval request URL'),
-                    'ticket.urlsatisfaction'  => $LANG['document'][33].' '.$LANG['satisfaction'][0],
+                    'ticket.urlsatisfaction'  => __('Satisfaction URL'),
                     'linkedticket.id'         => __("Linked ticket ID"),
                     'linkedticket.link'       => __("Linked ticket link"),
                     'linkedticket.url'        => __("Linked ticket URL"),

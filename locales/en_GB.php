@@ -1803,6 +1803,8 @@ $LANG['rulesengine'][152]="Computer to import";
 $LANG['rulesengine'][154]="is empty in GLPI";
 $LANG['rulesengine'][155]="Link with computer";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['satisfaction'][0]="Satisfaction";
 $LANG['satisfaction'][1]="Satisfaction with the resolution of the ticket";
 $LANG['satisfaction'][2]="No generated survey";
@@ -1816,10 +1818,6 @@ $LANG['satisfaction'][10]="External survey";
 $LANG['satisfaction'][12]="Invitation to fill out the survey";
 $LANG['satisfaction'][13]="Opened";
 $LANG['satisfaction'][14]="Answered";
-
-
-/// TODO After is ok for migration to gettext
-
 
 $LANG['search'][0]="Search";
 $LANG['search'][1]="for all";

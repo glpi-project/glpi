@@ -45,7 +45,7 @@ class TicketSatisfaction extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['satisfaction'][0];
+      return __('Satisfaction');
    }
 
 
@@ -111,7 +111,7 @@ class TicketSatisfaction extends CommonDBTM {
       if ($this->fields["type"] == 2) {
          $url = EntityData::generateLinkSatisfaction($ticket);
          echo "<div class='center spaced'>".
-              "<a href='$url'>".$LANG['satisfaction'][10]."</a><br>($url)</div>";
+              "<a href='$url'>".__('External survey')."</a><br>($url)</div>";
 
       // for internal inquest => form
       } else {
@@ -122,7 +122,7 @@ class TicketSatisfaction extends CommonDBTM {
             $this->fields["satisfaction"] = 3;
          }
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['satisfaction'][1]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Satisfaction with the resolution of the ticket')."</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='$tid'>";
          echo "<input type='hidden' id='satisfaction' name='satisfaction' value='".
@@ -152,7 +152,7 @@ class TicketSatisfaction extends CommonDBTM {
 
          if ($this->fields["date_answered"] > 0) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
+            echo "<td>".__('Response date to the satisfaction survey')."</td><td>";
             echo Html::convDateTime($this->fields["date_answered"])."</td></tr>\n";
          }
 
@@ -219,10 +219,10 @@ class TicketSatisfaction extends CommonDBTM {
 
       switch ($value) {
          case 1 :
-            return $LANG['satisfaction'][9];
+            return __('Internal survey');
 
          case 2 :
-            return $LANG['satisfaction'][10];
+            return __('External survey');
       }
    }
 

@@ -329,7 +329,7 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Number'), $header_num, '', 0, '',
                                         "colspan='4'");
             if ($itemtype =='Ticket') {
-               echo Search::showHeaderItem($output_type, $LANG['satisfaction'][0], $header_num, '',
+               echo Search::showHeaderItem($output_type, __('Satisfaction'), $header_num, '',
                                            0, '', "colspan='3'");
             }
             echo Search::showHeaderItem($output_type, __('Average time'), $header_num, '', 0, '',
