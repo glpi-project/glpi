@@ -1682,6 +1682,10 @@ $LANG['reservation'][38]="Are you sure you want do return this non-reservable it
 $LANG['reservation'][39]="That will remove all the reservations in progress.";
 $LANG['reservation'][40]="Material reservations expiring today";
 
+
+/// TODO After is ok for migration to gettext
+
+
 $LANG['rulesengine'][0]="is";
 $LANG['rulesengine'][1]="is not";
 $LANG['rulesengine'][3]="does not contain";
@@ -1802,8 +1806,6 @@ $LANG['rulesengine'][151]="is already present in GLPI";
 $LANG['rulesengine'][152]="Computer to import";
 $LANG['rulesengine'][154]="is empty in GLPI";
 $LANG['rulesengine'][155]="Link with computer";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['satisfaction'][0]="Satisfaction";
 $LANG['satisfaction'][1]="Satisfaction with the resolution of the ticket";
