@@ -105,7 +105,7 @@ $default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*
 $rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
                                                          'max'        => 50*HOUR_TIMESTAMP,
                                                          'value'      => $default_delay,
-                                                         'emptylabel' => __('Specify an end date'));
+                                                         'emptylabel' => __('Specify an end date')));
 echo "<br><div id='date_end$rand'></div>";
 
 $params = array('duration'     => '__VALUE__',

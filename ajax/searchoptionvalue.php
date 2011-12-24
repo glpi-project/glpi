@@ -210,8 +210,8 @@ if (isset($_REQUEST['searchtype'])) {
 
                case "glpi_ticketsatisfactions.type" :
                   Dropdown::showFromArray($inputname,
-                                          array(1 => $LANG['satisfaction'][9],
-                                                2 => $LANG['satisfaction'][10]),
+                                          array(1 => __('Internal survey'),
+                                                2 => __('External survey')),
                                           array('value' => $_REQUEST['value']));
                   $display = true;
                   break;

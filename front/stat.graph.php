@@ -430,8 +430,8 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
                                                             $_GET["type"], $val1, $val2);
 
 
-   $available = array('opensatisfaction'   => $LANG['satisfaction'][13],
-                     'answersatisfaction' => $LANG['satisfaction'][14]);
+   $available = array('opensatisfaction'   => __('Opened'),
+                     'answersatisfaction'  => __('Answered'));
    echo "<div class='center'>";
 
    foreach ($available as $key => $name) {
@@ -447,7 +447,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
       }
    }
 
-   Stat::showGraph($toprint, array('title'     => $LANG['satisfaction'][3],
+   Stat::showGraph($toprint, array('title'     => __('Satisfaction survey'),
                                  'showtotal' => 1,
                                  'unit'      => __('Ticket(s)')));
 
@@ -455,7 +455,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
                                                          $_REQUEST["date2"], $_GET["type"], $val1,
                                                          $val2);
 
-   $available = array('avgsatisfaction' => $LANG['satisfaction'][7]);
+   $available = array('avgsatisfaction' => __('Satisfaction'));
    echo "<div class='center'>";
 
    foreach ($available as $key => $name) {
@@ -471,7 +471,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
       }
    }
 
-   Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
+   Stat::showGraph($toprint, array('title' => __('Satisfaction')));
 
 }
 echo "</form>";

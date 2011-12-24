@@ -872,8 +872,8 @@ class EntityData extends CommonDBChild {
 
       /// no inquest case = rate 0
       $typeinquest = array(self::CONFIG_PARENT  => $LANG['common'][102],
-                           1                    => $LANG['satisfaction'][9],
-                           2                    => $LANG['satisfaction'][10]);
+                           1                    => __('Internal survey'),
+                           2                    => __('External survey'));
 
       // No inherit from parent for root entity
       if ($ID == 0) {

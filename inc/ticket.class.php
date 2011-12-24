@@ -397,7 +397,7 @@ class Ticket extends CommonITILObject {
             $ong[2] = $LANG['jobresolution'][2];
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
-               $ong[3] = $LANG['satisfaction'][0];
+               $ong[3] = __('Satisfaction');
             }
             if (Session::haveRight('observe_ticket','1')) {
                $ong[4] = $LANG['Menu'][13];
@@ -446,7 +446,7 @@ class Ticket extends CommonITILObject {
                   if ($item->fields['status'] == 'closed' && $satisfaction->getFromDB($_POST["id"])) {
                      $satisfaction->showSatisfactionForm($item);
                   } else {
-                     echo "<p class='center b'>".$LANG['satisfaction'][2]."</p>";
+                     echo "<p class='center b'>".__('No generated survey')."</p>";
                   }
                   break;
 
@@ -1715,7 +1715,7 @@ class Ticket extends CommonITILObject {
                                                  'joinparams' => array('jointype' => 'child')));
 
 
-      $tab['satisfaction'] = $LANG['satisfaction'][3];
+      $tab['satisfaction'] = __('Satisfaction survey');
 
       $tab[31]['table']      = 'glpi_ticketsatisfactions';
       $tab[31]['field']      = 'type';
@@ -1725,28 +1725,28 @@ class Ticket extends CommonITILObject {
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
       $tab[60]['field']         = 'date_begin';
-      $tab[60]['name']          = $LANG['satisfaction'][6];
+      $tab[60]['name']          = __('Creation date of the satisfaction survey');
       $tab[60]['datatype']      = 'datetime';
       $tab[60]['massiveaction'] = false;
       $tab[60]['joinparams']    = array('jointype' => 'child');
 
       $tab[61]['table']         = 'glpi_ticketsatisfactions';
       $tab[61]['field']         = 'date_answered';
-      $tab[61]['name']          = $LANG['satisfaction'][4];
+      $tab[61]['name']          = __('Response date to the satisfaction survey');
       $tab[61]['datatype']      = 'datetime';
       $tab[61]['massiveaction'] = false;
       $tab[61]['joinparams']    = array('jointype' => 'child');
 
       $tab[62]['table']         = 'glpi_ticketsatisfactions';
       $tab[62]['field']         = 'satisfaction';
-      $tab[62]['name']          = $LANG['satisfaction'][7];
+      $tab[62]['name']          = __('Satisfaction');
       $tab[62]['datatype']      = 'number';
       $tab[62]['massiveaction'] = false;
       $tab[62]['joinparams']    = array('jointype' => 'child');
 
       $tab[63]['table']         = 'glpi_ticketsatisfactions';
       $tab[63]['field']         = 'comment';
-      $tab[63]['name']          = $LANG['satisfaction'][8];
+      $tab[63]['name']          = __('Comments to the satisfaction survey');
       $tab[63]['datatype']      = 'text';
       $tab[63]['massiveaction'] = false;
       $tab[63]['joinparams']    = array('jointype' => 'child');

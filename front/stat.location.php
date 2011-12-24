@@ -209,8 +209,8 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = Html::clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['satisfaction'][3] => $cleandata),
-                      array('title'     => $LANG['satisfaction'][3],
+      Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
+                      array('title'     => __('Satisfaction survey'),
                             'showtotal' => 1,
                             'unit'      => __('Ticket(s)'),
                             'type'      => 'pie'));
