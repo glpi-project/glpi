@@ -275,7 +275,7 @@ class ComputerDisk extends CommonDBChild {
             }
 
          } else {
-            echo "<tr><th colspan='7'>".$LANG['search'][15]."</th></tr>";
+            echo "<tr><th colspan='7'>".__('No item found')."</th></tr>";
          }
 
          if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {

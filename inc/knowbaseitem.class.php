@@ -1033,7 +1033,7 @@ class KnowbaseItem extends CommonDBTM {
             }
 
          } else {
-            echo "<div class='center b'>".$LANG['search'][15]."</div>";
+            echo "<div class='center b'>".__('No item found')."</div>";
          }
       }
    }

@@ -516,7 +516,7 @@ class SoftwareLicense extends CommonDBTM {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['search'][15]."</th></tr>\n";
+         echo "<tr><th>".__('No item found')."</th></tr>\n";
 
          if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center'>";
@@ -664,7 +664,7 @@ class SoftwareLicense extends CommonDBTM {
             }
 
          } else {
-            echo $LANG['search'][15];
+            _e('No item found');
          }
       }
       echo "</div>";

@@ -347,7 +347,7 @@ class RuleCriteria extends CommonDBChild {
 
       $criteria =  array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
                          Rule::PATTERN_IS_NOT          => $LANG['rulesengine'][1],
-                         Rule::PATTERN_CONTAIN         => $LANG['search'][2],
+                         Rule::PATTERN_CONTAIN         => __('contains'),
                          Rule::PATTERN_NOT_CONTAIN     => $LANG['rulesengine'][3],
                          Rule::PATTERN_BEGIN           => $LANG['rulesengine'][4],
                          Rule::PATTERN_END             => $LANG['rulesengine'][5],

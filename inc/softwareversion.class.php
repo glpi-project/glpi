@@ -313,7 +313,7 @@ class SoftwareVersion extends CommonDBChild {
 
          } else {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".$LANG['search'][15]."</th></tr>";
+            echo "<tr><th>".__('No item found')."</th></tr>";
             if ($canedit) {
                echo "<tr class='tab_bg_2'><td class='center'>";
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".

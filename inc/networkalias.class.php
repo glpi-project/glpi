@@ -295,7 +295,7 @@ class NetworkAlias extends FQDNLabel {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan>".self::getTypeName()." - ".$LANG['search'][15]."</th></tr>";
+         echo "<tr><th>".self::getTypeName()."</th><th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
          Html::printAjaxPager(self::getTypeName($number),$start,$number);

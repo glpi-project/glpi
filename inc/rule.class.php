@@ -1813,7 +1813,7 @@ class Rule extends CommonDBTM {
 
       if (empty($rules)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>" . $LANG['search'][15] . "</th>";
+         echo "<tr><th>" . __('No item found') . "</th>";
          echo "</tr>\n";
          echo "</table>\n";
 

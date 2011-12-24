@@ -3278,7 +3278,7 @@ class Transfer extends CommonDBTM {
          echo "</td><td class='tab_bg_2 top'>";
 
          if (countElementsInTable('glpi_transfers') == 0) {
-            echo $LANG['search'][15];
+            _e('No item found');
          } else {
             $params = array('id' => '__VALUE__');
             Ajax::updateItemOnSelectEvent("dropdown_ID$rand", "transfer_form",

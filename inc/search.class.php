@@ -1433,7 +1433,7 @@ class Search {
                   echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
                          document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
-                        $LANG['search'][20]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                        __s('Delete a global search criteria')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
 
@@ -4790,7 +4790,7 @@ class Search {
       global $LANG;
 
       $searchopt = &self::getOptions($itemtype);
-      $actions   = array('contains'  => $LANG['search'][2],
+      $actions   = array('contains'  => __('contains'),
                          'searchopt' => array());
 
       if (isset($searchopt[$field_num])) {
@@ -4815,7 +4815,7 @@ class Search {
                      break;
 
                   case "contains" :
-                     $actions['contains'] = $LANG['search'][2];
+                     $actions['contains'] = __('contains');
                      break;
 
                   case "under" :
@@ -4823,11 +4823,11 @@ class Search {
                      break;
 
                   case "lessthan" :
-                     $actions['lessthan'] = $LANG['search'][23];
+                     $actions['lessthan'] = __('before');
                      break;
 
                   case "morethan" :
-                     $actions['morethan'] = $LANG['search'][24];
+                     $actions['morethan'] = __('after');
                      break;
                }
             }
@@ -4839,7 +4839,7 @@ class Search {
                case 'bool' :
                   return array('equals'    => $LANG['rulesengine'][0],
                                'notequals' => $LANG['rulesengine'][1],
-                               'contains'   => $LANG['search'][2],
+                               'contains'   => __('contains'),
                                'searchopt' => $searchopt[$field_num]);
 
                case 'right' :
@@ -4857,9 +4857,9 @@ class Search {
                case 'date_delay' :
                   return array('equals'    => $LANG['rulesengine'][0],
                                'notequals' => $LANG['rulesengine'][1],
-                               'lessthan'  => $LANG['search'][23],
-                               'morethan'  => $LANG['search'][24],
-                               'contains'  => $LANG['search'][2],
+                               'lessthan'  => __('before'),
+                               'morethan'  => __('after'),
+                               'contains'  => __('contains'),
                                'searchopt' => $searchopt[$field_num]);
             }
          }
@@ -4879,7 +4879,7 @@ class Search {
 
             case 'name' :
             case 'completename' :
-               $actions = array('contains'  => $LANG['search'][2],
+               $actions = array('contains'  => __('contains'),
                                 'equals'    => $LANG['rulesengine'][0],
                                 'notequals' => $LANG['rulesengine'][1],
                                 'searchopt' => $searchopt[$field_num]);
@@ -5049,7 +5049,7 @@ class Search {
             break;
 
          default :
-            $out = "<div class='center b'>".$LANG['search'][15]."</div>\n";
+            $out = "<div class='center b'>".__('No item found')."</div>\n";
       }
       return $out;
    }

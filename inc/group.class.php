@@ -331,12 +331,12 @@ class Group extends CommonTreeDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = $LANG['search'][2]." ".$LANG['common'][96];
+      $tab[14]['name']          = __('Can contain items');
       $tab[14]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = $LANG['search'][2]." ".$LANG['Menu'][14];
+      $tab[15]['name']          = __('Can contain users');
       $tab[15]['datatype']      = 'bool';
 
       $tab[70]['table']         = 'glpi_users';
@@ -605,7 +605,7 @@ class Group extends CommonTreeDropdown {
          }
          echo "</table>";
       } else {
-         echo "<p class='center b'>".$LANG['search'][15]."</p>";
+         echo "<p class='center b'>".__('No item found')."</p>";
       }
 
       if ($nbcan) {
