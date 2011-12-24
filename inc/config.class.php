@@ -310,7 +310,7 @@ class Config extends CommonDBTM {
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][86] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') . "</td><td>";
       Dropdown::show('SoftwareCategory',
                      array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
                            'name'  => "softwarecategories_id_ondelete"));

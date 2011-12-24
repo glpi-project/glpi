@@ -293,7 +293,7 @@ class RuleCollection extends CommonDBTM {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][29];
+      return __('Rules list');
    }
 
 
@@ -325,16 +325,16 @@ class RuleCollection extends CommonDBTM {
       //Display informations about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
          //The engine stop on the first matched rule
-         echo "<span class='center b'>".$LANG['rulesengine'][120]."</span><br>";
+         echo "<span class='center b'>".__('The engine stops on the first checked rule.')."</span><br>";
 
       } else {
          //The engine process all the rules
-         echo "<span class='center b'>".$LANG['rulesengine'][121]."</span><br>";
+         echo "<span class='center b'>".__('The engine treats all the rules.')."</span><br>";
       }
 
       if ($this->use_output_rule_process_as_next_input) {
          //The engine keep the result of a rule to be processed further
-         echo "<span class='center b'>".$LANG['rulesengine'][122]."</span><br>";
+         echo "<span class='center b'>".__('The engine passes the result of a rule to the following ones.')."</span><br>";
       }
       echo "</th></tr>";
       echo "</table>\n";
@@ -439,7 +439,7 @@ class RuleCollection extends CommonDBTM {
 
          if ($this->can_replay_rules) {
             echo "</td>"; // close td of Html::openArrowMassives
-            echo "<td><input type='submit' name='replay_rule' value='" . $LANG['rulesengine'][76] .
+            echo "<td><input type='submit' name='replay_rule' value='" . __s('Replay the dictionary rules') .
                        "' class='submit'></td>";
             echo "<td>"; // open td for Html::closeArrowMassives
          }
@@ -459,7 +459,7 @@ class RuleCollection extends CommonDBTM {
       echo "<a href='#' onClick=\"var w=window.open('".$url.
              "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->getRuleClassName().
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-             "w.focus();\">".$LANG['rulesengine'][84]."</a></span></div>";
+             "w.focus();\">".__('Test rules engine')."</a></span></div>";
 
       echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
@@ -699,7 +699,7 @@ class RuleCollection extends CommonDBTM {
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>\n";
 
          //Brower all criterias
          foreach ($input as $criteria) {
@@ -729,7 +729,7 @@ class RuleCollection extends CommonDBTM {
          echo "</form>\n";
 
       } else {
-         echo '<br><div class="center b">'.$LANG['rulesengine'][97].'</div>';
+         echo '<br><div class="center b">'.__('No element to be tested').'</div>';
       }
 
       return $input;
@@ -846,7 +846,7 @@ class RuleCollection extends CommonDBTM {
 
       if (isset($output["result"])) {
          echo "<table class='tab_cadrehov'>";
-         echo "<tr><th colspan='2'>" . $LANG['rulesengine'][82] . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . __('Result details') . "</th></tr>\n";
 
          foreach ($output["result"] as $ID=>$rule_result) {
             echo "<tr class='tab_bg_1'>";
@@ -861,7 +861,7 @@ class RuleCollection extends CommonDBTM {
                   break;
 
                case 2 :
-                  echo $LANG['rulesengine'][107];
+                  _e('Inactive');
                   break;
             }
 
@@ -914,9 +914,9 @@ class RuleCollection extends CommonDBTM {
 
       $actions = $rule->getActions();
       echo "<table class='tab_cadrehov'>";
-      echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>\n";
+      echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".$LANG['rulesengine'][41]."&nbsp;:&nbsp;<span class='b'>".
+      echo "<td class='center'>".__('Validation')."</td><td><span class='b'>".
              Dropdown::getYesNo($global_result)."</span></td>";
 
       $output = $this->preProcessPreviewResults($output);
@@ -1037,17 +1037,17 @@ class RuleCollection extends CommonDBTM {
       if ($item instanceof RuleCollection){
          $ong = array();
          if ($item->showInheritedTab()) {
-            $ong[1] = $LANG['rulesengine'][20].' : '.
-                      Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+            //TRANS: %s is the entity name
+            $ong[1] = sprintf(__('Rules applied: %s'), Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']));
          }
-         $title = $LANG['rulesengine'][17];
+         $title = _n('Rule', 'Rules', 2);
          if ($item->isRuleRecursive()) {
-            $title = $LANG['rulesengine'][23].' : '.
-                     Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']);
+            //TRANS: %s is the entity name
+            $ong[1] = sprintf(__('Local rules: %s'), Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']));
          }
          $ong[2] = $title;
          if ($item->showChildrensTab()) {
-            $ong[3] = $LANG['rulesengine'][21];
+            $ong[3] = __('Rules applicable in the sub-entities');
          }
          return $ong;
       }

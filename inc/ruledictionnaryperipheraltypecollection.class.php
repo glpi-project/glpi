@@ -48,7 +48,7 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][63];
+      return __('Dictionnary of device types');
    }
 
 }

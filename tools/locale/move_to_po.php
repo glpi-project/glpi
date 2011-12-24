@@ -137,7 +137,7 @@ fclose($po);
 function search_in_dict($string) {
    global $REFLANG, $LANG;
 
-   $ponctmatch="[: \(\)]*";
+   $ponctmatch="[\.: \(\)]*";
 
    if (preg_match("/($ponctmatch)(.*)($ponctmatch)$/U",$string,$reg)) {
       $left   = $reg[1];

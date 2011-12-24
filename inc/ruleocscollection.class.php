@@ -68,7 +68,7 @@ class RuleOcsCollection extends RuleCollection {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][18];
+      return __('Rules for assigning a computer to an entity');
    }
 
 

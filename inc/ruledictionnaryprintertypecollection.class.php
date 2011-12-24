@@ -48,7 +48,7 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][64];
+      return __('Dictionnary of printer types');
    }
 
 }

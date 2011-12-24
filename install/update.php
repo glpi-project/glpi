@@ -133,7 +133,7 @@ function displayMigrationMessage ($id, $msg="") {
 
    if ($created != $id) {
       if (empty($msg)) {
-         $msg = $LANG['rulesengine'][90];
+         $msg = __('Work in progress...');
       }
       echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
       $created = $id;
@@ -141,7 +141,7 @@ function displayMigrationMessage ($id, $msg="") {
 
    } else {
       if (empty($msg)) {
-         $msg = $LANG['rulesengine'][91];
+         $msg = __('Task completed.');
       }
       $fin = time();
       $tps = Html::timestampToString($fin-$deb);

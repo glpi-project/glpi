@@ -49,11 +49,11 @@ class RuleDictionnaryDropdown extends RuleCached {
       global $LANG;
 
       if ($this->show_cache) {
-         echo "<tr><th colspan='3'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"].
+         echo "<tr><th colspan='2'>".__('Cache informations')."</th><th>".$this->fields["name"].
               "</th></tr>";
-         echo "<tr><td class='tab_bg_1 b'>".$LANG['rulesengine'][104]."</td>";
+         echo "<tr><td class='tab_bg_1 b'>".__('Original value')."</td>";
          echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
-         echo "<td class='tab_bg_1 b'>".$LANG['rulesengine'][105]."</td></tr>";
+         echo "<td class='tab_bg_1 b'>".__('Modified value')."</td></tr>";
       } else {
          parent::showCacheRuleHeader();
       }
@@ -68,7 +68,7 @@ class RuleDictionnaryDropdown extends RuleCached {
          echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'').
               "</td>";
          echo "<td class='tab_bg_2'>".($fields["new_value"]!='' ? $fields["new_value"]
-                                                                : $LANG['rulesengine'][106])."</td>";
+                                                                : __('Unchanged'))."</td>";
       } else {
          parent::showCacheRuleDetail($fields);
       }

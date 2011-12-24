@@ -5008,7 +5008,7 @@ class Ticket extends CommonITILObject {
          if ($item = getItemForItemtype($output["itemtype"])) {
             if ($item->getFromDB($output["items_id"])) {
                echo "<tr class='tab_bg_2'>";
-               echo "<td>".$LANG['rulesengine'][48]."</td>";
+               echo "<td>".__('Assign equipment')."</td>";
 
                echo "<td>";
                echo $item->getLink(true);

@@ -537,7 +537,7 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td class='center'>" . __('Name') . "</td>\n";
       echo "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td>\n";
-      echo "<td class='center'>" . $LANG['rulesengine'][78] . "&nbsp;: </td>\n";
+      echo "<td class='center'>" . _n('Version', 'Versions',1) . "</td>\n";
       echo "<td>".$this->fields["ocs_version"]."</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
@@ -5685,7 +5685,7 @@ class OcsServer extends CommonDBTM {
       //If ticket is assign to an object, display this information first
       if (isset($output["action"])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['rulesengine'][11]."</td>";
+         echo "<td>".__('Action type')."</td>";
          echo "<td>";
 
          switch ($output["action"]) {
@@ -5709,7 +5709,7 @@ class OcsServer extends CommonDBTM {
             echo "<tr class='tab_bg_2'>";
             $item = new Computer;
             if ($item->getFromDB($output["found_computers"][0])) {
-               echo "<td>".$LANG['rulesengine'][155]."</td>";
+               echo "<td>".__('Link with computer')."</td>";
                echo "<td>".$item->getLink(true)."</td>";
             }
             echo "</tr>";

@@ -629,7 +629,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('satisfaction')));
       }
 
-      $tags = array('satisfaction.text' => __('Invitation to fill out the survey');
+      $tags = array('satisfaction.text' => __('Invitation to fill out the survey'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

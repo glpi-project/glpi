@@ -304,9 +304,9 @@ class NetworkAlias extends FQDNLabel {
 
          echo "<th><a href='javascript:reloadTab(\"order=alias\");'>".self::getTypeName().
               "</a></th>"; // Alias
-         echo "<th><a href='javascript:reloadTab(\"order=realname\");'>".$LANG['rulesengine'][25].
-              "</a></th>"; // Computer's name
-         echo "<th>".__('Comments')."</th>"; // Comment
+         echo "<th><a href='javascript:reloadTab(\"order=realname\");'>".__("Computer's name").
+              "</a></th>"; 
+         echo "<th>".__('Comments')."</th>"; 
          echo "</tr>\n";
 
          Session::initNavigateListItems($item->getType(), $alias->getTypeName()."=".

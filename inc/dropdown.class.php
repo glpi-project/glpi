@@ -682,7 +682,7 @@ class Dropdown {
                         => array('UserTitle'     => UserTitle::getTypeName(2),
                                  'UserCategory'  => UserCategory::getTypeName(2)),
 
-                        $LANG['rulesengine'][19]
+                        __('Authorizations assignment rules')
                         => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
 
                         __('Fields unicity')
@@ -1449,14 +1449,13 @@ class Dropdown {
                   if ($isadmin && countElementsInTable("glpi_rules",
                                                        "sub_type='RuleSoftwareCategory'")>0) {
 
-                     echo "<option value='compute_software_category'>".$LANG['rulesengine'][38]." ".
-                           $LANG['rulesengine'][40]."</option>";
+                     echo "<option value='compute_software_category'>".__('Recalculate the category')."</option>";
                   }
 
                   if (Session::haveRight("rule_dictionnary_software","w")
                       && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'")>0) {
 
-                     echo "<option value='replay_dictionnary'>".$LANG['rulesengine'][76]."</option>";
+                     echo "<option value='replay_dictionnary'>".__('Replay the dictionary rules')."</option>";
                   }
                   break;
 

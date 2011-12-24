@@ -4807,11 +4807,11 @@ class Search {
             foreach ($actions['searchopt']['searchtype'] as $searchtype) {
                switch ($searchtype) {
                   case "equals" :
-                     $actions['equals'] = $LANG['rulesengine'][0];
+                     $actions['equals'] = __('is');
                      break;
 
                   case "notequals" :
-                     $actions['notequals'] = $LANG['rulesengine'][1];
+                     $actions['notequals'] = __('is not');
                      break;
 
                   case "contains" :
@@ -4837,26 +4837,26 @@ class Search {
          if (isset($searchopt[$field_num]['datatype'])) {
             switch ($searchopt[$field_num]['datatype']) {
                case 'bool' :
-                  return array('equals'    => $LANG['rulesengine'][0],
-                               'notequals' => $LANG['rulesengine'][1],
+                  return array('equals'    => __('is'),
+                               'notequals' => __('is not'),
                                'contains'   => __('contains'),
                                'searchopt' => $searchopt[$field_num]);
 
                case 'right' :
-                  return array('equals'    => $LANG['rulesengine'][0],
-                               'notequals' => $LANG['rulesengine'][1],
+                  return array('equals'    => __('is'),
+                               'notequals' => __('is not'),
                                'searchopt' => $searchopt[$field_num]);
 
                case 'itemtypename' :
-                  return array('equals'    => $LANG['rulesengine'][0],
-                               'notequals' => $LANG['rulesengine'][1],
+                  return array('equals'    => __('is'),
+                               'notequals' => __('is not'),
                                'searchopt' => $searchopt[$field_num]);
 
                case 'date' :
                case 'datetime' :
                case 'date_delay' :
-                  return array('equals'    => $LANG['rulesengine'][0],
-                               'notequals' => $LANG['rulesengine'][1],
+                  return array('equals'    => __('is'),
+                               'notequals' => __('is not'),
                                'lessthan'  => __('before'),
                                'morethan'  => __('after'),
                                'contains'  => __('contains'),
@@ -4866,22 +4866,22 @@ class Search {
 
 //          switch ($searchopt[$field_num]['table']) {
 //             case 'glpi_users_validation' :
-//                return array('equals'    => $LANG['rulesengine'][0],
-//                             'notequals' => $LANG['rulesengine'][1],
+//                return array('equals'    => __('is'),
+//                             'notequals' => __('is not'),
 //                             'searchopt' => $searchopt[$field_num]);
 //          }
 
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
-               return array('equals'    => $LANG['rulesengine'][0],
-                            'notequals' => $LANG['rulesengine'][1],
+               return array('equals'    => __('is'),
+                            'notequals' => __('is not'),
                             'searchopt' => $searchopt[$field_num]);
 
             case 'name' :
             case 'completename' :
                $actions = array('contains'  => __('contains'),
-                                'equals'    => $LANG['rulesengine'][0],
-                                'notequals' => $LANG['rulesengine'][1],
+                                'equals'    => __('is'),
+                                'notequals' => __('is not'),
                                 'searchopt' => $searchopt[$field_num]);
 
                // Specific case of TreeDropdown : add under

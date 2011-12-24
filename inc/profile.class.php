@@ -1197,45 +1197,45 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
 
-      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['rulesengine'][17].' / '.
-             $LANG['rulesengine'][77]."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='3'>"._n('Rule', 'Rules', 2).'</td><td>'.
+             __('Dictionaries')."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['rulesengine'][19]."&nbsp;:</td><td>";
+      echo "<td>".__('Authorizations assignment rules')."</td><td>";
       self::dropdownNoneReadWrite("rule_ldap", $this->fields["rule_ldap"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['rulesengine'][18]."&nbsp;:</td><td>";
+      echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
       self::dropdownNoneReadWrite("rule_ocs", $this->fields["rule_ocs"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['rulesengine'][70]."&nbsp;:</td><td>";
+      echo "<td>".__('Rules for assigning a ticket created through a mail receiver')."</td><td>";
       self::dropdownNoneReadWrite("rule_mailcollector", $this->fields["rule_mailcollector"],
                                   1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['rulesengine'][37]."&nbsp;:</td><td>";
+      echo "<td>".__('Rules for assigning a category to software')."</td><td>";
       self::dropdownNoneReadWrite("rule_softwarecategories",
                                   $this->fields["rule_softwarecategories"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['rulesengine'][33]."&nbsp;:</td><td>";
+      echo "<td>".__('Dropdown dictionaries')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_dropdown",
                                   $this->fields["rule_dictionnary_dropdown"], 1, 1, 1);
       echo"</td>";
-      echo "<td>".$LANG['rulesengine'][35]."&nbsp;:</td><td>";
+      echo "<td>".__('Software dictionary')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_software",
                                   $this->fields["rule_dictionnary_software"], 1, 1, 1);
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['rulesengine'][28]."&nbsp;:</td><td>";
+      echo "<td>".__('Business rules for tickets')."</td><td>";
       self::dropdownNoneReadWrite("rule_ticket", $this->fields["rule_ticket"], 1, 1, 0);
       echo "</td>";
-      echo "<td class='tab_bg_1'>".$LANG['rulesengine'][28]." (".$LANG['entity'][0].")&nbsp;:</td>";
+      echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1'>";
       self::dropdownNoneReadWrite("entity_rule_ticket", $this->fields["entity_rule_ticket"],
                                   1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['rulesengine'][39]."&nbsp;:</td><td>";
+      echo "<td>".__('Dictionnary of printers')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_printer",
                                   $this->fields["rule_dictionnary_printer"], 1, 1, 1);
       echo "</td></tr>";
@@ -1568,42 +1568,42 @@ class Profile extends CommonDBTM {
 
       $tab[48]['table']    = $this->getTable();
       $tab[48]['field']    = 'rule_ticket';
-      $tab[48]['name']     = $LANG['rulesengine'][28];
+      $tab[48]['name']     = __('Business rules for tickets');
       $tab[48]['datatype'] = 'right';
 
       $tab[105]['table']    = $this->getTable();
       $tab[105]['field']    = 'rule_mailcollector';
-      $tab[105]['name']     = $LANG['rulesengine'][70];
+      $tab[105]['name']     = __('Rules for assigning a ticket created through a mail receive');
       $tab[105]['datatype'] = 'right';
 
       $tab[49]['table']    = $this->getTable();
       $tab[49]['field']    = 'rule_ocs';
-      $tab[49]['name']     = $LANG['rulesengine'][18];
+      $tab[49]['name']     = __('Rules for assigning a computer to an entity');
       $tab[49]['datatype'] = 'right';
 
       $tab[50]['table']    = $this->getTable();
       $tab[50]['field']    = 'rule_ldap';
-      $tab[50]['name']     = $LANG['rulesengine'][19];
+      $tab[50]['name']     = __('Authorizations assignment rules');
       $tab[50]['datatype'] = 'right';
 
       $tab[51]['table']    = $this->getTable();
       $tab[51]['field']    = 'rule_softwarecategories';
-      $tab[51]['name']     = $LANG['rulesengine'][37];
+      $tab[51]['name']     = __('Rules for assigning a category to software');
       $tab[51]['datatype'] = 'right';
 
       $tab[90]['table']    = $this->getTable();
       $tab[90]['field']    = 'rule_dictionnary_software';
-      $tab[90]['name']     = $LANG['rulesengine'][35];
+      $tab[90]['name']     = __('Software dictionary');
       $tab[90]['datatype'] = 'right';
 
       $tab[91]['table']    = $this->getTable();
       $tab[91]['field']    = 'rule_dictionnary_dropdown';
-      $tab[91]['name']     = $LANG['rulesengine'][33];
+      $tab[91]['name']     =__('Dropdown dictionaries');
       $tab[91]['datatype'] = 'right';
 
       $tab[93]['table']    = $this->getTable();
       $tab[93]['field']    = 'entity_rule_ticket';
-      $tab[93]['name']     = $LANG['rulesengine'][28]." (".$LANG['entity'][0].")";
+      $tab[93]['name']     = __('Business rules for tickets (entity)');
       $tab[93]['datatype'] = 'right';
 
       $tab[54]['table']    = $this->getTable();

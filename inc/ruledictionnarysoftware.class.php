@@ -55,7 +55,7 @@ class RuleDictionnarySoftware extends RuleCached {
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][35];
+      return __('Dictionnary of software');
    }
 
 
@@ -67,16 +67,16 @@ class RuleDictionnarySoftware extends RuleCached {
    function showCacheRuleHeader() {
       global $LANG;
 
-      echo "<tr><th colspan='9'>" . $LANG['rulesengine'][100] . "&nbsp;: " . $this->fields["name"];
+      echo "<tr><th colspan='4'>" . __('Cache informations') . "</th><th colspan='4'>" . $this->fields["name"];
       echo "</th></tr>";
 
-      echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['entity'][0]." ".$LANG['rulesengine'][104]."</td>";
+      echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Original entity value')."</td>";
       echo "<td class='tab_bg_1 b'>" . __('Original publisher')."</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
+      echo "<td class='tab_bg_1 b'>" . _n('Version', 'Versions',1) . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
       echo "<td class='tab_bg_1 b'>" . $LANG['ldap'][27] . "</td></tr>\n";
    }
@@ -90,13 +90,13 @@ class RuleDictionnarySoftware extends RuleCached {
                                                                $fields["old_entities_id"]) . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
-                                                               : $LANG['rulesengine'][106])."</td>";
+                                                               : __('Unchanged'))."</td>";
       echo "<td class='tab_bg_2'>". ($fields["version"] != '' ? $fields["version"]
-                                                              : $LANG['rulesengine'][106])."</td>";
+                                                              : __('Unchanged'))."</td>";
       echo "<td class='tab_bg_2'>".
              ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
               ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
-              : $LANG['rulesengine'][106]) . "</td>";
+              : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
       if ($fields["ignore_ocs_import"] == '') {
          echo "&nbsp;";
@@ -109,7 +109,7 @@ class RuleDictionnarySoftware extends RuleCached {
               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
               : Dropdown::getYesNo(0)) . "</td>";
       $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
-                                                      :$LANG['rulesengine'][106]);
+                                                      :__('Unchanged'));
       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", $new_entity) . "</td>";
    }
 
@@ -144,10 +144,10 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['name']['name']          = $LANG['help'][31];
       $actions['name']['force_actions'] = array('assign', 'regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
+      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
-      $actions['version']['name']          = $LANG['rulesengine'][78];
+      $actions['version']['name']          = _n('Version', 'Versions',1);
       $actions['version']['force_actions'] = array('assign','regex_result', 'append_regex_result');
 
       $actions['manufacturer']['name']  = __('Publisher');

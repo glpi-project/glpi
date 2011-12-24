@@ -64,7 +64,7 @@ class RuleRightParameter extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'value',
-                         'label' => $LANG['rulesengine'][16],
+                         'label' => _n('Criteria', 'Criteria', 1),
                          'type'  => 'text',
                          'list'  => false));
    }
@@ -82,7 +82,7 @@ class RuleRightParameter extends CommonDropdown {
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'value';
-      $tab[11]['name']  = $LANG['rulesengine'][16];
+      $tab[11]['name']  = _n('Criteria', 'Criteria', 1);
 
       return $tab;
    }
@@ -91,10 +91,7 @@ class RuleRightParameter extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['rulesengine'][138];
-      }
-      return $LANG['rulesengine'][137];
+      return _n('LDAP criteria', 'LDAP criterias', $nb);
    }
 
 }

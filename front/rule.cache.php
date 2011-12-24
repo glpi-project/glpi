@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkCentralAccess();
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
+   Html::header(_n('Rule', 'Rules', 2), $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
 }
 
 if (isset($_GET["sub_type"])) {

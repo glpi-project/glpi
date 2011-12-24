@@ -324,7 +324,7 @@ class Plugin extends CommonDBTM {
       echo "<tr><th colspan='8'>".$LANG['plugins'][0]."</th></tr>\n";
 
       if (!empty($pluglist)) {
-         echo "<tr><th>".__('Name')."</th><th>".$LANG['rulesengine'][78]."</th>";
+         echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".$LANG['install'][92]."</th>";
          echo "<th>".__('Status')."</th><th>".$LANG['plugins'][9]."</th>";
          echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
@@ -874,7 +874,7 @@ class Plugin extends CommonDBTM {
       $pluglist = $plug->find("","name, directory");
       foreach ($pluglist as $plugin) {
          $msg  = substr(str_pad($plugin['directory'],30),0,16)." ".__('Name').":".
-                 Toolbox::substr(str_pad($plugin['name'],40),0,30)." ".$LANG['rulesengine'][78].
+                 Toolbox::substr(str_pad($plugin['name'],40),0,30)." "._n('Version', 'Versions',1).
                  "&nbsp;:".str_pad($plugin['version'],10)." ".$LANG['joblist'][0]."&nbsp;:";
 
          switch ($plugin['state']) {

@@ -57,7 +57,7 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
    function getTitle() {
       global $LANG;
 
-      return $LANG['rulesengine'][50];
+      return __('Dictionnary of computer models');
    }
 
 }
