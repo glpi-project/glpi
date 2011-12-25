@@ -769,5 +769,41 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
    }
 
+   /**
+    * \brief Recreate network tree
+    * Among others, the migration create plan tree network. This method allows to recreate the tree.
+    * You can also use it if you suspect the network tree to be corrupted.
+    *
+    * First, reset the tree, then, update each network by its own field, letting
+    * CommonImplicitTreeDropdown working such as it would in case of standard update
+    *
+    * @return nothing
+   **/
+   static function recreateTree() {
+      global $DB;
+
+      // Reset the tree
+      $query = "UPDATE `glpi_ipnetworks`
+                SET `ipnetworks_id` = 0,
+                    `level` = 1,
+                    `completename` = `name`";
+
+      $DB->query($query);
+
+      // Foreach IPNetwork ...
+      $query = "SELECT `id`
+                FROM `glpi_ipnetworks`";
+
+      $network = new IPNetwork();
+
+      foreach ($DB->request($query) as $network_entry) {
+         if ($network->getFromDB($network_entry['id'])) {
+            $input = $network->fields;
+            // ... update it by its own entries
+            $network->update($input);
+         }
+      }
+   }
+
 }
 ?>
