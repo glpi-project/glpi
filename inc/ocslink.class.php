@@ -84,7 +84,7 @@ class Ocslink extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __('OCS Inventory NG') . "</th>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".$LANG['ocsconfig'][39]."&nbsp;: ".$data['tag']."</td></tr>";
+            echo "<td class='center'>".sprintf(__('OCSNG TAG: %s'),$data['tag'])."</td></tr>";
          }
       }
    }
@@ -97,7 +97,7 @@ class Ocslink extends CommonDBTM {
          switch ($item->getType()) {
             case 'Computer' :
                if (Session::haveRight('sync_ocsng', 'w') || Session::haveRight('computer', 'w')) {
-                  return $LANG['ocsconfig'][0];
+                  return __('OCSNG');
                }
                break;
          }

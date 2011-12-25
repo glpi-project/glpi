@@ -1367,12 +1367,14 @@ $LANG['networking'][59]="Gateway";
 $LANG['networking'][60]="Mask";
 $LANG['networking'][61]="Subnet";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['ocsconfig'][0]="OCSNG";
 $LANG['ocsconfig'][1]="OCSNG database user";
 $LANG['ocsconfig'][2]="Host for the OCSNG database";
 $LANG['ocsconfig'][3]="OCSNG user password";
 $LANG['ocsconfig'][4]="Name of the OCSNG database";
-$LANG['ocsconfig'][5]="Import Options";
+$LANG['ocsconfig'][5]="Import options";
 $LANG['ocsconfig'][6]="Connecting to the OCSNG database";
 $LANG['ocsconfig'][7]="OCSNG database in UTF8";
 $LANG['ocsconfig'][8]="Unable to add. The OCSNG server already exists.";
@@ -1399,7 +1401,7 @@ $LANG['ocsconfig'][38]="Use the OCSNG software dictionary";
 $LANG['ocsconfig'][39]="OCSNG TAG";
 $LANG['ocsconfig'][40]="Number of items to synchronize via the automatic OCSNG action";
 $LANG['ocsconfig'][41]="Registry";
-$LANG['ocsconfig'][43]="OCSNG Administrative Information";
+$LANG['ocsconfig'][43]="OCSNG administrative information";
 $LANG['ocsconfig'][48]="Behavior when disconnecting";
 $LANG['ocsconfig'][49]="Trash";
 $LANG['ocsconfig'][52]="Automatic connection of computers";
@@ -1410,8 +1412,6 @@ $LANG['ocsconfig'][56]="empty";
 $LANG['ocsconfig'][57]="equal";
 $LANG['ocsconfig'][58]="The link automatically connects a GLPI computer with one in OCSNG.<br>This option is taken into account during manual link and by synchronization scripts.";
 $LANG['ocsconfig'][59]="Web address of the OCSNG console";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['ocsng'][0]="OCS Inventory NG";
 $LANG['ocsng'][1]="Synchronize computers already imported";

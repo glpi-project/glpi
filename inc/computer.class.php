@@ -693,7 +693,7 @@ class Computer extends CommonDBTM {
           && Session::haveRight("sync_ocsng","w")
           && count($dataocs)) {
 
-         echo "<td >".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";
+         echo "<td >".__('Auto update OCSNG')."</td>";
          echo "<td >";
          Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
          echo "</td>";
@@ -1035,32 +1035,32 @@ class Computer extends CommonDBTM {
                                                   'joinparams' => array('jointype' => 'child')));
 
       if ($CFG_GLPI["use_ocs_mode"]) {
-         $tab['ocsng'] = $LANG['ocsconfig'][0];
+         $tab['ocsng'] = __('OCSNG');
 
          $tab[102]['table']         = 'glpi_ocslinks';
          $tab[102]['field']         = 'last_update';
-         $tab[102]['name']          = $LANG['ocsng'][13];
+         $tab[102]['name']          = __('Import date in GLPI');
          $tab[102]['datatype']      = 'datetime';
          $tab[102]['massiveaction'] = false;
          $tab[102]['joinparams']    = array('jointype' => 'child');
 
          $tab[103]['table']         = 'glpi_ocslinks';
          $tab[103]['field']         = 'last_ocs_update';
-         $tab[103]['name']          = $LANG['ocsng'][14];
+         $tab[103]['name']          = __('Last OCSNG inventory date');
          $tab[103]['datatype']      = 'datetime';
          $tab[103]['massiveaction'] = false;
          $tab[103]['joinparams']    = array('jointype' => 'child');
 
          $tab[100]['table']         = $this->getTable();
          $tab[100]['field']         = 'is_ocs_import';
-         $tab[100]['name']          = $LANG['ocsng'][7];
+         $tab[100]['name']          = __('Imported from OCSNG');
          $tab[100]['massiveaction'] = false;
          $tab[100]['datatype']      = 'bool';
 
          $tab[101]['table']      = 'glpi_ocslinks';
          $tab[101]['field']      = 'use_auto_update';
          $tab[101]['linkfield']  = '_auto_update_ocs'; // update through compter update process
-         $tab[101]['name']       = $LANG['ocsng'][6]." ".$LANG['ocsconfig'][0];
+         $tab[101]['name']       = __('Auto update OCSNG');
          $tab[101]['datatype']   = 'bool';
          $tab[101]['joinparams'] = array('jointype' => 'child');
 
@@ -1072,7 +1072,7 @@ class Computer extends CommonDBTM {
 
          $tab[105]['table']         = 'glpi_ocslinks';
          $tab[105]['field']         = 'tag';
-         $tab[105]['name']          = $LANG['ocsconfig'][39];
+         $tab[105]['name']          = __('OCSNG TAG');
          $tab[105]['datatype']      = 'string';
          $tab[105]['massiveaction'] = false;
          $tab[105]['joinparams']    = array('jointype' => 'child');
