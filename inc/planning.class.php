@@ -429,7 +429,7 @@ class Planning {
       echo "<tr class='tab_bg_1'><td colspan='$colnumber'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['profiles'][34]."</th>";
+      echo "<th>".__('Caption')."</th>";
       echo "<td class='available' colspan=8>".__('Available')."</td>";
       echo "<td class='notavailable' colspan=8>".__('Unavailable')."</td>";
       echo "<td colspan='".($colnumber-17)."'>&nbsp;</td></tr>";

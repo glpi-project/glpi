@@ -4300,7 +4300,7 @@ class Ticket extends CommonITILObject {
 
       if ($foruser) {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
-                $LANG['profiles'][5]."&nbsp;<img src='".$CFG_GLPI["root_doc"].
+                __('Create a ticket')."&nbsp;<img src='".$CFG_GLPI["root_doc"].
                 "/pics/menu_add.png' title=\"". __s('Add')."\" alt=\"".__s('Add').
                 "\"></a>";
       } else {

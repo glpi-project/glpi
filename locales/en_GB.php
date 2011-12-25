@@ -1551,8 +1551,8 @@ $LANG['problem'][11]="Closure of a problem";
 $LANG['problem'][12]="Deleting a problem";
 
 $LANG['profiles'][0]="Global right";
-$LANG['profiles'][1]="Entity Right";
-$LANG['profiles'][2]="Profile's interface";
+$LANG['profiles'][1]="Entity right";
+$LANG['profiles'][2]="Interface used by the profile";
 $LANG['profiles'][3]="Ticket creation form on login";
 $LANG['profiles'][4]="Add a followup to tickets of associated group(s)";
 $LANG['profiles'][5]="Create a ticket";
@@ -1562,8 +1562,8 @@ $LANG['profiles'][8]="View all followups and tasks (public and private)";
 $LANG['profiles'][9]="Show public followups and tasks";
 $LANG['profiles'][10]="Read";
 $LANG['profiles'][11]="Write";
-$LANG['profiles'][12]="No Access";
-$LANG['profiles'][13]="Default Profile";
+$LANG['profiles'][12]="No access";
+$LANG['profiles'][13]="Default profile";
 $LANG['profiles'][14]="Ticket's deletion";
 $LANG['profiles'][15]="Add a followup to all tickets";
 $LANG['profiles'][16]="To be in charge of a ticket";
@@ -1574,7 +1574,7 @@ $LANG['profiles'][20]="View personnal planning";
 $LANG['profiles'][21]="View all plannings";
 $LANG['profiles'][22]="Profile";
 $LANG['profiles'][23]="Administration of reservations";
-$LANG['profiles'][24]="Update Password";
+$LANG['profiles'][24]="Update password";
 $LANG['profiles'][25]="View all problems";
 $LANG['profiles'][26]="Show tickets created by my groups";
 $LANG['profiles'][27]="See hardware of my group(s)";
@@ -1605,7 +1605,7 @@ $LANG['profiles'][53]="See the problems (actor)";
 $LANG['profiles'][54]="Deletion";
 $LANG['profiles'][55]="See all changes";
 $LANG['profiles'][56]="Update all changes";
-$LANG['profiles'][57]="See the changes which I participate";
+$LANG['profiles'][57]="See the changes (actor)";
 
 
 /// TODO After is ok for migration to gettext

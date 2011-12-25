@@ -1617,7 +1617,7 @@ class User extends CommonDBTM {
       if (!empty($ID)) {
          if ($caneditpassword) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>" .  $LANG['profiles'][13] . "&nbsp;: </td><td>";
+            echo "<td>" .  __('Default profile') . "</td><td>";
 
             $options[0] = Dropdown::EMPTY_VALUE;
             $options += Dropdown::getDropdownArrayNames('glpi_profiles',
@@ -1625,7 +1625,7 @@ class User extends CommonDBTM {
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
 
-            echo "<td>" .  $LANG['profiles'][37] . "&nbsp;: </td><td>";
+            echo "<td>" .  __('Default entity') . "</td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
             Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
                                            'entity' => $entities));
@@ -1761,7 +1761,7 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (count($_SESSION['glpiprofiles']) >1) {
-            echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
+            echo "<td>" . __('Default profile') . "</td><td>";
 
             $options = array(0 => Dropdown::EMPTY_VALUE);
             $options += Dropdown::getDropdownArrayNames('glpi_profiles',
@@ -1785,7 +1785,7 @@ class User extends CommonDBTM {
 
         if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
             $entities = Profile_User::getUserEntities($this->fields['id'], 1);
-            echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
+            echo "<td>" . __('Default entity') . "</td><td>";
             Dropdown::show('Entity', array('value'  => $this->fields['entities_id'],
                                            'entity' => $entities));
          } else {
@@ -2058,12 +2058,12 @@ class User extends CommonDBTM {
 
       $tab[79]['table'] = 'glpi_profiles';
       $tab[79]['field'] = 'name';
-      $tab[79]['name']  = $LANG['profiles'][13];
+      $tab[79]['name']  = __('Default profile');
 
       $tab[77]['table']         = 'glpi_entities';
       $tab[77]['field']         = 'name';
       $tab[77]['massiveaction'] = true;
-      $tab[77]['name']          = $LANG['profiles'][37];
+      $tab[77]['name']          = __('Default entity');
 
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';

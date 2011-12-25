@@ -1356,7 +1356,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['profiles'][22]."</td>";
+               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
                echo "<td>";
                $names = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
                echo $names["name"]." ";

@@ -1868,7 +1868,7 @@ $LANG['profiles'][53] = "Voir les problèmes (acteur)";
 $LANG['profiles'][54] = "Suppression";
 $LANG['profiles'][55] = "Voir tous les changements";
 $LANG['profiles'][56] = "Editer tous les changements";
-$LANG['profiles'][57] = "Voir les changements auxquels je participe";
+$LANG['profiles'][57] = "Voir les changements (acteur)";
 
 $LANG['registry'][1] = "Ruche";
 $LANG['registry'][2] = "Chemin";
