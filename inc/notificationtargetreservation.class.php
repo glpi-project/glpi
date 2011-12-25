@@ -125,7 +125,7 @@ class NotificationTargetReservation extends NotificationTarget {
       global $LANG;
 
       $tags_all = array('reservation.item'     => $LANG['financial'][104],
-                        'reservation.itemtype' => $LANG['reports'][12],
+                        'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => $LANG['common'][94]);
 
       foreach ($tags_all as $tag => $label) {
@@ -150,7 +150,7 @@ class NotificationTargetReservation extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'items',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true,
                                 'events'  => array('alert')));

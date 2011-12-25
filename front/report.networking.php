@@ -42,39 +42,39 @@ Report::title();
 # Titre
 
 echo "<table class='tab_cadre' >";
-echo "<tr><th colspan='3'>&nbsp;".$LANG['reports'][33]."&nbsp;</th></tr>";
+echo "<tr><th colspan='3'>&nbsp;".__('Network report')."</th></tr>";
 echo "</table><br>";
 
 // 3. Selection d'affichage pour generer la liste
 
 echo "<form name='form' method='post' action='report.location.list.php'>";
 echo "<table class='tab_cadre' width='500'>";
-echo "<tr class='tab_bg_1'><td width='120'>".$LANG['reports'][39]."</td>";
+echo "<tr class='tab_bg_1'><td width='120'>".__('By location')."</td>";
 echo "<td>";
 Dropdown::show('Location', array('entity' => $_SESSION["glpiactive_entity"]));
 echo "</td><td class='center' width='120'>";
-echo "<input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'>";
+echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
 echo "</td></tr>";
 echo "</table></form>";
 
 echo "<form name='form2' method='post' action='report.switch.list.php'>";
 echo "<table class='tab_cadre' width='500'>";
-echo "<tr class='tab_bg_1'><td width='120'>".$LANG['reports'][41]."</td>";
+echo "<tr class='tab_bg_1'><td width='120'>".__('By hardware')."</td>";
 echo "<td>";
 Dropdown::show('NetworkEquipment', array('name' => 'switch'));
 echo "</td><td class='center' width='120'>";
-echo "<input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'>";
+echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
 echo "</td></tr>";
 echo "</table></form>";
 
 if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
    echo "<table class='tab_cadre' width='500'>";
-   echo "<tr class='tab_bg_1'><td width='120'>".$LANG['reports'][42]."</td>";
+   echo "<tr class='tab_bg_1'><td width='120'>".__('By network outlet')."</td>";
    echo "<td>";
    Netpoint::dropdownNetpoint("prise",0,-1,1,$_SESSION["glpiactive_entity"]);
    echo "</td><td class='center' width='120'>";
-   echo "<input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'>";
+   echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
    echo "</td></tr>";
    echo "</table></form>";
 }

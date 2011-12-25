@@ -46,13 +46,13 @@ Report::title();
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<table class='tab_cadre' >";
-echo "<tr><th colspan='2'><span class='big'>".$LANG['reports'][11]." </span></th></tr>";
+echo "<tr><th colspan='2'><span class='big'>".__('Hardware under contract')." </span></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center' width='200' >";
 
-echo "<p class='b'>".$LANG['reports'][12]."</p> ";
+echo "<p class='b'>".__('Item type')."</p> ";
 echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".__('All')."</option>";
 echo "<option value='Computer'>".$LANG['Menu'][0]."</option>";
@@ -65,7 +65,7 @@ echo "<option value='Phone'>".$LANG['Menu'][34]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td class='center' width='200'>";
-echo "<p class='b'>".$LANG['reports'][13]."</p> ";
+echo "<p class='b'>".__('Date')."</p> ";
 echo "<p><select name='annee[]' size='8' multiple>";
 echo "<option value='toutes' selected>".__('All')."</option>";
 
@@ -77,7 +77,7 @@ for ($i=$y-10 ; $i<=$y ; $i++) {
 echo "</select></p></td></tr>";
 
 echo "<tr><td class='tab_bg_1 center' colspan='2'>";
-echo "<p><input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'></p></td></tr>";
+echo "<p><input type='submit' value=\"".__s('Display report')."\" class='submit'></p></td></tr>";
 
 echo "</table>";
 echo "</form>";

@@ -49,24 +49,24 @@ class Report {
       
       // Report generation
       // Default Report included
-      $report_list["default"]["name"] = $LANG['reports'][26];
+      $report_list["default"]["name"] = __('Default report');
       $report_list["default"]["file"] = "report.default.php";
 
       if (Session::haveRight("contract","r")) {
          // Rapport ajoute par GLPI V0.2
-         $report_list["Contrats"]["name"] = $LANG['reports'][27];
+         $report_list["Contrats"]["name"] = __('By contract');
          $report_list["Contrats"]["file"] = "report.contract.php";
       }
       if (Session::haveRight("infocom","r")) {
-         $report_list["Par_annee"]["name"] = $LANG['reports'][28];
+         $report_list["Par_annee"]["name"] = __('By year');
          $report_list["Par_annee"]["file"] = "report.year.php";
-         $report_list["Infocoms"]["name"]  = $LANG['reports'][62];
+         $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative informations');
          $report_list["Infocoms"]["file"]  = "report.infocom.php";
-         $report_list["Infocoms2"]["name"] = $LANG['reports'][63];
+         $report_list["Infocoms2"]["name"] = __('Other financial and administrative informations (licenses, cartridges, consumables)');
          $report_list["Infocoms2"]["file"] = "report.infocom.conso.php";
       }
       if (Session::haveRight("networking","r")) {
-         $report_list["Rapport prises reseau"]["name"] = $LANG['reports'][33];
+         $report_list["Rapport prises reseau"]["name"] = __('Network report');
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
       if (Session::haveRight("reservation_central","r")) {
@@ -76,7 +76,7 @@ class Report {
       
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['reports'][0]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo "<select name='statmenu' onchange='window.location.href=this.options
     [this.selectedIndex].value'>";

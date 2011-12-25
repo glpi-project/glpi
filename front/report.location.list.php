@@ -39,7 +39,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    
    // Titre
    $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
-   echo "<div class='center'><h2>".$LANG['reports'][54]." $name </h2><br></div>";
+   echo "<div class='center'><h2>".sprintf(__('Network report by location: %s'),$name)." </h2><br></div>";
 
    $query = "SELECT `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
                     `glpi_networkports`.`ip`, `glpi_networkports`.`mac`,
@@ -58,15 +58,15 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    if ($result && $DB->numrows($result)) {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th>".__('Location')."</th>";
-      echo "<th>".$LANG['reports'][37]."</th>";
-      echo "<th>".$LANG['reports'][52]."</th>";
+      echo "<th>"._n('Network outlet', 'Network outlets', 2)."</th>";
+      echo "<th>".__('Switch')."</th>";
       echo "<th>".$LANG['networking'][14]."</th>";
-      echo "<th>".$LANG['reports'][46]."</th>";
+      echo "<th>".__('Hardware ports')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
-      echo "<th>".$LANG['reports'][47]."</th>";
+      echo "<th>".__('Device ports')."</th>";
       echo "<th>".$LANG['networking'][14]."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
-      echo "<th>".$LANG['reports'][36]."</th></tr>";
+      echo "<th>".__('Connected devices')."</th></tr>";
 
       while ($ligne = $DB->fetch_array($result)) {
          $lieu = $ligne["completename"];

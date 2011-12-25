@@ -858,7 +858,7 @@ class Contract extends CommonDBTM {
                echo "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
                      rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" .
                      rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;is_deleted=0".
-                     "&amp;start=0". "'>" . $LANG['reports'][57]."</a></td>";
+                     "&amp;start=0". "'>" . __('Device list')."</a></td>";
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb>0) {

@@ -91,7 +91,7 @@ class NotificationTargetCrontask extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'crontasks',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true));
 

@@ -2691,19 +2691,19 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
       if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
-         echo "<tr class='tab_bg_2'><td>".$LANG['reports'][64]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Resolution date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['solvedate'])."</td></tr>";
       }
 
       if ($this->fields['status']=='closed') {
-         echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Closing date')."</td>";
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
 

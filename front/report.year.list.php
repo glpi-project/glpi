@@ -45,7 +45,7 @@ $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                'SoftwareLicense');
 
 # Titre
-echo "<div class='center b'><big>".$LANG['reports'][57]."</big></div><br><br>";
+echo "<div class='center b'><big>".__('Device list')."</big></div><br><br>";
 
 # Request All
 if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')

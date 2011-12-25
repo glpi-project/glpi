@@ -112,7 +112,7 @@ class NotificationTargetContract extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'contracts',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true));
 

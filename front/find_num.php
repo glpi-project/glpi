@@ -87,7 +87,7 @@ echo "</td></tr></table></form></div>";
 if (isset($_POST["send"])) {
    echo "<table class='tab_cadre_fixe'>";
    echo " <tr class='tab_bg3'>";
-   echo " <td class='center b' width='30%'>".$LANG['reports'][19]."</td>";
+   echo " <td class='center b' width='30%'>".__('Alternate username')."</td>";
    echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
    echo " <td class='center b' width='30%'>".$LANG['document'][14]."</td>";
    echo " <td class='center b' width='5%'>".__('ID')."</td>";

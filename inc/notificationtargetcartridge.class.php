@@ -88,7 +88,7 @@ class NotificationTargetCartridge extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'cartridges',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true));
 

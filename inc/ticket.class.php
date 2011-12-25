@@ -1547,13 +1547,13 @@ class Ticket extends CommonITILObject {
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'date';
-      $tab[15]['name']          = $LANG['reports'][60];
+      $tab[15]['name']          = __('Opening date');
       $tab[15]['datatype']      = 'datetime';
       $tab[15]['massiveaction'] = false;
 
       $tab[16]['table']         = $this->getTable();
       $tab[16]['field']         = 'closedate';
-      $tab[16]['name']          = $LANG['reports'][61];
+      $tab[16]['name']          = __('Closing date');
       $tab[16]['datatype']      = 'datetime';
       $tab[16]['massiveaction'] = false;
 
@@ -1572,7 +1572,7 @@ class Ticket extends CommonITILObject {
 
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'solvedate';
-      $tab[17]['name']          = $LANG['reports'][64];
+      $tab[17]['name']          = __('Resolution date');
       $tab[17]['datatype']      = 'datetime';
       $tab[17]['massiveaction'] = false;
 
@@ -2391,7 +2391,7 @@ class Ticket extends CommonITILObject {
                }
             }
             if (!empty($tmp_device)) {
-               $my_devices .= "<optgroup label=\"".$LANG['reports'][36]."\">".$tmp_device."</optgroup>";
+               $my_devices .= "<optgroup label=\"".__s('Connected devices')."\">".$tmp_device."</optgroup>";
             }
 
             // Software
