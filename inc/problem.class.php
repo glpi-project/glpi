@@ -523,7 +523,7 @@ class Problem extends CommonITILObject {
 
       $tab[62]['table']         = $this->getTable();
       $tab[62]['field']         = 'symptomcontent';
-      $tab[62]['name']          = $LANG['problem'][5];
+      $tab[62]['name']          = $LANG['problem'][6];
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
 
