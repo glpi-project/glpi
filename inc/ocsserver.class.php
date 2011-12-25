@@ -2772,7 +2772,7 @@ class OcsServer extends CommonDBTM {
                }
                echo "</a></td></tr>";
 
-               echo "<tr class='tab_bg_1'><td class='center b'>".$LANG['ocsconfig'][18] . "<br>";
+               echo "<tr class='tab_bg_1'><td class='center b'>".$LANG['ocsconfig'][18] . "</td>";
                echo "</tr></table></form></div>";
             }
 
