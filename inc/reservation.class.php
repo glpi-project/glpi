@@ -248,14 +248,14 @@ class Reservation extends CommonDBChild {
             break;
 
          case "is_res" :
-            echo $LANG['reservation'][18];
+            echo __('The required item is already reserved for this timeframe');
             break;
 
          default :
             echo "Unknown error";
       }
 
-      echo "<br><a href='reservation.php?reservationitems_id=$ID'>".$LANG['reservation'][20]."</a>";
+      echo "<br><a href='reservation.php?reservationitems_id=$ID'>".__('Back to planning')."</a>";
       echo "</div>";
    }
 
@@ -369,7 +369,7 @@ class Reservation extends CommonDBChild {
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center b'>".$LANG['reservation'][2]."</td></tr>";
+            echo "<td class='center b'>".__('Device temporarily unavailable')."</td></tr>";
             echo "<tr class='tab_bg_1'><td class='center b'>";
             Html::displayBackLink();
             echo "</td></tr>";
@@ -393,7 +393,7 @@ class Reservation extends CommonDBChild {
 
       } else {
          $type = "";
-         $name = $LANG['reservation'][25];
+         $name = __('All reservable device');
          $all  = "&nbsp;";
       }
 
@@ -509,7 +509,7 @@ class Reservation extends CommonDBChild {
             echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
                   "date=".$annee_courante."-".$mois_courant."-".$ii."'>";
             echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
-                  $LANG['reservation'][8]."\" title=\"".$LANG['reservation'][8]."\"></a></td></tr>\n";
+                  __s('Reserve')."\" title=\"".__s('Reserve')8]."\"></a></td></tr>\n";
          }
 
          echo "<tr><td>";
@@ -587,7 +587,7 @@ class Reservation extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>".$LANG['reservation'][9]."</th></tr>\n";
+      echo "<tr><th colspan='2'>".__('Reserve an item')."</th></tr>\n";
 
       // Add Hardware name
       $r = new ReservationItem();
@@ -645,14 +645,13 @@ class Reservation extends CommonDBChild {
       echo "</td></tr>\n";
 
       if (empty($ID)) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][27]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."&nbsp;:</td>";
          echo "<td>";
          echo "<select name='periodicity'>";
-         echo "<option value='day'>".$LANG['reservation'][29]."</option>\n";
-         echo "<option value='week'>".$LANG['reservation'][28]."</option>\n";
+         echo "<option value='day'>".__('By day')."</option>\n";
+         echo "<option value='week'>".__('By week')."</option>\n";
          echo "</select>";
          Dropdown::showInteger('periodicity_times', 1, 1, 60);
-         echo $LANG['reservation'][30];
          echo "</td></tr>\n";
       }
 
@@ -792,10 +791,10 @@ class Reservation extends CommonDBChild {
                   $display = $LANG['planning'][5];
 
                } else if (strcmp($heure_debut,"00:00")==0) {
-                  $display = $LANG['reservation'][16]."&nbsp;".$heure_fin;
+                  $display = sprintf(__('To %s'), $heure_fin);
 
                } else if (strcmp($heure_fin,"24:00")==0) {
-                  $display = $LANG['reservation'][17]."&nbsp;".$heure_debut;
+                  $display = sprintf(__('From %s'), $heure_debut);
 
                } else {
                   $display = $heure_debut."-".$heure_fin;
@@ -858,15 +857,15 @@ class Reservation extends CommonDBChild {
 
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                   $ri->fields['id']."' >".$LANG['reservation'][35]."</a>";
+                   $ri->fields['id']."' >".__('Current and future reservations')."</a>";
          } else {
-            echo $LANG['reservation'][35];
+            _e('Current and future reservations');
          }
          echo "</th></tr>\n";
 
          if ($DB->numrows($result) == 0) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
+            echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
 
          } else {
             echo "<tr><th>".__('Start date')."</th>";
@@ -886,7 +885,7 @@ class Reservation extends CommonDBChild {
                list($annee, $mois, $jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                     $LANG['reservation'][21]."\">";
+                     __s('See planning')."\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
                echo "</td></tr>\n";
             }
@@ -905,15 +904,15 @@ class Reservation extends CommonDBChild {
 
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                   $ri->fields['id']."' >".$LANG['reservation'][36]."</a>";
+                   $ri->fields['id']."' >".__('Past reservations')."</a>";
          } else {
-            echo $LANG['reservation'][36];
+            _e('Past reservations');
          }
          echo "</th></tr>\n";
 
          if ($DB->numrows($result)==0) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
+            echo "<td class='center' colspan='5'>".__('No reservation')."</td></tr>\n";
 
          } else {
             echo "<tr><th>".__('Start date')."</th>";
@@ -933,7 +932,7 @@ class Reservation extends CommonDBChild {
                list($annee, $mois ,$jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
-                     $LANG['reservation'][21]."\">";
+                     __s('See planning')."\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
                echo "</a></td></tr>\n";
             }
@@ -971,11 +970,11 @@ class Reservation extends CommonDBChild {
 
       $ri = new ReservationItem();
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
+      echo "<tr><th colspan='6'>".__('Current and future reservations')."</th></tr>\n";
 
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr\n>";
+         echo "<td class='center' colspan='6'>".__('No reservation')."</td></tr\n>";
 
       } else {
          echo "<tr><th>".__('Start date')."</th>";
@@ -1009,7 +1008,7 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
-                  "annee_courante=$annee' title=\"".$LANG['reservation'][21]."\"><img src=\"".
+                  "annee_courante=$annee' title=\"".__s('See planning')."\"><img src=\"".
                   $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
             echo "</td></tr>\n";
          }
@@ -1026,11 +1025,11 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
+      echo "<tr><th colspan='6'>".__('Past reservations')."</th></tr>\n";
 
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>\n";
+         echo "<td class='center' colspan='6'>".__('No reservation')."</td></tr>\n";
 
       } else {
          echo "<tr><th>".__('Start date')."</th>";
@@ -1064,7 +1063,7 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
-                  "title=\"".$LANG['reservation'][21]."\">";
+                  "title=\"".__s('See planning')."\">";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png' alt='' title=''></a>";
             echo "</td></tr>\n";
          }

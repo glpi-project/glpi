@@ -1965,7 +1965,7 @@ $LANG['reservation'][30] = "fois";
 
 $LANG['reservation'][35] = "Réservations en cours et à venir";
 $LANG['reservation'][36] = "Réservations passées";
-$LANG['reservation'][37] = "Pas de réservations";
+$LANG['reservation'][37] = "Pas de réservation";
 $LANG['reservation'][38] = "Êtes-vous sur de vouloir rendre cet élément non réservable ?";
 $LANG['reservation'][39] = "Cela supprimera toutes les réservations en cours.";
 $LANG['reservation'][40] = "Matériels dont la réservation expire aujourd'hui";

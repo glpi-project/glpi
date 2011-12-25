@@ -128,7 +128,7 @@ class Ticket_Ticket extends CommonDBRelation {
                if ($canupdate) {
                   $icons .=  " <a href='".$CFG_GLPI["root_doc"].
                                "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID".
-                               "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
+                               "&amp;tickets_id=$ID' title=\"".__s('Prohibit reservations')."\">
                                <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                 alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
                }               

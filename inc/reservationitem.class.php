@@ -42,10 +42,7 @@ class ReservationItem extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['reservation'][10];
-      }
-      return $LANG['reservation'][1];
+      return _n('Reservable item', 'Reservable items',$nb);
    }
 
 
@@ -183,7 +180,7 @@ class ReservationItem extends CommonDBTM {
       echo "<div><form method='post' name=form action='".
                   Toolbox::getItemTypeFormURL('ReservationItem')."'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>".$LANG['reservation'][9]."</th></tr>";
+      echo "<tr><th>".__('Reserve an item')."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
          echo "<td class='center'>";
@@ -191,17 +188,17 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
          if ($ri->fields["is_active"]) {
             echo "<input type='hidden' name='is_active' value='0'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][3]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Make unavailable')."\"
                    class='submit'>";
          } else {
             echo "<input type='hidden' name='is_active' value='1'>";
-            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][5]."\"
+            echo "<input type='submit' name='update' value=\"".__s('Make available')."\"
                    class='submit'>";
          }
          echo "<span class='small_space'>";
-         echo "<input type='submit' name='delete' value=\"".$LANG['reservation'][6]."\"
-               class='submit' ".Html::addConfirmationOnAction(array($LANG['reservation'][38],
-                                                                    $LANG['reservation'][39])).">";
+         echo "<input type='submit' name='delete' value=\"".__s('Prohibit reservations')."\"
+               class='submit' ".Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
+                                                                    __('That will remove all the reservations in progress.')).">";
          echo "</span></td>";
       } else {
          echo "<td class='center'>";
@@ -209,7 +206,7 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
          echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Authorize reservations')."\" class='submit'>";
          echo "</td>";
       }
       echo "</tr></table></form></div>";
@@ -238,7 +235,7 @@ class ReservationItem extends CommonDBTM {
          echo "<div class='center'><form method='post' name=form action='".$this->getFormURL()."'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".$LANG['reservation'][22]."</th></tr>";
+         echo "<tr><th colspan='2'>".__s('Modify the comment')."</th></tr>";
 
          // Ajouter le nom du materiel
          echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
@@ -274,7 +271,7 @@ class ReservationItem extends CommonDBTM {
 
       echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>\n";
+      echo "<tr><th colspan='".($showentity?"5":"4")."'>"._n('Reservable item', 'Reservable items',1)."</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -386,16 +383,14 @@ class ReservationItem extends CommonDBTM {
          foreach ($DB->request($query_end) as $data) {
             $item_resa = new $data["itemtype"]();
             if ($item_resa->getFromDB($data["items_id"])) {
-               $message .= $LANG['reservation'][40]." ". $item_resa->getTypeName()." - ".
-                           $item_resa->getName()."<br />";
                $data['item_name'] = $item_resa->getName();
                $data['entity'] = $entity;
                $items_infos[$entity][$data['resaid']] = $data;
 
                if (!isset($items_messages[$entity])) {
-                  $items_messages[$entity] = $LANG['reservation'][40]."<br />";
+                  $items_messages[$entity] = __('Device reservations expiring today')."<br />";
                }
-               $items_messages[$entity] .= $message;
+               $items_messages[$entity] .= $item_resa->getTypeName()." - ".$item_resa->getName()."<br />";
             }
          }
       }

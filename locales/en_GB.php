@@ -1653,7 +1653,9 @@ $LANG['reports'][62]="Hardware financial and administrative informations";
 $LANG['reports'][63]="Other financial and administrative informations (licenses, cartridges, consumables)";
 $LANG['reports'][64]="Resolution date";
 
-$LANG['reservation'][1]="Reservable Item";
+/// TODO After is ok for migration to gettext
+
+$LANG['reservation'][1]="Reservable item";
 $LANG['reservation'][2]="Device temporarily unavailable";
 $LANG['reservation'][3]="Make unavailable";
 $LANG['reservation'][4]="Available";
@@ -1662,7 +1664,7 @@ $LANG['reservation'][6]="Prohibit reservations";
 $LANG['reservation'][7]="Authorize reservations";
 $LANG['reservation'][8]="Reserve";
 $LANG['reservation'][9]="Reserve an item";
-$LANG['reservation'][10]="Reservable Items";
+$LANG['reservation'][10]="Reservable items";
 $LANG['reservation'][11]="Unavailable";
 $LANG['reservation'][16]="To";
 $LANG['reservation'][17]="From";
@@ -1670,21 +1672,17 @@ $LANG['reservation'][18]="The required item is already reserved for this timefra
 $LANG['reservation'][20]="Back to planning";
 $LANG['reservation'][21]="See planning";
 $LANG['reservation'][22]="Modify the comment";
-$LANG['reservation'][25]="All reservable hardware";
+$LANG['reservation'][25]="All reservable device";
 $LANG['reservation'][27]="Rehearsal";
 $LANG['reservation'][28]="By week";
 $LANG['reservation'][29]="By day";
 $LANG['reservation'][30]="times";
 $LANG['reservation'][35]="Current and future reservations";
-$LANG['reservation'][36]="Past Reservations";
-$LANG['reservation'][37]="No Reservations";
+$LANG['reservation'][36]="Past reservations";
+$LANG['reservation'][37]="No reservation";
 $LANG['reservation'][38]="Are you sure you want do return this non-reservable item ?";
 $LANG['reservation'][39]="That will remove all the reservations in progress.";
-$LANG['reservation'][40]="Material reservations expiring today";
-
-
-/// TODO After is ok for migration to gettext
-
+$LANG['reservation'][40]="Device reservations expiring today";
 
 $LANG['rulesengine'][0]="is";
 $LANG['rulesengine'][1]="is not";
