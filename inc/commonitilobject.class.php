@@ -1603,7 +1603,7 @@ abstract class CommonITILObject extends CommonDBTM {
             if ($canedit) {
                echo "&nbsp;<a href='".$this->getFormURL()."?delete_group=delete_group&amp;id=".
                      $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                     "' title=\"".$LANG['reservation'][6]."\">
+                     "' title=\"".__s('Delete')."\">
                      <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                       alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }

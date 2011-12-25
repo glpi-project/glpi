@@ -956,7 +956,7 @@ class Search {
             }
             if ($itemtype == 'ReservationItem' && $output_type == self::HTML_OUTPUT) {
                if (Session::haveRight("reservation_central","w")) {
-                  echo self::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
+                  echo self::showHeaderItem($output_type, __('Available'), $header_num);
                   echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
                }
                echo self::showHeaderItem($output_type, "&nbsp;", $header_num);
@@ -1138,9 +1138,9 @@ class Search {
                         echo self::showItem($output_type,
                                             "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;delete=delete' ".
-                                              Html::addConfirmationOnAction(array($LANG['reservation'][38],
-                                                                                  $LANG['reservation'][39])).
-                                              " title=\"".$LANG['reservation'][6]."\">".
+                                              Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
+                                                                                  __('That will remove all the reservations in progress.')).
+                                              " title=\"".__s('Prohibit reservations')."\">".
                                               "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                                 alt='' title=''></a>",
                                             $item_num, $row_num, "class='center'");
@@ -1149,7 +1149,7 @@ class Search {
                   if ($data["ACTIVE"]) {
                      echo self::showItem($output_type,
                                          "<a href='reservation.php?reservationitems_id=".
-                                           $data["refID"]."' title=\"".$LANG['reservation'][21]."\">".
+                                           $data["refID"]."' title=\"".__s('See planning')."\">".
                                            "<img src=\"".$CFG_GLPI["root_doc"].
                                              "/pics/reservation-3.png\" alt='' title=''></a>",
                                          $item_num, $row_num, "class='center'");
@@ -3985,11 +3985,11 @@ class Search {
 
          case "glpi_reservationitems.comment" :
             if (empty($data[$NAME.$num])) {
-               return "<a title=\"".$LANG['reservation'][22]."\"
+               return "<a title=\"".__s('Modify the comment')."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                         $data["refID"]."' >".__('None')."</a>";
             }
-            return "<a title=\"".$LANG['reservation'][22]."\"
+            return "<a title=\"".__s('Modify the comment')."\"
                      href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                      $data['refID']."' >".Html::resume_text($data[$NAME.$num])."</a>";
 
