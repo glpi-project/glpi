@@ -1917,7 +1917,7 @@ class Html {
 
 
       if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("config","w")) {
-         $menu['config']['content']['ocsng']['title']           = $LANG['ocsconfig'][24];
+         $menu['config']['content']['ocsng']['title']           = __('OCSNG mode');
          $menu['config']['content']['ocsng']['page']            = '/front/ocsserver.php';
          $menu['config']['content']['ocsng']['links']['search'] = '/front/ocsserver.php';
          $menu['config']['content']['ocsng']['links']['add']    = '/front/ocsserver.form.php';

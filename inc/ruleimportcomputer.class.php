@@ -85,7 +85,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['states_id']['table']           = 'glpi_states';
       $criterias['states_id']['field']           = 'name';
-      $criterias['states_id']['name']            = $LANG['ocsconfig'][55];
+      $criterias['states_id']['name']            = __('Find computers in GLPI having the status');
       $criterias['states_id']['linkfield']       = 'state';
       $criterias['states_id']['type']            = 'dropdown';
       //Means that this criterion can only be used in a global search query

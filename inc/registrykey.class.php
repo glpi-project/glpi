@@ -115,7 +115,7 @@ class RegistryKey extends CommonDBTM {
             echo "</table></div>\n\n";
          } else {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th>".$LANG['ocsconfig'][41]."</th></tr>";
+            echo "<tr class='tab_bg_2'><th>".__('Registry')."</th></tr>";
             echo "<tr class='tab_bg_2'><td class='center b'>".__('No key found in registry')."</td></tr>";
             echo "</table></div>";
          }

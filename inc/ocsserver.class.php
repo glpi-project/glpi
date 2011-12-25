@@ -137,8 +137,8 @@ class OcsServer extends CommonDBTM {
                    && self::checkConfig(1)
                    && self::checkConfig(2)
                    && self::checkConfig(8)) {
-                  $ong[2] = $LANG['ocsconfig'][5];
-                  $ong[3] = $LANG['ocsconfig'][27];
+                  $ong[2] = __('Import options');
+                  $ong[3] = __('General informations');
                }
                return $ong;
          }
@@ -228,10 +228,9 @@ class OcsServer extends CommonDBTM {
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
       echo "<table class='tab_cadre_fixe'>\n";
-      echo "<tr><th><input type='hidden' name='id' value='$ID'>&nbsp;".$LANG['ocsconfig'][27] ." ".
-                     $LANG['Menu'][0]. "&nbsp;</th>\n";
+      echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General informations'). "</th>\n";
       echo "<th>&nbsp;" . Toolbox::ucfirst($LANG['log'][18]) . "&nbsp;</th>\n";
-      echo "<th>&nbsp;" . $LANG['ocsconfig'][43] . "&nbsp;</th></tr>\n";
+      echo "<th>&nbsp;" . __('OCSNG administrative information') . "&nbsp;</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>\n";
       echo "<td class='top'>\n";
@@ -320,11 +319,11 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_device_drive", $this->fields["import_device_drive"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][36] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Modems') . " </td>\n<td>";
       Dropdown::showYesNo("import_device_modem", $this->fields["import_device_modem"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][37] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Port', 'Ports', 2) . " </td>\n<td>";
       Dropdown::showYesNo("import_device_port", $this->fields["import_device_port"]);
       echo "</td></tr>\n";
       echo "</table>";
@@ -371,7 +370,7 @@ class OcsServer extends CommonDBTM {
 
       echo "</td></tr>\n";
 
-      echo "<tr><th>&nbsp;" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][3]. "&nbsp;</th>\n";
+      echo "<tr><th>" . _n('Monitor', 'Monitors', 2). "</th>\n";
       echo "<th colspan='2'>&nbsp;</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>\n";
@@ -400,27 +399,27 @@ class OcsServer extends CommonDBTM {
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
       echo "<table class='tab_cadre_fixe'>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][59];
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Web address of the OCSNG console');
       echo "<input type='hidden' name='id' value='$ID'>" . " </td>\n";
       echo "<td><input type='text' size='30' name='ocs_url' value=\"" . $this->fields["ocs_url"] ."\">";
       echo "</td></tr>\n";
 
-      echo "<tr><th colspan='2'>" . $LANG['ocsconfig'][5] . "</th></tr>\n";
+      echo "<tr><th colspan='2'>" . __('Import options') . "</th></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][17] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Limit the import to the following tags (separator $, nothing for all)') . " </td>\n";
       echo "<td><input type='text' size='30' name='tag_limit' value='".$this->fields["tag_limit"]."'>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][9] . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Exclude the following tags (separator $, nothing for all)') . " </td>\n";
       echo "<td><input type='text' size='30' name='tag_exclude' value='".
                  $this->fields["tag_exclude"]."'></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Default status') . " </td>\n<td>";
       Dropdown::show('State', array('name'   => 'states_id_default',
                                     'value'  => $this->fields["states_id_default"]));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Behavior when disconnecting') . " </td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior", array(''       => __('Preserve'),
                                                              "trash"  => $LANG['buttons'][6],
                                                              "delete" => $LANG['buttons'][22]),
@@ -428,13 +427,13 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       $import_array = array("0" => $LANG['mailgate'][8],
-                            "1" => $LANG['ocsconfig'][10],
-                            "2" => $LANG['ocsconfig'][12]);
+                            "1" => __('Global import'),
+                            "2" => __('Unit import'));
 
       $import_array2 = array("0" => $LANG['mailgate'][8],
-                             "1" => $LANG['ocsconfig'][10],
-                             "2" => $LANG['ocsconfig'][12],
-                             "3" => $LANG['ocsconfig'][19]);
+                             "1" => __('Global import'),
+                             "2" => __('Unit import'),
+                             "3" => __('Unit import on serial number'));
 
       $periph = $this->fields["import_periph"];
       $monitor = $this->fields["import_monitor"];
@@ -454,7 +453,7 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td>\n<td>";
       $import_array = array("0" => $LANG['mailgate'][8],
-                            "1" => $LANG['ocsconfig'][12]);
+                            "1" => __('Unit import'));
       Dropdown::showFromArray("import_software", $import_array, array('value' => $software));
       echo "</td></tr>\n";
 
@@ -462,11 +461,11 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_disk", $this->fields["import_disk"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][38] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Use the OCSNG software dictionary') . " </td>\n<td>";
       Dropdown::showYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][41] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Registry') . " </td>\n<td>";
       Dropdown::showYesNo("import_registry", $this->fields["import_registry"]);
       echo "</td></tr>\n";
 
@@ -476,12 +475,12 @@ class OcsServer extends CommonDBTM {
          echo "</td></tr>\n";
       }
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Number of items to synchronize via the automatic OCSNG action') . " </td>\n<td>";
       Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
                             array(0 => __('None')));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>".$LANG['ocsconfig'][20]."</td>";
+      echo "<tr class='tab_bg_2'><td class='center'>".__('Behavior to the deletion of a computer in OCSNG')."</td>";
       echo "<td>";
       $actions[0] = Dropdown::EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
@@ -493,9 +492,9 @@ class OcsServer extends CommonDBTM {
 
       echo "</table>\n";
 
-      echo "<br>" . $LANG['ocsconfig'][15];
-      echo "<br>" . $LANG['ocsconfig'][14];
-      echo "<br>" . $LANG['ocsconfig'][13];
+      echo "<br>" . __('No import: the plugin will not import these elements');
+      echo "<br>" . __('Global import: everything is imported but the material is globally managed (without double blooms)');
+      echo "<br>" . __("Unit import: everything is imported 'as-is'");
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
              __s('Update') . "'></p>";
@@ -538,7 +537,7 @@ class OcsServer extends CommonDBTM {
       echo "<td class='center'>" . _n('Version', 'Versions',1) . "</td>\n";
       echo "<td>".$this->fields["ocs_version"]."</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . __('Host for the OCSNG database') . "</td>\n";
       echo "<td><input type='text' name='ocs_db_host' value=\"" .$this->fields["ocs_db_host"] ."\">";
       echo "</td>\n";
       echo "<td class='center' rowspan='$rowspan'>" . __('Comments') . "</td>\n";
@@ -546,15 +545,15 @@ class OcsServer extends CommonDBTM {
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . __('Name of the OCSNG database') . "</td>\n";
       echo "<td><input type='text' name='ocs_db_name' value=\"" .
                     $this->fields["ocs_db_name"] . "\"></td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][1] . "&nbsp;: </td>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . __('OCSNG database user') . "</td>\n";
       echo "<td><input type='text' name='ocs_db_user' value=\"".$this->fields["ocs_db_user"]."\">";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . __('OCSNG user password') . "</td>\n";
       echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'>";
       if ($ID > 0) {
          echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
@@ -564,7 +563,7 @@ class OcsServer extends CommonDBTM {
 
       echo "</tr>\n";
       echo "<tr class='tab_bg_1'><td class='center'>" .
-                     $LANG['ocsconfig'][7] . "&nbsp;: </td>\n";
+                     __('OCSNG database in UTF8') . "</td>\n";
       echo "<td>";
       Dropdown::showYesNo('ocs_db_utf8',$this->fields["ocs_db_utf8"]);
       echo "</td>";
@@ -725,7 +724,7 @@ class OcsServer extends CommonDBTM {
                 WHERE `name` = '".$input['name']."';";
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         Session::addMessageAfterRedirect($LANG['ocsconfig'][8], false, ERROR);
+         Session::addMessageAfterRedirect(__('Unable to add. The OCSNG server already exists.'), false, ERROR);
          return false;
       }
 
@@ -831,10 +830,10 @@ class OcsServer extends CommonDBTM {
 
          $msg = '';
          foreach ($ocsServers as $ocsServer) {
-               $msg .= $LANG['ocsconfig'][2]." : '".$ocsServer['ocs_db_host']."'";
+               $msg .= __('Host for the OCSNG database')." : '".$ocsServer['ocs_db_host']."'";
                $msg .= ', '.(self::checkOCSconnection($ocsServer['id'])?__('Connection to OCSNG database successful')
                                                                        :__('Connection to the OCSNG database failed'));
-               $msg .= ', '.$LANG['ocsconfig'][38]. " : ".$ocsServer['use_soft_dict'];
+               $msg .= ', '.__('Use the OCSNG software dictionary'). " : ".$ocsServer['use_soft_dict'];
          }
          echo wordwrap($msg."\n", $width, "\n\t\t");
          echo "\n</pre></td></tr>";
@@ -2787,7 +2786,7 @@ class OcsServer extends CommonDBTM {
                }
                echo "</a></td></tr>";
 
-               echo "<tr class='tab_bg_1'><td class='center b'>".$LANG['ocsconfig'][18] . "<br>";
+               echo "<tr class='tab_bg_1'><td class='center b'>".__('Check first that duplicates have been correctly managed in OCSNG') . "</td>";
                echo "</tr></table></form></div>";
             }
 
@@ -5416,7 +5415,7 @@ class OcsServer extends CommonDBTM {
    static function cronInfo($name) {
       global $LANG;
 
-      return array('description' => $LANG['ocsconfig'][28]);
+      return array('description' => __('OCS Inventory NG'));
    }
 
 

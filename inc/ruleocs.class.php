@@ -102,7 +102,7 @@ class RuleOcs extends Rule {
 
       $criterias['TAG']['table']     = 'accountinfo';
       $criterias['TAG']['field']     = 'TAG';
-      $criterias['TAG']['name']      = $LANG['ocsconfig'][39];
+      $criterias['TAG']['name']      = __('OCSNG TAG');
       $criterias['TAG']['linkfield'] = 'HARDWARE_ID';
 
       $criterias['DOMAIN']['table']     = 'hardware';
