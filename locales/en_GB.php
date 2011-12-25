@@ -1607,23 +1607,24 @@ $LANG['profiles'][55]="See all changes";
 $LANG['profiles'][56]="Update all changes";
 $LANG['profiles'][57]="See the changes which I participate";
 
+
+/// TODO After is ok for migration to gettext
+
 $LANG['registry'][1]="Hive";
 $LANG['registry'][2]="Path";
 $LANG['registry'][3]="Key/value";
-$LANG['registry'][4]="Registry key(s) found";
+$LANG['registry'][4]="registry keys found";
 $LANG['registry'][5]="No key found in registry";
 $LANG['registry'][6]="OCSNG name";
 
-$LANG['reminder'][0]="Personal notes";
-$LANG['reminder'][1]="Public notes";
+$LANG['reminder'][0]="Personal reminders";
+$LANG['reminder'][1]="Public reminders";
 $LANG['reminder'][2]="Targets";
-$LANG['reminder'][3]="No restrictions";
+$LANG['reminder'][3]="No restriction";
 $LANG['reminder'][6]="New note";
 $LANG['reminder'][12]="Add to schedule";
-$LANG['reminder'][15]="Without Title";
+$LANG['reminder'][15]="Without title";
 $LANG['reminder'][16]="Global notes";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['reports'][0]="Select the report you want to generate";
 $LANG['reports'][4]="List of the hardware under contract";

@@ -374,10 +374,10 @@ class Reminder extends CommonDBTM {
          switch ($item->getType()) {
             case 'Reminder' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => self::createTabEntry($LANG['reminder'][2],
+                  return array(1 => self::createTabEntry(__('Targets'),
                                                          $item->countVisibilities()));
                }
-               return array(1 => $LANG['reminder'][2]);
+               return array(1 => __('Targets'));
          }
       }
       return '';
@@ -414,7 +414,7 @@ class Reminder extends CommonDBTM {
       $input["name"] = trim($input["name"]);
 
       if (empty($input["name"])) {
-         $input["name"] = $LANG['reminder'][15];
+         $input["name"] = __('Without title');
       }
 
       $input["begin"] = $input["end"] = "NULL";
@@ -452,7 +452,7 @@ class Reminder extends CommonDBTM {
          $input["name"] = trim($input["name"]);
 
          if (empty($input["name"])) {
-            $input["name"] = $LANG['reminder'][15];
+            $input["name"] = __('Without title');
          }
       }
 
@@ -490,7 +490,7 @@ class Reminder extends CommonDBTM {
    function post_getEmpty() {
       global $LANG;
 
-      $this->fields["name"]        = $LANG['reminder'][6];
+      $this->fields["name"]        = __('New note');
       $this->fields["users_id"]    = Session::getLoginUserID();
    }
 
@@ -588,7 +588,7 @@ class Reminder extends CommonDBTM {
              || Session::haveRight("show_all_planning","1")) {
 
             echo "<div id='plan' onClick='showPlan()'>\n";
-            echo "<span class='showplan'>".$LANG['reminder'][12]."</span>";
+            echo "<span class='showplan'>".__('Add to schedule')."</span>";
          }
 
       } else {
@@ -847,7 +847,7 @@ class Reminder extends CommonDBTM {
                          $restrict_visibility
                    ORDER BY `glpi_reminders`.`name`";
 
-         $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
+         $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".__('Personal reminders')."</a>";
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
@@ -871,10 +871,10 @@ class Reminder extends CommonDBTM {
 
 //          echo $query;
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
-            $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG['reminder'][1].
+            $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".__('Public reminders').
                      "</a>";
          } else {
-            $titre = $LANG['reminder'][1];
+            $titre = __('Public reminders');
          }
       }
 

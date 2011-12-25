@@ -949,7 +949,7 @@ class Change extends CommonITILObject {
       echo "</script>\n";
       echo "<div id='name$rand' class='tracking left' onClick='showName$rand()'>\n";
       if (empty($this->fields["name"])) {
-         echo $LANG['reminder'][15];
+         _e('Without title');
       } else {
          echo $this->fields["name"];
       }

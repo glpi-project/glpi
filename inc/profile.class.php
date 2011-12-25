@@ -598,7 +598,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
+      echo "<td>".__('Public reminders')."</td><td>";
       self::dropdownNoneReadWrite("reminder_public", $this->fields["reminder_public"], 1, 1, 0);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
@@ -710,7 +710,7 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Notes')."</td><td>";
       self::dropdownNoneReadWrite("notes", $this->fields["notes"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
+      echo "<td>".__('Public reminders')."</td><td>";
       self::dropdownNoneReadWrite("reminder_public", $this->fields["reminder_public"], 1, 1, 1);
       echo "</td>";
       echo "<td>".__('Public bookmarks')."</td><td>";
@@ -1868,7 +1868,7 @@ class Profile extends CommonDBTM {
 
       $tab[63]['table']    = $this->getTable();
       $tab[63]['field']    = 'reminder_public';
-      $tab[63]['name']     = $LANG['reminder'][1];
+      $tab[63]['name']     = __('Public reminders');
       $tab[63]['datatype'] = 'right';
 
       $tab[64]['table']    = $this->getTable();

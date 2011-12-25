@@ -114,10 +114,10 @@ class KnowbaseItem extends CommonDBTM {
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdate()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $ong[2] = self::createTabEntry($LANG['reminder'][2],
+                     $ong[2] = self::createTabEntry(__('Targets'),
                                                     $item->countVisibilities());
                   } else {
-                     $ong[2] = $LANG['reminder'][2];
+                     $ong[2] = __('Targets');
                   }
                }
                return $ong;

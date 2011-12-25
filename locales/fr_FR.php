@@ -1873,7 +1873,7 @@ $LANG['profiles'][57] = "Voir les changements auxquels je participe";
 $LANG['registry'][1] = "Ruche";
 $LANG['registry'][2] = "Chemin";
 $LANG['registry'][3] = "Clé/valeur";
-$LANG['registry'][4] = "Clé(s) de registre trouvée(s)";
+$LANG['registry'][4] = "clés de registre trouvées";
 $LANG['registry'][5] = "Aucune clé de la base de registre trouvée";
 $LANG['registry'][6] = "Nom OCSNG";
 
