@@ -549,10 +549,10 @@ class Reminder extends CommonDBTM {
       echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo '<table><tr><td>';
-      echo $LANG['pager'][6].'&nbsp;:&nbsp;</td><td>';
+      echo __('Begin').'</td><td>';
       Html::showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true,
                                  $canedit);
-      echo '</td><td>'.$LANG['pager'][7].'&nbsp;:&nbsp;</td><td>';
+      echo '</td><td>'.__('End').'</td><td>';
       Html::showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true, $canedit);
       echo '</td></tr></table>';
       echo "</td>";

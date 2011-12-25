@@ -5072,10 +5072,10 @@ class Search {
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf = new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
+            $nb = count($PDF_ARRAY);
             $pdf->ezStartPageNumbers(750, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".count($PDF_ARRAY)." ".
-                                       Toolbox::decodeFromUtf8($LANG['pager'][5], 'windows-1252').
+                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item', $nb), $nb), 'windows-1252').
                                        " - {PAGENUM}/{TOTALPAGENUM}");
             $options = array('fontSize'      => 8,
                              'colGap'        => 2,
@@ -5090,10 +5090,10 @@ class Search {
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf= new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
+            $nb = count($PDF_ARRAY);
             $pdf->ezStartPageNumbers(550, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".count($PDF_ARRAY)." ".
-                                       Toolbox::decodeFromUtf8($LANG['pager'][5], 'windows-1252').
+                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item', $nb), $nb), 'windows-1252').
                                        " - {PAGENUM}/{TOTALPAGENUM}");
             $options = array('fontSize'      => 8,
                              'colGap'        => 2,
