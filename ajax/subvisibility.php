@@ -51,7 +51,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          
          $params = array('value' => $_SESSION['glpiactive_entity']);
          if (Session::isViewAllEntities()) {
-            $params['toadd'] = array(-1 => $LANG['reminder'][3]);
+            $params['toadd'] = array(-1 => __('No restriction'));
          }
          echo "&nbsp;".$LANG['entity'][0]."&nbsp;:&nbsp;";
          Dropdown::show('Entity', $params);
