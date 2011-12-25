@@ -68,10 +68,7 @@ class Profile extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][35];
-      }
-      return $LANG['profiles'][22];
+      return _n('Profile', 'Profiles', $nb);
    }
 
 
@@ -404,12 +401,12 @@ class Profile extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline' class='b'>";
-      echo $LANG['profiles'][34]."&nbsp;: </td>";
+      echo __('Caption')."</td>";
       echo "<td class='tab_bg_4' width='15' style='border:1px solid black'></td>";
-      echo "<td class='b'>".$LANG['profiles'][0]."</td></tr>\n";
+      echo "<td class='b'>".__('Global right')."</td></tr>\n";
       echo "<tr class='tab_bg_2'><td></td>";
       echo "<td class='tab_bg_2' width='15' style='border:1px solid black'></td>";
-      echo "<td class='b'>".$LANG['profiles'][1]."</td></tr>";
+      echo "<td class='b'>".__('Entity right')."</td></tr>";
       echo "</table></div>\n";
    }
 
@@ -460,11 +457,11 @@ class Profile extends CommonDBTM {
       echo "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][13]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Default profile')."</td><td>";
       Dropdown::showYesNo("is_default", $this->fields["is_default"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][2]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__("Profile's interface")."</td>";
       echo "<td><select name='interface'>";
       echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
              self::getInterfaceName("helpdesk")."</option>\n";
@@ -472,11 +469,11 @@ class Profile extends CommonDBTM {
              self::getInterfaceName("central")."</option>";
       echo "</select></td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Update password')."</td><td>";
       Dropdown::showYesNo("password_update", $this->fields["password_update"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][3]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Ticket creation form on login')."</td><td>";
       Dropdown::showYesNo("create_ticket_on_login", $this->fields["create_ticket_on_login"]);
       echo "</td></tr>\n";
 
@@ -515,26 +512,26 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][5]."&nbsp;:</td><td>";
+      echo "<td>".__('Create a ticket')."</td><td>";
       Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][6]."&nbsp;:</td><td>";
+      echo "<td>".__('Add a followup to tickets (requester)')."</td><td>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][9]."&nbsp;:</td><td>";
+      echo "<td>".__('Show public followups and tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][26]."&nbsp;:</td><td>";
+      echo "<td>".__('Show tickets created by my groups')."</td><td>";
       Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
+      echo "<td>".__('See hardware of my group(s)')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
+      echo "<td>".__('Update followups (author)')."</td><td>";
       Dropdown::showYesNo("update_own_followups", $this->fields["update_own_followups"]);
       echo "</td></tr>\n";
 
@@ -577,9 +574,9 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      echo "<td>".__('Create a validation request')."</td><td>";
       Dropdown::showYesNo("create_validation", $this->fields["create_validation"]);
-      echo "<td>".$LANG['profiles'][49]."&nbsp;:</td><td>";
+      echo "<td>".__('Validate a ticket')."</td><td>";
       Dropdown::showYesNo("validate_ticket", $this->fields["validate_ticket"]);
       echo "</td>";
       echo "</tr>\n";
@@ -587,13 +584,13 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['Menu'][18]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['knowbase'][1]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['knowbase'][1]."</td><td>";
       if ($this->fields["interface"]=="helpdesk" && $this->fields["faq"]=='w') {
          $this->fields["faq"]='r';
       }
       self::dropdownNoneReadWrite("faq", $this->fields["faq"], 1, 1, 0);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][17]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][17]."</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
       echo "</td></tr>\n";
 
@@ -643,40 +640,40 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][38]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][0]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][0]."</td><td>";
       self::dropdownNoneReadWrite("computer", $this->fields["computer"], 1, 1,1 );
       echo "</td>";
-      echo "<td>".$LANG['Menu'][3]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][3]."</td><td>";
       self::dropdownNoneReadWrite("monitor", $this->fields["monitor"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][4]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][4]."</td><td>";
       self::dropdownNoneReadWrite("software", $this->fields["software"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][1]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][1]."</td><td>";
       self::dropdownNoneReadWrite("networking", $this->fields["networking"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][2]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][2]."</td><td>";
       self::dropdownNoneReadWrite("printer", $this->fields["printer"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][21]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][21]."</td><td>";
       self::dropdownNoneReadWrite("cartridge", $this->fields["cartridge"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][32]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][32]."</td><td>";
       self::dropdownNoneReadWrite("consumable", $this->fields["consumable"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][34]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][34]."</td><td>";
       self::dropdownNoneReadWrite("phone", $this->fields["phone"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][16]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][16]."</td><td>";
       self::dropdownNoneReadWrite("peripheral", $this->fields["peripheral"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Internet'][0]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Internet'][0]."</td><td>";
       self::dropdownNoneReadWrite("internet", $this->fields["internet"], 1, 1, 1);
       echo "</td>\n";
       echo "<td colspan='4'>&nbsp;</td></tr>";
@@ -685,21 +682,21 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][26]."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][22]." / ".$LANG['Menu'][23]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][22]." / ".$LANG['Menu'][23]."</td><td>";
       self::dropdownNoneReadWrite("contact_enterprise", $this->fields["contact_enterprise"], 1, 1,
                                   1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][27]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][27]."</td><td>";
       self::dropdownNoneReadWrite("document", $this->fields["document"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][25]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][25]."</td><td>";
       self::dropdownNoneReadWrite("contract", $this->fields["contract"], 1, 1, 1);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][24]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][24]."</td><td>";
       self::dropdownNoneReadWrite("infocom", $this->fields["infocom"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['financial'][87]."</td><td colspan='3'>";
       self::dropdownNoneReadWrite("budget", $this->fields["budget"], 1, 1, 1);
       echo "</td></tr>\n";
 
@@ -718,13 +715,13 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['knowbase'][1]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['knowbase'][1]."</td><td>";
       self::dropdownNoneReadWrite("faq", $this->fields["faq"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][6]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][6]."</td><td>";
       self::dropdownNoneReadWrite("reports", $this->fields["reports"], 1, 1, 0);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][17]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][17]."</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
       echo "</td></tr>\n";
 
@@ -732,24 +729,24 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Knowledge base')."</td><td>";
       self::dropdownNoneReadWrite("knowbase", $this->fields["knowbase"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][23]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".__('Administration of reservations')."</td><td colspan='3'>";
       self::dropdownNoneReadWrite("reservation_central", $this->fields["reservation_central"],
                                   1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['ocsconfig'][24]."&nbsp;: </td><td>";
+      echo "<td>".$LANG['ocsconfig'][24]." </td><td>";
       self::dropdownNoneReadWrite("ocsng", $this->fields["ocsng"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['ocsconfig'][22]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['ocsconfig'][22]."</td><td>";
       self::dropdownNoneReadWrite("sync_ocsng", $this->fields["sync_ocsng"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['ocsconfig'][21]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['ocsconfig'][21]."</td><td>";
       self::dropdownNoneReadWrite("view_ocsng", $this->fields["view_ocsng"], 1, 1, 0);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['ocsng'][3]."&nbsp;: </td><td>";
+      echo "<td>".$LANG['ocsng'][3]."</td><td>";
       self::dropdownNoneReadWrite("clean_ocsng", $this->fields["clean_ocsng"], 1, 1, 1);
       echo "</td><td colspan='4'>";
       echo "</td></tr>\n";
@@ -793,71 +790,71 @@ class Profile extends CommonDBTM {
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][41]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Creation')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][5]."&nbsp;:</td><td>";
+      echo "<td>".__('Create a ticket')."</td><td>";
       Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][6]."&nbsp;:</td><td>";
+      echo "<td>".__('Add a followup to tickets (requester)')."</td><td>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][15]."&nbsp;:</td><td>";
+      echo "<td>".__('Add a followup to all tickets')."</td><td>";
       Dropdown::showYesNo("global_add_followups", $this->fields["global_add_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][4]."&nbsp;:</td><td>";
+      echo "<td>".__('Add a followup to tickets of associated group(s)')."</td><td>";
       Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][45]."&nbsp;:</td><td>";
+      echo "<td>".__('Add a task to all tickets')."</td><td>";
       Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
       echo "</td>";
       echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][59]."&nbsp;: </td><td>";
+      echo "<td>".$LANG['job'][59]."</td><td>";
       self::dropdownNoneReadWrite("tickettemplate", $this->fields["tickettemplate"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['jobrecurrent'][1]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['jobrecurrent'][1]."</td><td>";
       self::dropdownNoneReadWrite("ticketrecurrent", $this->fields["ticketrecurrent"], 1, 1, 1);
       echo "</td>";
       echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][40]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Update')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][18]."&nbsp;:</td><td>";
+      echo "<td>".__('Update a ticket')."</td><td>";
       Dropdown::showYesNo("update_ticket", $this->fields["update_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
+      echo "<td>".__('Change the priority')."</td><td>";
       Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
+      echo "<td>".__('Edit all tasks')."</td><td>";
       Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
+      echo "<td>".__('Update followups (author)')."</td><td>";
       Dropdown::showYesNo("update_own_followups", $this->fields["update_own_followups"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
+      echo "<td>".__('Update all followups')."</td><td>";
       Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
       echo "</td>\n";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][54]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Deletion')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
+      echo "<td>".__("Ticket's deletion")."</td><td>";
       Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][51]."&nbsp;:</td><td>";
+      echo "<td>".__('Delete all followups')."</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td>\n";
       echo "<td colspan='2'></td></tr>\n";
@@ -866,31 +863,31 @@ class Profile extends CommonDBTM {
       echo "/tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      echo "<td>".__('Create a validation request')."</td><td>";
       Dropdown::showYesNo("create_validation", $this->fields["create_validation"]);
-      echo "<td>".$LANG['profiles'][49]."&nbsp;:</td><td>";
+      echo "<td>".__('Validate a ticket')."</td><td>";
       Dropdown::showYesNo("validate_ticket", $this->fields["validate_ticket"]);
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][39]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][16]."&nbsp;:</td><td>";
+      echo "<td>".__('To be in charge of a ticket')."</td><td>";
       Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
-      echo "<td>".$LANG['profiles'][17]."&nbsp;:</td><td>";
+      echo "<td>".__('Steal a ticket')."</td><td>";
       Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][19]."&nbsp;:</td><td>";
+      echo "<td>".__('Assign a ticket')."</td><td>";
       Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][42]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
+      echo "<td>".__('See hardware of my group(s)')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
@@ -930,39 +927,39 @@ class Profile extends CommonDBTM {
       echo "</select></td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['profiles'][38]."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Visibility')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][32]."&nbsp;:</td><td>";
+      echo "<td>".__('See assigned tickets (personnal + group associated)')."</td><td>";
       Dropdown::showYesNo("show_assign_ticket", $this->fields["show_assign_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][26]."&nbsp;:</td><td>";
+      echo "<td>".__('Show tickets created by my groups')."</td><td>";
       Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][7]."&nbsp;:</td><td>";
+      echo "<td>".__('Show all tickets')."</td><td>";
       Dropdown::showYesNo("show_all_ticket", $this->fields["show_all_ticket"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][9]."&nbsp;:</td><td>";
+      echo "<td>".__('Show public followups and tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][8]."&nbsp;:</td><td>";
+      echo "<td>".__('View all followups and tasks (public and private)')."</td><td>";
       Dropdown::showYesNo("show_full_ticket", $this->fields["show_full_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][13]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][13]."</td><td>";
       Dropdown::showYesNo("statistic", $this->fields["statistic"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][20]."&nbsp;:</td><td>";
+      echo "<td>".__('View personnal planning')."</td><td>";
       Dropdown::showYesNo("show_planning", $this->fields["show_planning"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][36]."&nbsp;:</td><td>";
+      echo "<td>".__('See schedule of people in my groups')."</td><td>";
       Dropdown::showYesNo("show_group_planning", $this->fields["show_group_planning"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][21]."&nbsp;:</td><td>";
+      echo "<td>".__('View all plannings')."</td><td>";
       Dropdown::showYesNo("show_all_planning", $this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
@@ -970,26 +967,26 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][52]."&nbsp;:</td><td>";
+      echo "<td>".__('Update all problems')."</td><td>";
       Dropdown::showYesNo("edit_all_problem", $this->fields["edit_all_problem"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][25]."&nbsp;:</td><td>";
+      echo "<td>".__('View all problems')."</td><td>";
       Dropdown::showYesNo("show_all_problem", $this->fields["show_all_problem"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][53]."&nbsp;:</td><td>";
+      echo "<td>".__('See the problems (actor)')."</td><td>";
       Dropdown::showYesNo("show_my_problem", $this->fields["show_my_problem"]);
       echo "</td>";
       echo "</tr>\n";
 
 
 //       echo "<tr class='tab_bg_2'>";
-//       echo "<td>".$LANG['profiles'][56]."&nbsp;:</td><td>";
+//       echo "<td>".__('Update all changes')."</td><td>";
 //       Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
 //       echo "</td>";
-//       echo "<td>".$LANG['profiles'][55]."&nbsp;:</td><td>";
+//       echo "<td>".(__$LANG'See all changes)['profiles'][55]."</td><td>";
 //       Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
 //       echo "</td>";
-//       echo "<td>".$LANG['profiles'][57]."&nbsp;:</td><td>";
+//       echo "<td>".__('See the changes (actor)')."</td><td>";
 //       Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
 //       echo "</td>";
 //       echo "</tr>\n";
@@ -1153,37 +1150,37 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][15]."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][14]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][14]."</td><td>";
       self::dropdownNoneReadWrite("user", $this->fields["user"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][36]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][36]."</td><td>";
       self::dropdownNoneReadWrite("group", $this->fields["group"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][43]."&nbsp;:</td><td>";
+      echo "<td>".__('Method for user authentication and synchronization')."</td><td>";
       self::dropdownNoneReadWrite("user_authtype", $this->fields["user_authtype"], 1, 1, 1);
       echo "</td></tr>\n";
 
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['Menu'][37]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][37]."</td><td>";
       self::dropdownNoneReadWrite("entity", $this->fields["entity"], 1,  1,1);
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
       self::dropdownNoneReadWrite("transfer", $this->fields["transfer"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][35]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][35]."</td><td>";
       self::dropdownNoneReadWrite("profile", $this->fields["profile"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['Menu'][12]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][12]."</td><td>";
       self::dropdownNoneReadWrite("backup", $this->fields["backup"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][30]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][30]."</td><td>";
       self::dropdownNoneReadWrite("logs", $this->fields["logs"], 1, 1, 0);
       echo "</td>";
 
-      echo "<td class='tab_bg_2'>".$LANG['profiles'][47]."&nbsp;:</td>";
+      echo "<td class='tab_bg_2'>".__('Add users from an external source')."</td>";
       echo "<td class='tab_bg_2'>";
       self::dropdownNoneReadWrite("import_externalauth_users",
                                   $this->fields["import_externalauth_users"], 1, 0, 1);
@@ -1284,7 +1281,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Setup')."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('General setup')."&nbsp;:</td><td>";
+      echo "<td>".__('General setup')."</td><td>";
       self::dropdownNoneReadWrite("config", $this->fields["config"], 1, 0, 1);
       echo "</td>";
       echo "<td>".__('Search result default display')."</td><td>";
@@ -1297,7 +1294,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".Toolbox::ucfirst($LANG['log'][18])."&nbsp;:</td><td>";
+      echo "<td>".Toolbox::ucfirst($LANG['log'][18])."</td><td>";
       self::dropdownNoneReadWrite("device", $this->fields["device"], 1, 0, 1);
       echo "</td>";
       echo "<td>".__('Dropdowns')."</td><td>";
@@ -1309,7 +1306,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['document'][7]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['document'][7]."</td><td>";
       self::dropdownNoneReadWrite("typedoc", $this->fields["typedoc"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
@@ -1323,7 +1320,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
       self::dropdownNoneReadWrite("notification", $this->fields["notification"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][42]."</td><td>";
       self::dropdownNoneReadWrite("calendar", $this->fields["calendar"], 1, 1, 1);
       echo "</td>\n";
       echo "<td>".__('Assistance')."</td><td>";
@@ -1367,18 +1364,18 @@ class Profile extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'interface';
-      $tab[2]['name']          = $LANG['profiles'][2];
+      $tab[2]['name']          = __("Profile's interface");
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'is_default';
-      $tab[3]['name']          = $LANG['profiles'][13];
+      $tab[3]['name']          = __('Default profile');
       $tab[3]['datatype']      = 'bool';
       $tab[3]['massiveaction'] = false;
 
       $tab[118]['table']    = $this->getTable();
       $tab[118]['field']    = 'create_ticket_on_login';
-      $tab[118]['name']     = $LANG['profiles'][3];
+      $tab[118]['name']     = __('Ticket creation form on login');
       $tab[118]['datatype'] = 'bool';
 
       $tab[16]['table']    = $this->getTable();
@@ -1489,7 +1486,7 @@ class Profile extends CommonDBTM {
 
       $tab[37]['table']    = $this->getTable();
       $tab[37]['field']    = 'reservation_central';
-      $tab[37]['name']     = $LANG['profiles'][23];
+      $tab[37]['name']     = __('Administration of reservations');
       $tab[37]['datatype'] = 'bool';
 
       $tab[38]['table']    = $this->getTable();
@@ -1623,12 +1620,12 @@ class Profile extends CommonDBTM {
 
       $tab[57]['table']    = $this->getTable();
       $tab[57]['field']    = 'user_authtype';
-      $tab[57]['name']     = $LANG['profiles'][43];
+      $tab[57]['name']     = __('Method for user authentication and synchronization');
       $tab[57]['datatype'] = 'right';
 
       $tab[104]['table']    = $this->getTable();
       $tab[104]['field']    = 'import_externalauth_users';
-      $tab[104]['name']     = $LANG['profiles'][47];
+      $tab[104]['name']     = __('Add users from an external source');
       $tab[104]['datatype'] = 'right';
 
       $tab[58]['table']    = $this->getTable();
@@ -1660,7 +1657,7 @@ class Profile extends CommonDBTM {
 
       $tab[102]['table']    = $this->getTable();
       $tab[102]['field']    = 'create_ticket';
-      $tab[102]['name']     = $LANG['profiles'][5];
+      $tab[102]['name']     = __('Create a ticket');
       $tab[102]['datatype'] = 'bool';
 
       $tab[103]['table']    = $this->getTable();
@@ -1670,87 +1667,87 @@ class Profile extends CommonDBTM {
 
       $tab[65]['table']    = $this->getTable();
       $tab[65]['field']    = 'delete_ticket';
-      $tab[65]['name']     = $LANG['profiles'][14];
+      $tab[65]['name']     = __("Ticket's deletion");
       $tab[65]['datatype'] = 'bool';
 
       $tab[66]['table']    = $this->getTable();
       $tab[66]['field']    = 'add_followups';
-      $tab[66]['name']     = $LANG['profiles'][6];
+      $tab[66]['name']     = __('Add a followup to tickets (requester)');
       $tab[66]['datatype'] = 'bool';
 
       $tab[67]['table']    = $this->getTable();
       $tab[67]['field']    = 'global_add_followups';
-      $tab[67]['name']     = $LANG['profiles'][15];
+      $tab[67]['name']     = __('Add a followup to all tickets');
       $tab[67]['datatype'] = 'bool';
 
       $tab[68]['table']    = $this->getTable();
       $tab[68]['field']    = 'update_ticket';
-      $tab[68]['name']     = $LANG['profiles'][18];
+      $tab[68]['name']     = __('Update a ticket');
       $tab[68]['datatype'] = 'bool';
 
       $tab[69]['table']    = $this->getTable();
       $tab[69]['field']    = 'own_ticket';
-      $tab[69]['name']     = $LANG['profiles'][16];
+      $tab[69]['name']     = __('To be in charge of a ticket');
       $tab[69]['datatype'] = 'bool';
 
       $tab[70]['table']    = $this->getTable();
       $tab[70]['field']    = 'steal_ticket';
-      $tab[70]['name']     = $LANG['profiles'][17];
+      $tab[70]['name']     = __('Steal a ticket');
       $tab[70]['datatype'] = 'bool';
 
       $tab[71]['table']    = $this->getTable();
       $tab[71]['field']    = 'assign_ticket';
-      $tab[71]['name']     = $LANG['profiles'][19];
+      $tab[71]['name']     = __('Assign a ticket');
       $tab[71]['datatype'] = 'bool';
 
       $tab[72]['table']    = $this->getTable();
       $tab[72]['field']    = 'show_all_ticket';
-      $tab[72]['name']     = $LANG['profiles'][7];
+      $tab[72]['name']     = __('Show all tickets');
       $tab[72]['datatype'] = 'bool';
 
       $tab[73]['table']    = $this->getTable();
       $tab[73]['field']    = 'show_assign_ticket';
-      $tab[73]['name']     = $LANG['profiles'][32];
+      $tab[73]['name']     = __('See assigned tickets (personnal + group associated)');
       $tab[73]['datatype'] = 'bool';
 
       $tab[74]['table']    = $this->getTable();
       $tab[74]['field']    = 'show_full_ticket';
-      $tab[74]['name']     = $LANG['profiles'][8];
+      $tab[74]['name']     = __('View all followups and tasks (public and private)');
       $tab[74]['datatype'] = 'bool';
 
       $tab[75]['table']    = $this->getTable();
       $tab[75]['field']    = 'observe_ticket';
-      $tab[75]['name']     = $LANG['profiles'][9];
+      $tab[75]['name']     = __('Show public followups and tasks');
       $tab[75]['datatype'] = 'bool';
 
       $tab[76]['table']    = $this->getTable();
       $tab[76]['field']    = 'update_followups';
-      $tab[76]['name']     = $LANG['profiles'][35];
+      $tab[76]['name']     = __('Update all followups');
       $tab[76]['datatype'] = 'bool';
 
       $tab[77]['table']    = $this->getTable();
       $tab[77]['field']    = 'show_planning';
-      $tab[77]['name']     = $LANG['profiles'][20];
+      $tab[77]['name']     = __('View personnal planning');
       $tab[77]['datatype'] = 'bool';
 
       $tab[78]['table']    = $this->getTable();
       $tab[78]['field']    = 'show_group_planning';
-      $tab[78]['name']     = $LANG['profiles'][36];
+      $tab[78]['name']     = __('See schedule of people in my groups');
       $tab[78]['datatype'] = 'bool';
 
       $tab[79]['table']    = $this->getTable();
       $tab[79]['field']    = 'show_all_planning';
-      $tab[79]['name']     = $LANG['profiles'][21];
+      $tab[79]['name']     = __('View all plannings');
       $tab[79]['datatype'] = 'bool';
 
       $tab[80]['table']    = $this->getTable();
       $tab[80]['field']    = 'update_own_followups';
-      $tab[80]['name']     = $LANG['profiles'][50];
+      $tab[80]['name']     = __('Update followups (author)');
       $tab[80]['datatype'] = 'bool';
 
       $tab[81]['table']    = $this->getTable();
       $tab[81]['field']    = 'delete_followups';
-      $tab[81]['name']     = $LANG['profiles'][51];
+      $tab[81]['name']     = __('Delete all followups');
       $tab[81]['datatype'] = 'bool';
 
       $tab[85]['table']    = $this->getTable();
@@ -1770,42 +1767,42 @@ class Profile extends CommonDBTM {
 
       $tab[88]['table']    = $this->getTable();
       $tab[88]['field']    = 'show_group_ticket';
-      $tab[88]['name']     = $LANG['profiles'][26];
+      $tab[88]['name']     = __('Show tickets created by my groups');
       $tab[88]['datatype'] = 'bool';
 
       $tab[89]['table']    = $this->getTable();
       $tab[89]['field']    = 'show_group_hardware';
-      $tab[89]['name']     = $LANG['profiles'][27];
+      $tab[89]['name']     = __('See hardware of my group(s)');
       $tab[89]['datatype'] = 'bool';
 
       $tab[94]['table']    = $this->getTable();
       $tab[94]['field']    = 'group_add_followups';
-      $tab[94]['name']     = $LANG['profiles'][4];
+      $tab[94]['name']     = __('Add a followup to tickets of associated group(s)');
       $tab[94]['datatype'] = 'bool';
 
       $tab[95]['table']    = $this->getTable();
       $tab[95]['field']    = 'global_add_tasks';
-      $tab[95]['name']     = $LANG['profiles'][45];
+      $tab[95]['name']     = __('Add a task to all tickets');
       $tab[95]['datatype'] = 'bool';
 
       $tab[96]['table']    = $this->getTable();
       $tab[96]['field']    = 'update_priority';
-      $tab[96]['name']     = $LANG['profiles'][44];
+      $tab[96]['name']     = __('Change the priority');
       $tab[96]['datatype'] = 'bool';
 
       $tab[97]['table']    = $this->getTable();
       $tab[97]['field']    = 'update_tasks';
-      $tab[97]['name']     = $LANG['profiles'][46];
+      $tab[97]['name']     = __('Edit all tasks');
       $tab[97]['datatype'] = 'bool';
 
       $tab[98]['table']    = $this->getTable();
       $tab[98]['field']    = 'validate_ticket';
-      $tab[98]['name']     = $LANG['profiles'][49];
+      $tab[98]['name']     = __('Validate a ticket');
       $tab[98]['datatype'] = 'bool';
 
       $tab[99]['table']    = $this->getTable();
       $tab[99]['field']    = 'create_validation';
-      $tab[99]['name']     = $LANG['profiles'][48];
+      $tab[99]['name']     = __('Create a validation request');
       $tab[99]['datatype'] = 'bool';
 
       $tab[100]['table']         = $this->getTable();
@@ -1824,17 +1821,17 @@ class Profile extends CommonDBTM {
 
       $tab[112]['table']    = $this->getTable();
       $tab[112]['field']    = 'show_my_problem';
-      $tab[112]['name']     = $LANG['profiles'][53];
+      $tab[112]['name']     = __('See the problems (actor)');
       $tab[112]['datatype'] = 'bool';
 
       $tab[113]['table']    = $this->getTable();
       $tab[113]['field']    = 'show_all_problem';
-      $tab[113]['name']     = $LANG['profiles'][25];
+      $tab[113]['name']     = __('View all problems');
       $tab[113]['datatype'] = 'bool';
 
       $tab[114]['table']    = $this->getTable();
       $tab[114]['field']    = 'edit_all_problem';
-      $tab[114]['name']     = $LANG['profiles'][52];
+      $tab[114]['name']     = __('Update all problems');
       $tab[114]['datatype'] = 'bool';
 
 //       $tab[111]['table']         = $this->getTable();
@@ -1846,24 +1843,24 @@ class Profile extends CommonDBTM {
 //
 //       $tab[115]['table']    = $this->getTable();
 //       $tab[115]['field']    = 'show_my_change';
-//       $tab[115]['name']     = $LANG['profiles'][57];
+//       $tab[115]['name']     =__('See the changes (actor)');
 //       $tab[115]['datatype'] = 'bool';
 //
 //       $tab[116]['table']    = $this->getTable();
 //       $tab[116]['field']    = 'show_all_change';
-//       $tab[116]['name']     = $LANG['profiles'][55];
+//       $tab[116]['name']     = _('See all changes')_;
 //       $tab[116]['datatype'] = 'bool';
 //
 //       $tab[117]['table']    = $this->getTable();
 //       $tab[117]['field']    = 'edit_all_change';
-//       $tab[117]['name']     = $LANG['profiles'][56];
+//       $tab[117]['name']     = __('Update all changes');
 //       $tab[117]['datatype'] = 'bool';
 
       $tab['other'] = __('Other');
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'password_update';
-      $tab[4]['name']     = $LANG['profiles'][24];
+      $tab[4]['name']     = __('Update password');
       $tab[4]['datatype'] = 'bool';
 
       $tab[63]['table']    = $this->getTable();
@@ -1894,13 +1891,13 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       if ($none) {
-         $values['NULL'] = $LANG['profiles'][12];
+         $values['NULL'] = __('No access');
       }
       if ($read) {
-         $values['r'] = $LANG['profiles'][10];
+         $values['r'] = __('Read');
       }
       if ($write) {
-         $values['w'] = $LANG['profiles'][11];
+         $values['w'] = __('Write');
       }
       Dropdown::showFromArray($name,$values,array('value'=>$value));
    }
@@ -1965,13 +1962,13 @@ class Profile extends CommonDBTM {
 
       switch ($value) {
          case '' :
-            return $LANG['profiles'][12];
+            return __('No access');
 
          case 'r' :
-            return $LANG['profiles'][10];
+            return __('Read');
 
          case 'w' :
-            return $LANG['profiles'][11];
+            return __('Write');
 
          default :
             return '';

@@ -115,9 +115,9 @@ class Profile_User extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
-         echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
+         echo "</td><td class='center'>"._n('Profile', 'Profiles', 1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
-         echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
+         echo "</td><td>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -128,7 +128,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][37]."</th>";
-      echo "<th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")";
+      echo "<th>".__('Profile (D=Dynamic, R=Recursive)');
       echo "</th></tr>";
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
@@ -237,9 +237,9 @@ class Profile_User extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right' => 'all'));
-         echo "</td><td class='tab_bg_2 center'>".$LANG['profiles'][22]."&nbsp;:&nbsp;";
+         echo "</td><td class='tab_bg_2 center'>"._n('Profile', 'Profiles', 1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
-         echo "</td><td class='tab_bg_2 center'>".$LANG['profiles'][28]."&nbsp;:&nbsp;";
+         echo "</td><td class='tab_bg_2 center'>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -249,8 +249,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
-                 " (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
+      echo "<tr><th colspan='$headerspan'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
 
       $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
@@ -265,7 +264,7 @@ class Profile_User extends CommonDBTM {
          Session::initNavigateListItems('User', $LANG['entity'][0]." = ".$entity->fields['name']);
 
          while ($data=$DB->fetch_array($result)) {
-            echo "<tr><th colspan='$headerspan'>".$LANG['profiles'][22]."&nbsp;: ".$data["name"];
+            echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'),$data["name"]);
             echo "</th></tr>";
 
             $query = "SELECT `glpi_users`.*,
@@ -366,11 +365,9 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".$LANG['profiles'][22]."&nbsp;:<span class='small_space'>".$prof->fields["name"].
-            "</span></th></tr>\n";
+      echo "<th>".sprintf(__('Profile: %s'),$prof->fields["name"])."</th></tr>\n";
 
-      echo "<tr><th colspan='2'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".
-                 $LANG['profiles'][28].")</th></tr>";
+      echo "<tr><th colspan='2'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
       echo "</table>\n";
 
       $query = "SELECT `glpi_users`.*,
@@ -507,7 +504,7 @@ class Profile_User extends CommonDBTM {
             }
 
          } else {
-            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".$LANG['profiles'][33]."</td></tr>\n";
+            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".__('No user found')."</td></tr>\n";
          }
       }
       echo "</table></div>\n";
@@ -669,12 +666,12 @@ class Profile_User extends CommonDBTM {
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'is_dynamic';
-      $tab[3]['name']     = $LANG['profiles'][29];
+      $tab[3]['name']     = __('Dynamic');
       $tab[3]['datatype'] = 'bool';
 
       $tab[4]['table'] = 'glpi_profiles';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['profiles'][22];
+      $tab[4]['name']  = _n('Profile', 'Profiles', 1);
 
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';

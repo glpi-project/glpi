@@ -2533,7 +2533,7 @@ class Html {
       if (Session::haveRight("create_ticket","1")) {
          echo "<li id='menu2'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' ".
-                "title=\"".$LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
+                "title=\"".__s('Create a ticket')."\" class='itemP'>".__('Create a ticket')."</a>";
          echo "</li>";
       }
 

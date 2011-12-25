@@ -98,9 +98,9 @@ class RuleRight extends Rule {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".$LANG['profiles'][22] . "</td><td>";
+      echo "<td class='center'>"._n('Profile', 'Profiles', 1) . "</td><td>";
       Dropdown::show('Profile');
-      echo "</td><td><span class='small_space'>".$LANG['profiles'][28] . "</span></td><td colspan='3'>";
+      echo "</td><td><span class='small_space'>".__('Recursive') . "</span></td><td colspan='3'>";
       Dropdown::showYesNo("is_recursive",0);
       echo "</td></tr>\n";
 
@@ -342,7 +342,7 @@ class RuleRight extends Rule {
       $actions['profiles_id']['type']  = 'dropdown';
       $actions['profiles_id']['table'] = 'glpi_profiles';
 
-      $actions['is_recursive']['name']  = $LANG['profiles'][28];
+      $actions['is_recursive']['name']  = __('Recursive');
       $actions['is_recursive']['type']  = 'yesno';
       $actions['is_recursive']['table'] = '';
 

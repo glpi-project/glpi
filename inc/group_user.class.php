@@ -137,7 +137,7 @@ class Group_User extends CommonDBRelation{
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'><tr>";
-      echo "<th colspan='$headerspan'>".$LANG['Menu'][36]."&nbsp;(D=".$LANG['profiles'][29].")</th>";
+      echo "<th colspan='$headerspan'>".__('Groups (D=Dynamic)')."</th>";
       echo "</tr>";
 
 
@@ -380,7 +380,7 @@ class Group_User extends CommonDBRelation{
 
       // Display results
       if ($number) {
-         Html::printAjaxPager($LANG['Menu'][14]." (D=".$LANG['profiles'][29].")", $start, $number);
+         Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
          Session::initNavigateListItems('User', $group->getTypeName(1)." = ".$group->getName());
 
          echo "<div class='spaced'>";
@@ -467,7 +467,7 @@ class Group_User extends CommonDBRelation{
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'is_dynamic';
-      $tab[3]['name']     = $LANG['profiles'][29];
+      $tab[3]['name']     = __('Dynamic');
       $tab[3]['datatype'] = 'bool';
 
       $tab[4]['table'] = 'glpi_groups';
