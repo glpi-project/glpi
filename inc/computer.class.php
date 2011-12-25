@@ -650,14 +650,14 @@ class Computer extends CommonDBTM {
           && count($dataocs)) {
 
          echo "<br>";
-         echo $LANG['ocsng'][14]."&nbsp;: ".Html::convDateTime($dataocs["last_ocs_update"]);
-         echo "<br>";
-         echo $LANG['ocsng'][13]."&nbsp;: ".Html::convDateTime($dataocs["last_update"]);
-         echo "<br>";
+         echo '<table>';
+         echo '<tr><td>'.__('Last OCSNG inventory date').'</td><td>'.Html::convDateTime($dataocs["last_ocs_update"]).'</td></tr>';
+         echo '<tr><td>'.__('Import date in GLPI').'</td><td>'.Html::convDateTime($dataocs["last_update"]).'</td></tr>';
          if (Session::haveRight("ocsng","r")) {
             $tmp = " <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id=" .
                    OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
-            printf(__('Server: %s'), $tmp);
+            echo '<tr><td>'.__('Server').'</td><td>'.$tmp.'</td></tr>';
+            
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$ID'";
@@ -669,18 +669,20 @@ class Computer extends CommonDBTM {
 
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
+               echo '<tr><td colspan=2>'.OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
                                                                  $data_version["ocsid"],
-                                                                 $LANG['ocsng'][57]);
+                                                                 __('OCSNG interface')).'</td></tr>';
             }
 
             if ($data_version["ocs_agent_version"] != NULL) {
-               echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
+               echo '<tr><td>'.__('Agent').'</td><td>'.$data_version["ocs_agent_version"].'</td></tr>';
             }
 
          } else {
-            printf(__('Server: %s'), OcsServer::getServerNameByID($ID));
+            echo '<tr><td>'.__('Server').'</td><td>'.OcsServer::getServerNameByID($ID).'</td></tr>';
          }
+         echo "</table>";
+         
       }
       echo "</td></tr>\n";
 
@@ -1064,7 +1066,7 @@ class Computer extends CommonDBTM {
 
          $tab[104]['table']         = 'glpi_ocslinks';
          $tab[104]['field']         = 'ocs_agent_version';
-         $tab[104]['name']          = $LANG['ocsng'][49];
+         $tab[104]['name']          = __('Agent');
          $tab[104]['massiveaction'] = false;
          $tab[104]['joinparams']    = array('jointype' => 'child');
 
@@ -1077,7 +1079,7 @@ class Computer extends CommonDBTM {
 
          $tab[106]['table']         = 'glpi_ocslinks';
          $tab[106]['field']         = 'ocsid';
-         $tab[106]['name']          = $LANG['ocsng'][45];
+         $tab[106]['name']          = __('OCS ID');
          $tab[106]['datatype']      = 'number';
          $tab[106]['massiveaction'] = false;
          $tab[106]['joinparams']    = array('jointype' => 'child');

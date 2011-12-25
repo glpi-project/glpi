@@ -43,7 +43,7 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
+Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "config","ocsng");
 
 //Delete template or server
 if (isset($_POST["delete"])) {

@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
 
-Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
+Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "config","ocsng");
 
 Search::show('OcsServer');
 

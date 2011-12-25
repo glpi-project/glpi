@@ -1695,13 +1695,13 @@ $LANG['ocsng'][46] = "Supprimé d'OCSNG";
 $LANG['ocsng'][47] = "Lié avec un ordinateur d'OCSNG";
 $LANG['ocsng'][48] = "L'ordinateur a changé d'ID OCSNG";
 $LANG['ocsng'][49] = "Agent";
-$LANG['ocsng'][50] = "IP(s) verrouillée(s)";
+$LANG['ocsng'][50] = "IPs verrouillées";
 
-$LANG['ocsng'][52]="Logiciel(s) verrouillé(s)";
+$LANG['ocsng'][52] = "Logiciels verrouillés";
 $LANG['ocsng'][53] = "Liaisons OCSNG";
 $LANG['ocsng'][54] = "Logiciel mis dans la corbeille par la synchro OCSNG";
-$LANG['ocsng'][55] = "Volume(s) verrouillé(s)";
-$LANG['ocsng'][56] = "Composant(s) verrouillé(s)";
+$LANG['ocsng'][55] = "Volumes verrouillés";
+$LANG['ocsng'][56] = "Composants verrouillés";
 $LANG['ocsng'][57] = "Interface OCSNG";
 $LANG['ocsng'][58] = "Liaison OCSNG";
 $LANG['ocsng'][59] = "Présent dans GLPI";

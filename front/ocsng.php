@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('ocsng'        => 'r',
                                     'clean_ocsng'  => 'r'));
 
-Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils","ocsng");
+Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset($_SESSION["ocs_import"])) {
    unset ($_SESSION["ocs_import"]);
 }
@@ -62,30 +62,30 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
 
    if ($DB->numrows($result) > 0) {
       $datas = $DB->fetch_array($result);
-      $name = " : " . $datas["name"];
+      $name = $datas["name"];
    }
    echo "<div class='center'>";
    echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png' alt='" .
-         $LANG['ocsng'][0] . "' title=\"" . $LANG['ocsng'][0] . "\" ></td>";
+         __s('OCS Inventory NG') . "' title=\"" . __s('OCS Inventory NG') . "\" ></td>";
    echo "</div>";
 
    echo "<div class='center'><table class='tab_cadre'>";
-   echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
+   echo "<tr><th>" . __('OCSNG server: ') . " " . $name . "</th></tr>";
 
    if (Session::haveRight('ocsng','w')) {
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>".$LANG['ocsng'][2].
-            "</a></td></tr>";
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>".
+            __('Import new computers')."</a></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>".$LANG['ocsng'][1].
-            "</a></td></tr>";
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>".
+            __('Synchronize computers already imported')."</a></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.link.php'>".$LANG['ocsng'][4].
-            "</a></td></tr>";
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.link.php'>".
+            __('Link new OCS computers to existing GLPI computers')."</a></td></tr>";
    }
 
    if (Session::haveRight('clean_ocsng','r')) {
-      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.clean.php'>".$LANG['ocsng'][3].
-            "</a></td> </tr>";
+      echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.clean.php'>".
+            __('Clean links between GLPI and OCSNG')."</a></td> </tr>";
    }
 
    echo "</table></div>";

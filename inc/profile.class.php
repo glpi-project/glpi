@@ -746,7 +746,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['ocsng'][3]."</td><td>";
+      echo "<td>".__('Clean links between GLPI and OCSNG')."</td><td>";
       self::dropdownNoneReadWrite("clean_ocsng", $this->fields["clean_ocsng"], 1, 1, 1);
       echo "</td><td colspan='4'>";
       echo "</td></tr>\n";

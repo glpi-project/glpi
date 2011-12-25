@@ -112,7 +112,7 @@ class RuleOcs extends Rule {
 
       $criterias['OCS_SERVER']['table']     = 'glpi_ocsservers';
       $criterias['OCS_SERVER']['field']     = 'name';
-      $criterias['OCS_SERVER']['name']      = $LANG['ocsng'][29];
+      $criterias['OCS_SERVER']['name']      = _n('OCSNG server', 'OCSNG servers', 1);
       $criterias['OCS_SERVER']['linkfield'] = '';
       $criterias['OCS_SERVER']['type']      = 'dropdown';
       $criterias['OCS_SERVER']['virtual']   = true;

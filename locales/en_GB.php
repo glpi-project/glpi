@@ -1411,6 +1411,8 @@ $LANG['ocsconfig'][57]="equal";
 $LANG['ocsconfig'][58]="The link automatically connects a GLPI computer with one in OCSNG.<br>This option is taken into account during manual link and by synchronization scripts.";
 $LANG['ocsconfig'][59]="Web address of the OCSNG console";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['ocsng'][0]="OCS Inventory NG";
 $LANG['ocsng'][1]="Synchronize computers already imported";
 $LANG['ocsng'][2]="Import new computers";
@@ -1426,7 +1428,7 @@ $LANG['ocsng'][12]="No new computer to be updated";
 $LANG['ocsng'][13]="Import date in GLPI";
 $LANG['ocsng'][14]="Last OCSNG inventory date";
 $LANG['ocsng'][15]="No field locked";
-$LANG['ocsng'][16]="Locked Field(s)";
+$LANG['ocsng'][16]="Locked fields";
 $LANG['ocsng'][18]="Connection to OCSNG database successful";
 $LANG['ocsng'][19]="Valid OCSNG configuration and version";
 $LANG['ocsng'][20]="Invalid OCSNG Version: RC3 is required";
@@ -1437,9 +1439,9 @@ $LANG['ocsng'][26]="Choice of an OCSNG server";
 $LANG['ocsng'][27]="No OCSNG server defined";
 $LANG['ocsng'][28]="OCSNG servers";
 $LANG['ocsng'][29]="OCSNG server";
-$LANG['ocsng'][30]="Locked monitor(s)";
-$LANG['ocsng'][32]="Locked device(s)";
-$LANG['ocsng'][34]="Locked printer(s)";
+$LANG['ocsng'][30]="Locked monitors";
+$LANG['ocsng'][32]="Locked devices";
+$LANG['ocsng'][34]="Locked printers";
 $LANG['ocsng'][37]="Enable preview";
 $LANG['ocsng'][38]="Disable the preview";
 $LANG['ocsng'][39]="Target location";
@@ -1453,13 +1455,13 @@ $LANG['ocsng'][46]="Deleted in OCSNG";
 $LANG['ocsng'][47]="Linked with an OCSNG computer";
 $LANG['ocsng'][48]="The OCSNG ID of the computer changed";
 $LANG['ocsng'][49]="Agent";
-$LANG['ocsng'][50]="Locked IP(s)";
-$LANG['ocsng'][52]="Locked software(s)";
+$LANG['ocsng'][50]="Locked IPs";
+$LANG['ocsng'][52]="Locked software";
 $LANG['ocsng'][53]="OCSNG links";
 $LANG['ocsng'][54]="Software deleted by OCSNG synchronization";
-$LANG['ocsng'][55]="Volume(s) locked(s)";
-$LANG['ocsng'][56]="Locked component(s)";
-$LANG['ocsng'][57]="OCSNG Interface";
+$LANG['ocsng'][55]="Locked volumes";
+$LANG['ocsng'][56]="Locked components";
+$LANG['ocsng'][57]="OCSNG interface";
 $LANG['ocsng'][58]="OCSNG link";
 $LANG['ocsng'][59]="Existing in GLPI";
 $LANG['ocsng'][60]="Existing in OCSNG";
@@ -1475,12 +1477,10 @@ $LANG['ocsng'][73]="Linked computers";
 $LANG['ocsng'][74]="Unmodified computers";
 $LANG['ocsng'][75]="Duplicate computers";
 $LANG['ocsng'][76]="Statistics of the OCS link";
-$LANG['ocsng'][77]="process completed";
+$LANG['ocsng'][77]="Process completed";
 $LANG['ocsng'][78]="Link if possible, otherwise imports declined";
 $LANG['ocsng'][79]="Link if possible";
 $LANG['ocsng'][80]="Computers whose import is refused by a rule";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['pager'][1]="to";
 $LANG['pager'][2]="from";
