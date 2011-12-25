@@ -285,7 +285,7 @@ class Peripheral  extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>\n";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
+      echo "<td>".__('Management type')."</td>\n";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
                                  array('withtemplate' => $withtemplate,
@@ -308,7 +308,7 @@ class Peripheral  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>\n";
+      echo "<td>".__('Brand')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "brand");
       echo "</td></tr>\n";
@@ -433,7 +433,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'brand';
-      $tab[11]['name']     = $LANG['peripherals'][18];
+      $tab[11]['name']     = __('Brand');
       $tab[11]['datatype'] = 'string';
 
       $tab[23]['table'] = 'glpi_manufacturers';
@@ -458,7 +458,7 @@ class Peripheral  extends CommonDBTM {
 
       $tab[82]['table']         = $this->getTable();
       $tab[82]['field']         = 'is_global';
-      $tab[82]['name']          = $LANG['peripherals'][31];
+      $tab[82]['name']          = __('Global management');
       $tab[82]['datatype']      = 'bool';
       $tab[82]['massiveaction'] = false;
 

@@ -432,7 +432,7 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
          }
       }
 
@@ -469,7 +469,7 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
          }
       }
 

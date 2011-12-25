@@ -45,14 +45,14 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
    function getEvents() {
       global $LANG;
 
-      $events = array('new'            => $LANG['problem'][8],
-                      'update'         => $LANG['problem'][9],
-                      'solved'         => $LANG['problem'][10],
+      $events = array('new'            => __('New problem'),
+                      'update'         => __('Update of a problem'),
+                      'solved'         => __('Problem solved'),
                       'add_task'       => $LANG['job'][49],
                       'update_task'    => $LANG['job'][52],
                       'delete_task'    => $LANG['job'][53],
-                      'closed'         => $LANG['problem'][11],
-                      'delete'         => $LANG['problem'][12]);
+                      'closed'         => __('Closure of a problem'),
+                      'delete'         => __('Deleting a problem'));
       asort($events);
       return $events;
    }
@@ -212,9 +212,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'task.status'               => $LANG['joblist'][0],
                     'problem.numberoftasks'     => $LANG['mailing'][122],
                     'problem.numberoftickets'   => __('Number of tickets'),
-                    'problem.impacts'           => $LANG['problem'][4],
-                    'problem.causes'            => $LANG['problem'][5],
-                    'problem.symtoms'           => $LANG['problem'][6],
+                    'problem.impacts'           => __('Impacts'),
+                    'problem.causes'            => __('Causes'),
+                    'problem.symtoms'           => __('Symptoms'),
                     'item.name'                 => $LANG['financial'][104],
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),

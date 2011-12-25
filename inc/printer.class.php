@@ -344,7 +344,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
+      echo "<td>".$LANG['common'][109]."</td>";
       echo "<td>";
       Dropdown::show('Group', array('name'      => 'groups_id_tech',
                                     'value'     => $this->fields['groups_id_tech'],
@@ -367,11 +367,11 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username')."&nbsp;:</td>\n";
+      echo "<td>".__('Alternate username')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>\n";
+      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
@@ -385,7 +385,7 @@ class Printer  extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>\n";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".__('Management type')."</td>";
       echo "<td>";
       if ($this->can($ID,'w')) {
          Dropdown::showGlobalSwitch($this->fields["id"],
@@ -425,44 +425,44 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
+      echo "<td>".$LANG['devices'][6]."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "memory_size");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
+      echo "<td>".__('Initial page counter')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "init_pages_counter", array('size' => 10));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['printers'][26]."&nbsp;:</td>\n";
+      echo "<td>".__('Current counter of pages')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "last_pages_counter", array('size' => 10));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['printers'][18]."&nbsp;: </td>";
+      echo "<td>"._n('Port','Ports',2)."</td>";
       echo "<td>\n<table>";
       // serial interface
-      echo "<tr><td>".$LANG['printers'][14]."</td><td>";
+      echo "<tr><td>".__('Serial')."</td><td>";
       Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);
       echo "</td>";
       // parallel interface?
-      echo "<td>".$LANG['printers'][15]."</td><td>";
+      echo "<td>".__('Parallel')."</td><td>";
       Dropdown::showYesNo("have_parallel", $this->fields["have_parallel"]);
       echo "</td></tr>";
       // USB interface?
-      echo "<tr><td>".$LANG['printers'][27]."</td><td>";
+      echo "<tr><td>".__('USB')."</td><td>";
       Dropdown::showYesNo("have_usb", $this->fields["have_usb"]);
       echo "</td>";
       // ethernet interface?
-      echo "<td>".$LANG['printers'][28]."</td><td>";
+      echo "<td>".__('Ethernet')."</td><td>";
       Dropdown::showYesNo("have_ethernet",$this->fields["have_ethernet"]);
       echo "</td></tr>";
       // wifi ?
-      echo "<tr><td>".$LANG['printers'][29]."</td><td colspan='3'>";
+      echo "<tr><td>".__('Wifi')."</td><td colspan='3'>";
       Dropdown::showYesNo("have_wifi", $this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
 
@@ -581,38 +581,38 @@ class Printer  extends CommonDBTM {
 
       $tab[42]['table']    = $this->getTable();
       $tab[42]['field']    = 'have_serial';
-      $tab[42]['name']     = $LANG['printers'][14];
+      $tab[42]['name']     = __('Serial');
       $tab[42]['datatype'] = 'bool';
 
       $tab[43]['table']    = $this->getTable();
       $tab[43]['field']    = 'have_parallel';
-      $tab[43]['name']     = $LANG['printers'][15];
+      $tab[43]['name']     = __('Parallel');
       $tab[43]['datatype'] = 'bool';
 
       $tab[44]['table']    = $this->getTable();
       $tab[44]['field']    = 'have_usb';
-      $tab[44]['name']     = $LANG['printers'][27];
+      $tab[44]['name']     = __('USB');
       $tab[44]['datatype'] = 'bool';
 
       $tab[45]['table']    = $this->getTable();
       $tab[45]['field']    = 'have_ethernet';
-      $tab[45]['name']     = $LANG['printers'][28];
+      $tab[45]['name']     = __('Ethernet');
       $tab[45]['datatype'] = 'bool';
 
       $tab[46]['table']    = $this->getTable();
       $tab[46]['field']    = 'have_wifi';
-      $tab[46]['name']     = $LANG['printers'][29];
+      $tab[46]['name']     = __('Wifi');
       $tab[46]['datatype'] = 'bool';
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'init_pages_counter';
-      $tab[11]['name']     = $LANG['printers'][30];
+      $tab[11]['name']     = __('Initial page counter');
       $tab[11]['datatype'] = 'number';
       $tab[11]['nosearch'] = true; // only display and histo, no index
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'last_pages_counter';
-      $tab[12]['name']     = $LANG['printers'][26];
+      $tab[12]['name']     = __('Current counter of pages');
       $tab[12]['datatype'] = 'number';
 
       $tab[90]['table']         = $this->getTable();
@@ -650,7 +650,7 @@ class Printer  extends CommonDBTM {
 
       $tab[82]['table']         = $this->getTable();
       $tab[82]['field']         = 'is_global';
-      $tab[82]['name']          = $LANG['peripherals'][31];
+      $tab[82]['name']          = __('Global management');
       $tab[82]['datatype']      = 'bool';
       $tab[82]['massiveaction'] = false;
 

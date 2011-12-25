@@ -277,7 +277,7 @@ class Phone extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".__('Management type')."</td>";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
                                  array('withtemplate' => $withtemplate,
@@ -300,13 +300,13 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>";
+      echo "<td>".__('Brand')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this,"brand");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
+      echo "<td>".__('Power supply')."</td>";
       echo "<td>";
       Dropdown::show('PhonePowerSupply', array('value' => $this->fields["phonepowersupplies_id"]));
       echo "</td></tr>\n";
@@ -318,7 +318,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['phones'][40]."&nbsp;:</td><td>";
+      echo "<td>".__('Number of lines')."</td><td>";
       Html::autocompletionTextField($this, "number_line");
       echo "</td></tr>\n";
 
@@ -326,12 +326,12 @@ class Phone extends CommonDBTM {
       echo "<td>".$LANG['monitors'][18]."&nbsp;:</td>";
       echo "<td>";
       // micro?
-      echo "\n<table><tr><td>".$LANG['phones'][38]."</td>";
+      echo "\n<table><tr><td>".__('Headset')."</td>";
       echo "<td>&nbsp;";
       Dropdown::showYesNo("have_headset", $this->fields["have_headset"]);
       echo "</td></tr>";
       // hp?
-      echo "<tr><td>".$LANG['phones'][39]."</td>";
+      echo "<tr><td>".__('Speaker')."</td>";
       echo "<td>&nbsp;";
       Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
       echo "</td></tr></table>\n";
@@ -432,7 +432,7 @@ class Phone extends CommonDBTM {
 
       $tab[9]['table']     = $this->getTable();
       $tab[9]['field']     = 'number_line';
-      $tab[9]['name']      = $LANG['phones'][40];
+      $tab[9]['name']      = __('Number of lines');
       $tab[9]['datatype']  = 'string';
 
       $tab[70]['table'] = 'glpi_users';
@@ -462,7 +462,7 @@ class Phone extends CommonDBTM {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'brand';
-      $tab[11]['name']     = $LANG['peripherals'][18];
+      $tab[11]['name']     = __('Brand');
       $tab[11]['datatype'] = 'string';
 
       $tab[23]['table'] = 'glpi_manufacturers';
@@ -482,16 +482,16 @@ class Phone extends CommonDBTM {
 
       $tab[42]['table'] = 'glpi_phonepowersupplies';
       $tab[42]['field'] = 'name';
-      $tab[42]['name']  = $LANG['phones'][36];
+      $tab[42]['name']  = __('Power supply');
 
       $tab[43]['table']    = $this->getTable();
       $tab[43]['field']    = 'have_headset';
-      $tab[43]['name']     = $LANG['phones'][38];
+      $tab[43]['name']     = __('Headset');
       $tab[43]['datatype'] = 'bool';
 
       $tab[44]['table']    = $this->getTable();
       $tab[44]['field']    = 'have_hp';
-      $tab[44]['name']     = $LANG['phones'][39];
+      $tab[44]['name']     = __('Speaker');
       $tab[44]['datatype'] = 'bool';
 
       $tab[80]['table']         = 'glpi_entities';
@@ -501,7 +501,7 @@ class Phone extends CommonDBTM {
 
       $tab[82]['table']         = $this->getTable();
       $tab[82]['field']         = 'is_global';
-      $tab[82]['name']          = $LANG['peripherals'][31];
+      $tab[82]['name']          = __('Global management');
       $tab[82]['datatype']      = 'bool';
       $tab[82]['massiveaction'] = false;
 

@@ -42,7 +42,8 @@ function registerPluginType($name) {
    global $LANG;
 
    echo "</table>";
-   Html::displayErrorAndDie($LANG['plugins'][10]."&nbsp;: $name<br><br>".$LANG['plugins'][1]);
+   Html::displayErrorAndDie(sprintf(__('The plugin %s is incompatible  with this version of GLPI'),$name).
+            "<br><br>".__('Delete or update it otherwise GLPI will not work correctly.'));
 }
 
 

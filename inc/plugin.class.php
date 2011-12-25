@@ -321,12 +321,12 @@ class Plugin extends CommonDBTM {
       $pluglist = $this->find("", "name, directory");
       $i = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
-      echo "<tr><th colspan='8'>".$LANG['plugins'][0]."</th></tr>\n";
+      echo "<tr><th colspan='8'>".__('Plugins list')."</th></tr>\n";
 
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".$LANG['install'][92]."</th>";
-         echo "<th>".__('Status')."</th><th>".$LANG['plugins'][9]."</th>";
+         echo "<th>".__('Status')."</th><th>".__('Authors')."</th>";
          echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
@@ -386,24 +386,24 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::NOTINSTALLED :
-                  echo __('Not installed');
+                  _e('Not installed');
                   break;
 
                case self::NOTUPDATED :
-                  echo $LANG['plugins'][6];
+                  _e('To update');
                   break;
 
                case self::TOBECONFIGURED :
-                  echo $LANG['plugins'][2];
+                  _e('Installed / not configured');
                   break;
 
                case self::NOTACTIVATED :
-                  echo $LANG['plugins'][3];
+                  _e('Installed / not activated');
                   break;
 
                case self::TOBECLEANED :
                default:
-                  echo $LANG['plugins'][4];
+                  _e('Error / to clean');
                   break;
             }
             echo "</td>";
@@ -428,7 +428,8 @@ class Plugin extends CommonDBTM {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
                   break;
@@ -455,13 +456,16 @@ class Plugin extends CommonDBTM {
                              "</a>";
                      }
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;:";
+                  
+                     $missing = '';
                      if (!function_exists("plugin_".$plug['directory']."_install")) {
-                        echo " plugin_".$plug['directory']."_install";
+                        $missing .= "plugin_".$plug['directory']."_install";
                      }
                      if (!function_exists("plugin_".$plug['directory']."_check_config")) {
-                        echo " plugin_".$plug['directory']."_check_config";
+                        $missing .= " plugin_".$plug['directory']."_check_config";
                      }
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), $missing);
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
@@ -473,7 +477,8 @@ class Plugin extends CommonDBTM {
                         echo "&nbsp;";
                      }
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
                   break;
@@ -488,14 +493,16 @@ class Plugin extends CommonDBTM {
                         Html::redirect($this->getSearchURL());
                      }
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_check_config";
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), "plugin_".$plug['directory']."_check_config");
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
                   break;
@@ -513,7 +520,8 @@ class Plugin extends CommonDBTM {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
-                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                     //TRANS: %s is the list of missing functions
+                     echo sprintf(__('Non-existent functions: %s'), "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
                   break;
@@ -530,13 +538,13 @@ class Plugin extends CommonDBTM {
          }
       }
       else {
-         echo "<tr class='tab_bg_1'><td class='center' colspan='7'>".$LANG['plugins'][7]."</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center' colspan='7'>".__('No plugin installed')."</td></tr>";
       }
       echo "</table></div>";
       echo "<br>";
       echo "<div class='center'><p>";
       echo "<a href='http://plugins.glpi-project.org'  class='icon_consol b' target='_blank'>".
-            $LANG['plugins'][8]."</a></p>";
+            __('See the catalog of plugins')."</a></p>";
       echo "</div>";
 
       $PLUGIN_HOOKS = $PLUGIN_HOOKS_SAVE;
@@ -867,7 +875,7 @@ class Plugin extends CommonDBTM {
    function showSystemInformations($width) {
       global $LANG;
 
-      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['plugins'][0] . "</th></tr>";
+      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . __('Plugins list') . "</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $plug = new Plugin();
@@ -891,16 +899,16 @@ class Plugin extends CommonDBTM {
                break;
 
             case self::TOBECONFIGURED :
-               $msg .=  $LANG['plugins'][2];
+               $msg .=  __('Installed / not configured');
                break;
 
             case self::NOTACTIVATED :
-               $msg .=  $LANG['plugins'][3];
+               $msg .=  __('Installed / not activated');
                break;
 
             case self::TOBECLEANED :
             default :
-               $msg .=  $LANG['plugins'][4];
+               $msg .=  __('Error / to clean');
                break;
          }
          echo wordwrap("\t".$msg."\n", $width, "\n\t\t");

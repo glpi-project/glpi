@@ -503,7 +503,8 @@ class Cartridge extends CommonDBTM {
                if ($pages[$printer]<$data['pages']) {
                   $pages_printed += $data['pages']-$pages[$printer];
                   $nb_pages_printed++;
-                  echo ($data['pages']-$pages[$printer])." ".$LANG['printers'][31];
+                  $pp = $data['pages']-$pages[$printer];
+                  echo sprintf(_n('%d printed page','%d printed pages',$pp), $pp);
                   $pages[$printer] = $data['pages'];
                }
                echo "</td>";
@@ -683,7 +684,8 @@ class Cartridge extends CommonDBTM {
             if ($pages<$data['pages']) {
                $pages_printed += $data['pages']-$pages;
                $nb_pages_printed++;
-               echo ($data['pages']-$pages)." ".$LANG['printers'][31];
+               $pp=$data['pages']-$pages;
+               echo sprintf(_n('%d printed page','%d printed pages',$pp), $pp);
                $pages = $data['pages'];
             }
             echo "</td><td class='center'>";
