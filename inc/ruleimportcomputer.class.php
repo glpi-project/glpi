@@ -94,7 +94,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['ocsservers_id']['table']     = 'glpi_ocsservers';
       $criterias['ocsservers_id']['field']     = 'name';
-      $criterias['ocsservers_id']['name']      = $LANG['ocsng'][29];
+      $criterias['ocsservers_id']['name']      = _n('OCSNG server', 'OCSNG servers', 1);
       $criterias['ocsservers_id']['linkfield'] = '';
       $criterias['ocsservers_id']['type']      = 'dropdown';
 
@@ -130,7 +130,7 @@ class RuleImportComputer extends Rule {
       global $LANG;
 
       $actions = array();
-      $actions['_fusion']['name']        = $LANG['ocsng'][58];
+      $actions['_fusion']['name']        = __('OCSNG link');
       $actions['_fusion']['type']        = 'fusion_type';
 
       $actions['_ignore_import']['name'] = __('To be unaware of import');
@@ -143,8 +143,8 @@ class RuleImportComputer extends Rule {
    static function getRuleActionValues() {
       global $LANG;
 
-      return array(self::RULE_ACTION_LINK_OR_IMPORT    => $LANG['ocsng'][79],
-                   self::RULE_ACTION_LINK_OR_NO_IMPORT => $LANG['ocsng'][78]);
+      return array(self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
+                   self::RULE_ACTION_LINK_OR_NO_IMPORT => __('Link if possible, otherwise imports declined'));
    }
 
 

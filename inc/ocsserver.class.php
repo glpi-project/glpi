@@ -98,10 +98,8 @@ class OcsServer extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['ocsng'][28];
-      }
-      return $LANG['ocsng'][29];
+
+      return _n('OCSNG server', 'OCSNG servers', $nb);
    }
 
 
@@ -174,7 +172,7 @@ class OcsServer extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['ocsng'][29];
+      $tab['common'] = _n('OCSNG server', 'OCSNG servers', 1);
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -599,22 +597,22 @@ class OcsServer extends CommonDBTM {
 
       $out="<br><div class='center'>\n";
       $out.="<table class='tab_cadre_fixe'>";
-      $out.="<tr><th>" .$LANG['ocsconfig'][6] . "</th></tr>\n";
+      $out.="<tr><th>" .__('Connecting to the OCSNG database') . "</th></tr>\n";
       $out.="<tr class='tab_bg_2'><td class='center'>";
       if ($ID != -1) {
          if (!self::checkOCSconnection($ID)) {
-            $out .= $LANG['ocsng'][21];
+            $out .= __('Connection to the OCSNG database failed');
          } else if (!self::checkConfig(1)) {
-            $out .= $LANG['ocsng'][20];
+            $out .= __('Invalid OCSNG Version: RC3 is required');
          } else if (!self::checkConfig(2)) {
-            $out .= $LANG['ocsng'][42];
+            $out .= __('Invalid OCSNG configuration (TRACE_DELETED must be active)');
          } else if (!self::checkConfig(4)) {
-            $out .= $LANG['ocsng'][43];
+            $out .= __('Access denied on OCSNG database (Need write rights on hardware.CHECKSUM necessary)');
          } else if (!self::checkConfig(8)) {
-            $out .= $LANG['ocsng'][44];
+            $out .= __('Access denied on OCSNG database (Delete rights in deleted_equiv table necessary)');
          } else {
-            $out .= $LANG['ocsng'][18];
-            $out .= "</td></tr>\n<tr class='tab_bg_2'><td class='center'>".$LANG['ocsng'][19];
+            $out .= __('Connection to OCSNG database successful');
+            $out .= "</td></tr>\n<tr class='tab_bg_2'><td class='center'>".__('Valid OCSNG configuration and version');
          }
       }
       $out .= "</td></tr>\n";
@@ -828,14 +826,14 @@ class OcsServer extends CommonDBTM {
 
       $ocsServers = getAllDatasFromTable('glpi_ocsservers');
       if (!empty($ocsServers)) {
-         echo "\n<tr class='tab_bg_2'><th>" . $LANG['ocsng'][0] . "</th></tr>\n";
+         echo "\n<tr class='tab_bg_2'><th>" . __('OCS Inventory NG') . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
          $msg = '';
          foreach ($ocsServers as $ocsServer) {
                $msg .= $LANG['ocsconfig'][2]." : '".$ocsServer['ocs_db_host']."'";
-               $msg .= ', '.(self::checkOCSconnection($ocsServer['id'])?$LANG['ocsng'][18]
-                                                                       :$LANG['ocsng'][18]);
+               $msg .= ', '.(self::checkOCSconnection($ocsServer['id'])?__('Connection to OCSNG database successful')
+                                                                       :__('Connection to the OCSNG database failed'));
                $msg .= ', '.$LANG['ocsconfig'][38]. " : ".$ocsServer['use_soft_dict'];
          }
          echo wordwrap($msg."\n", $width, "\n\t\t");
@@ -1156,7 +1154,8 @@ class OcsServer extends CommonDBTM {
          }
 
       } else {
-         Session::addMessageAfterRedirect($ocsid . " - " . $LANG['ocsng'][23], false, ERROR);
+         //TRANS: %s is the OCS id
+         Session::addMessageAfterRedirect(sprintf(__('Unable to import, GLPI computer is already related to an element of OCSNG (%d)'), $ocsid), false, ERROR);
       }
       return false;
    }
@@ -2298,7 +2297,7 @@ class OcsServer extends CommonDBTM {
       }
 
       echo "<div class='center'>";
-      echo "<h2>" . $LANG['ocsng'][3] . "</h2>";
+      echo "<h2>" . __('Clean links between GLPI and OCSNG') . "</h2>";
 
       $target = $CFG_GLPI['root_doc'].'/front/ocsng.clean.php';
       if (($numrows = count($already_linked)) > 0) {
@@ -2323,8 +2322,8 @@ class OcsServer extends CommonDBTM {
                   __('Uncheck all') . "</a>\n";
          }
          echo "<table class='tab_cadre'>";
-         echo "<tr><th>" . __('Item') . "</th><th>" . $LANG['ocsng'][13] . "</th>";
-         echo "<th>" . $LANG['ocsng'][59] . "</th><th>" . $LANG['ocsng'][60] . "</th>";
+         echo "<tr><th>" . __('Item') . "</th><th>" . __('Import date in GLPI') . "</th>";
+         echo "<th>" . __('Existing in GLPI') . "</th><th>" . __('Existing in OCSNG') . "</th>";
          if (Session::isMultiEntitiesMode()) {
             echo "<th>" . $LANG['entity'][0] . "</th>";
          }
@@ -2366,7 +2365,7 @@ class OcsServer extends CommonDBTM {
          Html::printPager($start, $numrows, $target, $parameters);
 
       } else {
-         echo "<div class='center b'>" . $LANG['ocsng'][61] . "</div>";
+         echo "<div class='center b'>" . __('No item to clean') . "</div>";
          Html::displayBackLink();
       }
       echo "</div>";
@@ -2480,7 +2479,7 @@ class OcsServer extends CommonDBTM {
             }
          }
          echo "<div class='center'>";
-         echo "<h2>" . $LANG['ocsng'][10] . "</h2>";
+         echo "<h2>" . __('Computers updated in OCSNG') . "</h2>";
 
          $target = $CFG_GLPI['root_doc'].'/front/ocsng.sync.php';
          if (($numrows = count($already_linked)) > 0) {
@@ -2507,8 +2506,8 @@ class OcsServer extends CommonDBTM {
                    $LANG['ldap'][15]."\">";
             echo "</td></tr>\n";
 
-            echo "<tr><th>" . $LANG['ocsng'][11] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
-            echo "<th>" . $LANG['ocsng'][14] . "</th><th>" . $LANG['ocsng'][6] . "</th>";
+            echo "<tr><th>" . __('Update computers') . "</th><th>" . __('Import date in GLPI') . "</th>";
+            echo "<th>" . __('Last OCSNG inventory date') . "</th><th>" . __('Auto update') . "</th>";
             echo "<th>&nbsp;</th></tr>\n";
 
             foreach ($already_linked as $ID => $tab) {
@@ -2539,12 +2538,12 @@ class OcsServer extends CommonDBTM {
             Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
-            echo "<br><span class='b'>" . $LANG['ocsng'][11] . "</span>";
+            echo "<br><span class='b'>" . __('Update computers') . "</span>";
          }
          echo "</div>";
 
       } else {
-         echo "<div class='center b'>" . $LANG['ocsng'][12] . "</div>";
+         echo "<div class='center b'>" . __('No new computer to be updated') . "</div>";
       }
    }
 
@@ -2751,7 +2750,7 @@ class OcsServer extends CommonDBTM {
          }
 
          if ($tolinked && count($hardware)) {
-            echo "<div class='center b'>" . $LANG['ocsng'][22] . "</div>";
+            echo "<div class='center b'>" . __('Caution! The imported data (see your configuration) will overwrite the existing data') . "</div>";
          }
          echo "<div class='center'>";
 
@@ -2773,7 +2772,7 @@ class OcsServer extends CommonDBTM {
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode'
                       action='$target'>\n";
                echo "<table class='tab_cadre_fixe'>";
-               echo "<tr><th>" . $LANG['ocsng'][41] . "</th></tr>\n";
+               echo "<tr><th>" . __('Manual import mode') . "</th></tr>\n";
                echo "<tr class='tab_bg_1'><td class='center'>";
                if ($advanced) {
                   $status = "false";
@@ -2782,9 +2781,9 @@ class OcsServer extends CommonDBTM {
                }
                echo "<a href='" . $target . "?change_import_mode=" . $status . "'>";
                if ($advanced) {
-                  echo $LANG['ocsng'][38];
+                  _e('Disable preview');
                } else {
-                  echo $LANG['ocsng'][37];
+                  _e('Enable preview');
                }
                echo "</a></td></tr>";
 
@@ -2807,13 +2806,13 @@ class OcsServer extends CommonDBTM {
                    __s('Import')."\">";
             echo "</td></tr>\n";
 
-            echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".__('Manufacturer')."</th><th>";
+            echo "<tr><th>" . __('Import new computers') . "</th>\n<th>".__('Manufacturer')."</th><th>";
             echo __('Model')."</th><th>".__('Serial number')."</th>\n";
             echo "<th>" . __('Date') . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
-               echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
+               echo "<th>" . __('Match the rule ?') . "</th>\n";
                echo "<th>" . $LANG['ldap'][27] . "</th>\n";
-               echo "<th>" . $LANG['ocsng'][39] . "</th>\n";
+               echo "<th>" . __('Target location') . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";
 
@@ -2915,8 +2914,8 @@ class OcsServer extends CommonDBTM {
 
          } else {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
-         echo "<tr class='tab_bg_1'><td class='center b'>" . $LANG['ocsng'][9] . "</td></tr>\n";
+         echo "<tr><th>" . __('Import new computers') . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center b'>" . __('No new computer to be imported') . "</td></tr>\n";
          echo "</table>";
          }
          echo "</div>";
@@ -2924,8 +2923,8 @@ class OcsServer extends CommonDBTM {
       } else {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
-         echo "<tr class='tab_bg_1'><td class='center b'>" . $LANG['ocsng'][9] . "</td></tr>\n";
+         echo "<tr><th>" . __('Import new computers') . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center b'>" . __('No new computer to be imported') . "</td></tr>\n";
          echo "</table></div>";
       }
    }
@@ -3971,7 +3970,7 @@ class OcsServer extends CommonDBTM {
       if ($DB->numrows($result) > 1) {
          echo "<form action=\"".$CFG_GLPI['root_doc']."/front/ocsng.php\" method='get'>";
          echo "<div class='center'><table class='tab_cadre'>";
-         echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
+         echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Choice of an OCSNG server') . "</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
          echo "<td class='center'>";
@@ -3993,9 +3992,9 @@ class OcsServer extends CommonDBTM {
       } else {
          echo "<form action='$target' method='get'>";
          echo "<div class='center'><table class='tab_cadre'>";
-         echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
+         echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Choice of an OCSNG server') . "</th></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>".$LANG['ocsng'][27]."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>".__('No OCSNG server defined')."</td></tr>";
          echo "</table></div></form>\n";
       }
    }
@@ -4750,7 +4749,7 @@ class OcsServer extends CommonDBTM {
                             && countElementsInTable('glpi_softwareversions',
                                     "softwares_id = '".$vers->fields['softwares_id']."'") == 1) {
                            // 1 is the current to be removed
-                           $soft->putInTrash($vers->fields['softwares_id'], $LANG['ocsng'][54]);
+                           $soft->putInTrash($vers->fields['softwares_id'], __('Software deleted by OCSNG synchronization'));
                         }
                         $vers->delete(array("id" => $data['softwareversions_id']));
                      }
@@ -5497,13 +5496,13 @@ class OcsServer extends CommonDBTM {
    static function getAvailableStatistics() {
       global $LANG;
 
-      $stats = array('imported_machines_number'      => $LANG['ocsng'][70],
-                     'synchronized_machines_number'  => $LANG['ocsng'][71],
-                     'linked_machines_number'        => $LANG['ocsng'][73],
-                     'notupdated_machines_number'    => $LANG['ocsng'][74],
-                     'failed_rules_machines_number'  => $LANG['ocsng'][72],
-                     'not_unique_machines_number'    => $LANG['ocsng'][75],
-                     'link_refused_machines_number'  => $LANG['ocsng'][80]);
+      $stats = array('imported_machines_number'      => __('Imported computers'),
+                     'synchronized_machines_number'  => __('Synchronized computers'),
+                     'linked_machines_number'        => __('Linked computers'),
+                     'notupdated_machines_number'    => __('Unmodified computers'),
+                     'failed_rules_machines_number'  => __('Computers not checking any rule'),
+                     'not_unique_machines_number'    => __('Duplicate computers'),
+                     'link_refused_machines_number'  => __('Computers whose import is refused by a rule'));
       return $stats;
    }
 
@@ -5552,9 +5551,9 @@ class OcsServer extends CommonDBTM {
       global $LANG;
 
       echo "<div class='center b'>";
-      echo "<table class='tab_cadre_fixe'><th colspan='2'>".$LANG['ocsng'][76];
+      echo "<table class='tab_cadre_fixe'><th>".__('Statistics of the OCS link').'</th><th>';
       if ($finished) {
-         echo " : ".$LANG['ocsng'][77];
+        _e('Process completed');
       }
       echo "</th>";
 
@@ -5690,15 +5689,15 @@ class OcsServer extends CommonDBTM {
 
          switch ($output["action"]) {
             case self::LINK_RESULT_LINK :
-               echo $LANG['ocsng'][67];
+               _e('Link possible');
                break;
 
             case self::LINK_RESULT_NO_IMPORT:
-               echo $LANG['ocsng'][68];
+               _e('Import refused');
                break;
 
             case self::LINK_RESULT_IMPORT:
-               echo $LANG['ocsng'][69];
+               _e('New computer created in GLPI');
                break;
          }
 

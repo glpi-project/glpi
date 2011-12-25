@@ -42,10 +42,8 @@ class Ocslink extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['ocsng'][53];
-      }
-      return $LANG['ocsng'][58];
+
+      return _n('OCSNG link', 'OCSNG links', $nb);
    }
 
 
@@ -84,7 +82,7 @@ class Ocslink extends CommonDBTM {
 
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . $LANG['ocsng'][0] . "</th>";
+            echo "<tr><th>" . __('OCS Inventory NG') . "</th>";
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".$LANG['ocsconfig'][39]."&nbsp;: ".$data['tag']."</td></tr>";
          }
@@ -139,7 +137,7 @@ class Ocslink extends CommonDBTM {
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".$LANG['ocsng'][0]."</th></tr>";
+            echo "<tr><th>".__('OCS Inventory NG')."</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
@@ -175,7 +173,7 @@ class Ocslink extends CommonDBTM {
 
          if (count($locked)) {
             $header = true;
-            echo "<tr><th colspan='2'>" . $LANG['ocsng'][16] . "&nbsp;:</th></tr>\n";
+            echo "<tr><th colspan='2'>" . __('Locked fields') . "</th></tr>\n";
 
             foreach ($locked as $key => $val) {
                echo "<tr class='tab_bg_1'>";
@@ -199,7 +197,7 @@ class Ocslink extends CommonDBTM {
                if ($DB->numrows($resultSearchMonitor) == 0) {
                   $header = true;
                   if ($first) {
-                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "&nbsp;: </th></tr>\n";
+                     echo "<tr><th colspan='2'>" . __('Locked monitors') . "</th></tr>\n";
                      $first = false;
                   }
 
@@ -223,7 +221,7 @@ class Ocslink extends CommonDBTM {
             if ($DB->numrows($resultSearchPrinter) == 0) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>\n";
+                  echo "<tr><th colspan='2'>" . __('Locked printers') . "</th></tr>\n";
                   $first = false;
                }
 
@@ -246,7 +244,7 @@ class Ocslink extends CommonDBTM {
             if ($DB->numrows($resultSearchPeriph) == 0) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>\n";
+                  echo "<tr><th colspan='2'>" . __('Locked devices') . "</th></tr>\n";
                   $first = false;
                }
 
@@ -278,7 +276,7 @@ class Ocslink extends CommonDBTM {
                if ($DB->numrows($resultSearchIP) == 0) {
                   $header = true;
                   if ($first) {
-                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][50] . "</th></tr>\n";
+                     echo "<tr><th colspan='2'>" . __('Locked IPs') . "</th></tr>\n";
                      $first = false;
                   }
                   echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $val . "</td>";
@@ -302,7 +300,7 @@ class Ocslink extends CommonDBTM {
                if ($DB->numrows($resultSearchSoft) == 0) {
                   $header = true;
                   if ($first) {
-                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>\n";
+                     echo "<tr><th colspan='2'>" . __('Locked software') . "</th></tr>\n";
                      $first = false;
                   }
                   echo "<tr class='tab_bg_1'>";
@@ -326,7 +324,7 @@ class Ocslink extends CommonDBTM {
             if ($DB->numrows($resultSearchDisk) == 0) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>\n";
+                  echo "<tr><th colspan='2'>" . __('Locked volumes') . "</th></tr>\n";
                   $first = false;
                }
                echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $val . "</td>";
@@ -355,7 +353,7 @@ class Ocslink extends CommonDBTM {
             if (!$compdev->getFromDB($iddev)) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][56] . "</th></tr>\n";
+                  echo "<tr><th colspan='2'>" . __('Locked components') . "</th></tr>\n";
                   $first = false;
                }
                $device = new $types[$type]();
@@ -372,7 +370,7 @@ class Ocslink extends CommonDBTM {
                   __s('Unlock') . "'></td></tr>";
          } else {
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo $LANG['ocsng'][15]."</td></tr>";
+            echo __('No field locked')."</td></tr>";
          }
 
          echo "</table></form>";

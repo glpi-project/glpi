@@ -408,8 +408,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_OCS_IMPORT :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
-                     $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]." :";
-                     $tmp['change'].= " "."\"".$data["new_value"]."\"";
+                     $tmp['change'] = __('Imported from OCSNG:')." \"".$data["new_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -418,8 +417,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_OCS_DELETE :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  ="";
-                     $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]." :";
-                     $tmp['change'].= " "."\"".$data["old_value"]."\"";
+                     $tmp['change'] = __('Deleted in OCSNG:')." \"".$data["old_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -431,8 +429,7 @@ class Log extends CommonDBTM {
                      if ($item = getItemForItemtype($data["itemtype_link"])) {
                         $tmp['field'] = $item->getTypeName();
                      }
-                     $tmp['change'] = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]." :";
-                     $tmp['change'].= " "."\"".$data["new_value"]."\"";
+                     $tmp['change'] = __('Linked with an OCSNG computer:')." \"".$data["new_value"]."\"";
 
                   } else {
                      $tmp['display_history'] = false;
@@ -442,7 +439,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_OCS_IDCHANGED :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
-                     $tmp['change'] = $LANG['ocsng'][48]." "." : "."\"".
+                     $tmp['change'] = __('The OCSNG ID of the computer changed:')." \"".
                                       $data["old_value"]."\" -->  : "."\"".
                                       $data["new_value"]."\"";
                   } else {

@@ -36,7 +36,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-Html::header($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
+Html::header(__('OCS Inventory NG'),$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
 
 if (!isset($_POST["clean_ok"])) {
    Session::checkRight("clean_ocsng", "r");
@@ -54,7 +54,7 @@ if (!isset($_POST["clean_ok"])) {
    Session::checkRight("clean_ocsng", "w");
    if (count($_POST['toclean']) >0) {
       OcsServer::cleanLinksFromList($_SESSION["ocsservers_id"], $_POST['toclean']);
-      echo "<div class='center b'>".$LANG['ocsng'][3]." - ".$LANG['log'][45]."<br>";
+      echo "<div class='center b'>".__('Clean links between GLPI and OCSNG')."<br>".$LANG['log'][45]."<br>";
       Html::displayBackLink();
       echo "</div>";
    }

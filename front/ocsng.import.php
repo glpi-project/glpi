@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("ocsng", "w");
 
-Html::header($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "import");
+Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "utils", "ocsng", "import");
 
 $display_list = true;
 //First time this screen is displayed : set the import mode to 'basic'
