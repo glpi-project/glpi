@@ -580,7 +580,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
       Session::initNavigateListItems('SoftwareLicense', 
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()))
+            sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
       
       $installed = array();
       if ($DB->numrows($result)) {
