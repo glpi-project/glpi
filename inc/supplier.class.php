@@ -545,7 +545,7 @@ class Supplier extends CommonDBTM {
                echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
                       rawurlencode("field[0]") . "=53&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
-                      $LANG['reports'][57]."</a></td>";
+                      __('Device list')."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 

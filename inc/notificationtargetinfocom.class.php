@@ -78,7 +78,7 @@ class NotificationTargetInfocom extends NotificationTarget {
       global $LANG;
 
       $tags = array('infocom.action'         => $LANG['mailing'][119],
-                    'infocom.itemtype'       => $LANG['reports'][12],
+                    'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => $LANG['financial'][104],
                     'infocom.expirationdate' => $LANG['mailing'][54],
                     'infocom.entity'         => $LANG['entity'][0]);
@@ -90,7 +90,7 @@ class NotificationTargetInfocom extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'items',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true));
 

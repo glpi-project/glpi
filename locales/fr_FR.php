@@ -1896,7 +1896,7 @@ $LANG['reports'][0]  = "Sélectionner un rapport à générer";
 $LANG['reports'][4]  = "Liste du matériel sous contrat";
 
 $LANG['reports'][11] = "Matériel sous contrat";
-$LANG['reports'][12] = "Type(s) de matériel";
+$LANG['reports'][12] = "Type de l'élément";
 $LANG['reports'][13] = "Date(s)";
 
 $LANG['reports'][15] = "Afficher rapport";
@@ -1916,13 +1916,13 @@ $LANG['reports'][39] = "Par lieu";
 $LANG['reports'][41] = "Par équipement";
 $LANG['reports'][42] = "Par prise";
 
-$LANG['reports'][46] = "port de l'équipement";
-$LANG['reports'][47] = "port du périphérique";
+$LANG['reports'][46] = "Port de l'équipement";
+$LANG['reports'][47] = "Port du périphérique";
 
 $LANG['reports'][49] = "Rapport réseau par équipement";
 
 $LANG['reports'][51] = "Rapport réseau par prise";
-$LANG['reports'][52] = "switch";
+$LANG['reports'][52] = "Switch";
 
 $LANG['reports'][54] = "Rapport réseau pour le lieu";
 

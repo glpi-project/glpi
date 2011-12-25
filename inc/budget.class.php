@@ -371,7 +371,7 @@ class Budget extends CommonDropdown{
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
                         rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
-                        $LANG['reports'][57]."</a></td>";
+                        __('Device list')."</a></td>";
                   echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
 
                } else if ($nb) {

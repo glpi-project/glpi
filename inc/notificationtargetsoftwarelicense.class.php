@@ -92,7 +92,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
       }
 
       $this->addTagToList(array('tag'     => 'licenses',
-                                'label'   => $LANG['reports'][57],
+                                'label'   => __('Device list'),
                                 'value'   => false,
                                 'foreach' => true));
 

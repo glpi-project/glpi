@@ -44,7 +44,7 @@ Report::title();
 $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
                'Software');
 # Titre
-echo "<span class='big b'>".$LANG['reports'][4]."</span><br><br>";
+echo "<span class='big b'>".__('List of the hardware under contract')."</span><br><br>";
 
 # Request All
 if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')

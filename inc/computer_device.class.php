@@ -205,7 +205,7 @@ class Computer_Device extends CommonDBTM {
       echo "<table class='tab_cadre_fixe' >";
 
       echo "<tr><th colspan='$global_colspan'>".Toolbox::ucfirst($LANG['log'][18])."</th></tr>";
-      echo "<tr><th>".$LANG['reports'][12]."</th>";
+      echo "<tr><th>".__('Item type')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Add')."</th>";
       echo "<th>".__('Delete all')."</th>";

@@ -509,7 +509,7 @@ class Reservation extends CommonDBChild {
             echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
                   "date=".$annee_courante."-".$mois_courant."-".$ii."'>";
             echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
-                  __s('Reserve')."\" title=\"".__s('Reserve')8]."\"></a></td></tr>\n";
+                  __s('Reserve')."\" title=\"".__s('Reserve')."\"></a></td></tr>\n";
          }
 
          echo "<tr><td>";

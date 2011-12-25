@@ -698,8 +698,8 @@ $LANG['financial'][50]="Loan";
 $LANG['financial'][51]="Renting";
 $LANG['financial'][52]="Leasing";
 $LANG['financial'][53]="Insurance";
-$LANG['financial'][54]="Hardware Support";
-$LANG['financial'][55]="Software Support";
+$LANG['financial'][54]="Hardware support";
+$LANG['financial'][55]="Software support";
 $LANG['financial'][56]="Service provided";
 $LANG['financial'][57]="month";
 $LANG['financial'][58]="No associated contract";
@@ -776,7 +776,7 @@ $LANG['help'][18]="Your ticket has been registered, its treatment is in progress
 $LANG['help'][19]="Thank you for using our automatic helpdesk system.";
 $LANG['help'][22]="Search the ID of your hardware";
 $LANG['help'][23]="Enter the first letters (user, item name, serial or asset number)";
-$LANG['help'][24]="Hardware Type";
+$LANG['help'][24]="Hardware type";
 $LANG['help'][25]="Computer";
 $LANG['help'][26]="Network device";
 $LANG['help'][27]="Printer";
@@ -1623,10 +1623,12 @@ $LANG['reminder'][12]="Add to schedule";
 $LANG['reminder'][15]="Without Title";
 $LANG['reminder'][16]="Global notes";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['reports'][0]="Select the report you want to generate";
 $LANG['reports'][4]="List of the hardware under contract";
 $LANG['reports'][11]="Hardware under contract";
-$LANG['reports'][12]="Hardware Type";
+$LANG['reports'][12]="Item type";
 $LANG['reports'][13]="Date(s)";
 $LANG['reports'][15]="Display report";
 $LANG['reports'][19]="Alternate username";
@@ -1639,21 +1641,19 @@ $LANG['reports'][37]="Network outlets";
 $LANG['reports'][39]="By location";
 $LANG['reports'][41]="By hardware";
 $LANG['reports'][42]="By network outlet";
-$LANG['reports'][46]="hardware ports";
-$LANG['reports'][47]="device ports";
+$LANG['reports'][46]="Hardware ports";
+$LANG['reports'][47]="Device ports";
 $LANG['reports'][49]="Network report by hardware";
 $LANG['reports'][51]="Network report by outlet";
-$LANG['reports'][52]="switch";
+$LANG['reports'][52]="Switch";
 $LANG['reports'][54]="Network report by location";
-$LANG['reports'][57]="Material list";
+$LANG['reports'][57]="Device list";
 $LANG['reports'][58]="Equipment's report by year";
 $LANG['reports'][60]="Opening date";
 $LANG['reports'][61]="Closing date";
 $LANG['reports'][62]="Hardware financial and administrative informations";
 $LANG['reports'][63]="Other financial and administrative informations (licenses, cartridges, consumables)";
 $LANG['reports'][64]="Resolution date";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['reservation'][1]="Reservable item";
 $LANG['reservation'][2]="Device temporarily unavailable";

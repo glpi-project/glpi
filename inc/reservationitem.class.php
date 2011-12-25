@@ -198,7 +198,7 @@ class ReservationItem extends CommonDBTM {
          echo "<span class='small_space'>";
          echo "<input type='submit' name='delete' value=\"".__s('Prohibit reservations')."\"
                class='submit' ".Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
-                                                                    __('That will remove all the reservations in progress.')).">";
+                                                                    __('That will remove all the reservations in progress.'))).">";
          echo "</span></td>";
       } else {
          echo "<td class='center'>";

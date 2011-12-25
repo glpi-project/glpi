@@ -1139,7 +1139,7 @@ class Search {
                                             "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                                               $data["refID"]."&amp;delete=delete' ".
                                               Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
-                                                                                  __('That will remove all the reservations in progress.')).
+                                                                                  __('That will remove all the reservations in progress.'))).
                                               " title=\"".__s('Prohibit reservations')."\">".
                                               "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                                 alt='' title=''></a>",

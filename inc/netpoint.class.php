@@ -56,10 +56,7 @@ class Netpoint extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['networking'][52];
-      }
-      return $LANG['networking'][51];
+      return _n('Network outlet', 'Network outlets', $nb);
    }
 
 
@@ -255,11 +252,11 @@ class Netpoint extends CommonDropdown {
          switch ($item->getType()) {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['reports'][37],
+                  return self::createTabEntry(_n('Network outlet', 'Network outlets', 2),
                                               countElementsInTable($this->getTable(),
                                                                    "locations_id = '".$item->getID()."'"));
                }
-               return $LANG['reports'][37];
+               return _n('Network outlet', 'Network outlets', 2);
          }
       }
       return '';
