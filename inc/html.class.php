@@ -3740,8 +3740,8 @@ class Html {
 
       // Print the "where am I?"
       echo "<td width='50%' class='tab_bg_2 b'>";
-      echo $LANG['pager'][2]."&nbsp;".$current_start."&nbsp;".$LANG['pager'][1]."&nbsp;".
-           $current_end."&nbsp;".$LANG['pager'][3]."&nbsp;".$numrows."&nbsp;";
+      //TRANS: %1$d, %2$d, %3$d are page numbers
+      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -3888,8 +3888,8 @@ class Html {
       }
 
       echo "<td width='50%' class='tab_bg_2 b'>";
-      echo $LANG['pager'][2]."&nbsp;".$current_start."&nbsp;".$LANG['pager'][1]."&nbsp;".
-            $current_end."&nbsp;".$LANG['pager'][3]."&nbsp;".$numrows."&nbsp;";
+      //TRANS: %1$d, %2$d, %3$d are page numbers
+      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
@@ -3924,16 +3924,14 @@ class Html {
 
       if ($action) {
          echo "<form method='POST' action=\"$action\">";
-         echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
+         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("submit()");
 
       } else {
          echo "<form method='POST' action =''>\n";
-         echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
+         echo "<span>".__('Display (number of items)')."</span>";
          Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
       }
-
-      echo "<span>&nbsp;".$LANG['pager'][5]."</span>";
       echo "</form>";
    }
 

@@ -1480,6 +1480,8 @@ $LANG['ocsng'][78]="Link if possible, otherwise imports declined";
 $LANG['ocsng'][79]="Link if possible";
 $LANG['ocsng'][80]="Computers whose import is refused by a rule";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['pager'][1]="to";
 $LANG['pager'][2]="from";
 $LANG['pager'][3]="of";
@@ -1487,9 +1489,6 @@ $LANG['pager'][4]="Display";
 $LANG['pager'][5]="items";
 $LANG['pager'][6]="from";
 $LANG['pager'][7]="to";
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['peripherals'][18]="Brand";
 $LANG['peripherals'][31]="Global management";
