@@ -284,7 +284,7 @@ class Monitor extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
+      echo "<td>".__('Management type')."</td>";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
                                  array('withtemplate' => $withtemplate,
@@ -534,7 +534,7 @@ class Monitor extends CommonDBTM {
 
       $tab[82]['table']         = $this->getTable();
       $tab[82]['field']         = 'is_global';
-      $tab[82]['name']          = $LANG['peripherals'][31];
+      $tab[82]['name']          = __('Global management');
       $tab[82]['datatype']      = 'bool';
       $tab[82]['massiveaction'] = false;
 

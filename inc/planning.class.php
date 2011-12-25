@@ -50,13 +50,13 @@ class Planning {
 
       switch ($value) {
          case 0 :
-            return $LANG['planning'][16];
+            return __('Information');
 
          case 1 :
-            return $LANG['planning'][17];
+            return __('To do');
 
          case 2 :
-            return $LANG['planning'][18];
+            return __('Done');
       }
    }
 
@@ -71,9 +71,9 @@ class Planning {
       global $LANG;
 
       echo "<select name='$name' id='$name'>";
-      echo "<option value='0'".($value==0?" selected ":"").">".$LANG['planning'][16]."</option>";
-      echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
-      echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
+      echo "<option value='0'".($value==0?" selected ":"").">".__('Information')."</option>";
+      echo "<option value='1'".($value==1?" selected ":"").">".__('To do')."</option>";
+      echo "<option value='2'".($value==2?" selected ":"").">".__('Done')."</option>";
       echo "</select>";
    }
 
@@ -111,7 +111,7 @@ class Planning {
          }
       }
       if ($planned) {
-         Session::addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message, false, ERROR);
+         Session::addMessageAfterRedirect(__('User is already occupied for the selected timeframe:').'<br>'.$message, false, ERROR);
       }
       return $planned;
    }
@@ -223,9 +223,9 @@ class Planning {
       echo "</td>\n";
 
       echo "<td><select name='type'>";
-      echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG['planning'][5].
+      echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day').
            "</option>";
-      echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG['planning'][6].
+      echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week').
            "</option>";
       echo "<option value='month' ".($type=="month"?" selected ":"").">".
              Toolbox::ucfirst($LANG['financial'][57])."</option>";
@@ -240,8 +240,8 @@ class Planning {
             href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
                   "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;token=".
                   User::getPersonalToken(Session::getLoginUserID(true))."\"
-                  title=\"".$LANG['planning'][12]."\">".
-            "<span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
+                  title=\"".__s('Download the planning in Ical format')."\">".
+            "<span style='font-size:10px'>".__('Ical')."</span></a>";
       echo "<br>";
 
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
@@ -249,8 +249,8 @@ class Planning {
              "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
              "&amp;usertype=".$usertype."&amp;token=".
              User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
-             $LANG['planning'][13]."\">";
-      echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
+             __s('webcal:// synchronization')."\">";
+      echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
       echo "</td>\n";
 
       echo "<td>";
@@ -862,7 +862,7 @@ class Planning {
       ksort($interv);
 
       echo "<table class='tab_cadrehov'><tr><th>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".$LANG['planning'][15]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".__('Your planning')."</a>";
       echo "</th></tr>";
       $type = '';
       if (count($interv)>0) {
@@ -971,7 +971,7 @@ class Planning {
 
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
-                                    $LANG['planning'][8]." # ".$val["tickets_id"]." ".
+                                    _n('Ticket','Tickets',1)." # ".$val["tickets_id"]." ".
                                        $LANG['document'][14]." # ".$val["device"]);
             } else if (isset($val["name"])) {
                $vevent->setProperty( "summary", $val["name"] );

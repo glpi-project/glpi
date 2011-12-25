@@ -62,11 +62,7 @@ class Problem extends CommonITILObject {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['Menu'][7];
-      }
-      return $LANG['problem'][0];
-
+      return _n('Problem', 'Problems', $nb);
    }
 
 
@@ -186,7 +182,7 @@ class Problem extends CommonITILObject {
                return self::createTabEntry($LANG['Menu'][7], $nb);
 
             case __CLASS__ :
-               $ong = array (1 => $LANG['problem'][3],         // Analysis
+               $ong = array (1 => __('Analysis'),         // Analysis
                              2 => $LANG['jobresolution'][2]);  // Solution
                if (Session::haveRight('observe_ticket','1')) {
                   $ong[4] = $LANG['Menu'][13];
@@ -197,7 +193,7 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case __CLASS__ :
-            return array(1 => $LANG['problem'][3],         // Analysis
+            return array(1 => __('Analysis'),         // Analysis
                          2 => $LANG['jobresolution'][2],    // Solution
                          4 => $LANG['Menu'][13]);           // Stats
       }
@@ -507,23 +503,23 @@ class Problem extends CommonITILObject {
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['analysis'] = $LANG['problem'][3];
+      $tab['analysis'] = __('Analysis');
 
       $tab[60]['table']         = $this->getTable();
       $tab[60]['field']         = 'impactcontent';
-      $tab[60]['name']          = $LANG['problem'][4];
+      $tab[60]['name']          = __('Impacts');
       $tab[60]['massiveaction'] = false;
       $tab[60]['datatype']      = 'text';
 
       $tab[61]['table']         = $this->getTable();
       $tab[61]['field']         = 'causecontent';
-      $tab[61]['name']          = $LANG['problem'][5];
+      $tab[61]['name']          = __('Causes');
       $tab[61]['massiveaction'] = false;
       $tab[61]['datatype']      = 'text';
 
       $tab[62]['table']         = $this->getTable();
       $tab[62]['field']         = 'symptomcontent';
-      $tab[62]['name']          = $LANG['problem'][5];
+      $tab[62]['name']          = __('Symptoms');
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
 
@@ -592,12 +588,12 @@ class Problem extends CommonITILObject {
 
       // To be overridden by class
       $tab = array('new'      => $LANG['joblist'][9],
-                   'accepted' => $LANG['problem'][1],
+                   'accepted' => __('Accepted'),
                    'assign'   => $LANG['joblist'][18],
                    'plan'     => $LANG['joblist'][19],
                    'waiting'  => $LANG['joblist'][26],
                    'solved'   => $LANG['joblist'][32],
-                   'observe'  => $LANG['problem'][2],
+                   'observe'  => __('Under observation'),
                    'closed'   => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
@@ -1003,7 +999,7 @@ class Problem extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][4]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Impacts')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='80'>";
          echo $this->getField('impactcontent');
@@ -1014,7 +1010,7 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][5]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Causes')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='causecontent' name='causecontent' rows='6' cols='80'>";
          echo $this->getField('causecontent');
@@ -1025,7 +1021,7 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][6]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Symptoms')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='symptomcontent' name='symptomcontent' rows='6' cols='80'>";
          echo $this->getField('symptomcontent');

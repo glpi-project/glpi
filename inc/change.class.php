@@ -595,7 +595,7 @@ class Change extends CommonITILObject {
       $tab = array('new'           => $LANG['joblist'][9],
                    'evaluation'    => __('Evaluation'),
                    'approbation'   => __('Approval'),
-                   'accepted'      => $LANG['problem'][1],
+                   'accepted'      => __('Accepted'),
                    'waiting'       => $LANG['joblist'][26],
 //                   'assign'      => $LANG['joblist'][18],
 //                   'plan'        => $LANG['joblist'][19],
@@ -1017,7 +1017,7 @@ class Change extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['problem'][4]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Impacts')."</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea id='impactcontent' name='impactcontent' rows='6' cols='80'>";
          echo $this->getField('impactcontent');

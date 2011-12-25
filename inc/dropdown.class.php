@@ -1258,7 +1258,7 @@ class Dropdown {
       }
 
       if ($params['value'] && empty($params['withtemplate'])) {
-         echo $LANG['peripherals'][31];
+         echo __('Global management');
 
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
@@ -1277,9 +1277,9 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "<select name='".$params['name']."'>";
             echo "<option value='".MANAGEMENT_UNITARY."' ".
-                  (!$params['value']?" selected":"").">".$LANG['peripherals'][32]."</option>";
+                  (!$params['value']?" selected":"").">".__('Unit management')."</option>";
             echo "<option value='".MANAGEMENT_GLOBAL."' ".
-                  ($params['value']?" selected":"").">".$LANG['peripherals'][31]."</option>";
+                  ($params['value']?" selected":"").">".__('Global management')."</option>";
             echo "</select>";
 
          } else {
@@ -1287,10 +1287,10 @@ class Dropdown {
             if (!empty($params['withtemplate'])) {
                echo "<input type='hidden' name='is_global' value='".
                       $params['management_restrict']."'>";
-               echo (!$params['management_restrict']?$LANG['peripherals'][32]
-                                                    :$LANG['peripherals'][31]);
+               echo (!$params['management_restrict']?__('Unit management')
+                                                    :__('Global management'));
             } else {
-               echo (!$params['value']?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
+               echo (!$params['value']?__('Unit management'):__('Global management'));
             }
          }
       }
@@ -1623,10 +1623,10 @@ class Dropdown {
             return "";
 
          case 0 :
-            return $LANG['peripherals'][32];
+            return __('Unit management');
 
          case 1 :
-            return $LANG['peripherals'][31];
+            return __('Global management');
       }
    }
 

@@ -90,7 +90,7 @@ $rand_begin = Html::showDateTimeFormItem("plan[begin]", $begin, -1, false, true,
                                          $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
 
-echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:&nbsp;";
+echo "<tr class='tab_bg_2'><td>".__('Period')."&nbsp;";
 
 if (isset($_POST["users_id"])) {
    echo "<span id='user_available$rand_user'>";

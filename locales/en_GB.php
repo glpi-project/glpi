@@ -1488,18 +1488,21 @@ $LANG['pager'][5]="items";
 $LANG['pager'][6]="from";
 $LANG['pager'][7]="to";
 
+
+/// TODO After is ok for migration to gettext
+
 $LANG['peripherals'][18]="Brand";
 $LANG['peripherals'][31]="Global management";
 $LANG['peripherals'][32]="Unit management";
-$LANG['peripherals'][33]="Management Type";
+$LANG['peripherals'][33]="Management type";
 
-$LANG['phones'][36]="Power Supply";
+$LANG['phones'][36]="Power supply";
 $LANG['phones'][38]="Headset";
 $LANG['phones'][39]="Speaker";
 $LANG['phones'][40]="Number of lines";
 
 $LANG['planning'][1]="Error in entering dates. The starting date is later than the ending date";
-$LANG['planning'][2]="User is already occupied for the selected timeframe :";
+$LANG['planning'][2]="User is already occupied for the selected timeframe:";
 $LANG['planning'][3]="Period";
 $LANG['planning'][5]="Day";
 $LANG['planning'][6]="Week";
@@ -1507,7 +1510,7 @@ $LANG['planning'][8]="Tracking";
 $LANG['planning'][10]="Ical";
 $LANG['planning'][11]="Webcal";
 $LANG['planning'][12]="Download the planning in Ical format";
-$LANG['planning'][13]="webcal:// Synchronization";
+$LANG['planning'][13]="webcal:// synchronization";
 $LANG['planning'][15]="Your planning";
 $LANG['planning'][16]="Information";
 $LANG['planning'][17]="To do";
@@ -1518,7 +1521,7 @@ $LANG['plugins'][1]="Delete or update it otherwise GLPI will not work correctly.
 $LANG['plugins'][2]="Installed / not configured";
 $LANG['plugins'][3]="Installed / not activated";
 $LANG['plugins'][4]="Error / to clean";
-$LANG['plugins'][5]="Non-existent function(s)";
+$LANG['plugins'][5]="Non-existent functions:";
 $LANG['plugins'][6]="To update";
 $LANG['plugins'][7]="No plugin installed";
 $LANG['plugins'][8]="See the catalog of plugins";
@@ -1528,13 +1531,14 @@ $LANG['plugins'][10]="Incompatible plugin with this version of GLPI";
 $LANG['printers'][14]="Serial";
 $LANG['printers'][15]="Parallel";
 $LANG['printers'][18]="Ports";
-$LANG['printers'][26]="Current meter of pages";
+$LANG['printers'][26]="Current counter of pages";
 $LANG['printers'][27]="USB";
 $LANG['printers'][28]="Ethernet";
 $LANG['printers'][29]="Wifi";
 $LANG['printers'][30]="Initial page counter";
 $LANG['printers'][31]="Printed pages";
 $LANG['printers'][32]="Driver";
+
 
 $LANG['problem'][0]="Problem";
 $LANG['problem'][1]="Accepted";
@@ -1549,10 +1553,6 @@ $LANG['problem'][9]="Update of a problem";
 $LANG['problem'][10]="Problem solved";
 $LANG['problem'][11]="Closure of a problem";
 $LANG['problem'][12]="Deleting a problem";
-
-
-/// TODO After is ok for migration to gettext
-
 
 $LANG['profiles'][0]="Global right";
 $LANG['profiles'][1]="Entity right";

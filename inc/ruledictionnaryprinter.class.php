@@ -71,7 +71,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('Original manufacturer')."</td>";
       echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['peripherals'][33] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . __('Management type') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('New manufacturer')."</td>";
       echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td></tr>";
    }
@@ -136,7 +136,7 @@ class RuleDictionnaryPrinter extends RuleCached {
       $actions['manufacturer']['table'] = 'glpi_manufacturers';
       $actions['manufacturer']['type']  = 'dropdown';
 
-      $actions['is_global']['name']  = $LANG['peripherals'][33];
+      $actions['is_global']['name']  = __('Management type');
       $actions['is_global']['type']  = 'dropdown_management';
 
       return $actions;

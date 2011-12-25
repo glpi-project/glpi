@@ -244,15 +244,15 @@ class Reservation extends CommonDBChild {
       echo "<br><div class='center'>";
       switch ($type) {
          case "date" :
-            echo $LANG['planning'][1];
+            _e('Error in entering dates. The starting date is later than the ending date');
             break;
 
          case "is_res" :
-            echo __('The required item is already reserved for this timeframe');
+            _e('The required item is already reserved for this timeframe');
             break;
 
          default :
-            echo "Unknown error";
+            _e("Unknown error");
       }
 
       echo "<br><a href='reservation.php?reservationitems_id=$ID'>".__('Back to planning')."</a>";
@@ -788,7 +788,7 @@ class Reservation extends CommonDBChild {
                }
 
                if (strcmp($heure_debut,"00:00")==0 && strcmp($heure_fin,"24:00")==0) {
-                  $display = $LANG['planning'][5];
+                  $display = __('Day');
 
                } else if (strcmp($heure_debut,"00:00")==0) {
                   $display = sprintf(__('To %s'), $heure_fin);
