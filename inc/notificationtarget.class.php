@@ -1050,8 +1050,11 @@ class NotificationTarget extends CommonDBChild {
          echo "<th>".NotificationTemplate::getTypeName()."</th></tr>";
 
          $notif = new Notification();
-         Session::initNavigateListItems('Notification',
-                                        $group->getTypeName()." = ".$group->getNameID());
+         
+         Session::initNavigateListItems('Notification', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
+         
          foreach ($req as $data) {
             Session::addToNavigateListItems('Notification', $data['id']);
 

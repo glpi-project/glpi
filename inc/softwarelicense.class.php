@@ -511,8 +511,9 @@ class SoftwareLicense extends CommonDBTM {
                                                                      '', '', true));
       echo "<div class='spaced'>";
 
-      Session::initNavigateListItems('SoftwareLicense',
-                                     $LANG['help'][31] ." = ". $software->fields["name"]);
+      Session::initNavigateListItems('SoftwareLicense', 
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            sprintf(__('%1$s = %2$s'),$software->getTypeName(1), $software->getName()));
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";

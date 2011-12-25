@@ -365,8 +365,11 @@ class NetworkPort extends CommonDBChild {
 
       $is_active_network_port = false;
       foreach (self::getNetworkPortInstantiations(false) as $portType) {
-         Session::initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
-
+         
+         Session::initNavigateListItems('NetworkPort', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+         
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE `items_id` = '$items_id'

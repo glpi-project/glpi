@@ -375,8 +375,10 @@ class Supplier extends CommonDBTM {
 
       $used = array();
       if ($number) {
-         Session::initNavigateListItems('Contact',
-                                        $LANG['financial'][26]." = ".$this->fields['name']);
+      
+         Session::initNavigateListItems('Contact', 
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+         sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
 
          while ($data=$DB->fetch_array($result)) {
             $ID                = $data["ID_ent"];

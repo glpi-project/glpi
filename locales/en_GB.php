@@ -1550,6 +1550,10 @@ $LANG['problem'][10]="Problem solved";
 $LANG['problem'][11]="Closure of a problem";
 $LANG['problem'][12]="Deleting a problem";
 
+
+/// TODO After is ok for migration to gettext
+
+
 $LANG['profiles'][0]="Global right";
 $LANG['profiles'][1]="Entity right";
 $LANG['profiles'][2]="Interface used by the profile";
@@ -1606,9 +1610,6 @@ $LANG['profiles'][54]="Deletion";
 $LANG['profiles'][55]="See all changes";
 $LANG['profiles'][56]="Update all changes";
 $LANG['profiles'][57]="See the changes (actor)";
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['registry'][1]="Hive";
 $LANG['registry'][2]="Path";

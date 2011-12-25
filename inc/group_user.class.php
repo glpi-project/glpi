@@ -142,7 +142,10 @@ class Group_User extends CommonDBRelation{
 
 
       if (!empty($groups)) {
-         Session::initNavigateListItems('Group', $user->getTypeName()." = ".$user->getName());
+         Session::initNavigateListItems('Group', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$user->getTypeName(1), $user->getName()));
+      
          $i = 0;
          foreach ($groups as $data) {
             Session::addToNavigateListItems('Group', $data["id"]);
@@ -381,8 +384,11 @@ class Group_User extends CommonDBRelation{
       // Display results
       if ($number) {
          Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
-         Session::initNavigateListItems('User', $group->getTypeName(1)." = ".$group->getName());
-
+         
+         Session::initNavigateListItems('User', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
+         
          echo "<div class='spaced'>";
          if ($canedit) {
             echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
