@@ -309,9 +309,10 @@ class NetworkAlias extends FQDNLabel {
          echo "<th>".__('Comments')."</th>"; 
          echo "</tr>\n";
 
-         Session::initNavigateListItems($item->getType(), $alias->getTypeName()."=".
-                                        $item->fields['name']);
-
+         Session::initNavigateListItems($item->getType(), 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$alias->getTypeName(1), $item->fields['name']));
+         
          $query = "SELECT `glpi_networkaliases`.`id` AS alias_id,
                           `glpi_networkaliases`.`name` AS alias,
                           `glpi_networknames`.`id` AS address_id,

@@ -591,9 +591,10 @@ class NetworkName extends FQDNLabel {
          echo "<th>".__('Comments')."</th>"; // Comment
          echo "</tr>\n";
 
-         Session::initNavigateListItems($internetElement->getType(),
-                                        $elementToDisplay->getTypeName()."=".
-                                        $internetElement->fields['name']);
+
+         Session::initNavigateListItems($internetElement->getType(), 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$elementToDisplay->getTypeName(1), $internetElement->getName()));
 
          $query = "SELECT *
                    FROM `".$elementToDisplay->getTable()."`

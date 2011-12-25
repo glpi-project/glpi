@@ -261,8 +261,11 @@ class Profile_User extends CommonDBTM {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         Session::initNavigateListItems('User', $LANG['entity'][0]." = ".$entity->fields['name']);
-
+      
+         Session::initNavigateListItems('User', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$entity->getTypeName(1), $entity->getName()));
+      
          while ($data=$DB->fetch_array($result)) {
             echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'),$data["name"]);
             echo "</th></tr>";

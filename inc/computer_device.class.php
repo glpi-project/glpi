@@ -220,8 +220,9 @@ class Computer_Device extends CommonDBTM {
 
       $numberOfPreviousItem = 0;
       foreach ($devtypes as $itemtype) {
-         Session::initNavigateListItems($itemtype,
-                                        $computer->getTypeName()." = ".$computer->getName());
+         Session::initNavigateListItems($itemtype, 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$computer->getTypeName(1), $computer->getName()));
 
          $device        = new $itemtype();
          $specificities = $device->getSpecifityLabel();

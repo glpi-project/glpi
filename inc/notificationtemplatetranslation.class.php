@@ -175,8 +175,10 @@ class NotificationTemplateTranslation extends CommonDBChild {
       }
 
       echo "<div class='center' id='tabsbody'>";
-      Session::initNavigateListItems('NotificationTemplateTranslation',
-                                     $template->getTypeName() . " = ". $template->fields["name"]);
+      
+      Session::initNavigateListItems('NotificationTemplateTranslation', 
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            sprintf(__('%1$s = %2$s'),$template->getTypeName(1), $template->getName()));
 
       echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";

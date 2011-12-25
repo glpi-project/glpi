@@ -4550,7 +4550,10 @@ class Ticket extends CommonITILObject {
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
-         Session::initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
+      
+         Session::initNavigateListItems('Ticket', 
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+         sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
 
          echo "<tr><th colspan='10'>";
          if ($number==1) {

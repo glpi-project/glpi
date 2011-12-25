@@ -363,8 +363,10 @@ class Contact extends CommonDBTM{
 
       $used = array();
       if ($number>0) {
-         Session::initNavigateListItems('Supplier', __('Contact')." = ".$this->fields['name']);
-
+         Session::initNavigateListItems('Supplier', 
+               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
+      
          while ($data= $DB->fetch_array($result)) {
             $ID = $data["id"];
             Session::addToNavigateListItems('Supplier', $data["entID"]);
