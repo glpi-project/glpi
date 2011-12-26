@@ -323,7 +323,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['monitors'][18]."&nbsp;:</td>";
+      echo "<td>".__('Flags')."</td>";
       echo "<td>";
       // micro?
       echo "\n<table><tr><td>".__('Headset')."</td>";
