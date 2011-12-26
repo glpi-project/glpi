@@ -421,8 +421,8 @@ class OcsServer extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Behavior when disconnecting') . " </td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior", array(''       => __('Preserve'),
-                                                             "trash"  => $LANG['buttons'][6],
-                                                             "delete" => $LANG['buttons'][22]),
+                                                             "trash"  => __('Delete'),
+                                                             "delete" => __('Purge')),
                               array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 

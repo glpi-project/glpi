@@ -323,8 +323,8 @@ class Session {
             $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
          }
          if ($ID=="all") {
-            $_SESSION["glpiactive_entity_name"]      .= " (".$LANG['buttons'][40].")";
-            $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
+            $_SESSION["glpiactive_entity_name"]      .= " (".__('Show all').")";
+            $_SESSION["glpiactive_entity_shortname"] .= " (".__('Show all').")";
          }
 
          if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])) {

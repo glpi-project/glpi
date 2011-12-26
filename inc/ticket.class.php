@@ -3301,7 +3301,7 @@ class Ticket extends CommonITILObject {
 
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla .= '<span class="b">'.sprintf(__('Next escalation: %s'), 
+               $commentsla .= '<span class="b">'.sprintf(__('Next escalation: %s'),
                                                 Html::convDateTime($nextaction->fields['date'])).
                               '</span><br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
@@ -3560,7 +3560,7 @@ class Ticket extends CommonITILObject {
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
              $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
              $tt->getEndHiddenFieldText('itemtype');
-      echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
+      echo "<img title='".__s('Update')."' alt='".__s('Update')."'
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       echo "</th>";
@@ -4550,8 +4550,8 @@ class Ticket extends CommonITILObject {
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
-      
-         Session::initNavigateListItems('Ticket', 
+
+         Session::initNavigateListItems('Ticket',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
          sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
 
@@ -4729,7 +4729,7 @@ class Ticket extends CommonITILObject {
             $second_col .= Html::convDateTime($job->fields['begin_waiting_date']);
 
          } else if ($job->fields['due_date']) {
-            $second_col = sprintf(__('Due date: %s'), 
+            $second_col = sprintf(__('Due date: %s'),
                ($output_type == Search::HTML_OUTPUT?'<br>':'').
                   Html::convDateTime($job->fields['due_date']));
          } else {
