@@ -212,10 +212,9 @@ class ITILCategory extends CommonTreeDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
-   
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("entity_dropdown","r")) {
          switch ($item->getType()) {
@@ -226,18 +225,18 @@ class ITILCategory extends CommonTreeDropdown {
       }
       return '';
    }
-   
-   
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
    }
-   
-   
+
+
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
       global $DB, $LANG, $CFG_GLPI;
-      
+
       $itilcategory = new self();
       $ID = $tt->fields['id'];
 
@@ -276,14 +275,14 @@ class ITILCategory extends CommonTreeDropdown {
                $itilcategory->getFromDB($data['id']);
                echo "<td>".$itilcategory->getLink(1)."</td>";
                if ($data['tickettemplates_id_incident'] == $ID) {
-                  echo "<td align='center'>
+                  echo "<td class='center'>
                      <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
                   $used_incident[] = $data["id"];
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if ($data['tickettemplates_id_demand'] == $ID) {
-                  echo "<td align='center'>
+                  echo "<td class='center'>
                      <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
                   $used_demand[] = $data["id"];
                } else {
@@ -300,5 +299,4 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 }
-
 ?>
