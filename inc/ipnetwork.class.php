@@ -769,6 +769,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
    }
 
+
    /**
     * \brief Recreate network tree
     * Among others, the migration create plan tree network. This method allows to recreate the tree.
