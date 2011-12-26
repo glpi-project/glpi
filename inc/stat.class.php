@@ -319,7 +319,7 @@ class Stat {
                $link = $_SERVER['PHP_SELF'].
                        "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
                        "&amp;value2=0";
-               $link = "<a href='$link'>".$LANG['buttons'][13]."</a>";
+               $link = "<a href='$link'>".__('Back')."</a>";
                echo Search::showHeaderItem($output_type, $link, $header_num);
             } else {
                echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
@@ -356,7 +356,7 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
-         
+
 
          if ($itemtype =='Ticket') {
             if ($output_type != Search::HTML_OUTPUT) {
@@ -366,7 +366,7 @@ class Stat {
                                           $header_num);
                echo Search::showHeaderItem($output_type, __('Average satisfaction'),
                                           $header_num);
-            
+
             } else {
                echo Search::showHeaderItem($output_type, __('Opened'),
                                           $header_num);
@@ -392,7 +392,7 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closuse'), $header_num);
          }
-         
+
 
          if ($output_type != Search::HTML_OUTPUT) {
             echo Search::showHeaderItem($output_type, __('Average real duration of treatment of the ticket'), $header_num);
