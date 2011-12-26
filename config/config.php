@@ -178,19 +178,19 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          if (!$error) {
             if (!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])<GLPI_VERSION) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-               echo "<p class='red'>".__('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
-               echo "<input type='submit' name='from_update' value=\"".$LANG['install'][4].
-                      "\" class='submit'>";
+               echo "<p class='red'>".
+                     __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
+               echo "<input type='submit' name='from_update' value=\"".__('Update')."\" class='submit'>";
                echo "</form>";
 
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
-               echo "<p class='red'>".__('You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.')."</p>";
+               echo "<p class='red'>".
+                     __('You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.')."</p>";
             }
 
          } else {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".
-                   $LANG['install'][27]."\">";
+            echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
             echo "</form>";
          }
 
@@ -201,5 +201,4 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
 
 }
-
 ?>
