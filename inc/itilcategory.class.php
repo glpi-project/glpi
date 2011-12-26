@@ -205,10 +205,12 @@ class ITILCategory extends CommonTreeDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
-   
-   
+
+
+   /**
+    * @since version 0.84
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("entity_dropdown","r")) {
          switch ($item->getType()) {
@@ -219,34 +221,33 @@ class ITILCategory extends CommonTreeDropdown {
       }
       return '';
    }
-   
-   
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showForTicketTemplate($item, $withtemplate);
       return true;
    }
-   
-   
+
+
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
-      global $DB, $LANG, $CFG_GLPI;
-      
+      global $DB, $CFG_GLPI;
+
       $itilcategory = new self();
-      $ID = $tt->fields['id'];
+      $ID           = $tt->fields['id'];
 
       if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
          return false;
       }
-      $ttm     = new self();
-
-      $rand    = mt_rand();
+      $ttm  = new self();
+      $rand = mt_rand();
 
       echo "<div class='center'>";
 
       $query = "SELECT `glpi_itilcategories`.*
                 FROM `glpi_itilcategories`
                 WHERE (`tickettemplates_id_incident` = '$ID')
-                     OR (`tickettemplates_id_demand` = '$ID')
+                       OR (`tickettemplates_id_demand` = '$ID')
                 ORDER BY `name`";
 
       if ($result=$DB->query($query)) {
@@ -257,11 +258,11 @@ class ITILCategory extends CommonTreeDropdown {
          echo "</a>";
          echo "</th></tr>";
          $used_incident = array();
-         $used_demand = array();
+         $used_demand   = array();
          if ($DB->numrows($result)) {
             echo "<th>".__('Name')."</th>";
-            echo "<th>".$LANG['job'][1]."</th>";
-            echo "<th>".$LANG['job'][2]."</th>";
+            echo "<th>".__('Incident')."</th>";
+            echo "<th>".__('Request')."</th>";
             echo "</tr>";
 
             while ($data=$DB->fetch_assoc($result)) {
@@ -269,15 +270,17 @@ class ITILCategory extends CommonTreeDropdown {
                $itilcategory->getFromDB($data['id']);
                echo "<td>".$itilcategory->getLink(1)."</td>";
                if ($data['tickettemplates_id_incident'] == $ID) {
-                  echo "<td align='center'>
-                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
+                  echo "<td class='center'>
+                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>
+                        </td>";
                   $used_incident[] = $data["id"];
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if ($data['tickettemplates_id_demand'] == $ID) {
-                  echo "<td align='center'>
-                     <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/></td>";
+                  echo "<td class='center'>
+                        <img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>
+                        </td>";
                   $used_demand[] = $data["id"];
                } else {
                   echo "<td>&nbsp;</td>";
@@ -293,5 +296,4 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 }
-
 ?>
