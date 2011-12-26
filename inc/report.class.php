@@ -38,15 +38,17 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  *  Report class
+ *
+ * @ since version 0.84
 **/
 class Report {
-   
+
    var $notable = false;
-   
+
+
    static function title() {
-      global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
-      
-      
+      global $PLUGIN_HOOKS, $CFG_GLPI;
+
       // Report generation
       // Default Report included
       $report_list["default"]["name"] = __('Default report');
@@ -70,10 +72,10 @@ class Report {
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
       if (Session::haveRight("reservation_central","r")) {
-         $report_list["reservation"]["name"] = $LANG['financial'][50];
+         $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
-      
+
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";
@@ -81,18 +83,18 @@ class Report {
       echo "<select name='statmenu' onchange='window.location.href=this.options
     [this.selectedIndex].value'>";
       echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
-      
-      $i = 0;
+
+      $i     = 0;
       $count = count($report_list);
       while ($data = each($report_list)) {
-         $val = $data[0];
+         $val  = $data[0];
          $name = $report_list["$val"]["name"];
          $file = $report_list["$val"]["file"];
          echo "<option value='$file'>".$name."</option>";
          $i++;
       }
 
-      $names = array();
+      $names    = array();
       $optgroup = array();
       if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
          foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages) {
@@ -100,26 +102,24 @@ class Report {
             $plugname = $function();
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
-                  $names[$plug.'/'.$page] = array("name"=> $name,
-                                                   "plug"=> $plug);
+                  $names[$plug.'/'.$page] = array("name" => $name,
+                                                  "plug" => $plug);
                   $optgroup[$plug] = $plugname['name'];
                }
             }
          }
          asort($names);
       }
-      
-      foreach ($optgroup as $opt => $title) {
 
+      foreach ($optgroup as $opt => $title) {
          echo "<optgroup label=\"". $title ."\">";
-         
+
          foreach ($names as $key => $val) {
              if ($opt==$val["plug"]) {
-               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".
-                                                                     $val["name"]."</option>";
+               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
+                    "</option>";
              }
          }
-         
           echo "</optgroup>";
       }
 
@@ -129,5 +129,4 @@ class Report {
       echo "</table>";
    }
 }
-
 ?>
