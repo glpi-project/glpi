@@ -46,8 +46,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Installation', 'Installations', $nb);
    }
 
@@ -60,9 +58,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
-      if (!isset($input['computers_id']) || !isset($input['softwareversions_id'])
-         || $input['computers_id']<=0
-         || $input['softwareversions_id']<=0 ) {
+      if (!isset($input['computers_id']) || $input['computers_id'] <= 0
+          || !isset($input['softwareversions_id']) || $input['softwareversions_id'] <= 0) {
          return false;
       }
 
@@ -315,12 +312,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($crit=="id") {
                $title .= " - " . $data["vername"];
             }
-            
-            Session::initNavigateListItems('Computer', 
+
+            Session::initNavigateListItems('Computer',
                   //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                   sprintf(__('%1$s = %2$s'),$soft->getTypeName(1), $title));
-            
-            
+
+
             $sort_img="<img src='".$CFG_GLPI["root_doc"]."/pics/".
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
 
@@ -569,19 +566,19 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr><th colspan='5'>";
 
       echo _n('Installed software', 'Installed softwares', $DB->numrows($result));
-      
+
       echo "</th></tr>";
 
       $cat = -1;
 
-      
-      Session::initNavigateListItems('Software', 
+
+      Session::initNavigateListItems('Software',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
             sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
-      Session::initNavigateListItems('SoftwareLicense', 
+      Session::initNavigateListItems('SoftwareLicense',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
             sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
-      
+
       $installed = array();
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_array($result)) {

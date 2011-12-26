@@ -72,6 +72,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * @return the modified $input array
    **/
    function prepareInputForAdd($input) {
+
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();
       // We call the parent to manage tree
       return parent::prepareInputForAdd($input);
@@ -86,6 +87,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * @return the modified $input array
    **/
    function prepareInputForUpdate($input) {
+
       $input[$this->getForeignKeyField()] = $this->getNewAncestor();
       // We call the parent to manage tree
       return parent::prepareInputForUpdate($input);
@@ -98,6 +100,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * @return nothing
    **/
    function post_addItem() {
+
       $this->alterElementInsideTree("add");
       parent::post_addItem();
    }
@@ -106,9 +109,12 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    /**
     * Used to update tree by redefining other items ForeignKeyField
     *
+    * @param $history
+    *
     * @return nothing
    **/
    function post_updateItem($history=1) {
+
       $this->alterElementInsideTree("update");
       parent::post_updateItem($history);
    }
@@ -120,6 +126,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
     * @return nothing
    **/
    function pre_deleteItem() {
+
       $this->alterElementInsideTree("delete");
       return parent::pre_deleteItem();
    }
@@ -139,20 +146,22 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       global $DB;
 
       switch ($step) {
-      case 'add' :
-         $newParent = $this->input[$this->getForeignKeyField()];
-         $potentialSons = $this->getPotentialSons();
-         break;
-      case 'update' :
-         $oldParent = $this->fields[$this->getForeignKeyField()];
-         $newParent = $this->input[$this->getForeignKeyField()];
-         $potentialSons = $this->getPotentialSons();
-         break;
-      case 'delete' :
-         $oldParent = $this->fields[$this->getForeignKeyField()];
-         $potentialSons = array(); // Because there is no future sons !
-         break;
-      };
+         case 'add' :
+            $newParent     = $this->input[$this->getForeignKeyField()];
+            $potentialSons = $this->getPotentialSons();
+            break;
+
+         case 'update' :
+            $oldParent     = $this->fields[$this->getForeignKeyField()];
+            $newParent     = $this->input[$this->getForeignKeyField()];
+            $potentialSons = $this->getPotentialSons();
+            break;
+
+         case 'delete' :
+            $oldParent     = $this->fields[$this->getForeignKeyField()];
+            $potentialSons = array(); // Because there is no future sons !
+            break;
+      }
 
       /** Here :
        * $oldParent contains the old parent, to check its sons to attach them to it
@@ -165,17 +174,17 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       if ($step != "add") { // Because there is no old sons of new node
          // First, get all my current direct sons (old ones) that are not new potential sons
          $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE `".$this->getForeignKeyField()."`='".$this->getID()."'
-                AND `id` NOT IN ('".implode("', '", $potentialSons)."')";
+                   FROM `".$this->getTable()."`
+                   WHERE `".$this->getForeignKeyField()."` = '".$this->getID()."'
+                         AND `id` NOT IN ('".implode("', '", $potentialSons)."')";
          $oldSons = array();
          foreach ($DB->request($query) as $oldSon) {
             $oldSons[] = $oldSon["id"];
          }
          if (count($oldSons) > 0) { // Then make them pointing to old parent
             $query = "UPDATE `".$this->getTable()."`
-                  SET `".$this->getForeignKeyField()."`='$oldParent'
-                  WHERE `id` IN ('".implode("', '",$oldSons)."')";
+                      SET `".$this->getForeignKeyField()."` = '$oldParent'
+                      WHERE `id` IN ('".implode("', '",$oldSons)."')";
             $DB->query($query);
             // Then, regenerate the old sons to reflect there new ancestors
             $this->regenerateTreeUnderID($oldParent, true, true);
@@ -187,17 +196,17 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
          // And, get all direct sons of my new Father that must be attached to me (ie : that are
          // potential sons
          $query = "SELECT `id`
-                FROM `".$this->getTable()."`
-                WHERE `".$this->getForeignKeyField()."`='$newParent'
-                AND `id` IN ('".implode("', '", $potentialSons)."')";
+                   FROM `".$this->getTable()."`
+                   WHERE `".$this->getForeignKeyField()."` = '$newParent'
+                         AND `id` IN ('".implode("', '", $potentialSons)."')";
          $newSons = array();
          foreach ($DB->request($query) as $newSon) {
             $newSons[] = $newSon["id"];
          }
          if (count($newSons) > 0) { // Then make them pointing to me
             $query = "UPDATE `".$this->getTable()."`
-                  SET `".$this->getForeignKeyField()."`='".$this->getID()."'
-                  WHERE `id` IN ('".implode("', '",$newSons)."')";
+                      SET `".$this->getForeignKeyField()."` = '".$this->getID()."'
+                      WHERE `id` IN ('".implode("', '",$newSons)."')";
             $DB->query($query);
             // Then, regenerate the new sons to reflect there new ancestors
             $this->regenerateTreeUnderID($this->getID(), true, true);
@@ -206,5 +215,4 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       }
    }
 }
-
 ?>

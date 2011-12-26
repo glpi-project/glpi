@@ -389,7 +389,7 @@ function update083to084() {
             if (isset($preparedInput['error'])) {
                $query = "SELECT id, items_id, itemtype
                          FROM origin_glpi_networkports
-                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='$address'
+                         WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) = '$address'
                                AND `netmask` = '$netmask'
                                AND `gateway` = '$gateway'
                                AND `entities_id` = '$entities_id'";
@@ -403,7 +403,7 @@ function update083to084() {
          } else if (isset($preparedInput['error'])) {
             $query = "SELECT id, items_id, itemtype
                       FROM origin_glpi_networkports
-                      WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`))='".$entry['address']."'
+                      WHERE INET_NTOA(INET_ATON(`ip`)&INET_ATON(`netmask`)) = '".$entry['address']."'
                             AND `netmask` = '$netmask'
                             AND `gateway` = '$gateway'
                             AND `entities_id` = '$entities_id'";
@@ -609,8 +609,9 @@ function update083to084() {
 
    $query = "SELECT *
              FROM `glpi_networkports`
-             WHERE `instantiation_type`='NetworkPortMigration'";
+             WHERE `instantiation_type` = 'NetworkPortMigration'";
    $result = $DB->query($query);
+
    // Adding NetworkPortMigration table only if it is required : in case of unknown interface
    if ((!TableExists('glpi_networkportmigrations')) && ($DB->numrows($result) > 0)) {
       $query = "CREATE TABLE `glpi_networkportmigrations` (

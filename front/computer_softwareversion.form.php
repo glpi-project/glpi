@@ -41,13 +41,13 @@ $inst = new Computer_SoftwareVersion();
 
 // From Computer - Software tab (add form or from not installed license)
 if (isset($_REQUEST["install"])) {
-   if (isset($_REQUEST["softwareversions_id"]) && isset($_REQUEST["computers_id"])
-      && $_REQUEST["softwareversions_id"] && $_REQUEST["computers_id"]) {
+   if (isset($_REQUEST["computers_id"]) && $_REQUEST["computers_id"]
+       && isset($_REQUEST["softwareversions_id"]) && $_REQUEST["softwareversions_id"]) {
       $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
                        'softwareversions_id' => $_REQUEST["softwareversions_id"]));
 
       Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][110]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][110]);
    }
    Html::back();
 

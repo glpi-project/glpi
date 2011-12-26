@@ -218,17 +218,21 @@ class DBmysql {
    /**
     * Execute a MySQL query
     *
+    * @since version 0.84
+    *
     * @param $query Query to execute
     * @param $message explaination of query
     *
     * @return Query result handler
    **/
    function queryOrDie($query, $message='') {
-      $res = $this->query($query) 
-         or die(sprintf(__('%1$s - Error during the database query: '.$query.' - Error is %2$s'),
-                        $message, $this->error()));
+
+      $res = $this->query($query)
+             or die(sprintf(__('%1$s - Error during the database query: '.$query.' - Error is %2$s'),
+                            $message, $this->error()));
       return $res;
    }
+
 
    /**
     * Give result from a mysql result

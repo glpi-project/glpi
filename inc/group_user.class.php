@@ -142,10 +142,10 @@ class Group_User extends CommonDBRelation{
 
 
       if (!empty($groups)) {
-         Session::initNavigateListItems('Group', 
+         Session::initNavigateListItems('Group',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$user->getTypeName(1), $user->getName()));
-      
+
          $i = 0;
          foreach ($groups as $data) {
             Session::addToNavigateListItems('Group', $data["id"]);
@@ -384,11 +384,11 @@ class Group_User extends CommonDBRelation{
       // Display results
       if ($number) {
          Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
-         
-         Session::initNavigateListItems('User', 
+
+         Session::initNavigateListItems('User',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
-         
+
          echo "<div class='spaced'>";
          if ($canedit) {
             echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
@@ -425,11 +425,11 @@ class Group_User extends CommonDBRelation{
                echo "</td><td>";
                echo Dropdown::getDropdownName('glpi_groups', $data['groups_id']);
             }
-            echo "</td><td align='center'>";
+            echo "</td><td class='center'>";
             if ($data['is_manager']) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
             }
-            echo "</td><td align='center'>";
+            echo "</td><td class='center'>";
             if ($data['is_userdelegate']) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14'/>";
             }

@@ -36,12 +36,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES peripherals
+// CLASS peripheral
 
 class Peripheral  extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory            = true;
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
@@ -208,9 +208,12 @@ class Peripheral  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
+      echo "<td>".sprintf('%1$s%2$s', __('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":""));
+      echo "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>\n";
@@ -271,9 +274,11 @@ class Peripheral  extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>\n";
+      echo "<td>".__('Inventory number').
+                 (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>\n";
@@ -466,5 +471,4 @@ class Peripheral  extends CommonDBTM {
    }
 
 }
-
 ?>
