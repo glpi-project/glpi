@@ -126,12 +126,13 @@ if (!defined("GLPI_EZC_BASE")) {
    # define("GLPI_EZC_BASE", "ezc/Base/base.php");
 }
 
-// Default Zend_Loader path 
+// Default Zend_Loader path
 if (!defined("GLPI_ZEND_PATH")) {
    define("GLPI_ZEND_PATH", GLPI_ROOT."/lib");
 
    # if Zend installed, use (in config_path.php)
-   # define("GLPI_ZEND_PATH", "/usr/share/php/");
+   # define("GLPI_ZEND_PATH", "/usr/share/php/");  // if not in standard include_path
+   # define("GLPI_ZEND_PATH", "");                 // if already in include_path
 }
 
 // Default phpCAS installation dir
