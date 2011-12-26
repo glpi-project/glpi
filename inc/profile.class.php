@@ -1506,7 +1506,7 @@ class Profile extends CommonDBTM {
 
       $tab[41]['table']    = $this->getTable();
       $tab[41]['field']    = 'sync_ocsng';
-      $tab[41]['name']     = __(Manual OCSNG synchronization);
+      $tab[41]['name']     = __('Manual OCSNG synchronization');
       $tab[41]['datatype'] = 'right';
 
       $tab['config'] = __('Setup');
