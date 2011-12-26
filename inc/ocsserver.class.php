@@ -2786,7 +2786,8 @@ class OcsServer extends CommonDBTM {
                }
                echo "</a></td></tr>";
 
-               echo "<tr class='tab_bg_1'><td class='center b'>".__('Check first that duplicates have been correctly managed in OCSNG') . "</td>";
+               echo "<tr class='tab_bg_1'><td class='center b'>"
+                      .__('Check first that duplicates have been correctly managed in OCSNG')."</td>";
                echo "</tr></table></form></div>";
             }
 

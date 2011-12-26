@@ -99,11 +99,11 @@ if ($pot && $po) {
       }
 
       if (preg_match('/^"(.*)"$/',$content,$reg)) {
-         $current_string .= $reg[1];
+         $current_string        .= $reg[1];
          $current_string_plural .= $reg[1];
 //          echo '-'.$current_string."-\n";
       }
-      
+
 
       if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
          if (strlen($reg[1]) == 0) { //Singular
@@ -167,7 +167,7 @@ function search_in_dict($string) {
          if (strcasecmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
-         
+
          // Search same case with punc
          if (strcmp($val,$left.$string.$right) === 0) {
             return $left.$LANG[$mod][$key].$right;
@@ -176,7 +176,7 @@ function search_in_dict($string) {
          if (strcasecmp($val,$left.$string.$right) === 0) {
             return $left.$LANG[$mod][$key].$right;
          }
-         
+
          // Search same case with left punc
          if (strcmp($val,$left.$string) === 0) {
             return $left.$LANG[$mod][$key];
@@ -185,7 +185,7 @@ function search_in_dict($string) {
          if (strcasecmp($val,$left.$string) === 0) {
             return $left.$LANG[$mod][$key];
          }
-         
+
          // Search same case with right punc
          if (strcmp($val,$string.$right) === 0) {
             return $LANG[$mod][$key].$right;
@@ -194,7 +194,7 @@ function search_in_dict($string) {
          if (strcasecmp($val,$string.$right) === 0) {
             return $LANG[$mod][$key].$right;
          }
-         
+
       }
    }
 
