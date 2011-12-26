@@ -40,10 +40,10 @@ class DBConnection extends CommonDBTM {
    var $notable = true;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return _n('Mysql replicate', 'Mysql replicates',$nb);
+      return _n('Mysql replicate', 'Mysql replicates', $nb);
    }
 
 
@@ -390,7 +390,7 @@ class DBConnection extends CommonDBTM {
          } else if ($diff) {
             echo sprintf(__('Difference between master and slave: %s'),Html::timestampToString($diff, 1)) . "<br>";
          } else {
-            
+
             echo sprintf(__('Difference between master and slave: %s'), __('None')) . "<br>";
          }
       }
