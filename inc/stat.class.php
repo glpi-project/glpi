@@ -1391,24 +1391,28 @@ class Stat {
       }
    }
 
+
+   /**
+    * @since version 0.84
+   **/
    static function title() {
-      global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
+      global $PLUGIN_HOOKS, $CFG_GLPI;
 
       $show_problem = Session::haveRight("edit_all_problem", "1")
-    || Session::haveRight("show_all_problem", "1");
+                      || Session::haveRight("show_all_problem", "1");
 
-      $opt_list["Ticket"] = $LANG['Menu'][5];
-      $stat_list["Ticket"]["Ticket_Global"]["name"]  = __('Global');
-      $stat_list["Ticket"]["Ticket_Global"]["file"]  = "stat.global.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Ticket"]["name"]  = __('By ticket');
-      $stat_list["Ticket"]["Ticket_Ticket"]["file"]  = "stat.tracking.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Location"]["name"]  = __('By hardware characteristics');
-      $stat_list["Ticket"]["Ticket_Location"]["file"]  = "stat.location.php?itemtype=Ticket";
-      $stat_list["Ticket"]["Ticket_Item"]["name"]  = __('By hardware');
-      $stat_list["Ticket"]["Ticket_Item"]["file"]  = "stat.item.php";
+      $opt_list["Ticket"] = __('Tickets');
+      $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
+      $stat_list["Ticket"]["Ticket_Global"]["file"]   = "stat.global.php?itemtype=Ticket";
+      $stat_list["Ticket"]["Ticket_Ticket"]["name"]   = __('By ticket');
+      $stat_list["Ticket"]["Ticket_Ticket"]["file"]   = "stat.tracking.php?itemtype=Ticket";
+      $stat_list["Ticket"]["Ticket_Location"]["name"] = __('By hardware characteristics');
+      $stat_list["Ticket"]["Ticket_Location"]["file"] = "stat.location.php?itemtype=Ticket";
+      $stat_list["Ticket"]["Ticket_Item"]["name"]     = __('By hardware');
+      $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
       if ($show_problem) {
-         $opt_list["Problem"] = $LANG['Menu'][7];
+         $opt_list["Problem"] = __('Problems');
          $stat_list["Problem"]["Problem_Global"]["name"]  = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]  = "stat.global.php?itemtype=Problem";
          $stat_list["Problem"]["Problem_Problem"]["name"]  = __('By problem');
@@ -1423,25 +1427,26 @@ class Stat {
     [this.selectedIndex].value'>";
       echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
 
-      $i = 0;
+      $i     = 0;
       $count = count($stat_list);
 
       foreach ($opt_list as $opt => $group) {
-
          echo "<optgroup label=\"". $group ."\">";
          while ($data = each($stat_list[$opt])) {
-            $name = $data[1]["name"];
-            $file = $data[1]["file"];
+            $name    = $data[1]["name"];
+            $file    = $data[1]["file"];
             $comment ="";
-            if (isset($data[1]["comment"]))
+            if (isset($data[1]["comment"])) {
                $comment = $data[1]["comment"];
+            }
 
-            echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
+            echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name.
+                 "</option>";
             $i++;
          }
          echo "</optgroup>";
       }
-      $names = array();
+      $names    = array();
       $optgroup = array();
       if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
          foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
@@ -1449,8 +1454,8 @@ class Stat {
             $plugname = $function();
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
-                  $names[$plug.'/'.$page] = array("name"=> $name,
-                                                   "plug"=> $plug);
+                  $names[$plug.'/'.$page] = array("name" => $name,
+                                                  "plug" => $plug);
                   $optgroup[$plug] = $plugname['name'];
                }
             }
@@ -1459,16 +1464,14 @@ class Stat {
       }
 
       foreach ($optgroup as $opt => $title) {
-
          echo "<optgroup label=\"". $title ."\">";
 
          foreach ($names as $key => $val) {
              if ($opt==$val["plug"]) {
-               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".
-                                                                     $val["name"]."</option>";
+               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
+                    "</option>";
              }
          }
-
           echo "</optgroup>";
       }
 
