@@ -152,8 +152,8 @@ class User extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__:
             $ong = array();
-            $ong[1] = __('Used items'); 
-            $ong[2] = __('Managed items'); 
+            $ong[1] = __('Used items');
+            $ong[2] = __('Managed items');
             return $ong;
 
          case 'Group' :
@@ -1301,7 +1301,7 @@ class User extends CommonDBTM {
       $listgroups = array();
 
       //User dn may contain ( or ), need to espace it!
-      $user_dn = str_replace(array("(", ")"), array("\(", "\)"), $user_dn);
+      $user_dn = str_replace(array("(", ")", "\,"), array("\(", "\)", "\\\,"), $user_dn);
 
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
