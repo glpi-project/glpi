@@ -41,8 +41,8 @@ if (!defined('GLPI_ROOT')) {
 class Monitor extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory=true;
-   protected $forward_entity_to=array('Infocom', 'ReservationItem');
+   public $dohistory            = true;
+   protected $forward_entity_to = array('Infocom', 'ReservationItem');
 
 
 /**
@@ -51,14 +51,9 @@ class Monitor extends CommonDBTM {
  * @param $nb : number of item in the type
  *
  * @return $LANG
- */
+**/
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][3];
-      }
-      return $LANG['help'][28];
+      return _n('Monitor', 'Monitors', $nb);
    }
 
 
@@ -73,7 +68,6 @@ class Monitor extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('Computer_Item', $ong, $options);
@@ -207,9 +201,12 @@ class Monitor extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
+      echo "<td>".sprintf('%1$s%2$s', __('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":""));
+      echo "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
@@ -270,9 +267,11 @@ class Monitor extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+      echo "<td>".__('Inventory number').
+                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
@@ -307,44 +306,44 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['monitors'][21]."&nbsp;:</td>";
+      echo "<td>".__('Size')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "size");
       echo "\"</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['monitors'][18]."&nbsp;:</td>";
+      echo "<td>".('Flags')."</td>";
       echo "<td><table>";
       // micro?
-      echo "<tr><td>".$LANG['monitors'][14]."</td><td>";
+      echo "<tr><td>".__('Microphone')."</td><td>";
       Dropdown::showYesNo("have_micro", $this->fields["have_micro"]);
       // speakers?
-      echo "</td><td>".$LANG['monitors'][15]."</td><td>";
+      echo "</td><td>".__('Speakers')."</td><td>";
       Dropdown::showYesNo("have_speaker", $this->fields["have_speaker"]);
       echo "</td></tr>";
 
      // sub-d?
-      echo "<tr><td>".$LANG['monitors'][19]."</td><td>";
+      echo "<tr><td>".__('Sub-D')."</td><td>";
       Dropdown::showYesNo("have_subd", $this->fields["have_subd"]);
       // bnc?
-      echo "</td><td>".$LANG['monitors'][20]."</td><td>";
+      echo "</td><td>".__('BNC')."</td><td>";
       Dropdown::showYesNo("have_bnc", $this->fields["have_bnc"]);
       echo "</td></tr>";
 
       // dvi?
-      echo "<tr><td>".$LANG['monitors'][32]."</td><td>";
+      echo "<tr><td>".__('DVI')."</td><td>";
       Dropdown::showYesNo("have_dvi", $this->fields["have_dvi"]);
       // pivot ?
-      echo "</td><td>".$LANG['monitors'][33]."</td><td>";
+      echo "</td><td>".__('Pivot')."</td><td>";
       Dropdown::showYesNo("have_pivot", $this->fields["have_pivot"]);
       echo "</td></tr>";
       // hdmi?
-      echo "<tr><td>".$LANG['monitors'][34]."</td><td>";
+      echo "<tr><td>".__('HDMI')."</td><td>";
       Dropdown::showYesNo("have_hdmi", $this->fields["have_hdmi"]);
       echo "</td>";
       //Displayport
-      echo "</td><td>".$LANG['monitors'][31]."</td><td>";
+      echo "</td><td>".__('DisplayPort')."</td><td>";
       Dropdown::showYesNo("have_displayport", $this->fields["have_displayport"]);
       echo "</td></tr>";
       echo "</table></td></tr>";
@@ -469,47 +468,47 @@ class Monitor extends CommonDBTM {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'size';
-      $tab[11]['name']     = $LANG['monitors'][21];
+      $tab[11]['name']     = __('Size');
       $tab[11]['datatype'] = 'number';
 
       $tab[41]['table']    = $this->getTable();
       $tab[41]['field']    = 'have_micro';
-      $tab[41]['name']     = $LANG['monitors'][14];
+      $tab[41]['name']     = __('Microphone');
       $tab[41]['datatype'] = 'bool';
 
       $tab[42]['table']    = $this->getTable();
       $tab[42]['field']    = 'have_speaker';
-      $tab[42]['name']     = $LANG['monitors'][15];
+      $tab[42]['name']     = __('Speakers');
       $tab[42]['datatype'] = 'bool';
 
       $tab[43]['table']    = $this->getTable();
       $tab[43]['field']    = 'have_subd';
-      $tab[43]['name']     = $LANG['monitors'][19];
+      $tab[43]['name']     = __('Sub-D');
       $tab[43]['datatype'] = 'bool';
 
       $tab[44]['table']    = $this->getTable();
       $tab[44]['field']    = 'have_bnc';
-      $tab[44]['name']     = $LANG['monitors'][20];
+      $tab[44]['name']     = ('BNC');
       $tab[44]['datatype'] = 'bool';
 
       $tab[45]['table']    = $this->getTable();
       $tab[45]['field']    = 'have_dvi';
-      $tab[45]['name']     = $LANG['monitors'][32];
+      $tab[45]['name']     = __('DVI');
       $tab[45]['datatype'] = 'bool';
 
       $tab[46]['table']    = $this->getTable();
       $tab[46]['field']    = 'have_pivot';
-      $tab[46]['name']     = $LANG['monitors'][33];
+      $tab[46]['name']     = __('Pivot');
       $tab[46]['datatype'] = 'bool';
 
       $tab[47]['table']    = $this->getTable();
       $tab[47]['field']    = 'have_hdmi';
-      $tab[47]['name']     = $LANG['monitors'][34];
+      $tab[47]['name']     = __('HDMI');
       $tab[47]['datatype'] = 'bool';
 
       $tab[48]['table']    = $this->getTable();
       $tab[48]['field']    = 'have_displayport';
-      $tab[48]['name']     = $LANG['monitors'][31];
+      $tab[48]['name']     = __('DisplayPort');
       $tab[48]['datatype'] = 'bool';
 
       $tab[23]['table'] = 'glpi_manufacturers';
@@ -542,5 +541,4 @@ class Monitor extends CommonDBTM {
    }
 
 }
-
 ?>
