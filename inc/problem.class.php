@@ -1184,7 +1184,7 @@ class Problem extends CommonITILObject {
             $second_col .= Html::convDateTime($job->fields['solvedate']);
 
          } else if ($job->fields['due_date']) {
-            $second_col = sprintf(__('Due date: %s'), 
+            $second_col = sprintf(__('Due date: %s'),
                ($output_type == Search::HTML_OUTPUT?'<br>':'').
                   Html::convDateTime($job->fields['due_date']));
          } else {
@@ -1370,7 +1370,7 @@ class Problem extends CommonITILObject {
                echo "<table class='tab_cadre_fixe'>";
                echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               echo $LANG['group'][3]."&nbsp;:&nbsp;";
+               _e('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
                                    array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
             } else {
@@ -1426,11 +1426,11 @@ class Problem extends CommonITILObject {
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
-      
-         Session::initNavigateListItems('Problem', 
+
+         Session::initNavigateListItems('Problem',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
-      
+
          echo "<tr><th colspan='8'>";
 
          echo $LANG['job'][21]."&nbsp;:&nbsp;".$number;
