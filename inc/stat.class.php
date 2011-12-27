@@ -1412,7 +1412,7 @@ class Stat {
       $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
       if ($show_problem) {
-         $opt_list["Problem"] = __('Problems');
+         $opt_list["Problem"] = _n('Problem', 'Problems', 2);
          $stat_list["Problem"]["Problem_Global"]["name"]  = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]  = "stat.global.php?itemtype=Problem";
          $stat_list["Problem"]["Problem_Problem"]["name"]  = __('By problem');
