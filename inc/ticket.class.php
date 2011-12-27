@@ -4497,7 +4497,7 @@ class Ticket extends CommonITILObject {
                echo "<table class='tab_cadre_fixe'>";
                echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               echo $LANG['group'][3]."&nbsp;:&nbsp;";
+               _e('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
                                    array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
             } else {

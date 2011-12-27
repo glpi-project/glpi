@@ -367,7 +367,7 @@ class Group_User extends CommonDBRelation{
                               array('value'     => $crit,
                                     'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
       if ($group->haveChildren()) {
-         echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
+         echo "</td><td class='center'>".__('Child groups');
          Dropdown::showYesNo('tree', $tree, -1,
                              array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
       } else {

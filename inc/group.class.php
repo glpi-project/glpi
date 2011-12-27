@@ -215,7 +215,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='4'>".$LANG['group'][0]."</td>";
+      echo "<td class='b' colspan='4'>".__('Visible in a ticket')."</td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
@@ -228,13 +228,13 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='b'>".$LANG['group'][1]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2' class='b'>".__('Can be notified')."</td>";
       echo "<td>";
       dropdown::showYesNo('is_notify', $this->fields['is_notify']);
       echo "</td><td></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='4'>".$LANG['group'][2]."</td>";
+      echo "<td class='b' colspan='4'>".__('Can contain')."</td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
@@ -326,7 +326,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'is_notify';
-      $tab[13]['name']          = $LANG['group'][1];
+      $tab[13]['name']          = __('Can be notified');
       $tab[13]['datatype']      = 'bool';
 
       $tab[14]['table']         = $this->getTable();
@@ -544,7 +544,7 @@ class Group extends CommonTreeDropdown {
                                            'name'      => 'onlytype',
                                            'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
       if ($this->haveChildren()) {
-         echo "</td><td class='center'>".$LANG['group'][3]."&nbsp;:&nbsp;";
+         echo "</td><td class='center'>".__('Child groups');
          Dropdown::showYesNo('tree', $tree, -1,
                              array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
       } else {
