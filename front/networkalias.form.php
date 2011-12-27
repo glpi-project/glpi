@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $alias->delete($_REQUEST, 1);
    Ajax::refreshPopupMainWindow();
 
-   Event::log($_POST["id"], $alias->getType(), 4, "setup",
+   Event::log($_REQUEST["id"], $alias->getType(), 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
    $node = new NetworkName();
    if ($node->can($alias->fields["networknames_id"], 'r')) {
