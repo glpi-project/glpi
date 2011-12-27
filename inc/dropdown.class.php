@@ -1360,14 +1360,14 @@ class Dropdown {
 
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          echo "<option value='delete'>".__('Delete')."</option>";
-         echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
-         echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
+         echo "<option value='assign_vlan'>".__('Associate a VLAN')."</option>";
+         echo "<option value='unassign_vlan'>".__('Dissociate a VLAN')."</option>";
          // Interest of this massive action ?
 //          echo "<option value='move'>".__('Move')."</option>";
          echo "</select>";
 
-         $params = array('action'  => '__VALUE__',
-                        'itemtype' => $itemtype);
+         $params = array('action'   => '__VALUE__',
+                         'itemtype' => $itemtype);
 
          Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",

@@ -349,13 +349,13 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['networking'][14]."&nbsp;:</td>";
+      echo "<td>".__('IP')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ip");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['networking'][15]."&nbsp;:</td>";
+      echo "<td>".__('MAC')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mac");
       echo "</td></tr>";
@@ -368,7 +368,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['networking'][5]."&nbsp;:</td>";
+      echo "<td>".__('Memory (Mio)')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
@@ -483,17 +483,17 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'ram';
-      $tab[14]['name']     = $LANG['networking'][5];
+      $tab[14]['name']     = __('Memory (Mio)');
       $tab[14]['datatype'] = 'number';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'ip';
-      $tab[12]['name']     = $LANG['networking'][14]." ".$LANG['help'][26];
+      $tab[12]['name']     = __('IP')." (".__('Network device').")";
       $tab[12]['datatype'] = 'ip';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'mac';
-      $tab[13]['name']     = $LANG['networking'][15]." ".$LANG['help'][26];
+      $tab[13]['name']     = __('MAC')." (".__('Network device').")";
       $tab[13]['datatype'] = 'mac';
 
       $tab[32]['table'] = 'glpi_networks';

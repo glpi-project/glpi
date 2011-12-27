@@ -365,11 +365,11 @@ class NetworkPort extends CommonDBChild {
 
       $is_active_network_port = false;
       foreach (self::getNetworkPortInstantiations(false) as $portType) {
-         
-         Session::initNavigateListItems('NetworkPort', 
+
+         Session::initNavigateListItems('NetworkPort',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
-         
+
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE `items_id` = '$items_id'
@@ -451,7 +451,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       if (!$is_active_network_port) {
-         echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr>";
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No network port found')."</th></tr>";
          echo "</table>";
       }
 
@@ -533,13 +533,13 @@ class NetworkPort extends CommonDBChild {
       echo "</td></tr>\n";
 
       if (!$options['several']) {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
+         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Ports number', 1) ."</td>\n";
          echo "<td>";
          Html::autocompletionTextField($this,"logical_number", array('size' => 5));
          echo "</td></tr>\n";
 
       } else {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
+         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Ports number', 2) ."</td>\n";
          echo "<td>";
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
@@ -586,42 +586,42 @@ class NetworkPort extends CommonDBChild {
 
       $tab[20]['table']         = 'glpi_networkports';
       $tab[20]['field']         = 'ip';
-      $tab[20]['name']          = $LANG['networking'][14];
+      $tab[20]['name']          = __('IP');
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = $joinparams;
 
       $tab[21]['table']         = 'glpi_networkports';
       $tab[21]['field']         = 'mac';
-      $tab[21]['name']          = $LANG['networking'][15];
+      $tab[21]['name']          = __('MAC');
       $tab[21]['forcegroupby']  = true;
       $tab[21]['massiveaction'] = false;
       $tab[21]['joinparams']    = $joinparams;
 
       $tab[83]['table']         = 'glpi_networkports';
       $tab[83]['field']         = 'netmask';
-      $tab[83]['name']          = $LANG['networking'][60];
+      $tab[83]['name']          = __('Netmask');
       $tab[83]['forcegroupby']  = true;
       $tab[83]['massiveaction'] = false;
       $tab[83]['joinparams']    = $joinparams;
 
       $tab[84]['table']         = 'glpi_networkports';
       $tab[84]['field']         = 'subnet';
-      $tab[84]['name']          = $LANG['networking'][61];
+      $tab[84]['name']          = __('Subnet');
       $tab[84]['forcegroupby']  = true;
       $tab[84]['massiveaction'] = false;
       $tab[84]['joinparams']    = $joinparams;
 
       $tab[85]['table']         = 'glpi_networkports';
       $tab[85]['field']         = 'gateway';
-      $tab[85]['name']          = $LANG['networking'][59];
+      $tab[85]['name']          = __('Gateway');
       $tab[85]['forcegroupby']  = true;
       $tab[85]['massiveaction'] = false;
       $tab[85]['joinparams']    = $joinparams;
 
       $tab[22]['table']         = 'glpi_netpoints';
       $tab[22]['field']         = 'name';
-      $tab[22]['name']          = $LANG['networking'][51];
+      $tab[22]['name']          = __('Network outlet');
       $tab[22]['forcegroupby']  = true;
       $tab[22]['massiveaction'] = false;
       $tab[22]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
@@ -642,7 +642,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[88]['table']         = 'glpi_vlans';
       $tab[88]['field']         = 'name';
-      $tab[88]['name']          = $LANG['networking'][56];
+      $tab[88]['name']          = __('VLAN');
       $tab[88]['forcegroupby']  = true;
       $tab[88]['massiveaction'] = false;
       $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
@@ -786,9 +786,11 @@ class NetworkPort extends CommonDBChild {
       if (Session::haveRight('networking','r')) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry($LANG['networking'][6], self::countForItem($item));
+               return self::createTabEntry(_n('Network port', 'Network ports',
+                                              self::countForItem($item)),
+                                           self::countForItem($item));
             }
-            return $LANG['networking'][6];
+            return _n('Network port', 'Network ports', 2);
          }
       }
       return '';

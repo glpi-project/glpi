@@ -86,13 +86,13 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
 
          if (!empty($data['nname'])) {
             $output      .= " - ".$data['nname'];
-            $output_long .= " - " . $LANG['networking'][44] . " " . $data['nname'];
+            $output_long .= " - " . printf(__('The port %s'), $data['nname']);
          }
 
          // display netpoint (which will be copied)
          if (!empty($data['npname'])) {
             $output      .= " - ".$data['npname'];
-            $output_long .= " - " . $LANG['networking'][51] . " " . $data['npname'];
+            $output_long .= " - " . printf(__('Network outlet %s'), $data['npname']);
          }
          $ID = $data['did'];
 

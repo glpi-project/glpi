@@ -77,8 +77,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       global $LANG;
 
       echo "<th>" . $LANG['Internet'][45] . "</th>\n";
-      echo "<th>" . $LANG['networking'][15] . "</th>\n";
-      echo "<th>" . $LANG['networking'][56] . "</th>\n";
+      echo "<th>". __('MAC') ."</th>\n";
+      echo "<th>". __('VLAN') ."</th>\n";
    }
 
 

@@ -57,10 +57,10 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
    if ($result && $DB->numrows($result)) {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th>".__('Hardware ports')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Device ports')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Connected devices')."</th></tr>\n";
 

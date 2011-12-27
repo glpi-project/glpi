@@ -195,7 +195,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          $used = self::showForNetworkPort($ID, true,0);
          echo "</td></tr>\n";
 
-         echo "<tr class='tab_bg_2'><td>".$LANG['networking'][55] . "&nbsp;:&nbsp;";
+         echo "<tr class='tab_bg_2'><td>".__('Associate a VLAN');
          Dropdown::show('Vlan',
                         array('used' => $used));
          echo "</td><td rowspan='2'>";

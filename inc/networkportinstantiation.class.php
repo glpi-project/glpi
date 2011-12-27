@@ -311,7 +311,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       global $LANG;
 
       // Show device MAC adresses
-      echo "<td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
+      echo "<td>" . __('MAC') ."</td>\n<td>";
       Html::autocompletionTextField($this, "mac");
       echo "</td>\n";
    }

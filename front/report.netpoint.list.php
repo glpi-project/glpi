@@ -37,9 +37,9 @@ Session::checkRight("reports", "r");
 
 if (isset($_POST["prise"]) && $_POST["prise"]) {
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
-   
+
    Report::title();
-   
+
    $name = Dropdown::getDropdownName("glpi_netpoints",$_POST["prise"]);
 
    // Titre
@@ -67,11 +67,11 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th>".__('Location')."</th>";
       echo "<th>".__('Switch')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".__('Hardware ports')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Device ports')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Connected devices')."</th>";
       echo "</tr>";

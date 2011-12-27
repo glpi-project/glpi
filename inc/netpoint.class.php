@@ -298,10 +298,12 @@ class Netpoint extends CommonDropdown {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['networking'][51]."</th><th>".__('No item found')."</th></tr>";
+         echo "<tr><th>"._n('Network outlet', 'Network outlets', 1)."</th>";
+         echo "<th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
-         Html::printAjaxPager($item->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
+         Html::printAjaxPager(printf(__('Network outlet for %s'), $item->getTreeLink()),
+                              $start, $number);
 
          if ($canedit) {
             echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action='".
@@ -322,7 +324,7 @@ class Netpoint extends CommonDropdown {
                        'START'        => $start,
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
-         Session::initNavigateListItems('Netpoint', 
+         Session::initNavigateListItems('Netpoint',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
 
