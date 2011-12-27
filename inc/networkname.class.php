@@ -585,14 +585,13 @@ class NetworkName extends FQDNLabel {
       } else {
          Html::printAjaxPager(self::getTypeName(2),$start,$number);
          echo "<table class='tab_cadre_fixe'><tr>";
-         echo "<th><a href='javascript:reloadTab(\"order=name\");'>".__('Name')."</a></th>"; // Name
-         echo "<th><a href='javascript:reloadTab(\"order=ip_addresses\");'>".
-                    $LANG['networking'][14]."</th>"; // IP
-         echo "<th>".__('Comments')."</th>"; // Comment
+         echo "<th><a href='javascript:reloadTab(\"order=name\");'>".__('Name')."</a></th>";
+         echo "<th><a href='javascript:reloadTab(\"order=ip_addresses\");'>".__('IP')."</th>";
+         echo "<th>".__('Comments')."</th>";
          echo "</tr>\n";
 
 
-         Session::initNavigateListItems($internetElement->getType(), 
+         Session::initNavigateListItems($internetElement->getType(),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$elementToDisplay->getTypeName(1), $internetElement->getName()));
 

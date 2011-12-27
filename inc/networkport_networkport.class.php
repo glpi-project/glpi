@@ -109,18 +109,15 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       if (empty($source) && !empty($destination)) {
          $ps->fields['netpoints_id'] = $destination;
          $ps->updateInDB($updates);
-         Session::addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" .
-                                          $LANG['networking'][51]);
+         Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
 
       } else if (!empty($source) && empty($destination)) {
          $pd->fields['netpoints_id'] = $source;
          $pd->updateInDB($updates);
-         Session::addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" .
-                                          $LANG['networking'][51]);
+         Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
 
       } else if ($source != $destination) {
-         Session::addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;:&nbsp;" .
-                                          $LANG['networking'][51]);
+         Session::addMessageAfterRedirect(__("Warning! The network outlets of two items do not match"));
       }
 
       // Manage VLAN : use networkings one as defaults

@@ -120,13 +120,12 @@ class RuleOcs extends Rule {
 
       $criterias['IPSUBNET']['table']     = 'networks';
       $criterias['IPSUBNET']['field']     = 'IPSUBNET';
-      $criterias['IPSUBNET']['name']      = $LANG['networking'][61];
+      $criterias['IPSUBNET']['name']      = __('Subnet');
       $criterias['IPSUBNET']['linkfield'] = 'HARDWARE_ID';
 
       $criterias['IPADDRESS']['table']     = 'networks';
       $criterias['IPADDRESS']['field']     = 'IPADDRESS';
-      $criterias['IPADDRESS']['name']      = $LANG['financial'][44]." ".
-                                                $LANG['networking'][14];
+      $criterias['IPADDRESS']['name']      = __('IP address');
       $criterias['IPADDRESS']['linkfield'] = 'HARDWARE_ID';
 
       $criterias['MACHINE_NAME']['table']     = 'hardware';

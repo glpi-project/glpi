@@ -34,9 +34,9 @@ Session::checkRight("reports", "r");
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
-   
+
    Report::title();
-   
+
    // Titre
    $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
    echo "<div class='center'><h2>".sprintf(__('Network report by location: %s'),$name)." </h2><br></div>";
@@ -60,11 +60,11 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       echo "<tr><th>".__('Location')."</th>";
       echo "<th>"._n('Network outlet', 'Network outlets', 2)."</th>";
       echo "<th>".__('Switch')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".__('Hardware ports')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Device ports')."</th>";
-      echo "<th>".$LANG['networking'][14]."</th>";
+      echo "<th>".__('IP')."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".__('Connected devices')."</th></tr>";
 

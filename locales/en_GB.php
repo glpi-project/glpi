@@ -1331,6 +1331,8 @@ $LANG['Menu'][41]="Checks";
 $LANG['Menu'][42]="Agendas";
 $LANG['Menu'][43]="SLAs";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['monitors'][14]="Microphone";
 $LANG['monitors'][15]="Speakers";
 $LANG['monitors'][18]="Flags";
@@ -1342,8 +1344,9 @@ $LANG['monitors'][32]="DVI";
 $LANG['monitors'][33]="Pivot";
 $LANG['monitors'][34]="HDMI";
 
+
 $LANG['networking'][4]="Network port";
-$LANG['networking'][5]="Memory (MB)";
+$LANG['networking'][5]="Memory (Mio)";
 $LANG['networking'][6]="Network ports";
 $LANG['networking'][10]="No network port found";
 $LANG['networking'][11]="network ports found";
@@ -1367,7 +1370,6 @@ $LANG['networking'][59]="Gateway";
 $LANG['networking'][60]="Mask";
 $LANG['networking'][61]="Subnet";
 
-/// TODO After is ok for migration to gettext
 
 $LANG['ocsconfig'][0]="OCSNG";
 $LANG['ocsconfig'][1]="OCSNG database user";
