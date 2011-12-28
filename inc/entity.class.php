@@ -95,7 +95,6 @@ class Entity extends CommonTreeDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab($this->getType(), $ong, $options);
@@ -180,7 +179,7 @@ class Entity extends CommonTreeDropdown {
 
 
    function cleanDBonPurge() {
-      global $DB, $LANG;
+      global $DB;
 
       $query = "DELETE
                 FROM `glpi_entitydatas`

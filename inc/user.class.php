@@ -51,8 +51,6 @@ class User extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('User','Users',$nb);
    }
 
@@ -197,7 +195,6 @@ class User extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Profile_User', $ong, $options);
@@ -454,7 +451,7 @@ class User extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $DB, $LANG;
+      global $DB;
 
       if (isset($input['_stop_import'])) {
          return false;
@@ -467,7 +464,8 @@ class User extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'),
+                                          false, ERROR);
          return false;
       }
 
@@ -478,11 +476,12 @@ class User extends CommonDBTM {
          } else {
             if ($input["password"] == $input["password2"]) {
                $input["password"]
-                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                  = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                unset($input["password2"]);
 
             } else {
-               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'), false, ERROR);
+               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'),
+                                                false, ERROR);
                return false;
             }
          }
@@ -518,7 +517,6 @@ class User extends CommonDBTM {
 
 
    function post_addItem() {
-      global $LANG;
 
       // add emails (use _useremails set from UI, not _emails set from LDAP)
       if (isset($this->input['_useremails']) && count($this->input['_useremails'])) {
@@ -564,7 +562,7 @@ class User extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (isset($input["password2"])) {
          // Empty : do not update
@@ -582,7 +580,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                        = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
                } else {
                   unset($input["password"]);
@@ -590,7 +588,8 @@ class User extends CommonDBTM {
                unset($input["password2"]);
 
             } else {
-               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'), false, ERROR);
+               Session::addMessageAfterRedirect(__('Error: the two passwords do not match'),
+                                                false, ERROR);
                return false;
             }
          }
@@ -1097,7 +1096,7 @@ class User extends CommonDBTM {
                                        Toolbox::addslashes_deep($result[$ldap_method["group_member_field"]]))."')";
 
             foreach ($DB->request($query) as $group) {
-               $this->fields["_groups"][]=$group['id'];
+               $this->fields["_groups"][] = $group['id'];
             }
          }
       }
@@ -1834,7 +1833,7 @@ class User extends CommonDBTM {
 
 
    function pre_updateInDB() {
-      global $DB,$LANG;
+      global $DB;
 
       if (($key=array_search('name',$this->updates)) !== false) {
          /// Check if user does not exists
@@ -1849,7 +1848,8 @@ class User extends CommonDBTM {
             unset($this->oldvalues['name']);
             /// For displayed message
             $this->fields['name'] = $this->oldvalues['name'];
-            Session::addMessageAfterRedirect(__('Unable to update login. A user already exists.'), false, ERROR);
+            Session::addMessageAfterRedirect(__('Unable to update login. A user already exists.'),
+                                             false, ERROR);
          }
       }
 
@@ -2657,7 +2657,8 @@ class User extends CommonDBTM {
                      }
                      $linktype = "";
                      if (isset($groups[$data[$field_group]])) {
-                        $linktype = sprintf(__('%1$s = %2$s'),_n('Group','Groups',1),$groups[$data[$field_group]]);
+                        $linktype = sprintf(__('%1$s = %2$s'),_n('Group','Groups',1),
+                                            $groups[$data[$field_group]]);
                      }
                      echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>";
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
@@ -2796,7 +2797,9 @@ class User extends CommonDBTM {
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>" . __('Forgot your password?')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Please confirm your email address and enter your new password.')."</td></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>". __('Please confirm your email address and enter your new password.').
+              "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
          echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
@@ -2827,7 +2830,7 @@ class User extends CommonDBTM {
     * Show form for password recovery
    **/
    static function showPasswordForgetRequestForm() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<div class='center'>";
       echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc'].
@@ -2835,7 +2838,9 @@ class User extends CommonDBTM {
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='2'>" . __('Forgot your password?')."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Please enter your email address. A email will be sent to you and you will be able to choose a new password.')."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>" .
+            __('Please enter your email address. A email will be sent to you and you will be able to choose a new password.').
+           "</td></tr>";
 
       echo "<tr class='tab_bg_2 center'>";
       echo "<td><input type='text' size='60' name='email' value=''></td>";
@@ -2847,7 +2852,7 @@ class User extends CommonDBTM {
 
 
    function updateForgottenPassword($input) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<div class='center'>";
       if ($this->getFromDBbyEmail($input['email'])) {

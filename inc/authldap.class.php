@@ -402,7 +402,6 @@ class AuthLDAP extends CommonDBTM {
 
 
    function showFormGroupsConfig() {
-      global $LANG;
 
       $ID = $this->getField('id');
 
@@ -549,7 +548,6 @@ class AuthLDAP extends CommonDBTM {
 
 
    function showFormEntityConfig() {
-      global $LANG;
 
       $ID = $this->getField('id');
 
@@ -557,7 +555,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
-      echo "<th class='center' colspan='4'>" . __('Import entities from LDAP directory') . "</th></tr>";
+      echo "<th class='center' colspan='4'>". __('Import entities from LDAP directory')."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Attribute representing entity') . "</td>";
       echo "<td colspan='3'>";
@@ -577,7 +575,6 @@ class AuthLDAP extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('AuthLDAP', $ong, $options);
@@ -759,7 +756,6 @@ class AuthLDAP extends CommonDBTM {
 
 
    function showSystemInformations($width) {
-      global $LANG;
 
       $ldap_servers = self::getLdapServers();
 
@@ -831,7 +827,6 @@ class AuthLDAP extends CommonDBTM {
     * @return nothing
    **/
    static function displayLdapFilter($target, $users=true) {
-      global $LANG;
 
       $config_ldap = new AuthLDAP();
       $res         = $config_ldap->getFromDB($_SESSION["ldap_server"]);
@@ -1105,7 +1100,7 @@ class AuthLDAP extends CommonDBTM {
     * @return  array of the user
    **/
    static function getAllUsers($options=array(), &$results, &$limitexceeded) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $config_ldap = new self();
       $res = $config_ldap->getFromDB($options['authldaps_id']);
@@ -1593,7 +1588,7 @@ class AuthLDAP extends CommonDBTM {
     * @return  nothing
    **/
    static function ldapImportUserByServerId($params=array(), $action, $ldap_server, $display=false) {
-      global $DB, $LANG;
+      global $DB;
       static $conn_cache = array();
 
       $params      = Toolbox::stripslashes_deep($params);

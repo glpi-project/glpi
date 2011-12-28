@@ -40,10 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class Network extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Network', 'Networks', $nb);
    }
 }
-
 ?>

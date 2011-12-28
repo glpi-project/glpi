@@ -72,7 +72,7 @@ class Calendar_Holiday extends CommonDBRelation {
     * @param $calendar Calendar object
    **/
    static function showForCalendar(Calendar $calendar) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $calendar->getField('id');
       if (!$calendar->can($ID,'r')) {
@@ -105,10 +105,11 @@ class Calendar_Holiday extends CommonDBRelation {
       $used = array();
 
       if ($DB->numrows($result) >0) {
-         
-         Session::initNavigateListItems('Holiday', 
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$calendar->getTypeName(1), $calendar->fields["name"]));
+
+         Session::initNavigateListItems('Holiday',
+                                        //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $calendar->getTypeName(1),
+                                                $calendar->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             Session::addToNavigateListItems('Holiday', $data["id"]);
@@ -171,7 +172,6 @@ class Calendar_Holiday extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -196,5 +196,4 @@ class Calendar_Holiday extends CommonDBRelation {
       return true;
    }
 }
-
 ?>

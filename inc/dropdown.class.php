@@ -63,7 +63,7 @@ class Dropdown {
     *
    **/
    static function show($itemtype, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI;
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
@@ -446,7 +446,6 @@ class Dropdown {
     * @return nothing (print out an HTML select box)
     */
    static function dropdownIcons($myname, $value, $store_path) {
-      global $LANG;
 
       if (is_dir($store_path)) {
          if ($dh = opendir($store_path)) {
@@ -526,7 +525,6 @@ class Dropdown {
     * @return rand value
    **/
    static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
-      global $LANG;
 
       if ($restrict_to != 0) {
          $options[0] = __('No');
@@ -547,7 +545,6 @@ class Dropdown {
     * @return string
    **/
    static function getYesNo($value) {
-      global $LANG;
 
       if ($value) {
          return __('Yes');
@@ -725,7 +722,6 @@ class Dropdown {
     * @param $value string URL of selected current value
    **/
    static function showItemTypeMenu($title, $optgroup, $value='') {
-      global $LANG;
 
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp;: ";
@@ -760,7 +756,6 @@ class Dropdown {
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
     */
    static function showItemTypeList($optgroup) {
-      global $LANG;
 
       echo "<p><a href=\"javascript:showHideDiv('list_nav','img_nav','";
       echo GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
@@ -1046,7 +1041,6 @@ class Dropdown {
     *    - value : default value
    **/
    static function showTimeStamp($myname, $options = array()) {
-      global $LANG;
 
       $params['value']       = 0;
       $params['min']         = 0;
@@ -1084,9 +1078,10 @@ class Dropdown {
          if ($day > 0) {
             if ($hour > 0 || $minute > 0) {
                //TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
-               $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s',$day),$day,$hour,$minute);
+               $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s',$day),
+                                     $day, $hour, $minute);
             } else {
-               $values[$i] = sprintf(_n('%d day','%d days',$day),$day);
+               $values[$i] = sprintf(_n('%d day','%d days',$day), $day);
             }
 
          } else if ($hour > 0 || $minute > 0) {
@@ -1107,7 +1102,7 @@ class Dropdown {
     * @param $is_recursive is the item recursive ?
    **/
    static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
@@ -1148,7 +1143,7 @@ class Dropdown {
     * Toggle view in LDAP user import/synchro between no restriction and date restriction
    **/
    static function showAdvanceDateRestrictionSwitch($enabled = 0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
       $url  = $CFG_GLPI["root_doc"]."/ajax/ldapdaterestriction.php";
@@ -1244,7 +1239,7 @@ class Dropdown {
     * - management_restrict global management restrict mode
    **/
    static function showGlobalSwitch($ID,$attrs = array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $params['management_restrict'] = 0;
       $params['value']               = 0;
@@ -1616,7 +1611,6 @@ class Dropdown {
     * @return the label corresponding to it, or ""
    **/
    static function getGlobalSwitch($value=0) {
-      global $LANG;
 
       switch ($value) {
          default :
@@ -1637,7 +1631,7 @@ class Dropdown {
     * @since version 0.83
    **/
    static function showOutputFormat() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<select name='display_type'>";
       echo "<option value='".Search::PDF_OUTPUT_LANDSCAPE."'>".__('Current page in landscape PDF').

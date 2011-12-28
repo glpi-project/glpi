@@ -41,8 +41,6 @@ class DBConnection extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Mysql replicate', 'Mysql replicates', $nb);
    }
 
@@ -398,10 +396,9 @@ class DBConnection extends CommonDBTM {
 
 
    function showSystemInformations($width) {
-      global $LANG;
 
       echo "\n</pre></td>";
-      echo "</tr><tr class='tab_bg_2'><th>" . _n('Mysql replicate', 'Mysql replicates',2) . "</th></tr>";
+      echo "</tr><tr class='tab_bg_2'><th>". _n('Mysql replicate', 'Mysql replicates',2)."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (self::isDBSlaveActive()) {

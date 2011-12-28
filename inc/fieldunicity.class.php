@@ -46,8 +46,6 @@ class FieldUnicity extends CommonDropdown {
 
 
    static function getTypeName() {
-      global $LANG;
-
       return __('Fields unicity');
    }
 
@@ -63,7 +61,6 @@ class FieldUnicity extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'is_active',
                          'label' => __('Active'),
@@ -89,7 +86,6 @@ class FieldUnicity extends CommonDropdown {
     * @param $options array
    **/
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $ong['empty'] = $this->getTypeName();
@@ -101,7 +97,6 @@ class FieldUnicity extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          if ($item->getType()==$this->getType()) {
@@ -353,10 +348,10 @@ class FieldUnicity extends CommonDropdown {
     * @return input the values to insert, but modified
    **/
    static function checkBeforeInsert($input) {
-      global $LANG;
 
       if (!$input['itemtype'] || empty($input['_fields'])) {
-         Session::addMessageAfterRedirect(__("It's mandatory to select a type and at least one field"), true, ERROR);
+         Session::addMessageAfterRedirect(__("It's mandatory to select a type and at least one field"),
+                                          true, ERROR);
          $input = array();
 
       } else {
@@ -404,7 +399,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $unicity an instance of FieldUnicity class
    **/
    static function showDoubles(FieldUnicity $unicity) {
-      global $LANG, $DB;
+      global $DB;
 
 
       $fields       = array();
@@ -449,7 +444,8 @@ class FieldUnicity extends CommonDropdown {
          }
 
          if (empty($results)) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
          } else {
             echo "<tr class='tab_bg_2'>";
             foreach ($fields as $field) {
@@ -468,7 +464,8 @@ class FieldUnicity extends CommonDropdown {
          }
 
       } else {
-         echo "<tr class='tab_bg_2'><td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
       }
       echo "</table>";
    }

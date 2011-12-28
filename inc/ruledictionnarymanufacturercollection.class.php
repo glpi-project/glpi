@@ -55,8 +55,6 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionary of manufacturers');
    }
 

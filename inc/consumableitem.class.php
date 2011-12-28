@@ -114,7 +114,6 @@ class ConsumableItem extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Consumable', $ong, $options);
@@ -305,7 +304,7 @@ class ConsumableItem extends CommonDBTM {
     * @return 0 : nothing to do 1 : done with success
    **/
    static function cronConsumable($task=NULL) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI;
 
       $cron_status = 1;
 
@@ -341,9 +340,9 @@ class ConsumableItem extends CommonDBTM {
                   // define message alert
                   //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s - Remaining %3$d'),
-                              $consumable["consname"], $consumable["consref"], $unused);
+                                      $consumable["consname"], $consumable["consref"], $unused);
                   $message.='<br>';
-                  
+
                   $items[$consumable["consID"]] = $consumable;
 
                   // if alert exists -> delete

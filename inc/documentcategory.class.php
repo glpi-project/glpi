@@ -40,10 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DocumentCategory extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Document heading', 'Document headings', $nb);
    }
 }
-
 ?>

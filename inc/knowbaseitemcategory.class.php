@@ -54,8 +54,6 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Knowledge base category', 'Knowledge base categories', $nb);
    }
 
@@ -86,7 +84,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
     * @return nothing (display the form)
    **/
    static function showFirstLevel($options, $faq=0) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
@@ -228,5 +226,4 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    }
 
 }
-
 ?>

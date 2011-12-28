@@ -80,7 +80,6 @@ class AuthMail extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('authMail', $ong, $options);
@@ -148,7 +147,6 @@ class AuthMail extends CommonDBTM {
     * @return Nothing (display)
     **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -179,7 +177,8 @@ class AuthMail extends CommonDBTM {
          Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Email domain Name (users email will be login@domain)') . "</td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>". __('Email domain Name (users email will be login@domain)') ."</td>";
          echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
          echo "</td></tr>";
 
@@ -204,8 +203,9 @@ class AuthMail extends CommonDBTM {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Email server configuration') . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
-         echo "<p class='red'>" .__('Your PHP parser was compiled without the IMAP functions') . "</p>";
-         echo "<p>" . __('Impossible to use email server as external source of connection') . "</p></td></tr></table></div>";
+         echo "<p class='red'>".__('Your PHP parser was compiled without the IMAP functions')."</p>";
+         echo "<p>". __('Impossible to use email server as external source of connection')."</p>";
+         echo "</td></tr></table></div>";
       }
    }
 
@@ -336,7 +336,6 @@ class AuthMail extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
@@ -359,5 +358,4 @@ class AuthMail extends CommonDBTM {
    }
 
 }
-
 ?>

@@ -46,7 +46,6 @@ class RuleDictionnaryDropdown extends RuleCached {
 
 
    function showCacheRuleHeader() {
-      global $LANG;
 
       if ($this->show_cache) {
          echo "<tr><th colspan='2'>".__('Cache informations')."</th><th>".$this->fields["name"].
@@ -61,7 +60,6 @@ class RuleDictionnaryDropdown extends RuleCached {
 
 
    function showCacheRuleDetail($fields) {
-      global $LANG;
 
       if ($this->show_cache) {
          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
@@ -75,5 +73,4 @@ class RuleDictionnaryDropdown extends RuleCached {
    }
 
 }
-
 ?>

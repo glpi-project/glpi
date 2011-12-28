@@ -48,8 +48,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    static function getTypeName() {
-      global $LANG;
-
       return __('Knowledge base');
    }
 
@@ -95,7 +93,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -106,7 +103,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -361,7 +357,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       // set new date if not exists
       if (!isset($input["date"]) || empty($input["date"])) {
@@ -385,7 +380,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       // set title for question if empty
       if (empty($input["name"])) {
@@ -740,7 +734,7 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display the form)
    **/
    static function searchForm($options, $faq=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
           && !Session::haveRight("knowbase","r")

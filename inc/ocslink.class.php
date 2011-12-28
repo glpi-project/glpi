@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class Ocslink extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-
       return _n('OCSNG link', 'OCSNG links', $nb);
    }
 
@@ -65,7 +62,7 @@ class Ocslink extends CommonDBTM {
    * @return nothing
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB, $LANG;
+      global $DB;
 
       if (in_array($item->getType(),array('Computer'))) {
          $items_id = $item->getField('id');
@@ -91,7 +88,6 @@ class Ocslink extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG, $CFG_GLPI;
 
       if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
          switch ($item->getType()) {
@@ -380,5 +376,4 @@ class Ocslink extends CommonDBTM {
 
 
 }
-
 ?>

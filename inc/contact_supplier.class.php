@@ -47,8 +47,6 @@ class Contact_Supplier extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Link Contact/Supplier','Links Contact/Supplier',$nb);
    }
 

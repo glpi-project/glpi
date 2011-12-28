@@ -56,12 +56,8 @@ class Change extends CommonITILObject {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Change','Changes',$nb);
    }
 
@@ -162,7 +158,6 @@ class Change extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("show_all_change","1")) {
          $nb = 0;
@@ -226,7 +221,6 @@ class Change extends CommonITILObject {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
       $ong['empty'] = $this->getTypeName(1);
@@ -259,26 +253,22 @@ class Change extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG, $CFG_GLPI;
 
       // Get change : need for comparison
 //       $this->getFromDB($input['id']);
 
       $input = parent::prepareInputForUpdate($input);
-
       return $input;
    }
 
 
    function pre_updateInDB() {
-      global $LANG, $CFG_GLPI;
-
       parent::pre_updateInDB();
    }
 
 
    function post_updateItem($history=1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $donotif = false;
 
@@ -320,16 +310,14 @@ class Change extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI, $LANG;
 
       $input =  parent::prepareInputForAdd($input);
-
       return $input;
    }
 
 
    function post_addItem() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       parent::post_addItem();
 
@@ -1007,7 +995,6 @@ class Change extends CommonITILObject {
     * Form to add an analysis to a change
    **/
    function showAnalysisForm() {
-      global $LANG, $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');
@@ -1048,7 +1035,6 @@ class Change extends CommonITILObject {
     * Form to add an analysis to a change
    **/
    function showPlanForm() {
-      global $LANG, $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');

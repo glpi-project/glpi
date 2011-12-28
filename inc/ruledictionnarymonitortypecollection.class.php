@@ -54,7 +54,6 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
 
 
    function getTitle() {
-      global $LANG;
 
       return __('Dictionnary of monitor types');
    }

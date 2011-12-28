@@ -45,7 +45,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
 
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
-      global $DB,$LANG;
+      global $DB;
 
       // Model check : need to check using manufacturer extra data so specific function
       if (strpos($this->item_table,'models')) {
@@ -123,7 +123,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
     * @return -1 on completion else current offset
    **/
    function replayRulesOnExistingDBForModel($offset=0, $maxtime=0) {
-      global $DB, $LANG;
+      global $DB;
 
       if (isCommandLine()) {
          echo "replayRulesOnExistingDB started : " . date("r") . "\n";
@@ -269,5 +269,4 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
    }
 
 }
-
 ?>

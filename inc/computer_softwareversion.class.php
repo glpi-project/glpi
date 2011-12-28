@@ -652,7 +652,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return new category ID
    **/
    private static function displayCategoryFooter($cat, $rand, $canedit) {
-      global $LANG;
 
       // Close old one
       if ($cat != -1) {
@@ -744,7 +743,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return array of found license id
    **/
    private static function displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $ID       = $data["id"];
       $verid    = $data["verid"];
@@ -823,7 +822,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return nothing
    */
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($data["softwareversions_id_use"]>0) {
          $ID = $data["softwareversions_id_use"];
@@ -1011,7 +1010,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'Software' :
@@ -1074,5 +1072,4 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 }
-
 ?>

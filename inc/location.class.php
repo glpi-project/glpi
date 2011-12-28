@@ -54,7 +54,6 @@ class Location extends CommonTreeDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => $this->getForeignKeyField(),
                          'label' => __('As child of'),
@@ -72,19 +71,16 @@ class Location extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Location','Locations',$nb);
    }
 
 
    static function getSearchOptionsToAdd() {
-      global $LANG;
 
       $tab = array();
-      $tab[3]['table'] = 'glpi_locations';
-      $tab[3]['field'] = 'completename';
-      $tab[3]['name']  = __('Location');
+      $tab[3]['table']          = 'glpi_locations';
+      $tab[3]['field']          = 'completename';
+      $tab[3]['name']           = __('Location');
 
       $tab[91]['table']         = 'glpi_locations';
       $tab[91]['field']         = 'building';
@@ -111,7 +107,6 @@ class Location extends CommonTreeDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -130,7 +125,6 @@ class Location extends CommonTreeDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
@@ -145,5 +139,4 @@ class Location extends CommonTreeDropdown {
       Rule::cleanForItemCriteria($this, 'users_locations');
    }
 }
-
 ?>

@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class PeripheralType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Devices type', 'Devices types', $nb);
    }
-}
 
+}
 ?>

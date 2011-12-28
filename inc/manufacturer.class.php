@@ -40,9 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class Manufacturer extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      
       return _n('Manufacturer','Manufacturers',$nb);
    }
 
@@ -68,5 +65,4 @@ class Manufacturer extends CommonDropdown {
       Rule::cleanForItemAction($this, 'manufacturer');
    }
 }
-
 ?>

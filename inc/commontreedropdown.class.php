@@ -39,11 +39,11 @@ if (!defined('GLPI_ROOT')) {
 /// CommonTreeDropdown class - Hirearchical and cross entities
 abstract class CommonTreeDropdown extends CommonDropdown {
 
+
    /**
     * Return Additional Fileds for this type
    **/
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => $this->getForeignKeyField(),
                          'label' => __('As child of'),
@@ -65,7 +65,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          if ($item->getType()==$this->getType()) {

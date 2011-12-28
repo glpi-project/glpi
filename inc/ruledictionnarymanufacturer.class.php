@@ -43,7 +43,6 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
@@ -55,7 +54,6 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['name']['name']          = __('Manufacturer');
@@ -65,5 +63,4 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
    }
 
 }
-
 ?>

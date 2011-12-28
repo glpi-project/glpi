@@ -35,7 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class Central extends CommonGLPI {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
       // No plural
       return __('Standard interface');
@@ -52,7 +51,6 @@ class Central extends CommonGLPI {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = __('Personal View');
@@ -130,7 +128,7 @@ class Central extends CommonGLPI {
     *
    **/
    static function showMyView() {
-      global $LANG, $DB;
+      global $DB;
 
       $showticket = (Session::haveRight("show_all_ticket", "1")
                      || Session::haveRight("show_assign_ticket", "1"));
@@ -157,7 +155,7 @@ class Central extends CommonGLPI {
 
       if ($DB->isSlave() && !$DB->first_connection) {
          echo "<tr><th colspan='2'><br>";
-         Html::displayTitle(GLPI_ROOT."/pics/warning.png", __('MySQL replica: read only'), 
+         Html::displayTitle(GLPI_ROOT."/pics/warning.png", __('MySQL replica: read only'),
                                     __('MySQL replica: read only'));
          echo "</th></tr>";
       }
@@ -247,5 +245,4 @@ class Central extends CommonGLPI {
    }
 
 }
-
 ?>

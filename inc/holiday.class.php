@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class Holiday extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Close time','Close times',$nb);
    }
 
@@ -57,7 +55,6 @@ class Holiday extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'begin_date',
                          'label' => __('Start'),
@@ -77,7 +74,6 @@ class Holiday extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -129,5 +125,4 @@ class Holiday extends CommonDropdown {
    }
 
 }
-
 ?>

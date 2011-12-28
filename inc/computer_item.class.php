@@ -688,7 +688,6 @@ class Computer_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // can exists for Template
       if ($item->can($item->getField('id'),'r')) {
@@ -699,7 +698,8 @@ class Computer_Item extends CommonDBRelation{
             case 'Monitor' :
                if (Session::haveRight('computer', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections',2), self::countForItem($item));
+                     return self::createTabEntry(_n('Connection','Connections',2),
+                                                 self::countForItem($item));
                   }
                   return _n('Connection','Connections',2);
                }

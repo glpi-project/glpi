@@ -169,7 +169,6 @@ class CommonGLPI {
     *  @return nothing (set the tab array)
    **/
    function addStandardTab($itemtype, &$ong, $options) {
-      global $LANG;
 
       $withtemplate = 0;
       if (isset($options['withtemplate'])) {
@@ -352,7 +351,7 @@ class CommonGLPI {
     * @return Nothing ()
    **/
    function showTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -603,5 +602,4 @@ class CommonGLPI {
    }
 
 }
-
 ?>

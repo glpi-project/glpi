@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class MonitorType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Monitor type', 'Monitor types', $nb);
    }
-}
 
+}
 ?>
