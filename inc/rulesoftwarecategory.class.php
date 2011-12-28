@@ -50,8 +50,6 @@ class RuleSoftwareCategory extends Rule {
    public $can_sort = true;
 
    function getTitle() {
-      global $LANG;
-
       return __('Rules for assigning a category to software');
    }
 
@@ -81,7 +79,6 @@ class RuleSoftwareCategory extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['softwarecategories_id']['name']  = __('Category');
@@ -91,5 +88,4 @@ class RuleSoftwareCategory extends Rule {
    }
 
 }
-
 ?>

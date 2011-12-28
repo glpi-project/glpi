@@ -72,7 +72,7 @@ class Search {
     * @return Nothing (display)
    **/
    static function showList ($itemtype, $params) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // Instanciate an object to access method
       $item = NULL;
@@ -80,7 +80,6 @@ class Search {
       if ($itemtype != 'States') {
          $item = getItemForItemtype($itemtype);
       }
-
 
       // Default values of parameters
       $p['link']        = array();//
@@ -1363,7 +1362,7 @@ class Search {
     *@return nothing (displays)
    **/
    static function showGenericSearch($itemtype, $params) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Default values of parameters
       $p['link']        = array();//
@@ -2481,7 +2480,6 @@ class Search {
     * @return select string
    **/
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
-      global $LANG;
 
       $searchopt = &self::getOptions($itemtype);
       $table     = $searchopt[$ID]["table"];
@@ -4791,7 +4789,6 @@ class Search {
 
 
    static function getActionsFor($itemtype, $field_num) {
-      global $LANG;
 
       $searchopt = &self::getOptions($itemtype);
       $actions   = array('contains'  => __('contains'),
@@ -5042,7 +5039,6 @@ class Search {
     * @return string to display
    **/
    static function showError($type) {
-      global $LANG;
 
       $out = "";
       switch ($type) {
@@ -5068,7 +5064,6 @@ class Search {
     * @return string to display
    **/
    static function showFooter($type, $title="") {
-      global $LANG;
 
       $out = "";
       switch ($type) {
@@ -5079,8 +5074,10 @@ class Search {
             $nb = count($PDF_ARRAY);
             $pdf->ezStartPageNumbers(750, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item', $nb), $nb), 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
+                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item',
+                                                                                $nb),
+                                                                     $nb),
+                                     'windows-1252'). " - {PAGENUM}/{TOTALPAGENUM}");
             $options = array('fontSize'      => 8,
                              'colGap'        => 2,
                              'maxWidth'      => 800,
@@ -5097,8 +5094,10 @@ class Search {
             $nb = count($PDF_ARRAY);
             $pdf->ezStartPageNumbers(550, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item', $nb), $nb), 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
+                                       " - ".Toolbox::decodeFromUtf8(sprintf(__('%s item', '%s item',
+                                                                                $nb),
+                                                                             $nb),
+                                     'windows-1252'). " - {PAGENUM}/{TOTALPAGENUM}");
             $options = array('fontSize'      => 8,
                              'colGap'        => 2,
                              'maxWidth'      => 565,

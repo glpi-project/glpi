@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class ReservationItem extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Reservable item', 'Reservable items',$nb);
    }
 
@@ -158,7 +156,6 @@ class ReservationItem extends CommonDBTM {
 
 
    static function showActivationFormForItem(CommonDBTM $item) {
-      global $CFG_GLPI, $LANG;
 
       if (!Session::haveRight("reservation_central","w")) {
          return false;
@@ -197,8 +194,9 @@ class ReservationItem extends CommonDBTM {
          }
          echo "<span class='small_space'>";
          echo "<input type='submit' name='delete' value=\"".__s('Prohibit reservations')."\"
-               class='submit' ".Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
-                                                                    __('That will remove all the reservations in progress.'))).">";
+               class='submit' ".
+               Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
+                                                   __('That will remove all the reservations in progress.'))).">";
          echo "</span></td>";
       } else {
          echo "<td class='center'>";
@@ -206,7 +204,8 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
          echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
-         echo "<input type='submit' name='add' value=\"".__s('Authorize reservations')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__s('Authorize reservations')."\"
+                class='submit'>";
          echo "</td>";
       }
       echo "</tr></table></form></div>";
@@ -214,7 +213,6 @@ class ReservationItem extends CommonDBTM {
 
 
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       if (!Session::haveRight("reservation_central","w")) {
          return false;
@@ -259,7 +257,7 @@ class ReservationItem extends CommonDBTM {
 
 
    static function showListSimple() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
@@ -271,7 +269,8 @@ class ReservationItem extends CommonDBTM {
 
       echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='".($showentity?"5":"4")."'>"._n('Reservable item', 'Reservable items',1)."</th></tr>\n";
+      echo "<tr><th colspan='".($showentity?"5":"4")."'>"._n('Reservable item', 'Reservable items',1).
+           "</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -349,7 +348,7 @@ class ReservationItem extends CommonDBTM {
     * @return 0 : nothing to do 1 : done with success
     **/
    static function cronReservation($task=NULL) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
@@ -452,5 +451,4 @@ class ReservationItem extends CommonDBTM {
    }
 
 }
-
 ?>

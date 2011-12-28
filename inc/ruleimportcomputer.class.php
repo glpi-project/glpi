@@ -61,8 +61,6 @@ class RuleImportComputer extends Rule {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Rules for import and link computers');
    }
 
@@ -74,7 +72,6 @@ class RuleImportComputer extends Rule {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['entities_id']['table']     = 'glpi_entities';
@@ -127,7 +124,6 @@ class RuleImportComputer extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['_fusion']['name']        = __('OCSNG link');
@@ -141,10 +137,11 @@ class RuleImportComputer extends Rule {
 
 
    static function getRuleActionValues() {
-      global $LANG;
 
-      return array(self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
-                   self::RULE_ACTION_LINK_OR_NO_IMPORT => __('Link if possible, otherwise imports declined'));
+      return array(self::RULE_ACTION_LINK_OR_IMPORT
+                                          => __('Link if possible'),
+                   self::RULE_ACTION_LINK_OR_NO_IMPORT
+                                          => __('Link if possible, otherwise imports declined'));
    }
 
 
@@ -156,7 +153,6 @@ class RuleImportComputer extends Rule {
     * @return the label's value or ''
    **/
    function displayAdditionRuleActionValue($value) {
-      global $LANG;
 
       $values = self::getRuleActionValues();
       if (isset($values[$value])) {
@@ -167,7 +163,6 @@ class RuleImportComputer extends Rule {
 
 
    function manageSpecificCriteriaValues($criteria, $name, $value) {
-      global $LANG;
 
       switch ($criteria['type']) {
          case "state" :
@@ -185,7 +180,6 @@ class RuleImportComputer extends Rule {
     * Add more criteria specific to this type of rule
    **/
    static function addMoreCriteria($criterion='') {
-      global $LANG;
 
       return array(Rule::PATTERN_FIND     => __('is already present in GLPI'),
                    self::PATTERN_IS_EMPTY => __('is empty in GLPI'));
@@ -193,7 +187,6 @@ class RuleImportComputer extends Rule {
 
 
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
-      global $LANG;
 
       if ($condition == self::PATTERN_IS_EMPTY) {
           return __('Yes');
@@ -220,7 +213,6 @@ class RuleImportComputer extends Rule {
 
 
    function displayAdditionalRuleAction($action, $params=array()) {
-      global $LANG;
 
       switch ($action['type']) {
          case 'fusion_type' :
@@ -462,5 +454,4 @@ class RuleImportComputer extends Rule {
    }
 
 }
-
 ?>

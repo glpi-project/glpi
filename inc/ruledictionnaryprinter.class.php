@@ -51,8 +51,6 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of printers');
    }
 
@@ -63,9 +61,9 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    function showCacheRuleHeader() {
-      global $LANG;
 
-      echo "<tr><th colspan='3'>" . __('Cache informations') . "</th><th colspan='3'>" . $this->fields["name"];
+      echo "<tr><th colspan='3'>" . __('Cache informations') . "</th>";
+      echo "<th colspan='3'>" . $this->fields["name"];
       echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
@@ -78,7 +76,6 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    function showCacheRuleDetail($fields) {
-      global $LANG;
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
@@ -103,45 +100,42 @@ class RuleDictionnaryPrinter extends RuleCached {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = __('Name');
-      $criterias['name']['table'] = 'glpi_printers';
+      $criterias['name']['field']         = 'name';
+      $criterias['name']['name']          = __('Name');
+      $criterias['name']['table']         = 'glpi_printers';
 
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = __('Manufacturer');
       $criterias['manufacturer']['table'] = '';
 
-      $criterias['comment']['field'] = 'comment';
-      $criterias['comment']['name']  = __('Comments');
-      $criterias['comment']['table'] = '';
+      $criterias['comment']['field']      = 'comment';
+      $criterias['comment']['name']       = __('Comments');
+      $criterias['comment']['table']      = '';
 
       return $criterias;
    }
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = __('Name');
-      $actions['name']['force_actions'] = array('assign', 'regex_result');
+      $actions['name']['name']               = __('Name');
+      $actions['name']['force_actions']      = array('assign', 'regex_result');
 
       $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
-      $actions['manufacturer']['name']  = __('Manufacturer');
-      $actions['manufacturer']['table'] = 'glpi_manufacturers';
-      $actions['manufacturer']['type']  = 'dropdown';
+      $actions['manufacturer']['name']       = __('Manufacturer');
+      $actions['manufacturer']['table']      = 'glpi_manufacturers';
+      $actions['manufacturer']['type']       = 'dropdown';
 
-      $actions['is_global']['name']  = __('Management type');
-      $actions['is_global']['type']  = 'dropdown_management';
+      $actions['is_global']['name']          = __('Management type');
+      $actions['is_global']['type']          = 'dropdown_management';
 
       return $actions;
    }
 
 }
-
 ?>

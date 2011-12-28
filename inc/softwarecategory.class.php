@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class SoftwareCategory extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Software category','Software categories', $nb);
    }
 
@@ -49,6 +47,6 @@ class SoftwareCategory extends CommonDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemAction($this);
    }
-}
 
+}
 ?>

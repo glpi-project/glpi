@@ -239,7 +239,6 @@ class Reservation extends CommonDBChild {
     * @return nothing
    **/
    function displayError($type,$ID) {
-      global $LANG;
 
       echo "<br><div class='center'>";
       switch ($type) {
@@ -321,7 +320,7 @@ class Reservation extends CommonDBChild {
    * @param $ID ID of the reservation item (if empty display all)
    **/
    static function showCalendar($ID="") {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
@@ -751,7 +750,7 @@ class Reservation extends CommonDBChild {
     * @param $date date to display
    **/
    static function displayReservationsForAnItem($ID,$date) {
-      global $DB, $LANG;
+      global $DB;
 
       $users_id = Session::getLoginUserID();
       $resa     = new self();

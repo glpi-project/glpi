@@ -47,7 +47,7 @@ class SlaLevel extends RuleTicket {
    public $right='sla';
 
    /**
-   * Constructor
+    * Constructor
    **/
    function __construct() {
       // Override in order not to use glpi_rules table.
@@ -55,14 +55,12 @@ class SlaLevel extends RuleTicket {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Escalation level', 'Escalation levels', $nb);
    }
 
+
    function cleanDBonPurge() {
       global $DB;
-
 
       parent::cleanDBOnPurge();
 
@@ -74,8 +72,7 @@ class SlaLevel extends RuleTicket {
    }
 
    function showForSLA(SLA $sla) {
-
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB;
 
       $ID = $sla->getField('id');
       if (!$sla->can($ID,'r')) {
@@ -84,7 +81,7 @@ class SlaLevel extends RuleTicket {
 
       $canedit = $sla->can($ID,'w');
 
-      $rand=mt_rand();
+      $rand = mt_rand();
       echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -101,8 +98,10 @@ class SlaLevel extends RuleTicket {
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
          self::dropdownExecutionTime('execution_time',
-                        array('max_time'  => $sla->fields['resolution_time'],
-                              'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
+                                     array('max_time'
+                                             => $sla->fields['resolution_time'],
+                                           'used'
+                                             => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
          Dropdown::showYesNo("is_active",array('value'=>1));
@@ -113,9 +112,9 @@ class SlaLevel extends RuleTicket {
          echo "</table></div>";
 
          $query = "SELECT *
-                  FROM `glpi_slalevels`
-                  WHERE `slas_id` = '$ID'
-                  ORDER BY `execution_time`";
+                   FROM `glpi_slalevels`
+                   WHERE `slas_id` = '$ID'
+                   ORDER BY `execution_time`";
          $result = $DB->query($query);
 
          if ($DB->numrows($result) >0) {
@@ -125,11 +124,11 @@ class SlaLevel extends RuleTicket {
             echo "<th>".__('Active')."</th>";
             echo "</tr>";
             Session::initNavigateListItems('SlaLevel',
-                  //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                  sprintf(__('%1$s = %2$s'),$sla->getTypeName(1), $sla->getName()));
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
+                                                   $sla->getName()));
 
             while ($data = $DB->fetch_array($result)) {
-
                Session::addToNavigateListItems('SlaLevel',$data["id"]);
 
                echo "<tr class='tab_bg_2'>";
@@ -145,10 +144,10 @@ class SlaLevel extends RuleTicket {
                if ($canedit) {
                   echo "<a href='".Toolbox::getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
                }
-                  echo $data["name"];
-                  if (empty($data["name"])) {
-                     echo "(".$data['id'].")";
-                  }
+               echo $data["name"];
+               if (empty($data["name"])) {
+                  echo "(".$data['id'].")";
+               }
                if ($canedit) {
                   echo "</a>";
                }
@@ -176,28 +175,26 @@ class SlaLevel extends RuleTicket {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = parent::getActions();
+
       unset($actions['slas_id']);
-      $actions['recall']['name'] = __('Automatic reminders of SLAs');
-      $actions['recall']['type'] = 'yesonly';
+      $actions['recall']['name']          = __('Automatic reminders of SLAs');
+      $actions['recall']['type']          = 'yesonly';
       $actions['recall']['force_actions'] = array('send');
       return $actions;
    }
 
 
    /**
-   * Show the rule
-   *
-   * @param $ID ID of the rule
-   * @param $options options
-   *
-   * @return nothing
+    * Show the rule
+    *
+    * @param $ID ID of the rule
+    * @param $options options
+    *
+    * @return nothing
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
-
 
       if (!$this->isNewID($ID)) {
          $this->check($ID,'r');
@@ -220,7 +217,7 @@ class SlaLevel extends RuleTicket {
       Dropdown::showYesNo("is_active",$this->fields["is_active"]);
       echo"</td></tr>\n";
 
-      $sla=new SLA();
+      $sla = new SLA();
       $sla->getFromDB($this->fields['slas_id']);
 
       echo "<tr class='tab_bg_1'>";
@@ -232,84 +229,92 @@ class SlaLevel extends RuleTicket {
       echo "<td>";
 
       self::dropdownExecutionTime('execution_time',
-                     array('max_time'  => $sla->fields['resolution_time'],
-                           'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id']),
-                           'value'     => $this->fields['execution_time']));
+                                  array('max_time'
+                                             => $sla->fields['resolution_time'],
+                                        'used'
+                                             => self::getAlreadyUsedExecutionTime($sla->fields['id']),
+                                        'value'
+                                             => $this->fields['execution_time']));
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
    }
 
+
    /**
-   * Dropdown execution time for SLA
-   *
-   * @param $name string name of the select
-   * @param $options array of options : may be :
-   *           - value : default value
-   *           - max_time : max time to use
-   *           - used : already used values
-   *
-   * @return nothing
+    * Dropdown execution time for SLA
+    *
+    * @param $name string name of the select
+    * @param $options array of options : may be :
+    *           - value : default value
+    *           - max_time : max time to use
+    *           - used : already used values
+    *
+    * @return nothing
    **/
-   static function dropdownExecutionTime ($name,$options=array()) {
-         global $LANG;
+   static function dropdownExecutionTime ($name, $options=array()) {
 
-         $p['value']='';
-         $p['max_time']=4*DAY_TIMESTAMP;
-         $p['used']=array();
+      $p['value']    = '';
+      $p['max_time'] = 4*DAY_TIMESTAMP;
+      $p['used']     = array();
 
-         if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-               $p[$key]=$val;
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      // Display default value;
+      if (($key=array_search($p['value'],$p['used'])) !== false) {
+         unset($p['used'][$key]);
+      }
+
+      $possible_values = array();
+      for ($i=1 ; $i<24 ; $i++) {
+         if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
+            $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %1$d hour','+ %1$d hours',$i), $i);
+         }
+         if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
+            if ($p['max_time'] >= $i*HOUR_TIMESTAMP) {
+               $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','+ %1$d hours',$i),
+                                                              $i);
             }
          }
-         // Display default value;
-         if (($key=array_search($p['value'],$p['used'])) !== false) {
-            unset($p['used'][$key]);
-         }
+      }
 
-         $possible_values=array();
-         for ($i=1 ; $i<24 ; $i++) {
-            if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
-               $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %1$d hour','+ %1$d hours',$i),$i);
-            }
-            if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
-               if ($p['max_time'] >= $i*HOUR_TIMESTAMP) {
-                  $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','+ %1$d hours',$i),$i);
-               }
+      for ($i=1 ; $i<30 ; $i++) {
+         if (!in_array($i*DAY_TIMESTAMP,$p['used'])) {
+            $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %1$d day','+ %1$d days',$i), $i);
+         }
+         if (!in_array(-$i*DAY_TIMESTAMP,$p['used'])) {
+            if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
+               $possible_values[-$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','+ %1$d days',$i), $i);
             }
          }
-         for ($i=1 ; $i<30 ; $i++) {
-            if (!in_array($i*DAY_TIMESTAMP,$p['used'])) {
-               $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %1$d day','+ %1$d days',$i),$i);
-            }
-            if (!in_array(-$i*DAY_TIMESTAMP,$p['used'])) {
-               if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
-                  $possible_values[-$i*DAY_TIMESTAMP]= sprintf(_n('- %1$d day','+ %1$d days',$i),$i);
-               }
-            }
-         }
-         if (!in_array(0,$p['used'])) {
-            $possible_values[0] = __('Due date');
-         }
+      }
+      if (!in_array(0,$p['used'])) {
+         $possible_values[0] = __('Due date');
+      }
 
-         ksort($possible_values);
-         Dropdown::showFromArray($name,$possible_values,array('value'=>$p['value']));
-
+      ksort($possible_values);
+      Dropdown::showFromArray($name, $possible_values, array('value' => $p['value']));
    }
 
+
    /**
-   * Get already used execution time for a SLA
-   *
-   * @param $slas_id integer id of the SLA
-   *
-   * @return array of already used execution times
+    * Get already used execution time for a SLA
+    *
+    * @param $slas_id integer id of the SLA
+    *
+    * @return array of already used execution times
    **/
    static function getAlreadyUsedExecutionTime($slas_id) {
       global $DB;
-      $result=array();
-      $query="SELECT DISTINCT `execution_time` FROM `glpi_slalevels` WHERE `slas_id` = '$slas_id';";
+
+      $result = array();
+      $query  = "SELECT DISTINCT `execution_time`
+                 FROM `glpi_slalevels`
+                 WHERE `slas_id` = '$slas_id';";
 
       foreach ($DB->request($query) as $data) {
          $result[$data['execution_time']] = $data['execution_time'];
@@ -319,19 +324,20 @@ class SlaLevel extends RuleTicket {
 
 
    /**
-   * Get first level for a SLA
-   *
-   * @param $slas_id integer id of the SLA
-   *
-   * @return id of the sla level : 0 if not exists
+    * Get first level for a SLA
+    *
+    * @param $slas_id integer id of the SLA
+    *
+    * @return id of the sla level : 0 if not exists
    **/
    static function getFirstSlaLevel($slas_id) {
       global $DB;
-      $query="SELECT `id`
-               FROM `glpi_slalevels`
-               WHERE `slas_id` = '$slas_id'
-                  AND `is_active` = 1
-               ORDER BY `execution_time` ASC LIMIT 1;";
+
+      $query = "SELECT `id`
+                FROM `glpi_slalevels`
+                WHERE `slas_id` = '$slas_id'
+                     AND `is_active` = 1
+                ORDER BY `execution_time` ASC LIMIT 1;";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -341,29 +347,31 @@ class SlaLevel extends RuleTicket {
       return 0;
    }
 
+
    /**
-   * Get next level for a SLA
-   *
-   * @param $slas_id integer id of the SLA
-   * @param $slalevels_id integer id of the current SLA level
-   *
-   * @return id of the sla level : 0 if not exists
+    * Get next level for a SLA
+    *
+    * @param $slas_id integer id of the SLA
+    * @param $slalevels_id integer id of the current SLA level
+    *
+    * @return id of the sla level : 0 if not exists
    **/
    static function getNextSlaLevel($slas_id,$slalevels_id) {
       global $DB;
-      $query="SELECT `execution_time`
-               FROM `glpi_slalevels`
-               WHERE `id` = '$slalevels_id';";
+
+      $query = "SELECT `execution_time`
+                FROM `glpi_slalevels`
+                WHERE `id` = '$slalevels_id';";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             $execution_time=$DB->result($result,0,0);
-            $query="SELECT `id`
-                     FROM `glpi_slalevels`
-                     WHERE `slas_id` = '$slas_id'
-                        AND `execution_time` > '$execution_time'
-                        AND `is_active` = 1
-                     ORDER BY `execution_time` ASC LIMIT 1 ;";
+            $query = "SELECT `id`
+                      FROM `glpi_slalevels`
+                       WHERE `slas_id` = '$slas_id'
+                             AND `execution_time` > '$execution_time'
+                             AND `is_active` = 1
+                      ORDER BY `execution_time` ASC LIMIT 1 ;";
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)) {
                   return $DB->result($result,0,0);
@@ -376,7 +384,6 @@ class SlaLevel extends RuleTicket {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -403,5 +410,4 @@ class SlaLevel extends RuleTicket {
    }
 
 }
-
 ?>

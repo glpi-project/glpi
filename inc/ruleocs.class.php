@@ -42,9 +42,8 @@ class RuleOcs extends Rule {
    public $right    = 'rule_ocs';
    public $can_sort = true;
 
-   function getTitle() {
-      global $LANG;
 
+   function getTitle() {
       return __('Rules for assigning a computer to an entity');
    }
 

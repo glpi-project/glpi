@@ -61,7 +61,6 @@ class RuleRightParameter extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'value',
                          'label' => _n('Criteria', 'Criteria', 1),
@@ -76,7 +75,6 @@ class RuleRightParameter extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -89,11 +87,8 @@ class RuleRightParameter extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('LDAP criteria', 'LDAP criterias', $nb);
    }
 
 }
-
 ?>

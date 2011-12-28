@@ -48,8 +48,6 @@ class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownColle
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of printer models');
    }
 

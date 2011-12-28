@@ -46,8 +46,6 @@ class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollecti
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of phone types');
    }
 

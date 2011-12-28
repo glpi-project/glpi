@@ -56,8 +56,6 @@ class RuleImportComputerCollection extends RuleCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Rules for import and link computers');
    }
 
@@ -97,5 +95,4 @@ class RuleImportComputerCollection extends RuleCollection {
    }
 
 }
-
 ?>

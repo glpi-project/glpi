@@ -271,7 +271,7 @@ class Stat {
 
 
    static function show($itemtype, $type, $date1, $date2, $start, $value, $value2="") {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Set display type for export if define
       $output_type = Search::HTML_OUTPUT;
@@ -334,8 +334,8 @@ class Stat {
             }
             echo Search::showHeaderItem($output_type, __('Average time'), $header_num, '', 0, '',
                                         $itemtype =='Ticket'?"colspan='3'":"colspan='2'");
-            echo Search::showHeaderItem($output_type, __('Real duration of treatment of the ticket'), $header_num, '', 0, '',
-                                        "colspan='2'");
+            echo Search::showHeaderItem($output_type, __('Real duration of treatment of the ticket'),
+                                        $header_num, '', 0, '', "colspan='2'");
          }
 
          echo Search::showNewLine($output_type);
@@ -1035,7 +1035,7 @@ class Stat {
     * @return array contains the distinct groups assigned to a tickets
    **/
    static function showGraph($entrees, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($uid=Session::getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
@@ -1368,7 +1368,8 @@ class Stat {
                echo Search::showNewLine($output_type, $i%2);
                echo Search::showItem($output_type, $item->getTypeName()." - ".$item->getLink(),
                                      $item_num, $i-$start+1,
-                                     "class='center'"." ".($item->isDeleted()?" class='deleted' ":""));
+                                     "class='center'"." ".($item->isDeleted()?" class='deleted' "
+                                                                             :""));
                if ($view_entities) {
                   $ent = $item->getEntityID();
                   if ($ent==0) {
@@ -1377,10 +1378,12 @@ class Stat {
                      $ent = $entities[$ent]['completename'];
                   }
                   echo Search::showItem($output_type, $ent, $item_num, $i-$start+1,
-                                        "class='center'"." ".($item->isDeleted()?" class='deleted' ":""));
+                                        "class='center'"." ".($item->isDeleted()?" class='deleted' "
+                                                                                :""));
                }
                echo Search::showItem($output_type, $data["NB"], $item_num, $i-$start+1,
-                                     "class='center'"." ".($item->isDeleted()?" class='deleted' ":""));
+                                     "class='center'"." ".($item->isDeleted()?" class='deleted' "
+                                                                             :""));
             }
          }
 

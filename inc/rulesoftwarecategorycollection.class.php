@@ -45,8 +45,6 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Rules for assigning a category to software');
    }
 
@@ -74,5 +72,4 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
    }
 
 }
-
 ?>

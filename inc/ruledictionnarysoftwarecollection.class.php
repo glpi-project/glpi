@@ -65,8 +65,6 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of software');
    }
 
@@ -84,18 +82,22 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
 
    function warningBeforeReplayRulesOnExistingDB($target) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"" .
              $target . "\">\n";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2' class='b'>" . __('Warning before running rename based on the dictionary rules') . "</th</tr>\n";
+      echo "<tr><th colspan='2' class='b'>" .
+            __('Warning before running rename based on the dictionary rules') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
-      echo "<td class='tab_bg_2 center'>" . __('Warning! This operation can put merged software in the trash.<br>Sure to notify your users.') . "</td></tr>\n";
+      echo "<td class='tab_bg_2 center'>" .
+            __('Warning! This operation can put merged software in the trash.<br>Sure to notify your users.').
+           "</td></tr>\n";
       echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
-      echo "<tr><td class='tab_bg_2 center'>" . __('Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)') . "</td>";
+      echo "<tr><td class='tab_bg_2 center'>" .
+            __('Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
       Dropdown::show('Manufacturer', array('name' => 'manufacturer'));
       echo "</td></tr>\n";
@@ -359,12 +361,13 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
     * @param $soft_ids array containing replay software need to be trashed
    */
    function putOldSoftsInTrash($soft_ids) {
-      global $DB, $LANG;
+      global $DB;
 
       if (count($soft_ids) > 0) {
          $ids = implode("','", $soft_ids);
 
-         //Try to delete all the software that are not used anymore (which means that don't have version associated anymore)
+         //Try to delete all the software that are not used anymore
+         // (which means that don't have version associated anymore)
          $res_countsoftinstall
             = $DB->query("SELECT `glpi_softwares`.`id`,
                                  COUNT(`glpi_softwareversions`.`softwares_id`) AS `cpt`
@@ -469,5 +472,4 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    }
 
 }
-
 ?>

@@ -48,8 +48,6 @@ class Reminder extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Reminder', 'Reminders', $nb);
    }
 
@@ -368,7 +366,6 @@ class Reminder extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("reminder_public","r")) {
          switch ($item->getType()) {
@@ -385,7 +382,6 @@ class Reminder extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong    = array();
       $this->addStandardTab('Document', $ong, $options);
@@ -407,7 +403,6 @@ class Reminder extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
@@ -432,7 +427,8 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+                                             false, ERROR);
          }
       }
 
@@ -444,7 +440,6 @@ class Reminder extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
@@ -469,7 +464,8 @@ class Reminder extends CommonDBTM {
             $input["end"]        = $input['_plan']["end"];
 
          } else {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+                                             false, ERROR);
          }
       }
 
@@ -488,7 +484,6 @@ class Reminder extends CommonDBTM {
 
 
    function post_getEmpty() {
-      global $LANG;
 
       $this->fields["name"]        = __('New note');
       $this->fields["users_id"]    = Session::getLoginUserID();
@@ -544,7 +539,7 @@ class Reminder extends CommonDBTM {
       echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
       echo "<td>";
