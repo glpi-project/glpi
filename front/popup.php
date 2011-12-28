@@ -70,19 +70,19 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "load_bookmark" :
-         Html::popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
          $_GET["action"] = "load";
          include "bookmark.php";
          break;
 
       case "edit_bookmark" :
-         Html::popHeader($LANG['Menu'][40], $_SERVER['PHP_SELF']);
+         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
          $_GET["action"] = "edit";
          include "bookmark.php";
          break;
 
       case "edit_user_notification" :
-         Html::popHeader($LANG['Menu'][40], $_SERVER['PHP_SELF']);
+         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
          include "ticket_user.form.php";
          break;
 

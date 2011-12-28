@@ -1085,7 +1085,7 @@ class Problem extends CommonITILObject {
       $items[__('Last update')] = "glpi_problems.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {
-         $items[$LANG['Menu'][37]] = "glpi_entities.completename";
+         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
       }
 
       $items[$LANG['joblist'][2]]   = "glpi_problems.priority";

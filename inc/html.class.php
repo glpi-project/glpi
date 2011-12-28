@@ -932,7 +932,7 @@ class Html {
 
       // INVENTORY
       $showstate = false;
-      $menu['inventory']['title'] = $LANG['Menu'][38];
+      $menu['inventory']['title'] = __('Inventory');
 
       if (Session::haveRight("computer","r")) {
          $menu['inventory']['default'] = '/front/computer.php';
@@ -1415,7 +1415,7 @@ class Html {
 
 
       if (Session::haveRight("group","r")) {
-         $menu['admin']['content']['group']['title']           = $LANG['Menu'][36];
+         $menu['admin']['content']['group']['title']           = Group::getTypeName(2);
          $menu['admin']['content']['group']['shortcut']        = 'g';
          $menu['admin']['content']['group']['page']            = '/front/group.php';
          $menu['admin']['content']['group']['links']['search'] = '/front/group.php';
@@ -1429,7 +1429,7 @@ class Html {
 
 
       if (Session::haveRight("entity","r")) {
-         $menu['admin']['content']['entity']['title']           = $LANG['Menu'][37];
+         $menu['admin']['content']['entity']['title']           = Entity::getTypeName(2);
          $menu['admin']['content']['entity']['shortcut']        = '';
          $menu['admin']['content']['entity']['page']            = '/front/entity.php';
          $menu['admin']['content']['entity']['links']['search'] = '/front/entity.php';
@@ -1728,7 +1728,7 @@ class Html {
 
 
       if (Session::haveRight("profile","r")) {
-         $menu['admin']['content']['profile']['title']           = $LANG['Menu'][35];
+         $menu['admin']['content']['profile']['title']           = Profile::getTypeName(2);
          $menu['admin']['content']['profile']['shortcut']        = '';
          $menu['admin']['content']['profile']['page']            = '/front/profile.php';
          $menu['admin']['content']['profile']['links']['search'] = "/front/profile.php";
@@ -1831,7 +1831,7 @@ class Html {
 
 
       if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = $LANG['Menu'][43];
+         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLAs', 2);
          $menu['config']['content']['sla']['page']            = '/front/sla.php';
          $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
          if (Session::haveRight("sla","w")) {
@@ -1844,7 +1844,7 @@ class Html {
          $menu['config']['content']['config']['title'] = __('General');
          $menu['config']['content']['config']['page']  = '/front/config.form.php';
 
-         $menu['config']['content']['control']['title'] = $LANG['Menu'][41];
+         $menu['config']['content']['control']['title'] = _n('Check', 'Checks', 2);
          $menu['config']['content']['control']['page']  = '/front/control.php';
 
          $menu['config']['content']['control']['options']['FieldUnicity']['title']
@@ -1903,7 +1903,7 @@ class Html {
                break;
          }
 
-         $menu['config']['content']['mailcollector']['title'] = $LANG['Menu'][39];
+         $menu['config']['content']['mailcollector']['title'] = MailCollector::getTypeName(2);
          $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
          if (Toolbox::canUseImapPop()) {
@@ -2347,7 +2347,7 @@ class Html {
                  __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
                 preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a>";
          echo sprintf(__('A new version is available: %s.'), $latest_version);
-         
+
          echo "</td>";
       }
       echo "<td class='right'>";

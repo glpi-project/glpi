@@ -122,7 +122,7 @@ class Event extends CommonDBTM {
                            'dropdown'    => $LANG['log'][44],
                            'rules'       => $LANG['log'][65]);
 
-      $logService = array('inventory'    => $LANG['Menu'][38],
+      $logService = array('inventory'    => __('Inventory'),
                           'tracking'     => $LANG['Menu'][5],
                           'maintain'     => __('Assistance'),
                           'planning'     => Toolbox::ucfirst($LANG['log'][16]),

@@ -2013,7 +2013,7 @@ class User extends CommonDBTM {
 
       $tab[20]['table']         = 'glpi_profiles';
       $tab[20]['field']         = 'name';
-      $tab[20]['name']          = $LANG['Menu'][35]." (- ".$LANG['entity'][0].")";
+      $tab[20]['name']          = _n('Profile', 'Profiles', 2)." (- "._n('Entity', 'Entities', 1).")";
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('beforejoin'
@@ -2040,7 +2040,7 @@ class User extends CommonDBTM {
       $tab[80]['realtable']     = 'glpi_entities';
       $tab[80]['linkfield']     = 'entities_id';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0]." (- ".$LANG['Menu'][35].")";
+      $tab[80]['name']          = _n('Entity', 'Entities', 2)." (- "._n('Profile', 'Profiles', 1).")";
       $tab[80]['forcegroupby']  = true;
       $tab[80]['massiveaction'] = false;
       $tab[80]['joinparams']    = array('beforejoin'

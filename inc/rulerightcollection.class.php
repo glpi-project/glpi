@@ -145,7 +145,7 @@ class RuleRightCollection extends RuleCollection {
             break;
 
          case "profile" :
-            echo "<td class='center'>".$LANG['Menu'][35]." </td>\n";
+            echo "<td class='center'>"._n('Profile', 'Profiles', 2)." </td>\n";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_profiles", $value)."</td>";
             break;
 

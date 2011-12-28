@@ -1135,12 +1135,12 @@ class EntityData extends CommonDBChild {
                $ong[1] = $LANG['financial'][44];      // Address
                $ong[2] = $LANG['entity'][14];         // Advanced
                if (Session::haveRight('notification','r')) {
-                  $ong[3] = _n('Notification', 'Notifications',2);      // Notification
+                  $ong[3] = _n('Notification', 'Notifications',2);
                }
                if (Session::haveRight('entity_helpdesk','r')) {
-                  $ong[4] = __('Assistance');       // Helpdesk
+                  $ong[4] = __('Assistance');
                }
-               $ong[5] = $LANG['Menu'][38];           // Inventory
+               $ong[5] = __('Inventory');
 
                return $ong;
          }
