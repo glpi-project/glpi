@@ -49,8 +49,6 @@ class Change_Ticket extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Link Ticket/Change','Links Ticket/Change',$nb);
    }
 

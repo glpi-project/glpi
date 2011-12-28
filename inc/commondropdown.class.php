@@ -103,7 +103,6 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return nothing (HTML display if needed)
    **/
    function title() {
-      global $LANG;
 
       if ($this->display_dropdowntitle) {
          Dropdown::showItemTypeMenu(__('Dropdowns'), Dropdown::getStandardDropdownItemTypes(),
@@ -122,7 +121,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
          $this->check($ID,'r');
@@ -384,21 +383,23 @@ abstract class CommonDropdown extends CommonDBTM {
     * @param $target string URL
    **/
    function showDeleteConfirmForm($target) {
-      global $LANG;
 
       if ($this->haveChildren()) {
-         echo "<div class='center'><p class='red'>" .__("You can't delete that item, because it has sub-items") . "</p></div>";
+         echo "<div class='center'><p class='red'>" .
+               __("You can't delete that item, because it has sub-items") . "</p></div>";
          return false;
       }
 
       $ID = $this->fields['id'];
 
-      echo "<div class='center'>";
-      echo "<p class='red'>" . __("Caution: you're about to remove a heading used for one or more items.") . "</p>";
+      echo "<div class='center'><p class='red'>".
+            __("Caution: you're about to remove a heading used for one or more items.")."</p></div>";
 
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
-         echo "<p>" . __('If you confirm the deletion the items using this heading used fields will be blanked.') . "</p>";
+         echo "<p>".
+               __('If you confirm the deletion the items using this heading used fields will be blanked.') .
+              "</p>";
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";

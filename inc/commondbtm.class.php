@@ -781,7 +781,7 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on add action
    **/
    function addMessageOnAddAction() {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $link = $this->getFormURL();
       if (!isset($link)) {
@@ -800,15 +800,16 @@ class CommonDBTM extends CommonGLPI {
       if ($addMessAfterRedirect) {
          if (($name=$this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'), 
-                                       $this->getTypeName(), $this->fields['id']);
+            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
+                                            $this->getTypeName(), $this->fields['id']);
          }
          $display = (isset($this->input['_no_message_link'])?$this->getNameID()
                                                             :$this->getLink());
 
          // Do not display quotes
          //TRANS : %s is the description of the added item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully added: %s'),stripslashes($display)));
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully added: %s'),
+                                                  stripslashes($display)));
 
       }
    }
@@ -998,7 +999,6 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on update action
    **/
    function addMessageOnUpdateAction() {
-      global $CFG_GLPI, $LANG;
 
       $link = $this->getFormURL();
       if (!isset($link)) {
@@ -1022,8 +1022,8 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['name'] = stripslashes($this->fields['name']);
          } else {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'), 
-                                       $this->getTypeName(), $this->fields['id']);
+            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
+                                            $this->getTypeName(), $this->fields['id']);
          }
 
 
@@ -1033,7 +1033,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully updated: %s'),$display));
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully updated: %s'), $display));
 
       }
 
@@ -1173,7 +1173,6 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on delete action
    **/
    function addMessageOnDeleteAction() {
-      global $CFG_GLPI, $LANG;
 
       $link = $this->getFormURL();
       if (!isset($link)) {
@@ -1194,7 +1193,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-      
+
 
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
@@ -1202,7 +1201,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully deleted: %s'),$display));
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully deleted: %s'), $display));
 
       }
    }
@@ -1212,7 +1211,6 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on purge action
    **/
    function addMessageOnPurgeAction() {
-      global $CFG_GLPI, $LANG;
 
       $link = $this->getFormURL();
       if (!isset($link)) {
@@ -1237,7 +1235,8 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully purged: %s'),$display));      }
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully purged: %s'), $display));
+      }
    }
 
 
@@ -1307,7 +1306,6 @@ class CommonDBTM extends CommonGLPI {
     * Add a message on restore action
    **/
    function addMessageOnRestoreAction() {
-      global $CFG_GLPI, $LANG;
 
       $link = $this->getFormURL();
       if (!isset($link)) {
@@ -1331,7 +1329,8 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully restored: %s'),$display));      }
+         Session::addMessageAfterRedirect(sprintf(__('Item successfully restored: %s'),$display));
+      }
    }
 
 
@@ -1653,7 +1652,6 @@ class CommonDBTM extends CommonGLPI {
     *
    **/
    function showFormButtons($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       // for single object like config
       if (isset($this->fields['id'])) {
@@ -1716,7 +1714,8 @@ class CommonDBTM extends CommonGLPI {
             } else {
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"".__s('Purge')."\"
-                         class='submit' ".Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
+                         class='submit' ".
+                         Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
                } else {
                   echo "<input type='submit' name='delete' value='" . __s('Delete') ."'
                          class='submit'>";
@@ -1826,7 +1825,7 @@ class CommonDBTM extends CommonGLPI {
           && !$this->isNewID($ID)) {
 
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
-         
+
          //TRANS: %s is the template name
          printf(__('Add based on template %s'), $this->fields["template_name"]);
 
@@ -2285,7 +2284,7 @@ class CommonDBTM extends CommonGLPI {
     * @return String: comments of the object in the current language (HTML)
    **/
    function getComments() {
-      global $LANG,$CFG_GLPI;
+
       /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
       if ($this->isField('completename')) {
@@ -2334,7 +2333,8 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Technician in charge of the hardware')."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Technician in charge of the hardware')."&nbsp;: ".
+                        "</span>".$tmp."<br>";
          }
       }
 
@@ -2414,7 +2414,6 @@ class CommonDBTM extends CommonGLPI {
     * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();__('Characteristics');
 
@@ -2449,6 +2448,7 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing display the dropdown
    **/
    static function dropdown($options=array()) {
+
       echo "This function cannot be used for the moment. Use Dropdown::show instead.";
       /*
       Dropdown::show(get_called_class(),$options);
@@ -2509,7 +2509,6 @@ class CommonDBTM extends CommonGLPI {
     * @return input the data checked
    **/
    function filterValues($display=true) {
-      global $LANG;
 
       if (in_array('CommonDBRelation',class_parents($this))) {
          return true;
@@ -2621,7 +2620,8 @@ class CommonDBTM extends CommonGLPI {
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          //TRANS: %s is the list of the failed fields
-         $message = sprintf(__('At least one field has an incorrect value: %s'),implode(',',$fails));
+         $message = sprintf(__('At least one field has an incorrect value: %s'),
+                            implode(',',$fails));
          Session::addMessageAfterRedirect($message, INFO, true);
       }
    }
@@ -2667,10 +2667,9 @@ class CommonDBTM extends CommonGLPI {
     * @param $doubles the items that are already present in DB
    **/
    function getUnicityErrorMessage($message, $unicity, $doubles) {
-      global $LANG;
 
       if ($unicity['action_refuse']) {
-         $message_text = sprintf(__('Impossible record for %s'),implode('&nbsp;&&nbsp;',$message));
+         $message_text = sprintf(__('Impossible record for %s'), implode('&nbsp;&&nbsp;',$message));
       } else {
          $message_text = sprintf(__('Item successfully added but duplicate record on %s'),
                                  implode('&nbsp;&&nbsp;',$message));
@@ -2874,7 +2873,6 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing
    **/
    function showNotesForm() {
-      global $LANG;
 
       if (!Session::haveRight("notes","r")) {
          return false;
@@ -2976,7 +2974,7 @@ class CommonDBTM extends CommonGLPI {
     * @return return the string to display
    **/
    function getValueToDisplay($field_id_or_search_options, $values, $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $param['comments'] = false;
       $param['html']     = false;
@@ -3138,7 +3136,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    static function listTemplates($itemtype, $target, $add=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB;
 
       if (!($item = getItemForItemtype($itemtype))) {
          return false;

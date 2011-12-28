@@ -40,11 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceCaseType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-      
       return  _n('Case type', 'Case types', $nb);
-
    }
 }
-
 ?>

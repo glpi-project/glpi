@@ -54,8 +54,6 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of computer types');
    }
 

@@ -44,7 +44,6 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
@@ -56,7 +55,6 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['name']['name']          = __('Type');
@@ -66,5 +64,4 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown {
    }
 
 }
-
 ?>

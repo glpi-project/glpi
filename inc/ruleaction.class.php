@@ -53,8 +53,6 @@ class RuleAction extends CommonDBChild {
     * @return Title of the rule
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Action','Actions',$nb);
    }
 
@@ -67,7 +65,6 @@ class RuleAction extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab[1]['table']         = $this->getTable();
@@ -139,7 +136,6 @@ class RuleAction extends CommonDBChild {
     * Display a dropdown with all the possible actions
    **/
    static function dropdownActions($sub_type, $name, $value='') {
-      global $LANG, $CFG_GLPI;
 
       $rule = new $sub_type();
       $actions_options = $rule->getActions();
@@ -159,7 +155,6 @@ class RuleAction extends CommonDBChild {
 
 
    static function getActions() {
-      global $LANG;
 
       return array('assign'              => __('Assign'),
                    'regex_result'        => __('Assign the value from regular expression'),
@@ -174,7 +169,6 @@ class RuleAction extends CommonDBChild {
 
 
    static function getActionByID($ID) {
-      global $LANG;
 
       $actions = self::getActions();
       if (isset($actions[$ID])) {

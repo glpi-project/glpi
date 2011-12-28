@@ -344,7 +344,7 @@ class Consumable extends CommonDBTM {
     * @return Nothing (displays)
     **/
    static function showAddForm(ConsumableItem $consitem) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ID = $consitem->getField('id');
 

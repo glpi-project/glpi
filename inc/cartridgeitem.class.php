@@ -47,9 +47,8 @@ class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    protected $forward_entity_to = array('Cartridge', 'Infocom');
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
+   static function getTypeName($nb=0) {
       return _n('Cartridge model','Cartridge models',$nb);
    }
 
@@ -115,7 +114,6 @@ class CartridgeItem extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Cartridge', $ong, $options);
@@ -383,7 +381,7 @@ class CartridgeItem extends CommonDBTM {
     *
     **/
    static function cronCartridge($task=NULL) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $cron_status = 1;
       if ($CFG_GLPI["use_mailing"]) {
@@ -415,7 +413,7 @@ class CartridgeItem extends CommonDBTM {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
                   //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
-                              $cartridge["cartname"], $cartridge["cartref"], $unused);
+                                      $cartridge["cartname"], $cartridge["cartref"], $unused);
                   $message.='<br>';
 
                   $items[$cartridge["cartID"]] = $cartridge;
@@ -476,7 +474,7 @@ class CartridgeItem extends CommonDBTM {
     *@return nothing (display)
     **/
    static function dropdownForPrinter(Printer $printer) {
-      global $DB, $LANG;
+      global $DB;
 
       $query = "SELECT COUNT(*) AS cpt,
                        `glpi_locations`.`completename` AS location,
@@ -522,7 +520,7 @@ class CartridgeItem extends CommonDBTM {
     *@return nothing (display)
     **/
    function showCompatiblePrinters() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $this->getField('id');
       if (!$this->can($instID, 'r')) {

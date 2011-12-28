@@ -83,7 +83,6 @@ class Contract extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Contract_Supplier', $ong, $options);
@@ -1015,7 +1014,7 @@ class Contract extends CommonDBTM {
       echo "</tr>";
 
       if ($number>0) {
-         Session::initNavigateListItems('Contract', 
+         Session::initNavigateListItems('Contract',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
       }

@@ -77,7 +77,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
 
 
    function post_addItem() {
-      global $DB, $LANG;
+      global $DB;
 
       // Get netpoint for $sport and $dport
       $sport = $this->fields['networkports_id_1'];
@@ -117,7 +117,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
 
       } else if ($source != $destination) {
-         Session::addMessageAfterRedirect(__("Warning! The network outlets of two items do not match"));
+         Session::addMessageAfterRedirect(__("Warning! The network outlets of two items don't match"));
       }
 
       // Manage VLAN : use networkings one as defaults
@@ -338,5 +338,4 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 }
-
 ?>

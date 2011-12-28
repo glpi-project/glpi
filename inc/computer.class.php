@@ -54,8 +54,6 @@ class Computer extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
          return _n('Computer', 'Computers', $nb);
@@ -73,7 +71,6 @@ class Computer extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('DeviceProcessor', $ong, $options); // All devices : use one to define tab
@@ -657,7 +654,7 @@ class Computer extends CommonDBTM {
             $tmp = " <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id=" .
                    OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
             echo '<tr><td>'.__('Server').'</td><td>'.$tmp.'</td></tr>';
-            
+
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$ID'";
@@ -682,7 +679,7 @@ class Computer extends CommonDBTM {
             echo '<tr><td>'.__('Server').'</td><td>'.OcsServer::getServerNameByID($ID).'</td></tr>';
          }
          echo "</table>";
-         
+
       }
       echo "</td></tr>\n";
 

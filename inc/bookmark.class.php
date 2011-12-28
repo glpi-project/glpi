@@ -60,7 +60,6 @@ class Bookmark extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -70,7 +69,6 @@ class Bookmark extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case __CLASS__:
@@ -169,7 +167,7 @@ class Bookmark extends CommonDBTM {
    *     - itemtype when adding a new bookmark
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ID = $this->fields['id'];
 
@@ -297,7 +295,6 @@ class Bookmark extends CommonDBTM {
     * @return prepared query array
    **/
    function prepareQueryToUse($type, $query_tab) {
-      global $LANG;
 
       switch ($type) {
          case self::SEARCH :
@@ -495,7 +492,7 @@ class Bookmark extends CommonDBTM {
     * @return nothing
    **/
    function showBookmarkList($target, $is_private=1) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!$is_private && !$this->canView()) {
          return false;
@@ -605,7 +602,7 @@ class Bookmark extends CommonDBTM {
     * @param $itemtype device type of item where is the bookmark
    **/
    static function showSaveButton($type, $itemtype=0) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".

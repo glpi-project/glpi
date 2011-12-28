@@ -52,7 +52,6 @@ abstract class CommonDBRelation extends CommonDBTM {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');

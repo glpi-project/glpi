@@ -41,14 +41,11 @@ class Vlan extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('VLAN','VLANs',$nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'     => 'tag',
                          'label'    => __('ID TAG'),
@@ -71,7 +68,6 @@ class Vlan extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 

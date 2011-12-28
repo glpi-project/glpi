@@ -73,7 +73,8 @@ class Ajax {
       echo "window.opener.reloadTab()";
       echo "</script>";
    }
-   
+
+
    /**
     * Input text used as search system in ajax system
     *
@@ -82,11 +83,12 @@ class Ajax {
     *
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       //TRANS: %s is the character used as wildcard in ajax search
-      echo "<input title=\"".sprintf(__s('Search (%s for all)'),$CFG_GLPI["ajax_wildcard"])."\" type='text' ondblclick=\"this.value='".
-           $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+      echo "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
+             "\" type='text' ondblclick=\"this.value='".
+             $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
 
 
@@ -423,7 +425,7 @@ class Ajax {
     *
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
-      global $CFG_GLPI, $DB, $LANG;
+      global $CFG_GLPI, $DB;
 
       $initparams = $params;
       if ($rand == 0) {
@@ -458,9 +460,9 @@ class Ajax {
       echo "function update_results_$rand() {";
       if ($use_ajax) {
          self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams,
-                                 "search_$rand");
+                                "search_$rand");
       } else {
-         $initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
+         $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
          self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams);
       }
       echo "}";
@@ -485,5 +487,4 @@ class Ajax {
    }
 
 }
-
 ?>

@@ -207,7 +207,7 @@ class DisplayPreference extends CommonDBTM {
     * @return nothing
    **/
    function showFormPerso($target,$itemtype) {
-      global $CFG_GLPI, $LANG, $DB;
+      global $CFG_GLPI, $DB;
 
       $searchopt = Search::getCleanedOptions($itemtype);
       if (!is_array($searchopt)) {
@@ -363,7 +363,7 @@ class DisplayPreference extends CommonDBTM {
     * @return nothing
    **/
    function showFormGlobal($target,$itemtype) {
-      global $CFG_GLPI, $LANG, $DB;
+      global $CFG_GLPI, $DB;
 
       $searchopt = Search::getOptions($itemtype);
       if (!is_array($searchopt)) {
@@ -520,7 +520,7 @@ class DisplayPreference extends CommonDBTM {
     * @param $users_id integer user ID
    **/
    static function showForUser($users_id) {
-      global $DB, $LANG;
+      global $DB;
 
       $url = Toolbox::getItemTypeFormURL(__CLASS__);
 
@@ -571,7 +571,6 @@ class DisplayPreference extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -581,7 +580,6 @@ class DisplayPreference extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'Preference' :
@@ -603,7 +601,6 @@ class DisplayPreference extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $CFG_GLPI;
 
       switch ($item->getType()) {
          case 'Preference' :
@@ -625,5 +622,4 @@ class DisplayPreference extends CommonDBTM {
       return false;
    }
 }
-
 ?>

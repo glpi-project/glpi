@@ -1015,7 +1015,8 @@ class Auth {
               "</tr>\n";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<p class='red'>" . __("The CURL or DOMXML extension for your PHP parser isn't installed") . "</p>";
+         echo "<p class='red'>". __("The CURL or DOMXML extension for your PHP parser isn't installed");
+         echo "</p>";
          echo "<p>" .__('Impossible to use CAS as external source of connection') . "</p></td></tr>\n";
       }
       // X509 config
@@ -1024,7 +1025,8 @@ class Auth {
          _e('Enabled');
       }
       echo "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Email attribute for x509 authentication') . "</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>". __('Email attribute for x509 authentication') ."</td>";
       echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
       echo "</td></tr>\n";
 
@@ -1034,7 +1036,8 @@ class Auth {
          _e('Enabled');
       }
       echo "</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Field storage of the login in the HTTP request') . "</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>" . __('Field storage of the login in the HTTP request') . "</td>";
       echo "<td><select name='existing_auth_server_field'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='HTTP_AUTH_USER' " .
@@ -1059,7 +1062,8 @@ class Auth {
       echo "</select>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Remove the domain of logins like login@domain') . "</td><td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>" . __('Remove the domain of logins like login@domain') . "</td><td>";
       Dropdown::showYesNo('existing_auth_server_field_clean_domain',
                           $CFG_GLPI['existing_auth_server_field_clean_domain']);
       echo "</td></tr>\n";

@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class PhoneType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Phone type', 'Phones types', $nb);
    }
-}
 
+}
 ?>

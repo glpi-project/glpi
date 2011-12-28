@@ -47,8 +47,6 @@ class Config extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Setup');
    }
 
@@ -179,7 +177,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormDisplay() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -248,17 +246,19 @@ class Config extends CommonDBTM {
 
       if ($CFG_GLPI["use_ajax"]) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __("Don't use dynamic display if the number of items is less than") . "</td><td>";
+         echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td><td>";
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
-         echo "</td><td>" . __('Maximum number of items to display in the dropdowns when wildcard is not used') . "</td><td>";
+         echo "</td><td>".
+               __('Maximum number of items to display in the dropdowns when wildcard is not used').
+              "</td><td>";
          Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
          Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-         echo "</td><td>" . __('Character to force the full display of dropdowns (wildcard)') . "</td>";
+         echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
          echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
                     $CFG_GLPI["ajax_wildcard"] . "'></td>";
          echo "</tr>";
@@ -999,7 +999,6 @@ class Config extends CommonDBTM {
     * @param $value default value
     */
    static function dropdownGlobalManagement($name,$value) {
-      global $LANG;
 
       $choices[0] = __('Yes - Restrict to unit management for manual add');
       $choices[1] = __('Yes - Restrict to global management for manual add');

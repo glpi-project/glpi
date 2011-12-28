@@ -46,8 +46,6 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of Service Packs');
    }
 

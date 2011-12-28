@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class Fieldblacklist extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
    }
 
@@ -57,7 +55,6 @@ class Fieldblacklist extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'itemtype',
                          'label' => __('Type'),
@@ -77,7 +74,6 @@ class Fieldblacklist extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -297,5 +293,4 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 }
-
 ?>

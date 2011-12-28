@@ -48,8 +48,6 @@ class CalendarSegment extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Time range','Time ranges',$nb);
    }
 
@@ -65,12 +63,12 @@ class CalendarSegment extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       // Check override of segment : do not add
       if (count(self::getSegmentsBetween($input['calendars_id'], $input['day'], $input['begin'],
                                          $input['day'], $input['end'])) > 0 ) {
-         Session::addMessageAfterRedirect(__('Can not add a range riding an existing period'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Can not add a range riding an existing period'),
+                                          false, ERROR);
          return false;
       }
       return $input;
@@ -280,7 +278,7 @@ class CalendarSegment extends CommonDBChild {
     * @param $calendar Calendar object
    **/
    static function showForCalendar(Calendar $calendar) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $calendar->getField('id');
       if (!$calendar->can($ID,'r')) {
@@ -359,7 +357,6 @@ class CalendarSegment extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -384,5 +381,4 @@ class CalendarSegment extends CommonDBChild {
       return true;
    }
 }
-
 ?>

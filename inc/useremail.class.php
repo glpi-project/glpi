@@ -46,8 +46,6 @@ class UserEmail  extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Email', 'Emails', $nb);
    }
 
@@ -214,7 +212,7 @@ class UserEmail  extends CommonDBChild {
 
 
    static function showAddEmailButton(User $user) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $users_id = $user->getID();
       if (!$user->can($users_id,'r') && $users_id != Session::getLoginUserID()) {

@@ -61,7 +61,6 @@ class Budget extends CommonDropdown{
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab(__CLASS__,$ong, $options);

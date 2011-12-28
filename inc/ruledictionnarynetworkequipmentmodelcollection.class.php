@@ -49,8 +49,6 @@ class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDrop
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of networking equipment models');
    }
 

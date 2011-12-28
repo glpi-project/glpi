@@ -42,10 +42,8 @@ class MonitorModel extends CommonDropdown {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Monitors model', 'Monitors models', $nb);
    }
-}
 
+}
 ?>

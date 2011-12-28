@@ -123,7 +123,6 @@ class Group extends CommonTreeDropdown {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'Group' :
@@ -151,7 +150,6 @@ class Group extends CommonTreeDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
 
@@ -270,7 +268,7 @@ class Group extends CommonTreeDropdown {
     *@return nothing (display)
     **/
    function title() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $buttons = array();
       if (Session::haveRight("group", "w")
@@ -363,7 +361,6 @@ class Group extends CommonTreeDropdown {
 
 
    function showLDAPForm ($ID) {
-      global $LANG;
 
       if ($ID > 0) {
          $this->check($ID, 'r');
@@ -426,7 +423,7 @@ class Group extends CommonTreeDropdown {
     * @return integer total of items
    **/
    function getDataItems($types, $field, $tree, $user, $start, &$res) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB;
 
       // include item of child groups ?
       if ($tree) {

@@ -46,8 +46,6 @@ class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCo
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of operating systems');
    }
 

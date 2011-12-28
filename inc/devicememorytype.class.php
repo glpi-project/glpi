@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class DeviceMemoryType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Memory type', 'Memory types', $nb);
    }
-}
 
+}
 ?>

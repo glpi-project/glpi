@@ -42,10 +42,9 @@ class PrinterModel extends CommonDropdown {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Printers model', 'Printers models', $nb);
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -59,11 +58,11 @@ class PrinterModel extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("printer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Printers model', 'Printers models', 2), self::countForCartridge($item));
+            return self::createTabEntry(_n('Printers model', 'Printers models', 2),
+                                        self::countForCartridge($item));
          }
          return _n('Printers model', 'Printers models', 2);
       }
@@ -89,5 +88,4 @@ class PrinterModel extends CommonDropdown {
       return true;
    }
 }
-
 ?>

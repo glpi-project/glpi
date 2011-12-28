@@ -49,9 +49,8 @@ class Cartridge extends CommonDBTM {
    protected $forward_entity_to = array('Infocom');
    var $no_form_page = false;
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
+   static function getTypeName($nb=0) {
       return _n('Cartridge','Cartridges',$nb);
    }
 
@@ -143,7 +142,7 @@ class Cartridge extends CommonDBTM {
    *@return boolean : true for success
    **/
    function install($pID, $tID) {
-      global $DB, $LANG;
+      global $DB;
 
       // Get first unused cartridge
       $query = "SELECT `id`
@@ -221,7 +220,7 @@ class Cartridge extends CommonDBTM {
     *@return string to display
     **/
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
-      global $DB, $LANG;
+      global $DB;
 
       /// TODO to be more useful permit to have several columns and display number in it
       // Get total
@@ -358,7 +357,6 @@ class Cartridge extends CommonDBTM {
     *@return string : dict value for the cartridge status.
     **/
    static function getStatus($date_use, $date_out) {
-      global $LANG;
 
       if (is_null($date_use) || empty($date_use)) {
          return __('New','New',1);
@@ -556,7 +554,7 @@ class Cartridge extends CommonDBTM {
     * @return Nothing (displays)
     **/
    static function showAddForm(CartridgeItem $cartitem) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ID = $cartitem->getField('id');
       if (!$cartitem->can($ID, 'w')) {

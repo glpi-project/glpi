@@ -66,7 +66,6 @@ class CronTask extends CommonDBTM{
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('CronTaskLog', $ong, $options);
@@ -272,7 +271,6 @@ class CronTask extends CommonDBTM{
     * @param $content
    **/
    function log($content) {
-      global $LANG;
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -570,7 +568,6 @@ class CronTask extends CommonDBTM{
     * @return string
    **/
    public function getDescription($id) {
-      global $LANG;
 
       if (!isset($this->fields['id']) || $this->fields['id']!=$id) {
          $this->getFromDB($id);
@@ -597,7 +594,6 @@ class CronTask extends CommonDBTM{
     * @return string
    **/
    public function getParameterDescription() {
-      global $LANG;
 
       $hook = array($this->fields['itemtype'], 'cronInfo');
 
@@ -991,9 +987,9 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".__('Date')."</th>"; 
+            echo "<th>".__('Date')."</th>";
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
-            echo "<th>".__('Number')."</th>"; 
+            echo "<th>".__('Number')."</th>";
             echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 
@@ -1041,10 +1037,10 @@ class CronTask extends CommonDBTM{
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
-            echo "<th>".__('Date')."</th>"; 
+            echo "<th>".__('Date')."</th>";
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
-            echo "<th>".__('Number')."</th>"; 
+            echo "<th>".__('Number')."</th>";
             echo "<th>".$LANG['joblist'][6]."</th>"; // Description
             echo "</tr>\n";
 
@@ -1332,7 +1328,6 @@ class CronTask extends CommonDBTM{
     * @param $value default value
    **/
    function dropdownFrequency($name, $value=0) {
-      global $LANG;
 
       $tab = array();
 

@@ -75,7 +75,7 @@ class Group_User extends CommonDBRelation{
     * @param $user the user
    **/
    static function showForUser(User $user) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ID = $user->fields['id'];
       if (!Session::haveRight("group","r") || !$user->can($ID,'r')) {
@@ -461,7 +461,6 @@ class Group_User extends CommonDBRelation{
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -501,7 +500,6 @@ class Group_User extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -527,5 +525,4 @@ class Group_User extends CommonDBRelation{
    }
 
 }
-
 ?>

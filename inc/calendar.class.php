@@ -43,9 +43,8 @@ class Calendar extends CommonDropdown {
    var $dohistory = true;
    protected $forward_entity_to = array('CalendarSegment');
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
+   static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);
    }
 
@@ -61,7 +60,6 @@ class Calendar extends CommonDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('CalendarSegment', $ong, $options);

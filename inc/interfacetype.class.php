@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class InterfaceType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
    }
-}
 
+}
 ?>

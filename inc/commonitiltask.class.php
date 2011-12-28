@@ -141,7 +141,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
@@ -162,7 +161,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          unset($input["plan"]);
 
          if (!$this->test_valid_date($input)) {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+                                             false, ERROR);
             return false;
          }
          Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
@@ -219,7 +219,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       $itemtype = $this->getItilObjectItemType();
 
@@ -236,7 +235,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          unset($input["plan"]);
          if (!$this->test_valid_date($input)) {
-            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'), false, ERROR);
+            Session::addMessageAfterRedirect(__('Error in entering dates. The starting date is later than the ending date'),
+                                             false, ERROR);
             return false;
          }
       }
@@ -333,7 +333,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function getName($with_comment=0) {
-      global $LANG;
 
       if (!isset($this->fields['taskcategories_id'])) {
          return NOT_AVAILABLE;

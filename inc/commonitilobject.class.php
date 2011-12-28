@@ -86,7 +86,6 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return true if succeed else false
    **/
    function getFromDBwithData($ID, $purecontent) {
-      global $DB, $LANG;
 
       if ($this->getFromDB($ID)) {
          if (!$purecontent) {
@@ -549,7 +548,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function pre_updateInDB() {
-      global $LANG, $CFG_GLPI;
 
       if ($this->fields['status'] == 'new') {
          if (in_array("suppliers_id_assign",$this->updates)
@@ -1583,7 +1581,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    function showGroupsAssociated($type, $canedit) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $showgrouplink = 0;
       if (Session::haveRight('group','r')) {

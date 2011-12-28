@@ -39,7 +39,6 @@ if (!defined('GLPI_ROOT')) {
 class RegistryKey extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
       // No plural
       return __('Registry');
@@ -73,7 +72,7 @@ class RegistryKey extends CommonDBTM {
    *
    */
    static function showForComputer(Computer $comp) {
-      global $DB, $LANG;
+      global $DB;
 
       if (!Session::haveRight("computer","r")) {
          return false;
@@ -94,7 +93,8 @@ class RegistryKey extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)!=0) {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>".sprintf(_n('%d registry key found', '%d registry keys found'), $DB->numrows($result))."</th></tr>\n";
+            echo "<tr><th colspan='4'>".sprintf(_n('%d registry key found', '%d registry keys found'),
+                                                $DB->numrows($result))."</th></tr>\n";
 
             echo "<tr><th>".__('OCSNG name')."</th>";
             echo "<th>".__('Hive')."</th>";
@@ -116,7 +116,8 @@ class RegistryKey extends CommonDBTM {
          } else {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th>".__('Registry')."</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='center b'>".__('No key found in registry')."</td></tr>";
+            echo "<tr class='tab_bg_2'><td class='center b'>".__('No key found in registry').
+                 "</td></tr>";
             echo "</table></div>";
          }
       }
@@ -124,7 +125,7 @@ class RegistryKey extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
          switch ($item->getType()) {
@@ -150,5 +151,4 @@ class RegistryKey extends CommonDBTM {
    }
 
 }
-
 ?>

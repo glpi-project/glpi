@@ -66,7 +66,6 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate
           && $item->getType()=='Computer'
