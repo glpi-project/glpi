@@ -68,7 +68,6 @@ class TicketRecurrent extends CommonDropdown {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'TicketRecurrent' :
@@ -98,7 +97,6 @@ class TicketRecurrent extends CommonDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
 

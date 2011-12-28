@@ -74,12 +74,8 @@ class Ticket extends CommonITILObject {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Ticket','Tickets',$nb);
    }
 
@@ -413,7 +409,6 @@ class Ticket extends CommonITILObject {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
 //          case 'Change' :
@@ -466,7 +461,6 @@ class Ticket extends CommonITILObject {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
 
       $ong = array();
       $this->addStandardTab('TicketFollowup',$ong, $options);
@@ -805,7 +799,6 @@ class Ticket extends CommonITILObject {
 
 
    function pre_updateInDB() {
-      global $LANG, $CFG_GLPI;
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
@@ -845,7 +838,7 @@ class Ticket extends CommonITILObject {
 
 
    function post_updateItem($history=1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $donotif = count($this->updates);
 
@@ -1971,7 +1964,6 @@ class Ticket extends CommonITILObject {
     * @return string id of the select
    **/
    static function dropdownType($name, $options=array()) {
-      global $LANG;
 
       $params['value']       = 0;
       $params['toadd']       = array();
@@ -3876,7 +3868,7 @@ class Ticket extends CommonITILObject {
 
 
    static function showDocumentAddButton($size=25) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
       echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
@@ -5001,7 +4993,6 @@ class Ticket extends CommonITILObject {
 
 
    static function showPreviewAssignAction($output) {
-      global $LANG;
 
       //If ticket is assign to an object, display this information first
       if (isset($output["entities_id"])
@@ -5027,6 +5018,7 @@ class Ticket extends CommonITILObject {
       unset($output["entities_id"]);
       return $output;
    }
+
 
    /**
     * Give cron informations

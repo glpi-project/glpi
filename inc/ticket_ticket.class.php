@@ -113,7 +113,7 @@ class Ticket_Ticket extends CommonDBRelation {
     * @return nothing display
    **/
    static function displayLinkedTicketsTo ($ID) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $tickets   = self::getLinkedTicketsTo($ID);
       $canupdate = Session::haveRight('update_ticket', '1');
@@ -131,12 +131,12 @@ class Ticket_Ticket extends CommonDBRelation {
                                "&amp;tickets_id=$ID' title=\"".__s('Prohibit reservations')."\">
                                <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                 alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
-               }               
-               
+               }
+
                //TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
                printf(__('%1$s %2$s %3$s'),self::getLinkName($data['link']),
                      $ticket->getLink(), $icons);
-                              
+
             }
             echo '<br>';
          }
@@ -151,7 +151,6 @@ class Ticket_Ticket extends CommonDBRelation {
     * @param $value default value
    **/
    static function dropdownLinks($myname, $value=self::LINK_TO) {
-      global $LANG;
 
       $tmp[self::LINK_TO]        = __('Linked to');
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');
@@ -165,7 +164,6 @@ class Ticket_Ticket extends CommonDBRelation {
     * @param $value default value
    **/
    static function getLinkName($value) {
-      global $LANG;
 
       $tmp[self::LINK_TO]        = __('Linked to');
       $tmp[self::DUPLICATE_WITH] = __('Duplicates');

@@ -220,7 +220,6 @@ class TicketTemplate extends CommonDropdown {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
 
@@ -237,7 +236,6 @@ class TicketTemplate extends CommonDropdown {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'TicketTemplate' :
@@ -258,7 +256,6 @@ class TicketTemplate extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
@@ -484,5 +481,6 @@ class TicketTemplate extends CommonDropdown {
          $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
       }
    }
+
 }
 ?>

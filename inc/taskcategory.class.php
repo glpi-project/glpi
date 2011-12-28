@@ -44,14 +44,14 @@ class TaskCategory extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Tasks category','Tasks categories', $nb);
    }
+
 
    function canCreate() {
       return Session::haveRight('entity_dropdown','w');
    }
+
 
    function canView() {
       return Session::haveRight('entity_dropdown','r');

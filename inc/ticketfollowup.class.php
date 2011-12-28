@@ -324,7 +324,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function post_addItem() {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $donotif = $CFG_GLPI["use_mailing"];
 
@@ -394,7 +394,6 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function getName($with_comment=0) {
-      global $LANG;
 
       if (!isset($this->fields['requesttypes_id'])) {
          return NOT_AVAILABLE;
@@ -417,7 +416,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $canedit = $this->can($this->fields['id'],'w') || $this->can($this->fields['id'],'d');
 

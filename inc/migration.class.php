@@ -40,7 +40,6 @@ class Migration {
 
 
    function __construct($ver) {
-      global $LANG;
 
       // begin of global message
       echo "<div id='migration_message_$ver'>
@@ -58,7 +57,6 @@ class Migration {
    **/
 
    function displayMessage ($msg) {
-      global $LANG;
 
       $fin = time();
       $tps = Html::timestampToString($fin-$this->deb);
@@ -75,7 +73,6 @@ class Migration {
     * @param $title string
    **/
    function displayTitle($title) {
-
       echo "<h3>".htmlentities($title, ENT_COMPAT, "UTF-8")."</h3>";
    }
 
@@ -207,7 +204,7 @@ class Migration {
     *    - after where adding the new field
    **/
    function addField($table, $field, $type, $options=array()) {
-      global $DB, $LANG;
+      global $DB;
 
       $params['update']    = '';
       $params['condition'] = '';
@@ -383,7 +380,7 @@ class Migration {
     * @param $newtable
    **/
    function renameTable($oldtable, $newtable) {
-      global $LANG, $DB;
+      global $DB;
 
       if (!TableExists("$newtable") && TableExists("$oldtable")) {
          $query = "RENAME TABLE `$oldtable` TO `$newtable`";
@@ -401,7 +398,7 @@ class Migration {
     * @param $newtable The copy of the old table
    **/
    function copyTable($oldtable, $newtable) {
-      global $LANG, $DB;
+      global $DB;
 
       if (!TableExists("$newtable") && TableExists("$oldtable")) {
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
@@ -426,7 +423,7 @@ class Migration {
     * @return id of the last item inserted by mysql
    **/
    function insertInTable($table, $input) {
-      global $LANG, $DB;
+      global $DB;
 
       if (TableExists("$table") && is_array($input) && (count($input) > 0)) {
          $fields = array();
@@ -453,7 +450,7 @@ class Migration {
     * @param $table
    **/
    function migrationOneTable($table) {
-      global $DB, $LANG;
+      global $DB;
 
       if (isset($this->change[$table])) {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
@@ -470,7 +467,6 @@ class Migration {
    **/
 
    function executeMigration() {
-      global $LANG;
 
       foreach ($this->change as $table => $tab) {
          $this->migrationOneTable($table);
@@ -481,5 +477,4 @@ class Migration {
    }
 
 }
-
 ?>
