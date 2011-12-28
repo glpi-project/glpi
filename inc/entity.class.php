@@ -63,12 +63,7 @@ class Entity extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][37];
-      }
-      return $LANG['entity'][0];
+      return _n('Entity', 'Entities', $nb);
    }
 
 
@@ -124,9 +119,9 @@ class Entity extends CommonTreeDropdown {
       global $LANG, $CFG_GLPI;
 
       $buttons = array();
-      $title   = $LANG['Menu'][37];
+      $title   = self::getTypeName(2);
       $buttons["entity.form.php?id=0"] = $LANG['entity'][2];
-      Html::displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png", $LANG['Menu'][37], $title,
+      Html::displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png", self::getTypeName(2), $title,
                          $buttons);
    }
 

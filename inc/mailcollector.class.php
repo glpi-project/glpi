@@ -75,12 +75,7 @@ class MailCollector  extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][39];
-      }
-      return $LANG['mailgate'][0];
+      return _n('Receiver', 'Receivers', $nb);
    }
 
 

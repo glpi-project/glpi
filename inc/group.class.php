@@ -43,7 +43,6 @@ class Group extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-
       _n('Group', 'Groups', $nb);
    }
 
@@ -282,10 +281,10 @@ class Group extends CommonTreeDropdown {
          $title = "";
 
       } else {
-         $title = $LANG['Menu'][36];
+         $title = self::getTypeName(2);
       }
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", $LANG['Menu'][36], $title,
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", self::getTypeName(2), $title,
                          $buttons);
    }
 

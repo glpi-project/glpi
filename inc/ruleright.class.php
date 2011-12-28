@@ -338,7 +338,7 @@ class RuleRight extends Rule {
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
 
-      $actions['profiles_id']['name']  = $LANG['Menu'][35];
+      $actions['profiles_id']['name']  = _n('Profile', 'Profiles', 2);
       $actions['profiles_id']['type']  = 'dropdown';
       $actions['profiles_id']['table'] = 'glpi_profiles';
 

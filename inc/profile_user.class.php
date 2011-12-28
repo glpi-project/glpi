@@ -127,7 +127,7 @@ class Profile_User extends CommonDBTM {
       }
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['Menu'][37]."</th>";
+      echo "<tr><th colspan='2'>"._n('Entity', 'Entities', 2)."</th>";
       echo "<th>".__('Profile (D=Dynamic, R=Recursive)');
       echo "</th></tr>";
 
@@ -261,11 +261,11 @@ class Profile_User extends CommonDBTM {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-      
-         Session::initNavigateListItems('User', 
+
+         Session::initNavigateListItems('User',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$entity->getTypeName(1), $entity->getName()));
-      
+
          while ($data=$DB->fetch_array($result)) {
             echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'),$data["name"]);
             echo "</th></tr>";
@@ -693,10 +693,8 @@ class Profile_User extends CommonDBTM {
    }
 
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['Menu'][35];
+   static function getTypeName($nb=0) {
+      return _n('Profile', 'Profiles', $nb);
    }
 
 

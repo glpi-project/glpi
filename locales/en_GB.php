@@ -1321,6 +1321,7 @@ $LANG['Menu'][30]="Logs";
 $LANG['Menu'][31]="Simplified interface";
 $LANG['Menu'][32]="Consumables";
 $LANG['Menu'][34]="Phones";
+/// TODO After is ok for migration to gettext
 $LANG['Menu'][35]="Profiles";
 $LANG['Menu'][36]="Groups";
 $LANG['Menu'][37]="Entities";
@@ -1331,7 +1332,7 @@ $LANG['Menu'][41]="Checks";
 $LANG['Menu'][42]="Agendas";
 $LANG['Menu'][43]="SLAs";
 
-/// TODO After is ok for migration to gettext
+
 
 $LANG['monitors'][14]="Microphone";
 $LANG['monitors'][15]="Speakers";

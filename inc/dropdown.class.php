@@ -649,7 +649,7 @@ class Dropdown {
                         $LANG['Menu'][18]
                         => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
 
-                        $LANG['Menu'][42]
+                        __('Calendar')
                         => array('Calendar' => Calendar::getTypeName(2),
                                  'Holiday'  => Holiday::getTypeName(2)),
 

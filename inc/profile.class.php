@@ -102,7 +102,7 @@ class Profile extends CommonDBTM {
                   $ong[1] = $LANG['Menu'][31]; // Helpdesk
 
                } else {
-                  $ong[2] = $LANG['Menu'][38].'/'.$LANG['Menu'][26].'/'.$LANG['Menu'][18]; // Inventory/Management
+                  $ong[2] = __('Inventory/Management/Tools');
                   $ong[3] = __('Assistance'); // Assistance
                   $ong[4] = __('Life cycles'); // Life cycles
                   $ong[5] = __('Administration');
@@ -637,7 +637,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       // Inventory
-      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][38]."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Inventory')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['Menu'][0]."</td><td>";
@@ -1162,13 +1162,13 @@ class Profile extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['Menu'][37]."</td><td>";
+      echo "<td>"._n('Entity', 'Entities', 2)."</td><td>";
       self::dropdownNoneReadWrite("entity", $this->fields["entity"], 1,  1,1);
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
       self::dropdownNoneReadWrite("transfer", $this->fields["transfer"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][35]."</td><td>";
+      echo "<td>"._n('Profile', 'Profiles', 2)."</td><td>";
       self::dropdownNoneReadWrite("profile", $this->fields["profile"], 1, 1, 1);
       echo "</td></tr>\n";
 
@@ -1320,7 +1320,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
       self::dropdownNoneReadWrite("notification", $this->fields["notification"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][42]."</td><td>";
+      echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
       self::dropdownNoneReadWrite("calendar", $this->fields["calendar"], 1, 1, 1);
       echo "</td>\n";
       echo "<td>".__('Assistance')."</td><td>";
@@ -1558,7 +1558,7 @@ class Profile extends CommonDBTM {
 
       $tab[107]['table']    = $this->getTable();
       $tab[107]['field']    = 'calendar';
-      $tab[107]['name']     = $LANG['Menu'][42];
+      $tab[107]['name']     = _n('Calendar', 'Calendars', 2);
       $tab[107]['datatype'] = 'right';
 
       $tab['admin'] = $LANG['Menu'][15];
@@ -1610,7 +1610,7 @@ class Profile extends CommonDBTM {
 
       $tab[55]['table']    = $this->getTable();
       $tab[55]['field']    = 'profile';
-      $tab[55]['name']     = $LANG['Menu'][35];
+      $tab[55]['name']     = _n('Profile', 'Profiles', 2);
       $tab[55]['datatype'] = 'right';
 
       $tab[56]['table']    = $this->getTable();
@@ -1635,7 +1635,7 @@ class Profile extends CommonDBTM {
 
       $tab[59]['table']    = $this->getTable();
       $tab[59]['field']    = 'entity';
-      $tab[59]['name']     = $LANG['Menu'][37];
+      $tab[59]['name']     = _n('Entity', 'Entities', 2);
       $tab[59]['datatype'] = 'right';
 
       $tab[60]['table']    = $this->getTable();

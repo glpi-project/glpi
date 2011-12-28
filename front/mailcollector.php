@@ -39,13 +39,15 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
 
-Html::header($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
+Html::header(MailCollector::getTypeName(2), $_SERVER['PHP_SELF'], "config","mailcollector");
 
 if (!Toolbox::canUseImapPop()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
-   echo "<tr class='tab_bg_2'><td class='center red'>" . __('Your PHP parser was compiled without the IMAP functions') . "</td></tr></table>";
+   echo "<tr><th colspan='2'>" . _n('Receiver', 'Receivers', 2)."</th></tr>";
+   echo "<tr class='tab_bg_2'>";
+   echo "<td class='center red'>" . __('Your PHP parser was compiled without the IMAP functions');
+   echo "</td></tr></table>";
    echo "</div>";
    Html::footer();
    exit();

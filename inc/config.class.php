@@ -291,7 +291,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['Menu'][38] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Inventory') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Activate the OCSNG mode') . "</td><td>";
@@ -875,7 +875,7 @@ class Config extends CommonDBTM {
       $values[3] = __('3- Important (successful logins)');
       $values[4] = __('4- Notices (Add, delete, tracking)');
       $values[5] = __('5- Complete (All)');
-      
+
       Dropdown::showFromArray('event_loglevel', $values,
                               array('value' => $CFG_GLPI["event_loglevel"]));
       echo "</td><td>".__('Maximal number of automatic actions (run by CLI)')."</td><td>";
@@ -1109,9 +1109,9 @@ class Config extends CommonDBTM {
          case __CLASS__ :
             $tabs[1] = __('General setup');   // Display
             $tabs[2] = __('Default values');   // Prefs
-            $tabs[3] = $LANG['Menu'][38];    // Inventory
-            $tabs[4] = __('Assistance'); 
-            $tabs[5] = __('System informations');  // SysInfo
+            $tabs[3] = __('Inventory');
+            $tabs[4] = __('Assistance');
+            $tabs[5] = __('System informations');
 
             if (DBConnection::isDBSlaveActive()) {
                $tabs[6]  = _n('Mysql replicate', 'Mysql replicates',2);  // Slave
