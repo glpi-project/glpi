@@ -221,7 +221,6 @@ class Session {
      * @param $title titre de la liste
     **/
     static function initNavigateListItems($itemtype, $title="") {
-       global $LANG;
 
        if (empty($title)) {
           $title = __('List');

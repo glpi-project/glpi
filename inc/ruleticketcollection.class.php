@@ -54,8 +54,6 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Business rules for tickets');
    }
 

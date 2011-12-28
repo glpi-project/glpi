@@ -68,7 +68,6 @@ class Software extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -93,7 +92,6 @@ class Software extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('SoftwareVersion', $ong, $options);
@@ -703,7 +701,7 @@ class Software extends CommonDBTM {
     * @return boolean (success)
    **/
    function putInTrash($ID, $comment = '') {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $this->getFromDB($ID);
       $input["id"]         = $ID;

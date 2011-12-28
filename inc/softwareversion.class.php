@@ -50,8 +50,6 @@ class SoftwareVersion extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Version', 'Versions',$nb);
    }
 
@@ -95,7 +93,6 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
@@ -274,7 +271,7 @@ class SoftwareVersion extends CommonDBChild {
                 WHERE `softwares_id` = '$softwares_id'
                 ORDER BY `name`";
 
-      Session::initNavigateListItems('SoftwareVersion', 
+      Session::initNavigateListItems('SoftwareVersion',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
             sprintf(__('%1$s = %2$s'),$soft->getTypeName(1), $soft->getName()));
 
@@ -329,7 +326,6 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -355,5 +351,4 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 }
-
 ?>

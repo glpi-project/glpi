@@ -84,7 +84,7 @@ class RuleCached extends Rule {
    * @param $target where to go
    **/
    function showCacheStatusByRule($target) {
-      global $DB, $LANG;
+      global $DB;
 
       echo "<div class='center'>";
       echo "<table  class='tab_cadre_fixe'>";
@@ -115,7 +115,6 @@ class RuleCached extends Rule {
     * Display Header for cache display
    **/
    function showCacheRuleHeader() {
-      global $LANG;
 
       echo "<tr><th>".__('Cache informations')."</th><th>".$this->fields["name"];
       echo "</th></tr>\n";
@@ -130,7 +129,6 @@ class RuleCached extends Rule {
     * @param $fields data array
    **/
    function showCacheRuleDetail($fields) {
-      global $LANG;
 
       echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
       echo "<td class='tab_bg_2'>".
@@ -138,5 +136,4 @@ class RuleCached extends Rule {
    }
 
 }
-
 ?>

@@ -291,8 +291,6 @@ class RuleCollection extends CommonDBTM {
     * @return Title of the rule collection
    **/
    function getTitle() {
-      global $LANG;
-
       return __('Rules list');
    }
 
@@ -689,7 +687,7 @@ class RuleCollection extends CommonDBTM {
     * @param $values data array
     **/
    function showRulesEnginePreviewCriteriasForm($target, $values) {
-      global $DB, $LANG;
+      global $DB;
 
       $input = $this->prepareInputDataForTestProcess();
 
@@ -831,7 +829,6 @@ class RuleCollection extends CommonDBTM {
     * @param $input data array
    **/
    function showRulesEnginePreviewResultsForm($target, $input) {
-      global $LANG;
 
       $output = array();
 
@@ -910,7 +907,6 @@ class RuleCollection extends CommonDBTM {
     * @return cleaned array
     **/
    function showTestResults($rule, $output, $global_result) {
-      global $LANG;
 
       $actions = $rule->getActions();
       echo "<table class='tab_cadrehov'>";
@@ -1022,7 +1018,6 @@ class RuleCollection extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -1032,18 +1027,21 @@ class RuleCollection extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item instanceof RuleCollection){
          $ong = array();
          if ($item->showInheritedTab()) {
             //TRANS: %s is the entity name
-            $ong[1] = sprintf(__('Rules applied: %s'), Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']));
+            $ong[1] = sprintf(__('Rules applied: %s'),
+                              Dropdown::getDropdownName('glpi_entities',
+                                                        $_SESSION['glpiactive_entity']));
          }
          $title = _n('Rule', 'Rules', 2);
          if ($item->isRuleRecursive()) {
             //TRANS: %s is the entity name
-            $ong[1] = sprintf(__('Local rules: %s'), Dropdown::getDropdownName('glpi_entities', $_SESSION['glpiactive_entity']));
+            $ong[1] = sprintf(__('Local rules: %s'),
+                              Dropdown::getDropdownName('glpi_entities',
+                                                        $_SESSION['glpiactive_entity']));
          }
          $ong[2] = $title;
          if ($item->showChildrensTab()) {
@@ -1056,7 +1054,6 @@ class RuleCollection extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $CFG_GLPI;
 
       if ($item instanceof RuleCollection) {
          $options = $_POST;

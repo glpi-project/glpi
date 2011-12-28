@@ -55,8 +55,6 @@ class RuleRightCollection extends RuleCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Authorizations assignment rules');
    }
 
@@ -71,13 +69,12 @@ class RuleRightCollection extends RuleCollection {
 
 
    function showTestResults($rule, $output, $global_result) {
-      global $LANG;
 
       $actions = $rule->getActions();
       echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center' colspan='2'>".__('Validation')."</td><td colspan='2'><span class='b'>".
-             Dropdown::getYesNo($global_result)."</span></td>";
+      echo "<td class='center' colspan='2'>".__('Validation')."</td><td colspan='2'>".
+           "<span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
 
       if (isset($output["_ldap_rules"]["rules_entities"])) {
          echo "<tr class='tab_bg_2'>";

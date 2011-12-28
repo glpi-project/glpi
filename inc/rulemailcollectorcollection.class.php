@@ -45,8 +45,6 @@ class RuleMailCollectorCollection extends RuleCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Rules for assigning a ticket created through a mail receiver');
    }
 
@@ -135,5 +133,4 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
 }
-
 ?>

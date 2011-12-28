@@ -51,7 +51,6 @@ class RequestType extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'is_helpdesk_default',
                          'label' => __('Default for tickets'),
@@ -63,7 +62,6 @@ class RequestType extends CommonDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -103,7 +101,7 @@ class RequestType extends CommonDropdown {
 
 
    function post_updateItem($history=1) {
-      global $DB, $LANG;
+      global $DB;
 
       if (in_array('is_helpdesk_default',$this->updates)) {
 
@@ -158,5 +156,4 @@ class RequestType extends CommonDropdown {
       Rule::cleanForItemCriteria($this);
    }
 }
-
 ?>

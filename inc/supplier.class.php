@@ -301,7 +301,7 @@ class Supplier extends CommonDBTM {
     * @param $withname boolean : also display name ?
    **/
    function getLinks($withname=false) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
 
@@ -375,8 +375,8 @@ class Supplier extends CommonDBTM {
 
       $used = array();
       if ($number) {
-      
-         Session::initNavigateListItems('Contact', 
+
+         Session::initNavigateListItems('Contact',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
          sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
 

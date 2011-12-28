@@ -46,7 +46,6 @@ class SLA extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
       // Acronymous, no plural
       return __('SLA');
@@ -70,17 +69,20 @@ class SLA extends CommonDBTM {
     *
    **/
    function setTicketCalendar($calendars_id) {
+
       if ($this->fields['calendars_id'] == -1 ) {
          $this->fields['calendars_id'] = $calendars_id;
       }
    }
 
+
    function defineTabs($options=array()) {
 
-      $ong    = array();
+      $ong = array();
       $this->addStandardTab('SlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
+
       return $ong;
    }
 
@@ -388,5 +390,4 @@ class SLA extends CommonDBTM {
    }
 
 }
-
 ?>

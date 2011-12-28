@@ -48,10 +48,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('License', 'Licenses', $nb);
-
    }
 
 
@@ -106,7 +103,6 @@ class SoftwareLicense extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
@@ -254,19 +250,18 @@ class SoftwareLicense extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       // Only use for History (not by search Engine)
       $tab = array();
 
-      $tab[2]['table'] = $this->getTable();
-      $tab[2]['field'] = 'name';
-      $tab[2]['name']  = __('Name');
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'name';
+      $tab[2]['name']            = __('Name');
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'serial';
-      $tab[3]['name']      = __('Serial number');
-      $tab[3]['datatype']  = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'serial';
+      $tab[3]['name']            = __('Serial number');
+      $tab[3]['datatype']        = 'string';
 
       $tab[162]['table']         = $this->getTable();
       $tab[162]['field']         = 'otherserial';
@@ -274,34 +269,34 @@ class SoftwareLicense extends CommonDBTM {
       $tab[162]['massiveaction'] = false;
       $tab[162]['datatype']      = 'string';
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'number';
-      $tab[4]['name']     = __('Number');
-      $tab[4]['datatype'] = 'number';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'number';
+      $tab[4]['name']            = __('Number');
+      $tab[4]['datatype']        = 'number';
 
-      $tab[5]['table'] = 'glpi_softwarelicensetypes';
-      $tab[5]['field'] = 'name';
-      $tab[5]['name']  = __('Type');
+      $tab[5]['table']           = 'glpi_softwarelicensetypes';
+      $tab[5]['field']           = 'name';
+      $tab[5]['name']            = __('Type');
 
-      $tab[6]['table']     = 'glpi_softwareversions';
-      $tab[6]['field']     = 'name';
-      $tab[6]['linkfield'] = 'softwareversions_id_buy';
-      $tab[6]['name']      = __('Purchase version');
+      $tab[6]['table']           = 'glpi_softwareversions';
+      $tab[6]['field']           = 'name';
+      $tab[6]['linkfield']       = 'softwareversions_id_buy';
+      $tab[6]['name']            = __('Purchase version');
 
-      $tab[7]['table']     = 'glpi_softwareversions';
-      $tab[7]['field']     = 'name';
-      $tab[7]['linkfield'] = 'softwareversions_id_use';
-      $tab[7]['name']      = __('Version in use');
+      $tab[7]['table']           = 'glpi_softwareversions';
+      $tab[7]['field']           = 'name';
+      $tab[7]['linkfield']       = 'softwareversions_id_use';
+      $tab[7]['name']            = __('Version in use');
 
-      $tab[8]['table']    = $this->getTable();
-      $tab[8]['field']    = 'expire';
-      $tab[8]['name']     = __('Expiration');
-      $tab[8]['datatype'] = 'date';
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'expire';
+      $tab[8]['name']            = __('Expiration');
+      $tab[8]['datatype']        = 'date';
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       return $tab;
    }
@@ -511,7 +506,7 @@ class SoftwareLicense extends CommonDBTM {
                                                                      '', '', true));
       echo "<div class='spaced'>";
 
-      Session::initNavigateListItems('SoftwareLicense', 
+      Session::initNavigateListItems('SoftwareLicense',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
             sprintf(__('%1$s = %2$s'),$software->getTypeName(1), $software->getName()));
 
@@ -704,7 +699,6 @@ class SoftwareLicense extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -729,5 +723,4 @@ class SoftwareLicense extends CommonDBTM {
    }
 
 }
-
 ?>

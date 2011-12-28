@@ -54,8 +54,6 @@ class RuleCriteria extends CommonDBChild {
     * @return Title of the rule
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Criteria', 'Criteria', $nb);
    }
 
@@ -68,7 +66,6 @@ class RuleCriteria extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab[1]['table']         = $this->getTable();
@@ -340,7 +337,6 @@ class RuleCriteria extends CommonDBChild {
     * @return array of criteria
    **/
    static function getConditions($itemtype, $criterion='') {
-      global $LANG;
 
       $criteria =  array(Rule::PATTERN_IS              => __('is'),
                          Rule::PATTERN_IS_NOT          => __('is not'),
@@ -378,7 +374,6 @@ class RuleCriteria extends CommonDBChild {
     * Display a dropdown with all the criterias
    **/
    static function dropdownConditions($itemtype, $params=array()) {
-      global $LANG;
 
       $p['criterion']        = '';
       $p['allow_conditions'] = array();
@@ -398,5 +393,4 @@ class RuleCriteria extends CommonDBChild {
    }
 
 }
-
 ?>

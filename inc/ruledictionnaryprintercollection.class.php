@@ -63,8 +63,6 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of printers');
    }
 
@@ -343,5 +341,4 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 }
-
 ?>

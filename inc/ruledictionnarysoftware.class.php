@@ -53,8 +53,6 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function getTitle() {
-      global $LANG;
-
       return __('Dictionnary of software');
    }
 
@@ -67,7 +65,8 @@ class RuleDictionnarySoftware extends RuleCached {
    function showCacheRuleHeader() {
       global $LANG;
 
-      echo "<tr><th colspan='4'>" . __('Cache informations') . "</th><th colspan='4'>" . $this->fields["name"];
+      echo "<tr><th colspan='4'>" . __('Cache informations') . "</th>";
+      echo "<th colspan='4'>" . $this->fields["name"];
       echo "</th></tr>";
 
       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
@@ -83,11 +82,10 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function showCacheRuleDetail($fields) {
-      global $LANG;
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
-                                                               $fields["old_entities_id"]) . "</td>";
+                                                               $fields["old_entities_id"]) ."</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
                                                                : __('Unchanged'))."</td>";
@@ -110,7 +108,7 @@ class RuleDictionnarySoftware extends RuleCached {
               : Dropdown::getYesNo(0)) . "</td>";
       $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
                                                       :__('Unchanged'));
-      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", $new_entity) . "</td>";
+      echo "<td class='tab_bg_2'>".Dropdown::getDropdownName("glpi_entities", $new_entity)."</td>";
    }
 
 

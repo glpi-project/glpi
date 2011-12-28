@@ -66,8 +66,6 @@ class Profile extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Profile', 'Profiles', $nb);
    }
 
@@ -396,7 +394,6 @@ class Profile extends CommonDBTM {
 
 
    function showLegend() {
-      global $LANG;
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -412,7 +409,6 @@ class Profile extends CommonDBTM {
 
 
    function post_getEmpty() {
-      global $LANG;
 
       $this->fields["interface"] = "helpdesk";
       $this->fields["name"] = __('Without name');
@@ -430,7 +426,6 @@ class Profile extends CommonDBTM {
     * @return boolean item found
     **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       $onfocus = "";
       $new     = false;
@@ -1888,7 +1883,6 @@ class Profile extends CommonDBTM {
     * @return nothing (print out an HTML select box)
     */
    static function dropdownNoneReadWrite($name, $value, $none=1, $read=1, $write=1) {
-      global $LANG;
 
       if ($none) {
          $values['NULL'] = __('No access');
@@ -1958,7 +1952,6 @@ class Profile extends CommonDBTM {
 
 
    static function getRightValue($value) {
-      global $LANG;
 
       switch ($value) {
          case '' :

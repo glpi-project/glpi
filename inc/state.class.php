@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class State extends CommonTreeDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Status of items', 'Status of items',$nb);
    }
 
@@ -54,7 +52,7 @@ class State extends CommonTreeDropdown {
     * @param $value default value
    **/
    static function dropdownBehaviour($name, $lib="", $value=0) {
-      global $DB, $LANG;
+      global $DB;
 
       $elements = array("0" => __('Keep status'));
 
@@ -77,7 +75,7 @@ class State extends CommonTreeDropdown {
 
 
    static function showSummary() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $state_type = $CFG_GLPI["state_types"];
       $states     = array();

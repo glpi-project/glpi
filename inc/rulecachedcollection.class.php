@@ -75,7 +75,7 @@ class RuleCachedCollection extends RuleCollection {
     * @return nothing
    **/
    function showAdditionalInformationsInForm($target) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       echo "<div class='spaced center'><span class='icon_consol'>";
       echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
@@ -121,7 +121,7 @@ class RuleCachedCollection extends RuleCollection {
     * Show cache status by rules
    **/
    function showCacheStatusForRuleType() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       echo "<div class='center'>";
       echo "<table  class='tab_cadre_fixe'>";
@@ -143,8 +143,9 @@ class RuleCachedCollection extends RuleCollection {
       $total = 0;
       while ($datas = $DB->fetch_array($res_count)) {
          echo "<tr><td class='tab_bg_2'>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".$this->getRuleClassName().
-              "&amp;rules_id=".$datas["rules_id"]."'>".$datas["name"]."</a></td>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".
+                $this->getRuleClassName()."&amp;rules_id=".$datas["rules_id"]."'>".$datas["name"].
+              "</a></td>";
          echo "<td class='tab_bg_2'>".$datas["cpt"]."</td></tr>\n";
          $total += $datas["cpt"];
       }
@@ -235,5 +236,4 @@ class RuleCachedCollection extends RuleCollection {
 
 
 }
-
 ?>

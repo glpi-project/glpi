@@ -101,8 +101,6 @@ class Rule extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Rule', 'Rules', $nb);
    }
 
@@ -144,8 +142,6 @@ class Rule extends CommonDBTM {
     * @return Title of the rule
    **/
    function getTitle() {
-      global $LANG;
-
       return __('Rules management');
    }
 
@@ -297,7 +293,6 @@ class Rule extends CommonDBTM {
     *                   to restrict to its type / false if both displayed
    **/
    function dropdownRulesMatch($name, $value='', $restrict=false) {
-      global $LANG;
 
       if (!$restrict || $restrict == self::AND_MATCHING) {
          $elements[self::AND_MATCHING] = __('and');
@@ -348,7 +343,6 @@ class Rule extends CommonDBTM {
     * @param $target where to go if action
    **/
    function getTitleAction($target) {
-      global $LANG, $CFG_GLPI;
 
       foreach ($this->getActions() as $key => $val) {
          if (isset($val['force_actions'])
@@ -356,7 +350,9 @@ class Rule extends CommonDBTM {
                  || in_array('append_regex_result',$val['force_actions']))) {
 
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td>".__('It is possible to affect the result of a regular expression using the string #0')."</td></tr>\n";
+            echo "<tr class='tab_bg_2'><td>".
+                  __('It is possible to affect the result of a regular expression using the string #0').
+                 "</td></tr>\n";
             echo "</table><br>";
             return;
          }
@@ -391,7 +387,6 @@ class Rule extends CommonDBTM {
     * @param $options array iof options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
-      global $CFG_GLPI, $LANG;
 
       $p['readonly'] = false;
 
@@ -462,7 +457,6 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addActionForm($rules_id) {
-      global $LANG, $CFG_GLPI;
 
       $ra = new $this->ruleactionclass();
 
@@ -492,7 +486,6 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addCriteriaForm($rules_id) {
-      global $LANG, $CFG_GLPI;
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -536,7 +529,6 @@ class Rule extends CommonDBTM {
     * @param $rules_id
    **/
    function showCriteriasList($rules_id) {
-      global $CFG_GLPI, $LANG;
 
       $canedit = $this->can($rules_id, "w");
       $this->getTitleCriteria(Toolbox::getItemTypeFormURL(get_class($this)));
@@ -555,7 +547,7 @@ class Rule extends CommonDBTM {
       echo "<form name='criteriasform' id='criteriasform' method='post' action='".
              Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>\n";
+      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criteria', 'Criteria', 2)."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       if ($canedit) {
@@ -588,7 +580,7 @@ class Rule extends CommonDBTM {
     * @return the initial value (first)
    **/
    function dropdownCriterias() {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $items = array();
 
@@ -1031,7 +1023,7 @@ class Rule extends CommonDBTM {
     * @param $display_entities display entities / make it read only display
    **/
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $canedit = Session::haveRight($this->right, "w") && !$display_entities;
       echo "<tr class='tab_bg_1'>";
@@ -1065,13 +1057,14 @@ class Rule extends CommonDBTM {
          if ($this->maybeRecursive() && $this->fields['is_recursive']) {
             $rec =' <span class="b">&nbsp;(R)</span>';
          }
-         echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id'])."$rec</td>";
+         echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
+                     "$rec</td>";
       }
 
       if (!$display_entities) {
          if ($this->can_sort && !$first && $canedit) {
-            echo "<td><a href='".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;id=".
-                       $this->fields["id"]."'>";
+            echo "<td><a href='".$target."?type=".$this->fields["sub_type"].
+                       "&amp;action=up&amp;id=".$this->fields["id"]."'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_up.png' alt=''></a></td>";
 
          } else {
@@ -1081,8 +1074,8 @@ class Rule extends CommonDBTM {
 
       if (!$display_entities) {
          if ($this->can_sort && !$last && $canedit) {
-            echo "<td><a href='".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;id=".
-                       $this->fields["id"]."'>";
+            echo "<td><a href='".$target."?type=".$this->fields["sub_type"].
+                       "&amp;action=down&amp;id=".$this->fields["id"]."'>";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' alt=''></a></td>";
 
          } else {
@@ -1158,7 +1151,6 @@ class Rule extends CommonDBTM {
     * @param $params params used (see addSpecificParamsForPreview)
    **/
    function showRulePreviewResultsForm($target, $input, $params) {
-      global $LANG;
 
       $actions       = $this->getActions();
       $check_results = array();
@@ -1478,7 +1470,6 @@ class Rule extends CommonDBTM {
     * @param $value the value
    **/
    function getActionValue($ID, $value) {
-      global $LANG;
 
       $action = $this->getAction($ID);
       if (isset($action['type'])) {
@@ -1532,7 +1523,6 @@ class Rule extends CommonDBTM {
     * @param $value the pattern
    **/
    function getCriteriaValue($ID, $condition, $value) {
-      global $LANG;
 
       if (!in_array($condition, array(self::PATTERN_IS,
                                       self::PATTERN_IS_NOT,
@@ -1594,7 +1584,7 @@ class Rule extends CommonDBTM {
     * @param $rules_id ID of the rule
    **/
    function showRulePreviewCriteriasForm($target, $rules_id) {
-      global $DB, $LANG;
+      global $DB;
 
       $criterias = $this->getCriterias();
 
@@ -1669,7 +1659,7 @@ class Rule extends CommonDBTM {
     * @param $options possible options
    **/
    static function dropdown($options=array()) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
@@ -1829,11 +1819,11 @@ class Rule extends CommonDBTM {
          echo "<th>" . $LANG['joblist'][6] . "</th>";
          echo "<th>" . __('Active') . "</th>";
          echo "</tr>\n";
-         
-         Session::initNavigateListItems(get_class($this), 
+
+         Session::initNavigateListItems(get_class($this),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
-         
+
          foreach ($rules as $rule) {
             Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);
             echo "<tr class='tab_bg_1'>";
@@ -1931,7 +1921,7 @@ class Rule extends CommonDBTM {
    **/
    private static function cleanForItemActionOrCriteria($item, $field, $ruleitem, $table,
                                                         $valfield, $fieldfield) {
-      global $DB, $LANG;
+      global $DB;
 
       $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
 
@@ -1960,7 +1950,8 @@ class Rule extends CommonDBTM {
                   $input['id'] = $data[$fieldid];
                   $ruleitem->update($input);
                }
-               Session::addMessageAfterRedirect(__('Rules using the object have been disabled.'), true);
+               Session::addMessageAfterRedirect(__('Rules using the object have been disabled.'),
+                                                true);
             }
          }
       }
@@ -1997,12 +1988,12 @@ class Rule extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Entity' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $types = array();
+                  $types      = array();
                   $collection = new RuleRightCollection();
                   if ($collection->canList()) {
                      $types[] = 'RuleRight';
@@ -2015,11 +2006,12 @@ class Rule extends CommonDBTM {
                   if ($collection->canList()) {
                      $types[] = 'RuleMailCollector';
                   }
-                  $nb=0;
+                  $nb = 0;
                   if (count($types)) {
                      $nb = countElementsInTable(array('glpi_rules', 'glpi_ruleactions'),
                                                 "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
-                                                  AND `glpi_rules`.`sub_type` IN ('".implode("','",$types)."')
+                                                  AND `glpi_rules`.`sub_type`
+                                                         IN ('".implode("','",$types)."')
                                                   AND `glpi_ruleactions`.`field` = 'entities_id'
                                                   AND `glpi_ruleactions`.`value` = '".$item->getID()."'");
                   }
