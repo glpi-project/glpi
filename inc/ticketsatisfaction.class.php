@@ -43,8 +43,6 @@ class TicketSatisfaction extends CommonDBTM {
 
 
    static function getTypeName() {
-      global $LANG;
-
       return __('Satisfaction');
    }
 
@@ -101,7 +99,6 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $ticket Object : the ticket
    **/
    function showSatisfactionForm($ticket) {
-      global $LANG;
 
       $tid = $ticket->fields['id'];
       $options = array();
@@ -215,7 +212,6 @@ class TicketSatisfaction extends CommonDBTM {
     * @param $value status ID
    **/
    static function getTypeInquestName($value) {
-      global $LANG;
 
       switch ($value) {
          case 1 :
@@ -227,5 +223,4 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 }
-
 ?>

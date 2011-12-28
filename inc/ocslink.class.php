@@ -88,6 +88,7 @@ class Ocslink extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $CFG_GLPI;
 
       if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
          switch ($item->getType()) {

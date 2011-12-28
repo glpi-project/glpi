@@ -175,7 +175,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     * @return Nothing (call to classes members)
    **/
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
-      global $DB, $LANG,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $ID = $tt->fields['id'];
 

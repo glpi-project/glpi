@@ -46,8 +46,6 @@ class TicketValidation  extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Approval','Approvals',$nb);
    }
 
@@ -107,7 +105,6 @@ class TicketValidation  extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight('create_validation','1')
           || Session::haveRight('validate_ticket','1')) {
@@ -173,7 +170,7 @@ class TicketValidation  extends CommonDBChild {
 
 
    function post_addItem() {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $job      = new Ticket();
       $mailsend = false;
@@ -203,16 +200,19 @@ class TicketValidation  extends CommonDBChild {
             $email = $user->getDefaultEmail();
             if (!empty($email)) {
                //TRANS: %s is the user name
-               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'),$user->getName()));
+               Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'),
+                                                        $user->getName()));
             } else {
-               Session::addMessageAfterRedirect(__('The selected user has no valid email address. The request has been created, without email confirmation.'), false, ERROR);
+               Session::addMessageAfterRedirect(__('The selected user has no valid email address. The request has been created, without email confirmation.'),
+                                                false, ERROR);
             }
          }
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
          //TRANS: %s is the username
-         $changes[2] = sprintf(__('Approval request send to %s'),getUserName($this->fields["users_id_validate"]));
+         $changes[2] = sprintf(__('Approval request send to %s'),
+                               getUserName($this->fields["users_id_validate"]));
          Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                       Log::HISTORY_LOG_SIMPLE_MESSAGE);
       }
@@ -220,7 +220,6 @@ class TicketValidation  extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       $job = new Ticket();
       $forbid_fields = array();
@@ -228,7 +227,8 @@ class TicketValidation  extends CommonDBChild {
       if ($this->fields["users_id_validate"] == Session::getLoginUserID()) {
          if ($input["status"] == "rejected"
              && (!isset($input["comment_validation"]) || $input["comment_validation"] == '')) {
-            Session::addMessageAfterRedirect(__('If approval is denied, specify a reason.'), false, ERROR);
+            Session::addMessageAfterRedirect(__('If approval is denied, specify a reason.'),
+                                             false, ERROR);
             return false;
          }
          if ($input["status"] == "waiting") {
@@ -258,7 +258,7 @@ class TicketValidation  extends CommonDBChild {
 
 
    function post_updateItem($history=1) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $job = new Ticket();
       $mailsend = false;
@@ -281,13 +281,15 @@ class TicketValidation  extends CommonDBChild {
          switch ($this->fields["status"]) {
             case 'accepted' :
                //TRANS: %s is the username
-               $changes[2] = sprintf(__('Approval granted by %s'), getUserName($this->fields["users_id_validate"]));
+               $changes[2] = sprintf(__('Approval granted by %s'),
+                                     getUserName($this->fields["users_id_validate"]));
                break;
 
             case 'rejected' :
             default :
                //TRANS: %s is the username
-               $changes[2] = sprintf(__('Update the approval request to %s'), getUserName($this->fields["users_id_validate"]));
+               $changes[2] = sprintf(__('Update the approval request to %s'),
+                                     getUserName($this->fields["users_id_validate"]));
                break;
 
          }
@@ -308,13 +310,13 @@ class TicketValidation  extends CommonDBChild {
 
 
    function post_deleteFromDB() {
-      global $LANG;
 
       // Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
       //TRANS: %s is the username
-      $changes[2] = sprintf(__('Cancel the approval request to %s'), getUserName($this->fields["users_id_validate"]));
+      $changes[2] = sprintf(__('Cancel the approval request to %s'),
+                            getUserName($this->fields["users_id_validate"]));
 
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_LOG_SIMPLE_MESSAGE);
@@ -330,7 +332,6 @@ class TicketValidation  extends CommonDBChild {
     * @return an array
     */
    static function getAllStatusArray($withmetaforsearch=false, $global=false) {
-      global $LANG;
 
       $tab = array('waiting'  => __('Waiting for approval'),
                    'rejected' => __('Refused'),
@@ -508,7 +509,6 @@ class TicketValidation  extends CommonDBChild {
     * Form for Followup on Massive action
    **/
    static function showFormMassiveAction() {
-      global $LANG;
 
       echo "&nbsp;".__('Approver')."&nbsp;: ";
       User::dropdown(array('name'   => 'users_id_validate',
@@ -528,7 +528,7 @@ class TicketValidation  extends CommonDBChild {
     * @param $ticket class
    **/
    function showSummary($ticket) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight('validate_ticket',1)
           && !Session::haveRight('create_validation',1)) {
@@ -589,7 +589,7 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</tr>";
 
-         Session::initNavigateListItems('TicketValidation', 
+         Session::initNavigateListItems('TicketValidation',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1), $ticket->fields["name"]));
 
@@ -653,7 +653,6 @@ class TicketValidation  extends CommonDBChild {
     *
     **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       $this->check($ID,'w');
 
@@ -746,7 +745,6 @@ class TicketValidation  extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Approval');
@@ -794,5 +792,4 @@ class TicketValidation  extends CommonDBChild {
    }
 
 }
-
 ?>
