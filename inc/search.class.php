@@ -2088,13 +2088,13 @@ class Search {
 
          case "glpi_groups.name" :
             if ($itemtype != 'Group' && $itemtype != 'User') {
-               
+
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num, ";
                }
                return "`$table$addtable`.`$field` AS ".$NAME."_$num, ";
-               
+
 //                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
             break;
@@ -2574,7 +2574,7 @@ class Search {
                return " $link (`$table`.`id`".$SEARCH.
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            
+
             $toadd = '';
             if ($itemtype == 'Ticket') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
@@ -2583,8 +2583,8 @@ class Search {
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
                   $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
                }
-            }            
-            
+            }
+
             return $link." ($toadd `$table`.`$name1` $SEARCH
                             OR `$table`.`$name2` $SEARCH
                             OR CONCAT(`$table`.`$name1`, ' ',
@@ -2603,7 +2603,7 @@ class Search {
 //                   return " $link (`$table`.`id` IS NOT NULL) ";
 //                }
 //                return " $link (`$table`.`id`".$SEARCH.') ';
-// 
+//
 //             }
 //             return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
@@ -2955,7 +2955,7 @@ class Search {
          if ($searchtype=='notequals') {
             $nott = !$nott;
          }
-         // Add NULL if $val = 0 and not negative search or 
+         // Add NULL if $val = 0 and not negative search or
          // Or negative search on real value
          if ((!$nott && $val==0) || ($nott && $val != 0)) {
             $out .= " OR `$table`.`id` IS NULL";
@@ -4642,6 +4642,10 @@ class Search {
             $itemtable = $item->getTable();
          }
          foreach ($search[$itemtype] as $key => $val) {
+            if (!is_array($val)) {
+               // skip sub-menu
+               continue;
+            }
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
             if (isset($val['linkfield']) && empty($val['linkfield'])) {
                $search[$itemtype][$key]['massiveaction'] = false;
