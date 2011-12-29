@@ -39,10 +39,8 @@ if (!defined('GLPI_ROOT')) {
 // CLASSES link
 class Link extends CommonDBTM {
 
+
    static function getTypeName($nb=0) {
-      global $LANG;
-
-
       return _n('External link', 'External links',$nb);
    }
 
@@ -58,7 +56,6 @@ class Link extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("link","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -80,7 +77,6 @@ class Link extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Link_ItemType', $ong, $options);

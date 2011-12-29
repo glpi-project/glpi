@@ -599,7 +599,7 @@ class Infocom extends CommonDBChild {
     *@return float
     **/
    static function showDisplayLink($itemtype, $device_id, $update=0) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("infocom","r") || !($item = getItemForItemtype($itemtype))) {
          return false;
@@ -1497,7 +1497,6 @@ class Infocom extends CommonDBChild {
     * @return expiration date string
    **/
    static function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
-      global $LANG;
 
       // Life warranty
       if ($addwarranty==-1 && $deletenotice==0) {
@@ -1514,5 +1513,4 @@ class Infocom extends CommonDBChild {
 
 
 }
-
 ?>
