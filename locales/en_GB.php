@@ -1297,6 +1297,8 @@ $LANG['Menu'][5]="Tickets";
 $LANG['Menu'][6]="Reports";
 $LANG['Menu'][7]="Problems";
 $LANG['Menu'][8]="Changes";
+
+/// TODO After is ok for migration to gettext
 $LANG['Menu'][9]="LDAP directories";
 $LANG['Menu'][10]="Mail servers";
 $LANG['Menu'][11]="Settings";
@@ -1310,7 +1312,6 @@ $LANG['Menu'][18]="Tools";
 $LANG['Menu'][19]="Knowledge base";
 $LANG['Menu'][20]="FAQ";
 
-/// TODO After is ok for migration to gettext
 $LANG['Menu'][21]="Cartridges";
 $LANG['Menu'][22]="Contacts";
 $LANG['Menu'][23]="Suppliers";

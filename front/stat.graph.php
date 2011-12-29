@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Html::header($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
+Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
@@ -119,7 +119,8 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
       $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
-      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
+      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_itilcategories",
+                                                                     $_GET["id"]));
       break;
 
    case "type" :
@@ -219,7 +220,8 @@ switch($_GET["type"]) {
       $next  = $prev=0;
       $next  = getNextItem("glpi_usercategories", $_GET["id"]);
       $prev  = getPreviousItem("glpi_usercategories", $_GET["id"]);
-      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_usercategories",$_GET["id"]));
+      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_usercategories",
+                                                                     $_GET["id"]));
       break;
 
    case "requesttypes_id" :
@@ -312,17 +314,21 @@ if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
 
 ///////// Stats nombre intervention
 // Total des interventions
-$values['total']  = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_total", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['total']  = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_total",
+                                               $_REQUEST["date1"], $_REQUEST["date2"],
+                                               $_GET["type"], $val1, $val2);
 // Total des interventions résolues
-$values['solved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['solved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved",
+                                               $_REQUEST["date1"], $_REQUEST["date2"],
+                                               $_GET["type"], $val1, $val2);
 // Total des interventions closes
-$values['closed'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_closed", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['closed'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_closed",
+                                               $_REQUEST["date1"], $_REQUEST["date2"],
+                                               $_GET["type"], $val1, $val2);
 // Total des interventions closes
-$values['late']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved_late", $_REQUEST["date1"],
-                                               $_REQUEST["date2"], $_GET["type"], $val1, $val2);
+$values['late']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_solved_late",
+                                               $_REQUEST["date1"], $_REQUEST["date2"],
+                                               $_GET["type"], $val1, $val2);
 
 $available = array('total'  => $LANG['job'][14],
                    'solved' => $LANG['job'][15],
@@ -348,25 +354,25 @@ Stat::showGraph($toprint, array('title'     => __('Number of tickets'),
                                 'unit'      => __('Ticket(s)')));
 
 //Temps moyen de resolution d'intervention
-$values2['avgsolved']     = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsolvedtime", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"], $_GET["type"], $val1,
-                                                       $val2);
+$values2['avgsolved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsolvedtime",
+                                                   $_REQUEST["date1"], $_REQUEST["date2"],
+                                                   $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgsolved'] as $key => $val) {
    $values2['avgsolved'][$key] /= HOUR_TIMESTAMP;
 }
 //Temps moyen de cloture d'intervention
-$values2['avgclosed']     = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgclosedtime", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"], $_GET["type"], $val1,
-                                                       $val2);
+$values2['avgclosed'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgclosedtime",
+                                                   $_REQUEST["date1"], $_REQUEST["date2"],
+                                                   $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key] /= HOUR_TIMESTAMP;
 }
 //Temps moyen d'intervention reel
-$values2['avgactiontime'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgactiontime", $_REQUEST["date1"],
-                                                       $_REQUEST["date2"], $_GET["type"], $val1,
-                                                       $val2);
+$values2['avgactiontime'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgactiontime",
+                                                       $_REQUEST["date1"], $_REQUEST["date2"],
+                                                       $_GET["type"], $val1, $val2);
 // Pass to hour values
 foreach ($values2['avgactiontime'] as $key => $val) {
    $values2['avgactiontime'][$key] /= HOUR_TIMESTAMP;
@@ -381,9 +387,10 @@ $available = array('avgclosed'     => __('Closure'),
 if ($_REQUEST['itemtype'] == 'Ticket') {
    $available['avgtaketime'] = __('Take into account');
    //Temps moyen de prise en compte de l'intervention
-   $values2['avgtaketime']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgtakeaccount", $_REQUEST["date1"],
-                                                         $_REQUEST["date2"], $_GET["type"], $val1,
-                                                         $val2);
+   $values2['avgtaketime'] = Stat::constructEntryValues($_REQUEST['itemtype'],
+                                                        "inter_avgtakeaccount", $_REQUEST["date1"],
+                                                        $_REQUEST["date2"], $_GET["type"], $val1,
+                                                        $val2);
    // Pass to hour values
    foreach ($values2['avgtaketime'] as $key => $val) {
       $values2['avgtaketime'][$key] /= HOUR_TIMESTAMP;
@@ -421,13 +428,15 @@ Stat::showGraph($toprint, array('title'     => __('Average time'),
 
 if ($_REQUEST['itemtype'] == 'Ticket') {
    ///////// Satisfaction
-   $values['opensatisfaction']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_opensatisfaction",
-                                                            $_REQUEST["date1"], $_REQUEST["date2"],
-                                                            $_GET["type"], $val1, $val2);
+   $values['opensatisfaction']   = Stat::constructEntryValues($_REQUEST['itemtype'],
+                                                              "inter_opensatisfaction",
+                                                              $_REQUEST["date1"], $_REQUEST["date2"],
+                                                              $_GET["type"], $val1, $val2);
 
-   $values['answersatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_answersatisfaction",
-                                                            $_REQUEST["date1"], $_REQUEST["date2"],
-                                                            $_GET["type"], $val1, $val2);
+   $values['answersatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
+                                                              "inter_answersatisfaction",
+                                                              $_REQUEST["date1"], $_REQUEST["date2"],
+                                                              $_GET["type"], $val1, $val2);
 
 
    $available = array('opensatisfaction'   => __('Opened'),
@@ -451,9 +460,10 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
                                  'showtotal' => 1,
                                  'unit'      => __('Ticket(s)')));
 
-   $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsatisfaction", $_REQUEST["date1"],
-                                                         $_REQUEST["date2"], $_GET["type"], $val1,
-                                                         $val2);
+   $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
+                                                           "inter_avgsatisfaction",
+                                                           $_REQUEST["date1"], $_REQUEST["date2"],
+                                                           $_GET["type"], $val1, $val2);
 
    $available = array('avgsatisfaction' => __('Satisfaction'));
    echo "<div class='center'>";

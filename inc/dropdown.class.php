@@ -643,7 +643,7 @@ class Dropdown {
                         => array('DocumentCategory' => DocumentCategory::getTypeName(2),
                                  'DocumentType'     => DocumentType::getTypeName(2)),
 
-                        $LANG['Menu'][18]
+                        __('Tools')
                         => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
 
                         __('Calendar')

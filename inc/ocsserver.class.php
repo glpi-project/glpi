@@ -434,7 +434,7 @@ class OcsServer extends CommonDBTM {
       $monitor = $this->fields["import_monitor"];
       $printer = $this->fields["import_printer"];
       $software = $this->fields["import_software"];
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][16] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>"._n('Device', 'Devices', 2)."</td>\n<td>";
       Dropdown::showFromArray("import_periph", $import_array, array('value' => $periph));
       echo "</td></tr>\n";
 

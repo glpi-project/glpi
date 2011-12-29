@@ -34,12 +34,13 @@ if (!defined('GLPI_ROOT')) {
 // class Preference for the current connected User
 class Preference extends CommonGLPI {
 
+
    static function getTypeName($nb=0) {
-      global $LANG;
 
       // Always plural
-      return $LANG['Menu'][11];
+      return __('Settings');
    }
+
 
    function defineTabs($options=array()) {
 

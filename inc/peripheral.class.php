@@ -45,20 +45,13 @@ class Peripheral  extends CommonDBTM {
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+   **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][16];
-      }
-      return $LANG['help'][29];
+      return _n('Device', 'Devices', $nb);
    }
 
 
@@ -73,7 +66,6 @@ class Peripheral  extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Computer_Item', $ong, $options);

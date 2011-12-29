@@ -1642,10 +1642,9 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function getSearchOptionsStats() {
-      global $LANG;
 
       $tab = array();
-      $tab['stats'] = $LANG['Menu'][13];
+      $tab['stats']              = __('Statistics');
 
       $tab[151]['table']         = $this->getTable();
       $tab[151]['field']         = 'solve_delay_stat';
@@ -1667,8 +1666,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[153]['datatype']      = 'timestamp';
       $tab[153]['forcegroupby']  = true;
       $tab[153]['massiveaction'] = false;
-
-
 
       return $tab;
    }

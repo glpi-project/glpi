@@ -550,7 +550,7 @@ function update0713to072() {
       }
    }
 
-   displayMigrationMessage("072", $LANG['Menu'][14]); // User
+   displayMigrationMessage("072", _n('User', 'Users', 2));
 
    if (!FieldExists("glpi_groups", "recursive")) {
       $query = "ALTER TABLE `glpi_groups`

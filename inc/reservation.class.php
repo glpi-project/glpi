@@ -45,20 +45,14 @@ class Reservation extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][17];
-      }
-      return $LANG['log'][42];
+      return _n('Reservation', 'Reservations', $nb);
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("reservation_central","r")) {
-         return $LANG['Menu'][17];
+         return self::getTypeName(2);
       }
       return '';
    }

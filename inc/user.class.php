@@ -145,7 +145,6 @@ class User extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case __CLASS__:
@@ -157,11 +156,11 @@ class User extends CommonDBTM {
          case 'Group' :
             if (Session::haveRight("user","r")) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][14],
+                  return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable("glpi_groups_users",
                                                                    "`groups_id` = '".$item->getID()."'" ));
                }
-               return $LANG['Menu'][14];
+               return self::getTypeName(2);
             }
             break;
 
@@ -1405,10 +1404,10 @@ class User extends CommonDBTM {
     * @return nothing (display)
    **/
    function title() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $buttons = array();
-      $title = $LANG['Menu'][14];
+      $title   = _n('User', 'Users', 2);
 
       if ($this->canCreate()) {
          $buttons["user.form.php?new=1"] = __('Add user...');
@@ -1424,7 +1423,7 @@ class User extends CommonDBTM {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
       }
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title,
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", _n('User', 'Users', 2), $title,
                          $buttons);
    }
 

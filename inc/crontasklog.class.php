@@ -67,13 +67,12 @@ class CronTaskLog extends CommonDBTM{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'CronTask' :
                $ong = array();
-               $ong[1] = $LANG['Menu'][13]; // Stat
+               $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $ong[2] = self::createTabEntry(_n('Log', 'Logs', 2),
                                                  countElementsInTable($this->getTable(),

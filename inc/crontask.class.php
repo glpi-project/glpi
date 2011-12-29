@@ -860,7 +860,7 @@ class CronTask extends CommonDBTM{
 
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='2'>&nbsp;".$LANG['Menu'][13]."&nbsp;</th></tr>\n"; // Date
+      echo "<tr><th colspan='2'>&nbsp;".__('Statistics')."</th></tr>\n"; // Date
 
       $nbstart = countElementsInTable('glpi_crontasklogs',
                                       "`crontasks_id` = '".$this->fields['id']."'

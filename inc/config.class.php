@@ -1092,7 +1092,6 @@ class Config extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       switch ($item->getType()) {
          case 'Preference' :
@@ -1101,7 +1100,7 @@ class Config extends CommonDBTM {
          case 'User' :
             if (Session::haveRight('user','w')
                 && $item->currentUserHaveMoreRightThan($item->getID())) {
-               return $LANG['Menu'][11];
+               return __('Settings');
             }
             break;
 

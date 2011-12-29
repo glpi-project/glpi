@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Html::header($LANG['Menu'][13],'',"maintain","stat");
+Html::header(__('Statistics'), '', "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
@@ -98,13 +98,13 @@ $items = array($LANG['job'][4]       => $requester,
                __('Characteristics') => $caract,
                $LANG['job'][5]       => array('technicien'
                                                    => array('title' => __('Technician as assigned')),
-                                             'technicien_followup'
+                                              'technicien_followup'
                                                    => array('title' => __('Technician in tasks')),
-                                             'groups_id_assign'
+                                              'groups_id_assign'
                                                    => array('title' => __('Group')),
-                                             'groups_tree_assign'
+                                              'groups_tree_assign'
                                                    => array('title' => __('Group tree')),
-                                             'enterprise'
+                                              'enterprise'
                                                    => array('title' => $LANG['financial'][26])));
 
 $INSELECT = "";

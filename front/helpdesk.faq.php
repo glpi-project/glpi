@@ -49,11 +49,11 @@ $name = "";
 Session:: checkFaqAccess();
 
 if (Session::getLoginUserID()) {
-   Html::helpHeader($LANG['Menu'][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
-   Html::simpleHeader($LANG['Menu'][20],array($LANG['Menu'][20] => $_SERVER['PHP_SELF']));
+   Html::simpleHeader(__('FAQ'), array(__('FAQ') => $_SERVER['PHP_SELF']));
 }
 
 if (!isset($_GET["contains"])) {

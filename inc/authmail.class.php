@@ -42,12 +42,7 @@ class AuthMail extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][10];
-      }
-      return $LANG['login'][3];
+      return _n('Mail server', 'Mail servers', $nb);
    }
 
 
