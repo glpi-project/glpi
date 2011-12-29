@@ -2099,7 +2099,7 @@ class Search {
                       && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                       && ($searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_tickets_users'
                            || $searchopt[$ID]['joinparams']['beforejoin']['table'] == 'glpi_problems_users')) { // For tickets_users
-                     
+
                      $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'].
                                           "_".self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
                      $addaltemail = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`,
@@ -4088,7 +4088,7 @@ class Search {
             $values  = explode(',',$data[$NAME.$num]);
             if (!($item = getItemForItemtype($data['ITEMTYPE']))) {
                continue;
-            }            
+            }
             $message = array();
             foreach ($values as $field) {
                $table = getTableNameForForeignKeyField($field);
@@ -4710,6 +4710,10 @@ class Search {
             $itemtable = $item->getTable();
          }
          foreach ($search[$itemtype] as $key => $val) {
+            if (!is_array($val)) {
+               // skip sub-menu
+               continue;
+            }
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
             if (isset($val['linkfield']) && empty($val['linkfield'])) {
                $search[$itemtype][$key]['massiveaction'] = false;
