@@ -146,7 +146,7 @@ function update0782to080() {
                   $query = "INSERT INTO `glpi_calendarsegments`
                                    (`calendars_id`, `day`, `begin`, `end`)
                             VALUES ($default_calendar_id, $i, '$begin', '$end')";
-                  $DB->qqueryOrDieuery($query, "0.80 add default glpi_calendarsegments");
+                  $DB->queryOrDie($query, "0.80 add default glpi_calendarsegments");
                }
             }
          }
