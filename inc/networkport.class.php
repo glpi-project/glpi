@@ -280,7 +280,6 @@ class NetworkPort extends CommonDBChild {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('NetworkName', $ong, $options);

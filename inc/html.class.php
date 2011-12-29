@@ -307,7 +307,6 @@ class Html {
     * @return string
    **/
    static function timestampToString($time, $display_sec=true) {
-      global $LANG;
 
       $sign = '';
       if ($time<0) {
@@ -326,14 +325,15 @@ class Html {
 
       if ($units['day']>0) {
          if ($display_sec) {
-            //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes,  %4$d number of seconds
+            //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes,
+            //       %4$d number of seconds
             return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)',
                            $units['day'], $units['hour'], $units['minute'],
                            $units['second']);
          }
          //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
          return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s)',
-               $units['day'], $units['hour'], $units['minute']);
+                        $units['day'], $units['hour'], $units['minute']);
       }
 
       if ($units['hour']>0) {
@@ -345,7 +345,7 @@ class Html {
          }
          //TRANS: %1$d number of hours,   %2$d number of minutes
          return sprintf('%1$d hour(s) %2$d minute(s)',
-               $units['hour'], $units['minute']);
+                        $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
@@ -450,8 +450,6 @@ class Html {
     * @return Nothing (die)
    **/
    static function displayRightError() {
-      global $LANG;
-
       self::displayErrorAndDie(__("You don't have permission to perform this action."));
    }
 
@@ -578,7 +576,6 @@ class Html {
     * Display a Link to the last page using http_referer if available else use history.back
    **/
    static function displayBackLink() {
-      global $LANG;
 
       if (isset($_SERVER['HTTP_REFERER'])) {
          echo "<a href='".$_SERVER['HTTP_REFERER']."'>".__('Back')."</a>";
@@ -722,7 +719,7 @@ class Html {
      * @return nothing
     **/
     static function displayProgressBar($width, $percent, $options=array()) {
-       global $CFG_GLPI, $LANG;
+       global $CFG_GLPI;
 
        $param['title']        = __('Progress');
        $param['simple']       = false;
@@ -771,7 +768,7 @@ class Html {
     * @return nothing
    **/
    static function includeHeader($title='') {
-      global $CFG_GLPI, $PLUGIN_HOOKS, $LANG;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
@@ -1928,10 +1925,11 @@ class Html {
 
 
       if (Session::haveRight("link","r")) {
-         $menu['config']['content']['link']['title']           = _n('External link', 'External links',2);
-         $menu['config']['content']['link']['page']            = '/front/link.php';
-         $menu['config']['content']['link']['hide']            = true;
-         $menu['config']['content']['link']['links']['search'] = '/front/link.php';
+         $menu['config']['content']['link']['title']  = _n('External link', 'External links',2);
+         $menu['config']['content']['link']['page']   = '/front/link.php';
+         $menu['config']['content']['link']['hide']   = true;
+         $menu['config']['content']['link']['links']['search']
+                                                      = '/front/link.php';
 
          if (Session::haveRight("link","w")) {
             $menu['config']['content']['link']['links']['add'] = "/front/link.form.php";
@@ -2196,8 +2194,9 @@ class Html {
 
                   case "template" :
                      echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                __s('Manage templates...')."\" alt=\"".__s('Manage templates...')."\" src='".
-                                $CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png'></a></li>";
+                                __s('Manage templates...')."\" alt=\"".__s('Manage templates...').
+                                "\" src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png'></a>".
+                          "</li>";
                      break;
 
                   case "showall" :
@@ -2325,7 +2324,7 @@ class Html {
     * @param $keepDB booleen, closeDBConnections if false
    **/
    static function footer($keepDB=false) {
-      global $LANG, $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
+      global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
       // Print foot for every page
       if ($FOOTER_LOADED) {
@@ -2404,7 +2403,7 @@ class Html {
     * @param $links links to display
    **/
    static function simpleHeader($title, $links=array()) {
-      global $CFG_GLPI, $LANG, $HEADER_LOADED;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       // Print a nice HTML-head for help page
       if ($HEADER_LOADED) {
@@ -2681,7 +2680,7 @@ class Html {
     * Print footer for help page
    **/
    static function helpFooter() {
-      global $LANG, $CFG_GLPI, $FOOTER_LOADED;
+      global $CFG_GLPI, $FOOTER_LOADED;
 
       // Print foot for help page
       if ($FOOTER_LOADED) {
@@ -2722,7 +2721,7 @@ class Html {
     * @param $url not used anymore.
    **/
    static function nullHeader($title, $url='') {
-      global $CFG_GLPI, $HEADER_LOADED, $LANG;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       if ($HEADER_LOADED) {
          return;
@@ -2787,7 +2786,7 @@ class Html {
     * @param $url not used anymore.
    **/
    static function popHeader($title, $url='') {
-      global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED;
+      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
@@ -2847,7 +2846,7 @@ class Html {
     * @param $width only for dictionnary
    **/
    static function openArrowMassives($formname, $fixed=false, $width='80%') {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($fixed) {
          echo "<table class='tab_glpi' width='950px'>";
@@ -2876,7 +2875,8 @@ class Html {
       if (count($actions)) {
          foreach($actions as $name => $label) {
             if (!empty($name)) {
-               echo "<input type='submit' name='$name' value=\"".addslashes($label)."\" class='submit'>&nbsp;";
+               echo "<input type='submit' name='$name' value=\"".addslashes($label).
+                      "\" class='submit'>&nbsp;";
             }
          }
       }
@@ -3101,7 +3101,7 @@ class Html {
     * @return rand value of dropdown
    **/
    static function showGenericDateTimeSearch($element, $value='', $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $params['with_time']          = false;
       $params['with_future']        = false;
@@ -3181,7 +3181,6 @@ class Html {
     * @see showGenericDateTimeSearch
    **/
    static function getGenericDateTimeSearchItems($options) {
-      global $LANG;
 
       $params['with_time']          = false;
       $params['with_future']        = false;
@@ -3692,7 +3691,7 @@ class Html {
     * @return nothing (print a pager)
    **/
    static function printAjaxPager($title, $start, $numrows) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
       // Forward is the next step forward
@@ -3809,7 +3808,7 @@ class Html {
    **/
    static function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
                               $item_type_output_param=0) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
       // Forward is the next step forward
@@ -3923,7 +3922,6 @@ class Html {
     * @return nothing (print a combo)
    **/
    static function printPagerForm($action="") {
-      global $LANG, $CFG_GLPI;
 
       if ($action) {
          echo "<form method='POST' action=\"$action\">";

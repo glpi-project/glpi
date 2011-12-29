@@ -63,14 +63,11 @@ class Log extends CommonDBTM {
 
 
    static function getTypeName() {
-      global $LANG;
-
       return __('Historical');
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -102,7 +99,6 @@ class Log extends CommonDBTM {
     * @return boolean for success (at least 1 log entry added)
    **/
    static function constructHistory(CommonDBTM $item, & $oldvalues, & $values) {
-      global $LANG;
 
       if (!count($oldvalues)) {
          return false;
